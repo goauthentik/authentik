@@ -113,7 +113,7 @@ def postprocess_schema_responses(
     return result
 
 
-def postprocess_schema_pagination(
+def postprocess_schema_query_params(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
     """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
@@ -163,6 +163,17 @@ def postprocess_schema_pagination(
                 "required": False,
                 "in": "query",
                 "description": "A search term.",
+                "schema": {"type": "string"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        # Not related to pagination but a very common query param
+        "name": create_component(
+            generator,
+            "QueryName",
+            {
+                "name": "name",
+                "in": "query",
                 "schema": {"type": "string"},
             },
             ResolvedComponent.PARAMETER,

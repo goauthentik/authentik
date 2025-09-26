@@ -350,10 +350,7 @@ paths:
       operationId: authenticators_admin_duo_list
       description: Viewset for Duo authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -558,10 +555,7 @@ paths:
       operationId: authenticators_admin_email_list
       description: Viewset for email authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -766,10 +760,7 @@ paths:
       operationId: authenticators_admin_endpoint_list
       description: Viewset for Endpoint authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -978,10 +969,7 @@ paths:
       operationId: authenticators_admin_sms_list
       description: Viewset for sms authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -1186,10 +1174,7 @@ paths:
       operationId: authenticators_admin_static_list
       description: Viewset for static authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -1394,10 +1379,7 @@ paths:
       operationId: authenticators_admin_totp_list
       description: Viewset for totp authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -1602,10 +1584,7 @@ paths:
       operationId: authenticators_admin_webauthn_list
       description: Viewset for WebAuthn authenticator devices (for admins)
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -1839,10 +1818,7 @@ paths:
       operationId: authenticators_duo_list
       description: Viewset for Duo authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2051,10 +2027,7 @@ paths:
       operationId: authenticators_email_list
       description: Viewset for email authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2263,10 +2236,7 @@ paths:
       operationId: authenticators_endpoint_list
       description: Viewset for Endpoint authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2371,10 +2341,7 @@ paths:
       operationId: authenticators_sms_list
       description: Viewset for sms authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2583,10 +2550,7 @@ paths:
       operationId: authenticators_static_list
       description: Viewset for static authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2795,10 +2759,7 @@ paths:
       operationId: authenticators_totp_list
       description: Viewset for totp authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -3007,10 +2968,7 @@ paths:
       operationId: authenticators_webauthn_list
       description: Viewset for WebAuthn authenticator devices
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -3224,10 +3182,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -3498,10 +3453,7 @@ paths:
         name: meta_publisher
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: only_with_launch_url
         schema:
@@ -4381,10 +4333,7 @@ paths:
           only.
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -5299,10 +5248,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -5837,10 +5783,7 @@ paths:
         name: managed
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -6193,10 +6136,7 @@ paths:
       operationId: enterprise_license_list
       description: License Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -7258,10 +7198,7 @@ paths:
         name: destination_group__name
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -7527,10 +7464,7 @@ paths:
           - local
           - webhook
           - webhook_slack
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -8272,10 +8206,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -8761,10 +8692,7 @@ paths:
       operationId: managed_blueprints_list
       description: Blueprint instances
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -9878,10 +9806,7 @@ paths:
       operationId: outposts_ldap_list
       description: LDAPProvider Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -9952,10 +9877,7 @@ paths:
       operationId: outposts_proxy_list
       description: ProxyProvider Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -9988,10 +9910,7 @@ paths:
       operationId: outposts_radius_list
       description: RadiusProvider Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -10062,10 +9981,7 @@ paths:
       operationId: outposts_service_connections_all_list
       description: ServiceConnection Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -10268,10 +10184,7 @@ paths:
         name: local
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -10535,10 +10448,7 @@ paths:
         name: local
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -11332,10 +11242,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -11660,10 +11567,7 @@ paths:
         name: model
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -11932,10 +11836,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -12186,10 +12087,7 @@ paths:
       operationId: policies_geoip_list
       description: GeoIP Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -12519,10 +12417,7 @@ paths:
         name: length_min
         schema:
           type: integer
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -12807,10 +12702,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -13083,10 +12975,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -13510,10 +13399,7 @@ paths:
         schema:
           type: string
           format: date-time
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: num_historical_passwords
         schema:
@@ -13784,10 +13670,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -13991,10 +13874,7 @@ paths:
       operationId: propertymappings_notification_list
       description: NotificationWebhookMapping Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -14252,10 +14132,7 @@ paths:
             type: string
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -14518,10 +14395,7 @@ paths:
             type: string
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -14780,10 +14654,7 @@ paths:
             type: string
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -15041,10 +14912,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -15306,10 +15174,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -15571,10 +15436,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -15832,10 +15694,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -16097,10 +15956,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -16358,10 +16214,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -16619,10 +16472,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -16880,10 +16730,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -17141,10 +16988,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -17402,10 +17246,7 @@ paths:
         name: managed__isnull
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -17835,10 +17676,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -18796,10 +18634,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -19517,10 +19352,7 @@ paths:
         description: |+
           Configure how the issuer field of the ID Token should be filled.
 
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -20751,10 +20583,7 @@ paths:
         name: issuer
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: name_id_mapping
         schema:
@@ -21176,10 +21005,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -22334,10 +22160,7 @@ paths:
       operationId: rac_endpoints_list
       description: List accessible endpoints
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -22587,10 +22410,7 @@ paths:
       operationId: rbac_initial_permissions_list
       description: InitialPermissions viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -24162,10 +23982,7 @@ paths:
         name: managed
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -25909,10 +25726,7 @@ paths:
         description: |+
           KAdmin server type
 
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -26270,10 +26084,7 @@ paths:
         name: lookup_groups_from_user
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: object_uniqueness_field
         schema:
@@ -26696,10 +26507,7 @@ paths:
         schema:
           type: boolean
         description: Only return sources with JWKS data
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -26983,10 +26791,7 @@ paths:
         Get all creatable source types. If ?name is set, only returns the type for <name>.
         If <name> isn't found, returns the default type.
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       tags:
       - sources
       security:
@@ -27050,10 +26855,7 @@ paths:
         description: |+
           How the source determines if an existing group should be used or a new group created.
 
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -27425,10 +27227,7 @@ paths:
         name: managed
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: name_id_policy
         schema:
@@ -27795,10 +27594,7 @@ paths:
       operationId: sources_scim_list
       description: SCIMSource Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -30096,10 +29892,7 @@ paths:
       operationId: stages_all_list
       description: Stage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -30305,10 +30098,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -30670,10 +30460,7 @@ paths:
         name: host
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -30969,10 +30756,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -31260,10 +31044,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -31534,10 +31315,7 @@ paths:
         name: friendly_name
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -31812,10 +31590,7 @@ paths:
         name: friendly_name
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -32075,10 +31850,7 @@ paths:
             format: uuid
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: not_configured_action
         schema:
@@ -32362,10 +32134,7 @@ paths:
         name: max_attempts
         schema:
           type: integer
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -32712,10 +32481,7 @@ paths:
       operationId: stages_captcha_list
       description: CaptchaStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -32977,10 +32743,7 @@ paths:
           - always_require
           - expiring
           - permanent
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -33235,10 +32998,7 @@ paths:
         name: deny_message
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -33489,10 +33249,7 @@ paths:
       operationId: stages_dummy_list
       description: DummyStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -33759,10 +33516,7 @@ paths:
         name: host
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -34087,10 +33841,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -34372,10 +34123,7 @@ paths:
         name: flow__slug
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -34625,10 +34373,7 @@ paths:
         name: continue_flow_without_invitation
         schema:
           type: boolean
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: no_flows
         schema:
@@ -34907,10 +34652,7 @@ paths:
           enum:
           - optional
           - required
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -35181,10 +34923,7 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -35438,10 +35177,7 @@ paths:
         name: label
         schema:
           type: string
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -35756,10 +35492,7 @@ paths:
             format: uuid
         explode: true
         style: form
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -36019,10 +35752,7 @@ paths:
       operationId: stages_redirect_list
       description: RedirectStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -36268,10 +35998,7 @@ paths:
       operationId: stages_source_list
       description: SourceStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -36531,10 +36258,7 @@ paths:
       operationId: stages_user_delete_list
       description: UserDeleteStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -36797,10 +36521,7 @@ paths:
         description: |+
           Bind sessions created by this stage to the configured GeoIP location
 
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - in: query
         name: network_binding
         schema:
@@ -37079,10 +36800,7 @@ paths:
       operationId: stages_user_logout_list
       description: UserLogoutStage Viewset
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -37342,10 +37060,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: name
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -38448,6 +38163,11 @@ paths:
           description: ''
 components:
   parameters:
+    QueryName:
+      name: name
+      in: query
+      schema:
+        type: string
     QueryPaginationOrdering:
       name: ordering
       required: false
