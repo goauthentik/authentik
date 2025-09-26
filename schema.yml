@@ -40734,7 +40734,7 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - endpoint
@@ -41307,17 +41307,6 @@ components:
       required:
       - code
       - name
-    DetailedCountryFieldRequest:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/CountryCodeEnum'
-        name:
-          type: string
-          minLength: 1
-      required:
-      - code
-      - name
     Device:
       type: object
       description: Serializer for authenticator devices
@@ -41736,7 +41725,7 @@ components:
           maxLength: 64
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - name
@@ -41809,7 +41798,7 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - email
@@ -43348,7 +43337,7 @@ components:
           format: uuid
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/UserGroup'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         provider:
           type: integer
@@ -43511,7 +43500,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         provider:
           type: integer
@@ -43573,7 +43562,7 @@ components:
         users_obj:
           type: array
           items:
-            $ref: '#/components/schemas/GroupMember'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
           nullable: true
         attributes:
@@ -43745,83 +43734,6 @@ components:
       - name_link
       - name_deny
       type: string
-    GroupMember:
-      type: object
-      description: Stripped down user serializer to show relevant users for groups
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-      required:
-      - name
-      - pk
-      - uid
-      - username
-    GroupMemberRequest:
-      type: object
-      description: Stripped down user serializer to show relevant users for groups
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - username
     GroupOAuthSourceConnection:
       type: object
       description: Group Source Connection
@@ -44420,7 +44332,7 @@ components:
           additionalProperties: {}
         created_by:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         single_use:
           type: boolean
@@ -45842,7 +45754,7 @@ components:
           format: uuid
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/UserGroup'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         provider:
           type: integer
@@ -46000,7 +45912,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         provider:
           type: integer
@@ -49443,6 +49355,82 @@ components:
       - total_pages
       - start_index
       - end_index
+    PartialGroup:
+      type: object
+      description: Partial Group Serializer, does not include child relations.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        num_pk:
+          type: integer
+          description: Get a numerical, int32 ID for the group
+          readOnly: true
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        parent:
+          type: string
+          format: uuid
+          nullable: true
+        parent_name:
+          type: string
+          readOnly: true
+          nullable: true
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
+      - num_pk
+      - parent_name
+      - pk
+    PartialUser:
+      type: object
+      description: Partial User Serializer, does not include child relations.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - uid
+      - username
     PasswordChallenge:
       type: object
       description: Password challenge UI fields
@@ -53641,11 +53629,11 @@ components:
           readOnly: true
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/Group'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         target:
           type: string
@@ -56270,7 +56258,7 @@ components:
           format: uuid
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/UserGroup'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         provider:
           type: integer
@@ -56371,7 +56359,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         provider:
           type: integer
@@ -56489,7 +56477,7 @@ components:
           format: uuid
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/UserGroup'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         source:
           type: string
@@ -56636,7 +56624,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         source:
           type: string
@@ -56688,7 +56676,7 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - name
@@ -57630,7 +57618,7 @@ components:
           title: ID
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - name
@@ -57654,16 +57642,6 @@ components:
       properties:
         token:
           type: string
-          maxLength: 16
-      required:
-      - token
-    StaticDeviceTokenRequest:
-      type: object
-      description: Serializer for static device's tokens
-      properties:
-        token:
-          type: string
-          minLength: 1
           maxLength: 16
       required:
       - token
@@ -57809,7 +57787,7 @@ components:
           title: ID
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - name
@@ -58321,7 +58299,7 @@ components:
         groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/UserGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
           nullable: true
         email:
@@ -58518,59 +58496,6 @@ components:
       - username
       - upn
       type: string
-    UserGroup:
-      type: object
-      description: Simplified Group Serializer for user's groups
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
-          readOnly: true
-          nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
-      - num_pk
-      - parent_name
-      - pk
-    UserGroupRequest:
-      type: object
-      description: Simplified Group Serializer for user's groups
-      properties:
-        name:
-          type: string
-          minLength: 1
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
     UserKerberosSourceConnection:
       type: object
       description: User source connection
@@ -59495,7 +59420,7 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/GroupMember'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - aaguid
@@ -59523,19 +59448,6 @@ components:
           format: uuid
         description:
           type: string
-      required:
-      - aaguid
-      - description
-    WebAuthnDeviceTypeRequest:
-      type: object
-      description: WebAuthnDeviceType Serializer
-      properties:
-        aaguid:
-          type: string
-          format: uuid
-        description:
-          type: string
-          minLength: 1
       required:
       - aaguid
       - description
