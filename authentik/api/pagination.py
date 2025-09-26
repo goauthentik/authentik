@@ -4,7 +4,7 @@ from drf_spectacular.plumbing import build_object_type
 from rest_framework import pagination
 from rest_framework.response import Response
 
-from authentik.api.v3.schema import PAGINATION
+from authentik.api.v3.schema.response import PAGINATION
 
 
 class Pagination(pagination.PageNumberPagination):

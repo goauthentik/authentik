@@ -183,6 +183,7 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.schema.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
+        "authentik.api.schema.postprocess_schema_register",
         "authentik.api.schema.postprocess_schema_responses",
         "authentik.api.schema.postprocess_schema_query_params",
         "authentik.api.schema.postprocess_schema_simplify_paginated",

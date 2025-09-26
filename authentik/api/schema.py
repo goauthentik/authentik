@@ -11,9 +11,11 @@ from drf_spectacular.plumbing import (
 )
 from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
+from structlog.stdlib import get_logger
 
 from authentik.api.apps import AuthentikAPIConfig
-from authentik.api.v3.schema import (
+from authentik.api.v3.schema.query import QUERY_PARAMS
+from authentik.api.v3.schema.response import (
     GENERIC_ERROR,
     GENERIC_ERROR_RESPONSE,
     PAGINATION,
@@ -21,19 +23,7 @@ from authentik.api.v3.schema import (
     VALIDATION_ERROR_RESPONSE,
 )
 
-
-def create_component(
-    generator: SchemaGenerator, name: str, schema: Any, type_=ResolvedComponent.SCHEMA
-) -> ResolvedComponent:
-    """Register a component and return a reference to it."""
-    component = ResolvedComponent(
-        name=name,
-        type=type_,
-        schema=schema,
-        object=name,
-    )
-    generator.registry.register_on_missing(component)
-    return component
+LOGGER = get_logger()
 
 
 def preprocess_schema_exclude_non_api(endpoints: list[tuple[str, Any, Any, Callable]], **kwargs):
@@ -45,22 +35,26 @@ def preprocess_schema_exclude_non_api(endpoints: list[tuple[str, Any, Any, Calla
     ]
 
 
-def postprocess_schema_responses(
+def postprocess_schema_register(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
-    """Workaround to set a default response for endpoints.
-    Workaround suggested at
-    <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>
-    for the missing drf-spectacular feature discussed in
-    <https://github.com/tfranzel/drf-spectacular/issues/101>.
-    """
-
+    """Register custom schema components"""
+    LOGGER.debug("Registering custom schemas")
     generator.registry.register_on_missing(PAGINATION)
     generator.registry.register_on_missing(GENERIC_ERROR)
     generator.registry.register_on_missing(GENERIC_ERROR_RESPONSE)
     generator.registry.register_on_missing(VALIDATION_ERROR)
     generator.registry.register_on_missing(VALIDATION_ERROR_RESPONSE)
+    for query in QUERY_PARAMS.values():
+        generator.registry.register_on_missing(query)
+    return result
 
+
+def postprocess_schema_responses(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Default error responses"""
+    LOGGER.debug("Adding default error responses")
     for path in result["paths"].values():
         for method in path.values():
             method["responses"].setdefault("400", VALIDATION_ERROR_RESPONSE.ref)
@@ -83,73 +77,13 @@ def postprocess_schema_query_params(
 ) -> dict[str, Any]:
     """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
     declare them globally and refer to them"""
-    to_replace = {
-        "ordering": create_component(
-            generator,
-            "QueryPaginationOrdering",
-            {
-                "name": "ordering",
-                "required": False,
-                "in": "query",
-                "description": "Which field to use when ordering the results.",
-                "schema": {"type": "string"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "page": create_component(
-            generator,
-            "QueryPaginationPage",
-            {
-                "name": "page",
-                "required": False,
-                "in": "query",
-                "description": "A page number within the paginated result set.",
-                "schema": {"type": "integer"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "page_size": create_component(
-            generator,
-            "QueryPaginationPageSize",
-            {
-                "name": "page_size",
-                "required": False,
-                "in": "query",
-                "description": "Number of results to return per page.",
-                "schema": {"type": "integer"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "search": create_component(
-            generator,
-            "QuerySearch",
-            {
-                "name": "search",
-                "required": False,
-                "in": "query",
-                "description": "A search term.",
-                "schema": {"type": "string"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        # Not related to pagination but a very common query param
-        "name": create_component(
-            generator,
-            "QueryName",
-            {
-                "name": "name",
-                "in": "query",
-                "schema": {"type": "string"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-    }
+    LOGGER.debug("Deduplicating query parameters")
     for path in result["paths"].values():
         for method in path.values():
             for idx, param in enumerate(method.get("parameters", [])):
-                for replace_name, replace_ref in to_replace.items():
-                    if param["name"] == replace_name:
-                        method["parameters"][idx] = replace_ref.ref
+                if param["name"] not in QUERY_PARAMS:
+                    continue
+                method["parameters"][idx] = QUERY_PARAMS[param["name"]].ref
     return result
 
 
@@ -161,11 +95,14 @@ def postprocess_schema_remove_unused(
     # less efficient than walking through the tree but a lot simpler and no
     # possibility that we miss something
     raw = OpenApiJsonRenderer().render(result, renderer_context={}).decode()
+    count = 0
     for key in result["components"][ResolvedComponent.SCHEMA].keys():
         schema_usages = raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}")
         if schema_usages >= 1:
             continue
         del generator.registry[(key, ResolvedComponent.SCHEMA)]
+        count += 1
+    LOGGER.debug("Removing unused components", count=count)
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
     return result
 
@@ -174,6 +111,14 @@ def postprocess_schema_simplify_paginated(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
     prefix = "#/components/schemas/Paginated"
+    LOGGER.debug("Simplifying paginated responses")
+    autocomplete = None
+    try:
+        from authentik.enterprise.search.schema import AUTOCOMPLETE_SCHEMA
+
+        autocomplete = AUTOCOMPLETE_SCHEMA
+    except ImportError:
+        LOGGER.debug("Enterprise not available")
     for _path, path in result["paths"].items():
         for _method, method in path.items():
             for _code, response in method["responses"].items():
@@ -189,12 +134,15 @@ def postprocess_schema_simplify_paginated(
                     actual_component = generator.registry[
                         (ref.replace(prefix, "").replace("List", ""), ResolvedComponent.SCHEMA)
                     ]
-                    content_response["schema"] = build_object_type(
-                        properties={
+                    schema_params = {
+                        "properties": {
                             "pagination": PAGINATION.ref,
-                            "autocomplete": {"$ref": "#/components/schemas/Autocomplete"},
                             "results": build_array_type(schema=actual_component.ref),
                         },
-                        required=["pagination", "results", "autocomplete"],
-                    )
+                        "required": ["pagination", "results"],
+                    }
+                    if autocomplete:
+                        schema_params["properties"]["autocomplete"] = autocomplete.ref
+                        schema_params["required"].append("autocomplete")
+                    content_response["schema"] = build_object_type(**schema_params)
     return result
