@@ -200,7 +200,7 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
-    signed_assertion = models.BooleanField(default=False)
+    signed_assertion = models.BooleanField(default=True)
     signed_response = models.BooleanField(default=False)
 
     @property

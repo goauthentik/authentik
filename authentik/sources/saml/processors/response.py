@@ -123,7 +123,7 @@ class ResponseProcessor:
 
             if len(signature_nodes) != 1:
                 raise InvalidSignature("No Signature exists in the Response element.")
-            signatures.append(signature_nodes)
+            signatures.extend(signature_nodes)
 
         if self._source.signed_assertion:
             signature_nodes = self._root.xpath(
@@ -132,13 +132,12 @@ class ResponseProcessor:
 
             if len(signature_nodes) != 1:
                 raise InvalidSignature("No Signature exists in the Assertion element.")
-            signatures.append(signature_nodes)
+            signatures.extend(signature_nodes)
 
         if len(signatures) == 0:
             raise InvalidSignature()
 
-        for signature in signatures:
-            signature_node = signature[0]
+        for signature_node in signatures:
             xmlsec.tree.add_ids(self._root, ["ID"])
 
             ctx = xmlsec.SignatureContext()

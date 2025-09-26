@@ -135,6 +135,7 @@ class TestResponseProcessor(TestCase):
         )
         self.source.verification_kp = kp
         self.source.signed_assertion = True
+        self.source.signed_response = False
         request = self.factory.post(
             "/",
             data={
@@ -160,6 +161,7 @@ class TestResponseProcessor(TestCase):
         )
         self.source.verification_kp = kp
         self.source.signed_response = True
+        self.source.signed_assertion = False
         request = self.factory.post(
             "/",
             data={
