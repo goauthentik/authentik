@@ -45,15 +45,14 @@ test.describe("Provider Wizard", () => {
         });
     });
 
-    test.afterEach("Verification", async ({ page }, { testId }) => {
+    test.afterEach("Verification", async ({ page, form }, { testId }) => {
         //#region Confirm provider
 
         const providerName = providerNames.get(testId)!;
+        const { fill, findTextualInput } = form;
 
         const $provider = await test.step("Find provider via search", async () => {
-            const searchInput = page.getByLabel("Provider Search");
-
-            await searchInput.fill(providerName);
+            const providerSearch = await findTextualInput("Provider Search");
 
             // We have to wait for the provider to appear in the table,
             // but several UI elements will be rendered asynchronously.
@@ -63,8 +62,8 @@ test.describe("Provider Wizard", () => {
             let found = false;
 
             for (let i = 0; i < tries; i++) {
-                await searchInput.press("Enter");
-                await searchInput.blur();
+                await fill(providerSearch, providerName);
+                await providerSearch.press("Enter");
 
                 const $rowEntry = page.getByRole("row", {
                     name: providerName,
