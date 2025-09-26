@@ -3,6 +3,7 @@
 import re
 import socket
 from ipaddress import ip_address, ip_network
+from smtplib import SMTPException
 from textwrap import indent
 from types import CodeType
 from typing import TYPE_CHECKING, Any
@@ -32,6 +33,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
+from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
@@ -244,7 +246,6 @@ class BaseEvaluator:
         """
         # Deferred imports to avoid circular import issues
         from authentik.stages.email.tasks import send_mail, send_mails
-        from authentik.stages.email.utils import TemplateEmailMessage
 
         if body and template:
             raise ValueError("body and template parameters are mutually exclusive")
@@ -253,7 +254,6 @@ class BaseEvaluator:
             raise ValueError("Either body or template parameter must be provided")
 
         try:
-
             if template is not None:
                 # Use all available context from the evaluator for template rendering
                 template_context = self._context.copy()
@@ -284,7 +284,7 @@ class BaseEvaluator:
                 send_mail.send(message.__dict__, None, None)
             return True
 
-        except Exception as exc:
+        except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
             LOGGER.warning("Failed to send email", exc=exc, address=address, subject=subject)
             return False
 
