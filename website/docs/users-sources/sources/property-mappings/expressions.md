@@ -20,10 +20,18 @@ import Functions from "../../../expressions/\_functions.mdx";
 
 <Functions />
 
-Example?
+## Source property mapping examples
+
+### Set a user's type
+
+The following example is useful when users are being synced from a source such as LDAP and their authentik accounts need to be set as a certain type: external, internal, service account or internal service account.
+
+To set users as external, create the following source property mapping and add it to the source's settings.
 
 ```python
 return {
   "type": "external".
 }
 ```
+
+###
