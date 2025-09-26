@@ -1,5 +1,6 @@
 """common RBAC serializers"""
 
+from django.contrib.auth.models import Permission, Group as DjangoGroup
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -55,23 +56,50 @@ class RoleAssignedPermissionFilter(FilterSet):
     model = ChoiceFilter(choices=model_choices(), method="filter_model", required=True)
     object_pk = CharFilter(method="filter_object_pk")
 
+    def filter_queryset(self, queryset: QuerySet[Role]) -> QuerySet[Role]:
+        queryset = super().filter_queryset(queryset)
+        data = self.form.cleaned_data
+        model: str = data["model"]
+        object_pk: str | None = data.get("object_pk", None)
+        app, _, model = model.partition(".")
+
+        permissions = Permission.objects.filter(
+            content_type__app_label=app,
+            content_type__model=model,
+        )
+
+        group_pks_with_model_permission = (
+            permissions.order_by().values_list("group", flat=True).distinct()
+        )
+        group_pks_with_object_permission = []
+        if object_pk:
+            group_pks_with_object_permission = (
+                GroupObjectPermission.objects.filter(
+                    permission__in=permissions, object_pk=object_pk
+                )
+                .order_by()
+                .values_list("group", flat=True)
+                .distinct()
+            )
+
+        return queryset.filter(
+            Q(group_id__in=group_pks_with_model_permission)
+            | Q(group_id__in=group_pks_with_object_permission)
+        )
+
     def filter_model(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object type"""
-        app, _, model = value.partition(".")
-        return queryset.filter(
-            Q(
-                group__permissions__content_type__app_label=app,
-                group__permissions__content_type__model=model,
-            )
-            | Q(
-                group__groupobjectpermission__permission__content_type__app_label=app,
-                group__groupobjectpermission__permission__content_type__model=model,
-            )
-        ).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object primary key"""
-        return queryset.filter(Q(group__groupobjectpermission__object_pk=value)).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
 
 class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
@@ -81,7 +109,11 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     ordering = ["name"]
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
-    queryset = Role.objects.all()
+    queryset = (
+        Role.objects.all()
+        .select_related("group")
+        .prefetch_related("group__groupobjectpermission_set")
+    )
     filterset_class = RoleAssignedPermissionFilter
 
     @permission_required("authentik_rbac.assign_role_permissions")
