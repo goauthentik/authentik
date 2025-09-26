@@ -3,39 +3,17 @@
 from collections.abc import Callable
 from typing import Any
 
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.plumbing import (
     ResolvedComponent,
     build_array_type,
-    build_basic_type,
     build_object_type,
 )
 from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
-from drf_spectacular.types import OpenApiTypes
-from rest_framework.settings import api_settings
 
 from authentik.api.apps import AuthentikAPIConfig
-from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
-
-GENERIC_ERROR = build_object_type(
-    description=_("Generic API Error"),
-    properties={
-        "detail": build_basic_type(OpenApiTypes.STR),
-        "code": build_basic_type(OpenApiTypes.STR),
-    },
-    required=["detail"],
-)
-VALIDATION_ERROR = build_object_type(
-    description=_("Validation Error"),
-    properties={
-        api_settings.NON_FIELD_ERRORS_KEY: build_array_type(build_basic_type(OpenApiTypes.STR)),
-        "code": build_basic_type(OpenApiTypes.STR),
-    },
-    required=[],
-    additionalProperties={},
-)
+from authentik.api.v3.schema import GENERIC_ERROR, PAGINATION, VALIDATION_ERROR
 
 
 def create_component(
@@ -71,35 +49,14 @@ def postprocess_schema_responses(
     <https://github.com/tfranzel/drf-spectacular/issues/101>.
     """
 
-    create_component(generator, PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA)
-
-    generic_error = create_component(generator, "GenericError", GENERIC_ERROR)
-    validation_error = create_component(generator, "ValidationError", VALIDATION_ERROR)
+    generator.registry.register_on_missing(PAGINATION)
+    generator.registry.register_on_missing(GENERIC_ERROR)
+    generator.registry.register_on_missing(VALIDATION_ERROR)
 
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"].setdefault(
-                "400",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": validation_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
-            method["responses"].setdefault(
-                "403",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": generic_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
+            method["responses"].setdefault("400", VALIDATION_ERROR.ref)
+            method["responses"].setdefault("403", GENERIC_ERROR.ref)
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
@@ -226,11 +183,9 @@ def postprocess_schema_simplify_paginated(
                     ]
                     content_response["schema"] = build_object_type(
                         properties={
-                            "pagination": {
-                                "$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"
-                            },
+                            "pagination": PAGINATION.ref,
                             "autocomplete": {"$ref": "#/components/schemas/Autocomplete"},
-                            "results": build_array_type(schema={"$ref": actual_component.ref}),
+                            "results": build_array_type(schema=actual_component.ref),
                         },
                         required=["pagination", "results", "autocomplete"],
                     )
