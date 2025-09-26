@@ -39,7 +39,7 @@ import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -125,7 +125,7 @@ export class StageWizard extends AKElement {
                               .targetPk=${this.bindingTarget}
                           ></ak-stage-binding-form>
                       </ak-wizard-page-form>`
-                    : html``}
+                    : nothing}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

@@ -32,7 +32,7 @@ import {
 } from "chart.js";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 
 Chart.register(Legend, Tooltip);
@@ -208,8 +208,8 @@ export abstract class AKChart<T> extends AKElement {
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `
-                    : html`${this.chart ? html`` : html`<ak-empty-state loading></ak-empty-state>`}`}
-                ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
+                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>
         `;

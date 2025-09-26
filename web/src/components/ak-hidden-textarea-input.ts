@@ -4,6 +4,8 @@ import {
     InputListener,
 } from "./ak-hidden-text-input.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -108,8 +110,8 @@ export class AkHiddenTextAreaInput
                 style="flex: 1 1 auto; min-width: 0;"
                 part="textarea"
                 @input=${setValue}
-                placeholder=${ifDefined(this.placeholder)}
-                aria-label=${ifDefined(this.label)}
+                placeholder=${ifPresent(this.placeholder)}
+                aria-label=${ifPresent(this.label)}
                 rows=${ifDefined(this.rows)}
                 cols=${ifDefined(this.cols)}
                 wrap=${ifDefined(wrap)}

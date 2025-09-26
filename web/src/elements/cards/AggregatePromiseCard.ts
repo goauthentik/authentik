@@ -48,10 +48,12 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         }
         try {
             const value = await this.promise;
-            return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
+            return html`<i class="fa fa-check-circle" aria-hidden="true"></i
+                >&nbsp;${value.toString()}`;
         } catch (error: unknown) {
             console.warn(error);
-            return html`<i class="fa fa-exclamation-circle"></i>&nbsp;${this.failureMessage}`;
+            return html`<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;${this
+                    .failureMessage}`;
         }
     }
 

@@ -54,12 +54,14 @@ sequenceDiagram
 | Token                | `/application/o/token/`                                              |
 | User Info            | `/application/o/userinfo/`                                           |
 | Token Revoke         | `/application/o/revoke/`                                             |
+| Token Introspection  | `/application/o/introspect/`                                         |
+| Device Authorization | `/application/o/device/`                                             |
 | End Session          | `/application/o/<application slug>/end-session/`                     |
 | JWKS                 | `/application/o/<application slug>/jwks/`                            |
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 :::caution Reserved application slugs
-Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `userinfo`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
 :::
 
 ### Additional configuration options with Redirect URIs

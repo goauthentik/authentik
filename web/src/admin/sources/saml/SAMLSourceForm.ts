@@ -248,7 +248,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                                         ${msg("Currently set to:")} ${this.instance?.icon}
                                     </p>
                                 `
-                              : html``}
+                              : nothing}
                       </ak-form-element-horizontal>
                       ${this.instance?.icon
                           ? html`
@@ -276,7 +276,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                                     </p>
                                 </ak-form-element-horizontal>
                             `
-                          : html``}`
+                          : nothing}`
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
