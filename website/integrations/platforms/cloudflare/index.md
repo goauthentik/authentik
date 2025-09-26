@@ -22,22 +22,23 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::warning Prerequisites
-Before proceeding, ensure you have a Cloudflare account and that authentik is already configured with Cloudflare Access, following the steps in our [integration guide](../../networking/cloudflare-access/index.md).
+Before proceeding, ensure you have a Cloudflare account and that authentik is already configured with Cloudflare Access, following the steps in our [integration guide](../../security/cloudflare-access/index.md).
 :::
 
 ## Cloudflare configuration
 
-1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com) as an administrator. Go to **My account** (sidebar) > **Account API tokens** and click **Create**.
-2. Under **Create Custom Token**, select **Get Started**. Add an `Account` permission with the `SSO Connector: Edit` scope. Store this token securely; you will need it throughout this guide, and it can also be used to disable SSO if you are locked out. Complete the process by selecting **Continue to Summary**, then **Create Token**.
-3. Copy your Cloudflare Account ID from the dashboard URL. For example, in `https://dash.cloudflare.com/<account_id>/home/domains`, the value in `<account_id>` is what you need.
-4. Export the following environment variables in your terminal:
+1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com) as an administrator.
+2. Navigate to **My account** (sidebar) > **Account API tokens** and click **Create**.
+3. Under **Create Custom Token**, select **Get Started**. Add an `Account` permission with the `SSO Connector: Edit` scope. Store this token securely; you will need it throughout this guide, and it can also be used to disable SSO if you are locked out. Complete the process by selecting **Continue to Summary**, then **Create Token**.
+4. Copy your Cloudflare Account ID from the dashboard URL. For example, in `https://dash.cloudflare.com/<account_id>/home/domains`, the `<account_id>` value is what you need.
+5. Export the following environment variables in your terminal:
 
 ```sh
 export CLOUDFLARE_API_TOKEN=<your_api_token>
 export CLOUDFLARE_ACCOUNT_ID=<your_account_id>
 ```
 
-5. Create the SSO connector:
+5. Create the SSO connector with the following command:
 
 ```sh
 curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors" \
@@ -46,7 +47,7 @@ curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_c
   --json '{"email_domain":"acmecorp.company"}'
 ```
 
-Example response:
+An example of a successful response:
 
 ```json
 {
@@ -67,7 +68,7 @@ Example response:
 }
 ```
 
-Copy the `code` value and create a DNS record containing it at the apex of your email domain.
+Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
 
 Also export your connector ID:
 
@@ -75,7 +76,7 @@ Also export your connector ID:
 export CLOUDFLARE_SSO_CONNECTOR_ID=<your_sso_connector_id>
 ```
 
-5. After the DNS record has propagated, enable the connector:
+5. After the DNS record has propagated, enable the connector with the following command:
 
 ```sh
 curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors/$CLOUDFLARE_SSO_CONNECTOR_ID" \
@@ -86,7 +87,7 @@ curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_c
 
 ## Configuration verification
 
-To confirm the integration, log in to your company’s Cloudflare Access installation with authentik. A new application named **SSO App** should appear in the dashboard. Selecting it should redirect you to the Cloudflare Dashboard.
+To verify the integration, log in to your company’s Cloudflare Access installation with authentik. A new application named **SSO App** should appear in the dashboard. Selecting it should redirect you to the Cloudflare Dashboard.
 
 ## Resources
 
