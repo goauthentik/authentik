@@ -334,6 +334,21 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserServiceAccountSerializer(PassiveSerializer):
+    """Payload to create a service account"""
+
+    name = CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+    )
+    create_group = BooleanField(default=False)
+    expiring = BooleanField(default=True)
+    expires = DateTimeField(
+        required=False,
+        help_text="If not provided, valid for 360 days",
+    )
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -494,18 +509,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required(None, ["authentik_core.add_user", "authentik_core.add_token"])
     @extend_schema(
-        request=inline_serializer(
-            "UserServiceAccountSerializer",
-            {
-                "name": CharField(required=True),
-                "create_group": BooleanField(default=False),
-                "expiring": BooleanField(default=True),
-                "expires": DateTimeField(
-                    required=False,
-                    help_text="If not provided, valid for 360 days",
-                ),
-            },
-        ),
+        request=UserServiceAccountSerializer,
         responses={
             200: inline_serializer(
                 "UserServiceAccountResponse",
@@ -527,11 +531,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     def service_account(self, request: Request) -> Response:
         """Create a new user account that is marked as a service account"""
-        username = request.data.get("name")
-        create_group = request.data.get("create_group", False)
-        expiring = request.data.get("expiring", True)
-        expires = request.data.get("expires", now() + timedelta(days=360))
+        data = UserServiceAccountSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        expires = data.validated_data.get("expires", now() + timedelta(days=360))
 
+        username = data.validated_data["name"]
+        expiring = data.validated_data["expiring"]
         with atomic():
             try:
                 user: User = User.objects.create(
@@ -549,10 +554,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     "user_uid": user.uid,
                     "user_pk": user.pk,
                 }
-                if create_group and self.request.user.has_perm("authentik_core.add_group"):
-                    group = Group.objects.create(
-                        name=username,
-                    )
+                if data.validated_data["create_group"] and self.request.user.has_perm(
+                    "authentik_core.add_group"
+                ):
+                    group = Group.objects.create(name=username)
                     group.users.add(user)
                     response["group_pk"] = str(group.pk)
                 token = Token.objects.create(
@@ -565,7 +570,29 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 response["token"] = token.key
                 return Response(response)
             except IntegrityError as exc:
-                return Response(data={"non_field_errors": [str(exc)]}, status=400)
+                error_msg = str(exc).lower()
+
+                if "unique" in error_msg:
+                    return Response(
+                        data={
+                            "non_field_errors": [
+                                _("A user/group with these details already exists")
+                            ]
+                        },
+                        status=400,
+                    )
+                else:
+                    LOGGER.warning("Service account creation failed", exc=exc)
+                    return Response(
+                        data={"non_field_errors": [_("Unable to create user")]},
+                        status=400,
+                    )
+            except (ValueError, TypeError) as exc:
+                LOGGER.error("Unexpected error during service account creation", exc=exc)
+                return Response(
+                    data={"non_field_errors": [_("Unknown error occurred")]},
+                    status=500,
+                )
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(
