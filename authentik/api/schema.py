@@ -110,6 +110,8 @@ def postprocess_schema_remove_unused(
 def postprocess_schema_simplify_paginated(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
+    """Not used currently, simplifies paginated responses"""
+
     prefix = "#/components/schemas/Paginated"
     LOGGER.debug("Simplifying paginated responses")
     autocomplete = None

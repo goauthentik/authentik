@@ -3,7 +3,6 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.schema.postprocess_schema_register",
         "authentik.api.schema.postprocess_schema_responses",
         "authentik.api.schema.postprocess_schema_query_params",
-        "authentik.api.schema.postprocess_schema_simplify_paginated",
         "authentik.api.schema.postprocess_schema_remove_unused",
         "authentik.enterprise.search.schema.postprocess_schema_search_autocomplete",
         "drf_spectacular.hooks.postprocess_schema_enums",

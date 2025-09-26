@@ -276,20 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DuoDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDuoDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -446,20 +433,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmailDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEmailDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -616,20 +590,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EndpointDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -790,20 +751,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SMSDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSMSDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -960,20 +908,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/StaticDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedStaticDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1130,20 +1065,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TOTPDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTOTPDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1300,20 +1222,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/WebAuthnDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1491,20 +1400,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DuoDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDuoDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1665,20 +1561,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmailDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEmailDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1839,20 +1722,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EndpointDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -1933,20 +1803,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SMSDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSMSDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2107,20 +1964,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/StaticDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedStaticDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2281,20 +2125,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TOTPDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTOTPDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2455,20 +2286,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/WebAuthnDevice'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2639,20 +2457,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ApplicationEntitlement'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedApplicationEntitlementList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -2874,20 +2679,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Application'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -3168,20 +2960,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatedSession'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatedSessionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -3353,20 +3132,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Brand'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedBrandList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -3613,20 +3379,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Group'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -3921,20 +3674,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Token'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTokenList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -4205,20 +3945,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserConsent'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserConsentList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -4417,20 +4144,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/User'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -4819,20 +4533,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CertificateKeyPair'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedCertificateKeyPairList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5109,20 +4810,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/License'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedLicenseList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5448,20 +5136,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Event'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEventList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5805,20 +5480,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Notification'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedNotificationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -6013,20 +5675,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/NotificationRule'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedNotificationRuleList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -6233,20 +5882,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/NotificationTransport'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedNotificationTransportList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -6525,20 +6161,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/FlowStageBinding'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedFlowStageBindingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -6857,20 +6480,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Flow'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedFlowList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7256,20 +6866,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/BlueprintInstance'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedBlueprintInstanceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7514,20 +7111,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TokenModel'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTokenModelList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7634,20 +7218,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ExpiringBaseGrantModel'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedExpiringBaseGrantModelList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7754,20 +7325,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/TokenModel'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTokenModelList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7902,20 +7460,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Outpost'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedOutpostList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8191,20 +7736,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/LDAPOutpostConfig'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedLDAPOutpostConfigList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8259,20 +7791,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ProxyOutpostConfig'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedProxyOutpostConfigList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8297,20 +7816,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RadiusOutpostConfig'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRadiusOutpostConfigList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8365,20 +7871,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ServiceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedServiceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8547,20 +8040,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DockerServiceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDockerServiceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8754,20 +8234,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/KubernetesServiceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedKubernetesServiceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8964,20 +8431,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Policy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -9202,20 +8656,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PolicyBinding'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPolicyBindingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -9436,20 +8877,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DummyPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDummyPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -9706,20 +9134,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EventMatcherPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEventMatcherPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -9932,20 +9347,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ExpressionPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedExpressionPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10135,20 +9537,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GeoIPPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGeoIPPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10431,20 +9820,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PasswordPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPasswordPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10661,20 +10037,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PasswordExpiryPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPasswordExpiryPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10895,20 +10258,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ReputationPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedReputationPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11118,20 +10468,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Reputation'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedReputationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11261,20 +10598,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UniquePasswordPolicy'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUniquePasswordPolicyList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11476,20 +10800,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11649,20 +10960,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/NotificationWebhookMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedNotificationWebhookMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11869,20 +11167,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -12089,20 +11374,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -12300,20 +11572,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RACPropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRACPropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -12515,20 +11774,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RadiusProviderPropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRadiusProviderPropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -12738,20 +11984,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SAMLPropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSAMLPropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -12953,20 +12186,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -13172,20 +12392,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ScopeMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedScopeMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -13387,20 +12594,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/KerberosSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedKerberosSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -13602,20 +12796,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedLDAPSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -13817,20 +12998,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedOAuthSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -14032,20 +13200,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PlexSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPlexSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -14247,20 +13402,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SAMLSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSAMLSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -14462,20 +13604,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMSourcePropertyMapping'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMSourcePropertyMappingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -14675,20 +13804,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Provider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -14822,20 +13938,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GoogleWorkspaceProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -15090,20 +14193,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderGroupList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -15241,20 +14331,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGoogleWorkspaceProviderUserList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -15417,20 +14494,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/LDAPProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedLDAPProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -15624,20 +14688,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MicrosoftEntraProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -15892,20 +14943,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderGroupList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -16043,20 +15081,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MicrosoftEntraProviderUser'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedMicrosoftEntraProviderUserList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -16261,20 +15286,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OAuth2Provider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedOAuth2ProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -16582,20 +15594,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ProxyProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedProxyProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -16787,20 +15786,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RACProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRACProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -17000,20 +15986,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RadiusProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRadiusProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -17337,20 +16310,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SAMLProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSAMLProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -17643,20 +16603,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -17911,20 +16858,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMProviderGroup'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMProviderGroupList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -18062,20 +16996,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMProviderUser'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMProviderUserList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -18209,20 +17130,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SSFProvider'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSSFProviderList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -18424,20 +17332,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ConnectionToken'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedConnectionTokenList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -18611,20 +17506,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Endpoint'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEndpointList'
           description: ''
         '400':
           description: Bad request
@@ -18814,20 +17696,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/InitialPermissions'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedInitialPermissionsList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19031,20 +17900,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Permission'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPermissionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19208,20 +18064,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RoleAssignedObjectPermission'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRoleAssignedObjectPermissionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19426,20 +18269,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserAssignedObjectPermission'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserAssignedObjectPermissionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19531,20 +18361,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ExtraRoleObjectPermission'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedExtraRoleObjectPermissionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19680,20 +18497,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ExtraUserObjectPermission'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedExtraUserObjectPermissionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19829,20 +18633,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Role'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRoleList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20214,20 +19005,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Source'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20432,20 +19210,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20614,20 +19379,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupKerberosSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupKerberosSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20825,20 +19577,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupLDAPSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupLDAPSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21031,20 +19770,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupOAuthSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupOAuthSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21237,20 +19963,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupPlexSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupPlexSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21443,20 +20156,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/GroupSAMLSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedGroupSAMLSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21689,20 +20389,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/KerberosSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedKerberosSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -22031,20 +20718,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/LDAPSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedLDAPSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -22368,20 +21042,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OAuthSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedOAuthSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -22653,20 +21314,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PlexSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPlexSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -23045,20 +21693,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SAMLSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSAMLSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -23278,20 +21913,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMSource'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMSourceList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -23488,20 +22110,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMSourceGroup'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMSourceGroupList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -23697,20 +22306,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SCIMSourceUser'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSCIMSourceUserList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -23902,20 +22498,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -24083,20 +22666,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserKerberosSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserKerberosSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -24293,20 +22863,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserLDAPSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserLDAPSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -24498,20 +23055,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserOAuthSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserOAuthSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -24703,20 +23247,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserPlexSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserPlexSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -24908,20 +23439,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserSAMLSourceConnection'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserSAMLSourceConnectionList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25120,20 +23638,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SSFStream'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSSFStreamList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25185,20 +23690,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Stage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25356,20 +23848,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorDuoStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorDuoStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25704,20 +24183,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorEmailStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorEmailStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -25912,20 +24378,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorEndpointGDTCStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -26173,20 +24626,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorSMSStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorSMSStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -26398,20 +24838,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorStaticStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorStaticStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -26622,20 +25049,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorTOTPStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorTOTPStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -26842,20 +25256,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorValidateStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorValidateStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -27096,20 +25497,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedAuthenticatorWebAuthnStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -27311,20 +25699,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/WebAuthnDeviceType'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedWebAuthnDeviceTypeList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -27380,20 +25755,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CaptchaStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedCaptchaStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -27600,20 +25962,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ConsentStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedConsentStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -27812,20 +26161,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DenyStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDenyStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -28024,20 +26360,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DummyStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDummyStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -28275,20 +26598,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmailStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedEmailStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -28536,20 +26846,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/IdentificationStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedIdentificationStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -28752,20 +27049,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Invitation'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedInvitationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -28968,20 +27252,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/InvitationStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedInvitationStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -29207,20 +27478,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MutualTLSStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedMutualTLSStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -29423,20 +27681,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PasswordStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPasswordStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -29661,20 +27906,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Prompt'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPromptList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -29912,20 +28144,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PromptStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedPromptStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -30115,20 +28334,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RedirectStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedRedirectStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -30332,20 +28538,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SourceStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedSourceStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -30540,20 +28733,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserDeleteStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserDeleteStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -30788,20 +28968,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserLoginStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserLoginStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -30996,20 +29163,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserLogoutStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserLogoutStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -31234,20 +29388,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserWriteStage'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedUserWriteStageList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -31459,20 +29600,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Schedule'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedScheduleList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -31661,20 +29789,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Task'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTaskList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -31768,20 +29883,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Domain'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedDomainList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -31925,20 +30027,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-                  results:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Tenant'
-                  autocomplete:
-                    $ref: '#/components/schemas/Autocomplete'
-                required:
-                - autocomplete
-                - pagination
-                - results
+                $ref: '#/components/schemas/PaginatedTenantList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -40959,6 +39048,2085 @@ components:
       - radius
       - rac
       type: string
+    PaginatedApplicationEntitlementList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationEntitlement'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedApplicationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatedSessionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatedSession'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorDuoStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorDuoStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorEmailStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorEmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorEndpointGDTCStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorSMSStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorSMSStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorStaticStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorStaticStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorTOTPStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorTOTPStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorValidateStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorValidateStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedAuthenticatorWebAuthnStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedBlueprintInstanceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintInstance'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedBrandList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedCaptchaStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaptchaStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedCertificateKeyPairList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedConnectionTokenList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionToken'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedConsentStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDenyStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DenyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDockerServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DockerServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDomainList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Domain'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDummyPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDummyStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DummyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDuoDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DuoDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEmailDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEmailStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEndpointDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEndpointList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEventList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEventMatcherPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventMatcherPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedExpiringBaseGrantModelList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpiringBaseGrantModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedExpressionPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpressionPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedExtraRoleObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraRoleObjectPermission'
+      required:
+      - pagination
+      - results
+    PaginatedExtraUserObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraUserObjectPermission'
+      required:
+      - pagination
+      - results
+    PaginatedFlowList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flow'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedFlowStageBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowStageBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGeoIPPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoIPPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGoogleWorkspaceProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGoogleWorkspaceProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGoogleWorkspaceProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGoogleWorkspaceProviderUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupLDAPSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupLDAPSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupOAuthSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupPlexSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupPlexSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupSAMLSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupSAMLSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGroupSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedIdentificationStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentificationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedInitialPermissionsList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitialPermissions'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedInvitationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invitation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedInvitationStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvitationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedKerberosSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedKerberosSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedKubernetesServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KubernetesServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLDAPOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLDAPProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLDAPSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLDAPSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLicenseList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedMicrosoftEntraProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedMicrosoftEntraProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedMicrosoftEntraProviderMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedMicrosoftEntraProviderUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftEntraProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedMutualTLSStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MutualTLSStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedNotificationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedNotificationRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedNotificationTransportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationTransport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedNotificationWebhookMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationWebhookMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedOAuth2ProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuth2Provider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedOAuthSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedOAuthSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedOutpostList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Outpost'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPasswordExpiryPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordExpiryPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPasswordPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPasswordStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PasswordStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPlexSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPlexSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlexSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPolicyBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPromptList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prompt'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPromptStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromptStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedProxyOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedProxyProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRACPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRACProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRadiusOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRadiusProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRadiusProviderPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRedirectStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedReputationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reputation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedReputationPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRoleAssignedObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleAssignedObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedRoleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSAMLPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSAMLProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSAMLSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSAMLSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMProviderGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMProviderUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMSourceGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSCIMSourceUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourceUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSMSDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SMSDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSSFProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSSFStreamList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFStream'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedScheduleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedScopeMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedServiceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSourceStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedStaticDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaticDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTOTPDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TOTPDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTenantList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTokenList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Token'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTokenModelList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUniquePasswordPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UniquePasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserAssignedObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAssignedObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserConsentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserConsent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserDeleteStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDeleteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserLDAPSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLDAPSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserLoginStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLoginStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserLogoutStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserLogoutStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserOAuthSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserPlexSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPlexSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserSAMLSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSAMLSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedUserWriteStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWriteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedWebAuthnDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedWebAuthnDeviceTypeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnDeviceType'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     Pagination:
       type: object
       properties:
