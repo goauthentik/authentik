@@ -2,7 +2,6 @@
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
@@ -10,7 +9,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
@@ -33,7 +32,7 @@ def kerberos_connectivity_check(pk: str):
     description=_("Sync Kerberos source."),
 )
 def kerberos_sync(pk: str):
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     source: KerberosSource = KerberosSource.objects.filter(enabled=True, pk=pk).first()
     if not source:
         return

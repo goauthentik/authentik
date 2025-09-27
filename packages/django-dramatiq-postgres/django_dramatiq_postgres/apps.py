@@ -11,7 +11,7 @@ class DjangoDramatiqPostgres(AppConfig):
     name = "django_dramatiq_postgres"
     verbose_name = "Django Dramatiq postgres"
 
-    def ready(self):
+    def ready(self) -> None:
         old_broker = dramatiq.get_broker()
 
         if len(old_broker.actors) != 0:
@@ -38,7 +38,7 @@ class DjangoDramatiqPostgres(AppConfig):
                     *Conf().result_backend_args,
                     **Conf().result_backend_kwargs,
                 )
-            broker.add_middleware(middleware)
+            broker.add_middleware(middleware)  # type: ignore[no-untyped-call]
 
         dramatiq.set_broker(broker)
 

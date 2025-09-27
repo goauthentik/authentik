@@ -200,8 +200,15 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
+module = ["dramatiq.*", "pglock.*"]
+follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cron_converter.*", "django_tenants.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = [
-  "authentik.admin.*",
   "authentik.api.*",
   "authentik.blueprints.*",
   "authentik.brands.*",
@@ -261,7 +268,6 @@ module = [
   "authentik.tasks.*",
   "authentik.tasks.schedules.*",
   "authentik.tenants.*",
-  "django_dramatiq_postgres.*",
   "lifecycle.*",
   "tests.e2e.*",
   "tests.integration.*",
