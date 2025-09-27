@@ -63,9 +63,13 @@ class Migration(migrations.Migration):
         try:
             recorder = MigrationRecorder(connection)
             if not recorder.migration_qs.exists():
-                self.dependencies.append(("django_postgres_cache", "0001_initial"),)
+                self.dependencies.append(
+                    ("django_postgres_cache", "0001_initial"),
+                )
         except:
-            self.dependencies.append(("django_postgres_cache", "0001_initial"),)
+            self.dependencies.append(
+                ("django_postgres_cache", "0001_initial"),
+            )
 
     operations = [
         migrations.AlterModelOptions(

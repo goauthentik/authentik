@@ -27,13 +27,13 @@ class DatabaseCache(BaseDatabaseCache):
         except ProgrammingError:
             return {}
 
-    def keys(self, keys_pattern: str, version: int|None = None) -> list[str]:
+    def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
         try:
             return self._keys(keys_pattern, version=version)
         except ProgrammingError:
             return []
 
-    def _keys(self, keys_pattern: str, version: int|None = None) -> list[str]:
+    def _keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
         keys_pattern = self.make_key(keys_pattern.replace("*", ".*"), version=version)
         db = router.db_for_read(self.cache_model_class)
         connection = connections[db]
@@ -54,7 +54,7 @@ class DatabaseCache(BaseDatabaseCache):
 
         return [self.reverse_key_func(row[0]) for row in rows]
 
-    def ttl(self, key: str, version: int|None = None) -> int | None:
+    def ttl(self, key: str, version: int | None = None) -> int | None:
         """Get TTL left for a given key and version"""
         key = self.make_and_validate_key(key, version=version)
         db = router.db_for_read(self.cache_model_class)
