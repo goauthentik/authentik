@@ -10,7 +10,6 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
@@ -179,8 +178,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
         except DB_ERRORS:  # pragma: no cover
             self.send_response(503)

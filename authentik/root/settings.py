@@ -231,9 +231,6 @@ CACHES = {
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
-DJANGO_REDIS_SCAN_ITERSIZE = 1000
-DJANGO_REDIS_IGNORE_EXCEPTIONS = True
-DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"

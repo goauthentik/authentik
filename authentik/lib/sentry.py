@@ -8,7 +8,6 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
-from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from dramatiq.errors import Retry
 from h11 import LocalProtocolError
@@ -61,7 +60,6 @@ ignored_classes = (
     ValidationError,
     # Redis errors
     RedisConnectionError,
-    ConnectionInterrupted,
     RedisError,
     ResponseError,
     # websocket errors
@@ -159,9 +157,7 @@ def before_send(event: dict, hint: dict) -> dict | None:
         if event["logger"] in [
             "asyncio",
             "multiprocessing",
-            "django_redis",
             "django.security.DisallowedHost",
-            "django_redis.cache",
             "paramiko.transport",
         ]:
             return None

@@ -4,6 +4,9 @@ from hmac import compare_digest
 from pathlib import Path
 from tempfile import gettempdir
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from channels_redis.pubsub import RedisPubSubLoopLayer, RedisSingleShardConnection
 from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
@@ -11,7 +14,7 @@ from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
-from django_redis import get_redis_connection
+from redis.asyncio.client import Redis
 from redis.exceptions import RedisError
 
 monitoring_set = Signal()
@@ -46,17 +49,28 @@ class LiveView(View):
 class ReadyView(View):
     """View for readiness probe, always returns Http 200, unless sql or redis is down"""
 
+    def check_db(self):
+        for db_conn in connections.all():
+            # Force connection reload
+            db_conn.connect()
+            _ = db_conn.cursor()
+
+    async def check_redis(self):
+        layer = get_channel_layer()
+        root_layer: RedisPubSubLoopLayer = layer._get_layer()
+        shard: RedisSingleShardConnection = root_layer._shards[0]
+        async with shard._lock:
+            shard._ensure_redis()
+            redis_client: Redis = root_layer._shards[0]._redis
+            await redis_client.ping()
+
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
+            self.check_db()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         try:
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
+            async_to_sync(self.check_redis)()
         except RedisError:  # pragma: no cover
             return HttpResponse(status=503)
         return HttpResponse(status=200)
