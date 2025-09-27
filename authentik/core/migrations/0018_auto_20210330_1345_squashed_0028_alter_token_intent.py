@@ -51,6 +51,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0017_managed"),
+        ("django_postgres_cache", "0001_initial"),
     ]
 
     operations = [
