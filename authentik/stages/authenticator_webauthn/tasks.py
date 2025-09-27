@@ -7,7 +7,6 @@ from pathlib import Path
 from django.core.cache import cache
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from fido2.mds3 import filter_revoked, parse_blob
 
@@ -15,7 +14,7 @@ from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDeviceType,
 )
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
 AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"
@@ -33,7 +32,7 @@ def mds_ca() -> bytes:
 @actor(description=_("Background task to import FIDO Alliance MDS blob and AAGUIDs into database."))
 def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
     to_create_update = [
