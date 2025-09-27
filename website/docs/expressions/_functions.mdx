@@ -125,11 +125,19 @@ Example:
 jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile", "email"])
 ```
 
-### `ak_send_email(address: str, subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
+### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
 
 Send an email using authentik's email system.
 
-The `address` parameter specifies the recipient email address. The `subject` parameter sets the email subject line.
+The `address` parameter specifies the recipient email address(es). It can be:
+- A single email address as a string: `"user@example.com"`
+- A list of email addresses: `["user1@example.com", "user2@example.com"]`
+
+:::note
+When using multiple recipients, all email addresses will be visible in the "To:" field of the email. If you need to send to multiple recipients without revealing all addresses to each other, send individual emails instead.
+:::
+
+The `subject` parameter sets the email subject line.
 
 You must provide either `body` (for plain text/HTML content) or `template` (for template rendering), but not both.
 
@@ -142,15 +150,22 @@ If the email is queued successfully, the function returns `True`; otherwise, it 
 Examples:
 
 ```python
-# Send email with plain body
+# Send email with plain body to single recipient
 ak_send_email("user@example.com", "Welcome!", body="Welcome to our platform!")
+
+# Send email to multiple recipients
+ak_send_email(
+    ["user1@example.com", "user2@example.com", "admin@example.com"],
+    "System Maintenance",
+    body="Scheduled maintenance will occur tonight."
+)
 
 # Send email using a template
 ak_send_email("user@example.com", "Password Reset", template="email/password_reset.html")
 
-# Send email with custom context for template
+# Send email with custom context for template to multiple recipients
 ak_send_email(
-    "user@example.com",
+    ["user@example.com", "admin@example.com"],
     "Account Update",
     template="email/event_notification.html",
     context={

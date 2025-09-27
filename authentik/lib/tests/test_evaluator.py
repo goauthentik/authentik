@@ -195,3 +195,46 @@ class TestEvaluator(TestCase):
         self.assertEqual(message_dict["to"], ["test@example.com"])
         self.assertIn("2026-01-01", message_dict["body"])
         self.assertIn("http://localhost", message_dict["body"])
+
+    @patch("authentik.stages.email.tasks.send_mail")
+    def test_expr_send_email_multiple_addresses(self, mock_send_mail):
+        """Test ak_send_email with multiple email addresses"""
+        user = create_test_user()
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"user": user}
+
+        # Test sending email to multiple addresses
+        result = evaluator.evaluate(
+            "return ak_send_email(['user1@example.com', 'user2@example.com'], "
+            "'Test Subject', body='Test Body')"
+        )
+
+        self.assertTrue(result)
+        mock_send_mail.send.assert_called_once()
+
+        # Verify the call arguments
+        args, kwargs = mock_send_mail.send.call_args
+        message_dict, stage_class_path, email_stage_pk = args
+
+        # Check that global settings are used (None parameters)
+        self.assertIsNone(stage_class_path)
+        self.assertIsNone(email_stage_pk)
+
+        # Check message properties - should have multiple recipients
+        self.assertEqual(message_dict["subject"], "Test Subject")
+        self.assertEqual(message_dict["to"], ["user1@example.com", "user2@example.com"])
+        self.assertEqual(message_dict["body"], "Test Body")
+
+    def test_expr_send_email_multiple_addresses_validation(self):
+        """Test ak_send_email validation with multiple addresses"""
+        evaluator = BaseEvaluator(generate_id())
+
+        # Test error when empty list is provided
+        with self.assertRaises(ValueError) as cm:
+            evaluator.evaluate("return ak_send_email([], 'Test', body='Body')")
+        self.assertIn("Address list cannot be empty", str(cm.exception))
+
+        # Test error when invalid type is provided
+        with self.assertRaises(ValueError) as cm:
+            evaluator.evaluate("return ak_send_email(123, 'Test', body='Body')")
+        self.assertIn("Address must be a string or list of strings", str(cm.exception))

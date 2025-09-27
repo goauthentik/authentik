@@ -224,7 +224,7 @@ class BaseEvaluator:
 
     def expr_send_email(
         self,
-        address: str,
+        address: str | list[str],
         subject: str,
         body: str | None = None,
         stage: "EmailStage | None" = None,
@@ -234,7 +234,9 @@ class BaseEvaluator:
         """Send an email using authentik's email system
 
         Args:
-            address: Email address to send to
+            address: Email address(es) to send to. Can be:
+                - Single email: "user@example.com"
+                - List of emails: ["user1@example.com", "user2@example.com"]
             subject: Email subject
             body: Email body (plain text/HTML). Mutually exclusive with template.
             stage: EmailStage instance to use for settings. If None, uses global settings.
@@ -253,6 +255,18 @@ class BaseEvaluator:
         if not body and not template:
             raise ValueError("Either body or template parameter must be provided")
 
+        # Normalize address parameter to list of (name, email) tuples
+        if isinstance(address, str):
+            # Single email address
+            to_addresses = [("", address)]
+        elif isinstance(address, list):
+            if not address:
+                raise ValueError("Address list cannot be empty")
+            # List of email strings
+            to_addresses = [("", email) for email in address]
+        else:
+            raise ValueError("Address must be a string or list of strings")
+
         try:
             if template is not None:
                 # Use all available context from the evaluator for template rendering
@@ -264,7 +278,7 @@ class BaseEvaluator:
                 # Use template rendering
                 message = TemplateEmailMessage(
                     subject=subject,
-                    to=[("", address)],
+                    to=to_addresses,
                     template_name=template,
                     template_context=template_context,
                 )
@@ -272,7 +286,7 @@ class BaseEvaluator:
                 # Use plain body
                 message = TemplateEmailMessage(
                     subject=subject,
-                    to=[("", address)],
+                    to=to_addresses,
                     body=body,
                 )
 
@@ -285,7 +299,7 @@ class BaseEvaluator:
             return True
 
         except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
-            LOGGER.warning("Failed to send email", exc=exc, address=address, subject=subject)
+            LOGGER.warning("Failed to send email", exc=exc, addresses=to_addresses, subject=subject)
             return False
 
     def wrap_expression(self, expression: str) -> str:
