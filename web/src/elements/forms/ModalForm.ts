@@ -106,7 +106,7 @@ export class ModalForm extends ModalButton {
                 : nothing}
             <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">
                         <slot name="header"></slot>
                     </h1>
                 </div>

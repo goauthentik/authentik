@@ -449,34 +449,33 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.hideServiceAccounts}
-                                @change=${() => {
-                                    this.hideServiceAccounts = !this.hideServiceAccounts;
-                                    this.page = 1;
-                                    this.fetch();
-                                    updateURLParams({
-                                        hideServiceAccounts: this.hideServiceAccounts,
-                                    });
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.hideServiceAccounts}
+                            @change=${() => {
+                                this.hideServiceAccounts = !this.hideServiceAccounts;
+                                this.page = 1;
+                                this.fetch();
+                                updateURLParams({
+                                    hideServiceAccounts: this.hideServiceAccounts,
+                                });
+                            }}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Hide service-accounts")}</span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Hide service-accounts")}</span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 }
 
