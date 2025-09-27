@@ -1,0 +1,49 @@
+---
+title: Admin Access
+description: Restore authentik admin privileges by recreating the admin group from the command line.
+tags:
+    - troubleshooting
+    - administration
+    - access-control
+keywords:
+    - authentik admin access
+    - admin group recovery
+    - lost admin rights
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+If all Admin groups have been deleted or misconfigured during synchronization, you can use the following command to restore admin access by creating a new admin group and adding a user to it:
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose run --rm server ak create_admin_group <username>
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak create_admin_group <username>
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak create_admin_group <username>
+```
+
+    </TabItem>
+
+</Tabs>

@@ -1,0 +1,93 @@
+---
+title: LDAP
+description: Run LDAP sync and connectivity checks to troubleshoot directory integrations in authentik.
+tags:
+    - troubleshooting
+    - integrations
+    - ldap
+keywords:
+    - authentik ldap
+    - ldap sync errors
+    - directory troubleshooting
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+authentik raises LDAP errors when it cannot reach the directory server or when a synchronization hits schema or credential issues. Use the steps below to isolate the failure.
+
+## Check directory connectivity
+
+Run the connectivity check to confirm authentik can reach the LDAP host, bind, and search using the current configuration.
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose run --rm worker ldap_check_connection <slug_of_the_source>
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak ldap_check_connection <slug_of_the_source>
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak ldap_check_connection <slug_of_the_source>
+```
+
+    </TabItem>
+
+</Tabs>
+
+If the command fails, use the output to adjust firewalls, TLS settings, or bind credentials and retry the check.
+
+## Run a foreground synchronization
+
+Once connectivity works, execute a foreground sync to surface schema or attribute mapping issues.
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose run --rm worker ldap_sync <slug_of_the_source>
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak ldap_sync <slug_of_the_source>
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak ldap_sync <slug_of_the_source>
+```
+
+    </TabItem>
+
+</Tabs>
+
+The sync prints each object it processes and any warnings it encounters. Resolve reported mapping errors, missing filters, or attribute permissions, then rerun the sync.

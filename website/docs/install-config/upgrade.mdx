@@ -12,7 +12,7 @@ authentik does not support downgrading. Make sure to back up your database in ca
 
 **Preview the release notes**: Be sure to carefully read the [Release Notes](../../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
 
-**Database backup**: Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method ([Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md)).
+**Database backup**: Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method ([Docker Compose](../troubleshooting/infrastructure/docker/postgres-upgrade.mdx) or [Kubernetes](../troubleshooting/infrastructure/kubernetes/postgres-upgrade.mdx)).
 
 **Upgrade sequence**: Upgrades must follow the sequence of major releases; **do not skip** directly from an older major version to the most recent version.
 

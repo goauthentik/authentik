@@ -1,0 +1,55 @@
+---
+title: Missing Permissions
+description: Resolve authentik missing permission errors by regenerating permissions after setup.
+tags:
+    - troubleshooting
+    - authentication
+    - permissions
+keywords:
+    - authentik missing permissions
+    - repair permissions
+    - bootstrap errors
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+:::note
+This warning usually appears during the initial bootstrap, when authentik starts the embedded Outpost before database migrations finish. It should clear on its own once migrations complete.
+:::
+
+If the warning persists, regenerate authentik's default permission mapping with the following command:
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose run --rm worker repair_permissions
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak repair_permissions
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak repair_permissions
+```
+
+    </TabItem>
+
+</Tabs>
+
+If the error persists after running this command, please open an issue on [GitHub](https://github.com/goauthentik/authentik/issues/).

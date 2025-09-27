@@ -1,0 +1,101 @@
+---
+title: Login Issues
+description: Recover authentik login access by generating emergency keys or resetting admin passwords.
+tags:
+    - troubleshooting
+    - authentication
+    - login
+keywords:
+    - authentik login issues
+    - recovery key
+    - initial setup flow
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+You may be locked out of authentik due to misconfigurations or if the initial setup flow fails. Use the options below to regain access.
+
+## Generate a temporary recovery link
+
+Create a recovery link that logs in as the specified user for a limited time. The duration is defined in **minutes** and defaults to `60` (one hour).
+
+:::caution
+Anyone with the recovery URL can sign in as the target user while it is valid.
+:::
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose run --rm server create_recovery_key 60 akadmin
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak create_recovery_key 60 akadmin
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak create_recovery_key 60 akadmin
+```
+
+    </TabItem>
+
+</Tabs>
+
+The command prints a URL that remains valid for 60 minutes. Adjust the first argument to increase or decrease the window (for example, `15` for 15 minutes).
+
+## Reset the admin password during installation
+
+If the initial setup flow (`/if/flow/initial-setup/`) is unavailable, restart the containers first. If the issue persists, reset the administrator password directly.
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```bash
+docker compose exec server ak changepassword akadmin
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```bash
+kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```bash
+uv run ak changepassword akadmin
+```
+
+    </TabItem>
+
+</Tabs>
+
+After setting the new password, you can now log in at `https://authentik.company/if/flow/default-authentication-flow/?next=%2F`.
+
+:::note
+Resetting the password outside the setup flow bypasses some onboarding steps. Use this as a last resort and review the `akadmin` user account configuration afterwards.
+:::

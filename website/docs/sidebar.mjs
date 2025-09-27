@@ -792,47 +792,73 @@ const items = [
         type: "category",
         label: "Troubleshooting",
         link: {
-            type: "generated-index",
-            title: "Troubleshooting",
-            slug: "troubleshooting",
-            description: "Troubleshooting various issues",
+            type: "doc",
+            id: "troubleshooting/index",
         },
         items: [
             {
                 //#endregion
 
-                //#region Forward auth
+                //#region Getting started
                 type: "category",
-                label: "Forward auth",
-                items: ["troubleshooting/forward_auth/general"],
-                link: {
-                    type: "generated-index",
-                    title: "Forward auth troubleshooting",
-                    slug: "troubleshooting/forward_auth",
-                    description:
-                        "Steps to help debug forward auth setups with various reverse proxies.",
-                },
+                label: "Getting started",
+                items: ["troubleshooting/getting-started/logs"],
             },
             {
                 //#endregion
 
-                //#region PostgreSQL
+                //#region Authentication issues
                 type: "category",
-                label: "PostgreSQL",
+                label: "Authentication issues",
                 items: [
-                    "troubleshooting/postgres/upgrade_kubernetes",
-                    "troubleshooting/postgres/upgrade_docker",
+                    "troubleshooting/authentication/login-issues",
+                    "troubleshooting/authentication/access-denied",
+                    "troubleshooting/authentication/csrf-errors",
+                    "troubleshooting/authentication/missing-permissions",
                 ],
             },
-            "troubleshooting/access",
-            "troubleshooting/login",
-            "troubleshooting/logs",
-            "troubleshooting/image_upload",
-            "troubleshooting/missing_permission",
-            "troubleshooting/missing_admin_group",
-            "troubleshooting/csrf",
-            "troubleshooting/emails",
-            "troubleshooting/ldap_source",
+            {
+                //#endregion
+
+                //#region Integration problems
+                type: "category",
+                label: "Integration problems",
+                items: [
+                    "troubleshooting/integrations/ldap",
+                    "troubleshooting/integrations/forward-auth",
+                    "troubleshooting/integrations/email",
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Administration
+                type: "category",
+                label: "Administration",
+                items: [
+                    "troubleshooting/administration/admin-access",
+                    "troubleshooting/administration/file-uploads",
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Infrastructure
+                type: "category",
+                label: "Infrastructure",
+                items: [
+                    {
+                        type: "category",
+                        label: "Docker",
+                        items: ["troubleshooting/infrastructure/docker/postgres-upgrade"],
+                    },
+                    {
+                        type: "category",
+                        label: "Kubernetes",
+                        items: ["troubleshooting/infrastructure/kubernetes/postgres-upgrade"],
+                    },
+                ],
+            },
         ],
     },
     {
