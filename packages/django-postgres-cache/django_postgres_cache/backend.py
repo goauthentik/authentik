@@ -25,7 +25,7 @@ class DatabaseCache(BaseDatabaseCache):
         try:
             return super().get(key, default=default, version=version)
         except ProgrammingError:
-            return {}
+            return default
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
         try:
