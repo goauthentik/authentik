@@ -62,7 +62,7 @@ class MessagesMiddleware(Middleware):
         if task_created:
             task._messages.append(
                 Task._make_message(
-                    class_to_path(self),
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
                     delay=delay,
@@ -72,7 +72,7 @@ class MessagesMiddleware(Middleware):
             task._previous_messages.extend(task._messages)
             task._messages = [
                 Task._make_message(
-                    class_to_path(self),
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
                     delay=delay,
@@ -82,7 +82,7 @@ class MessagesMiddleware(Middleware):
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(class_to_path(self), TaskStatus.INFO, "Task is being processed")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task is being processed")
 
     def after_process_message(
         self,
@@ -95,13 +95,15 @@ class MessagesMiddleware(Middleware):
         task: Task = message.options["task"]
         if exception is None:
             task.log(
-                class_to_path(self), TaskStatus.INFO, "Task finished processing without errors"
+                class_to_path(type(self)),
+                TaskStatus.INFO,
+                "Task finished processing without errors",
             )
             return
         if should_ignore_exception(exception):
             return
         task.log(
-            class_to_path(self),
+            class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
@@ -118,7 +120,7 @@ class MessagesMiddleware(Middleware):
 
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(class_to_path(self), TaskStatus.INFO, "Task has been skipped")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task has been skipped")
 
 
 class LoggingMiddleware(Middleware):
