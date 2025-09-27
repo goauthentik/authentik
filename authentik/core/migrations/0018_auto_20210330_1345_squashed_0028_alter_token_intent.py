@@ -51,8 +51,21 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0017_managed"),
-        ("django_postgres_cache", "0001_initial"),
     ]
+
+    def __init__(self, name, app_label):
+        """Conditionally add dependency for fresh installs only"""
+        super().__init__(name, app_label)
+
+        from django.db.migrations.recorder import MigrationRecorder
+        from django.db import connection
+
+        try:
+            recorder = MigrationRecorder(connection)
+            if not recorder.migration_qs.exists():
+                self.dependencies.append(("django_postgres_cache", "0001_initial"),)
+        except:
+            self.dependencies.append(("django_postgres_cache", "0001_initial"),)
 
     operations = [
         migrations.AlterModelOptions(
