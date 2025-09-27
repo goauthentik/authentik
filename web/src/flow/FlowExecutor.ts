@@ -529,6 +529,18 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></xak-flow-frame>`;
+            case "ak-stage-saml-logout":
+                await import("#flow/providers/saml/SAMLLogoutStage");
+                return html`<ak-stage-saml-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-saml-logout>`;
+            case "ak-stage-iframe-logout":
+                await import("#flow/providers/IFrameLogoutStage");
+                return html`<ak-stage-iframe-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-iframe-logout>`;
             default:
                 return html`Invalid native challenge element`;
         }

@@ -28,7 +28,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import LogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
@@ -167,12 +167,22 @@ class SAMLProviderSerializer(ProviderSerializer):
                         "and 'Sign Response' must be selected."
                     )
                 )
+
+        # Validate logout_method - backchannel is only available with POST SLS binding
+        if (
+            attrs.get("logout_method") == LogoutMethods.BACKCHANNEL
+            and attrs.get("sls_binding") == SAML_BINDING_REDIRECT
+        ):
+            # Auto-correct to frontchannel_iframe
+            attrs["logout_method"] = LogoutMethods.FRONTCHANNEL_IFRAME
+
         return super().validate(attrs)
 
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
+            "sls_url",
             "audience",
             "issuer",
             "assertion_valid_not_before",
@@ -188,7 +198,10 @@ class SAMLProviderSerializer(ProviderSerializer):
             "encryption_kp",
             "sign_assertion",
             "sign_response",
+            "sign_logout_request",
             "sp_binding",
+            "sls_binding",
+            "logout_method",
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",

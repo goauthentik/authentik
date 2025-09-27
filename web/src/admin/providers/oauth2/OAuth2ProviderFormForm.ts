@@ -121,6 +121,15 @@ const backchannelLogoutUriHelpMessages: string[] = [
     ),
 ];
 
+const frontchannelLogoutUriHelpMessages: string[] = [
+    msg(
+        "URIs to send front-channel logout notifications to when users log out. Required for OpenID Connect Front-Channel Logout functionality.",
+    ),
+    msg(
+        "These URIs are loaded in the user's browser as iframes or redirects during logout to notify OAuth2/OpenID clients about the logout event.",
+    ),
+];
+
 type ShowClientSecret = (show: boolean) => void;
 const defaultShowClientSecret: ShowClientSecret = (_show) => undefined;
 
@@ -216,6 +225,17 @@ export function renderForm(
                     input-hint="code"
                     placeholder="https://..."
                     .help=${backchannelLogoutUriHelpMessages.map(
+                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    )}
+                ></ak-text-input>
+
+                <ak-text-input
+                    label=${msg("Front-Channel Logout URI")}
+                    name="frontchannelLogoutUri"
+                    value="${provider?.frontchannelLogoutUri ?? ""}"
+                    input-hint="code"
+                    placeholder="https://..."
+                    .help=${frontchannelLogoutUriHelpMessages.map(
                         (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
                     )}
                 ></ak-text-input>

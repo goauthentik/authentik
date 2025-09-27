@@ -204,6 +204,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Back-Channel Logout URI"),
         blank=True,
     )
+    frontchannel_logout_uri = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Front-Channel Logout URI"),
+        blank=True,
+    )
 
     include_claims_in_id_token = models.BooleanField(
         default=True,

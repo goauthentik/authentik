@@ -4,7 +4,19 @@ from django.urls import path
 
 from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
-from authentik.providers.saml.views import metadata, slo, sso
+
+# Import logout stages to ensure challenges are discovered by schema generation
+from authentik.providers.saml.idp_logout import (  # noqa: F401
+    IframeLogoutChallenge,
+    IframeLogoutStageView,
+    SAMLLogoutChallenge,
+    SAMLLogoutStageView,
+)
+from authentik.providers.saml.views import metadata, sso
+from authentik.providers.saml.views.sp_slo import (
+    SPInitiatedSLOBindingPOSTView,
+    SPInitiatedSLOBindingRedirectView,
+)
 
 urlpatterns = [
     # SSO Bindings
@@ -24,15 +36,15 @@ urlpatterns = [
         sso.SAMLSSOBindingInitView.as_view(),
         name="sso-init",
     ),
-    # SLO Bindings
+    # SLO Bindings - SP-initiated
     path(
         "<slug:application_slug>/slo/binding/redirect/",
-        slo.SAMLSLOBindingRedirectView.as_view(),
+        SPInitiatedSLOBindingRedirectView.as_view(),
         name="slo-redirect",
     ),
     path(
         "<slug:application_slug>/slo/binding/post/",
-        slo.SAMLSLOBindingPOSTView.as_view(),
+        SPInitiatedSLOBindingPOSTView.as_view(),
         name="slo-post",
     ),
     # Metadata
