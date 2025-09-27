@@ -75,7 +75,7 @@ export class PromptListPage extends TablePage<Prompt> {
             html`<code>${item.fieldKey}</code>`,
             html`${item.type}`,
             html`${item.order}`,
-            html`${item.promptstageSet?.map((stage) => {
+            html`${item.promptStagesObj.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal size=${PFSize.XLarge}>
