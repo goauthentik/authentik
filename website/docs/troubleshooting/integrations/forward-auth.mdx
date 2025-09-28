@@ -15,7 +15,7 @@ Forward-auth errors typically occur when the reverse proxy drops required header
 
 ## Capture header details with trace logging
 
-Temporarily raise the log level to `trace` so the outpost records every header it receives. Follow the platform-specific steps in the [Logs troubleshooting guide](../getting-started/logs.mdx#enabling-trace-mode) to enable trace mode.
+Temporarily raise the log level to `trace` so the outpost records every header it receives. Follow the platform-specific steps in the [Logs troubleshooting guide](../administration/logs.mdx#enabling-trace-mode) to enable trace mode.
 
 After turning on trace logging, reproduce the failing request and inspect the outpost logs (for example, `docker compose logs --tail=200 outpost`). Verify that headers such as `X-Forwarded-Host`, `X-Forwarded-Proto`, and `X-Forwarded-For` appear with the expected values.
 

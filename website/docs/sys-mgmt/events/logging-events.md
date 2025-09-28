@@ -8,7 +8,7 @@ Event logging in authentik is highly configurable. You can set the [retention pe
 
 ## Troubleshooting with event logs
 
-For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing logs in authentik](../../troubleshooting/getting-started/logs.mdx).
+For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing logs in authentik](../../troubleshooting/administration/logs.mdx).
 
 ## Enhanced audit logging :ak-enterprise
 

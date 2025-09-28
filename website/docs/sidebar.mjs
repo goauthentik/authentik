@@ -797,16 +797,6 @@ const items = [
         },
         items: [
             {
-                //#endregion
-
-                //#region Getting started
-                type: "category",
-                label: "Getting started",
-                items: ["troubleshooting/getting-started/logs"],
-            },
-            {
-                //#endregion
-
                 //#region Authentication issues
                 type: "category",
                 label: "Authentication issues",
@@ -838,6 +828,7 @@ const items = [
                 items: [
                     "troubleshooting/administration/admin-access",
                     "troubleshooting/administration/file-uploads",
+                    "troubleshooting/administration/logs",
                 ],
             },
             {
