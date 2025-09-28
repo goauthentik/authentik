@@ -4,7 +4,14 @@ title: SCIM Provider
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
 
-### Configuration
+## Authentication options
+
+In authentik, there are two options for a SCIM provider's authentication:
+
+- The default method for authentication is a token provided by the application.
+- Alternatively, you can configure your SCIM provider to use OAuth authentication for a SCIM provider, in which case an OAuth token is sent to the application for validation.
+
+### Default authentication method
 
 A SCIM provider requires a base URL and a token. SCIM works via HTTP requests, so authentik must be able to reach the specified endpoint.
 
@@ -15,6 +22,8 @@ The token given by the application will be sent with all outgoing SCIM requests 
 :::info
 When adding the SCIM provider, you must define the **Backchannel provider using the name of the SCIM provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps\*\*, which is not supported for SCIM).
 :::
+
+### OAuth authentication for SCIM provider :ak-enterprise
 
 ### Syncing
 
