@@ -13,13 +13,13 @@ In authentik, there are two options for how to configure authentication for a SC
 - a static token provided by the application (default)
 - an OAuth token sent to the application for validation
 
-When you create a new SCIM provider, select which authentication mode you want to implement.
+When you create a new SCIM provider, select which **Authentication Mode** you want to implement.
 
 ![](./scim_oauth.png)
 
-Whichever mode you select you'll need to enter an endpoint. The endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
+Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint. The endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
 
-### Default authentication method
+### Default authentication method for a SCIM provider
 
 With authentik's default mode, the token that you enter (provided by the application) is sent with all outgoing SCIM requests to authenticate each request.
 
@@ -27,13 +27,13 @@ With authentik's default mode, the token that you enter (provided by the applica
 When adding the SCIM provider, you must define the **Backchannel provider using the name of the SCIM provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps\*\*, which is not supported for SCIM).
 :::
 
-### OAuth authentication for SCIM provider :ak-enterprise
+### OAuth authentication for a SCIM provider :ak-enterprise
 
 Configuring your SCIM provider to use OAuth for authentication means that instead of a token immediately being sent from OAuth, authentik creates and stores a value and sends that to Oauth, which then sends back a token.
 
 You can also add additional parameters to the OAUth token, such as `grant_type`.
 
-To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/scim/).
+To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/oauth/).
 
 ### Syncing
 
