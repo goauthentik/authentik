@@ -120,7 +120,7 @@ You can send a link with the URL for the user to reset their password via Email.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To send the email to the user, click **Email recovery link**.
 
-If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
+If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/integrations/email.mdx).
 
 ## Reset the password for the user
 
