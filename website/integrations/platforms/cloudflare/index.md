@@ -76,7 +76,7 @@ An example of a successful response:
 export CLOUDFLARE_SSO_CONNECTOR_ID=<your_sso_connector_id>
 ```
 
-5. After the DNS record has propagated, enable the connector with the following command:
+8. After the DNS record has propagated, enable the connector with the following command:
 
 ```sh
 curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors/$CLOUDFLARE_SSO_CONNECTOR_ID" \
