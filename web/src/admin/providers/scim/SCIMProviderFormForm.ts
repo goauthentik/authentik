@@ -189,6 +189,11 @@ export function renderForm(
                             value: CompatibilityModeEnum.Slack,
                             description: html`${msg("Altered behavior for usage with Slack.")}`,
                         },
+                        {
+                            label: msg("Salesforce"),
+                            value: CompatibilityModeEnum.Sfdc,
+                            description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",

@@ -399,7 +399,9 @@ class _PostgresConsumer(Consumer):
 
         processing = len(self.in_processing)
         if processing >= self.prefetch:
-            # Wait and don't consume the message, other worker will be faster
+            # If we have too many messages already processing, wait and don't consume a message
+            # straight away, other workers will be faster.
+            # After waiting consume a message regardless.
             self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)  # type: ignore[no-untyped-call]
             self.logger.debug(
                 "Too many messages in processing, Sleeping",
@@ -407,7 +409,8 @@ class _PostgresConsumer(Consumer):
                 backoff_ms=backoff_ms,
             )
             time.sleep(backoff_ms / 1000)
-            return None
+        else:
+            self.misses = 0
 
         if not self.notifies:
             self.notifies += self._poll_for_notify()
@@ -437,6 +440,7 @@ class _PostgresConsumer(Consumer):
         self._auto_purge()
         self._scheduler()
 
+        self.misses = 0
         return None
 
     def _purge_locks(self) -> None:

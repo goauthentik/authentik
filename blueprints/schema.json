@@ -8396,6 +8396,12 @@
                     "title": "Refresh token validity",
                     "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 },
+                "refresh_token_threshold": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh token threshold",
+                    "description": "When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3)."
+                },
                 "include_claims_in_id_token": {
                     "type": "boolean",
                     "title": "Include claims in id_token",
@@ -9428,7 +9434,8 @@
                     "enum": [
                         "default",
                         "aws",
-                        "slack"
+                        "slack",
+                        "sfdc"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -11795,6 +11802,14 @@
                     "format": "uuid",
                     "title": "Encryption Keypair",
                     "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "signed_assertion": {
+                    "type": "boolean",
+                    "title": "Signed assertion"
+                },
+                "signed_response": {
+                    "type": "boolean",
+                    "title": "Signed response"
                 }
             },
             "required": []

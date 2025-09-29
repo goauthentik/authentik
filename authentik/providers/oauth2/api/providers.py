@@ -66,6 +66,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",
+            "refresh_token_threshold",
             "include_claims_in_id_token",
             "signing_key",
             "encryption_key",

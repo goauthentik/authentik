@@ -286,6 +286,12 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        if not self.request.user.is_authenticated:
+            return RedirectChallenge(
+                data={
+                    "to": reverse("authentik_core:root-redirect"),
+                },
+            )
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {
             "component": "ak-stage-session-end",
