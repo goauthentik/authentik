@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>Die URL "
-<x id="0" equiv-text="${this.url}"/>" wurde nicht gefunden.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>Die URL &quot;
+<x id="0" equiv-text="${this.url}"/>&quot; wurde nicht gefunden.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1672,8 +1672,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon "fa-test" zu verwenden</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon &quot;fa-test&quot; zu verwenden</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3704,10 +3704,10 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Bist du sicher, dass du
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>"aktualisieren möchtest?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot;aktualisieren möchtest?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4761,8 +4761,8 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Ein "Roaming"-Authentifikator, wie ein YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Ein &quot;Roaming&quot;-Authentifikator, wie ein YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5120,7 +5120,7 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>Wenn auf eine Dauer größer als 0 gesetzt, hat der Benutzer die Option „Angemeldet bleiben“, wodurch seine Sitzung um die hier angegebene Zeit verlängert wird.</target>
         
       </trans-unit>
@@ -6556,7 +6556,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
       </trans-unit>
       <trans-unit id="sf34026321b35315c">
         <source>Either no applications are defined, or you don’t have access to any.</source>
-        <target>Entweder sind keine Anwendungen definiert, oder Sie haben keinen Zugriff auf welche.</target>
+        <target>Es sind keine Anwendungen vorhanden oder du hast keinen Zugriff darauf.</target>
       </trans-unit>
       <trans-unit id="s1cf2298d92c327a6">
         <source>My Applications</source>
@@ -7229,7 +7229,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
   <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
-  <target>Rolle <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></target>
+  <target>Rolle <x id="0" equiv-text="${this._role.name}"/></target>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
@@ -7348,7 +7348,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Benutzer erfolgreich erstellt und zu Gruppe <x id="0" equiv-text="${this.group.name}"/> hinzugefügt.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Dieser Benutzer wird der Gruppe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot; hinzugefügt.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8601,7 +8601,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Gruppe synchronisieren</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, vom typ <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -8849,8 +8849,8 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Gültige Redirect-URIs nach einem erfolgreichen Autorisierungsflow. Gib hier auch alle Origins für Implicit-Flows an.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Um jede Redirect-URI zu erlauben, setze den Modus auf Regex und den Wert auf ".*". Beachte die möglichen Sicherheitsimplikationen.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>Um jede Redirect-URI zu erlauben, setze den Modus auf Regex und den Wert auf &quot;.*&quot;. Beachte die möglichen Sicherheitsimplikationen.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9595,7 +9595,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Wie die Authentifizierung während eines Authorization-Code-Token-Anforderungsflows durchgeführt wird</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
+  <source>Enable &quot;Remember me on this device&quot;</source>
   <target>„Angemeldet bleiben auf diesem Gerät“ aktivieren</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
@@ -10012,7 +10012,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>z.B. Collaboration, Communication, Intern usw.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
   <target>Fehler beim Abrufen der Applikation &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
@@ -10141,166 +10141,221 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s3633ffed92acaecb">
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+  <target><x id="0" equiv-text="${this.label || &quot;&quot;}"/> Tabellen-Paginierung</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <target>Sortieren nach &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <target>Zeile &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot; auswählen</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
+  <target>Zeile reduzieren</target>
 </trans-unit>
 <trans-unit id="s73f51a3532f29159">
   <source>Expand row</source>
+  <target>Zeile erweitern</target>
 </trans-unit>
 <trans-unit id="sda170fd79bca1616">
   <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
+  <target><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> aktionen</target>
 </trans-unit>
 <trans-unit id="sd09354b0220a13ce">
   <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  <target>Alle Zeilen auf der Seite auswählen (<x id="0" equiv-text="${selectedCount}"/> von <x id="1" equiv-text="${pageItemCount}"/> ausgewählt)</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
+  <target><x id="0" equiv-text="${this.label}"/> Tabelle</target>
 </trans-unit>
 <trans-unit id="s15a7e4227737b7c4">
   <source>Column actions</source>
+  <target>Spaltenaktionen</target>
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>Rolle zugewiesen</target>
 </trans-unit>
 <trans-unit id="s4dcbef0770f0b649">
   <source>Assigned to user</source>
+  <target>Benutzer zugewiesen</target>
 </trans-unit>
 <trans-unit id="sa3242c7021e01280">
   <source>Row Actions</source>
+  <target>Zeilenaktionen</target>
 </trans-unit>
 <trans-unit id="sd939185840181160">
   <source>Select a flow...</source>
+  <target>Einen Flow auswählen …</target>
 </trans-unit>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
+  <target>Suche <x id="0" equiv-text="${this.availableLabel}"/>...</target>
 </trans-unit>
 <trans-unit id="sa637fa23edcbd60b">
   <source>Provider name...</source>
+  <target>Provider name...</target>
 </trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
+  <target>Provider Name</target>
 </trans-unit>
 <trans-unit id="s9bcd7cad5f5e2b15">
   <source>Select a certificate...</source>
+  <target>Ein Zertifikat auswählen …</target>
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
+  <target>Einen Autorisierungs-Flow auswählen …</target>
 </trans-unit>
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
+  <target>Einen Signaturschlüssel auswählen …</target>
 </trans-unit>
 <trans-unit id="sb52c56e87be6cd0c">
   <source>Select an encryption key...</source>
+  <target>Einen Verschlüsselungsschlüssel auswählen …</target>
 </trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
+  <target>Einen Authentifizierungs-Flow auswählen …</target>
 </trans-unit>
 <trans-unit id="s0c9d1c885a69abe8">
   <source>Provider Search</source>
+  <target>Provider Suche</target>
 </trans-unit>
 <trans-unit id="s0fb31bb136cc353a">
   <source>Provider not assigned to any application.</source>
+  <target>Provider ist keiner Anwendung zugewiesen.</target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <target>Provider &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; bearbeiten</target>
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
+  <target>Anwendungsdokumentation</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Anwendungssymbol für  &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>&amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; bearbeiten</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>&amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; ausführen</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>&amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; exportieren</target>
 </trans-unit>
 <trans-unit id="s021258b2c04e722f">
   <source>Search for an application by name</source>
+  <target>Nach einer Anwendung anhand des Namens suchen</target>
 </trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
+  <target>Gerät bearbeiten</target>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
+  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <target>&amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot; Berechtigungen aktualisieren</target>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
+  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <target>&amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot; Berechtigungsdialog öffnen</target>
 </trans-unit>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
+  <target>OCI URL</target>
 </trans-unit>
 <trans-unit id="h3b1f38bb34f8b1b6">
   <source> A valid OCI manifest URL, prefixed with the protocol
                                               e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+  <target> Eine gültige OCI-Manifest-URL mit Protokoll-Präfix
+                                              z.B. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></target>
 </trans-unit>
 <trans-unit id="sc19e397bee1e67f7">
   <source>Read more about</source>
+  <target>Mehr erfahren über</target>
 </trans-unit>
 <trans-unit id="sa777a614e18a35cd">
   <source>OCI Support</source>
+  <target>OCI Support</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <target>Blueprint &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; bearbeiten</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <target>Blueprint &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; anwenden</target>
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${username}"/></source>
+  <target>Wilkommen, <x id="0" equiv-text="${username}"/></target>
 </trans-unit>
 <trans-unit id="scdb1bac161852c73">
   <source>Welcome</source>
+  <target>Wilkommen</target>
 </trans-unit>
 <trans-unit id="s64330d6dc06337c9">
   <source>Loading application...</source>
+  <target>Anwendung wird geladen …</target>
 </trans-unit>
 <trans-unit id="sd5746b2550ac4852">
   <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+  <target>Zertifikat für EAP-TLS verwendet. Erfordert eine Mutual-TLS-Stage im Authentifizierungs-Flow.</target>
 </trans-unit>
 <trans-unit id="seb250c3885733522">
   <source>Token to authenticate with.</source>
+  <target>Token zur Authentifizierung.</target>
 </trans-unit>
 <trans-unit id="scdafec223d3840e9">
   <source>OAuth Source</source>
+  <target>OAuth Quelle</target>
 </trans-unit>
 <trans-unit id="s2111b3384e12349c">
   <source>Specify OAuth source used for authentication.</source>
+  <target>OAuth-Quelle angeben, die für die Authentifizierung verwendet wird.</target>
 </trans-unit>
 <trans-unit id="s1876401267e31dd0">
   <source>OAuth Parameters</source>
+  <target>OAuth-Parameter</target>
 </trans-unit>
 <trans-unit id="sc5ca1b55a5391535">
   <source>Additional OAuth parameters, such as grant_type.</source>
+  <target>Zusätzliche OAuth-Parameter, z. B. grant_type.</target>
 </trans-unit>
 <trans-unit id="s6e4af789dec357dc">
   <source>Authentication Mode</source>
+  <target>Authentifizierungsmodus</target>
 </trans-unit>
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
+  <target>SCIM-Anfragen mit einem statischen Token authentifizieren.</target>
 </trans-unit>
 <trans-unit id="s0e1641692e0dac94">
   <source>OAuth</source>
+  <target>OAuth</target>
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
+  <target>SCIM-Anfragen per OAuth authentifizieren.</target>
 </trans-unit>
 <trans-unit id="s2ce58eab7841b342">
   <source>Salesforce</source>
+  <target>Salesforce</target>
 </trans-unit>
 <trans-unit id="s7392b5925a4803af">
   <source>Altered behavior for usage with Salesforce.</source>
+  <target>Geändertes Verhalten für die Verwendung mit Salesforce.</target>
 </trans-unit>
     </body>
   </file>
