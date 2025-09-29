@@ -67,7 +67,11 @@ Returns "None" if no user was found, otherwise returns the [User](../users-sourc
 Example:
 
 ```python
+# Find user by username
 other_user = ak_user_by(username="other_user")
+
+# Find user by custom attribute additionalState and value confirmed
+other_user = ak_user_by(attributes__additionalState="confirmed")
 ```
 
 ### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool`
