@@ -8,6 +8,9 @@ inputs:
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
+  profiles:
+    description: "Extra profiles of supporting services to start"
+    default: ""
 
 runs:
   using: "composite"
@@ -55,21 +58,13 @@ runs:
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
+        export COMPOSE_PROFILES=${{ inputs.profiles }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
         cd web && npm ci
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
-      shell: uv run python {0}
+      shell: bash
+      env:
+        PROFILES: ${{ inputs.profiles }}
       run: |
-        from authentik.lib.generators import generate_id
-        from yaml import safe_dump
-
-        with open("local.env.yml", "w") as _config:
-            safe_dump(
-                {
-                    "log_level": "debug",
-                    "secret_key": generate_id(),
-                },
-                _config,
-                default_flow_style=False,
-            )
+        uv run python3 ${{ github.action_path }}/ci_config.py
