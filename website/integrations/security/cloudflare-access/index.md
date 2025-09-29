@@ -23,7 +23,9 @@ To proceed, you need to register for a free Cloudflare Access account and have b
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::info Looking to integrate authentik with your Cloudflare dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
+:::info 
+Looking to integrate authentik with your Cloudflare dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
+:::
 :::
 
 ## authentik configuration
