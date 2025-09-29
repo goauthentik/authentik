@@ -68,7 +68,7 @@ An example of a successful response:
 }
 ```
 
-Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
+6. Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
 
 Also export your connector ID:
 
