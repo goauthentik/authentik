@@ -71,7 +71,7 @@ Example:
 other_user = ak_user_by(username="other_user")
 
 # Find user by custom attribute my_custom_attribute and value confirmed
-other_user = ak_user_by(attributes__my_custom_attribute="confirmed")
+other_user = ak_user_by(attributes__<custom_attribute_name>="<value>")
 ```
 
 ### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool`
