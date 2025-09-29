@@ -27,7 +27,7 @@ Before proceeding, ensure you have a Cloudflare account and that authentik is al
 
 ## Cloudflare configuration
 
-1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com) as an administrator.
+1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com) as an administrator.
 2. Navigate to **My account** (sidebar) > **Account API tokens** and click **Create**.
 3. Under **Create Custom Token**, select **Get Started**. Add an `Account` permission with the `SSO Connector: Edit` scope. Store this token securely; you will need it throughout this guide, and it can also be used to disable SSO if you are locked out. Complete the process by selecting **Continue to Summary**, then **Create Token**.
 4. Copy your Cloudflare Account ID from the dashboard URL. For example, in `https://dash.cloudflare.com/<account_id>/home/domains`, the `<account_id>` value is what you need.
