@@ -18,6 +18,7 @@
 
 body {
     background-color: var(--ak-dark-background) !important;
+    color-scheme: dark;
 }
 
 .pf-c-radio {
@@ -224,10 +225,6 @@ select.pf-c-form-control {
 
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
-}
-input[type="datetime-local"]::-webkit-calendar-picker-indicator,
-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
 }
 
 /* select toggle */
