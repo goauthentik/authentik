@@ -40,6 +40,8 @@ export abstract class HorizontalLightComponent<T>
         return this;
     }
 
+    public override role = "presentation";
+
     //#region Properties
 
     /**
@@ -56,26 +58,7 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String })
-    public get label() {
-        return this.ariaLabel;
-    }
-
-    public set label(value: string | null) {
-        this.ariaLabel = value;
-    }
-
-    /**
-     * The ARIA role for the input control
-     * @property
-     * @attribute
-     */
-    public get role() {
-        return super.role || "group";
-    }
-
-    public set role(value: string | null) {
-        super.role = value;
-    }
+    label: string | null = null;
 
     /**
      * @property
@@ -146,15 +129,32 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, attribute: "input-hint" })
     inputHint?: string;
 
+    #fieldID = IDGenerator.elementID().toString();
+    protected helpID = `field-help-${this.#fieldID}`;
+    protected labelID = `field-label-${this.#fieldID}`;
+
     /**
      * A unique ID to associate with the input and label.
      * @property
      */
     @property({ type: String, reflect: false })
-    public fieldID?: string = IDGenerator.elementID().toString();
+    public get fieldID() {
+        return this.#fieldID;
+    }
 
-    protected get helpID() {
-        return this.fieldID ? `field-help-${this.fieldID}` : "field-help";
+    public set fieldID(value: string) {
+        this.#fieldID = value;
+        this.helpID = `field-help-${this.#fieldID}`;
+        this.labelID = `field-label-${this.#fieldID}`;
+    }
+
+    //#endregion
+
+    //#region Lifecycle
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.setAttribute("aria-labelledby", this.labelID);
     }
 
     //#endregion
@@ -187,7 +187,14 @@ export abstract class HorizontalLightComponent<T>
             .errorMessages=${this.errorMessages}
         >
             <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label || "")}
+                ${AKLabel(
+                    {
+                        id: this.labelID,
+                        htmlFor: this.fieldID,
+                        required: this.required,
+                    },
+                    this.label || "",
+                )}
             </div>
 
             ${this.renderControl()}
