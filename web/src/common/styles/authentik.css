@@ -225,12 +225,21 @@ html > form > input {
 .pf-c-form__helper-text {
     text-wrap: pretty;
 }
+
+::placeholder {
+    font-style: italic;
+}
+
 /* #endregion */
 
 /* #region Fonts */
 
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
 }
 
 /* #endregion */
