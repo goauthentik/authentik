@@ -6575,6 +6575,7 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
       <trans-unit id="saf63d34c8601dd41">
         <source><x id="0" equiv-text="${prompt.label}"/></source>
         <target>
+
 <x id="0" equiv-text="${prompt.label}"/> 
 </target>
         
