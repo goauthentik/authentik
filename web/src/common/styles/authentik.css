@@ -222,6 +222,9 @@ html > form > input {
     user-select: none;
 }
 
+.pf-c-form__helper-text {
+    text-wrap: pretty;
+}
 /* #endregion */
 
 /* #region Fonts */
