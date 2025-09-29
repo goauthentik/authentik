@@ -79,13 +79,6 @@ export abstract class Table<T extends object>
                 }
             }
 
-            td,
-            th {
-                &:last-child {
-                    white-space: nowrap;
-                }
-            }
-
             /**
              * TODO: Row actions need a better approach to alignment,
              * but this will at least get the buttons in a grid-like layout.

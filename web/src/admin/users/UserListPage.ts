@@ -248,7 +248,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
@@ -277,7 +278,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 
