@@ -1,6 +1,6 @@
 """common RBAC serializers"""
 
-from django.contrib.auth.models import Permission, Group as DjangoGroup
+from django.contrib.auth.models import Permission
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
