@@ -340,7 +340,7 @@ class TokenParams:
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
-            key=password, intent=TokenIntents.INTENT_APP_PASSWORD
+            key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
