@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-24 00:11+0000\n"
+"POT-Creation-Date: 2025-09-26 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Victor Haddad, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/authentik/teams/119923/pt_BR/)\n"
@@ -2362,6 +2362,10 @@ msgstr "AWS"
 #: authentik/providers/scim/models.py
 msgid "Slack"
 msgstr "Slack"
+
+#: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
