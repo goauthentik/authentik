@@ -5,7 +5,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -18,6 +18,14 @@ export abstract class TablePage<T extends object> extends Table<T> {
         PFPage,
         PFContent,
         PFSidebar,
+        css`
+            .pf-c-sidebar__panel {
+                flex: 0 1 25%;
+            }
+            .pf-c-sidebar__content {
+                flex: 1 1 75%;
+            }
+        `,
     ];
 
     //#region Abstract properties
