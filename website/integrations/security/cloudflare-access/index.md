@@ -24,7 +24,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::info 
-Looking to integrate authentik with your Cloudflare dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
+Looking to integrate authentik with your Cloudflare Dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
 :::
 :::
 
