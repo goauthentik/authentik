@@ -29,7 +29,7 @@ When adding the SCIM provider, you must define the **Backchannel provider using 
 
 ### OAuth authentication for a SCIM provider :ak-enterprise
 
-Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control than a static token.
+Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
 
 You can also add additional parameters to the OAUth token, such as `grant_type`.
 
