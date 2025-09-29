@@ -55,8 +55,8 @@
     }
 }
 
-.pf-c-form__label[aria-required] .pf-c-form__label-text::after {
-    content: "*" / "Required";
+.pf-c-form__label[aria-required="true"] .pf-c-form__label-text::after {
+    content: "*" / "";
     user-select: none;
     margin-left: var(--pf-c-form__label-required--MarginLeft);
     font-size: var(--pf-c-form__label-required--FontSize);
