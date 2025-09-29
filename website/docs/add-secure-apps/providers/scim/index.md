@@ -15,7 +15,7 @@ In authentik, there are two options for how to configure authentication for a SC
 
 When you create a new SCIM provider, select which **Authentication Mode** you want to implement.
 
-![](./scim_oauth.png)
+![Creating a SCIM provider](./scim_oauth.png)
 
 Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint. The endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
 
