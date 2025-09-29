@@ -31,7 +31,12 @@ When adding the SCIM provider, you must define the **Backchannel provider using 
 
 Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
 
-You can also add additional parameters to the OAUth token, such as `grant_type`.
+You can also add additional parameters to the OAuth token, such as `grant_type`. Some examples are:
+
+- `grant_type: client_credentials`
+
+- `grant_type: password`
+  `password: very-secure-password`
 
 To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/oauth/).
 
