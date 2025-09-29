@@ -211,15 +211,10 @@ select.pf-c-form-control {
     --pf-c-form-control--BorderLeftColor: transparent !important;
     --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
     --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
-}
+    --pf-c-form-control--Color: var(--ak-dark-foreground);
 
-.pf-c-form-control:disabled {
-    background-color: var(--ak-dark-background-light);
-}
-
-.pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light);
 }
 
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
