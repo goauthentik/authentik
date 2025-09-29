@@ -27479,6 +27479,14 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
       - in: query
+        name: signed_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: signed_response
+        schema:
+          type: boolean
+      - in: query
         name: signing_kp
         schema:
           type: string
@@ -46475,6 +46483,11 @@ components:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        refresh_token_threshold:
+          type: string
+          description: 'When refreshing a token, if the refresh token is valid for
+            less than this duration, it will be renewed. When set to seconds=0, token
+            will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
         include_claims_in_id_token:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
@@ -46586,6 +46599,12 @@ components:
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        refresh_token_threshold:
+          type: string
+          minLength: 1
+          description: 'When refreshing a token, if the refresh token is valid for
+            less than this duration, it will be renewed. When set to seconds=0, token
+            will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
         include_claims_in_id_token:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
@@ -51576,6 +51595,12 @@ components:
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+        refresh_token_threshold:
+          type: string
+          minLength: 1
+          description: 'When refreshing a token, if the refresh token is valid for
+            less than this duration, it will be renewed. When set to seconds=0, token
+            will always be renewed. (Format: hours=1;minutes=2;seconds=3).'
         include_claims_in_id_token:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
@@ -52597,6 +52622,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
     PatchedSCIMMappingRequest:
       type: object
       description: SCIMMapping Serializer
@@ -55886,6 +55915,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
       required:
       - component
       - icon
@@ -56077,6 +56110,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
       required:
       - name
       - pre_authentication_flow
