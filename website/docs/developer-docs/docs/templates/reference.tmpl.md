@@ -4,7 +4,7 @@ title: "Markdown template: reference"
 
 Write a few sentences introducing the feature/component/technology, and state that this page contains reference materials.
 
-:::info Add a title here
+:::info Optionally add a title here
 If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
 :::
 
