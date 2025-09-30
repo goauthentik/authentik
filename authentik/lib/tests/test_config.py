@@ -27,7 +27,6 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT": "124s",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS": "32m",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_REPUTATION": "298382us",
     }
 
     @mock.patch.dict(environ, {ENV_PREFIX + "_test__test": "bar"})
@@ -179,12 +178,10 @@ class TestConfig(TestCase):
         self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
         self.assertEqual(config.get("worker.threads"), 2)
         self.assertEqual(config.get("cache.timeout"), "124s")
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
-        self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
 
     def test_get_keys(self):
         """Test get_keys"""

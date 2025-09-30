@@ -104,7 +104,6 @@ def get_logger_config():
         "daphne": "WARNING",
         "kubernetes": "INFO",
         "asyncio": "WARNING",
-        "redis": "WARNING",
         "fsevents": "WARNING",
         "uvicorn": "WARNING",
         "gunicorn": "INFO",

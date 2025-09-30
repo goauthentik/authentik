@@ -29,7 +29,6 @@ Before you begin, ensure you have the following tools installed:
 
 authentik depends on several external services:
 
-- [Redis](https://redis.io/) for caching
 - [PostgreSQL](https://www.postgresql.org/) for database storage
 - [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/) for object storage
 - [Sentry Spotlight](https://spotlightjs.com/) for error tracking and visualization
@@ -64,7 +63,6 @@ libpq \
 pkg-config \
 uv \
 postgresql \
-redis \
 node@24 \
 golangci-lint \
 krb5
@@ -82,8 +80,7 @@ libgss-dev \
 krb5-config \
 libkrb5-dev \
 postgresql-server-dev-all \
-postgresql \
-redis
+postgresql
 ```
 
 For other distributions (Red Hat, SUSE, Arch), adjust the package names as needed.

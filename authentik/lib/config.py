@@ -45,7 +45,6 @@ DEPRECATIONS = {
     "redis.cache_timeout": "cache.timeout",
     "redis.cache_timeout_flows": "cache.timeout_flows",
     "redis.cache_timeout_policies": "cache.timeout_policies",
-    "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
 
 
