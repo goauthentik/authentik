@@ -267,6 +267,14 @@ html > form > input {
     user-select: none;
 }
 
+.pf-c-form__helper-text {
+    text-wrap: pretty;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
 /* #endregion */
 
 .pf-c-form__helper-text {
@@ -283,6 +291,10 @@ html > form > input {
 
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
 }
 
 /* #endregion */
