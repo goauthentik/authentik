@@ -20752,6 +20752,17 @@ paths:
         schema:
           type: string
       - in: query
+        name: logout_method
+        schema:
+          type: string
+          enum:
+          - backchannel
+          - frontchannel_iframe
+          - frontchannel_native
+        description: |+
+          Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+
+      - in: query
         name: name
         schema:
           type: string
@@ -20782,6 +20793,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sign_logout_request
+        schema:
+          type: boolean
+      - in: query
         name: sign_response
         schema:
           type: boolean
@@ -20804,6 +20819,20 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: sls_binding
+        schema:
+          type: string
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the logout response back to the Service Provider.
+
+      - in: query
+        name: sls_url
+        schema:
+          type: string
       - in: query
         name: sp_binding
         schema:
@@ -38537,6 +38566,7 @@ components:
       - authentik.policies.password
       - authentik.policies.reputation
       - authentik.policies
+      - authentik.providers
       - authentik.providers.ldap
       - authentik.providers.oauth2
       - authentik.providers.proxy
@@ -40644,6 +40674,8 @@ components:
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
+      - $ref: '#/components/schemas/IframeLogoutChallenge'
+      - $ref: '#/components/schemas/NativeLogoutChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
       - $ref: '#/components/schemas/PasswordChallenge'
@@ -40673,6 +40705,8 @@ components:
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
+          ak-stage-iframe-logout: '#/components/schemas/IframeLogoutChallenge'
+          ak-stage-native-logout: '#/components/schemas/NativeLogoutChallenge'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
@@ -42689,6 +42723,8 @@ components:
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
       - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
+      - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
+      - $ref: '#/components/schemas/NativeLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -42714,6 +42750,8 @@ components:
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
+          ak-stage-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
+          ak-stage-native-logout: '#/components/schemas/NativeLogoutChallengeResponseRequest'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -44233,6 +44271,34 @@ components:
             repeat users to skip straight to entering their password.
       required:
       - name
+    IframeLogoutChallenge:
+      type: object
+      description: Challenge for iframe logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-iframe-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        logout_urls:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+    IframeLogoutChallengeResponseRequest:
+      type: object
+      description: Response for iframe logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-iframe-logout
     ImpersonationRequest:
       type: object
       properties:
@@ -46147,6 +46213,44 @@ components:
       - mode
       - name
       - user_attribute
+    NativeLogoutChallenge:
+      type: object
+      description: Challenge for native browser logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-native-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        post_url:
+          type: string
+        saml_request:
+          type: string
+        relay_state:
+          type: string
+        provider_name:
+          type: string
+        binding:
+          type: string
+        redirect_url:
+          type: string
+        is_complete:
+          type: boolean
+          default: false
+    NativeLogoutChallengeResponseRequest:
+      type: object
+      description: Response for native browser logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-native-logout
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -46507,10 +46611,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
-        backchannel_logout_uri:
+        logout_uri:
           type: string
-          title: Back-Channel Logout URI
           format: uri
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
+          description: Backchannel logs out with server to server calls. Frontchannel
+            uses iframes in your browser
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -46546,6 +46654,11 @@ components:
       - redirect_uris
       - verbose_name
       - verbose_name_plural
+    OAuth2ProviderLogoutMethodEnum:
+      enum:
+      - backchannel
+      - frontchannel
+      type: string
     OAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -46624,10 +46737,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
-        backchannel_logout_uri:
+        logout_uri:
           type: string
-          title: Back-Channel Logout URI
           format: uri
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
+          description: Backchannel logs out with server to server calls. Frontchannel
+            uses iframes in your browser
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -51620,10 +51737,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
-        backchannel_logout_uri:
+        logout_uri:
           type: string
-          title: Back-Channel Logout URI
           format: uri
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
+          description: Backchannel logs out with server to server calls. Frontchannel
+            uses iframes in your browser
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -52412,6 +52533,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -52480,12 +52606,27 @@ components:
           type: boolean
         sign_response:
           type: boolean
+        sign_logout_request:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          description: Method to use for logout. Front-channel iframe loads all logout
+            URLs simultaneously in hidden iframes. Front-channel native uses your
+            active browser tab to send post requests and redirect to providers. Back-channel
+            sends logout requests directly from the server without user interaction
+            (requires POST SLS binding).
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -55521,6 +55662,11 @@ components:
         acs_url:
           type: string
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55585,12 +55731,27 @@ components:
           type: boolean
         sign_response:
           type: boolean
+        sign_logout_request:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          description: Method to use for logout. Front-channel iframe loads all logout
+            URLs simultaneously in hidden iframes. Front-channel native uses your
+            active browser tab to send post requests and redirect to providers. Back-channel
+            sends logout requests directly from the server without user interaction
+            (requires POST SLS binding).
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -55661,6 +55822,12 @@ components:
       - file
       - invalidation_flow
       - name
+    SAMLProviderLogoutMethodEnum:
+      enum:
+      - frontchannel_iframe
+      - frontchannel_native
+      - backchannel
+      type: string
     SAMLProviderRequest:
       type: object
       description: SAMLProvider Serializer
@@ -55690,6 +55857,11 @@ components:
         acs_url:
           type: string
           minLength: 1
+          format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
           format: uri
         audience:
           type: string
@@ -55759,12 +55931,27 @@ components:
           type: boolean
         sign_response:
           type: boolean
+        sign_logout_request:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
+        logout_method:
+          allOf:
+          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          description: Method to use for logout. Front-channel iframe loads all logout
+            URLs simultaneously in hidden iframes. Front-channel native uses your
+            active browser tab to send post requests and redirect to providers. Back-channel
+            sends logout requests directly from the server without user interaction
+            (requires POST SLS binding).
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -57286,6 +57473,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SlsBindingEnum:
+      enum:
+      - redirect
+      - post
       type: string
     Source:
       type: object

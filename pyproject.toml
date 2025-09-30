@@ -197,7 +197,7 @@ max-returns = 10
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
-exclude = ['^gen-py-api/']
+exclude = ['^gen-py-api/', 'authentik/providers/signals.py']
 
 [[tool.mypy.overrides]]
 module = [

@@ -7,6 +7,7 @@ from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_TRANSIENT
 
 GET_LOGOUT_REQUEST = (
     "lJLNauMwEMdfRejuSJbtEIvYsBAWDNlltyk99DaxJ41AllzNGNq3L3Z7CD0EehJo5vf/ENoTjH6yx/gSZ37A1xmJxdvo"
@@ -28,7 +29,7 @@ POST_LOGOUT_REQUEST = (
 
 
 class TestLogoutRequest(TestCase):
-    """Test LogoutRequest generator and parser"""
+    """Test LogoutRequest parser"""
 
     @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
@@ -52,10 +53,16 @@ class TestLogoutRequest(TestCase):
         """Test static LogoutRequest"""
         request = LogoutRequestParser(self.provider).parse_detached(GET_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-2ea1b01f69363ac95e3da4a15409b9d8ec525944")
-        self.assertIsNone(request.issuer)
+        self.assertEqual(request.issuer, "saml-test-sp")
+        # The GET request has an empty NameID element with transient format
+        self.assertIsNone(request.name_id)  # Empty NameID element returns None
+        self.assertEqual(request.name_id_format, SAML_NAME_ID_FORMAT_TRANSIENT)
 
     def test_static_post(self):
         """Test static LogoutRequest"""
         request = LogoutRequestParser(self.provider).parse(POST_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-b8f4fd51ed4106f1e782b95d51d9ad3f385e5816")
-        self.assertIsNone(request.issuer)
+        self.assertEqual(request.issuer, "saml-test-sp")
+        # The POST request has an empty NameID element with transient format
+        self.assertIsNone(request.name_id)  # Empty NameID element returns None
+        self.assertEqual(request.name_id_format, SAML_NAME_ID_FORMAT_TRANSIENT)

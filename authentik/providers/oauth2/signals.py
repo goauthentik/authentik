@@ -3,7 +3,12 @@ from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.providers.oauth2.models import AccessToken, DeviceToken, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    DeviceToken,
+    OAuth2LogoutMethod,
+    RefreshToken,
+)
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
 
 LOGGER = get_logger()
@@ -21,17 +26,21 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
         session__session__session_key=instance.session.session_key,
     )
 
-    backchannel_logout_notification_dispatch.send(
-        revocations=[
-            (
-                token.provider_id,
-                token.id_token.iss,
-                token.id_token.sub,
-                instance.session.session_key,
-            )
-            for token in access_tokens
-        ],
-    )
+    # Only send backchannel logout notifications for providers that have
+    # logout_uri configured and backchannel logout method set
+    backchannel_tokens = [
+        (
+            token.provider_id,
+            token.id_token.iss,
+            token.id_token.sub,
+            instance.session.session_key,
+        )
+        for token in access_tokens
+        if token.provider.logout_uri
+        and token.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+    ]
+
+    backchannel_logout_notification_dispatch.send(revocations=backchannel_tokens)
 
     access_tokens.delete()
 
