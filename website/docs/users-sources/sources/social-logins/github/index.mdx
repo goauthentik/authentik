@@ -58,7 +58,7 @@ Make sure to include `read:org` in the sources' _Scopes_ setting.
 
 ```python
 # Ensure flow is only run during oauth logins via Github
-if context["source"].provider_type != "github":
+if not isinstance(context['source'], OAuthSource) or context["source"].provider_type != "github":
     return True
 
 accepted_org = "foo"

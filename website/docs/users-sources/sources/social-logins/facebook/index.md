@@ -59,6 +59,6 @@ Finally, you need to publish the Facebook app.
             - **Enrollment flow**: leave the default `default-source-enrollment` option.
 3. Click **Finish** to save your settings and close the box.
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

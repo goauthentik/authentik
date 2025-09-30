@@ -76,7 +76,8 @@ export class BrandListPage extends TablePage<Brand> {
             html`${item.domain}`,
             html`${item.brandingTitle}`,
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Brand")}</span>
                     <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
@@ -91,7 +92,8 @@ export class BrandListPage extends TablePage<Brand> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

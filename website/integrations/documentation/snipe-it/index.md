@@ -28,7 +28,7 @@ The following placeholders are used in this guide:
 - `snipeit-user` is the name of the authentik service account we will create.
 - `DC=ldap,DC=authentik,DC=io` is the Base DN of the LDAP Provider (default)
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -40,7 +40,7 @@ In authentik, create a service account (under _Directory/Users_) for Snipe-IT to
 
 In this example, we'll use `snipeit-user` as the Service account's username
 
-:::note
+:::info
 If you didn't keep the password, you can copy it from _Directory/Tokens & App password_.
 :::
 
@@ -84,12 +84,12 @@ Change the following fields
     - LDAP Bind USername: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - LDAP Bind Password: `<snipeit-user password from step 2>`
 - Base Bind DN: `ou=users,DC=ldap,DC=goauthentik,DC=io`
-  :::note
+  :::info
   ou=users is the default OU for users. If you are using authentik's virtual groups, or have your users in a different organizational unit (ou), change accordingly.
   :::
 - LDAP Filter: &(objectClass=user)
 - Username Field: mail
-  :::note
+  :::info
   Setting the Username field to mail is recommended in order to ensure the usernameisunique. See https://snipe-it.readme.io/docs/ldap-sync-login
   :::
 - Allow unauthenticated bind: **unticked**
@@ -98,7 +98,7 @@ Change the following fields
 - LDAP AUthentication query: cn=
 - LDAP Email: mail
 
-:::note
+:::info
 authentik does not support other LDAP attributes like Employee Number, Department, etc out of the box. If you need these fields, you will need to setup custom attributes.
 :::
 
@@ -113,7 +113,7 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
 - CLick `LDAP Sync`
 - Select your Location
 - Click Synchronize
-  :::note
+  :::info
   Snipe-IT will only import users with both a first and last name set. You need to create user attributes with first and last names.
   :::
 
@@ -130,7 +130,7 @@ Create another application in authentik and note the slug you choose, as this wi
 - Signing certificate: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
 - NamedID Property Mapping: authentik default SAML Mapping: Email
-  :::note
+  :::info
   This is to match setting the username as **mail**. If you are using another field as the username, set it here.
   :::
 

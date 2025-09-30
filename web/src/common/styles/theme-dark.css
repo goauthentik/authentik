@@ -14,10 +14,13 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
 }
 
 body {
     background-color: var(--ak-dark-background) !important;
+    color-scheme: dark;
 }
 
 .pf-c-radio {
@@ -85,20 +88,20 @@ body {
 }
 
 /* #region Tables */
+
 .pf-c-table {
+    --pf-global--Color--100: var(--ak-dark-foreground);
     --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
     --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
     --pf-c-table--cell--Color: var(--ak-dark-foreground);
     --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
     --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
 }
 
 .pf-c-table__text {
     color: var(--ak-dark-foreground);
-}
-
-.pf-c-table__sort:not(.pf-m-selected) .pf-c-table__button .pf-c-table__text {
-    color: var(--ak-dark-foreground) !important;
 }
 
 .pf-c-table__sort-indicator i {
@@ -211,23 +214,14 @@ select.pf-c-form-control {
     --pf-c-form-control--BorderLeftColor: transparent !important;
     --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
     --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
-}
+    --pf-c-form-control--Color: var(--ak-dark-foreground);
 
-.pf-c-form-control:disabled {
-    background-color: var(--ak-dark-background-light);
-}
-
-.pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light);
 }
 
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
-}
-input[type="datetime-local"]::-webkit-calendar-picker-indicator,
-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
 }
 
 /* select toggle */
@@ -262,16 +256,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
 
-.pf-c-button:disabled {
-    color: var(--ak-dark-background-lighter);
-}
+/* #region Buttons */
 
-.pf-c-button.pf-m-plain {
-    --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
-    --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+.pf-c-button {
+    --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--300);
 
-    &:focus:hover {
-        color: var(--pf-c-button--m-plain--hover--Color);
+    &.pf-m-plain {
+        --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
+        --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+
+        &:focus:hover {
+            color: var(--pf-c-button--m-plain--hover--Color);
+        }
     }
 }
 
@@ -295,6 +291,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         --pf-c-button--after--BorderColor: var(--ak-dark-foreground);
     }
 }
+
+/* #endregion */
 
 .pf-c-form__label-text {
     color: var(--ak-dark-foreground);
@@ -334,11 +332,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .pf-c-toggle-group__button.pf-m-selected {
     color: var(--ak-dark-foreground) !important;
     background-color: var(--pf-global--primary-color--100) !important;
-}
-
-/* inputs help text */
-.pf-c-form__helper-text:not(.pf-m-error) {
-    color: var(--ak-dark-foreground);
 }
 
 /* #endregion */

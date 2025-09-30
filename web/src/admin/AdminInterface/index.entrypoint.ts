@@ -198,7 +198,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
-            <ak-skip-to-content></ak-skip-to-content>
             <div class="pf-c-page">
                 <ak-page-navbar ?open=${this.sidebarOpen}>
                     <ak-version-banner></ak-version-banner>

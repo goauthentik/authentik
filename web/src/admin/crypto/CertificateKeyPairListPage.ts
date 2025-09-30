@@ -112,7 +112,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             >
             </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
@@ -127,7 +128,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCryptoCertificatekeypair}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

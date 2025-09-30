@@ -185,6 +185,7 @@ SPECTACULAR_SETTINGS = {
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "authentik.api.schema.postprocess_schema_pagination",
+        "authentik.api.schema.postprocess_schema_remove_unused",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
 }
@@ -416,7 +417,10 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("django_dramatiq_postgres.middleware.CurrentTask", {}),

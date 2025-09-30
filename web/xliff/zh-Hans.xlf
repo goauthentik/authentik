@@ -10213,6 +10213,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
 </trans-unit>
+<trans-unit id="s2ce58eab7841b342">
+  <source>Salesforce</source>
+</trans-unit>
+<trans-unit id="s7392b5925a4803af">
+  <source>Altered behavior for usage with Salesforce.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
