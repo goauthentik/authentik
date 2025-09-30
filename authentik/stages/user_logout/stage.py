@@ -1,13 +1,17 @@
 """Logout stage logic"""
 
 from django.contrib.auth import logout
+from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from structlog.stdlib import get_logger
 
-from authentik.flows.signals import flow_pre_user_logout
 from authentik.flows.stage import StageView
 
 LOGGER = get_logger()
+
+# Custom signal for handling
+# front-channel logouts
+flow_pre_user_logout = Signal()
 
 
 class UserLogoutStageView(StageView):
