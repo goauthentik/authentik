@@ -64,6 +64,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
@@ -72,7 +73,6 @@ TENANT_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "pgtrigger",
-    "channels_postgres",
     "authentik.admin",
     "authentik.api",
     "authentik.core",
@@ -400,8 +400,6 @@ DRAMATIQ = {
     ).total_seconds(),
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
-        # TODO: fixme
-        # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
