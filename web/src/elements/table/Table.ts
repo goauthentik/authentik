@@ -130,7 +130,12 @@ export abstract class Table<T extends object>
             .pf-c-toolbar__content {
                 justify-content: space-between;
                 gap: var(--pf-global--spacer--sm);
+
+                .pf-c-switch {
+                    --pf-c-switch--ColumnGap: var(--pf-c-toolbar__item--m-search-filter--spacer);
+                }
             }
+
             .pf-c-toolbar__group {
                 gap: var(--pf-global--spacer--sm);
             }
@@ -572,7 +577,7 @@ export abstract class Table<T extends object>
 
         if (selectAllCheckbox) {
             selectAllCheckbox.checked = pageItemCount !== 0 && selectedCount !== 0;
-            selectAllCheckbox.indeterminate = pageItemCount !== 0 && selectedCount < pageItemCount;
+            selectAllCheckbox.indeterminate = selectedCount !== 0 && selectedCount < pageItemCount;
         }
 
         this.requestUpdate();
