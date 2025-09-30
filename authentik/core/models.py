@@ -406,7 +406,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
-        if request and request.LANGUAGE_CODE:
+        if request and hasattr(request, "LANGUAGE_CODE"):
             return request.LANGUAGE_CODE
         try:
             return self.attributes.get("settings", {}).get("locale", "")
