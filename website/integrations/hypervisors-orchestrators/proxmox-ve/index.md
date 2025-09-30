@@ -57,8 +57,8 @@ To support the integration of Proxmox with authentik, you need to create an appl
     - In the dialog that appears, fill in the following details:
         - **Issuer URL**: Enter the Issuer URL from authentik (found in your provider's overview tab), e.g., `https://authentik.company/application/o/proxmox/`.
         - **Realm**: Enter a name for this authentication source, such as `authentik`.
-        - **Client ID**: <client_ID>
-        - **Client Key**: <client_secret>
+        - **Client ID**: `<client_ID>`
+        - **Client Key**: `<client_secret>`
         - **Username claim**: Set this to `username`.
         - **Autocreate users**: Enabled.
         - **Default**: Check this if you want OpenID Connect to be pre-selected as the default on the login screen.
