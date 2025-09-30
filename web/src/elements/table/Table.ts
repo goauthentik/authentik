@@ -855,7 +855,7 @@ export abstract class Table<T extends object>
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">
                 <ak-timestamp .timestamp=${this.lastRefreshedAt} refresh>
-                    ${msg("Last updated")}
+                    ${msg("Last refreshed")}
                 </ak-timestamp>
                 ${this.renderTablePagination()}
             </div>`;
