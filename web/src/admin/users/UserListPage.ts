@@ -91,6 +91,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     supportsQL = true;
 
     protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by username, email, etc...");
+    public override searchLabel = msg("User Search");
+
     public pageTitle = msg("Users");
     public pageDescription = "";
     public pageIcon = "pf-icon pf-icon-user";
@@ -207,34 +210,40 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.hideDeactivated}
-                                @change=${() => {
-                                    this.hideDeactivated = !this.hideDeactivated;
-                                    this.page = 1;
-                                    this.fetch();
-                                    updateURLParams({
-                                        hideDeactivated: this.hideDeactivated,
-                                    });
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
+        return html` <div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label
+                        class="pf-c-switch"
+                        for="hide-deactivated-users"
+                        aria-labelledby="hide-deactivated-users-label"
+                    >
+                        <input
+                            id="hide-deactivated-users"
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${!this.hideDeactivated}
+                            @change=${() => {
+                                this.hideDeactivated = !this.hideDeactivated;
+                                this.page = 1;
+                                this.fetch();
+                                updateURLParams({
+                                    hideDeactivated: this.hideDeactivated,
+                                });
+                            }}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Hide deactivated user")}</span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
+                            ${msg("Show deactivated users")}
+                        </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     row(item: User): SlottedTemplateResult[] {
@@ -248,7 +257,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
@@ -277,7 +287,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 
@@ -392,27 +403,24 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create User")}</span>
+                <span slot="submit">${msg("Create User")}</span>
+                <span slot="header">${msg("New User")}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Service account")}</span>
+                <span slot="submit">${msg("Create Service Account")}</span>
+                <span slot="header">${msg("New Service Account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create Service account")}
+                    ${msg("New Service Account")}
                 </button>
             </ak-forms-modal>
         `;
     }
 
     protected renderSidebarBefore(): TemplateResult {
-        return html`<aside
-            aria-labelledby="sidebar-left-panel-header"
-            class="pf-c-sidebar__panel pf-m-width-25"
-        >
+        return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
             <div class="pf-c-card">
                 <div
                     role="heading"
@@ -424,6 +432,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
+                        label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
                         @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {

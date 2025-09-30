@@ -87,7 +87,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Rule")}</span>
                     <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
@@ -102,7 +103,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

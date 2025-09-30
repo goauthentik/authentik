@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://emby.media/
 
-:::note
+:::info
 An [Emby Premiere](https://emby.media/premiere.html) subscription is required for LDAP authentication to work via the official plugin.
 :::
 
@@ -25,7 +25,7 @@ The following placeholders are used in this guide:
 - `ldap_service_account` is the name of the Service Account used for LDAP binding.
 - `emby_users` is the name of the authentik group containing users who should have access to Emby.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

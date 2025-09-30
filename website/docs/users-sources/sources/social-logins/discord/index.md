@@ -48,7 +48,7 @@ Here is an example of a complete authentik Discord OAuth Source
 
 Save, and you now have Discord as a source.
 
-:::note
+:::info
 For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
 :::
 
@@ -381,6 +381,6 @@ return True
 
 Now bind this policy to the chosen enrollment and authentication flows for the Discord OAuth source.
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
