@@ -247,7 +247,7 @@ class BaseEvaluator:
             bool: True if email was queued successfully, False otherwise
         """
         # Deferred imports to avoid circular import issues
-        from authentik.stages.email.tasks import send_mail, send_mails
+        from authentik.stages.email.tasks import send_mails
 
         if body and template:
             raise ValueError("body and template parameters are mutually exclusive")
@@ -290,12 +290,7 @@ class BaseEvaluator:
                     body=body,
                 )
 
-            # Send the email using appropriate method
-            if stage:
-                send_mails(stage, message)
-            else:
-                # For global settings, call send_mail directly without stage
-                send_mail.send(message.__dict__, None, None)
+            send_mails(stage, message)
             return True
 
         except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
