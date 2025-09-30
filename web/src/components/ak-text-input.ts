@@ -18,15 +18,27 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
     public placeholder: string | null = null;
 
+    @property({ type: Number, attribute: "maxlength" })
+    public maxLength?: number;
+
+    @property({ type: Number, attribute: "minlength" })
+    public minLength?: number;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly: boolean = false;
+
+    @property({ type: String })
+    public type: "text" | "email" = "text";
+
     #inputListener(ev: InputEvent) {
         this.value = (ev.target as HTMLInputElement).value;
     }
 
     public override renderControl() {
         const code = this.inputHint === "code";
+
         return html` <input
-            type="text"
-            role="textbox"
+            type=${this.type}
             id=${ifDefined(this.fieldID)}
             @input=${this.#inputListener}
             value=${ifDefined(this.value)}
@@ -34,9 +46,10 @@ export class AkTextInput extends HorizontalLightComponent<string> {
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,
             })}"
+            maxlength=${ifPresent(this.maxLength)}
+            minlength=${ifPresent(this.minLength)}
             autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
-            aria-label=${ifPresent(this.placeholder || this.label)}
             aria-describedby=${this.helpID}
             placeholder=${ifPresent(this.placeholder)}
             ?required=${this.required}

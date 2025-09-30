@@ -55,8 +55,8 @@
     }
 }
 
-.pf-c-form__label[aria-required] .pf-c-form__label-text::after {
-    content: "*" / "Required";
+.pf-c-form__label[aria-required="true"] .pf-c-form__label-text::after {
+    content: "*" / "";
     user-select: none;
     margin-left: var(--pf-c-form__label-required--MarginLeft);
     font-size: var(--pf-c-form__label-required--FontSize);
@@ -222,12 +222,24 @@ html > form > input {
     user-select: none;
 }
 
+.pf-c-form__helper-text {
+    text-wrap: pretty;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
 /* #endregion */
 
 /* #region Fonts */
 
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
 }
 
 /* #endregion */
