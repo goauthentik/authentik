@@ -50,6 +50,6 @@ After following the prompts to set a new password, you can then login via: `http
 
 After logging in, you can set the email address and other settings for the account by navigating to **Directory** > **Users** and editing the user account.
 
-:::note
+:::info
 This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the administrator user.
 :::

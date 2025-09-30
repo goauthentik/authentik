@@ -149,7 +149,7 @@ Your choice of `slug` should match the ACS URL you provided to Google Workspace.
 You can choose a different slug, but you will need to update the ACS URL in Google Workspace to match.
 :::
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
 :::
 
