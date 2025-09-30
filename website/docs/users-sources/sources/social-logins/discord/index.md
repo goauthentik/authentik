@@ -13,52 +13,39 @@ The following placeholders are used in this guide:
 
 ## Discord configuration
 
-1. Create an application in the Discord Developer Portal (This is Free) https://discord.com/developers/applications
-
-![New Application Button](./discord1.png)
-
-2. Name the Application
-
-![Name App](./discord2.png)
-
-3. Select **OAuth2** from the left menu
-
-4. Copy the **Client ID** and _save it for later_
-
-5. **Click to Reveal** the Client Secret and _save it for later_
-
-6. Click **Add Redirect** and add https://authentik.company/source/oauth/callback/discord/
-
-Here is an example of a completed OAuth2 screen for Discord.
-
-![](./discord3.png)
+1. Log in to the [Discord Developer Portal](https://discord.com/developers/applications).
+2. Navigate to **Applications** and click **New Application**.
+3. Provide a name for the application, accept the terms, and then click **Create**.
+4. Select **OAuth2** in the sidebar.
+5. Under **Client Secret**, click **Reset Secret** and follow the steps.
+6. Take note of the **Client ID** and **Client Secret**. They will be required in the next section.
+7. Click **Add Redirect** and enter `https://authentik.company/source/oauth/callback/discord/`.
 
 ## authentik configuration
 
-8. Under **Directory > Federation & Social login** click **Create Discord OAuth Source**
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Discord OAuth Source** as the source type.
+    - **Create Discord OAuth Source**: provide a name, a slug which must match the slug used in the Discord `Redirect URI`, and the following required configurations:
+        - Under **Protocol Settings**:
+            - **Consumer key**: Client ID from Discord.
+            - **Consumer secret**: Client Secret from Discord
+            - **Scopes**_(optional)_: if you need authentik to sync guild membership information from Disord, add the `guilds guilds.members.read` scope.
 
-9. **Name:** Choose a name (For the example I used `Discord`)
-10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URL and point it to the correct slug.)
-11. **Consumer Key:** Client ID from step 4
-12. **Consumer Secret:** Client Secret from step 5
+3. Click **Save**.
 
-Here is an example of a complete authentik Discord OAuth Source
-
-![](./discord4.png)
-
-Save, and you now have Discord as a source.
-
-:::note
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
 ### Checking for membership of a Discord Guild
 
 :::info
-Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings**.
+Ensure that the Discord OAuth source has the `guilds guilds.members.read` scope configured.
 :::
 
-Create a new **Expression Policy** with the content below, adjusting the variables where required:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Cusotmization** > **Property Mappings**.
 
 ```python
 # To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
@@ -70,7 +57,7 @@ GUILD_NAME_STRING = "The desired server/guild name in the error message."
 # Only change below here if you know what you are doing.
 
 # Ensure flow is only run during OAuth logins via Discord
-if context['source'].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -118,7 +105,7 @@ ROLE_NAME_STRING = "The desired role name in the error message."
 GUILD_API_URL = f"https://discord.com/api/users/@me/guilds/{ACCEPTED_GUILD_ID}/member"
 
 # Ensure flow is only run during OAuth logins via Discord
-if context['source'].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -185,7 +172,7 @@ guild_id = "<YOUR GUILD ID>"
 ##############
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -250,7 +237,7 @@ guild_id = "<YOUR GUILD ID>"
 ##############
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -347,7 +334,7 @@ def get_avatar_from_avatar_url(url):
 
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 user = request.user
@@ -380,3 +367,7 @@ return True
 ```
 
 Now bind this policy to the chosen enrollment and authentication flows for the Discord OAuth source.
+
+:::note
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+:::
