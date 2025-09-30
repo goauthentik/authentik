@@ -299,10 +299,9 @@ export class BrandForm extends ModelForm<Brand, string> {
 
                     <ak-form-element-horizontal name="attributes">
                         <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "attributes", required: true }, msg("Attributes"))}
+                            ${AKLabel({ htmlFor: "attributes" }, msg("Attributes"))}
                         </div>
                         <ak-codemirror
-                            required
                             id="attributes"
                             name="attributes"
                             mode=${CodeMirrorMode.YAML}
