@@ -13,6 +13,7 @@ import {
     CryptoCertificatekeypairsListRequest,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
@@ -43,10 +44,10 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public name?: string | null;
 
     @property({ type: String })
-    public label: string | null = null;
+    public label: string | null = msg("Certificate");
 
     @property({ type: String })
-    public placeholder: string | null = null;
+    public placeholder: string | null = msg("Select a certificate...");
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
