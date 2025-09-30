@@ -159,6 +159,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="defaultApplication"
                     >
                         <ak-search-select
+                            placeholder=${msg("Select an application...")}
                             blankable
                             .fetchObjects=${async (query?: string): Promise<Application[]> => {
                                 const args: CoreApplicationsListRequest = {
@@ -203,6 +204,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowAuthentication"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an authentication flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.flowAuthentication}
                         ></ak-flow-search>
@@ -217,6 +219,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowInvalidation"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an invalidation flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.flowInvalidation}
                         ></ak-flow-search>
@@ -229,6 +232,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
                         <ak-flow-search
+                            placeholder=${msg("Select a recovery flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
                         ></ak-flow-search>
@@ -238,6 +242,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowUnenrollment"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an unenrollment flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Unenrollment}
                             .currentFlow=${this.instance?.flowUnenrollment}
                         ></ak-flow-search>
@@ -252,6 +257,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowUserSettings"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select a user settings flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowUserSettings}
                         ></ak-flow-search>
@@ -264,6 +270,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowDeviceCode"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select a device code flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowDeviceCode}
                         ></ak-flow-search>
