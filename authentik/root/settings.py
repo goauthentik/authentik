@@ -417,7 +417,10 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.CurrentTask", {}),

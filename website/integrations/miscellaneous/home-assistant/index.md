@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.home-assistant.io/
 
-:::note
+:::info
 To integrate Home Assistant with authentik, a custom integration needs to be installed in Home Assistant.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `hass.company` is the FQDN of the Home Assistant installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -77,7 +77,7 @@ openid:
 
 3. Restart Home Assistant
 
-:::note
+:::info
 You must create OIDC users in Home Assistant before they can log in using OIDC.
 :::
 
@@ -137,7 +137,7 @@ Alternatively, you can associate an existing Home Assistant username to an authe
 1. Within authentik, navigate to **Directory** > **Users**.
 2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
 
-:::note
+:::info
 This configuration adds an extra header for the authentik user, containing the Home Assistant username, which allows Home Assistant to authenticate the user accordingly.
 :::
 

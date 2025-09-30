@@ -119,7 +119,11 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
+    # https://github.com/rust-lang/rustup/issues/2949
+    # Fixes issues where the rust version in the build cache is older than latest
+    # and rustup tries to update it, which fails
+    RUSTUP_PERMIT_COPY_RENAME="true"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \

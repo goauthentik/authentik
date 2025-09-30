@@ -151,7 +151,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`${BlueprintStatus(item)}`,
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
@@ -192,7 +193,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     <pf-tooltip position="top" content=${msg("Apply")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
-                </ak-action-button>`,
+                </ak-action-button>
+            </div>`,
         ];
     }
 
