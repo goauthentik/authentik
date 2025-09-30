@@ -15,7 +15,7 @@ export class AKTimestamp extends AKElement {
         return this.#timestamp;
     }
 
-    public set timestamp(value: string | Date | null) {
+    public set timestamp(value: string | Date | number | null) {
         this.#timestamp = value ? (value instanceof Date ? value : new Date(value)) : null;
     }
 
