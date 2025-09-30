@@ -8,9 +8,6 @@ from textwrap import indent
 from types import CodeType
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:
-    from authentik.stages.email.models import EmailStage
-
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django.http import HttpRequest
@@ -34,6 +31,9 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.email.utils import TemplateEmailMessage
+
+if TYPE_CHECKING:
+    from authentik.stages.email.models import EmailStage
 
 LOGGER = get_logger()
 
