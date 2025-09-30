@@ -27,6 +27,7 @@ export class PointerFixture extends PageFixture {
         }
 
         const options = {
+            exact: typeof name === "string",
             ...optionsOrRole,
             name,
         };
