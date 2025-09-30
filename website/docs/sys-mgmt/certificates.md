@@ -36,7 +36,7 @@ To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), 
 
 authentik can automatically discover and import certificates from a designated directory. This allows you to use externally managed certificates with minimal configuration.
 
-:::note
+:::info
 Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** > **System Tasks**.
 :::
 

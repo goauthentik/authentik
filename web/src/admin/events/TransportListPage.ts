@@ -78,7 +78,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
@@ -106,7 +107,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     <pf-tooltip position="top" content=${msg("Test")}>
                         <i class="fas fa-vial" aria-hidden="true"></i>
                     </pf-tooltip>
-                </ak-action-button>`,
+                </ak-action-button>
+            </div>`,
         ];
     }
 

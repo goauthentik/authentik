@@ -207,7 +207,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
@@ -222,7 +223,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
-                </ak-rbac-object-permission-modal> `,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

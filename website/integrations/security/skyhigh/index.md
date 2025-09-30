@@ -21,7 +21,7 @@ The following placeholder will be used throughout this document.
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -91,6 +91,6 @@ Configure your SAML provider as follows:
 
 Save your changes and publish the web policy.
 
-:::note
+:::info
 You must also ensure that your web and/or private access policies grant access to users who will be authenticated. This configuration is out of scope for this document.
 :::
