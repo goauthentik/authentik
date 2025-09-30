@@ -124,7 +124,8 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
@@ -150,7 +151,8 @@ export class OutpostListPage extends TablePage<Outpost> {
                               ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 

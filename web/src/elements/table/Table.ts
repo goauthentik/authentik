@@ -75,15 +75,8 @@ export abstract class Table<T extends object>
                 .presentational {
                     --pf-c-table--cell--MinWidth: 0;
                 }
-                @container (width > 600px) {
+                @container (width > 1200px) {
                     --pf-c-table--cell--MinWidth: 9em;
-                }
-            }
-
-            td,
-            th {
-                &:last-child {
-                    white-space: nowrap;
                 }
             }
 
