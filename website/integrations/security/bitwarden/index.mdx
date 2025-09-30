@@ -20,11 +20,11 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `bitwarden.company` is the FQDN of the Bitwarden installation (if using self-hosted Bitwarden).
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::note
+:::info
 To enable Single Sign-On (SSO) with Bitwarden, an [enterprise subscription](https://bitwarden.com/help/password-manager-plans/#compare-business-plans) is required.
 :::
 
@@ -166,7 +166,7 @@ To confirm that authentik is properly configured with Bitwarden, log out and go 
 
 Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to login, once successful you should be redirected to the Bitwarden dashboard.
 
-:::note
+:::info
 Depending on your `Member decryption options` setting, which is set in Bitwarden via **Admin Console** > **Settings** > **Single sign-on**, you may still be required to enter your master password after signing in via SSO.
 :::
 

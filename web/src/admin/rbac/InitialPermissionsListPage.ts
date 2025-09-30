@@ -73,17 +73,19 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     row(item: InitialPermissions): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Initial Permissions")}</span>
-                <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
-                </ak-initial-permissions-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Initial Permissions")}</span>
+                    <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
+                    </ak-initial-permissions-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
