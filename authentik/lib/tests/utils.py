@@ -7,7 +7,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest
 from django.test.client import RequestFactory
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 
 
 def dummy_get_response(request: HttpRequest):  # pragma: no cover

@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import ASN, City
 from guardian.conf import settings
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
 from authentik.core.models import User
