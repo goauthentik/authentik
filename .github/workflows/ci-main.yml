@@ -34,6 +34,7 @@ jobs:
           - codespell
           - pending-migrations
           - ruff
+          - mypy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -256,7 +257,7 @@ jobs:
       # Needed for checkout
       contents: read
     needs: ci-core-mark
-    uses: ./.github/workflows/_reusable-docker-build.yaml
+    uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     with:
       image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}

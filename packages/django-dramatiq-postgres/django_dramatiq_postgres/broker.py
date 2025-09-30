@@ -237,6 +237,9 @@ class _PostgresConsumer(Consumer):
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
 
+        self.lock_purge_interval = timezone.timedelta(seconds=Conf().lock_purge_interval)
+        self.lock_purge_last_run = timezone.now()
+
         self.task_purge_interval = timezone.timedelta(seconds=Conf().task_purge_interval)
         self.task_purge_last_run = timezone.now() - self.task_purge_interval
 
@@ -378,9 +381,13 @@ class _PostgresConsumer(Consumer):
             # Force creation of listen connection
             _ = self.listen_connection
 
+        self._purge_locks()
+
         processing = len(self.in_processing)
         if processing >= self.prefetch:
-            # Wait and don't consume the message, other worker will be faster
+            # If we have too many messages already processing, wait and don't consume a message
+            # straight away, other workers will be faster.
+            # After waiting consume a message regardless.
             self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)
             self.logger.debug(
                 "Too many messages in processing, Sleeping",
@@ -388,7 +395,8 @@ class _PostgresConsumer(Consumer):
                 backoff_ms=backoff_ms,
             )
             time.sleep(backoff_ms / 1000)
-            return None
+        else:
+            self.misses = 0
 
         if not self.notifies:
             self.notifies += self._poll_for_notify()
@@ -415,24 +423,27 @@ class _PostgresConsumer(Consumer):
                 )
 
         # No message to process
-        self._purge_locks()
         self._auto_purge()
         self._scheduler()
 
+        self.misses = 0
         return None
 
     def _purge_locks(self):
+        if timezone.now() - self.lock_purge_last_run < self.lock_purge_interval:
+            return
         while True:
             try:
                 message_id = self.unlock_queue.get(block=False)
             except Empty:
-                return
+                break
             self.logger.debug("Unlocking message", message_id=message_id)
             with self.connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT pg_advisory_unlock(%s)", (self._get_message_lock_id(message_id),)
                 )
             self.unlock_queue.task_done()
+        self.lock_purge_last_run = timezone.now()
 
     def _auto_purge(self):
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
@@ -444,6 +455,7 @@ class _PostgresConsumer(Consumer):
             result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info("Purged messages in all queues", count=count)
+        self.task_purge_last_run = timezone.now()
 
     def _scheduler(self):
         if not self.scheduler:
@@ -451,6 +463,7 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
             return
         self.scheduler.run()
+        self.schedule_last_run = timezone.now()
 
     @raise_connection_error
     def close(self):
@@ -465,4 +478,7 @@ class _PostgresConsumer(Consumer):
                 if self._listen_connection is not None:
                     conn = self._listen_connection
                     self._listen_connection = None
-                    conn.close()
+                    try:
+                        conn.close()
+                    except DatabaseError:
+                        pass

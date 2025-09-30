@@ -1,9 +1,10 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -20,9 +21,9 @@ export class LDAPSourceConnectivity extends AKElement {
 
     static styles: CSSResult[] = [PFBase, PFList];
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.connectivity) {
-            return html``;
+            return nothing;
         }
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {

@@ -97,8 +97,8 @@ class ParamUserSerializer(PassiveSerializer):
     user = PrimaryKeyRelatedField(queryset=User.objects.all().exclude_anonymous(), required=False)
 
 
-class UserGroupSerializer(ModelSerializer):
-    """Simplified Group Serializer for user's groups"""
+class PartialGroupSerializer(ModelSerializer):
+    """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
@@ -143,11 +143,11 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_groups", "true")).lower() == "true"
 
-    @extend_schema_field(UserGroupSerializer(many=True))
-    def get_groups_obj(self, instance: User) -> list[UserGroupSerializer] | None:
+    @extend_schema_field(PartialGroupSerializer(many=True))
+    def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return UserGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.ak_groups, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -326,6 +326,12 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+
+
+class UserPasswordSetSerializer(PassiveSerializer):
+    """Payload to set a users' password directly"""
+
+    password = CharField(required=True)
 
 
 class UsersFilter(FilterSet):
@@ -585,12 +591,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        request=inline_serializer(
-            "UserPasswordSetSerializer",
-            {
-                "password": CharField(required=True),
-            },
-        ),
+        request=UserPasswordSetSerializer,
         responses={
             204: OpenApiResponse(description="Successfully changed password"),
             400: OpenApiResponse(description="Bad request"),
@@ -599,9 +600,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, methods=["POST"], permission_classes=[])
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
+        data = UserPasswordSetSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
         user: User = self.get_object()
         try:
-            user.set_password(request.data.get("password"), request=request)
+            user.set_password(data.validated_data["password"], request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
@@ -678,8 +681,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         ),
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
-            "401": OpenApiResponse(description="Access denied"),
+            204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
     @action(detail=True, methods=["POST"], permission_classes=[])
@@ -698,7 +700,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without permissions",
                 user=request.user,
             )
-            return Response(status=401)
+            return Response(status=403)
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
@@ -707,19 +709,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without providing a reason",
                 user=request.user,
             )
-            return Response(status=401)
+            raise ValidationError({"reason": _("This field is required.")})
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
-        return Response(status=201)
+        return Response(status=204)
 
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=None,
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
+            "204": OpenApiResponse(description="Successfully ended impersonation"),
         },
     )
     @action(detail=False, methods=["GET"])

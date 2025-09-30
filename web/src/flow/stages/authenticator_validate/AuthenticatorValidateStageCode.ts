@@ -1,5 +1,9 @@
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
+
+import { FocusTarget } from "#elements/utils/focus";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
@@ -11,7 +15,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-code")
@@ -19,11 +23,14 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles: CSSResult[] = [
         ...super.styles,
         css`
             .icon-description {
                 display: flex;
+                align-items: center;
             }
             .icon-description i {
                 font-size: 2em;
@@ -32,6 +39,12 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
             }
         `,
     ];
+
+    #focusTarget = new FocusTarget<HTMLInputElement>();
+
+    protected override firstUpdated(): void {
+        this.#focusTarget.focus();
+    }
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
@@ -74,16 +87,16 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
                 <p>${this.deviceMessage()}</p>
             </div>
-            <ak-form-element
-                label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                    ? msg("Static token")
-                    : msg("Authentication code")}"
-                required
-                class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {}).code}
-            >
-                <!-- @ts-ignore -->
+            <div class="pf-c-form__group">
+                ${AKLabel(
+                    { required: true, htmlFor: "validation-code-input" },
+                    this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                        ? msg("Static token")
+                        : msg("Authentication code"),
+                )}
                 <input
+                    ${this.#focusTarget.toRef()}
+                    id="validation-code-input"
                     type="text"
                     name="code"
                     inputmode="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
@@ -93,13 +106,14 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         ? "[0-9a-zA-Z]*"
                         : "[0-9]*"}"
                     placeholder="${msg("Please enter your code")}"
-                    autofocus=""
+                    autofocus
                     autocomplete="one-time-code"
                     class="pf-c-form-control"
                     value="${PasswordManagerPrefill.totp || ""}"
                     required
                 />
-            </ak-form-element>
+                ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+            </div>
 
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

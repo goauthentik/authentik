@@ -56,7 +56,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         let text = this.value?.versionCurrent;
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();
-        let link = `https://goauthentik.io/docs/releases/${versionFamily?.join(".")}`;
+        let link = `https://docs.goauthentik.io/releases/${versionFamily?.join(".")}`;
         if (this.value?.buildHash) {
             text = this.value.buildHash?.substring(0, 7);
             link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;

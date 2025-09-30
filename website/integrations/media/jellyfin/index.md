@@ -172,5 +172,5 @@ a.raised.emby-button {
 15. When you are signed out you should now see a **Sign in with SSO** button.
 
 :::note
-If you have problems check your logs which are under the **Administration** -> **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
+If you have problems check your logs which are under the **Administration** > **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
 :::

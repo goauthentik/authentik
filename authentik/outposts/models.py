@@ -76,6 +76,7 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_ingress_path_type: str | None = field(default=None)
     kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
@@ -151,7 +152,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_monitor.send_with_options(args=(self.pk), rel_obj=self)
+            outpost_service_connection_monitor.send_with_options(args=(self.pk,), rel_obj=self)
             return OutpostServiceConnectionState("", False)
         return state
 
@@ -356,7 +357,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                             message=(
                                 "While setting the permissions for the service-account, a "
                                 "permission was not found: Check "
-                                "https://goauthentik.io/docs/troubleshooting/missing_permission"
+                                "https://docs.goauthentik.io/troubleshooting/missing_permission"
                             ),
                         ).with_exception(exc).set_user(user).save()
                 else:

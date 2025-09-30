@@ -48,6 +48,15 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                 user-select: none;
             }
 
+            .pf-m-disabled {
+                cursor: not-allowed;
+
+                .pf-c-radio__label {
+                    cursor: not-allowed;
+                    color: var(--pf-global--disabled-color--100);
+                }
+            }
+
             .pf-c-radio__description {
                 text-wrap: balance;
             }
@@ -91,7 +100,10 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
         const changeListener = this.#buildChangeListener(option);
 
-        return html`<div class="pf-c-radio" @click=${changeListener}>
+        return html`<div
+            class="pf-c-radio ${option.disabled ? "pf-m-disabled" : ""}"
+            @click=${changeListener}
+        >
             <input
                 class="pf-c-radio__input"
                 type="radio"

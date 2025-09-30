@@ -114,15 +114,21 @@ class AttributesMixin(models.Model):
 
     def update_attributes(self, properties: dict[str, Any]):
         """Update fields and attributes, but correctly by merging dicts"""
+        needs_update = False
         for key, value in properties.items():
             if key == "attributes":
                 continue
-            setattr(self, key, value)
+            if getattr(self, key, None) != value:
+                setattr(self, key, value)
+                needs_update = True
         final_attributes = {}
         MERGE_LIST_UNIQUE.merge(final_attributes, self.attributes)
         MERGE_LIST_UNIQUE.merge(final_attributes, properties.get("attributes", {}))
-        self.attributes = final_attributes
-        self.save()
+        if self.attributes != final_attributes:
+            self.attributes = final_attributes
+            needs_update = True
+        if needs_update:
+            self.save()
 
     @classmethod
     def update_or_create_attributes(
@@ -200,7 +206,10 @@ class Group(SerializerModel, AttributesMixin):
                 "parent",
             ),
         )
-        indexes = [models.Index(fields=["name"])]
+        indexes = (
+            models.Index(fields=["name"]),
+            models.Index(fields=["is_superuser"]),
+        )
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
         permissions = [
@@ -400,7 +409,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         try:
             return self.attributes.get("settings", {}).get("locale", "")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
             return request.brand.locale
@@ -581,7 +590,7 @@ class Application(SerializerModel, PolicyBindingModel):
             try:
                 return url % user.__dict__
 
-            except Exception as exc:
+            except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
@@ -777,7 +786,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                 "slug": self.slug,
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
 

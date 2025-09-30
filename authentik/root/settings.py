@@ -4,7 +4,6 @@ import importlib
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from tempfile import gettempdir
 
 import orjson
 from sentry_sdk import set_tag
@@ -177,6 +176,7 @@ SPECTACULAR_SETTINGS = {
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -185,6 +185,8 @@ SPECTACULAR_SETTINGS = {
     ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
+        "authentik.api.schema.postprocess_schema_pagination",
+        "authentik.api.schema.postprocess_schema_remove_unused",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
 }
@@ -257,6 +259,7 @@ MIDDLEWARE = [
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
@@ -370,6 +373,9 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
+    "lock_purge_interval": timedelta_from_string(
+        CONFIG.get("worker.lock_purge_interval")
+    ).total_seconds(),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -426,7 +432,6 @@ DRAMATIQ = {
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
-                "multiproc_dir": str(Path(gettempdir()) / "authentik_prometheus_tmp"),
                 "prefix": "authentik",
             },
         ),

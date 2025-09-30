@@ -27,6 +27,7 @@ window.authentik.flow = {
 {% endblock %}
 
 {% block body %}
+<ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
 <ak-flow-executor flowSlug="{{ flow.slug }}">
     <ak-loading></ak-loading>

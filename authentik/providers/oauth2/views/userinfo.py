@@ -60,7 +60,7 @@ class UserInfoView(View):
         for scope in scopes:
             if scope in special_scope_map:
                 scope_descriptions.append(
-                    PermissionDict(id=scope, name=str(special_scope_map[scope]))
+                    PermissionDict(id=str(scope), name=str(special_scope_map[scope]))
                 )
         return scope_descriptions
 

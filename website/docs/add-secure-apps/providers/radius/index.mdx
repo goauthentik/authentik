@@ -31,6 +31,22 @@ The following stages are supported:
 - [User Logout](../../flows-stages/stages/user_logout.md)
 - [User Login](../../flows-stages/stages/user_login/index.md)
 - [Deny](../../flows-stages/stages/deny.md)
+- [Mutual TLS stage](../../flows-stages/stages/mtls/index.md)
+
+### EAP
+
+<div className="badge-group">
+
+:ak-version[2025.10]
+:ak-enterprise
+
+</div>
+
+authentik supports EAP with TLS as the inner protocol. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
+
+#### EAP-TLS
+
+Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your certificate authority. Afterwards a certificate needs to be generated for the RADIUS outpost, which can be configured in the RADIUS provider. Once the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
 
 ### RADIUS attributes
 

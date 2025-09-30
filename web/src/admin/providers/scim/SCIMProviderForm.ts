@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
-import { ProvidersApi, SCIMProvider } from "@goauthentik/api";
+import { ProvidersApi, SCIMAuthenticationModeEnum, SCIMProvider } from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
@@ -28,8 +28,14 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
         });
     }
 
+    get defaultInstance() {
+        return {
+            authMode: SCIMAuthenticationModeEnum.Token,
+        } as SCIMProvider;
+    }
+
     renderForm() {
-        return renderForm(this.instance ?? {}, []);
+        return renderForm(this.requestUpdate.bind(this), this.instance ?? {}, []);
     }
 }
 

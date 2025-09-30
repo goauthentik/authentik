@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-18 00:11+0000\n"
+"POT-Creation-Date: 2025-09-26 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +152,10 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
 #: authentik/core/models.py
 msgid "name"
 msgstr ""
@@ -206,11 +210,11 @@ msgstr ""
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can unassign permissions from users"
 msgstr ""
 
@@ -336,7 +340,7 @@ msgid ""
 "created."
 msgstr ""
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
 msgstr ""
 
@@ -657,6 +661,14 @@ msgid ""
 "providers."
 msgstr ""
 
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr ""
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr ""
+
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
@@ -884,14 +896,6 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid "Webhook Mappings"
-msgstr ""
-
-#: authentik/events/models.py
-msgid "System Task"
-msgstr ""
-
-#: authentik/events/models.py
-msgid "System Tasks"
 msgstr ""
 
 #: authentik/events/tasks.py
@@ -2124,6 +2128,10 @@ msgid "SAML Providers from Metadata"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "OAuth"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Default"
 msgstr ""
 
@@ -2136,11 +2144,23 @@ msgid "Slack"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
 msgstr ""
 
 #: authentik/providers/scim/models.py
@@ -2197,6 +2217,14 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -2949,6 +2977,10 @@ msgstr ""
 msgid "Invalid email"
 msgstr ""
 
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr ""
+
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
 #, python-format
@@ -3483,6 +3515,10 @@ msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
+msgstr ""
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
 msgstr ""
 
 #: authentik/stages/identification/stage.py

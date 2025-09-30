@@ -9,6 +9,8 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -66,9 +68,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         name="signingKey"
                         required
                     >
-                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
-                            certificate=${ifDefined(provider?.signingKey ?? undefined)}
+                            certificate=${ifPresent(provider?.signingKey)}
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
