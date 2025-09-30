@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `openwebui.company` is the FQDN of the Open WebUI installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -73,7 +73,7 @@ Then restart Open WebUI to apply the changes.
 - After logging in, authentik will redirect you back to `https://openwebui.company`.
 - If you successfully return to the Open WebUI, the login is working correctly.
 
-:::note
+:::info
 Users are automatically created, but an administrator must update their role to at least **User** via the WebGUI.
 To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company`/admin/users).
 Click on the user whose role should be increased from **Pending** to at least **User**.
