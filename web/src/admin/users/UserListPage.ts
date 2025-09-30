@@ -213,8 +213,13 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return html` <div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
-                    <label class="pf-c-switch">
+                    <label
+                        class="pf-c-switch"
+                        for="hide-deactivated-users"
+                        aria-labelledby="hide-deactivated-users-label"
+                    >
                         <input
+                            id="hide-deactivated-users"
                             class="pf-c-switch__input"
                             type="checkbox"
                             ?checked=${!this.hideDeactivated}
@@ -232,7 +237,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                 <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
                         </span>
-                        <span class="pf-c-switch__label">${msg("Show deactivated users")}</span>
+                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
+                            ${msg("Show deactivated users")}
+                        </span>
                     </label>
                 </div>
             </div>

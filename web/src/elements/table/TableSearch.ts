@@ -128,6 +128,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
             aria-label=${ifPresent(this.label)}
             name="search"
             type="search"
+            autocomplete="off"
             placeholder=${ifPresent(this.placeholder)}
             value=${ifPresent(this.defaultValue)}
             class="pf-c-form-control"
