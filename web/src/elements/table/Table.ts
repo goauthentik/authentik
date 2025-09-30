@@ -4,6 +4,7 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
+import "#elements/timestamp/ak-timestamp";
 
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
@@ -152,6 +153,22 @@ export abstract class Table<T extends object>
             time {
                 text-transform: capitalize;
             }
+
+            .pf-c-pagination {
+                ak-timestamp {
+                    font-size: 0.75rem;
+                    font-style: italic;
+                    color: var(--pf-global--Color--300);
+
+                    &::part(label) {
+                        display: inline-block;
+                    }
+
+                    &::part(elapsed) {
+                        display: inline-block;
+                    }
+                }
+            }
         `,
     ];
 
@@ -173,6 +190,9 @@ export abstract class Table<T extends object>
     @state()
     protected loading = false;
 
+    @state()
+    protected lastRefreshedAt: Date | null = null;
+
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
 
@@ -188,7 +208,7 @@ export abstract class Table<T extends object>
     public label: string | null = null;
 
     @property({ attribute: false })
-    public data?: PaginatedResponse<T>;
+    public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number })
     public page = getURLParam(this.#pageParam, 1);
@@ -363,6 +383,7 @@ export abstract class Table<T extends object>
             })
             .finally(() => {
                 this.loading = false;
+                this.lastRefreshedAt = new Date();
                 this.requestUpdate();
             });
     }
@@ -435,12 +456,11 @@ export abstract class Table<T extends object>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
-
-        if (!this.data || this.loading) {
+        if (this.loading && this.data === null) {
             return this.renderLoading();
         }
 
-        if (this.data.pagination.count === 0) {
+        if (!this.data?.pagination.count) {
             return this.renderEmpty();
         }
 
@@ -833,7 +853,12 @@ export abstract class Table<T extends object>
         const totalItemCount = this.data?.pagination.count ?? -1;
 
         const renderBottomPagination = () =>
-            html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
+            html`<div class="pf-c-pagination pf-m-bottom">
+                <ak-timestamp .timestamp=${this.lastRefreshedAt} refresh>
+                    ${msg("Last updated")}
+                </ak-timestamp>
+                ${this.renderTablePagination()}
+            </div>`;
 
         return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
