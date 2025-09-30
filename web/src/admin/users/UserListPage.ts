@@ -425,6 +425,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
+                        label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
                         @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
