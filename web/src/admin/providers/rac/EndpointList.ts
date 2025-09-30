@@ -86,7 +86,8 @@ export class EndpointListPage extends Table<Endpoint> {
         return [
             html`${item.name}`,
             html`${item.host}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Endpoint")}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
@@ -101,7 +102,8 @@ export class EndpointListPage extends Table<Endpoint> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

@@ -7,7 +7,18 @@ import Tabs from "@theme/Tabs";
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
-The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (https://integrations.goauthentik.io/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `npm`. The `Makefile` in the root of the repository defines commands to build and test the content locally. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+
+## Documentation subdomains
+
+authentik documentation is deployed to different subdomains based on the git branch:
+
+| Subdomain                                          | Git Branch       | Description                      |
+| -------------------------------------------------- | ---------------- | -------------------------------- |
+| [main.goauthentik.io](https://main.goauthentik.io) | `main`           | Latest changes and features      |
+| [next.goauthentik.io](https://next.goauthentik.io) | `next`           | Upcoming release content         |
+| [docs.goauthentik.io](https://docs.goauthentik.io) | Current release  | Official stable documentation    |
+| version-YYYY-MM.goauthentik.io                     | Specific release | Historical version documentation |
 
 ## Guidelines
 

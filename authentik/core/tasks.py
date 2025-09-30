@@ -14,6 +14,7 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
+from authentik.lib.utils.db import chunked_queryset
 from authentik.tasks.models import Task
 
 LOGGER = get_logger()
@@ -28,7 +29,7 @@ def clean_expired_models():
             cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
-        for obj in objects:
+        for obj in chunked_queryset(objects):
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
