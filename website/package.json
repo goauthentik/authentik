@@ -35,18 +35,18 @@
         "typescript-eslint": "^8.45.0"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.5.7",
-        "@rspack/binding-linux-arm64-gnu": "1.5.7",
-        "@rspack/binding-linux-x64-gnu": "1.5.7",
+        "@rspack/binding-darwin-arm64": "1.5.8",
+        "@rspack/binding-linux-arm64-gnu": "1.5.8",
+        "@rspack/binding-linux-x64-gnu": "1.5.8",
         "@swc/core-darwin-arm64": "1.13.20",
         "@swc/core-linux-arm64-gnu": "1.13.20",
         "@swc/core-linux-x64-gnu": "1.13.20",
         "@swc/html-darwin-arm64": "1.13.20",
         "@swc/html-linux-arm64-gnu": "1.13.20",
         "@swc/html-linux-x64-gnu": "1.13.20",
-        "lightningcss-darwin-arm64": "1.30.1",
-        "lightningcss-linux-arm64-gnu": "1.30.1",
-        "lightningcss-linux-x64-gnu": "1.30.1"
+        "lightningcss-darwin-arm64": "1.30.2",
+        "lightningcss-linux-arm64-gnu": "1.30.2",
+        "lightningcss-linux-x64-gnu": "1.30.2"
     },
     "engines": {
         "node": ">=24"
