@@ -98,21 +98,11 @@ body {
     --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
     --pf-global--link--Color: var(--pf-global--link--Color--light);
     --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-    /* --pf-c-table__sort__button__text--Color: var(--pf-global--Color--light-200);
-    --pf-c-table__button--hover--Color: var(--pf-global--link--Color--light--hover); */
 }
 
 .pf-c-table__text {
     color: var(--ak-dark-foreground);
 }
-/*
-.pf-c-table__sort.pf-m-selected {
-    .pf-c-table__button .pf-c-table__text {
-        --pf-c-table__sort__button__text--Color: var(--pf-global--Color--light-200);
-
-        --pf-c-table__button--hover--Color: var(--pf-global--link--Color--light--hover);
-    }
-} */
 
 .pf-c-table__sort-indicator i {
     color: var(--ak-dark-foreground) !important;
