@@ -22,7 +22,7 @@ def build_rac_client_group() -> str:
     The `RACClientConsumer` consumer adds itself to this group on connection,
     and removes itself once it has been assigned a specific outpost channel
     """
-    sha256(f"{connection.schema_name}/group_rac_client".encode()).hexdigest()
+    return sha256(f"{connection.schema_name}/group_rac_client".encode()).hexdigest()
 
 
 def build_rac_client_group_session(session_key: str) -> str:
@@ -72,13 +72,14 @@ class RACClientConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code):
         self.logger.debug("Disconnecting")
-        # Tell the outpost we're disconnecting
-        await self.channel_layer.send(
-            self.dest_channel_id,
-            {
-                "type": "event.disconnect",
-            },
-        )
+        if self.dest_channel_id:
+            # Tell the outpost we're disconnecting
+            await self.channel_layer.send(
+                self.dest_channel_id,
+                {
+                    "type": "event.disconnect",
+                },
+            )
 
     @database_sync_to_async
     def init_outpost_connection(self):

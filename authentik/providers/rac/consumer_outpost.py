@@ -1,5 +1,6 @@
 """RAC consumer"""
 
+from autobahn.exception import Disconnected
 from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -41,9 +42,15 @@ class RACOutpostConsumer(AsyncWebsocketConsumer):
     async def event_send(self, event: dict):
         """Handler called by client websocket that sends data to this specific
         outpost connection"""
-        await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))
+        try:
+            await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))
+        except Disconnected:
+            pass
 
     async def event_disconnect(self, event: dict):
         """Tell outpost we're about to disconnect"""
-        await self.send(text_data="0.authentik.disconnect")
+        try:
+            await self.send(text_data="0.authentik.disconnect")
+        except Disconnected:
+            pass
         await self.close()
