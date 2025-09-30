@@ -18,6 +18,7 @@
 
 body {
     background-color: var(--ak-dark-background) !important;
+    color-scheme: dark;
 }
 
 .pf-c-radio {
@@ -211,23 +212,14 @@ select.pf-c-form-control {
     --pf-c-form-control--BorderLeftColor: transparent !important;
     --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
     --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
-}
+    --pf-c-form-control--Color: var(--ak-dark-foreground);
 
-.pf-c-form-control:disabled {
-    background-color: var(--ak-dark-background-light);
-}
-
-.pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light);
 }
 
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
-}
-input[type="datetime-local"]::-webkit-calendar-picker-indicator,
-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
 }
 
 /* select toggle */
@@ -286,12 +278,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .pf-m-tertiary,
 .pf-c-button.pf-m-tertiary {
     --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
-    color: var(--ak-dark-foreground-darker);
-}
+    --pf-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --pf-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--sm);
 
-.pf-m-tertiary:hover,
-.pf-c-button.pf-m-tertiary:hover {
-    --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter);
+    color: var(--ak-dark-foreground-darker);
+
+    &:hover {
+        --pf-c-button--after--BorderColor: var(--ak-dark-foreground);
+    }
 }
 
 .pf-c-form__label-text {

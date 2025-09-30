@@ -15,12 +15,12 @@ import Tabs from "@theme/Tabs";
 
 <Tabs
   groupId="platform"
-  defaultValue="docker-compose"
+  defaultValue="docker"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
-  <TabItem value="docker-compose">
+  <TabItem value="docker">
 
 1. Add the following environment variable to your docker deployment:
 
@@ -55,12 +55,12 @@ To enable `trace` logging, follow the platform-specific steps below:
 
 <Tabs
   groupId="platform"
-  defaultValue="docker-compose"
+  defaultValue="docker"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
-  <TabItem value="docker-compose">
+  <TabItem value="docker">
 
 1. Add the following environment variable to your docker deployment:
 
@@ -98,7 +98,7 @@ For more details, see the [`docker logs` documentation](https://docs.docker.com/
     {label: 'docker', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
-  <TabItem value="docker-compose">
+  <TabItem value="docker">
 
 To retrieve logs from a specific timeframe, use:
 

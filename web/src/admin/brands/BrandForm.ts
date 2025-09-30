@@ -44,6 +44,7 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     async send(data: Brand): Promise<Brand> {
+        data.attributes ??= {};
         if (this.instance?.brandUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
                 brandUuid: this.instance.brandUuid,
@@ -161,6 +162,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="brandingCustomCss"
                     >
                         <ak-codemirror
+                            id="branding-custom-css"
                             mode=${CodeMirrorMode.CSS}
                             value="${this.instance?.brandingCustomCss ??
                             DefaultBrand.brandingCustomCss}"
@@ -319,6 +321,9 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
+                            required
+                            id="attributes"
+                            name="attributes"
                             mode=${CodeMirrorMode.YAML}
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
                         >

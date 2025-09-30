@@ -10,11 +10,13 @@ import { fileURLToPath } from "node:url";
 import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
-} from "@goauthentik/docusaurus-theme/releases/utils";
+    prepareReleaseEnvironment,
+} from "@goauthentik/docusaurus-theme/releases/node";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const releases = collectReleaseFiles(path.join(__dirname));
+const releaseEnvironment = prepareReleaseEnvironment();
 
 /**
  * @type {SidebarItemConfig[]}
@@ -173,6 +175,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
+                            "add-secure-apps/providers/oauth2/backchannel-logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },
@@ -340,8 +343,6 @@ const items = [
                             "add-secure-apps/outposts/upgrading",
                         ],
                     },
-                    "add-secure-apps/outposts/manual-deploy-docker-compose",
-                    "add-secure-apps/outposts/manual-deploy-kubernetes",
                 ],
             },
         ],
@@ -380,8 +381,9 @@ const items = [
                         },
                         items: [
                             "customize/policies/expression/unique_email",
-                            "customize/policies/expression/whitelist_email",
                             "customize/policies/expression/managing_flow_context_keys",
+                            "customize/policies/expression/source_switch",
+                            "customize/policies/expression/whitelist_email",
                         ],
                     },
                     "customize/policies/unique_password",
@@ -615,6 +617,7 @@ const items = [
                 },
                 items: [
                     "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/notification_rule_expression_policies",
                     "sys-mgmt/events/transports",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
@@ -639,9 +642,14 @@ const items = [
         items: [
             {
                 type: "link",
-                href: "https://api.goauthentik.io",
+                href: releaseEnvironment.apiReferenceOrigin,
                 label: "API Overview",
                 className: "api-overview",
+            },
+            {
+                type: "doc",
+                id: "developer-docs/contributing",
+                label: "Contributing",
             },
 
             {
@@ -650,10 +658,13 @@ const items = [
                 //#region Development environment
                 type: "category",
                 label: "Development environment",
+                link: {
+                    type: "doc",
+                    id: "developer-docs/setup/index",
+                },
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
                     "developer-docs/setup/debugging",
                 ],
             },

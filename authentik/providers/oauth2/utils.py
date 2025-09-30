@@ -4,17 +4,18 @@ import re
 import uuid
 from base64 import b64decode
 from binascii import Error
-from time import time
 from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
@@ -217,23 +218,25 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
 
 
 def create_logout_token(
-    iss: str,
     provider: OAuth2Provider,
-    session_key: str | None = None,
+    iss: str,
     sub: str | None = None,
+    session_key: str | None = None,
 ) -> str:
     """Create a logout token for Back-Channel Logout
 
     As per https://openid.net/specs/openid-connect-backchannel-1_0.html
     """
 
-    LOGGER.debug("Creating logout token", provider=provider, session_key=session_key, sub=sub)
+    LOGGER.debug("Creating logout token", provider=provider, sub=sub)
 
+    _now = now()
     # Create the logout token payload
     payload = {
         "iss": str(iss),
         "aud": provider.client_id,
-        "iat": int(time()),
+        "iat": int(_now.timestamp()),
+        "exp": int((_now + timedelta_from_string(provider.access_token_validity)).timestamp()),
         "jti": str(uuid.uuid4()),
         "events": {
             "http://schemas.openid.net/event/backchannel-logout": {},

@@ -41,7 +41,7 @@ export class BrandLinks extends AKElement {
                 }
 
                 return html`<li>
-                    <span> ${children} </span>
+                    <span> ${children}</span>
                 </li>`;
             })}
             <li><span>${msg("Powered by authentik")}</span></li>

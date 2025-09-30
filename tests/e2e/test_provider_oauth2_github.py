@@ -220,7 +220,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
         negative_policy = ExpressionPolicy.objects.create(
-            name="negative-static", expression="return False"
+            name=generate_id(), expression="return False"
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 

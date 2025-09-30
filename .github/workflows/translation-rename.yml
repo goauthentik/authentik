@@ -1,6 +1,7 @@
+---
 # Rename transifex pull requests to have a correct naming
 # Also enables auto squash-merge
-name: authentik-translation-transifex-rename
+name: Translation - Auto-rename Transifex PRs
 
 on:
   pull_request:
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - id: generate_token
         uses: tibdex/github-app-token@v2
         with:

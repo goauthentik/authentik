@@ -1,3 +1,9 @@
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -8,20 +14,27 @@ import * as path from "node:path";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
+import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
-import { readBuildIdentifier } from "@goauthentik/core/version/node";
+import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { copy } from "esbuild-plugin-copy";
-import { polyfillNode } from "esbuild-plugin-polyfill-node";
 
 /// <reference types="../types/esbuild.js" />
 
-const logPrefix = "[Build]";
+const logger = ConsoleLogger.child({ name: "Build" });
+
+const bundleDefinitions = createBundleDefinitions();
+
+const publicBundledDefinitions = Object.fromEntries(
+    Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
+);
+logger.info(publicBundledDefinitions, "Bundle definitions");
 
 const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
@@ -29,7 +42,7 @@ const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
  * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
-    entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
+    entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     outdir: DistDirectory,
@@ -48,6 +61,11 @@ const BASE_ESBUILD_OPTIONS = {
     plugins: [
         copy({
             assets: [
+                {
+                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
+                    to: path.dirname(EntryPoint.StandaloneLoading.out),
+                },
+
                 {
                     from: path.join(patternflyPath, "patternfly.min.css"),
                     to: ".",
@@ -70,16 +88,11 @@ const BASE_ESBUILD_OPTIONS = {
                 },
             ],
         }),
-        polyfillNode({
-            polyfills: {
-                path: true,
-            },
-        }),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
     ],
-    define: createBundleDefinitions(),
+    define: bundleDefinitions,
     format: "esm",
     logOverride: {
         /**
@@ -93,9 +106,7 @@ const BASE_ESBUILD_OPTIONS = {
 };
 
 async function cleanDistDirectory() {
-    const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
-
-    console.time(timerLabel);
+    logger.info(`♻️ Cleaning previous builds...`);
 
     await fs.rm(DistDirectory, {
         recursive: true,
@@ -106,7 +117,7 @@ async function cleanDistDirectory() {
         recursive: true,
     });
 
-    console.timeEnd(timerLabel);
+    logger.info(`♻️ Done!`);
 }
 
 /**
@@ -125,7 +136,7 @@ export function createESBuildOptions(overrides) {
 }
 
 function doHelp() {
-    console.log(`Build the authentik UI
+    logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
@@ -137,20 +148,17 @@ function doHelp() {
 }
 
 async function doWatch() {
-    console.group(`${logPrefix} 🤖 Watching entry points`);
+    const { promise, resolve, reject } = Promise.withResolvers();
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-        return target;
-    });
-
-    console.groupEnd();
+    const entryPoints = Object.values(EntryPoint);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
+                logger: logger.child({ name: "Live Reload" }),
             }),
         ])
         .catch(() => []);
@@ -171,32 +179,36 @@ async function doWatch() {
     const httpsURL = new URL("https://localhost");
     httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
 
-    console.log(`\n${logPrefix} 🚀 Server running\n\n`);
+    logger.info(`🚀 Server running`);
 
-    console.log(`  🔓 ${httpURL.href}`);
-    console.log(`  🔒 ${httpsURL.href}`);
+    logger.info(`🔓 ${httpURL.href}`);
+    logger.info(`🔒 ${httpsURL.href}`);
 
-    console.log(`\n---`);
+    let disposing = false;
 
-    return /** @type {Promise<void>} */ (
-        new Promise((resolve) => {
-            process.on("SIGINT", () => {
-                resolve();
-            });
-        })
-    );
+    const delegateShutdown = () => {
+        logger.flush();
+        console.log("");
+
+        // We prevent multiple attempts to dispose the context
+        // because ESBuild will repeatedly restart its internal clean-up logic.
+        // However, sending a second SIGINT will still exit the process immediately.
+        if (disposing) return;
+
+        disposing = true;
+
+        return buildContext.dispose().then(resolve).catch(reject);
+    };
+
+    process.on("SIGINT", delegateShutdown);
+
+    return promise;
 }
 
 async function doBuild() {
-    console.group(`${logPrefix} 🚀 Building entry points:`);
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
-
-        return target;
-    });
-
-    console.groupEnd();
+    const entryPoints = Object.values(EntryPoint);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
@@ -204,7 +216,7 @@ async function doBuild() {
 
     await esbuild.build(buildOptions);
 
-    console.log("Build complete");
+    logger.info("Build complete");
 }
 
 async function doProxy() {
@@ -215,7 +227,7 @@ async function doProxy() {
     });
 
     await esbuild.build(buildOptions);
-    console.log("Proxy build complete");
+    logger.info("Proxy build complete");
 }
 
 async function delegateCommand() {
@@ -245,7 +257,7 @@ await cleanDistDirectory()
                 process.exit(0);
             })
             .catch((error) => {
-                console.error(error);
+                logger.error(error);
                 process.exit(1);
             }),
     );

@@ -1,3 +1,4 @@
+import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -5,6 +6,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-license-notice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
@@ -44,9 +46,10 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Provider name...")}
             value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
         >
         </ak-text-input>
@@ -55,9 +58,11 @@ export function renderForm(
             label=${msg("Authentication flow")}
             required
             name="authorizationFlow"
-            .errorMessages=${errors?.authorizationFlow ?? []}
+            .errorMessages=${errors?.authorizationFlow}
         >
             <ak-branded-flow-search
+                label=${msg("Authentication flow")}
+                placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
                 .currentFlow=${provider?.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
@@ -79,7 +84,7 @@ export function renderForm(
                 <ak-hidden-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors?.sharedSecret ?? []}
+                    .errorMessages=${errors?.sharedSecret}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
                     input-hint="code"
@@ -88,11 +93,24 @@ export function renderForm(
                     name="clientNetworks"
                     label=${msg("Client Networks")}
                     value=${provider?.clientNetworks ?? "0.0.0.0/0, ::/0"}
-                    .errorMessages=${errors?.clientNetworks ?? []}
+                    .errorMessages=${errors?.clientNetworks}
                     required
                     help=${clientNetworksHelp}
                     input-hint="code"
                 ></ak-text-input>
+                <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                    <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
+                    <ak-crypto-certificate-search
+                        certificate=${ifDefined(provider?.certificate ?? undefined)}
+                        singleton
+                    ></ak-crypto-certificate-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.",
+                        )}
+                    </p>
+                    <ak-license-notice></ak-license-notice>
+                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"
@@ -118,7 +136,7 @@ export function renderForm(
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
-                        .errorMessages=${errors?.invalidationFlow ?? []}
+                        .errorMessages=${errors?.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-flow-search>

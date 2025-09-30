@@ -9,7 +9,6 @@ tags:
     - docker
 ---
 
-import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -24,6 +23,7 @@ Before you begin, ensure you have the following tools installed:
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
+- [Make](https://www.gnu.org/software/make/) (3 or later)
 
 ## 1. Setting Up Required Services
 
@@ -52,8 +52,8 @@ If using locally installed databases, ensure the PostgreSQL credentials provided
 
 ## 2. Installing Platform-Specific Dependencies
 
-<Tabs defaultValue="Mac">
-<TabItem value="Mac">
+<Tabs defaultValue="macOS">
+<TabItem value="macOS">
 
 Install the required native dependencies on macOS using Homebrew:
 
@@ -61,13 +61,13 @@ Install the required native dependencies on macOS using Homebrew:
 brew install \
 libxmlsec1 \
 libpq \
-krb5 \
 pkg-config \
 uv \
 postgresql \
 redis \
 node@24 \
-golangci-lint
+golangci-lint \
+krb5
 ```
 
 </TabItem>
@@ -76,13 +76,13 @@ golangci-lint
 For Debian/Ubuntu-based distributions:
 
 ```shell
-pip install uv && \
+pip install uv
 sudo apt-get install -y \
 libgss-dev \
 krb5-config \
 libkrb5-dev \
 postgresql-server-dev-all \
-postresql \
+postgresql \
 redis
 ```
 
@@ -120,44 +120,28 @@ Create a local configuration file that uses the local databases for development:
 make gen-dev-config
 ```
 
-### Understanding the architecture
+### Initialize the database
 
-authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files.
-For better code navigation, most functions and classes have type hints and docstrings. We recommend installing a Python Type-checking Extension in your IDE.
-
-## 4. Set up the frontend
-
-Even if you're not planning to develop the UI, you need to build the frontend as no compiled bundle is included by default.
-
-### Running database migrations
-
-First, apply all database migrations:
+Run all migrations with the following command:
 
 ```shell
 make migrate
 ```
 
-### Generating schema files
-
-Generate the required schema files and TypeScript client:
-
-```shell
-make gen
-```
-
 :::info
-After making changes to the authentik API, you must re-run `make gen` to update the API library used by the UI.
+If you ever want to start over, use `make dev-reset` which drops and restores the authentik PostgreSQL database to the state after `make migrate`.
 :::
 
+### Understanding the architecture
+
+authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files.
+Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python Type-checking Extension in your IDE.
+
+## 4. Set up the frontend
+
+Even if you're not planning to develop the UI, you need to build the frontend as no compiled bundle is included by default.
+
 ### Building the UI
-
-You have several options for building the UI:
-
-#### One-time build
-
-```shell
-make web-build
-```
 
 #### Live development mode
 
@@ -167,29 +151,31 @@ For real-time feedback as you make changes:
 make web-watch
 ```
 
-#### Formatting frontend code
-
-After making changes:
+Or instead, if you just want to build it once:
 
 ```shell
-make web
+make web-build
 ```
 
 ## 5. Running authentik
 
 Now that the backend and frontend have been set up and built, you can start authentik.
 
-Start the server by running the following command in the same directory as your local authentik git repository:
+Start the server:
 
 ```shell
-make run-server   # Starts authentik server
+make run-server
 ```
 
-Start the worker by running the following command in the same directory as your local authentik git repository:
+In a separate process, start the worker:
 
 ```shell
-make run-worker   # Starts authentik worker
+make run-worker
 ```
+
+:::info
+The very first time a worker runs, it might need some time to clear the initial task queue. Adjust [`AUTHENTIK_WORKER__THREADS`](../../../install-config/configuration/#authentik_worker__threads) as required.
+:::
 
 Both processes need to run to get a fully functioning authentik development environment.
 
@@ -200,13 +186,7 @@ authentik will be accessible at http://localhost:9000.
 To set a password for the default admin user (**akadmin**):
 
 1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
-2. Follow the setup wizard to create your admin account.
-
-:::info
-To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
-
-In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
-:::
+2. Follow the prompts to set up your admin account.
 
 ### Hot-reloading
 
@@ -214,7 +194,11 @@ When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environ
 
 ## End-to-End (E2E) Setup
 
-To run E2E tests, navigate to the `/tests/e2e` directory in your local copy of the authentik git repo, and start the services by running `docker compose up -d`.
+Start the E2E test services with the following command:
+
+```shell
+docker compose -f tests/e2e/docker-compose.yml up -d
+```
 
 You can then view the Selenium Chrome browser via http://localhost:7900/ using the password: `secret`.
 
@@ -233,6 +217,7 @@ Ensure your code meets our quality standards by running:
 1. **Code linting**:
 
     ```shell
+    make lint-fix
     make lint
     ```
 
@@ -248,15 +233,21 @@ Ensure your code meets our quality standards by running:
     make web
     ```
 
+4. **Run tests**:
+
+    ```shell
+    make test
+    ```
+
 You can run all these checks at once with:
 
 ```shell
-make lint gen web
+make all
 ```
 
 ### Submitting your changes
 
-Once your code passes all checks, you can submit a pull request through [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
+After your code passes all checks, submit a pull request on [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
 
 - Provide a clear description of your changes
 - Reference any related issues

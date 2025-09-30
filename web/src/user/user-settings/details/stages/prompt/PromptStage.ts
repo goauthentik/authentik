@@ -8,7 +8,7 @@ import { PromptStage } from "#flow/stages/prompt/PromptStage";
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
@@ -27,17 +27,15 @@ export class UserSettingsPromptStage extends PromptStage {
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
-        const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
+        const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
+
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
                     label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
-                    ?invalid=${errors !== undefined}
-                    .errorMessages=${(errors || []).map((error) => {
-                        return error.string;
-                    })}
+                    .errorMessages=${errors}
                 >
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
@@ -59,7 +57,7 @@ export class UserSettingsPromptStage extends PromptStage {
                           >
                               ${msg("Delete account")}
                           </a>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
         </div>`;

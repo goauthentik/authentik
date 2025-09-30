@@ -1,7 +1,8 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
+
+import { ErrorProp } from "#components/ak-field-errors";
 
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
@@ -33,9 +34,10 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         PFTitle,
     ];
 
-    hasError(field: string): boolean {
-        const errors = (this.challenge?.responseErrors || {})[field];
-        return (errors || []).length > 0;
+    #errors(field: string): ErrorProp[] | undefined {
+        const errors = this.challenge?.responseErrors?.[field];
+
+        return errors;
     }
 
     render(): TemplateResult {
@@ -65,9 +67,8 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     required
                     grab-focus
                     class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {}).password}
+                    .errors=${this.#errors("password")}
                     ?allow-show-password=${this.challenge.allowShowPassword}
-                    invalid=${this.hasError("password").toString()}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
                 <div class="pf-c-form__group pf-m-action">

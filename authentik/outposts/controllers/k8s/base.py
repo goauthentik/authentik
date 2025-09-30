@@ -17,7 +17,7 @@ from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
@@ -29,8 +29,8 @@ T = TypeVar("T", V1Pod, V1Deployment)
 
 
 def get_version() -> str:
-    """Wrapper for __version__ to make testing easier"""
-    return __version__
+    """Wrapper for authentik_version() to make testing easier"""
+    return authentik_version()
 
 
 class KubernetesObjectReconciler(Generic[T]):

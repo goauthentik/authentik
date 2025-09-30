@@ -35,7 +35,7 @@ Here is an example of a completed OAuth2 screen for Discord.
 
 ## authentik
 
-8. Under _Directory -> Federation & Social login_ Click **Create Discord OAuth Source**
+8. Under **Directory > Federation & Social login** click **Create Discord OAuth Source**
 
 9. **Name:** Choose a name (For the example I used `Discord`)
 10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URL and point it to the correct slug.)
@@ -70,7 +70,7 @@ GUILD_NAME_STRING = "The desired server/guild name in the error message."
 # Only change below here if you know what you are doing.
 
 # Ensure flow is only run during OAuth logins via Discord
-if context['source'].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -118,7 +118,7 @@ ROLE_NAME_STRING = "The desired role name in the error message."
 GUILD_API_URL = f"https://discord.com/api/users/@me/guilds/{ACCEPTED_GUILD_ID}/member"
 
 # Ensure flow is only run during OAuth logins via Discord
-if context['source'].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -185,7 +185,7 @@ guild_id = "<YOUR GUILD ID>"
 ##############
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -250,7 +250,7 @@ guild_id = "<YOUR GUILD ID>"
 ##############
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -347,7 +347,7 @@ def get_avatar_from_avatar_url(url):
 
 
 # Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
+if not isinstance(context['source'], OAuthSource) or context['source'].provider_type != "discord":
     return True
 
 user = request.user

@@ -26,6 +26,10 @@ export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
+
+        /* Fixes issue where browser inherits from modal parent with more restrictive style. */
+        cursor: initial;
+        user-select: text;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;

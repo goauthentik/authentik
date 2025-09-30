@@ -6,7 +6,7 @@ The following topics are for the basic management of users: how to create, modif
 
 [Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
 
-### Create a user
+## Create a user
 
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
 
@@ -33,7 +33,29 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-### View user details
+## Advanced queries for users:ak-enterprise {#tell-me-more}
+
+You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+
+- **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
+
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
+
+- **Values**: `True`, `False`, `None`, and more
+
+- **Example queries**:
+    - search user by status: `is_active = False`
+    - search user by username: `username = "bob"`
+    - search user by email address: `email = "bob@authentik.company"`
+    - search user by attribute: `attribute.my_custom_attribute = "foo"`
+
+:::info
+
+1. To dismiss the drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+   :::
+
+## View user details
 
 In the **Directory > Users** menu of the Admin interface, you can browse all the users in your authentik instance.
 
@@ -58,7 +80,7 @@ After the creation of the user, you can edit any parameter defined during the cr
 
 To modify a user object, go to **Directory > Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
 
-### Assign, modify, or remove permissions for a user
+## Assign, modify, or remove permissions for a user
 
 You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
 
@@ -86,7 +108,7 @@ This option is only available if a default recovery flow was configured for the 
 
 A pop-up will appear on your browser with the link for you to copy and to send to the user.
 
-### Email them a recovery link
+### Email a recovery link
 
 :::info
 This option is only available if a default recovery flow was configured for the currently active brand and if the configured flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it.
@@ -95,12 +117,12 @@ This option is only available if a default recovery flow was configured for the 
 You can send a link with the URL for the user to reset their password via Email. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To send the email to the user, click **Email recovery link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
-### Reset the password for the user
+## Reset the password for the user
 
 As an Admin, you can simply reset the password for the user.
 
@@ -110,14 +132,14 @@ As an Admin, you can simply reset the password for the user.
 
 ## Deactivate or Delete user
 
-#### To deactivate a user:
+### To deactivate a user:
 
 1. Go into the user list or detail, and click **Deactivate**.
 2. Review the changes and click **Update**.
 
 The active sessions are revoked and the authentication of the user blocked. You can reactivate the account by following the same procedure.
 
-#### To delete a user:
+### To delete a user:
 
 :::caution
 This deletion is not reversible, so be sure you do not need to recover any identity data of the user.

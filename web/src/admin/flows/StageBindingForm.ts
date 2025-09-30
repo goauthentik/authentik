@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
@@ -20,7 +21,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
@@ -75,9 +76,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    renderTarget(): SlottedTemplateResult {
         if (this.instance?.target || this.targetPk) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search

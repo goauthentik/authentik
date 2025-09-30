@@ -26,7 +26,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -76,9 +76,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.8.4 AS uv
+FROM ghcr.io/astral-sh/uv:0.8.22 AS uv
 # Stage 5: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.13.5-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.13.7-slim-trixie-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -119,7 +119,11 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
+    # https://github.com/rust-lang/rustup/issues/2949
+    # Fixes issues where the rust version in the build cache is older than latest
+    # and rustup tries to update it, which fails
+    RUSTUP_PERMIT_COPY_RENAME="true"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
@@ -175,6 +179,7 @@ COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
+RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/

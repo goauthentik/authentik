@@ -4,21 +4,23 @@ import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
 
+import { ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
-    label?: string;
+    label: string | null;
     required?: boolean;
-    help?: string;
+    help: string | null;
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
     hidden?: boolean;
     invalid?: boolean;
-    errorMessages?: string[];
+    errorMessages?: ErrorProp[];
     value?: T;
     inputHint?: string;
 }
@@ -38,6 +40,8 @@ export abstract class HorizontalLightComponent<T>
         return this;
     }
 
+    //#region Properties
+
     /**
      * The name attribute for the form element
      * @property
@@ -51,23 +55,48 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    label?: string;
+    @property({ type: String })
+    public get label() {
+        return this.ariaLabel;
+    }
+
+    public set label(value: string | null) {
+        this.ariaLabel = value;
+    }
+
+    /**
+     * The ARIA role for the input control
+     * @property
+     * @attribute
+     */
+    public get role() {
+        return super.role || "group";
+    }
+
+    public set role(value: string | null) {
+        super.role = value;
+    }
 
     /**
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    required = false;
+    @property({ type: Boolean, reflect: false })
+    public get required() {
+        return this.ariaRequired === "true";
+    }
+
+    public set required(value: boolean) {
+        this.ariaRequired = value ? "true" : "false";
+    }
 
     /**
      * Help text to display below the form element. Optional
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    help = "";
+    @property({ reflect: false })
+    help: string | null = null;
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
@@ -80,8 +109,14 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    hidden = false;
+    @property({ type: Boolean })
+    public get hidden() {
+        return this.ariaHidden === "true";
+    }
+
+    public set hidden(value: boolean) {
+        this.ariaHidden = value ? "true" : "false";
+    }
 
     /**
      * @property
@@ -94,10 +129,9 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    public errorMessages?: ErrorProp[];
 
     /**
-     * @attribute
      * @property
      */
     @property({ attribute: false })
@@ -112,11 +146,25 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, attribute: "input-hint" })
     inputHint?: string;
 
-    protected renderControl() {
-        throw new Error("Must be implemented in a subclass");
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
+
+    protected get helpID() {
+        return this.fieldID ? `field-help-${this.fieldID}` : "field-help";
     }
 
-    protected fieldID = IDGenerator.elementID().toString();
+    //#endregion
+
+    //#region Rendering
+
+    /**
+     * Render the control element, e.g. an input, textarea, select, etc.
+     */
+    protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
         const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
@@ -131,15 +179,21 @@ export abstract class HorizontalLightComponent<T>
 
     render() {
         return html`<ak-form-element-horizontal
-            fieldID=${this.fieldID}
-            label=${ifDefined(this.label)}
+            .fieldID=${this.fieldID}
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
+            role="presentation"
             .errorMessages=${this.errorMessages}
-            ?invalid=${this.invalid}
         >
-            ${this.renderControl()} ${this.renderHelp()}
+            <div slot="label" class="pf-c-form__group-label">
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label || "")}
+            </div>
+
+            ${this.renderControl()}
+            <div id=${this.helpID}>${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
+
+    //#endregion
 }

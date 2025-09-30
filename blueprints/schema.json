@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.6.4 Blueprint schema",
+    "title": "authentik 2025.10.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -3624,46 +3624,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_stages_consent.userconsent"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_stages_deny.denystage"
                         },
                         "id": {
@@ -6118,11 +6078,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "credentials": {
@@ -6753,6 +6709,15 @@
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
+                "email_subject_prefix": {
+                    "type": "string",
+                    "title": "Email subject prefix"
+                },
+                "email_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Email template"
+                },
                 "send_once": {
                     "type": "boolean",
                     "title": "Send once",
@@ -7342,7 +7307,9 @@
                         "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
+                        "authentik.core",
                         "authentik.crypto",
+                        "authentik.enterprise",
                         "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
@@ -7394,12 +7361,12 @@
                         "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
-                        "authentik.core",
-                        "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
+                        "authentik.enterprise.providers.radius",
+                        "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
@@ -7417,7 +7384,13 @@
                     "enum": [
                         null,
                         "authentik_tenants.domain",
+                        "authentik_core.group",
+                        "authentik_core.user",
+                        "authentik_core.application",
+                        "authentik_core.applicationentitlement",
+                        "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -7488,7 +7461,6 @@
                         "authentik_stages_authenticator_webauthn.webauthndevice",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
-                        "authentik_stages_consent.userconsent",
                         "authentik_stages_deny.denystage",
                         "authentik_stages_dummy.dummystage",
                         "authentik_stages_email.emailstage",
@@ -7506,12 +7478,6 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
-                        "authentik_core.group",
-                        "authentik_core.user",
-                        "authentik_core.application",
-                        "authentik_core.applicationentitlement",
-                        "authentik_core.token",
-                        "authentik_enterprise.license",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
@@ -8430,6 +8396,12 @@
                     "title": "Refresh token validity",
                     "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 },
+                "refresh_token_threshold": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh token threshold",
+                    "description": "When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3)."
+                },
                 "include_claims_in_id_token": {
                     "type": "boolean",
                     "title": "Include claims in id_token",
@@ -9013,6 +8985,11 @@
                     "type": "boolean",
                     "title": "MFA Support",
                     "description": "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon."
+                },
+                "certificate": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Certificate"
                 }
             },
             "required": []
@@ -9430,16 +9407,35 @@
                 },
                 "token": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Token",
                     "description": "Authentication token"
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "token",
+                        "oauth"
+                    ],
+                    "title": "Auth mode"
+                },
+                "auth_oauth": {
+                    "type": "integer",
+                    "title": "Auth oauth",
+                    "description": "OAuth Source used for authentication"
+                },
+                "auth_oauth_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Auth oauth params",
+                    "description": "Additional OAuth parameters, such as grant_type"
                 },
                 "compatibility_mode": {
                     "type": "string",
                     "enum": [
                         "default",
                         "aws",
-                        "slack"
+                        "slack",
+                        "sfdc"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -11225,6 +11221,11 @@
                     ],
                     "title": "Access token"
                 },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
@@ -11801,6 +11802,14 @@
                     "format": "uuid",
                     "title": "Encryption Keypair",
                     "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "signed_assertion": {
+                    "type": "boolean",
+                    "title": "Signed assertion"
+                },
+                "signed_response": {
+                    "type": "boolean",
+                    "title": "Signed response"
                 }
             },
             "required": []
@@ -12156,11 +12165,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "client_id": {
@@ -12351,11 +12356,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "use_global_settings": {
@@ -12584,11 +12585,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "provider": {
@@ -12801,11 +12798,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "token_count": {
@@ -12985,11 +12978,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "digits": {
@@ -13344,11 +13333,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "user_verification": {
@@ -13743,187 +13728,6 @@
                             "change_consentstage",
                             "delete_consentstage",
                             "view_consentstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_stages_consent.userconsent": {
-            "type": "object",
-            "properties": {
-                "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "expiring": {
-                    "type": "boolean",
-                    "title": "Expiring"
-                },
-                "user": {
-                    "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "format": "uuid"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
-                },
-                "application": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name",
-                            "description": "Application's display Name."
-                        },
-                        "slug": {
-                            "type": "string",
-                            "maxLength": 50,
-                            "minLength": 1,
-                            "pattern": "^[-a-zA-Z0-9_]+$",
-                            "title": "Slug",
-                            "description": "Internal application name, used in URLs."
-                        },
-                        "provider": {
-                            "type": "integer",
-                            "title": "Provider"
-                        },
-                        "backchannel_providers": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Backchannel providers"
-                        },
-                        "open_in_new_tab": {
-                            "type": "boolean",
-                            "title": "Open in new tab",
-                            "description": "Open launch URL in a new browser tab or window."
-                        },
-                        "meta_launch_url": {
-                            "type": "string",
-                            "title": "Meta launch url"
-                        },
-                        "meta_description": {
-                            "type": "string",
-                            "title": "Meta description"
-                        },
-                        "meta_publisher": {
-                            "type": "string",
-                            "title": "Meta publisher"
-                        },
-                        "policy_engine_mode": {
-                            "type": "string",
-                            "enum": [
-                                "all",
-                                "any"
-                            ],
-                            "title": "Policy engine mode"
-                        },
-                        "group": {
-                            "type": "string",
-                            "title": "Group"
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "slug"
-                    ],
-                    "title": "Application"
-                },
-                "permissions": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Permissions"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_consent.userconsent_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_userconsent",
-                            "change_userconsent",
-                            "delete_userconsent",
-                            "view_userconsent"
                         ]
                     },
                     "user": {
@@ -14336,6 +14140,18 @@
                     "type": "boolean",
                     "title": "Activate user on success",
                     "description": "Activate users upon completion of stage."
+                },
+                "recovery_max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Recovery max attempts"
+                },
+                "recovery_cache_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Recovery cache timeout",
+                    "description": "The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
             "required": []

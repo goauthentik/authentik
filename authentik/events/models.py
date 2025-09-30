@@ -18,7 +18,7 @@ from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -41,6 +41,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
@@ -295,6 +296,15 @@ class NotificationTransport(TasksModel, SerializerModel):
 
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
+    send_once = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only send notification once, for example when sending a webhook into a chat channel."
+        ),
+    )
+
+    email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
+    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(
@@ -317,12 +327,6 @@ class NotificationTransport(TasksModel, SerializerModel):
         help_text=_(
             "Configure additional headers to be sent. "
             "Mapping should return a dictionary of key-value pairs"
-        ),
-    )
-    send_once = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Only send notification once, for example when sending a webhook into a chat channel."
         ),
     )
 
@@ -434,7 +438,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                     "title": notification.body,
                     "color": "#fd4b2d",
                     "fields": fields,
-                    "footer": f"authentik {get_full_version()}",
+                    "footer": f"authentik {authentik_full_version()}",
                 }
             ],
         }
@@ -462,7 +466,6 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
             return None
-        subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
                 "user_email": notification.user.email,
@@ -490,10 +493,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 "from": self.name,
             }
         mail = TemplateEmailMessage(
-            subject=subject_prefix + context["title"],
+            subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name="email/event_notification.html",
+            template_name=self.email_template,
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
@@ -629,45 +632,3 @@ class NotificationWebhookMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")
-
-
-class TaskStatus(models.TextChoices):
-    """DEPRECATED do not use"""
-
-    UNKNOWN = "unknown"
-    SUCCESSFUL = "successful"
-    WARNING = "warning"
-    ERROR = "error"
-
-
-class SystemTask(ExpiringModel):
-    """DEPRECATED do not use"""
-
-    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField()
-    uid = models.TextField(null=True)
-
-    start_timestamp = models.DateTimeField(default=now)
-    finish_timestamp = models.DateTimeField(default=now)
-    duration = models.FloatField(default=0)
-
-    status = models.TextField(choices=TaskStatus.choices)
-
-    description = models.TextField(null=True)
-    messages = models.JSONField()
-
-    task_call_module = models.TextField()
-    task_call_func = models.TextField()
-    task_call_args = models.JSONField(default=list)
-    task_call_kwargs = models.JSONField(default=dict)
-
-    def __str__(self) -> str:
-        return f"System Task {self.name}"
-
-    class Meta:
-        unique_together = (("name", "uid"),)
-        default_permissions = ()
-        permissions = ()
-        verbose_name = _("System Task")
-        verbose_name_plural = _("System Tasks")
-        indexes = ExpiringModel.Meta.indexes

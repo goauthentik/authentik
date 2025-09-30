@@ -232,13 +232,19 @@ Defaults to `seconds=30`.
 
 Configure how many times a failing task will be retried before abandoning.
 
-Defaults to 20.
+Defaults to 5.
 
 ##### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
 
 Configure the default duration a task can run for before it is aborted. Some tasks will override this setting based on other settings, such as LDAP source synchronization tasks.
 
 Defaults to `minutes=10`.
+
+##### `AUTHENTIK_WORKER__LOCK_PURGE_INTERVAL`
+
+Configure the interval at which old PostgreSQL locks are cleaned up.
+
+Defaults to `minutes=1`.
 
 ##### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
 
@@ -504,7 +510,7 @@ If you are running a version earlier than 2025.4, you can configure if the sessi
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) for session validity.
 
 Defaults to `days=1`.
 
@@ -532,7 +538,7 @@ Defaults to `/`.
 
 ## System settings:ak-version[2024.2]
 
-Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
+Additional settings are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

@@ -1,4 +1,3 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
@@ -9,7 +8,7 @@ import { ListenerController } from "#elements/utils/listenerController";
 import { randomId } from "#elements/utils/randomId";
 
 import { BaseStage } from "#flow/stages/base";
-import { CaptchaHandler, iframeTemplate } from "#flow/stages/captcha/shared";
+import { CaptchaHandler, CaptchaProvider, iframeTemplate } from "#flow/stages/captcha/shared";
 
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
@@ -109,7 +108,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     //#region State
 
     @state()
-    protected activeHandler: CaptchaHandler | null = null;
+    protected activeHandler: CaptchaProvider | null = null;
 
     @state()
     protected error: string | null = null;
@@ -265,7 +264,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    #handlers = new Map<string, CaptchaHandler>([
+    /**
+     * Mapping of captcha provider names to their respective JS API global.
+     *
+     * Note that this is a `Map` to ensure the preferred order of discovering provider globals.
+     */
+    #handlers = new Map<CaptchaProvider, CaptchaHandler>([
         [
             "grecaptcha",
             {
@@ -415,7 +419,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    //#region Listeners
+    //#region Resizing
 
     #loadListener = () => {
         const iframe = this.#iframeRef.value;
@@ -423,17 +427,73 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
         if (!iframe || !contentDocument) return;
 
-        const resizeListener: ResizeObserverCallback = () => {
-            if (!this.#iframeRef) return;
+        let synchronizeHeight: () => void;
 
-            const target = contentDocument.getElementById("ak-container");
+        if (this.activeHandler === CaptchaProvider.reCAPTCHA) {
+            // reCAPTCHA's use of nested iframes prevents their internal resize observer from
+            // reporting the correct height back to our iframe, so we have to do it ourselves.
 
-            if (!target) return;
+            synchronizeHeight = () => {
+                if (!this.#iframeRef) return;
 
-            this.iframeHeight = Math.round(target.clientHeight);
-        };
+                const target = contentDocument.getElementById("ak-container");
 
-        const resizeObserver = new ResizeObserver(resizeListener);
+                if (!target) return;
+
+                const innerIFrame = contentDocument.querySelector<HTMLIFrameElement>(
+                    'iframe[style~="height:"]',
+                );
+
+                const innerBottom = innerIFrame?.getBoundingClientRect().bottom ?? 0;
+
+                const actualHeight = Math.max(innerBottom, target.clientHeight);
+
+                this.iframeHeight = Math.round(actualHeight * 1.1);
+
+                if (innerIFrame?.parentElement) {
+                    innerIFrame.parentElement.style.height = `${actualHeight}px`;
+                }
+            };
+
+            // We watch for any newly inserted iframes, as they may alter the height
+            // of the parent iframe...
+            const mutationObserver = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    if (mutation.type !== "childList") continue;
+
+                    for (const node of mutation.addedNodes as NodeListOf<HTMLElement>) {
+                        if (node.tagName !== "IFRAME") continue;
+
+                        // And then resize the iframe to match the new size.
+                        //
+                        // This doesn't fix the issue entirely since the challenge frame
+                        // doesn't yet know the correct height, but at least the user can
+                        // try to load the challenge again with the correct height.
+
+                        resizeObserver.observe(node as HTMLIFrameElement);
+
+                        requestAnimationFrame(synchronizeHeight);
+                    }
+                }
+            });
+
+            mutationObserver.observe(contentDocument.body, {
+                childList: true,
+                subtree: true,
+            });
+        } else {
+            synchronizeHeight = () => {
+                if (!this.#iframeRef) return;
+
+                const target = contentDocument.getElementById("ak-container");
+
+                if (!target) return;
+
+                this.iframeHeight = Math.round(target.clientHeight);
+            };
+        }
+
+        const resizeObserver = new ResizeObserver(synchronizeHeight);
 
         requestAnimationFrame(() => {
             resizeObserver.observe(contentDocument.body);
@@ -442,22 +502,26 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         });
     };
 
+    //#endregion
+
+    //#region Loading
+
     #scriptLoadListener = async (): Promise<void> => {
         console.debug("authentik/stages/captcha: script loaded");
 
         this.error = null;
         this.#iframeLoaded = false;
 
-        for (const [name, handler] of this.#handlers) {
+        for (const name of this.#handlers.keys()) {
             if (!Object.hasOwn(window, name)) {
                 continue;
             }
 
             try {
-                await this.#run(handler);
+                await this.#run(name);
                 console.debug(`authentik/stages/captcha[${name}]: handler succeeded`);
 
-                this.activeHandler = handler;
+                this.activeHandler = name;
 
                 return;
             } catch (error) {
@@ -469,7 +533,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         }
     };
 
-    async #run(handler: CaptchaHandler) {
+    async #run(captchaProvider: CaptchaProvider) {
+        const handler = this.#handlers.get(captchaProvider)!;
+
         if (this.challenge.interactive) {
             const iframe = this.#iframeRef.value;
 
@@ -478,18 +544,44 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 return;
             }
 
+            const { contentDocument } = iframe;
+
+            if (!contentDocument) {
+                console.debug(
+                    `authentik/stages/captcha: No iframe content window found, skipping.`,
+                );
+
+                return;
+            }
+
             console.debug(`authentik/stages/captcha: Rendering interactive.`);
 
             const captchaElement = handler.interactive();
-            const template = iframeTemplate(captchaElement, this.challenge.jsUrl);
+            const template = iframeTemplate(captchaElement, {
+                challengeURL: this.challenge.jsUrl,
+                theme: this.activeTheme,
+            });
 
-            URL.revokeObjectURL(this.#iframeSource);
+            if (captchaProvider === CaptchaProvider.reCAPTCHA) {
+                // reCAPTCHA's domain verification can't seem to penetrate the true origin
+                // of the page when loaded from a blob URL, likely due to their double-nested
+                // iframe structure.
+                // We fallback to the deprecated `document.write` to get around this.
+                this.#iframeSource = "about:blank";
+                contentDocument.open();
+                contentDocument.write(template);
+                contentDocument.close();
 
-            const url = URL.createObjectURL(new Blob([template], { type: "text/html" }));
+                // this.#loadListener();
+            } else {
+                URL.revokeObjectURL(this.#iframeSource);
 
-            this.#iframeSource = url;
+                const url = URL.createObjectURL(new Blob([template], { type: "text/html" }));
 
-            iframe.src = url;
+                this.#iframeSource = url;
+
+                iframe.src = url;
+            }
 
             return;
         }

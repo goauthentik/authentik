@@ -13,9 +13,9 @@ from django.db import (
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
-from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware.middleware import Middleware
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
@@ -26,7 +26,7 @@ class HTTPServer(BaseHTTPServer):
         self.socket.close()
 
         host, port = self.server_address[:2]
-        if host == "0.0.0.0":  # nosec
+        if host == "0.0.0.0" and socket.has_dualstack_ipv6():  # nosec
             host = "::"  # nosec
 
         # Strip IPv6 brackets
@@ -36,7 +36,9 @@ class HTTPServer(BaseHTTPServer):
         self.server_address = (host, port)
 
         self.address_family = (
-            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+            socket.AF_INET6
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
+            else socket.AF_INET
         )
 
         self.socket = socket.create_server(
@@ -141,7 +143,6 @@ class MetricsMiddleware(Middleware):
     def __init__(
         self,
         prefix: str,
-        multiproc_dir: str,
         labels: list[str] | None = None,
     ):
         super().__init__()
@@ -150,9 +151,6 @@ class MetricsMiddleware(Middleware):
 
         self.delayed_messages = set()
         self.message_start_times = {}
-
-        os.makedirs(multiproc_dir, exist_ok=True)
-        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", multiproc_dir)
 
     @property
     def forks(self):

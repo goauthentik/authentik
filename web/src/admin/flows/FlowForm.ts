@@ -21,7 +21,7 @@ import {
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -337,7 +337,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                                                 ${this.instance?.background}
                                             </p>
                                         `
-                                      : html``}
+                                      : nothing}
 
                                   <p class="pf-c-form__helper-text">
                                       ${msg("Background shown during execution.")}
@@ -373,7 +373,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                                             </p>
                                         </ak-form-element-horizontal>
                                     `
-                                  : html``}`
+                                  : nothing}`
                         : html`<ak-form-element-horizontal
                               label=${msg("Background")}
                               name="background"
