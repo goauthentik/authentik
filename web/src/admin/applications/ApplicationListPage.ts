@@ -80,7 +80,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     protected renderSidebarAfter(): TemplateResult {
         return html`<aside
             aria-label=${msg("Applications Documentation")}
-            class="pf-c-sidebar__panel pf-m-width-25"
+            class="pf-c-sidebar__panel"
         >
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
