@@ -8,8 +8,16 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-timestamp")
 export class AKTimestamp extends AKElement {
-    @property({ type: Date })
-    public timestamp?: Date | null = null;
+    #timestamp: Date | null = null;
+
+    @property({ attribute: false })
+    public get timestamp(): Date | null {
+        return this.#timestamp;
+    }
+
+    public set timestamp(value: string | Date | null) {
+        this.#timestamp = value ? (value instanceof Date ? value : new Date(value)) : null;
+    }
 
     @property({ type: Boolean })
     public elapsed: boolean = true;

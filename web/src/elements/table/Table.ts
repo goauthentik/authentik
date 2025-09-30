@@ -158,7 +158,7 @@ export abstract class Table<T extends object>
                 ak-timestamp {
                     font-size: 0.75rem;
                     font-style: italic;
-                    color: var(--pf-global--Color--300);
+                    color: var(--pf-global--Color--200);
 
                     &::part(label) {
                         display: inline-block;
