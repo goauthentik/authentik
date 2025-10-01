@@ -14,6 +14,8 @@ The most common types are:
 
 - [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commonly APIs.
 
+- [**Tutorial**](./tutorial-template.mdx): these are comprehensive, step-by-step guides that walk users through completing specific tasks from start to finish. Tutorials are structured around a specific task and goal, are less generic than procedural docs, and focus on learning by doing.
+
 ### Add a new integration
 
 To add documentation for a new integration (with support level Community or Vendor), please use the integration templates [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) from our GitHub repo. You can download the template using the following command:
