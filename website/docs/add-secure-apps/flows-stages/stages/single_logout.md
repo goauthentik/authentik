@@ -23,7 +23,7 @@ When a user logs out or their session is terminated in authentik, the following 
     - **Back-channel**: HTTP POST requests are sent directly from the authentik server to each back-channel provider's configured logout endpoint.
     - **Front-channel**: For user-initiated logouts, a logout stage is automatically injected into the flow that handles browser-based logout (typically via iframes or sequential redirects).
 4. **Provider Processing**: Each provider processes the logout request, validates it, and terminates the user's active session.
-5. **Completion**: Once all providers have been notified, the user's authentik session is fully terminated and they are redirected accordingly.
+5. **Completion**: Once all providers have been notified, the user is redirected back to the authentik login screen.
 
 ## Front-Channel vs. Back-Channel Logout
 
@@ -84,8 +84,8 @@ See the [SAML Single Logout documentation](../../providers/saml/saml_single_logo
 See the [OIDC Front-channel and Back-channel Logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
 1. Configure logout URLs:
-    - Front-channel logout URL - the provider's front-channel logout endpoint (typically end_session_endpoint).
-    - Back-channel logout URL - the provider's back-channel logout endpoint (typically backchannel_logout_uri).
+    - Front-channel logout URL - the provider's front-channel logout endpoint.
+    - Back-channel logout URL - the provider's back-channel logout endpoint.
 2. Enable the desired logout method; front-channel, back-channel, or both.
 3. Optionally configure logout token signing for back-channel requests.
 
