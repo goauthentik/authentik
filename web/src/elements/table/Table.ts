@@ -138,6 +138,10 @@ export abstract class Table<T extends object>
 
             .pf-c-toolbar__group {
                 gap: var(--pf-global--spacer--sm);
+
+                .pf-c-card__title .pf-icon {
+                    margin-inline-end: var(--pf-global--spacer--sm);
+                }
             }
 
             .pf-c-table {
@@ -701,15 +705,31 @@ export abstract class Table<T extends object>
     protected renderToolbarContainer(): SlottedTemplateResult {
         const label = this.toolbarLabel ?? msg(str`${this.label ?? "Table"} actions`);
 
-        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
-            <div class="pf-c-toolbar__content">
-                ${this.renderSearch()}
-                ${this.renderToolbarAfter
-                    ? html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`
-                    : nothing}
-            </div>
+        // We need to conditionally render the primary toolbar section
+        // to avoid an empty container which applies a gap unnecessarily.
+        // This may happen when a table toolbar has an unusual markup,
+        // such as in the Recent Events card.
 
-            <div class="pf-c-toolbar__content">
+        const primaryToolbar: SlottedTemplateResult[] = [];
+
+        if (this.searchEnabled) {
+            primaryToolbar.push(this.renderSearch());
+        }
+
+        if (this.renderToolbarAfter) {
+            primaryToolbar.push(
+                html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`,
+            );
+        }
+
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
+            ${primaryToolbar.length
+                ? html`<div class="pf-c-toolbar__content" name="toolbar-primary">
+                      ${primaryToolbar}
+                  </div>`
+                : nothing}
+
+            <div class="pf-c-toolbar__content" name="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
