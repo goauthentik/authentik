@@ -191,7 +191,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
 
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
@@ -220,7 +221,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                               </button>
                           </ak-forms-modal>
                       `
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 

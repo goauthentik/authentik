@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `miniflux.company` is the FQDN of the Miniflux installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -49,7 +49,7 @@ Add the following environment variables to your Miniflux configuration. Make sur
     OAUTH2_USER_CREATION=1
     ```
 
-:::note
+:::info
 The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC_DISCOVERY_ENDPOINT`
 :::
 

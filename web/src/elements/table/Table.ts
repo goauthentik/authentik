@@ -4,6 +4,7 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
+import "#elements/timestamp/ak-timestamp";
 
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
@@ -17,6 +18,7 @@ import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { Pagination } from "@goauthentik/api";
 
@@ -74,15 +76,8 @@ export abstract class Table<T extends object>
                 .presentational {
                     --pf-c-table--cell--MinWidth: 0;
                 }
-                @container (width > 600px) {
+                @container (width > 1200px) {
                     --pf-c-table--cell--MinWidth: 9em;
-                }
-            }
-
-            td,
-            th {
-                &:last-child {
-                    white-space: nowrap;
                 }
             }
 
@@ -122,11 +117,8 @@ export abstract class Table<T extends object>
                 }
             }
 
-            .pf-c-toolbar__group.pf-m-search-filter.ql {
-                flex-grow: 1;
-            }
-            ak-table-search.ql {
-                width: 100% !important;
+            .pf-m-search-filter {
+                flex: 1 1 auto;
             }
             .pf-c-table thead .pf-c-table__check {
                 min-width: 3rem;
@@ -134,11 +126,22 @@ export abstract class Table<T extends object>
             .pf-c-table tbody .pf-c-table__check input {
                 margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
             }
+
             .pf-c-toolbar__content {
-                row-gap: var(--pf-global--spacer--sm);
+                justify-content: space-between;
+                gap: var(--pf-global--spacer--sm);
+
+                .pf-c-switch {
+                    --pf-c-switch--ColumnGap: var(--pf-c-toolbar__item--m-search-filter--spacer);
+                }
             }
-            .pf-c-toolbar__item .pf-c-input-group {
-                padding: 0 var(--pf-global--spacer--sm);
+
+            .pf-c-toolbar__group {
+                gap: var(--pf-global--spacer--sm);
+
+                .pf-c-card__title .pf-icon {
+                    margin-inline-end: var(--pf-global--spacer--sm);
+                }
             }
 
             .pf-c-table {
@@ -154,6 +157,26 @@ export abstract class Table<T extends object>
             thead,
             .pf-c-table tr.pf-m-hoverable {
                 user-select: none;
+            }
+
+            time {
+                text-transform: capitalize;
+            }
+
+            .pf-c-pagination {
+                ak-timestamp {
+                    font-size: 0.75rem;
+                    font-style: italic;
+                    color: var(--pf-global--Color--200);
+
+                    &::part(label) {
+                        display: inline-block;
+                    }
+
+                    &::part(elapsed) {
+                        display: inline-block;
+                    }
+                }
             }
         `,
     ];
@@ -173,7 +196,11 @@ export abstract class Table<T extends object>
      */
     protected abstract row(item: T): SlottedTemplateResult[];
 
-    #loading = false;
+    @state()
+    protected loading = false;
+
+    @state()
+    protected lastRefreshedAt: Date | null = null;
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
@@ -190,7 +217,7 @@ export abstract class Table<T extends object>
     public label: string | null = null;
 
     @property({ attribute: false })
-    public data?: PaginatedResponse<T>;
+    public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number })
     public page = getURLParam(this.#pageParam, 1);
@@ -329,11 +356,11 @@ export abstract class Table<T extends object>
     }
 
     public fetch(): Promise<void> {
-        if (this.#loading) {
+        if (this.loading) {
             return Promise.resolve();
         }
 
-        this.#loading = true;
+        this.loading = true;
 
         return this.apiEndpoint()
             .then((data) => {
@@ -364,7 +391,8 @@ export abstract class Table<T extends object>
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
-                this.#loading = false;
+                this.loading = false;
+                this.lastRefreshedAt = new Date();
                 this.requestUpdate();
             });
     }
@@ -437,12 +465,11 @@ export abstract class Table<T extends object>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
-
-        if (!this.data || this.#loading) {
+        if (this.loading && this.data === null) {
             return this.renderLoading();
         }
 
-        if (this.data.pagination.count === 0) {
+        if (!this.data?.pagination.count) {
             return this.renderEmpty();
         }
 
@@ -554,7 +581,7 @@ export abstract class Table<T extends object>
 
         if (selectAllCheckbox) {
             selectAllCheckbox.checked = pageItemCount !== 0 && selectedCount !== 0;
-            selectAllCheckbox.indeterminate = pageItemCount !== 0 && selectedCount < pageItemCount;
+            selectAllCheckbox.indeterminate = selectedCount !== 0 && selectedCount < pageItemCount;
         }
 
         this.requestUpdate();
@@ -673,26 +700,40 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    protected renderToolbarAfter(): SlottedTemplateResult {
-        return nothing;
-    }
+    protected renderToolbarAfter?(): SlottedTemplateResult;
 
     protected renderToolbarContainer(): SlottedTemplateResult {
         const label = this.toolbarLabel ?? msg(str`${this.label ?? "Table"} actions`);
 
+        // We need to conditionally render the primary toolbar section
+        // to avoid an empty container which applies a gap unnecessarily.
+        // This may happen when a table toolbar has an unusual markup,
+        // such as in the Recent Events card.
+
+        const primaryToolbar: SlottedTemplateResult[] = [];
+
+        if (this.searchEnabled) {
+            primaryToolbar.push(this.renderSearch());
+        }
+
+        if (this.renderToolbarAfter) {
+            primaryToolbar.push(
+                html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`,
+            );
+        }
+
         return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
-            <div role="presentation" class="pf-c-toolbar__content">
-                ${this.renderSearch()}
-                <div role="presentation" class="pf-c-toolbar__bulk-select">
-                    ${this.renderToolbar()}
+            ${primaryToolbar.length
+                ? html`<div class="pf-c-toolbar__content" name="toolbar-primary">
+                      ${primaryToolbar}
+                  </div>`
+                : nothing}
+
+            <div class="pf-c-toolbar__content" name="toolbar-secondary">
+                <div class="pf-c-toolbar__group">
+                    ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
-                <div role="presentation" class="pf-c-toolbar__group">
-                    ${this.renderToolbarAfter()}
-                </div>
-                <div role="presentation" class="pf-c-toolbar__group">
-                    ${this.renderToolbarSelected()}
-                </div>
-                ${this.paginated ? this.renderTablePagination() : nothing}
+                ${this.renderTablePagination()}
             </div>
         </header>`;
     }
@@ -716,18 +757,16 @@ export abstract class Table<T extends object>
 
         const isQL = this.supportsQL && this.hasEnterpriseLicense;
 
-        return html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
-            <ak-table-search
-                class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
-                .defaultValue=${this.search}
-                label=${ifDefined(this.searchLabel)}
-                placeholder=${ifDefined(this.searchPlaceholder)}
-                .onSearch=${this.#searchListener}
-                .supportsQL=${this.supportsQL}
-                .apiResponse=${this.data}
-            >
-            </ak-table-search>
-        </div>`;
+        return html` <ak-table-search
+            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            .defaultValue=${this.search}
+            label=${ifDefined(this.searchLabel)}
+            placeholder=${ifDefined(this.searchPlaceholder)}
+            .onSearch=${this.#searchListener}
+            .supportsQL=${this.supportsQL}
+            .apiResponse=${this.data}
+        >
+        </ak-table-search>`;
     }
 
     //#endregion
@@ -816,6 +855,8 @@ export abstract class Table<T extends object>
      * A simple pagination display, shown at both the top and bottom of the page.
      */
     protected renderTablePagination(): SlottedTemplateResult {
+        if (!this.paginated) return nothing;
+
         const handler = (page: number) => {
             this.page = page;
             this.fetch();
@@ -823,7 +864,8 @@ export abstract class Table<T extends object>
 
         return html`
             <ak-table-pagination
-                label=${ifDefined(this.label || undefined)}
+                ?loading=${this.loading}
+                label=${ifPresent(this.label)}
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
                 .onPageChange=${handler}
@@ -836,7 +878,12 @@ export abstract class Table<T extends object>
         const totalItemCount = this.data?.pagination.count ?? -1;
 
         const renderBottomPagination = () =>
-            html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
+            html`<div class="pf-c-pagination pf-m-bottom">
+                <ak-timestamp .timestamp=${this.lastRefreshedAt} refresh>
+                    ${msg("Last refreshed")}
+                </ak-timestamp>
+                ${this.renderTablePagination()}
+            </div>`;
 
         return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}

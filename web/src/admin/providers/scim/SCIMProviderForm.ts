@@ -35,7 +35,10 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     }
 
     renderForm() {
-        return renderForm(this.requestUpdate.bind(this), this.instance ?? {}, []);
+        return renderForm({
+            update: this.requestUpdate.bind(this),
+            provider: this.instance,
+        });
     }
 }
 

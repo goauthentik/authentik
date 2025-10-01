@@ -104,6 +104,7 @@ TENANT_APPS = [
     "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.sources.scim",
+    "authentik.sources.telegram",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_email",
@@ -409,10 +410,13 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.MessagesMiddleware", {}),

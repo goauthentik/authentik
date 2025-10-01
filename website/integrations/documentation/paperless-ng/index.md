@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 
 - `paperless.company` is the FQDN of the Paperless-ng installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

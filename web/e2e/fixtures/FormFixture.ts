@@ -1,7 +1,7 @@
 import { PageFixture } from "#e2e/fixtures/PageFixture";
 import type { LocatorContext } from "#e2e/selectors/types";
 
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 
 export class FormFixture extends PageFixture {
     static fixtureName = "Form";
@@ -18,22 +18,62 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param value the value to set.
      */
-    public fill = async (
-        fieldName: string,
-        value: string,
-        parent: LocatorContext = this.page,
-    ): Promise<void> => {
-        const control = parent
-            .getByRole("textbox", {
-                name: fieldName,
+    public findTextualInput = async (
+        fieldName: string | RegExp,
+        context: LocatorContext = this.page,
+    ) => {
+        const control = context
+            .getByLabel(fieldName, { exact: true })
+            .filter({
+                hasNot: context.getByRole("presentation"),
             })
             .or(
-                parent.getByRole("spinbutton", {
+                context.getByRole("textbox", {
+                    name: fieldName,
+                }),
+            )
+            .or(
+                context.getByRole("spinbutton", {
                     name: fieldName,
                 }),
             );
 
-        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
+        const role = await control.getAttribute("role");
+
+        let textbox: Locator;
+
+        if (role === "combobox") {
+            // Comboboxes, such as our Query Language input need additional handling...
+            const textbox = control.getByRole("textbox");
+
+            return textbox;
+        } else {
+            textbox = control;
+        }
+
+        await expect(textbox, `Field (${fieldName}) should be visible`).toBeVisible();
+
+        return textbox;
+    };
+
+    /**
+     * Set the value of a text input.
+     *
+     * @param target The name of the form element.
+     * @param value the value to set.
+     */
+    public fill = async (
+        target: string | RegExp | Locator,
+        value: string,
+        context: LocatorContext = this.page,
+    ): Promise<void> => {
+        let control: Locator;
+
+        if (typeof target === "string" || target instanceof RegExp) {
+            control = await this.findTextualInput(target, context);
+        } else {
+            control = target;
+        }
 
         await control.fill(value);
     };

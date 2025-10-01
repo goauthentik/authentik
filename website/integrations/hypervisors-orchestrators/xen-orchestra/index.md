@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://xen-orchestra.com/
 
-:::note
+:::info
 Xen Orchestra offers authentication plugins for OpenID Connect, SAML and LDAP. This guide is using the OpenID Connect plugin.
 If you are using the Xen Orchestra Appliance, the OIDC Plugin should be present. If you are using Xen Orchestra compiled from sources, make sure the plugin `auth-oidc` is installed.
 :::
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -64,6 +64,6 @@ All of the URLs mentioned below can be copied & pasted from authentik (**Applica
 4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
 5. You should be able to login with OIDC.
 
-:::note
+:::info
 The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
 :::
