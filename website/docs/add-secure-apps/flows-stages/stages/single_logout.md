@@ -56,15 +56,15 @@ Use native front-channel mode for SAML providers if you encounter iframe compati
 
 ### Back-Channel Logout
 
-Back-channel logout sends logout requests directly from the authentik server to the provider's logout endpoint via HTTP POST. This method:
+Back-channel logout sends logout requests directly from the authentik server to the provider's logout endpoint via HTTP POST.
 
-- Does not require user browser interaction
-- Works even when the user is offline or their browser is closed
-- Is automatically triggered for administrative session termination (user deactivation or session deletion)
-- Requires the provider to accept server-to-server POST requests
+- Does not require user browser interaction.
+- Works even when the user is offline or their browser is closed.
+- Is automatically triggered by administrators terminating a user session (user deactivation or session deletion).
+- Requires the provider to accept server-to-server POST requests.
 
-**For SAML**: Requires POST SLS binding
-**For OIDC**: Requires a logout_uri configured for back-channel that accepts logout tokens
+**For SAML**: Requires POST SLS binding.
+**For OIDC**: Requires a `logout_uri` configured for back-channel that accepts logout tokens.
 
 ## Enable Single Logout
 
