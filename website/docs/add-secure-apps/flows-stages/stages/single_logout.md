@@ -89,7 +89,7 @@ See the [OIDC Front-channel and Back-channel Logout documentation](../../provide
 2. Enable the desired logout method(s) (front-channel, back-channel, or both)
 3. Optionally configure logout token signing for back-channel requests
 
-## Session Tracking
+## Session tracking
 
 authentik tracks provider sessions to enable single logout:
 
