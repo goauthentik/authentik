@@ -248,7 +248,6 @@ class BaseEvaluator:
         """
         # Deferred imports to avoid circular import issues
         from authentik.stages.email.tasks import send_mails
-        from authentik.stages.email.tasks import send_mails
 
         if body and template:
             raise ValueError("body and template parameters are mutually exclusive")
