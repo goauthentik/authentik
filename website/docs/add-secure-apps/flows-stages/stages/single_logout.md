@@ -25,11 +25,12 @@ When a user logs out or their session is terminated in authentik, the following 
 4. **Provider Processing**: Each provider processes the logout request, validates it, and terminates the user's active session.
 5. **Completion**: After all providers have been notified, the user is redirected back to the authentik login screen.
 
-## Front-Channel vs. Back-Channel Logout
+## Front-channel vs. back-channel logout
 
 authentik supports both front-channel (browser-based) and back-channel (server-to-server) logout methods, depending on how each provider is configured.
 
-### Front-Channel Logout
+### Front-channel logout
+``
 
 Front-channel logout sends logout requests through the user's browser. authentik supports two front-channel modes:
 
@@ -54,7 +55,7 @@ Front-channel logout sends logout requests through the user's browser. authentik
 Use native front-channel mode for SAML providers if you encounter iframe compatibility issues, such as Content Security Policy (CSP) restrictions or cookie handling problems.
 :::
 
-### Back-Channel Logout
+### Back-channel Logout
 
 Back-channel logout sends logout requests directly from the authentik server to the provider's logout endpoint via HTTP POST.
 
@@ -74,14 +75,14 @@ Enabling single logout requires configuring logout endpoints on your SAML or OID
 
 See the [SAML Single Logout documentation](../../providers/saml/saml_single_logout.md) for detailed instructions. You will need to:
 
-1. Configure the SLS URL (Single Logout Service URL) - the provider's logout endpoint.
-2. Select the SLS Binding (Redirect or POST).
+1. Configure the **SLS URL** (Single Logout Service URL) - the provider's logout endpoint.
+2. Select the **SLS Binding** (Redirect or POST).
 3. Choose a Logout Method; front-channel iframe, front-channel native, or back-channel.
 4. Optionally, enable `Sign logout request` for additional security.
 
-### OIDC Providers
+### OIDC providers
 
-See the [OIDC Front-channel and Back-channel Logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
+See the [OIDC Front-channel and Back-channel logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
 1. Configure logout URLs:
     - Front-channel logout URL - the provider's front-channel logout endpoint.
