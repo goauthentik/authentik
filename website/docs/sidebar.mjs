@@ -688,10 +688,10 @@ const items = [
                             id: "developer-docs/docs/templates/index",
                         },
                         items: [
+                            "developer-docs/docs/templates/combo",
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],
