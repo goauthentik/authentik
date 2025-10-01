@@ -15,9 +15,9 @@ Check with your service provider to see if they support SAML Single Logout or OI
 When a user logs out or their session is terminated in authentik, the following process occurs:
 
 1. **Session Termination**: The user's session ends through one of the following:
-    - User-initiated logout via a logout flow
-    - Administrative action (session deletion or user deactivation)
-    - Token revocation or expiration
+    - User-initiated logout via a logout flow.
+    - Administrative action (session deletion or user deactivation).
+    - Token revocation or expiration.
 2. **Provider Identification**: authentik identifies all OAuth2/OIDC and SAML providers with active sessions for the user that have SLO configured.
 3. **Logout Request Dispatch**:
     - **Back-channel**: HTTP POST requests are sent directly from the authentik server to each back-channel provider's configured logout endpoint
