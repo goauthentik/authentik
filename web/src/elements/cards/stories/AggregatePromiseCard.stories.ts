@@ -2,10 +2,11 @@ import "../AggregatePromiseCard.js";
 
 import { AggregatePromiseCard, type IAggregatePromiseCard } from "../AggregatePromiseCard.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AggregatePromiseCard> = {
     title: "Elements/<ak-aggregate-card-promise>",
@@ -75,10 +76,10 @@ export const DefaultStory: StoryObj = {
                 }
             </style>
             <ak-aggregate-card-promise
-                header=${ifDefined(header)}
-                headerLink=${ifDefined(headerLink)}
-                subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
+                header=${ifPresent(header)}
+                headerLink=${ifPresent(headerLink)}
+                subtext=${ifPresent(subtext)}
+                icon=${ifPresent(icon)}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise> `;
@@ -112,11 +113,11 @@ export const PromiseRejected: StoryObj = {
                 }
             </style>
             <ak-aggregate-card-promise
-                header=${ifDefined(header)}
-                headerLink=${ifDefined(headerLink)}
-                subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
-                failureMessage=${ifDefined(failureMessage)}
+                header=${ifPresent(header)}
+                headerLink=${ifPresent(headerLink)}
+                subtext=${ifPresent(subtext)}
+                icon=${ifPresent(icon)}
+                failureMessage=${ifPresent(failureMessage)}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
