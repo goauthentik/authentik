@@ -9,7 +9,6 @@ class CacheEntry(models.Model):
 
     class Meta:
         default_permissions = []
-        db_table = ""
 
     def __str__(self) -> str:
         return f"Cache entry '{self.cache_key}'"

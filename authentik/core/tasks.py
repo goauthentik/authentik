@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
+from django_postgres_cache.tasks import clear_expired_cache
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
@@ -33,6 +34,7 @@ def clean_expired_models():
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    clear_expired_cache()
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))
