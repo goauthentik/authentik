@@ -19,9 +19,9 @@ Your OAuth application (Relying Party) must explicitly support OpenID Connect fr
 
 Your OAuth application (Relying Party) must:
 
-- **HTTPS**: Use HTTPS in production
-- **Accessible**: Be reachable from authentik
-- **Logout endpoint**: Have a defined endpoint to handle OP logout requests (front-channel, back-channel, or both)
+    - **HTTPS**: Use HTTPS in production.
+    - **Accessible**: Be reachable from authentik.
+    - **Logout endpoint**: Have a defined endpoint to handle OP logout requests (front-channel, back-channel, or both).
 
 ## Configuration
 
@@ -39,7 +39,7 @@ Back-channel logout is the only way to ensure users are logged out of the provid
 
 ### Logout URI format
 
-The logout URI should be a single URL provided by your Relying Party application. Examples:
+The logout URI should be a single URL provided by your Relying Party application, for example:
 
 **Back-channel:**
 
@@ -62,13 +62,13 @@ https://api.service.com/logout
 
 With back-channel logout, authentik sends logout requests directly from the server to the Relying Party's back-channel logout endpoint using HTTP POST. The logout request includes a signed JWT logout token that contains:
 
-- `iss` (issuer): The authentik issuer URL
-- `sub` (subject): The user's unique identifier
-- `aud` (audience): The client ID
-- `iat` (issued at): Token creation timestamp
-- `jti` (JWT ID): Unique token identifier
-- `events`: Logout event claim
-- `sid` (session ID): The session identifier (if available)
+- `iss` (issuer): The authentik issuer URL.
+- `sub` (subject): The user's unique identifier.
+- `aud` (audience): The client ID.
+- `iat` (issued at): Token creation timestamp.
+- `jti` (JWT ID): Unique token identifier.
+- `events`: Logout event claim.
+- `sid` (session ID): The session identifier (if available).
 
 Example back-channel logout request:
 
@@ -82,17 +82,17 @@ logout_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
 
 Back-channel logout is triggered when:
 
-- A user logs out through a logout flow
-- An administrator deletes a user's session
-- A user account is deactivated
-- A session expires or is revoked
+    - A user logs out through a logout flow.
+    - An administrator deletes a user's session.
+    - A user account is deactivated.
+    - A session expires or is revoked.
 
 ### Front-channel logout
 
 With front-channel logout, authentik injects an iframe logout stage into the logout flow. This stage loads the Relying Party's front-channel logout URL in a hidden iframe within the user's browser. The logout URL includes session information as query parameters:
 
-- `iss`: The authentik issuer URL
-- `sid`: The session identifier
+    - `iss`: The authentik issuer URL.
+    - `sid`: The session identifier.
 
 Example front-channel logout iframe:
 
@@ -108,7 +108,7 @@ The RP processes the logout request and terminates the user's session. After all
 Front-channel logout only works for user-initiated logouts through a logout flow. It cannot be used for administrative session termination since it requires an active browser session.
 :::
 
-## Related Documentation
+## Resources
 
 - [Single Logout (SLO) Overview](../../flows-stages/stages/single_logout.md)
 - [User Logout Stage](../../flows-stages/stages/user_logout.md)

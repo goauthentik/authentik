@@ -2,7 +2,7 @@
 title: SAML Single Logout
 ---
 
-[Single logout (SLO)](../../flows-stages/stages/single_logout.md) provides a way to configure authentik to log out a user from all supported providers simultaneously when signing out of authentik. For SAML providers, this requires your service provider to support Single Logout via a Single Logout Service URL. Check with your provider to see if they support Single Logout, as not all providers do.
+[Single logout (SLO)](../../flows-stages/stages/single_logout.md) allows you to configure authentik to log out a user from all supported providers simultaneously when signing out of authentik. For SAML providers, this requires your service provider to support Single Logout via a Single Logout Service URL. Check with your provider to see if they support Single Logout, as not all providers do.
 
 ## Configure your SAML provider
 
@@ -22,7 +22,7 @@ To enable single logout, add a **Single Logout Service URL** to your SAML provid
 7. (Optional) Enable **Sign logout request** to cryptographically sign SAML logout requests sent to the service provider.
 8. Click **Finish**.
 
-:::tip
+:::info
 Back-channel logout ensures users are logged out even when their session is terminated administratively (e.g., when a user is deactivated or their session is deleted). This requires POST SLS binding.
 :::
 
@@ -42,10 +42,12 @@ With front-channel native logout, authentik chains logout requests sequentially 
 
 With back-channel logout, authentik sends SAML logout requests directly from the server to each provider's SLS URL using HTTP POST. This happens asynchronously and does not require browser interaction. Back-channel logout is also triggered automatically when:
 
-- A user's session is administratively deleted
-- A user account is deactivated
+    - A user's session is administratively deleted.
+    - A user account is deactivated.
 
+:::info
 Back-channel logout requires POST SLS binding.
+:::
 
 ## Binding Comparison
 
@@ -57,15 +59,15 @@ Back-channel logout requires POST SLS binding.
 | Request sent via     | URL query parameters  | HTTP POST body           |
 | Maximum data size    | Limited by URL length | Large requests supported |
 
-## SAML Session Tracking
+## SAML session tracking
 
-authentik tracks SAML sessions for each provider to support single logout. When a user successfully authenticates to a SAML provider, authentik creates a SAMLSession record containing:
+authentik tracks SAML sessions for each provider to support single logout. When a user successfully authenticates to a SAML provider, authentik creates a `SAMLSession` record containing:
 
-- The SAML SessionIndex
-- The NameID and NameID format used for the session
-- A link to the user's authenticated session
+    - The SAML `SessionIndex`.
+    - The `NameID` and `NameID format` used for the session.
+    - A link to the user's authenticated session.
 
-These session records are used to generate proper SAML logout requests with the correct SessionIndex and NameID values that the service provider expects.
+These session records are used to generate proper SAML logout requests with the correct `SessionIndex` and `NameID` values that the service provider expects.
 
 ## Resources
 
