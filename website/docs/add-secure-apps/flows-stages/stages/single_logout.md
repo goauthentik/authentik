@@ -74,10 +74,10 @@ Enabling single logout requires configuring logout endpoints on your SAML or OID
 
 See the [SAML Single Logout documentation](../../providers/saml/saml_single_logout.md) for detailed instructions. You will need to:
 
-1. Configure the SLS URL (Single Logout Service URL) - the provider's logout endpoint
-2. Select the SLS Binding (Redirect or POST)
-3. Choose a Logout Method (front-channel iframe, front-channel native, or back-channel)
-4. Optionally enable Sign logout request for additional security
+1. Configure the SLS URL (Single Logout Service URL) - the provider's logout endpoint.
+2. Select the SLS Binding (Redirect or POST).
+3. Choose a Logout Method; front-channel iframe, front-channel native, or back-channel.
+4. Optionally, enable `Sign logout request` for additional security.
 
 ### OIDC Providers
 
@@ -93,8 +93,8 @@ See the [OIDC Front-channel and Back-channel Logout documentation](../../provide
 
 authentik tracks provider sessions to enable single logout:
 
-- **SAML**: Creates SAMLSession records containing the SessionIndex, NameID, and NameID format for each successful authentication
-- **OIDC**: Tracks session identifiers (sid) and ID tokens required for logout requests
+- **SAML**: Creates `SAMLSession` records containing the `SessionIndex`, `NameID`, and `NameID format` for each successful authentication.
+- **OIDC**: Tracks session identifiers (`sid`) and ID tokens required for logout requests.
 
 These session records are automatically created during authentication and cleaned up after logout or expiration.
 
@@ -107,7 +107,7 @@ Back-channel logout is triggered even when a user session is terminated via admi
 
 These requests are processed asynchronously to avoid blocking administrative operations.
 
-## Related Documentation
+## Resources
 
 - [SAML Single Logout](../../providers/saml/saml_single_logout.md)
 - [OIDC Front-channel and Back-channel Logout](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx)
