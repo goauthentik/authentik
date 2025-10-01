@@ -20,4 +20,6 @@ runs:
     - name: PostgreSQL Logs
       shell: bash
       run: |
+        echo "::group::PostgreSQL Logs"
         docker logs setup-postgresql-1
+        echo "::endgroup::"
