@@ -14,7 +14,6 @@ export interface IAggregateCard {
     label?: string | null;
     headerLink?: string | null;
     subtext?: string | null;
-    leftJustified?: boolean;
 }
 
 /**
@@ -60,36 +59,32 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: String })
     public subtext: string | null = null;
 
-    /**
-     * If this is set, the contents of the card will be left-justified; otherwise they will be
-     * centered by default.
-     *
-     * @attr
-     */
-    @property({ type: Boolean, attribute: "left-justified" })
-    public leftJustified = false;
-
     static styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFFlex,
         css`
+            .pf-c-card {
+                container-type: inline-size;
+            }
+
             .pf-c-card.pf-c-card-aggregate {
                 height: 100%;
             }
             .pf-c-card__header {
-                padding-inline: var(--pf-global--spacer--md);
+                padding: var(--pf-global--spacer--md);
             }
             .pf-c-card__title {
                 display: flex;
                 align-items: center;
-                gap: var(--pf-global--spacer--md);
+                gap: var(--pf-global--spacer--sm);
+                flex: 1 1 auto;
+
+                @container (width < 200px) {
+                    font-size: var(--pf-global--FontSize--sm);
+                }
             }
 
-            .center-value {
-                font-size: var(--pf-global--icon--FontSize--lg);
-                text-align: center;
-            }
             .subtext {
                 margin-top: var(--pf-global--spacer--sm);
                 font-size: var(--pf-global--FontSize--sm);
@@ -98,6 +93,21 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 overflow-x: auto;
                 padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
                 padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
+            }
+            .status-container {
+                font-size: var(--pf-global--icon--FontSize--lg);
+                text-align: center;
+
+                @container (width < 200px) {
+                    font-size: var(--pf-global--icon--FontSize--md);
+                }
+
+                .status-heading {
+                    display: flex;
+                    gap: var(--pf-global--spacer--sm);
+                    justify-content: center;
+                    align-items: baseline;
+                }
             }
             .pf-c-card__header,
             .pf-c-card__title,
@@ -122,21 +132,30 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         }
 
         return html`<a href="${this.headerLink}">
-            <i aria-hidden="true" class="fa fa-link"> </i>
+            <i aria-hidden="true" class="fa fa-link"></i>
         </a>`;
     }
 
     render(): SlottedTemplateResult {
-        return html`<section class="pf-c-card pf-c-card-aggregate" aria-labelledby="card-title">
-            <header class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <h1 class="pf-c-card__title" id="card-title">
+        return html`<section
+            class="pf-c-card pf-c-card-aggregate"
+            aria-labelledby="card-title"
+            part="card"
+        >
+            <header
+                part="card-header"
+                class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between"
+            >
+                <h1 part="card-title" class="pf-c-card__title" id="card-title">
                     ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
-                    ${this.label || nothing} ${this.renderHeaderLink()}
+                    <span>${this.label || nothing}</span>${this.renderHeaderLink()}
                 </h1>
             </header>
-            <div class="pf-c-card__body ${this.leftJustified ? "" : "center-value"}">
+            <div part="card-body" class="pf-c-card__body">
                 ${this.renderInner()}
-                ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : nothing}
+                ${this.subtext
+                    ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
+                    : nothing}
             </div>
             <div class="pf-c-card__footer"></div>
         </section>`;

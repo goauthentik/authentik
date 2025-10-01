@@ -59,7 +59,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
     actions: QuickAction[] = [];
 
     render() {
-        return html` <ak-aggregate-card icon="fa fa-share" label=${this.title} left-justified>
+        return html` <ak-aggregate-card icon="fa fa-share" label=${this.title}>
             <ul aria-label="${msg("Quick actions")}" class="pf-c-list">
                 ${map(this.actions, renderItem)}
             </ul>

@@ -43,7 +43,6 @@ import "#elements/cards/AggregatePromiseCard";
         label: { control: "text" },
         headerLink: { control: "text" },
         subtext: { control: "text" },
-        leftJustified: { control: "boolean" },
         failureMessage: { control: "text" },
     },
 };
@@ -62,15 +61,8 @@ export const DefaultStory: StoryObj = {
         header: "Default",
         headerLink: undefined,
         subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
-        leftJustified: false,
     },
-    render: ({
-        icon,
-        label: header,
-        headerLink,
-        subtext,
-        leftJustified,
-    }: IAggregatePromiseCard) => {
+    render: ({ icon, label: header, headerLink, subtext }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((resolve) => setTimeout(resolve, timeout, value));
 
@@ -87,7 +79,6 @@ export const DefaultStory: StoryObj = {
                 headerLink=${ifDefined(headerLink)}
                 subtext=${ifDefined(subtext)}
                 icon=${ifDefined(icon)}
-                ?left-justified=${leftJustified}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise> `;
@@ -100,7 +91,6 @@ export const PromiseRejected: StoryObj = {
         header: "Default",
         headerLink: undefined,
         subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
-        leftJustified: false,
         failureMessage: undefined,
     },
     render: ({
@@ -108,7 +98,6 @@ export const PromiseRejected: StoryObj = {
         label: header,
         headerLink,
         subtext,
-        leftJustified,
         failureMessage,
     }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
@@ -128,7 +117,6 @@ export const PromiseRejected: StoryObj = {
                 subtext=${ifDefined(subtext)}
                 icon=${ifDefined(icon)}
                 failureMessage=${ifDefined(failureMessage)}
-                ?left-justified=${leftJustified}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
