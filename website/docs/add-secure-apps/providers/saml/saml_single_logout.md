@@ -67,7 +67,7 @@ authentik tracks SAML sessions for each provider to support single logout. When 
 
 These session records are used to generate proper SAML logout requests with the correct SessionIndex and NameID values that the service provider expects.
 
-## Related Documentation
+## Resources
 
 - [Single Logout (SLO) Overview](../../flows-stages/stages/single_logout.md)
 - [User Logout Stage](../../flows-stages/stages/user_logout.md)
