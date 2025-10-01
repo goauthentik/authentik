@@ -20,7 +20,7 @@ authentik dynamically injects logout stages into the user logout flow when provi
 
 This approach ensures that single logout happens automatically without requiring explicit flow configuration.
 
-## Administrative Session Termination
+## Administrative session termination
 
 Back-channel logout provides robust session management for administrative scenarios:
 
