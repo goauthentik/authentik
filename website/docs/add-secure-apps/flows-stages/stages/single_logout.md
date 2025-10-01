@@ -23,7 +23,7 @@ When a user logs out or their session is terminated in authentik, the following 
     - **Back-channel**: HTTP POST requests are sent directly from the authentik server to each back-channel provider's configured logout endpoint.
     - **Front-channel**: For user-initiated logouts, a logout stage is automatically injected into the flow that handles browser-based logout (typically via iframes or sequential redirects).
 4. **Provider Processing**: Each provider processes the logout request, validates it, and terminates the user's active session.
-5. **Completion**: Once all providers have been notified, the user is redirected back to the authentik login screen.
+5. **Completion**: After all providers have been notified, the user is redirected back to the authentik login screen.
 
 ## Front-Channel vs. Back-Channel Logout
 
