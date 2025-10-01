@@ -98,7 +98,7 @@ authentik tracks provider sessions to enable single logout:
 
 These session records are automatically created during authentication and cleaned up after logout or expiration.
 
-## Administrative Session Termination
+## Administrative session termination
 
 Back-channel logout ensures sessions are terminated even during administrative actions:
 
