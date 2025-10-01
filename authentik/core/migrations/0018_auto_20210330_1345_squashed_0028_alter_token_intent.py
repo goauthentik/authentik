@@ -13,14 +13,6 @@ import authentik.core.models
 import authentik.lib.models
 
 
-def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from django.contrib.sessions.backends.cache import KEY_PREFIX
-    from django.core.cache import cache
-
-    session_keys = cache.keys(KEY_PREFIX + "*")
-    cache.delete_many(session_keys)
-
-
 def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     Token = apps.get_model("authentik_core", "token")
@@ -52,24 +44,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_core", "0017_managed"),
     ]
-
-    def __init__(self, name, app_label):
-        """Conditionally add dependency for fresh installs only"""
-        super().__init__(name, app_label)
-
-        from django.db.migrations.recorder import MigrationRecorder
-        from django.db import connection
-
-        try:
-            recorder = MigrationRecorder(connection)
-            if not recorder.migration_qs.exists():
-                self.dependencies.append(
-                    ("django_postgres_cache", "0001_initial"),
-                )
-        except:
-            self.dependencies.append(
-                ("django_postgres_cache", "0001_initial"),
-            )
 
     operations = [
         migrations.AlterModelOptions(
@@ -168,9 +142,6 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-        ),
-        migrations.RunPython(
-            code=migrate_sessions,
         ),
         migrations.AlterField(
             model_name="application",
