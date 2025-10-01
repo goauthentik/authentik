@@ -102,8 +102,8 @@ These session records are automatically created during authentication and cleane
 
 Back-channel logout is triggered even when a user session is terminated via administrative actions:
 
-- **Session Deletion**: When an administrator manually deletes a user's session through the Admin interface or API, authentik sends back-channel logout requests to all configured providers
-- **User Deactivation**: When a user account is deactivated, authentik automatically sends back-channel logout requests to terminate all active sessions across all providers
+- **Session Deletion**: When an administrator manually deletes a user's session through the Admin interface or API, authentik sends back-channel logout requests to all configured providers.
+- **User Deactivation**: When a user account is deactivated, authentik automatically sends back-channel logout requests to terminate all active sessions across all providers.
 
 These requests are processed asynchronously to avoid blocking administrative operations.
 
