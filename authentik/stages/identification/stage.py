@@ -148,7 +148,10 @@ class IdentificationChallengeResponse(ChallengeResponse):
             captcha_token = attrs.get("captcha_token", None)
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
-            verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            try:
+                verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            except ValidationError:
+                raise ValidationError(_("Failed to authenticate.")) from None
 
         # Password check
         if not current_stage.password_stage:

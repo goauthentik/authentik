@@ -10,7 +10,7 @@ SSH private keys can be configured via several methods:
 
 ## Apply a private key to an RAC provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the **Edit** icon on the RAC provider that requires public key authentication.
 4. In the **Settings** codebox enter the private key of the endpoint, for example:
@@ -34,7 +34,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 
 ## Apply a private key to an RAC endpoint
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the name of the RAC provider that the endpoint belongs to.
 4. Under **Endpoints**, click on the **Edit** icon next to the endpoint that requires public key authentication.
@@ -59,7 +59,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 
 ## Apply a private key to an RAC property mapping
 
-1.  Log in to authentik as an administrator, and open the authentik Admin interface.
+1.  Log in to authentik as an administrator and open the authentik Admin interface.
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
@@ -87,7 +87,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 
 ## Retrieve a private key from a user's attributes and apply it to an RAC property mapping
 
-1.  Log in to authentik as an administrator, and open the authentik Admin interface.
+1.  Log in to authentik as an administrator and open the authentik Admin interface.
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:

@@ -8,9 +8,6 @@ from textwrap import indent
 from types import CodeType
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:
-    from authentik.stages.email.models import EmailStage
-
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django.http import HttpRequest
@@ -34,6 +31,9 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.email.utils import TemplateEmailMessage
+
+if TYPE_CHECKING:
+    from authentik.stages.email.models import EmailStage
 
 LOGGER = get_logger()
 
@@ -248,6 +248,7 @@ class BaseEvaluator:
         """
         # Deferred imports to avoid circular import issues
         from authentik.stages.email.tasks import send_mails
+        from authentik.stages.email.tasks import send_mails
 
         if body and template:
             raise ValueError("body and template parameters are mutually exclusive")
@@ -290,7 +291,6 @@ class BaseEvaluator:
                     body=body,
                 )
 
-            # Send the email (stage can be None for global settings)
             send_mails(stage, message)
             return True
 

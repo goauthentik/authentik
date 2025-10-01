@@ -99,7 +99,7 @@ class Command(BaseCommand):
         else:
             try:
                 hook()
-            except Exception:
+            except Exception:  # noqa
                 # Match the behavior of the cpython shell where an error in
                 # sys.__interactivehook__ prints a warning and the exception
                 # and continues.

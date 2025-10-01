@@ -11,7 +11,7 @@ def worker_healthcheck():
     import authentik.tasks.setup  # noqa
     from authentik.tasks.middleware import WorkerHealthcheckMiddleware
 
-    host, _, port = CONFIG.get("listen.listen_http").rpartition(":")
+    host, _, port = CONFIG.get("listen.http").rpartition(":")
 
     try:
         port = int(port)
@@ -33,7 +33,7 @@ def worker_metrics():
     import authentik.tasks.setup  # noqa
     from authentik.tasks.middleware import MetricsMiddleware
 
-    addr, _, port = CONFIG.get("listen.listen_metrics").rpartition(":")
+    addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
 
     try:
         port = int(port)

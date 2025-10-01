@@ -23,21 +23,25 @@ LOGGER = get_logger()
 
 
 def send_mails(
-    stage: EmailStage | AuthenticatorEmailStage, *messages: list[EmailMultiAlternatives]
+    stage: EmailStage | AuthenticatorEmailStage | None, *messages: list[EmailMultiAlternatives]
 ):
     """Wrapper to convert EmailMessage to dict and send it from worker
 
     Args:
-        stage: Either an EmailStage or AuthenticatorEmailStage instance
+        stage: Either an EmailStage or AuthenticatorEmailStage instance,
+            or nothing to use global settings
         messages: List of email messages to send
     Returns:
         Dramatiq group promise for the email sending tasks
     """
     tasks = []
     # Use the class path instead of the class itself for serialization
-    stage_class_path = class_to_path(stage.__class__)
+    stage_class_path, stage_pk = None, None
+    if stage:
+        stage_class_path = class_to_path(stage.__class__)
+        stage_pk = str(stage.pk)
     for message in messages:
-        tasks.append(send_mail.message(message.__dict__, stage_class_path, str(stage.pk)))
+        tasks.append(send_mail.message(message.__dict__, stage_class_path, stage_pk))
     return group(tasks).run()
 
 

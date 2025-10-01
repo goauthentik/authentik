@@ -340,7 +340,7 @@ From the authentik Admin Dashboard:
 :::note
 The following procedure apply to an authentik deployment within Kubernetes.
 
-For other kinds of deployment, please refer to the [authentik documentation](https://goauthentik.io/docs/).
+For other kinds of deployment, please refer to the [authentik documentation](https://docs.goauthentik.io/).
 :::
 
 1. Follow authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps :
