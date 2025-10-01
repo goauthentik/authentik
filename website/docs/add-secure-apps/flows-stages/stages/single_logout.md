@@ -35,7 +35,10 @@ Front-channel logout sends logout requests through the user's browser. authentik
 
 **Iframe Mode (Default for OIDC)**
 
-- Loads all provider logout URLs simultaneously in hidden iframes
+- Loads all provider logout URLs simultaneously in hidden iframes.
+- Provides fast, parallel logout across multiple providers.
+- Required by the OIDC front-channel logout specification.
+- Most SAML providers also support iframe-based logout.
 - Provides fast, parallel logout across multiple providers
 - Required by the OIDC front-channel logout specification
 - Most SAML providers also support iframe-based logout
