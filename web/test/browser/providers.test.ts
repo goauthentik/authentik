@@ -200,7 +200,7 @@ test.describe("Provider Wizard", () => {
 
     test("Complete RADIUS Provider", async ({ page, pointer, form }, testInfo) => {
         const providerName = providerNames.get(testInfo.testId)!;
-        const { fill, selectSearchValue } = form;
+        const { fill, selectSearchValue, setFormGroup } = form;
         const { click } = pointer;
 
         await series(
@@ -208,6 +208,8 @@ test.describe("Provider Wizard", () => {
             [click, "Next"],
             [fill, "Provider name", providerName],
             [selectSearchValue, "Authentication flow", /default-authentication-flow/],
+            [setFormGroup, "Protocol settings", true],
+            [selectSearchValue, "Certificate", /------/],
             [click, "Finish", "button", page.getByRole("dialog", { name: "New Provider" })],
         );
     });
