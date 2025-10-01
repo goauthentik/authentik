@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of your authentik installation
 - `fortigate.company` is the FQDN of your FortiGate firewall
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

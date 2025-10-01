@@ -191,7 +191,7 @@ export function renderForm({
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
-                    value="${ifDefined(provider?.slsUrl)}"
+                    value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
                         "Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.",

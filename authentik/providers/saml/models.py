@@ -67,13 +67,6 @@ class SAMLProvider(Provider):
             "no audience restriction will be added."
         ),
     )
-    sls_url = models.TextField(
-        default="",
-        blank=True,
-        validators=[DomainlessURLValidator(schemes=("http", "https"))],
-        verbose_name=_("SLS URL"),
-        help_text=_("Single Logout Service URL where the logout response should be sent."),
-    )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
@@ -83,16 +76,31 @@ class SAMLProvider(Provider):
             "This determines how authentik sends the response back to the Service Provider."
         ),
     )
+    sls_url = models.TextField(
+        blank=True,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("SLS URL"),
+        help_text=_("Single Logout Service URL where the logout response should be sent."),
+    )
     sls_binding = models.TextField(
         choices=SAMLBindings.choices,
-        default=SAMLBindings.REDIRECT,
         blank=True,
         verbose_name=_("SLS Binding"),
         help_text=_(
             "This determines how authentik sends the logout response back to the Service Provider."
         ),
     )
-
+    logout_method = models.TextField(
+        choices=LogoutMethods.choices,
+        blank=True,
+        help_text=_(
+            "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously "
+            "in hidden iframes. Front-channel native uses your active browser tab to send post "
+            "requests and redirect to providers. "
+            "Back-channel sends logout requests directly from the server without "
+            "user interaction (requires POST SLS binding)."
+        ),
+    )
     name_id_mapping = models.ForeignKey(
         "SAMLPropertyMapping",
         default=None,
@@ -217,18 +225,6 @@ class SAMLProvider(Provider):
     sign_assertion = models.BooleanField(default=True)
     sign_response = models.BooleanField(default=False)
     sign_logout_request = models.BooleanField(default=False)
-
-    logout_method = models.TextField(
-        choices=LogoutMethods.choices,
-        default=LogoutMethods.FRONTCHANNEL_IFRAME,
-        help_text=_(
-            "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously "
-            "in hidden iframes. Front-channel native uses your active browser tab to send post "
-            "requests and redirect to providers. "
-            "Back-channel sends logout requests directly from the server without "
-            "user interaction (requires POST SLS binding)."
-        ),
-    )
 
     @property
     def launch_url(self) -> str | None:

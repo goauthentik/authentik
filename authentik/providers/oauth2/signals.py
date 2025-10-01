@@ -42,7 +42,6 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
             user=user,
             session=auth_session,
             provider__logout_method=OAuth2LogoutMethod.FRONTCHANNEL,
-            provider__logout_uri__isnull=False,
         )
         .exclude(provider__logout_uri="")
         .select_related("provider")
@@ -97,15 +96,10 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
         if not any(
             binding.stage.view == IframeLogoutStageView for binding in executor.plan.bindings
         ):
-            LOGGER.debug("Injected stage from OIDC============================")
             iframe_stage = in_memory_stage(IframeLogoutStageView)
             executor.plan.insert_stage(iframe_stage, index=1)
 
-    LOGGER.debug(
-        "Injected iframe stage via signal",
-        user=user,
-        oidc_sessions=len(oidc_sessions),
-    )
+        LOGGER.debug("Oauth iframe sessions gathered")
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)

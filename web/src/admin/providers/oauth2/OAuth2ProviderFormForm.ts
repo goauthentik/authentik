@@ -127,49 +127,32 @@ const redirectUriHelpMessages: string[] = [
     ),
 ];
 
-const logoutUriHelpMessages: string[] = [
-    msg(
-        "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
-    ),
-    msg(
-        "The logout method determines how this URI is called - back-channel (server-to-server) or front-channel (browser iframe).",
-    ),
-];
-
 type ShowClientSecret = (show: boolean) => void;
 type ShowLogoutMethod = (show: boolean) => void;
 
-interface OAuth2FormOptions {
+export interface OAuth2ProviderFormProps {
+    provider?: Partial<OAuth2Provider>;
+    errors?: ValidationError;
     showClientSecret?: boolean;
     showClientSecretCallback?: ShowClientSecret;
-    showLogoutMethod?: boolean;
-    showLogoutMethodCallback?: ShowLogoutMethod;
+    showLogoutMethod: boolean;
+    showLogoutMethodCallback: ShowLogoutMethod;
 }
 
-const defaultOptions: OAuth2FormOptions = {
-    showClientSecret: false,
-    showClientSecretCallback: (_show) => undefined,
-    showLogoutMethod: false,
-    showLogoutMethodCallback: (_show) => undefined,
-};
-
-export function renderForm(
-    provider: Partial<OAuth2Provider>,
-    errors: ValidationError,
-    options: OAuth2FormOptions = {},
-) {
-    const {
-        showClientSecret = defaultOptions.showClientSecret,
-        showClientSecretCallback = defaultOptions.showClientSecretCallback,
-        showLogoutMethod = defaultOptions.showLogoutMethod,
-        showLogoutMethodCallback = defaultOptions.showLogoutMethodCallback,
-    } = options;
+export function renderForm({
+    provider = {},
+    errors = {},
+    showClientSecret = false,
+    showClientSecretCallback = (_show) => undefined,
+    showLogoutMethod = false,
+    showLogoutMethodCallback = (_show) => undefined,
+}: OAuth2ProviderFormProps) {
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Provider name...")}
             label=${msg("Provider Name")}
-            value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name}
+            value=${ifDefined(provider.name)}
+            .errorMessages=${errors.name}
             required
         ></ak-text-input>
 
@@ -182,8 +165,8 @@ export function renderForm(
                 label=${msg("Authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                .currentFlow=${provider?.authorizationFlow}
-                .errorMessages=${errors?.authorizationFlow}
+                .currentFlow=${provider.authorizationFlow}
+                .errorMessages=${errors.authorizationFlow}
                 required
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
@@ -195,7 +178,7 @@ export function renderForm(
                 <ak-radio-input
                     name="clientType"
                     label=${msg("Client type")}
-                    .value=${provider?.clientType}
+                    .value=${provider.clientType}
                     required
                     @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
                         showClientSecretCallback?.(ev.detail.value !== ClientTypeEnum.Public);
@@ -206,17 +189,17 @@ export function renderForm(
                 <ak-text-input
                     name="clientId"
                     label=${msg("Client ID")}
-                    value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
+                    value="${provider.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
                     input-hint="code"
-                    .errorMessages=${errors?.clientId}
+                    .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
                 <ak-hidden-text-input
                     name="clientSecret"
                     autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    value="${provider.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     input-hint="code"
                     ?hidden=${!showClientSecret}
                 >
@@ -226,7 +209,7 @@ export function renderForm(
                     name="redirectUris"
                 >
                     <ak-array-input
-                        .items=${provider?.redirectUris ?? []}
+                        .items=${provider.redirectUris ?? []}
                         .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri
@@ -249,8 +232,8 @@ export function renderForm(
                     value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
                     placeholder="https://..."
-                    .help=${logoutUriHelpMessages.map(
-                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    .help=${msg(
+                        "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
                     )}
                     @input=${(ev: Event) => {
                         const target = ev.target as HTMLInputElement;
@@ -262,10 +245,13 @@ export function renderForm(
                     ? html`<ak-radio-input
                           label=${msg("Logout Method")}
                           name="logoutMethod"
-                          .value=${provider?.logoutMethod ||
+                          .value=${provider.logoutMethod ||
                           OAuth2ProviderLogoutMethodEnum.Backchannel}
                           required
                           .options=${logoutMethodOptions}
+                          .help=${msg(
+                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                          )}
                       ></ak-radio-input>`
                     : html``}
 
@@ -274,7 +260,7 @@ export function renderForm(
                     <ak-crypto-certificate-search
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
-                        certificate=${ifPresent(provider?.signingKey)}
+                        certificate=${ifPresent(provider.signingKey)}
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
@@ -284,7 +270,7 @@ export function renderForm(
                     <ak-crypto-certificate-search
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
-                        certificate=${ifPresent(provider?.encryptionKey)}
+                        certificate=${ifPresent(provider.encryptionKey)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
                 </ak-form-element-horizontal>
@@ -301,7 +287,7 @@ export function renderForm(
                         label=${msg("Authentication flow")}
                         placeholder=${msg("Select an authentication flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider?.authenticationFlow}
+                        .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -318,7 +304,7 @@ export function renderForm(
                         label=${msg("Invalidation flow")}
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${provider?.invalidationFlow}
+                        .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required
                     ></ak-flow-search>
@@ -336,7 +322,7 @@ export function renderForm(
                     label=${msg("Access code validity")}
                     input-hint="code"
                     required
-                    value="${provider?.accessCodeValidity ?? "minutes=1"}"
+                    value="${provider.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
                             ${msg("Configure how long access codes are valid for.")}
                         </p>
@@ -346,7 +332,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
-                    value="${provider?.accessTokenValidity ?? "minutes=5"}"
+                    value="${provider.accessTokenValidity ?? "minutes=5"}"
                     input-hint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
@@ -359,7 +345,7 @@ export function renderForm(
                 <ak-text-input
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
-                    value="${provider?.refreshTokenValidity ?? "days=30"}"
+                    value="${provider.refreshTokenValidity ?? "days=30"}"
                     input-hint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
@@ -385,7 +371,7 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
-                        .selector=${propertyMappingsSelector(provider?.propertyMappings)}
+                        .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available Scopes")}
                         selected-label=${msg("Selected Scopes")}
                     ></ak-dual-select-dynamic-selected>
@@ -401,7 +387,7 @@ export function renderForm(
                     label=${msg("Subject mode")}
                     required
                     .options=${subjectModeOptions}
-                    .value=${provider?.subMode}
+                    .value=${provider.subMode}
                     help=${msg(
                         "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
                     )}
@@ -410,7 +396,7 @@ export function renderForm(
                 <ak-switch-input
                     name="includeClaimsInIdToken"
                     label=${msg("Include claims in id_token")}
-                    ?checked=${provider?.includeClaimsInIdToken ?? true}
+                    ?checked=${provider.includeClaimsInIdToken ?? true}
                     help=${msg(
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}
@@ -420,7 +406,7 @@ export function renderForm(
                     label=${msg("Issuer mode")}
                     required
                     .options=${issuerModeOptions}
-                    .value=${provider?.issuerMode}
+                    .value=${provider.issuerMode}
                     help=${msg("Configure how the issuer field of the ID Token should be filled.")}
                 >
                 </ak-radio-input>
@@ -435,7 +421,7 @@ export function renderForm(
                 >
                     <ak-dual-select-dynamic-selected
                         .provider=${oauth2SourcesProvider}
-                        .selector=${oauth2SourcesSelector(provider?.jwtFederationSources)}
+                        .selector=${oauth2SourcesSelector(provider.jwtFederationSources)}
                         available-label=${msg("Available Sources")}
                         selected-label=${msg("Selected Sources")}
                     ></ak-dual-select-dynamic-selected>
@@ -451,7 +437,7 @@ export function renderForm(
                 >
                     <ak-dual-select-dynamic-selected
                         .provider=${oauth2ProvidersProvider}
-                        .selector=${oauth2ProvidersSelector(provider?.jwtFederationProviders)}
+                        .selector=${oauth2ProvidersSelector(provider.jwtFederationProviders)}
                         available-label=${msg("Available Providers")}
                         selected-label=${msg("Selected Providers")}
                     ></ak-dual-select-dynamic-selected>

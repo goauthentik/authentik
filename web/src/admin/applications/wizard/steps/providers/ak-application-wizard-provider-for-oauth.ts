@@ -44,22 +44,21 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
     }
 
     renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
-        // Initialize showLogoutMethod based on existing provider
-        if (provider?.logoutUri && !this.showLogoutMethod) {
-            this.showLogoutMethod = true;
-        }
-
+        const showClientSecretCallback = (show: boolean) => {
+            this.showClientSecret = show;
+        };
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors.provider ?? {}, {
+                ${renderForm({
+                    provider,
+                    errors,
                     showClientSecret: this.showClientSecret,
-                    showClientSecretCallback: (show: boolean) => {
-                        this.showClientSecret = show;
-                    },
+                    showClientSecretCallback,
                     showLogoutMethod: this.showLogoutMethod,
-                    showLogoutMethodCallback: (show: boolean) => {
-                        this.showLogoutMethod = show;
-                    },
+                    showLogoutMethodCallback,
                 })}
             </form>`;
     }

@@ -25,6 +25,8 @@ SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 SCOPE_OFFLINE_ACCESS = "offline_access"
 
+UI_LOCALES = "ui_locales"
+
 # https://www.iana.org/assignments/oauth-parameters/auth-parameters.xhtml#pkce-code-challenge-method
 PKCE_METHOD_PLAIN = "plain"
 PKCE_METHOD_S256 = "S256"

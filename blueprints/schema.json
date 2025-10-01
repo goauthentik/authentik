@@ -9308,6 +9308,7 @@
                 "logout_method": {
                     "type": "string",
                     "enum": [
+                        "",
                         "frontchannel_iframe",
                         "frontchannel_native",
                         "backchannel"

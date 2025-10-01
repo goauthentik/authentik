@@ -46,7 +46,7 @@ This configurations requires:
     - **Order**: `1`
 5. Click **Create** to save the prompt.
 
-:::note
+:::info
 You can optionally add other prompt fields such as `domain` (e.g. `connection_settings.domain`), which can be useful for Windows based RDP. There is also the option of adding a `Text (read-only)` type prompt field that includes explanatory text for the user (e.g. `please enter your RDP credentials`).
 :::
 
@@ -85,7 +85,7 @@ Depending on the configuration of the RDP server that's being connected to, it i
 4. Under **Advanced Settings** in the **Settings** box, enter `security: tls`
 5. Click **Update** to save the change.
 
-:::note
+:::info
 Other options for the connection security type are: `any`, `nla`, `nla-ext`, `vmconnect`, and `rdp`. For more information see the [Guacamole RDP Authentication and Security Documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#authentication-and-security).
 :::
 

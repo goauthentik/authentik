@@ -18,15 +18,16 @@ export class PointerFixture extends PageFixture {
     public static fixtureName = "Pointer";
 
     public click = (
-        name: string,
+        name: string | RegExp,
         optionsOrRole?: ARIAOptions | ARIARole,
         context: LocatorContext = this.page,
     ): Promise<void> => {
         if (typeof optionsOrRole === "string") {
-            return context.getByRole(optionsOrRole, { name }).click();
+            return context.getByRole(optionsOrRole, { name }).first().click();
         }
 
         const options = {
+            exact: typeof name === "string",
             ...optionsOrRole,
             name,
         };

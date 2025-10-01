@@ -26,6 +26,16 @@ const buttonStyles = [
         #spinner-button.working {
             pointer-events: none;
         }
+
+        .pf-c-button {
+            &.pf-m-primary.pf-m-success {
+                color: var(--pf-c-button--m-primary--Color) !important;
+            }
+
+            &.pf-m-secondary.pf-m-success {
+                color: var(--pf-c-button--m-secondary--Color) !important;
+            }
+        }
     `,
 ];
 

@@ -45,7 +45,6 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
             user=user,
             expires__gt=timezone.now(),
             expiring=True,
-            provider__sls_url__isnull=False,
             provider__logout_method=LogoutMethods.FRONTCHANNEL_IFRAME,
         )
         .exclude(provider__sls_url="")
@@ -107,15 +106,10 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
         if not any(
             binding.stage.view == IframeLogoutStageView for binding in executor.plan.bindings
         ):
-            LOGGER.debug("Injected stage from SAML============================")
             iframe_stage = in_memory_stage(IframeLogoutStageView)
             executor.plan.insert_stage(iframe_stage, index=1)
 
-    LOGGER.debug(
-        "Injected iframe stages via signal",
-        user=user,
-        total_saml_sessions=len(iframe_saml_sessions),
-    )
+        LOGGER.debug("saml iframe sessions gathered")
 
 
 @receiver(flow_pre_user_logout)
@@ -139,10 +133,9 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
             user=user,
             expires__gt=timezone.now(),
             expiring=True,
-            provider__sls_url__isnull=False,
             provider__logout_method=LogoutMethods.FRONTCHANNEL_NATIVE,
         )
-        .exclude(provider__logout_method=LogoutMethods.BACKCHANNEL)
+        .exclude(provider__sls_url="")
         .select_related("provider")
     )
 
@@ -206,12 +199,15 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
 def user_session_deleted_saml_logout(sender, instance: AuthenticatedSession, **_):
     """Send SAML backchannel logout requests when user session is deleted"""
 
-    backchannel_saml_sessions = SAMLSession.objects.filter(
-        session=instance,
-        provider__sls_url__isnull=False,
-        provider__logout_method=LogoutMethods.BACKCHANNEL,
-        provider__sls_binding=SAMLBindings.POST,
-    ).select_related("provider", "user")
+    backchannel_saml_sessions = (
+        SAMLSession.objects.filter(
+            session=instance,
+            provider__logout_method=LogoutMethods.BACKCHANNEL,
+            provider__sls_binding=SAMLBindings.POST,
+        )
+        .exclude(provider__sls_url="")
+        .select_related("provider", "user")
+    )
 
     for saml_session in backchannel_saml_sessions:
         LOGGER.info(
@@ -236,12 +232,15 @@ def user_deactivated_saml_logout(sender, instance: User, **kwargs):
     if instance.is_active:
         return
 
-    backchannel_saml_sessions = SAMLSession.objects.filter(
-        user=instance,
-        provider__sls_url__isnull=False,
-        provider__logout_method=LogoutMethods.BACKCHANNEL,
-        provider__sls_binding=SAMLBindings.POST,
-    ).select_related("provider")
+    backchannel_saml_sessions = (
+        SAMLSession.objects.filter(
+            user=instance,
+            provider__logout_method=LogoutMethods.BACKCHANNEL,
+            provider__sls_binding=SAMLBindings.POST,
+        )
+        .exclude(provider__sls_url="")
+        .select_related("provider")
+    )
 
     for saml_session in backchannel_saml_sessions:
         LOGGER.info(
