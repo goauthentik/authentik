@@ -108,7 +108,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
         return html`
-            <p><i class="${status.icon}" aria-hidden="true"></i>&nbsp;${this.renderValue()}</p>
+            <p><i class="${status.icon}" aria-hidden="true"></i>${this.renderValue()}</p>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
         `;
     }
@@ -121,7 +121,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      */
     private renderError(error: string): SlottedTemplateResult {
         return html`
-            <p><i aria-hidden="true" class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
+            <p><i aria-hidden="true" class="fa fa-times"></i>${msg("Failed to fetch")}</p>
             <p class="subtext">${error}</p>
         `;
     }

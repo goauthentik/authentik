@@ -40,7 +40,7 @@ import "#elements/cards/AggregatePromiseCard";
     },
     argTypes: {
         icon: { control: "text" },
-        header: { control: "text" },
+        label: { control: "text" },
         headerLink: { control: "text" },
         subtext: { control: "text" },
         leftJustified: { control: "boolean" },
@@ -64,7 +64,13 @@ export const DefaultStory: StoryObj = {
         subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
         leftJustified: false,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregatePromiseCard) => {
+    render: ({
+        icon,
+        label: header,
+        headerLink,
+        subtext,
+        leftJustified,
+    }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((resolve) => setTimeout(resolve, timeout, value));
 
@@ -99,7 +105,7 @@ export const PromiseRejected: StoryObj = {
     },
     render: ({
         icon,
-        header,
+        label: header,
         headerLink,
         subtext,
         leftJustified,

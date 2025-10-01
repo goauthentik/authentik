@@ -4,17 +4,16 @@ import { AKElement } from "#elements/Base";
 
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IAggregateCard {
-    icon?: string;
-    header?: string;
-    headerLink?: string;
-    subtext?: string;
+    icon?: string | null;
+    label?: string | null;
+    headerLink?: string | null;
+    subtext?: string | null;
     leftJustified?: boolean;
 }
 
@@ -34,32 +33,32 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      *
      * @attr
      */
-    @property()
-    icon?: string;
+    @property({ type: String })
+    public icon: string | null = null;
 
     /**
      * The title of the card.
      *
      * @attr
      */
-    @property()
-    header?: string;
+    @property({ type: String })
+    public label: string | null = null;
 
     /**
      * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
      *
      * @attr
      */
-    @property()
-    headerLink?: string;
+    @property({ type: String })
+    public headerLink: string | null = null;
 
     /**
      * If this is non-empty, a small-text footer will be shown at the bottom of the card
      *
      * @attr
      */
-    @property()
-    subtext?: string;
+    @property({ type: String })
+    public subtext: string | null = null;
 
     /**
      * If this is set, the contents of the card will be left-justified; otherwise they will be
@@ -68,7 +67,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property({ type: Boolean, attribute: "left-justified" })
-    leftJustified = false;
+    public leftJustified = false;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -79,8 +78,14 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 height: 100%;
             }
             .pf-c-card__header {
-                flex-wrap: nowrap;
+                padding-inline: var(--pf-global--spacer--md);
             }
+            .pf-c-card__title {
+                display: flex;
+                align-items: center;
+                gap: var(--pf-global--spacer--md);
+            }
+
             .center-value {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;
@@ -100,6 +105,10 @@ export class AggregateCard extends AKElement implements IAggregateCard {
             .pf-c-card__footer {
                 padding-bottom: 0;
             }
+
+            .pf-c-card__footer {
+                min-height: 1ex;
+            }
         `,
     ];
 
@@ -117,30 +126,20 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         </a>`;
     }
 
-    renderHeader(): SlottedTemplateResult {
-        return this.header ?? nothing;
-    }
-
     render(): SlottedTemplateResult {
-        return html`<div
-            aria-label="${ifDefined(this.header)}"
-            role="region"
-            class="pf-c-card pf-c-card-aggregate"
-        >
-            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__title">
-                    ${this.icon
-                        ? html`<i aria-hidden="true" class="${this.icon}"></i>&nbsp;`
-                        : nothing}${this.renderHeader()}
-                </div>
-                ${this.renderHeaderLink()}
-            </div>
+        return html`<section class="pf-c-card pf-c-card-aggregate" aria-labelledby="card-title">
+            <header class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
+                <h1 class="pf-c-card__title" id="card-title">
+                    ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
+                    ${this.label || nothing} ${this.renderHeaderLink()}
+                </h1>
+            </header>
             <div class="pf-c-card__body ${this.leftJustified ? "" : "center-value"}">
                 ${this.renderInner()}
                 ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : nothing}
             </div>
-            <div class="pf-c-card__footer">&nbsp;</div>
-        </div>`;
+            <div class="pf-c-card__footer"></div>
+        </section>`;
     }
 }
 
