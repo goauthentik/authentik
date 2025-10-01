@@ -10,7 +10,7 @@ For example, if a user is concurrently logged into one OIDC provider and two SAM
 Check with your service provider to see if they support SAML Single Logout or OIDC front-channel/back-channel logout. Not all providers support these features.
 :::
 
-## How Single Logout Works in authentik
+## How Single Logout works in authentik
 
 When a user logs out or their session is terminated in authentik, the following process occurs:
 
