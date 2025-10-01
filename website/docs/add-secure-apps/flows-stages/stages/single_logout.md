@@ -33,7 +33,7 @@ authentik supports both front-channel (browser-based) and back-channel (server-t
 
 Front-channel logout sends logout requests through the user's browser. authentik supports two front-channel modes:
 
-**Iframe Mode (Default for OIDC)**
+#### iframe Mode (Default for OIDC)
 
 - Loads all provider logout URLs simultaneously in hidden iframes.
 - Provides fast, parallel logout across multiple providers.
@@ -43,7 +43,7 @@ Front-channel logout sends logout requests through the user's browser. authentik
 - Required by the OIDC front-channel logout specification
 - Most SAML providers also support iframe-based logout
 
-**Native Mode (SAML Only)**
+#### Native Mode (SAML Only)
 
 - Uses the active browser tab to chain redirects and POST requests sequentially.
 - Provides better compatibility with SAML providers that have iframe restrictions.
@@ -84,10 +84,10 @@ See the [SAML Single Logout documentation](../../providers/saml/saml_single_logo
 See the [OIDC Front-channel and Back-channel Logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
 1. Configure logout URLs:
-    - Front-channel logout URL - the provider's front-channel logout endpoint (typically end_session_endpoint)
-    - Back-channel logout URL - the provider's back-channel logout endpoint (typically backchannel_logout_uri)
-2. Enable the desired logout method(s) (front-channel, back-channel, or both)
-3. Optionally configure logout token signing for back-channel requests
+    - Front-channel logout URL - the provider's front-channel logout endpoint (typically end_session_endpoint).
+    - Back-channel logout URL - the provider's back-channel logout endpoint (typically backchannel_logout_uri).
+2. Enable the desired logout method; front-channel, back-channel, or both.
+3. Optionally configure logout token signing for back-channel requests.
 
 ## Session tracking
 
