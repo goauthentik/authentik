@@ -45,10 +45,10 @@ Front-channel logout sends logout requests through the user's browser. authentik
 
 **Native Mode (SAML Only)**
 
-- Uses the active browser tab to chain redirects and POST requests sequentially
-- Provides better compatibility with SAML providers that have iframe restrictions
-- Each provider redirects the user back to authentik before proceeding to the next provider
-- Not available for OIDC providers as the specification requires iframe support
+- Uses the active browser tab to chain redirects and POST requests sequentially.
+- Provides better compatibility with SAML providers that have iframe restrictions.
+- Each provider redirects the user back to authentik before proceeding to the next provider.
+- Not available for OIDC providers as the specification requires iframe support.
 
 :::tip
 Use native front-channel mode for SAML providers if you encounter iframe compatibility issues, such as Content Security Policy (CSP) restrictions or cookie handling problems.
