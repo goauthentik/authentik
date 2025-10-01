@@ -1,11 +1,12 @@
 import sys
 from argparse import Namespace
+from typing import Any
 
 from django.apps.registry import apps
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 from django.db import connections
 from django.utils.module_loading import import_string, module_has_submodule
-from dramatiq.__main__ import main
+from dramatiq.cli import main
 
 from django_dramatiq_postgres.conf import Conf
 
@@ -13,7 +14,7 @@ from django_dramatiq_postgres.conf import Conf
 class Command(BaseCommand):
     """Run worker"""
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument(
             "--pid-file",
             action="store",
@@ -31,11 +32,11 @@ class Command(BaseCommand):
 
     def handle(
         self,
-        pid_file,
-        watch,
-        verbosity,
-        **options,
-    ):
+        pid_file: str,
+        watch: bool,
+        verbosity: int,
+        **options: Any,
+    ) -> None:
         worker = Conf().worker
         setup, modules = self._discover_tasks_modules()
         args = Namespace(
@@ -70,7 +71,7 @@ class Command(BaseCommand):
         args.verbose = verbosity - 1
 
         connections.close_all()
-        sys.exit(main(args))
+        sys.exit(main(args))  # type: ignore[no-untyped-call]
 
     def _discover_tasks_modules(self) -> tuple[str, list[str]]:
         # Does not support a tasks directory
