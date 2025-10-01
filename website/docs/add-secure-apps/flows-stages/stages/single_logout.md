@@ -33,7 +33,7 @@ authentik supports both front-channel (browser-based) and back-channel (server-t
 
 Front-channel logout sends logout requests through the user's browser. authentik supports two front-channel modes:
 
-#### iframe Mode (Default for OIDC)
+#### iframe mode (default for OIDC)
 
 - Loads all provider logout URLs simultaneously in hidden iframes.
 - Provides fast, parallel logout across multiple providers.
