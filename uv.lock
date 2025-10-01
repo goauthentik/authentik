@@ -1988,7 +1988,7 @@ wheels = [
 
 [[package]]
 name = "microsoft-kiota-authentication-azure"
-version = "1.9.6"
+version = "1.9.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -1997,9 +1997,9 @@ dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/0b/e5b0537438002409bd7c4f7f6d8afbc949dca77a805ead73684b605a1e5f/microsoft_kiota_authentication_azure-1.9.6.tar.gz", hash = "sha256:93598ebd475735c5170001a9ac01ceaba7f78bf4039067567b6d79b142ca13b8", size = 4987, upload-time = "2025-08-21T12:47:45.115Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/9a/3deb5d951e55e059fbde93deaf1b3fdd1ec3a6e8bdac01280c640dac7b8c/microsoft_kiota_authentication_azure-1.9.7.tar.gz", hash = "sha256:1ecef94097ca8029e5b903bfef8dbbf47ba75bc1521907164a84b6617226696b", size = 4987, upload-time = "2025-09-09T13:53:52.47Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/f1/e3291441f437110d8ff0b97d21791b7955520e0fb3f43e136030b64d5247/microsoft_kiota_authentication_azure-1.9.6-py3-none-any.whl", hash = "sha256:5b34e989b97aa84d26fb8244254de0137df48dfbd567e869b8b5bf294638923b", size = 6907, upload-time = "2025-08-21T12:47:43.973Z" },
+    { url = "https://files.pythonhosted.org/packages/24/49/d12e7eabd6fc7039bfa301dfff26f0fced9bd164564b96b6d99fffcb020b/microsoft_kiota_authentication_azure-1.9.7-py3-none-any.whl", hash = "sha256:a2d776bef22d10be65df1ea9e8f1737e46981bd14cdb70e3fe4f4a066e92b139", size = 6908, upload-time = "2025-09-09T13:53:51.735Z" },
 ]
 
 [[package]]
