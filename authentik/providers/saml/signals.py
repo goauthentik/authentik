@@ -8,18 +8,114 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
-from authentik.flows.signals import flow_pre_user_logout
+from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.saml.models import LogoutMethods, SAMLBindings, SAMLSession
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.tasks import send_saml_logout_request
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
     PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS,
     PLAN_CONTEXT_SAML_RELAY_STATE,
 )
 from authentik.stages.user_logout.models import UserLogoutStage
+from authentik.stages.user_logout.stage import flow_pre_user_logout
 
 LOGGER = get_logger()
+
+
+@receiver(flow_pre_user_logout)
+def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs):
+    """Handle SAML iframe logout when user logs out via flow"""
+
+    # Only proceed if this is actually a UserLogoutStage
+    if not isinstance(executor.current_stage, UserLogoutStage):
+        return
+
+    if not user.is_authenticated:
+        return
+
+    auth_session = AuthenticatedSession.from_request(request, user)
+    if not auth_session:
+        return
+
+    iframe_saml_sessions = (
+        SAMLSession.objects.filter(
+            session=auth_session,
+            user=user,
+            expires__gt=timezone.now(),
+            expiring=True,
+            provider__sls_url__isnull=False,
+            provider__logout_method=LogoutMethods.FRONTCHANNEL_IFRAME,
+        )
+        .exclude(provider__sls_url="")
+        .select_related("provider")
+    )
+
+    if not iframe_saml_sessions.exists():
+        LOGGER.debug("No sessions requiring IFrame frontchannel logout")
+        return
+
+    saml_sessions = []
+
+    relay_state = request.build_absolute_uri(
+        reverse("authentik_core:if-flow", kwargs={"flow_slug": executor.flow.slug})
+    )
+
+    # Store return URL in plan context as fallback if SP doesn't echo relay_state
+    executor.plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+
+    for session in iframe_saml_sessions:
+        try:
+            processor = LogoutRequestProcessor(
+                provider=session.provider,
+                user=None,  # User context not needed for logout URL generation
+                destination=session.provider.sls_url,
+                name_id=session.name_id,
+                name_id_format=session.name_id_format,
+                session_index=session.session_index,
+                relay_state=relay_state,
+            )
+
+            if session.provider.sls_binding == SAMLBindings.POST:
+                form_data = processor.get_post_form_data()
+                logout_data = {
+                    "url": session.provider.sls_url,
+                    "saml_request": form_data["SAMLRequest"],
+                    "provider_name": session.provider.name,
+                    "binding": SAMLBindings.POST,
+                }
+            else:
+                logout_url = processor.get_redirect_url()
+                logout_data = {
+                    "url": logout_url,
+                    "provider_name": session.provider.name,
+                    "binding": SAMLBindings.REDIRECT,
+                }
+
+            saml_sessions.append(logout_data)
+        except (KeyError, AttributeError) as exc:
+            LOGGER.warning(
+                "Failed to generate SAML logout URL",
+                provider=session.provider.name,
+                exc=exc,
+            )
+
+    if saml_sessions:
+        executor.plan.context[PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS] = saml_sessions
+        # Stage already exists, don't reinject it
+        if not any(
+            binding.stage.view == IframeLogoutStageView for binding in executor.plan.bindings
+        ):
+            LOGGER.debug("Injected stage from SAML============================")
+            iframe_stage = in_memory_stage(IframeLogoutStageView)
+            executor.plan.insert_stage(iframe_stage, index=1)
+
+    LOGGER.debug(
+        "Injected iframe stages via signal",
+        user=user,
+        total_saml_sessions=len(iframe_saml_sessions),
+    )
 
 
 @receiver(flow_pre_user_logout)

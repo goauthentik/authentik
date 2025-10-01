@@ -9,7 +9,7 @@ from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.providers.logout import (
+from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
     IframeLogoutStageView,
 )

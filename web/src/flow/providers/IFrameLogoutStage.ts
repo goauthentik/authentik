@@ -237,8 +237,10 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     public override render(): TemplateResult {
-        // If no logout URLs, show loading (will auto-submit)
+        // If no logout URLs, stage may have gotten double injected
         if (!this.challenge.logoutUrls || this.challenge.logoutUrls.length === 0) {
+            const submitEvent = new SubmitEvent("submit");
+            this.submitForm(submitEvent);
             return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
         }
 
