@@ -178,6 +178,13 @@ export abstract class Table<T extends object>
                     }
                 }
             }
+
+            /**
+             * TODO: Remove after <dialog> modals are implemented.
+             */
+            .pf-c-dropdown__menu:has(ak-forms-modal) {
+                z-index: var(--pf-global--ZIndex--lg);
+            }
         `,
     ];
 

@@ -397,15 +397,29 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                   </ak-forms-modal>`
                 : nothing}
             <ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${msg("Create user")}</span>
+                <button
+                    class="pf-m-secondary pf-c-dropdown__toggle"
+                    type="button"
+                    id="add-user-toggle"
+                    aria-haspopup="true"
+                    aria-controls="add-user-menu"
+                    tabindex="0"
+                >
+                    <span class="pf-c-dropdown__toggle-text">${msg("Add new user")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul class="pf-c-dropdown__menu" hidden>
-                    <li>
+                <ul
+                    class="pf-c-dropdown__menu"
+                    hidden
+                    role="menu"
+                    id="add-user-menu"
+                    aria-labelledby="add-user-toggle"
+                    tabindex="-1"
+                >
+                    <li role="presentation">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Create")}</span>
-                            <span slot="header">${msg("Create User")}</span>
+                            <span slot="submit">${msg("Create User")}</span>
+                            <span slot="header">${msg("New User")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">
@@ -416,18 +430,18 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                   `
                                 : nothing}
                             <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
-                            <a slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("Create user")}
+                            <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
+                                ${msg("New user...")}
                             </a>
                         </ak-forms-modal>
                     </li>
-                    <li>
+                    <li role="presentation">
                         <ak-forms-modal
                             .closeAfterSuccessfulSubmit=${false}
                             .cancelText=${msg("Close")}
                         >
-                            <span slot="submit">${msg("Create")}</span>
-                            <span slot="header">${msg("Create Service account")}</span>
+                            <span slot="submit">${msg("Create Service Account")}</span>
+                            <span slot="header">${msg("New Service Account")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">
@@ -439,8 +453,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                 : nothing}
                             <ak-user-service-account-form .group=${this.targetGroup} slot="form">
                             </ak-user-service-account-form>
-                            <a slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("Create Service account")}
+                            <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
+                                ${msg("New service account...")}
                             </a>
                         </ak-forms-modal>
                     </li>
