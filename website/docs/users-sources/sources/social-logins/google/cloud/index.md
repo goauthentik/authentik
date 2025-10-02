@@ -31,11 +31,11 @@ To integrate Google with authentik you will need to create a new project, and OA
 5. Select your project from the drop down at the top.
 6. Click the **Credentials** menu icon on the left which looks like a key.
 
-![](./googledeveloper3.png)
+![](./googledeveloper2.png)
 
 7. On the right side, click on **Configure Consent Screen**.
 
-![](./googledeveloper4.png)
+![](./googledeveloper3.png)
 
 8. Set the following required fields:
     - **User Type**: If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_.
@@ -53,7 +53,7 @@ To integrate Google with authentik you will need to create a new project, and OA
     - **Name**: Provide a name
     - **Authorized redirect URIs**: `https://authentik.company/source/oauth/callback/google/`
 
-![](./googledeveloper6.png)
+![](./googledeveloper4.png)
 
 15. Click **Create**.
 16. Take note of the **Client ID** and **Client Secret**. These values will be required in the next section.
