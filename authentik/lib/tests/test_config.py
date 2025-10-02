@@ -24,9 +24,6 @@ class TestConfig(TestCase):
 
     check_deprecations_env_vars = {
         ENV_PREFIX + "_WORKER__CONCURRENCY": "2",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT": "124s",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS": "32m",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
     }
 
     @mock.patch.dict(environ, {ENV_PREFIX + "_test__test": "bar"})
@@ -142,7 +139,7 @@ class TestConfig(TestCase):
 
     def test_attr_json_encoder(self):
         """Test AttrEncoder"""
-        test_attr = Attr("foo", Attr.Source.ENV, "AUTHENTIK_REDIS__USERNAME")
+        test_attr = Attr("foo", Attr.Source.ENV, "AUTHENTIK_POSTGRESQL__USERNAME")
         json_attr = dumps(test_attr, indent=4, cls=AttrEncoder)
         self.assertEqual(json_attr, '"foo"')
 
@@ -175,13 +172,7 @@ class TestConfig(TestCase):
         config.update_from_env()
         config.check_deprecations()
         self.assertEqual(config.get("worker.concurrency", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
         self.assertEqual(config.get("worker.threads"), 2)
-        self.assertEqual(config.get("cache.timeout"), "124s")
-        self.assertEqual(config.get("cache.timeout_flows"), "32m")
-        self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
 
     def test_get_keys(self):
         """Test get_keys"""
