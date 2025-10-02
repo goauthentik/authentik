@@ -9,7 +9,7 @@ import {
     ProvidersApi,
     SAMLProvider,
     SAMLProviderLogoutMethodEnum,
-    SpBindingEnum,
+    SAMLBindingsEnum,
 } from "@goauthentik/api";
 
 import { customElement, state } from "lit/decorators.js";
@@ -34,7 +34,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         });
         this.hasSigningKp = !!provider.signingKp;
         this.hasSlsUrl = !!provider.slsUrl;
-        this.hasPostBinding = provider.slsBinding === SpBindingEnum.Post;
+        this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod =
             provider.logoutMethod ?? SAMLProviderLogoutMethodEnum.FrontchannelIframe;
         return provider;
@@ -43,7 +43,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     async send(data: SAMLProvider): Promise<SAMLProvider> {
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
-            data.slsBinding === SpBindingEnum.Redirect &&
+            data.slsBinding === SAMLBindingsEnum.Redirect &&
             data.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
         ) {
             data.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
@@ -77,11 +77,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
         const setSlsBinding = (ev: Event) => {
             const target = ev.target as HTMLInputElement;
-            this.hasPostBinding = target.value === SpBindingEnum.Post;
+            this.hasPostBinding = target.value === SAMLBindingsEnum.Post;
 
             // If switching to redirect binding, change logout method from backchannel if needed
             if (
-                target.value === SpBindingEnum.Redirect &&
+                target.value === SAMLBindingsEnum.Redirect &&
                 this.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
             ) {
                 this.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;

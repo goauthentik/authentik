@@ -6,7 +6,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { SAMLProvider, SAMLProviderLogoutMethodEnum, SpBindingEnum } from "@goauthentik/api";
+import { SAMLProvider, SAMLProviderLogoutMethodEnum, SAMLBindingsEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -32,7 +32,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         const values = super.formValues;
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
-            values.slsBinding === SpBindingEnum.Redirect &&
+            values.slsBinding === SAMLBindingsEnum.Redirect &&
             values.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
         ) {
             return {
@@ -60,11 +60,11 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
 
         const setSlsBinding = (ev: Event) => {
             const target = ev.target as HTMLInputElement;
-            this.hasPostBinding = target.value === SpBindingEnum.Post;
+            this.hasPostBinding = target.value === SAMLBindingsEnum.Post;
 
             // If switching to redirect binding, change logout method from backchannel if needed
             if (
-                target.value === SpBindingEnum.Redirect &&
+                target.value === SAMLBindingsEnum.Redirect &&
                 this.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
             ) {
                 this.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;

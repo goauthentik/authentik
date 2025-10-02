@@ -173,6 +173,7 @@ SPECTACULAR_SETTINGS = {
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",

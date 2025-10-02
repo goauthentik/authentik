@@ -5,7 +5,7 @@ import { BaseStage } from "#flow/stages/base";
 import {
     FlowChallengeResponseRequest,
     IframeLogoutChallenge,
-    SpBindingEnum,
+    SAMLBindingsEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -167,7 +167,7 @@ export class IFrameLogoutStage extends BaseStage<
         });
 
         // Handle based on binding type
-        if (logoutData.binding === SpBindingEnum.Redirect || !logoutData.saml_request) {
+        if (logoutData.binding === SAMLBindingsEnum.Redirect || !logoutData.saml_request) {
             // For REDIRECT binding, just navigate the iframe to the URL
             iframe.src = logoutData.url;
         } else {

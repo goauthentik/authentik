@@ -22,7 +22,7 @@ import {
     SAMLPropertyMapping,
     SAMLProvider,
     SAMLProviderLogoutMethodEnum,
-    SpBindingEnum,
+    SAMLBindingsEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -30,15 +30,15 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const serviceProviderBindingOptions: RadioOption<SpBindingEnum>[] = [
+const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Redirect"),
-        value: SpBindingEnum.Redirect,
+        value: SAMLBindingsEnum.Redirect,
         default: true,
     },
     {
         label: msg("Post"),
-        value: SpBindingEnum.Post,
+        value: SAMLBindingsEnum.Post,
     },
 ];
 

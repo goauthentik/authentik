@@ -52609,13 +52609,13 @@ components:
           type: boolean
         sp_binding:
           allOf:
-          - $ref: '#/components/schemas/SpBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
         sls_binding:
           allOf:
-          - $ref: '#/components/schemas/SlsBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           description: This determines how authentik sends the logout response back
             to the Service Provider.
         logout_method:
@@ -55495,6 +55495,11 @@ components:
           maxLength: 150
       required:
       - name
+    SAMLBindingsEnum:
+      enum:
+      - redirect
+      - post
+      type: string
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -55734,13 +55739,13 @@ components:
           type: boolean
         sp_binding:
           allOf:
-          - $ref: '#/components/schemas/SpBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
         sls_binding:
           allOf:
-          - $ref: '#/components/schemas/SlsBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           description: This determines how authentik sends the logout response back
             to the Service Provider.
         logout_method:
@@ -55934,13 +55939,13 @@ components:
           type: boolean
         sp_binding:
           allOf:
-          - $ref: '#/components/schemas/SpBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
         sls_binding:
           allOf:
-          - $ref: '#/components/schemas/SlsBindingEnum'
+          - $ref: '#/components/schemas/SAMLBindingsEnum'
           description: This determines how authentik sends the logout response back
             to the Service Provider.
         logout_method:
@@ -57473,11 +57478,6 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
-    SlsBindingEnum:
-      enum:
-      - redirect
-      - post
-      type: string
     Source:
       type: object
       description: Source Serializer
@@ -57729,11 +57729,6 @@ components:
       - request_token_url
       - urls_customizable
       - verbose_name
-    SpBindingEnum:
-      enum:
-      - redirect
-      - post
-      type: string
     Stage:
       type: object
       description: Stage Serializer
