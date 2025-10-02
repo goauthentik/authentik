@@ -17,6 +17,9 @@ export type ClickByRole = (
 export class PointerFixture extends PageFixture {
     public static fixtureName = "Pointer";
 
+    /**
+     * A high-level click function that simplifies clicking on buttons and links.
+     */
     public click = (
         name: string | RegExp,
         optionsOrRole?: ARIAOptions | ARIARole,

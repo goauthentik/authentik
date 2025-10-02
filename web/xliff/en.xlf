@@ -8226,6 +8226,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s441f155311f1748a">
   <source>User paths</source>
 </trans-unit>
+<trans-unit id="sd5d9adfcbd8abdfe">
+  <source>Bot username</source>
+</trans-unit>
+<trans-unit id="saf5316edc3679fef">
+  <source>Bot token</source>
+</trans-unit>
+<trans-unit id="s64b935d223a99731">
+  <source>Request access to send messages from your bot</source>
+</trans-unit>
+<trans-unit id="s500a041b1fab7aac">
+  <source>Telegram Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s463491b90193d86b">
+  <source>Telegram bot</source>
+</trans-unit>
+<trans-unit id="s4014853299a8bb20">
+  <source>Update Telegram Source</source>
+</trans-unit>
+<trans-unit id="sf376ae7e9ef41c1a">
+  <source>Authenticating with Telegram...</source>
+</trans-unit>
+<trans-unit id="s76ea993fdc8503d8">
+  <source>Click the button below to start.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
