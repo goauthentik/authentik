@@ -82,13 +82,6 @@ Enabling signed responses indicates that the entire SAML authentication response
 9. Next, we configure which user attributes Google should send to authentik, and map them to the attributes that authentik expects. Set the following field:
     - **Basic Information › Primary Email**: `email`
 
-| Google Directory attributes       | App attributes |
-| --------------------------------- | -------------- |
-| Basic Information › Primary Email | `email`        |
-| Basic Information › Primary Email | `email`        |
-| Basic Information › Primary Email | `email`        |
-| Basic Information › Primary Email | `email`        |
-
 ### Enable the application for your organization
 
 10. Finally, we complete the application creation process by saving the configuration.
