@@ -13,10 +13,10 @@ The following placeholders are used in this guide:
 
 ## Facebook configuration
 
-To integrate authentik with Facebook, you will need to register with Meta for Developers and create a developers account.
+To integrate Facebook with authentik you will need to create an OAuth application in the Meta for Developers Dashboard.
 
 1. Log in to the [Meta for Developers Dashboard](https://developers.facebook.com/) with your Facebook account.
-2. After logging in, [register as a developer](https://developers.facebook.com/async/registration). Refer to the [Facebook documentation](https://developers.facebook.com/docs/development) for more information.
+2. After logging in, [register as a developer](https://developers.facebook.com/async/registration). Refer to the [Facebook development documentation](https://developers.facebook.com/docs/development) for more information.
 
 After registering, you need to create an app so that Facebook generates a unique ID for authentik.
 

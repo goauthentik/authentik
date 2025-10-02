@@ -13,6 +13,8 @@ The following placeholders are used in this guide:
 
 ## Discord configuration
 
+To integrate Discord with authentik you will need to create an OAuth application in the Discord Developer Portal.
+
 1. Log in to the [Discord Developer Portal](https://discord.com/developers/applications).
 2. Navigate to **Applications** and click **New Application**.
 3. Provide a name for the application, accept the terms, and then click **Create**.
@@ -46,9 +48,9 @@ For instructions on how to display the new source on the authentik login page, r
 Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings** > **Scopes**.:::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**.
-3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, select **Expression Policy** and then **Next**.
+4. Provide a name for the policy and set the following expression:
 
 ```python
 # To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
@@ -82,11 +84,11 @@ if not user_matched:
 return user_matched
 ```
 
-6. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
-7. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-9. Select the policy that you previously created and click **Create**.
-10. Optionally, repeat the process for any other flows that you want the policy applied to.
+5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
+6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+8. Select the policy that you previously created and click **Create**.
+9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
 ### Checking for membership of a Discord Guild role
 
@@ -97,9 +99,9 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 To check if the user is member of a Discord Guild role, you can use the following policy on your flows:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**.
-3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, select **Expression Policy** and then **Next**.
+4. Provide a name for the policy and set the following expression:
 
 ```python
 # To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
@@ -150,11 +152,11 @@ if not user_matched:
 return user_matched
 ```
 
-6. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
-7. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-9. Select the policy that you previously created and click **Create**.
-10. Optionally, repeat the process for any other flows that you want the policy applied to.
+5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
+6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+8. Select the policy that you previously created and click **Create**.
+9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
 ### Syncing Discord roles to authentik groups
 
@@ -179,9 +181,9 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 The following policy will sync Discord roles when a user enrolls.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**.
-3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, select **Expression Policy** and then **Next**.
+4. Provide a name for the policy and set the following expression:
 
 ```python
 from authentik.core.models import Group
@@ -245,10 +247,10 @@ return True
 
 ```
 
-6. Click **Finish**. You can now bind this policy to the chosen enrollment flow of the Discord OAuth source.
-7. Navigate to **Flows and Stages** > **Flows** and click the name of the enrollment flow in question.
-8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-9. Select the policy that you previously created and click **Create**.
+5. Click **Finish**. You can now bind this policy to the chosen enrollment flow of the Discord OAuth source.
+6. Navigate to **Flows and Stages** > **Flows** and click the name of the enrollment flow in question.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+8. Select the policy that you previously created and click **Create**.
 
 #### Sync on authentication
 
@@ -259,9 +261,9 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 The following policy will sync Discord roles when a user logs in.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**.
-3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, select **Expression Policy** and then **Next**.
+4. Provide a name for the policy and set the following expression:
 
 ```python
 from authentik.core.models import Group
@@ -332,10 +334,10 @@ return True
 
 ```
 
-6. Click **Finish**. You can now bind this policy to the chosen authentication flow of the Discord OAuth source.
-7. Navigate to **Flows and Stages** > **Flows** and click the name of the authentication flow in question.
-8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-9. Select the policy that you previously created and click **Create**.
+5. Click **Finish**. You can now bind this policy to the chosen authentication flow of the Discord OAuth source.
+6. Navigate to **Flows and Stages** > **Flows** and click the name of the authentication flow in question.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+8. Select the policy that you previously created and click **Create**.
 
 ### Store OAuth info in attribute and create avatar attribute from Discord avatar
 
@@ -350,7 +352,7 @@ In order to use the created attribute in authentik you will have to set authenti
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**.
 3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
-4. Provide a name for the mapping and set the following expression:
+4. Provide a name for the policy and set the following expression:
 
 ```python
 import base64
@@ -404,8 +406,8 @@ return True
 
 ```
 
-6. Click **Finish**. You can now bind this policy to the chosen enrollment and authentication flow of the Discord OAuth source.
-7. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-9. Select the policy that you previously created and click **Create**.
-10. Repeat the process for any other flows that you want the policy applied to.
+5. Click **Finish**. You can now bind this policy to the chosen enrollment and authentication flow of the Discord OAuth source.
+6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+8. Select the policy that you previously created and click **Create**.
+9. Repeat the process for any other flows that you want the policy applied to.
