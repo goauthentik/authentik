@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.models import SAMLLogoutMethods, SAMLBindings, SAMLSession
+from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLSession
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.tasks import send_saml_logout_request
