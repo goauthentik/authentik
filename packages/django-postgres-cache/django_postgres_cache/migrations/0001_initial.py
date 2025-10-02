@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="CacheEntry",
             fields=[
-                ("cache_key", models.TextField(primary_key=True, serialize=False, unique=True)),
+                ("cache_key", models.TextField(primary_key=True, serialize=False)),
                 ("value", models.TextField()),
                 ("expires", models.DateTimeField(db_index=True)),
             ],
