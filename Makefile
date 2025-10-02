@@ -193,6 +193,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 
+	cd ${PWD}/${GEN_API_TS} && npm i
 	cd ${PWD}/${GEN_API_TS} && npm link
 	cd ${PWD}/web && npm link @goauthentik/api
 
@@ -319,6 +320,9 @@ test-docker:
 ci--meta-debug:
 	python -V
 	node --version
+
+ci-mypy: ci--meta-debug
+	uv run mypy --strict $(PY_SOURCES)
 
 ci-black: ci--meta-debug
 	uv run black --check $(PY_SOURCES)

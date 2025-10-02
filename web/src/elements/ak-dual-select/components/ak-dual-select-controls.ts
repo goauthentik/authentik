@@ -105,7 +105,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                     @click=${() => this.dispatchCustomEvent(eventType)}
                     data-ouia-component-type="AK/Button"
                 >
-                    <i class="fa ${direction}"></i>
+                    <i class="fa ${direction}" aria-hidden="true"></i>
                 </button>
             </div>
         </div>`;

@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import gettempdir
 
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 from authentik.lib.config import CONFIG
 
@@ -62,3 +63,13 @@ def get_env() -> str:
     if "AK_APPLIANCE" in os.environ:
         return os.environ["AK_APPLIANCE"]
     return "custom"
+
+
+def ConditionalInheritance(path: str):
+    """Conditionally inherit from a class, intended for things like authentik.enterprise,
+    without which authentik should still be able to run"""
+    try:
+        cls = import_string(path)
+        return cls
+    except ModuleNotFoundError:
+        return object

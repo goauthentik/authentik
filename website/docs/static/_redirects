@@ -6,13 +6,15 @@
 #       i.e. The first rule that matches the URL will take precedence.
 
 #region API
-/api                                                        https://api.goauthentik.io  301!
-/docs/api                                                   https://api.goauthentik.io  301!
-/docs/developer-docs/api/                                   https://api.goauthentik.io  301!
-/api/*                                                      https://api.goauthentik.io/:splat  301!
-/docs/api/*                                                 https://api.goauthentik.io/:splat  301!
-/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat  301!
-/developer-docs/api/*                                       https://api.goauthentik.io/:splat  301!
+/schema.yml                                                 https://api.goauthentik.io/schema.yml 301!
+/schema.yaml                                                https://api.goauthentik.io/schema.yml 301!
+/api                                                        https://api.goauthentik.io 301!
+/docs/api                                                   https://api.goauthentik.io 301!
+/docs/developer-docs/api/                                   https://api.goauthentik.io 301!
+/api/*                                                      https://api.goauthentik.io/:splat 301!
+/docs/api/*                                                 https://api.goauthentik.io/:splat 301!
+/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat 301!
+/developer-docs/api/*                                       https://api.goauthentik.io/:splat 301!
 #endregion
 
 #region Applications

@@ -3024,6 +3024,166 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_sources_telegram.grouptelegramsourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_telegram.telegramsource"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_telegram.telegramsourcepropertymapping"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_telegram.usertelegramsourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_authenticator_duo.authenticatorduostage"
                         },
                         "id": {
@@ -3613,46 +3773,6 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_stages_consent.consentstage"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_stages_consent.userconsent"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.userconsent"
                         }
                     }
                 },
@@ -5311,6 +5431,22 @@
                             "authentik_sources_scim.view_scimsourcegroup",
                             "authentik_sources_scim.view_scimsourcepropertymapping",
                             "authentik_sources_scim.view_scimsourceuser",
+                            "authentik_sources_telegram.add_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.add_telegramsource",
+                            "authentik_sources_telegram.add_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.add_usertelegramsourceconnection",
+                            "authentik_sources_telegram.change_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.change_telegramsource",
+                            "authentik_sources_telegram.change_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.change_usertelegramsourceconnection",
+                            "authentik_sources_telegram.delete_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.delete_telegramsource",
+                            "authentik_sources_telegram.delete_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.delete_usertelegramsourceconnection",
+                            "authentik_sources_telegram.view_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.view_telegramsource",
+                            "authentik_sources_telegram.view_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.view_usertelegramsourceconnection",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -6118,11 +6254,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "credentials": {
@@ -7380,6 +7512,7 @@
                         "authentik.sources.plex",
                         "authentik.sources.saml",
                         "authentik.sources.scim",
+                        "authentik.sources.telegram",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
                         "authentik.stages.authenticator_email",
@@ -7409,6 +7542,8 @@
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
+                        "authentik.enterprise.providers.radius",
+                        "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
@@ -7488,6 +7623,10 @@
                         "authentik_sources_saml.groupsamlsourceconnection",
                         "authentik_sources_scim.scimsource",
                         "authentik_sources_scim.scimsourcepropertymapping",
+                        "authentik_sources_telegram.telegramsource",
+                        "authentik_sources_telegram.telegramsourcepropertymapping",
+                        "authentik_sources_telegram.usertelegramsourceconnection",
+                        "authentik_sources_telegram.grouptelegramsourceconnection",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
                         "authentik_stages_authenticator_email.authenticatoremailstage",
@@ -7503,7 +7642,6 @@
                         "authentik_stages_authenticator_webauthn.webauthndevice",
                         "authentik_stages_captcha.captchastage",
                         "authentik_stages_consent.consentstage",
-                        "authentik_stages_consent.userconsent",
                         "authentik_stages_deny.denystage",
                         "authentik_stages_dummy.dummystage",
                         "authentik_stages_email.emailstage",
@@ -8439,6 +8577,12 @@
                     "title": "Refresh token validity",
                     "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 },
+                "refresh_token_threshold": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh token threshold",
+                    "description": "When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3)."
+                },
                 "include_claims_in_id_token": {
                     "type": "boolean",
                     "title": "Include claims in id_token",
@@ -9022,6 +9166,11 @@
                     "type": "boolean",
                     "title": "MFA Support",
                     "description": "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon."
+                },
+                "certificate": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Certificate"
                 }
             },
             "required": []
@@ -9439,16 +9588,35 @@
                 },
                 "token": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Token",
                     "description": "Authentication token"
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "token",
+                        "oauth"
+                    ],
+                    "title": "Auth mode"
+                },
+                "auth_oauth": {
+                    "type": "integer",
+                    "title": "Auth oauth",
+                    "description": "OAuth Source used for authentication"
+                },
+                "auth_oauth_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Auth oauth params",
+                    "description": "Additional OAuth parameters, such as grant_type"
                 },
                 "compatibility_mode": {
                     "type": "string",
                     "enum": [
                         "default",
                         "aws",
-                        "slack"
+                        "slack",
+                        "sfdc"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -9989,6 +10157,22 @@
                             "authentik_sources_scim.view_scimsourcegroup",
                             "authentik_sources_scim.view_scimsourcepropertymapping",
                             "authentik_sources_scim.view_scimsourceuser",
+                            "authentik_sources_telegram.add_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.add_telegramsource",
+                            "authentik_sources_telegram.add_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.add_usertelegramsourceconnection",
+                            "authentik_sources_telegram.change_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.change_telegramsource",
+                            "authentik_sources_telegram.change_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.change_usertelegramsourceconnection",
+                            "authentik_sources_telegram.delete_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.delete_telegramsource",
+                            "authentik_sources_telegram.delete_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.delete_usertelegramsourceconnection",
+                            "authentik_sources_telegram.view_grouptelegramsourceconnection",
+                            "authentik_sources_telegram.view_telegramsource",
+                            "authentik_sources_telegram.view_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.view_usertelegramsourceconnection",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -11234,6 +11418,11 @@
                     ],
                     "title": "Access token"
                 },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
@@ -11810,6 +11999,14 @@
                     "format": "uuid",
                     "title": "Encryption Keypair",
                     "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "signed_assertion": {
+                    "type": "boolean",
+                    "title": "Signed assertion"
+                },
+                "signed_response": {
+                    "type": "boolean",
+                    "title": "Signed response"
                 }
             },
             "required": []
@@ -12068,6 +12265,289 @@
                 }
             }
         },
+        "model_authentik_sources_telegram.grouptelegramsourceconnection": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.grouptelegramsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_grouptelegramsourceconnection",
+                            "change_grouptelegramsourceconnection",
+                            "delete_grouptelegramsourceconnection",
+                            "view_grouptelegramsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_telegram.telegramsource": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "Source's display Name."
+                },
+                "slug": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "title": "Slug",
+                    "description": "Internal source name, used in URLs."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow to use when authenticating existing users."
+                },
+                "enrollment_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Enrollment flow",
+                    "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "user_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "email_link",
+                        "email_deny",
+                        "username_link",
+                        "username_deny"
+                    ],
+                    "title": "User matching mode",
+                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                },
+                "user_path_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User path template"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                },
+                "bot_username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Bot username",
+                    "description": "Telegram bot username"
+                },
+                "bot_token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Bot token",
+                    "description": "Telegram bot token"
+                },
+                "request_message_access": {
+                    "type": "boolean",
+                    "title": "Request message access",
+                    "description": "Request access to send messages from your bot."
+                },
+                "pre_authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Pre authentication flow",
+                    "description": "Flow used before authentication."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.telegramsource_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_telegramsource",
+                            "change_telegramsource",
+                            "delete_telegramsource",
+                            "view_telegramsource"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_telegram.telegramsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.telegramsourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_telegramsourcepropertymapping",
+                            "change_telegramsourcepropertymapping",
+                            "delete_telegramsourcepropertymapping",
+                            "view_telegramsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_telegram.usertelegramsourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.usertelegramsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_usertelegramsourceconnection",
+                            "change_usertelegramsourceconnection",
+                            "delete_usertelegramsourceconnection",
+                            "view_usertelegramsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_duo.authenticatorduostage": {
             "type": "object",
             "properties": {
@@ -12165,11 +12645,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "client_id": {
@@ -12360,11 +12836,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "use_global_settings": {
@@ -12593,11 +13065,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "provider": {
@@ -12810,11 +13278,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "token_count": {
@@ -12994,11 +13458,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "digits": {
@@ -13353,11 +13813,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "user_verification": {
@@ -13752,187 +14208,6 @@
                             "change_consentstage",
                             "delete_consentstage",
                             "view_consentstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_stages_consent.userconsent": {
-            "type": "object",
-            "properties": {
-                "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "expiring": {
-                    "type": "boolean",
-                    "title": "Expiring"
-                },
-                "user": {
-                    "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "format": "uuid"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
-                },
-                "application": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name",
-                            "description": "Application's display Name."
-                        },
-                        "slug": {
-                            "type": "string",
-                            "maxLength": 50,
-                            "minLength": 1,
-                            "pattern": "^[-a-zA-Z0-9_]+$",
-                            "title": "Slug",
-                            "description": "Internal application name, used in URLs."
-                        },
-                        "provider": {
-                            "type": "integer",
-                            "title": "Provider"
-                        },
-                        "backchannel_providers": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Backchannel providers"
-                        },
-                        "open_in_new_tab": {
-                            "type": "boolean",
-                            "title": "Open in new tab",
-                            "description": "Open launch URL in a new browser tab or window."
-                        },
-                        "meta_launch_url": {
-                            "type": "string",
-                            "title": "Meta launch url"
-                        },
-                        "meta_description": {
-                            "type": "string",
-                            "title": "Meta description"
-                        },
-                        "meta_publisher": {
-                            "type": "string",
-                            "title": "Meta publisher"
-                        },
-                        "policy_engine_mode": {
-                            "type": "string",
-                            "enum": [
-                                "all",
-                                "any"
-                            ],
-                            "title": "Policy engine mode"
-                        },
-                        "group": {
-                            "type": "string",
-                            "title": "Group"
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "slug"
-                    ],
-                    "title": "Application"
-                },
-                "permissions": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Permissions"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_consent.userconsent_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_userconsent",
-                            "change_userconsent",
-                            "delete_userconsent",
-                            "view_userconsent"
                         ]
                     },
                     "user": {

@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.plesk.com
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Changes other than those mentioned in this guide can cause issues accessing your application.
 :::
 

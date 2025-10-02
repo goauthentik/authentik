@@ -239,32 +239,33 @@ class AssertionProcessor:
                 ).from_http(self.http_request)
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
                 return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
             return name_id
-        if name_id.attrib["Format"] in [
+        if self.auth_n_request.name_id_policy in [
             SAML_NAME_ID_FORMAT_PERSISTENT,
             SAML_NAME_ID_FORMAT_UNSPECIFIED,
         ]:
             name_id.text = persistent
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get(
                 LDAP_DISTINGUISHED_NAME, persistent
             )
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_WINDOWS:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_WINDOWS:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get("upn", persistent)
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_TRANSIENT:
             # Use the hash of the user's session, which changes every session
             session_key: str = self.http_request.session.session_key
             name_id.text = sha256(session_key.encode()).hexdigest()
             return name_id
         raise UnsupportedNameIDFormat(
-            f"Assertion contains NameID with unsupported format {name_id.attrib['Format']}."
+            "Assertion contains NameID with unsupported "
+            f"format {self.auth_n_request.name_id_policy}."
         )
 
     def get_assertion_subject(self) -> Element:

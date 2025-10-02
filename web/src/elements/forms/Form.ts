@@ -374,7 +374,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 return response;
             })
             .catch(async (error: unknown) => {
-                if (error instanceof PreventFormSubmit && error.element) {
+                if (
+                    error instanceof PreventFormSubmit &&
+                    error.element instanceof HorizontalFormElement
+                ) {
                     error.element.errorMessages = [error.message];
                 }
 

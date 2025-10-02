@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `paperless.company` is the FQDN of the Paperless-ngx installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -81,6 +81,7 @@ environment:
         }
     PAPERLESS_AUTO_LOGIN=true
     PAPERLESS_AUTO_CREATE=true
+    PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
 ```
 
 Now restart your container:

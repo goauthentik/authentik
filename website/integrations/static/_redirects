@@ -9,3 +9,5 @@
 #region Integrations prefix
 /integrations/*                                                     /:splat 301!
 #endregion
+
+/networking/cloudflare-access                                       /security/cloudflare-access 301!

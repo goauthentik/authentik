@@ -59,13 +59,15 @@ class OAuth2Client(BaseOAuthClient):
         """Get client secret"""
         return self.source.consumer_secret
 
-    def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
+    def get_access_token_args(self, callback: str | None, code: str | None) -> dict[str, Any]:
         args = {
-            "redirect_uri": callback,
-            "code": code,
             "grant_type": "authorization_code",
         }
-        if SESSION_KEY_OAUTH_PKCE in self.request.session:
+        if callback:
+            args["redirect_uri"] = callback
+        if code:
+            args["code"] = code
+        if self.request and SESSION_KEY_OAUTH_PKCE in self.request.session:
             args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         if (
             self.source.source_type.authorization_code_auth_method

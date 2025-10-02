@@ -3,6 +3,7 @@ services:
     image: docker.io/library/postgres:${PSQL_TAG:-16}
     volumes:
       - db-data:/var/lib/postgresql/data
+    command: "-c log_statement=all"
     environment:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"

@@ -6,6 +6,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -20,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -55,9 +57,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    renderConnectionSettings(): SlottedTemplateResult {
         if (!this.showConnectionSettings) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
@@ -149,7 +151,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     renderForm(): TemplateResult {
-        return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
+        return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

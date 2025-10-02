@@ -103,6 +103,7 @@ TENANT_APPS = [
     "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.sources.scim",
+    "authentik.sources.telegram",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_email",
@@ -175,6 +176,7 @@ SPECTACULAR_SETTINGS = {
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -183,6 +185,8 @@ SPECTACULAR_SETTINGS = {
     ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
+        "authentik.api.schema.postprocess_schema_pagination",
+        "authentik.api.schema.postprocess_schema_remove_unused",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
 }
@@ -255,6 +259,7 @@ MIDDLEWARE = [
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
@@ -413,10 +418,13 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.MessagesMiddleware", {}),

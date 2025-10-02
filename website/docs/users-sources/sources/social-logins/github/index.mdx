@@ -44,7 +44,7 @@ Here is an example of a complete authentik Github OAuth Source
 
 Save, and you now have Github as a source.
 
-:::note
+:::info
 For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
 :::
 
@@ -58,7 +58,7 @@ Make sure to include `read:org` in the sources' _Scopes_ setting.
 
 ```python
 # Ensure flow is only run during oauth logins via Github
-if context["source"].provider_type != "github":
+if not isinstance(context['source'], OAuthSource) or context["source"].provider_type != "github":
     return True
 
 accepted_org = "foo"
@@ -99,6 +99,6 @@ If a user is not member of the chosen organisation, they will see this message
 
 ![](./github_org_membership.png)
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

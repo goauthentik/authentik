@@ -41,7 +41,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             this.hasSigningKp = !!target.selectedKeypair;
         };
 
-        return renderForm(this.instance ?? {}, [], setHasSigningKp, this.hasSigningKp);
+        return renderForm({
+            provider: this.instance,
+            setHasSigningKp,
+            hasSigningKp: this.hasSigningKp,
+        });
     }
 }
 

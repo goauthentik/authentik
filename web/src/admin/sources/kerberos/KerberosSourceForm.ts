@@ -31,7 +31,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -391,7 +391,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                                             ${msg("Currently set to:")} ${this.instance?.icon}
                                         </p>
                                     `
-                                  : html``}
+                                  : nothing}
                           </ak-form-element-horizontal>
                           ${this.instance?.icon
                               ? html`
@@ -419,7 +419,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                                         </p>
                                     </ak-form-element-horizontal>
                                 `
-                              : html``}`
+                              : nothing}`
                     : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input
                               type="text"
