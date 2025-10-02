@@ -3,7 +3,7 @@ from django.db import models
 
 class CacheEntry(models.Model):
 
-    cache_key = models.TextField(unique=True, primary_key=True)
+    cache_key = models.TextField(primary_key=True)
     value = models.TextField()
     expires = models.DateTimeField(db_index=True)
 
