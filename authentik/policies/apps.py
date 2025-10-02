@@ -1,9 +1,10 @@
-"""Authentik policies app config
+"""authentik policies app config
 
 Every system policy should be its own Django app under the `policies` app.
 For example: The 'dummy' policy is available at `authentik.policies.dummy`.
 """
 
+from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -36,6 +37,7 @@ class BufferedPolicyAccessViewFlag(Flag[bool], key="policies_buffered_access_vie
 
     default = False
     visibility = "public"
+    description = _("Allow concurrent authorization requests to be buffered.")
 
 
 class AuthentikPoliciesConfig(ManagedAppConfig):
