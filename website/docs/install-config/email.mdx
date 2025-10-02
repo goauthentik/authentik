@@ -7,12 +7,12 @@ import Tabs from "@theme/Tabs";
 
 This page covers both configuring authentik to send emails and testing that email delivery is working.
 
-authentik can be configured with global email settings which are used to notify administrators about alerts, configuration issues and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik.
+authentik can be configured with global email settings used to notify administrators about alerts, configuration issues, and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik.
 
 authentik also provides [Email stages](../add-secure-apps/flows-stages/stages/email/index.mdx), which are used to send emails to users for actions such as account recovery and verification. Email stages can be configured to use the global email settings or their own specific email settings.
 
 :::warning
-Some hosting providers block outgoing SMTP ports, in which case you'll have to host an SMTP relay on a different port with a different provider.
+Some hosting providers block outgoing SMTP ports, in which case you will need to host an SMTP relay on a different port with a different provider.
 :::
 
 ## Global email settings
@@ -76,7 +76,7 @@ email:
 
 ## Testing email configuration
 
-To test if the global email settings are configured correctly, you can use the following command on your authentik server:
+To test whether the global email settings are configured correctly, you can use the following command on your authentik server:
 
 ```shell
 ak test_email <to_address>
@@ -120,9 +120,7 @@ kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
 
 To send email through Google SMTP servers, the easiest and most reliable method is often to use [Google's SMTP relay service](https://support.google.com/a/answer/2956491). Google provides detailed guidance in their documentation: [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en).
 
-Configuration can be confusing, as there is a lot of conflicting information available online.
-
-First, confirm the outbound IP address that authentik will use to send emails. [Follow Google's documentation](https://support.google.com/a/answer/2956491) to add the IP address or addresses to the **SMTP relay service** options in your workspace's Gmail settings.
+First, confirm the outbound IP address that authentik uses to send emails. [Follow Google's documentation](https://support.google.com/a/answer/2956491) to add the IP address or addresses to the **SMTP relay service** options in your workspace's Gmail settings.
 
     - Set **Allowed Senders** to `Only addresses in my domains`.
     - Set **Authentication** to `Only accept mail from the specified IP addresses`.
@@ -171,7 +169,7 @@ Redeploy the authentik containers, and use the `ak test_email` command to confir
 
 ## SMTP server with TLS verification
 
-If you're configuring authentik to send email via an SMTP server that has TLS enabled you will need to mount the authenticating certificate in your authenik worker and server containers:
+If you're configuring authentik to send email via an SMTP server that has TLS enabled you must mount the authenticating certificate in your authentik worker and server containers:
 
 <Tabs
   groupId="deployment"
@@ -197,13 +195,13 @@ environment:
   </TabItem>
   <TabItem value="kubernetes">
 
-1. Create a `ConfigMap` with your certificate by running the following command on the kubernetes host:
+1. Create a `ConfigMap` with your certificate by running the following command on the Kubernetes host:
 
 ```sh
 kubectl create configmap my-custom-cert --from-file=<cert_name>.crt -n <your_namespace>
 ```
 
-2. Create a volume by adding the following configration to your kubernetes `values.yaml` file:
+2. Create a volume by adding the following configration to your Kubernetes `values.yaml` file:
 
 ```yaml
 volumes:
@@ -212,7 +210,7 @@ volumes:
           name: my-custom-cert
 ```
 
-3. Add a `volumeMount` and environment variable to your server and worker containers by adding the following configuration to your kubernetes `values.yaml` file in the appropriate locations:
+3. Add a `volumeMount` and environment variable to your server and worker containers by adding the following configuration to your Kubernetes `values.yaml` file in the appropriate locations:
 
 ```yaml
 volumeMounts:
