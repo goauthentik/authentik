@@ -184,18 +184,12 @@ export class TaskList extends Table<Task> {
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <div class="pf-c-content">
-                    <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
-                    <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
-                        ${msg("Previous executions logs")}
-                    </p>
-                    <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
-                </div>
-            </div>
-        </td>`;
+        return html`<div class="pf-c-content">
+            <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
+            <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
+            <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
+            <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
+        </div>`;
     }
 }
 

@@ -250,151 +250,127 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("User status")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.isActive ? msg("Active") : msg("Inactive")}
-                                </div>
-                                <div class="pf-c-description-list__text">
-                                    ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Change status")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-user-active-form
-                                        .obj=${item}
-                                        objectLabel=${msg("User")}
-                                        .delete=${() => {
-                                            return new CoreApi(
-                                                DEFAULT_CONFIG,
-                                            ).coreUsersPartialUpdate({
-                                                id: item.pk || 0,
-                                                patchedUserRequest: {
-                                                    isActive: !item.isActive,
-                                                },
-                                            });
-                                        }}
-                                    >
-                                        <button slot="trigger" class="pf-c-button pf-m-warning">
-                                            ${item.isActive ? msg("Deactivate") : msg("Activate")}
-                                        </button>
-                                    </ak-user-active-form>
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Recovery")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-forms-modal>
-                                        <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">
-                                            ${msg(
-                                                str`Update ${item.name || item.username}'s password`,
-                                            )}
-                                        </span>
-                                        <ak-user-password-form
-                                            username=${item.username}
-                                            email=${ifDefined(item.email)}
-                                            slot="form"
-                                            .instancePk=${item.pk}
-                                        ></ak-user-password-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                            ${msg("Set password")}
-                                        </button>
-                                    </ak-forms-modal>
-                                    ${this.brand.flowRecovery
-                                        ? html`
-                                              <ak-action-button
-                                                  class="pf-m-secondary"
-                                                  .apiRequest=${() => {
-                                                      return new CoreApi(DEFAULT_CONFIG)
-                                                          .coreUsersRecoveryCreate({
-                                                              id: item.pk,
-                                                          })
-                                                          .then((rec) => {
-                                                              showMessage({
-                                                                  level: MessageLevel.success,
-                                                                  message: msg(
-                                                                      "Successfully generated recovery link",
-                                                                  ),
-                                                                  description: rec.link,
-                                                              });
-                                                          })
-                                                          .catch(async (error: unknown) => {
-                                                              const parsedError =
-                                                                  await parseAPIResponseError(
-                                                                      error,
-                                                                  );
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("User status")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.isActive ? msg("Active") : msg("Inactive")}
+                    </div>
+                    <div class="pf-c-description-list__text">
+                        ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Change status")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-user-active-form
+                            .obj=${item}
+                            objectLabel=${msg("User")}
+                            .delete=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                    id: item.pk || 0,
+                                    patchedUserRequest: {
+                                        isActive: !item.isActive,
+                                    },
+                                });
+                            }}
+                        >
+                            <button slot="trigger" class="pf-c-button pf-m-warning">
+                                ${item.isActive ? msg("Deactivate") : msg("Activate")}
+                            </button>
+                        </ak-user-active-form>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Recovery")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-forms-modal>
+                            <span slot="submit">${msg("Update password")}</span>
+                            <span slot="header">
+                                ${msg(str`Update ${item.name || item.username}'s password`)}
+                            </span>
+                            <ak-user-password-form
+                                username=${item.username}
+                                email=${ifDefined(item.email)}
+                                slot="form"
+                                .instancePk=${item.pk}
+                            ></ak-user-password-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Set password")}
+                            </button>
+                        </ak-forms-modal>
+                        ${this.brand.flowRecovery
+                            ? html`
+                                  <ak-action-button
+                                      class="pf-m-secondary"
+                                      .apiRequest=${() => {
+                                          return new CoreApi(DEFAULT_CONFIG)
+                                              .coreUsersRecoveryCreate({
+                                                  id: item.pk,
+                                              })
+                                              .then((rec) => {
+                                                  showMessage({
+                                                      level: MessageLevel.success,
+                                                      message: msg(
+                                                          "Successfully generated recovery link",
+                                                      ),
+                                                      description: rec.link,
+                                                  });
+                                              })
+                                              .catch(async (error: unknown) => {
+                                                  const parsedError =
+                                                      await parseAPIResponseError(error);
 
-                                                              showMessage({
-                                                                  level: MessageLevel.error,
-                                                                  message:
-                                                                      pluckErrorDetail(parsedError),
-                                                              });
-                                                          });
-                                                  }}
-                                              >
-                                                  ${msg("Copy recovery link")}
-                                              </ak-action-button>
-                                              ${item.email
-                                                  ? html`<ak-forms-modal
-                                                        .closeAfterSuccessfulSubmit=${false}
-                                                    >
-                                                        <span slot="submit">
-                                                            ${msg("Send link")}
-                                                        </span>
-                                                        <span slot="header">
-                                                            ${msg("Send recovery link to user")}
-                                                        </span>
-                                                        <ak-user-reset-email-form
-                                                            slot="form"
-                                                            .user=${item}
-                                                        >
-                                                        </ak-user-reset-email-form>
-                                                        <button
-                                                            slot="trigger"
-                                                            class="pf-c-button pf-m-secondary"
-                                                        >
-                                                            ${msg("Email recovery link")}
-                                                        </button>
-                                                    </ak-forms-modal>`
-                                                  : html`<span
-                                                        >${msg(
-                                                            "Recovery link cannot be emailed, user has no email address saved.",
-                                                        )}</span
-                                                    >`}
-                                          `
-                                        : html` <p>
-                                              ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
-                                              )}
-                                          </p>`}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+                                                  showMessage({
+                                                      level: MessageLevel.error,
+                                                      message: pluckErrorDetail(parsedError),
+                                                  });
+                                              });
+                                      }}
+                                  >
+                                      ${msg("Copy recovery link")}
+                                  </ak-action-button>
+                                  ${item.email
+                                      ? html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
+                                            <span slot="submit"> ${msg("Send link")} </span>
+                                            <span slot="header">
+                                                ${msg("Send recovery link to user")}
+                                            </span>
+                                            <ak-user-reset-email-form slot="form" .user=${item}>
+                                            </ak-user-reset-email-form>
+                                            <button
+                                                slot="trigger"
+                                                class="pf-c-button pf-m-secondary"
+                                            >
+                                                ${msg("Email recovery link")}
+                                            </button>
+                                        </ak-forms-modal>`
+                                      : html`<span
+                                            >${msg(
+                                                "Recovery link cannot be emailed, user has no email address saved.",
+                                            )}</span
+                                        >`}
+                              `
+                            : html` <p>
+                                  ${msg(
+                                      "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
+                                  )}
+                              </p>`}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderToolbar(): TemplateResult {
