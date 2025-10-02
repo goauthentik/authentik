@@ -3,7 +3,6 @@
 from asyncio.exceptions import CancelledError
 from typing import Any
 
-from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
@@ -63,7 +62,6 @@ ignored_classes = (
     RedisError,
     ResponseError,
     # websocket errors
-    ChannelFull,
     WebSocketException,
     LocalProtocolError,
     # rest_framework error
