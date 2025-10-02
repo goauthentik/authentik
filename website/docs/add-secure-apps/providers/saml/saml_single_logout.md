@@ -8,19 +8,19 @@ title: SAML Single Logout
 
 To enable single logout, add a **Single Logout Service URL** to your SAML provider. The URL is the service provider’s endpoint to which authentik sends logout requests.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
-3. Click the edit icon of the SAML provider that you want to configure for SLO.
-4. Set the **SLS URL** field to your service provider's logout endpoint.
+1. Log in to authentik as an administrator and open the authentik Admin interface
+2. Navigate to **Applications** > **Providers**
+3. Click the edit icon of the SAML provider that you want to configure for SLO
+4. Set the **SLS URL** field to your service provider's logout endpoint
 5. Select the appropriate **SLS Binding**:
     - **Redirect** - Uses HTTP redirects to send logout requests to the provider (front-channel only)
     - **POST** - Supports both front-channel and back-channel logout methods
 6. Select the appropriate **Logout Method**:
-    - **Front-channel iframe** - Performs parallel logout requests using hidden iframes. Supports both Redirect and POST bindings.
-    - **Front-channel native** - Uses the active browser tab to chain redirects and POST requests for sequential logout. Supports both Redirect and POST bindings.
-    - **Back-channel** - Performs server-to-server POST requests to log out the user. Requires POST SLS binding. Users are logged out even when their session is administratively terminated.
-7. (Optional) Enable **Sign logout request** to cryptographically sign SAML logout requests sent to the service provider.
-8. Click **Finish**.
+    - **Front-channel iframe** - Performs parallel logout requests using hidden iframes. Supports both Redirect and POST bindings
+    - **Front-channel native** - Uses the active browser tab to chain redirects and POST requests for sequential logout. Supports both Redirect and POST bindings
+    - **Back-channel** - Performs server-to-server POST requests to log out the user. Requires POST SLS binding. Users are logged out even when their session is administratively terminated
+7. (Optional) Enable **Sign Logout Request** to cryptographically sign SAML logout requests sent to the service provider
+8. Click **Finish**
 
 :::info
 Back-channel logout ensures users are logged out even when their session is terminated administratively (e.g., when a user is deactivated or their session is deleted). This requires POST SLS binding.
@@ -63,9 +63,9 @@ Back-channel logout requires POST SLS binding.
 
 authentik tracks SAML sessions for each provider to support single logout. When a user successfully authenticates to a SAML provider, authentik creates a `SAMLSession` record containing:
 
-    - The SAML `SessionIndex`.
-    - The `NameID` and `NameID format` used for the session.
-    - A link to the user's authenticated session.
+    - The SAML `SessionIndex`
+    - The `NameID` and `NameID format` used for the session
+    - A link to the user's authenticated session
 
 These session records are used to generate proper SAML logout requests with the correct `SessionIndex` and `NameID` values that the service provider expects.
 
