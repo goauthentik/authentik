@@ -27,6 +27,7 @@ ifeq ($(UNAME), Darwin)
 	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
 	ifdef BREW_EXISTS
 		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
 		ifdef LIBXML2_EXISTS
 			BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
 			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
@@ -51,7 +52,11 @@ go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
-	uv run coverage run manage.py test --keepdb authentik
+ifdef KRB5_EXISTS
+	PATH="$(shell brew --prefix krb5)/sbin:$(shell brew --prefix krb5)/bin:$$PATH" uv run coverage run manage.py test --keepdb authentik
+else
+	 uv run coverage run manage.py test --keepdb authentik
+endif
 	uv run coverage html
 	uv run coverage report
 
