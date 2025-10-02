@@ -44,12 +44,15 @@ class LiveView(View):
 class ReadyView(View):
     """View for readiness probe, always returns Http 200, unless sql is down"""
 
+    def check_db(self):
+        for db_conn in connections.all():
+            # Force connection reload
+            db_conn.connect()
+            _ = db_conn.cursor()
+
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
+            self.check_db()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         return HttpResponse(status=200)

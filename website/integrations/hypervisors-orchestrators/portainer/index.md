@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.portainer.io/
 
-:::note
+:::info
 This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `portainer.company` is the FQDN of Portainer installation.
 - `authentik.company` is the FQDN of authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -58,7 +58,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 - User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
 - Scopes: `email openid profile`
 
-:::note
+:::info
 Portainer by default shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_
 :::
 
@@ -66,6 +66,6 @@ Portainer by default shows commas between each item in the Scopes field. Do **NO
 
 ## Notes
 
-:::note
+:::info
 Portainer Reference link: https://documentation.portainer.io/v2.0/auth/oauth/
 :::

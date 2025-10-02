@@ -118,23 +118,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     renderExpanded(item: FlowStageBinding): TemplateResult {
-        return html` <td></td>
-            <td colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control if this stage will be applied to the flow.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list
-                            .target=${item.policybindingmodelPtrId}
-                            .policyEngineMode=${item.policyEngineMode}
-                        >
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>${msg("These bindings control if this stage will be applied to the flow.")}</p>
+            <ak-bound-policies-list
+                .target=${item.policybindingmodelPtrId}
+                .policyEngineMode=${item.policyEngineMode}
+            >
+            </ak-bound-policies-list>
+        </div>`;
     }
 
     renderEmpty(): TemplateResult {

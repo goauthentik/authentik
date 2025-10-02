@@ -151,17 +151,13 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html` <td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <div class="pf-c-content">
-                    <ak-task-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${item.id}"
-                    ></ak-task-list>
-                </div>
-            </div>
-        </td>`;
+        return html`<div class="pf-c-content">
+            <ak-task-list
+                .relObjAppLabel=${appLabel}
+                .relObjModel=${modelName}
+                .relObjId="${item.id}"
+            ></ak-task-list>
+        </div>`;
     }
 }
 

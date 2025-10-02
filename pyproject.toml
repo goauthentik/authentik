@@ -7,22 +7,22 @@ requires-python = "==3.13.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
-  "channels-redis==4.3.0",
+  "channels-postgres==1.1.2",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.1.12",
+  "django==5.1.13",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
+  "django-postgres-cache",
   "django-filter==25.1",
   "django-guardian==3.0.3",
   "django-model-utils==5.0.0",
   "django-pglock==1.7.2",
   "django-pgtrigger==4.15.2",
   "django-prometheus==2.4.1",
-  "django-redis==6.0.0",
   "django-storages[s3]==1.14.6",
   "django-tenants==3.8.0",
   "djangoql==0.18.1",
@@ -120,10 +120,15 @@ no-binary-package = [
 [tool.uv.sources]
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 django-dramatiq-postgres = { workspace = true }
+django-postgres-cache = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
+channels-postgres = { git = "https://github.com/rissson/channels_postgres", rev = "93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
 
 [tool.uv.workspace]
-members = ["packages/django-dramatiq-postgres"]
+members = [
+  "packages/django-dramatiq-postgres",
+  "packages/django-postgres-cache",
+]
 
 [project.scripts]
 ak = "lifecycle.ak:main"
@@ -200,6 +205,14 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
+module = ["dramatiq.*", "pglock.*"]
+follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cron_converter.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = [
   "authentik.admin.*",
   "authentik.api.*",
@@ -236,6 +249,7 @@ module = [
   "authentik.sources.plex.*",
   "authentik.sources.saml.*",
   "authentik.sources.scim.*",
+  "authentik.sources.telegram.*",
   "authentik.stages.authenticator_duo.*",
   "authentik.stages.authenticator_email.*",
   "authentik.stages.authenticator_sms.*",
@@ -261,7 +275,6 @@ module = [
   "authentik.tasks.*",
   "authentik.tasks.schedules.*",
   "authentik.tenants.*",
-  "django_dramatiq_postgres.*",
   "lifecycle.*",
   "tests.e2e.*",
   "tests.integration.*",
