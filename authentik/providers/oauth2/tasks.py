@@ -1,14 +1,13 @@
 """OAuth2 Provider Tasks"""
 
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.oauth2.models import OAuth2LogoutMethod, OAuth2Provider
 from authentik.providers.oauth2.utils import create_logout_token
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -31,7 +30,7 @@ def send_backchannel_logout_request(
     Returns:
         bool: True if the request was sent successfully, False otherwise
     """
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     LOGGER.debug("Sending back-channel logout request", provider_pk=provider_pk, sub=sub)
 
     provider = OAuth2Provider.objects.filter(pk=provider_pk).first()

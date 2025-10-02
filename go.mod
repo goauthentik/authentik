@@ -11,7 +11,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/getsentry/sentry-go v0.35.3
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
-	github.com/go-ldap/ldap/v3 v3.4.11
+	github.com/go-ldap/ldap/v3 v3.4.12
 	github.com/go-openapi/runtime v0.29.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
@@ -32,7 +32,7 @@ require (
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025100.14
+	goauthentik.io/api/v3 v3.2025100.16
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.31.0
 	golang.org/x/sync v0.17.0

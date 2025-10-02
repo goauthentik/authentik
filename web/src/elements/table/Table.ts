@@ -54,6 +54,16 @@ export function hasPrimaryKey<T extends string | number = string | number>(
     return Object.hasOwn(item, "pk");
 }
 
+/**
+ * An instance of a Table component.
+ *
+ * This is necessary to work around limitations in Lit's typing system
+ * not recognizing abstract properties.
+ */
+export type TableInstance = InstanceType<typeof Table> & {
+    columns: TableColumn[];
+};
+
 export abstract class Table<T extends object>
     extends WithLicenseSummary(AKElement)
     implements TableLike
@@ -138,6 +148,10 @@ export abstract class Table<T extends object>
 
             .pf-c-toolbar__group {
                 gap: var(--pf-global--spacer--sm);
+
+                .pf-c-card__title .pf-icon {
+                    margin-inline-end: var(--pf-global--spacer--sm);
+                }
             }
 
             .pf-c-table {
@@ -174,6 +188,13 @@ export abstract class Table<T extends object>
                     }
                 }
             }
+
+            /**
+             * TODO: Remove after <dialog> modals are implemented.
+             */
+            .pf-c-dropdown__menu:has(ak-forms-modal) {
+                z-index: var(--pf-global--ZIndex--lg);
+            }
         `,
     ];
 
@@ -191,6 +212,20 @@ export abstract class Table<T extends object>
      * @abstract
      */
     protected abstract row(item: T): SlottedTemplateResult[];
+
+    /**
+     * The total number of defined and additional columns in the table.
+     */
+    #columnCount = 0;
+
+    #synchronizeColumnCount() {
+        let nextColumnCount = this.columns.length;
+
+        if (this.checkbox) nextColumnCount += 1;
+        if (this.expandable) nextColumnCount += 1;
+
+        this.#columnCount = nextColumnCount;
+    }
 
     @state()
     protected loading = false;
@@ -336,6 +371,16 @@ export abstract class Table<T extends object>
         }
     }
 
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        if (
+            (changedProperties as PropertyValues<TableInstance>).has("columns") ||
+            changedProperties.has("checkbox") ||
+            changedProperties.has("expandable")
+        ) {
+            this.#synchronizeColumnCount();
+        }
+    }
+
     firstUpdated(): void {
         this.fetch();
     }
@@ -397,7 +442,7 @@ export abstract class Table<T extends object>
 
     protected renderLoading(): TemplateResult {
         return html`<tr role="presentation">
-            <td role="presentation" colspan="25">
+            <td role="presentation" colspan=${this.#columnCount}>
                 <div class="pf-l-bullseye">
                     <ak-empty-state default-label></ak-empty-state>
                 </div>
@@ -408,7 +453,7 @@ export abstract class Table<T extends object>
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`
             <tr role="presentation">
-                <td role="presentation" colspan="8">
+                <td role="presentation" colspan=${this.#columnCount}>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
@@ -484,14 +529,12 @@ export abstract class Table<T extends object>
             }
         }
 
-        const columnCount = this.columns.length + (this.checkbox ? 1 : 0);
-
         return groups.map(([group, items], groupIndex) => {
             const groupHeaderID = `table-group-${groupIndex}`;
 
             return html`<thead>
                     <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${columnCount}>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
                             ${group}
                         </th>
                     </tr>
@@ -510,13 +553,7 @@ export abstract class Table<T extends object>
         return [["", items]];
     }
 
-    protected renderExpanded(_item: T): SlottedTemplateResult {
-        if (this.expandable) {
-            throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
-        }
-
-        return nothing;
-    }
+    protected renderExpanded?(item: T): SlottedTemplateResult;
 
     #toggleExpansion = (itemKey?: string | number, event?: PointerEvent) => {
         // An unlikely scenario but possible if items shift between fetches
@@ -633,6 +670,27 @@ export abstract class Table<T extends object>
             </td>`;
         };
 
+        let expansionContent: SlottedTemplateResult = nothing;
+
+        if (this.expandable) {
+            if (!this.renderExpanded) {
+                throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
+            }
+
+            expansionContent = html`<tr
+                class="pf-c-table__expandable-row ${classMap({
+                    "pf-m-expanded": expanded,
+                })}"
+            >
+                <td aria-hidden="true"></td>
+                <td colspan=${this.#columnCount - 1}>
+                    <div class="pf-c-table__expandable-row-content">
+                        ${this.renderExpanded(item)}
+                    </div>
+                </td>
+            </tr>`;
+        }
+
         return html`
             <tr
                 aria-selected=${selected ? "true" : "false"}
@@ -663,16 +721,7 @@ export abstract class Table<T extends object>
                     </td>`;
                 })}
             </tr>
-            ${this.expandable
-                ? html` <tr
-                      class="pf-c-table__expandable-row ${classMap({
-                          "pf-m-expanded": expanded,
-                      })}"
-                  >
-                      <td aria-hidden="true"></td>
-                      ${expanded ? this.renderExpanded(item) : nothing}
-                  </tr>`
-                : nothing}
+            ${expansionContent}
         `;
     }
 
@@ -701,15 +750,31 @@ export abstract class Table<T extends object>
     protected renderToolbarContainer(): SlottedTemplateResult {
         const label = this.toolbarLabel ?? msg(str`${this.label ?? "Table"} actions`);
 
-        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
-            <div class="pf-c-toolbar__content">
-                ${this.renderSearch()}
-                ${this.renderToolbarAfter
-                    ? html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`
-                    : nothing}
-            </div>
+        // We need to conditionally render the primary toolbar section
+        // to avoid an empty container which applies a gap unnecessarily.
+        // This may happen when a table toolbar has an unusual markup,
+        // such as in the Recent Events card.
 
-            <div class="pf-c-toolbar__content">
+        const primaryToolbar: SlottedTemplateResult[] = [];
+
+        if (this.searchEnabled) {
+            primaryToolbar.push(this.renderSearch());
+        }
+
+        if (this.renderToolbarAfter) {
+            primaryToolbar.push(
+                html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`,
+            );
+        }
+
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
+            ${primaryToolbar.length
+                ? html`<div class="pf-c-toolbar__content" name="toolbar-primary">
+                      ${primaryToolbar}
+                  </div>`
+                : nothing}
+
+            <div class="pf-c-toolbar__content" name="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>

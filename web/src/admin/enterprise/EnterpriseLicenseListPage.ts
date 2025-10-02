@@ -148,7 +148,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast internal users")}
+                        label=${msg("Forecast internal users")}
                         subtext=${msg(
                             str`Estimated user count one year from now based on ${this.forecast?.internalUsers} current internal users and ${this.forecast?.forecastedInternalUsers} forecasted internal users.`,
                         )}
@@ -159,7 +159,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast external users")}
+                        label=${msg("Forecast external users")}
                         subtext=${msg(
                             str`Estimated user count one year from now based on ${this.forecast?.externalUsers} current external users and ${this.forecast?.forecastedExternalUsers} forecasted external users.`,
                         )}
@@ -170,7 +170,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Expiry")}
+                        label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
                     >
                         ${this.summary &&
