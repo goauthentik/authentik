@@ -60,7 +60,6 @@ export class RecentEventsCard extends Table<Event> {
         [msg("User"), "user"],
         [msg("Creation Date"), "created"],
         [msg("Client IP"), "client_ip"],
-        [msg("Brand"), "brand_name"],
     ];
 
     renderToolbar(): TemplateResult {
@@ -77,7 +76,6 @@ export class RecentEventsCard extends Table<Event> {
             Timestamp(item.created),
             html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.brand?.name || msg("-")}</span>`,
         ];
     }
 
