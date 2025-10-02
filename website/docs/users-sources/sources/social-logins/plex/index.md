@@ -25,6 +25,10 @@ Save, and you now have Plex as a source.
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
+:::info Embed new source in flow
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
+:::
+
 ## Plex source property mappings
 
 See the [overview](../../property-mappings/index.md) for information on how property mappings work.

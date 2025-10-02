@@ -28,7 +28,7 @@ To integrate Discord with authentik you will need to create an OAuth application
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Discord OAuth Source** as the source type.
-    - **Create Discord OAuth Source**: provide a name, a slug which must match the slug used in the Discord `Redirect URI`, and the following required configurations:
+    - **Create Discord OAuth Source**: provide a name, a slug which must match the slug used in the Discord `Redirect URI` (e.g. `discord`), and the following required configurations:
         - Under **Protocol Settings**:
             - **Consumer key**: Client ID from Discord.
             - **Consumer secret**: Client Secret from Discord
@@ -39,6 +39,14 @@ To integrate Discord with authentik you will need to create an OAuth application
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+:::info Embed new source in flow
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
+:::
+
+## Configuration verification
+
+TODO
 
 ## Optional additional configuration
 

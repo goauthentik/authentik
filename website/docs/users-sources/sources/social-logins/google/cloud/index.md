@@ -63,7 +63,7 @@ To integrate Google with authentik you will need to create a new project, and OA
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **GitHub OAuth Source** as the source type.
-    - **Create Facebook OAuth Source**: provide a name, set the slug to `google`, and set the following required configurations:
+    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Google Workspace `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: <client_ID>
             - **Consumer Secret**: <client_secret>
@@ -73,6 +73,14 @@ To integrate Google with authentik you will need to create a new project, and OA
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+:::info Embed new source in flow
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
+:::
+
+## Configuration verification
+
+TODO
 
 ## Optional additional configuration
 

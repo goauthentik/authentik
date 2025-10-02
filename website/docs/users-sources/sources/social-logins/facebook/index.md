@@ -45,7 +45,7 @@ Finally, you need to publish the Facebook app.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Facebook OAuth Source** as the source type.
-    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Facebook `Valid OAuth redirect URIs` field, and the following required configurations:
+    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Facebook `Valid OAuth redirect URIs` field (e.g. `facebook`), and the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: enter the **App ID** from Facebook.
             - **Consumer Secret**: enter the **App Secret** from Facebook.
@@ -55,3 +55,11 @@ Finally, you need to publish the Facebook app.
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+:::info Embed new source in flow
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
+:::
+
+## Configuration verification
+
+TODO
