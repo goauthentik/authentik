@@ -465,7 +465,7 @@ class _PostgresConsumer(Consumer):
         self.logger.debug("Running garbage collector")
         count = self.query_set.filter(
             state__in=(TaskState.DONE, TaskState.REJECTED),
-            mtime__lte=timezone.now() - timedelta(seconds=Conf().task_purge_interval),
+            mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
             result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info("Purged messages in all queues", count=count)
