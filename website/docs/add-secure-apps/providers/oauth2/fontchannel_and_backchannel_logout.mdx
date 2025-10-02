@@ -9,7 +9,7 @@ authentik_preview: true
 
 OAuth2/OpenID logout is a security feature defined in the OpenID Connect specification. It allows an OpenID Provider (OP), such as authentik, to notify Relying Parties (RPs) when a user session ends. This ensures that all associated applications can properly terminate the user's session.
 
-For more information about single logout across all providers, see the [Single Logout (SLO) Overview](../../flows-stages/stages/single_logout.md).
+For more information about single logout across all providers, see the [Single Logout (SLO) Overview](../single-logout/index.md).
 
 :::warning
 Your OAuth application (Relying Party) must explicitly support OpenID Connect front-channel logout or back-channel logout to properly handle logout requests. Not all OAuth applications support these features, so compatibility should be verified.
@@ -110,7 +110,7 @@ Front-channel logout only works for user-initiated logouts through a logout flow
 
 ## Resources
 
-- [Single Logout (SLO) Overview](../../flows-stages/stages/single_logout.md)
+- [Single Logout (SLO) Overview](../single-logout/index.md)
 - [User Logout Stage](../../flows-stages/stages/user_logout.md)
 - [OAuth2 Provider Configuration](./index.mdx)
 - [OpenID Connect Back-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-backchannel-1_0.html)

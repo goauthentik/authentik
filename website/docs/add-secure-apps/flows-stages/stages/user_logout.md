@@ -2,7 +2,7 @@
 title: User Logout stage
 ---
 
-The User Logout stage terminates the user's session in authentik and, if configured, triggers [Single Logout](./single_logout.md) in [SAML](../../providers/saml/saml_single_logout.md) and [OIDC](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) providers.
+The User Logout stage terminates the user's session in authentik and, if configured, triggers [Single Logout](../../providers/single-logout/index.md) in [SAML](../../providers/saml/saml_single_logout.md) and [OIDC](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) providers.
 
 ## Logout flow injection
 

@@ -31,8 +31,6 @@ authentik supports both front-channel (browser-based) and back-channel (server-t
 
 ### Front-channel logout
 
-``
-
 Front-channel logout sends logout requests through the user's browser. authentik supports two front-channel modes:
 
 #### iframe mode (default for OIDC)
@@ -74,7 +72,7 @@ Enabling single logout requires configuring logout endpoints on your SAML or OID
 
 ### SAML Providers
 
-See the [SAML Single Logout documentation](../../providers/saml/saml_single_logout.md) for detailed instructions. You will need to:
+See the [SAML Single Logout documentation](../saml/saml_single_logout.md) for detailed instructions. You will need to:
 
 1. Configure the **SLS URL** (Single Logout Service URL) - the provider's logout endpoint
 2. Select the **SLS Binding** (Redirect or POST)
@@ -83,7 +81,7 @@ See the [SAML Single Logout documentation](../../providers/saml/saml_single_logo
 
 ### OIDC providers
 
-See the [OIDC Front-channel and Back-channel logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
+See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
 1. Configure the **logout URI** - the provider's logout endpoint
 2. Enable the desired **Logout Method**; front-channel or back-channel
@@ -109,9 +107,9 @@ These requests are processed asynchronously to avoid blocking administrative ope
 
 ## Resources
 
-- [SAML Single Logout](../../providers/saml/saml_single_logout.md)
-- [OIDC Front-channel and Back-channel Logout](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx)
-- [User Logout Stage](./user_logout.md)
+- [SAML Single Logout](../saml/saml_single_logout.md)
+- [OIDC Front-channel and Back-channel Logout](../oauth2/fontchannel_and_backchannel_logout.mdx)
+- [User Logout Stage](../../flows-stages/stages/user_logout.md)
 - [SAML Profiles 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)
 - [OpenID Connect Front-Channel Logout 1.0](https://openid.net/specs/openid-connect-frontchannel-1_0.html)
 - [OpenID Connect Back-Channel Logout 1.0](https://openid.net/specs/openid-connect-backchannel-1_0.html)

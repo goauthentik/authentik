@@ -228,6 +228,15 @@ const items = [
                         },
                         items: ["add-secure-apps/providers/saml/saml_single_logout"],
                     },
+                    {
+                        type: "category",
+                        label: "Single Logout",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/single-logout/index",
+                        },
+                        items: [],
+                    },
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
@@ -308,7 +317,6 @@ const items = [
                             "add-secure-apps/flows-stages/stages/user_delete",
                             "add-secure-apps/flows-stages/stages/user_login/index",
                             "add-secure-apps/flows-stages/stages/user_logout",
-                            "add-secure-apps/flows-stages/stages/single_logout",
                             "add-secure-apps/flows-stages/stages/user_write",
                         ],
                     },
