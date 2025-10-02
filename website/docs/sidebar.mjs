@@ -132,6 +132,15 @@ const items = [
                     },
                     {
                         type: "category",
+                        label: "Single Logout",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/single-logout/index",
+                        },
+                        items: [],
+                    },
+                    {
+                        type: "category",
                         label: "Google Workspace Provider",
                         link: {
                             type: "doc",
@@ -227,15 +236,6 @@ const items = [
                             id: "add-secure-apps/providers/saml/index",
                         },
                         items: ["add-secure-apps/providers/saml/saml_single_logout"],
-                    },
-                    {
-                        type: "category",
-                        label: "Single Logout",
-                        link: {
-                            type: "doc",
-                            id: "add-secure-apps/providers/single-logout/index",
-                        },
-                        items: [],
                     },
                     "add-secure-apps/providers/scim/index",
                     {
