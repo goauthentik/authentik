@@ -71,7 +71,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - **Start URL**: `https://authentik.company`
     - **Name ID format**: `EMAIL`
     - **Name ID**: Basic Information › Primary Email
-    - **Signed Response**: Enabled ✅
+    - **Signed Response**: Enabled
 
 :::info Verify signed responses
 Enabling signed responses indicates that the entire SAML authentication response will be signed by Google. You'll need to [configure certificates in authentik](../../../../../sys-mgmt/certificates) if you enable this option.
@@ -84,6 +84,9 @@ Enabling signed responses indicates that the entire SAML authentication response
 
 | Google Directory attributes       | App attributes |
 | --------------------------------- | -------------- |
+| Basic Information › Primary Email | `email`        |
+| Basic Information › Primary Email | `email`        |
+| Basic Information › Primary Email | `email`        |
 | Basic Information › Primary Email | `email`        |
 
 ### Enable the application for your organization
@@ -103,12 +106,12 @@ You should now see the new application in the list of SAML apps. View the applic
             - **Issuer (Entity ID)**: `https://authentik.company`
             - **Verification Certificate**: Certificate downloaded from Google Workspace
         - **Advanced Protocol Settings**:
-            - **Allow IdP-initiated Login**: Enabled ✅
+            - **Allow IdP-initiated Login**: Enabled
             - **NameID Policy**: `Email address`
 3. Click **Finish** to save your settings.
 
 :::info Display new source on login screen
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
 :::
 
 :::info Embed new source in flow
