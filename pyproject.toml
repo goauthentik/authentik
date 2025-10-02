@@ -121,6 +121,7 @@ no-binary-package = [
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 django-dramatiq-postgres = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
+channels-postgres = { git = "https://github.com/rissson/channels_postgres", rev = "93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
 
 [tool.uv.workspace]
 members = ["packages/django-dramatiq-postgres"]

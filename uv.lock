@@ -266,7 +266,7 @@ dev = [
 requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
-    { name = "channels-postgres", specifier = "==1.1.2" },
+    { name = "channels-postgres", git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
@@ -682,17 +682,13 @@ daphne = [
 
 [[package]]
 name = "channels-postgres"
-version = "1.1.2"
-source = { registry = "https://pypi.org/simple" }
+version = "1.1.4"
+source = { git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f#93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
 dependencies = [
     { name = "asgiref" },
     { name = "channels" },
     { name = "msgpack" },
     { name = "psycopg", extra = ["pool"] },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/21/c74be89ec2f93fa832f9c5b47f08c73e5e07279aab176a1f7ef4a240722d/channels_postgres-1.1.2.tar.gz", hash = "sha256:bfdf580ba65aab0d5e944d38ddd807d3521939153b786b53d6f932b6f3defd8e", size = 19696, upload-time = "2025-04-20T16:09:01.83Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fd/0b/1ec2c7357ebff7ff457f39d51ccb74be56ac796595dfc228658ba23974a1/channels_postgres-1.1.2-py3-none-any.whl", hash = "sha256:301e1980f23e325e289ac93265baf54ceae289c19f1893d1b55e40fe73149f67", size = 16176, upload-time = "2025-04-20T16:09:00.383Z" },
 ]
 
 [[package]]
