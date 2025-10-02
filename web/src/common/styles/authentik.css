@@ -253,6 +253,12 @@ html > form > input {
 
 /* #region Fields */
 
+fieldset[name="actions"] {
+    border: none;
+    display: flex;
+    gap: var(--pf-global--spacer--sm);
+}
+
 /* #region Switch  */
 .pf-c-switch {
     --pf-c-switch__input--focus__toggle--OutlineWidth: 0;
