@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
                 ("expires", models.DateTimeField(db_index=True)),
             ],
             options={
-                "db_table": "",
                 "default_permissions": [],
             },
         ),
