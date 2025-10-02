@@ -213,7 +213,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     )
     logout_method = models.TextField(
         choices=OAuth2LogoutMethod.choices,
-        blank=True,
+        default=OAuth2LogoutMethod.BACKCHANNEL,
         verbose_name=_("Logout Method"),
         help_text=_(
             "Backchannel logs out with server to server calls. "

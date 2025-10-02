@@ -84,7 +84,7 @@ class SAMLProvider(Provider):
     )
     sls_binding = models.TextField(
         choices=SAMLBindings.choices,
-        blank=True,
+        default=SAMLBindings.REDIRECT,
         verbose_name=_("SLS Binding"),
         help_text=_(
             "This determines how authentik sends the logout response back to the Service Provider."
@@ -92,7 +92,7 @@ class SAMLProvider(Provider):
     )
     logout_method = models.TextField(
         choices=LogoutMethods.choices,
-        blank=True,
+        default=LogoutMethods.FRONTCHANNEL_IFRAME,
         help_text=_(
             "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously "
             "in hidden iframes. Front-channel native uses your active browser tab to send post "

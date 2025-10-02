@@ -8456,7 +8456,6 @@
                 "logout_method": {
                     "type": "string",
                     "enum": [
-                        "",
                         "backchannel",
                         "frontchannel"
                     ],
@@ -9298,7 +9297,6 @@
                 "sls_binding": {
                     "type": "string",
                     "enum": [
-                        "",
                         "redirect",
                         "post"
                     ],
@@ -9308,7 +9306,6 @@
                 "logout_method": {
                     "type": "string",
                     "enum": [
-                        "",
                         "frontchannel_iframe",
                         "frontchannel_native",
                         "backchannel"
