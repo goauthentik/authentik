@@ -23,17 +23,19 @@ When a user logs out or their session is terminated in authentik, the following 
     - **Back-channel**: HTTP POST requests are sent directly from the authentik server to each back-channel provider's configured logout endpoint
     - **Front-channel**: For user-initiated logouts, a logout stage is automatically injected into the flow that handles browser-based logout (typically via iframes or sequential redirects)
 4. **Provider Processing**: Each provider processes the logout request, validates it, and terminates the user's active session
-5. **Completion**: Once all providers have been notified, the user is redirected back to the authentik login screen
+5. **Completion**: After all providers have been notified, the user is redirected back to the authentik login screen
 
-## Front-Channel vs. Back-Channel Logout
+## Front-channel vs. back-channel logout
 
 authentik supports both front-channel (browser-based) and back-channel (server-to-server) logout methods, depending on how each provider is configured.
 
-### Front-Channel Logout
+### Front-channel logout
+
+``
 
 Front-channel logout sends logout requests through the user's browser. authentik supports two front-channel modes:
 
-#### iframe Mode (Default for OIDC)
+#### iframe mode (default for OIDC)
 
     - Loads all provider logout URLs simultaneously in hidden iframes
     - Provides fast, parallel logout across multiple providers
@@ -54,7 +56,7 @@ Front-channel logout sends logout requests through the user's browser. authentik
 Use native front-channel mode for SAML providers if you encounter iframe compatibility issues, such as Content Security Policy (CSP) restrictions or cookie handling problems.
 :::
 
-### Back-Channel Logout
+### Back-channel Logout
 
 Back-channel logout sends logout requests directly from the authentik server to the provider's logout endpoint via HTTP POST.
 
@@ -79,9 +81,9 @@ See the [SAML Single Logout documentation](../../providers/saml/saml_single_logo
 3. Choose a **Logout Method**; front-channel iframe, front-channel native, or back-channel
 4. Optionally, enable **Sign Logout Request** for additional security
 
-### OIDC Providers
+### OIDC providers
 
-See the [OIDC Front-channel and Back-channel Logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
+See the [OIDC Front-channel and Back-channel logout documentation](../../providers/oauth2/fontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
 1. Configure the **logout URI** - the provider's logout endpoint
 2. Enable the desired **Logout Method**; front-channel or back-channel
