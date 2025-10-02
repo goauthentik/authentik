@@ -17,7 +17,6 @@ from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
@@ -30,7 +29,7 @@ from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
-DB_ERRORS = (OperationalError, Error, RedisError)
+DB_ERRORS = (OperationalError, Error)
 
 
 class CurrentTask(BaseCurrentTask):
