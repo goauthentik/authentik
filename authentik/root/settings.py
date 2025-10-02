@@ -64,6 +64,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
@@ -297,16 +298,6 @@ TEMPLATES = [
 
 ASGI_APPLICATION = "authentik.root.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
-        "CONFIG": {
-            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
-            "prefix": "authentik_channels_",
-        },
-    },
-}
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -318,6 +309,16 @@ DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
     "django_tenants.routers.TenantSyncRouter",
 )
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "authentik.root.channels.PostgresChannelLayer",
+        "CONFIG": {
+            **DATABASES["default"],
+            "TIME_ZONE": None,
+        },
+    },
+}
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -400,8 +401,6 @@ DRAMATIQ = {
     ).total_seconds(),
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
-        # TODO: fixme
-        # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
