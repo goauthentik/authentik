@@ -13,7 +13,7 @@ from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
     IframeLogoutStageView,
 )
-from authentik.providers.saml.models import LogoutMethods, SAMLProvider
+from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.native_logout import (
     NativeLogoutChallenge,
     NativeLogoutStageView,
@@ -45,7 +45,7 @@ class TestNativeLogoutStageView(TestCase):
             issuer="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
-            logout_method=LogoutMethods.FRONTCHANNEL_NATIVE,
+            logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
 
         self.provider2 = SAMLProvider.objects.create(
@@ -56,7 +56,7 @@ class TestNativeLogoutStageView(TestCase):
             issuer="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
-            logout_method=LogoutMethods.FRONTCHANNEL_NATIVE,
+            logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
 
     def test_get_challenge_with_pending_providers_redirect(self):
@@ -373,7 +373,7 @@ class TestIdPLogoutIntegration(FlowTestCase):
             signing_kp=self.keypair,
             sign_logout_request=True,
             signature_algorithm=RSA_SHA256,
-            logout_method=LogoutMethods.FRONTCHANNEL_NATIVE,
+            logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
 
     def test_signed_logout_request_generation(self):

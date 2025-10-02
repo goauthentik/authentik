@@ -1,5 +1,6 @@
 """authentik SAML Provider Models"""
 
+from uuid import uuid4
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -45,7 +46,7 @@ class SAMLBindings(models.TextChoices):
     POST = "post"
 
 
-class LogoutMethods(models.TextChoices):
+class SAMLLogoutMethods(models.TextChoices):
     """SAML Logout methods supported by authentik"""
 
     FRONTCHANNEL_IFRAME = "frontchannel_iframe"
@@ -91,8 +92,8 @@ class SAMLProvider(Provider):
         ),
     )
     logout_method = models.TextField(
-        choices=LogoutMethods.choices,
-        default=LogoutMethods.FRONTCHANNEL_IFRAME,
+        choices=SAMLLogoutMethods.choices,
+        default=SAMLLogoutMethods.FRONTCHANNEL_IFRAME,
         help_text=_(
             "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously "
             "in hidden iframes. Front-channel native uses your active browser tab to send post "
@@ -304,6 +305,7 @@ class SAMLProviderImportModel(CreatableType, Provider):
 class SAMLSession(SerializerModel, ExpiringModel):
     """Track active SAML sessions for Single Logout support"""
 
+    saml_session_id = models.UUIDField(default=uuid4, primary_key=True)
     provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     session = models.ForeignKey(

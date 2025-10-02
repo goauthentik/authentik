@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.models import LogoutMethods, SAMLBindings, SAMLSession
+from authentik.providers.saml.models import SAMLLogoutMethods, SAMLBindings, SAMLSession
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.tasks import send_saml_logout_request
@@ -45,7 +45,7 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
             user=user,
             expires__gt=timezone.now(),
             expiring=True,
-            provider__logout_method=LogoutMethods.FRONTCHANNEL_IFRAME,
+            provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_IFRAME,
         )
         .exclude(provider__sls_url="")
         .select_related("provider")
@@ -133,7 +133,7 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
             user=user,
             expires__gt=timezone.now(),
             expiring=True,
-            provider__logout_method=LogoutMethods.FRONTCHANNEL_NATIVE,
+            provider__logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
         )
         .exclude(provider__sls_url="")
         .select_related("provider")
@@ -202,7 +202,7 @@ def user_session_deleted_saml_logout(sender, instance: AuthenticatedSession, **_
     backchannel_saml_sessions = (
         SAMLSession.objects.filter(
             session=instance,
-            provider__logout_method=LogoutMethods.BACKCHANNEL,
+            provider__logout_method=SAMLLogoutMethods.BACKCHANNEL,
             provider__sls_binding=SAMLBindings.POST,
         )
         .exclude(provider__sls_url="")
@@ -235,7 +235,7 @@ def user_deactivated_saml_logout(sender, instance: User, **kwargs):
     backchannel_saml_sessions = (
         SAMLSession.objects.filter(
             user=instance,
-            provider__logout_method=LogoutMethods.BACKCHANNEL,
+            provider__logout_method=SAMLLogoutMethods.BACKCHANNEL,
             provider__sls_binding=SAMLBindings.POST,
         )
         .exclude(provider__sls_url="")
