@@ -114,38 +114,6 @@ body {
 
 /* #endregion  */
 
-/* #region Tabs */
-
-.pf-c-tabs {
-    background-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__item.pf-m-current {
-    --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
-}
-
-.pf-c-tabs__link {
-    --pf-c-tabs__link--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
-    background-color: transparent;
-}
-
-/* #endregion */
-
 /* #Region Mobile Tables */
 @media screen and (max-width: 1200px) {
     .pf-m-grid-xl.pf-c-table tbody:first-of-type {

@@ -932,28 +932,30 @@ export abstract class Table<T extends object>
 
         return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
-            <table
-                aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
-                aria-rowcount=${totalItemCount}
-                class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
-            >
-                <thead aria-label=${msg("Column actions")}>
-                    <tr class="pf-c-table__header-row">
-                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                        ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                        ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
-                            renderTableColumn({
-                                label,
-                                ariaLabel,
-                                orderBy,
-                                table: this,
-                                columnIndex: idx,
-                            }),
-                        )}
-                    </tr>
-                </thead>
-                ${this.renderRows()}
-            </table>
+            <div part="table-container">
+                <table
+                    aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
+                    aria-rowcount=${totalItemCount}
+                    class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
+                >
+                    <thead aria-label=${msg("Column actions")}>
+                        <tr class="pf-c-table__header-row">
+                            ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
+                            ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                            ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
+                                renderTableColumn({
+                                    label,
+                                    ariaLabel,
+                                    orderBy,
+                                    table: this,
+                                    columnIndex: idx,
+                                }),
+                            )}
+                        </tr>
+                    </thead>
+                    ${this.renderRows()}
+                </table>
+            </div>
             ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
