@@ -15,7 +15,7 @@ from pathlib import Path
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
