@@ -12,14 +12,14 @@ from authentik.providers.saml.views.flows import PLAN_CONTEXT_SAML_LOGOUT_IFRAME
 class IframeLogoutChallenge(Challenge):
     """Challenge for iframe logout"""
 
-    component = CharField(default="ak-stage-iframe-logout")
+    component = CharField(default="ak-provider-iframe-logout")
     logout_urls = ListField(child=DictField(), default=list)
 
 
 class IframeLogoutChallengeResponse(ChallengeResponse):
     """Response for iframe logout"""
 
-    component = CharField(default="ak-stage-iframe-logout")
+    component = CharField(default="ak-provider-iframe-logout")
 
 
 class IframeLogoutStageView(ChallengeStageView):
@@ -50,7 +50,7 @@ class IframeLogoutStageView(ChallengeStageView):
 
         return IframeLogoutChallenge(
             data={
-                "component": "ak-stage-iframe-logout",
+                "component": "ak-provider-iframe-logout",
                 "logout_urls": logout_urls,
             }
         )

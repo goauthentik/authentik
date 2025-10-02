@@ -21,7 +21,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-stage-native-logout")
+@customElement("ak-provider-saml-native-logout")
 export class NativeLogoutStage extends BaseStage<
     NativeLogoutChallenge,
     FlowChallengeResponseRequest
@@ -110,6 +110,6 @@ export class NativeLogoutStage extends BaseStage<
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-stage-native-logout": NativeLogoutStage;
+        "ak-provider-saml-native-logout": NativeLogoutStage;
     }
 }

@@ -509,6 +509,18 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-session-end>`;
+            case "ak-provider-saml-native-logout":
+                await import("#flow/providers/saml/NativeLogoutStage");
+                return html`<ak-provider-saml-native-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-provider-saml-native-logout>`;
+            case "ak-provider-iframe-logout":
+                await import("#flow/providers/IFrameLogoutStage");
+                return html`<ak-provider-iframe-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-provider-iframe-logout>`;
             // Internal stages
             case "ak-stage-flow-error":
                 return html`<ak-stage-flow-error
@@ -529,18 +541,6 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></xak-flow-frame>`;
-            case "ak-stage-native-logout":
-                await import("#flow/providers/saml/NativeLogoutStage");
-                return html`<ak-stage-native-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-native-logout>`;
-            case "ak-stage-iframe-logout":
-                await import("#flow/providers/IFrameLogoutStage");
-                return html`<ak-stage-iframe-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-iframe-logout>`;
             default:
                 return html`Invalid native challenge element`;
         }

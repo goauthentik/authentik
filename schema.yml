@@ -40704,8 +40704,8 @@ components:
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
-          ak-stage-iframe-logout: '#/components/schemas/IframeLogoutChallenge'
-          ak-stage-native-logout: '#/components/schemas/NativeLogoutChallenge'
+          ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallenge'
+          ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallenge'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
@@ -42749,8 +42749,8 @@ components:
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
-          ak-stage-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
-          ak-stage-native-logout: '#/components/schemas/NativeLogoutChallengeResponseRequest'
+          ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
+          ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallengeResponseRequest'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -44278,7 +44278,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-stage-iframe-logout
+          default: ak-provider-iframe-logout
         response_errors:
           type: object
           additionalProperties:
@@ -44297,7 +44297,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-stage-iframe-logout
+          default: ak-provider-iframe-logout
     ImpersonationRequest:
       type: object
       properties:
@@ -46220,7 +46220,7 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
           type: string
-          default: ak-stage-native-logout
+          default: ak-provider-saml-native-logout
         response_errors:
           type: object
           additionalProperties:
@@ -46249,7 +46249,7 @@ components:
         component:
           type: string
           minLength: 1
-          default: ak-stage-native-logout
+          default: ak-provider-saml-native-logout
     NetworkBindingEnum:
       enum:
       - no_binding

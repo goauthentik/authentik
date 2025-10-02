@@ -18,7 +18,7 @@ class NativeLogoutStageViewBase(ChallengeStageView):
 class NativeLogoutChallenge(Challenge):
     """Challenge for native browser logout"""
 
-    component = CharField(default="ak-stage-native-logout")
+    component = CharField(default="ak-provider-saml-native-logout")
     post_url = CharField(required=False)
     saml_request = CharField(required=False)
     relay_state = CharField(required=False)
@@ -31,7 +31,7 @@ class NativeLogoutChallenge(Challenge):
 class NativeLogoutChallengeResponse(ChallengeResponse):
     """Response for native browser logout"""
 
-    component = CharField(default="ak-stage-native-logout")
+    component = CharField(default="ak-provider-saml-native-logout")
 
 
 class NativeLogoutStageView(NativeLogoutStageViewBase):
@@ -46,7 +46,7 @@ class NativeLogoutStageView(NativeLogoutStageViewBase):
             self.executor.plan.context.pop(PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS, None)
             return NativeLogoutChallenge(
                 data={
-                    "component": "ak-stage-native-logout",
+                    "component": "ak-provider-saml-native-logout",
                     "is_complete": True,
                 }
             )
@@ -56,7 +56,7 @@ class NativeLogoutStageView(NativeLogoutStageViewBase):
 
         return NativeLogoutChallenge(
             data={
-                "component": "ak-stage-native-logout",
+                "component": "ak-provider-saml-native-logout",
                 **logout_data,
             }
         )

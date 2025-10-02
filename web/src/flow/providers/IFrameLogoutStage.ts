@@ -44,7 +44,7 @@ function renderStatusIcon(status: string): TemplateResult | typeof nothing {
     return nothing;
 }
 
-@customElement("ak-stage-iframe-logout")
+@customElement("ak-provider-iframe-logout")
 export class IFrameLogoutStage extends BaseStage<
     IframeLogoutChallenge,
     FlowChallengeResponseRequest
@@ -265,6 +265,6 @@ export class IFrameLogoutStage extends BaseStage<
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-stage-iframe-logout": IFrameLogoutStage;
+        "ak-provider-iframe-logout": IFrameLogoutStage;
     }
 }
