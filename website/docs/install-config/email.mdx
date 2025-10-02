@@ -212,7 +212,7 @@ volumes:
           name: my-custom-cert
 ```
 
-3. Add a volumeMount and environment variable to your server and worker containers by adding the following configration to your kubernetes `values.yaml` file in the appropriate locations:
+3. Add a `volumeMount` and environment variable to your server and worker containers by adding the following configuration to your kubernetes `values.yaml` file in the appropriate locations:
 
 ```yaml
 volumeMounts:
@@ -225,7 +225,7 @@ env:
       value: /etc/ssl/certs/ca-certificates.crt
 ```
 
-4. Redploy the containers for the change to take effect.
+4. Recreate the pods for the changes to take effect.
 
   </TabItem>
 </Tabs>
