@@ -156,8 +156,12 @@ export abstract class SearchSelectBase<T>
     //#endregion
 
     public toForm(): string {
-        if (!this.objects) {
-            throw new PreventFormSubmit(msg("Loading options..."));
+        if (!this.objects && !this.blankable) {
+            // TODO: The loading state needs more exposure to forms.
+            // For E2E tests that run significantly faster than humans,
+            // there isn't enough context to know that the data is still being fetched.
+
+            throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
         return this.value(this.selectedObject) || "";
     }
