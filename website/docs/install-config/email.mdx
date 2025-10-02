@@ -171,7 +171,7 @@ Redeploy the authentik containers, and use the `ak test_email` command to confir
 
 ## SMTP server with TLS verification
 
-If you're configuring authentik to send email via an SMTP server that has TLS enabled...
+If you're configuring authentik to send email via an SMTP server that has TLS enabled you will need to mount the authenticating certificate in your authenik worker and server containers:
 
 <Tabs
   groupId="deployment"
@@ -183,16 +183,7 @@ If you're configuring authentik to send email via an SMTP server that has TLS en
 >
   <TabItem value="docker">
 
-Add the following to your Docker compose configuration so that your authentik container trusts the same root certificates as the docker host:
-
-```yaml
-volumes:
-    - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
-environment:
-    - SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
-```
-
-Or if the certificate is located elsewhere:
+1. Add the following configuration to the server and worker containers in your Docker Compose file:
 
 ```yaml
 volumes:
@@ -201,14 +192,40 @@ environment:
     - SSL_CERT_FILE="/etc/ssl/certs/<cert_name>.crt"
 ```
 
+2. Redeploy the containers for the changes to take effect.
+
   </TabItem>
   <TabItem value="kubernetes">
 
-Add the following to your Kubernetes `values.yaml` file
+1. Create a `ConfigMap` with your certificate by running the following command on the kubernetes host:
+
+```sh
+kubectl create configmap my-custom-cert --from-file=<cert_name>.crt -n <your_namespace>
+```
+
+2. Create a volume by adding the following configration to your kubernetes `values.yaml` file:
 
 ```yaml
-
+volumes:
+    - name: custom-ca
+      configMap: # or use secret if preferred
+          name: my-custom-cert
 ```
+
+3. Add a volumeMount and environment variable to your server and worker containers by adding the following configration to your kubernetes `values.yaml` file in the appropriate locations:
+
+```yaml
+volumeMounts:
+    - name: custom-ca
+      mountPath: /etc/ssl/certs/ca-certificates.crt
+      subPath: ca-certificates.crt
+      readOnly: true
+env:
+    - name: SSL_CERT_FILE
+      value: /etc/ssl/certs/ca-certificates.crt
+```
+
+4. Redploy the containers for the change to take effect.
 
   </TabItem>
 </Tabs>
