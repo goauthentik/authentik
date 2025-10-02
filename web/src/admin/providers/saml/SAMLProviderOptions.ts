@@ -1,4 +1,4 @@
-import { DigestAlgorithmEnum, SignatureAlgorithmEnum, SAMLBindingsEnum } from "@goauthentik/api";
+import { DigestAlgorithmEnum, SAMLBindingsEnum, SignatureAlgorithmEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 

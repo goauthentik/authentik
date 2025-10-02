@@ -6,7 +6,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { SAMLProvider, SAMLProviderLogoutMethodEnum, SAMLBindingsEnum } from "@goauthentik/api";
+import { SAMLBindingsEnum, SAMLProvider, SAMLProviderLogoutMethodEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";

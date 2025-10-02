@@ -7,9 +7,9 @@ import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import {
     ProvidersApi,
+    SAMLBindingsEnum,
     SAMLProvider,
     SAMLProviderLogoutMethodEnum,
-    SAMLBindingsEnum,
 } from "@goauthentik/api";
 
 import { customElement, state } from "lit/decorators.js";

@@ -18,11 +18,11 @@ import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
+    SAMLBindingsEnum,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
     SAMLProviderLogoutMethodEnum,
-    SAMLBindingsEnum,
     ValidationError,
 } from "@goauthentik/api";
 
