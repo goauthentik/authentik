@@ -2,7 +2,7 @@ import { ConsoleLogger, FixtureLogger } from "#logger/node";
 
 import { Page } from "@playwright/test";
 
-export interface PageFixtureOptions {
+export interface PageFixtureInit {
     page: Page;
     testName: string;
 }
@@ -19,7 +19,7 @@ export abstract class PageFixture {
     protected readonly page: Page;
     protected readonly testName: string;
 
-    constructor({ page, testName }: PageFixtureOptions) {
+    constructor({ page, testName }: PageFixtureInit) {
         this.page = page;
         this.testName = testName;
 

@@ -1,6 +1,5 @@
 import { expect, test } from "#e2e";
 import { randomName } from "#e2e/utils/generators";
-import { ConsoleLogger } from "#logger/node";
 
 import { IDGenerator } from "@goauthentik/core/id";
 import { series } from "@goauthentik/core/promises";
@@ -45,49 +44,13 @@ test.describe("Provider Wizard", () => {
         });
     });
 
-    test.afterEach("Verification", async ({ page, form }, { testId }) => {
+    test.afterEach("Verification", async ({ form }, { testId }) => {
         //#region Confirm provider
 
         const providerName = providerNames.get(testId)!;
-        const { fill, findTextualInput } = form;
+        const { search } = form;
 
-        const $provider = await test.step("Find provider via search", async () => {
-            const providerSearch = await findTextualInput("Provider Search");
-
-            // We have to wait for the provider to appear in the table,
-            // but several UI elements will be rendered asynchronously.
-            // We attempt several times to find the provider to avoid flakiness.
-
-            const tries = 10;
-            let found = false;
-
-            for (let i = 0; i < tries; i++) {
-                await fill(providerSearch, providerName);
-                await providerSearch.press("Enter");
-
-                const $rowEntry = page.getByRole("row", {
-                    name: providerName,
-                });
-
-                ConsoleLogger.info(
-                    `${i + 1}/${tries} Waiting for provider ${providerName} to appear in the table`,
-                );
-
-                found = await $rowEntry
-                    .waitFor({
-                        timeout: 1500,
-                    })
-                    .then(() => true)
-                    .catch(() => false);
-
-                if (found) {
-                    ConsoleLogger.info(`Provider ${providerName} found in the table`);
-                    return $rowEntry;
-                }
-            }
-
-            throw new Error(`Provider ${providerName} not found in the table`);
-        });
+        const $provider = await test.step("Find provider via search", () => search(providerName));
 
         await expect($provider, "Provider is visible").toBeVisible();
 
