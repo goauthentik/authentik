@@ -13,12 +13,10 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
@@ -31,7 +29,7 @@ from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
-DB_ERRORS = (OperationalError, Error, RedisError)
+DB_ERRORS = (OperationalError, Error)
 
 
 class CurrentTask(BaseCurrentTask):
@@ -188,8 +186,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
         except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
