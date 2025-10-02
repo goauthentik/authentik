@@ -14,54 +14,57 @@ The following placeholders are used in this guide:
 
 ## Github configuration
 
-1. Create an OAuth app under Developer Settings https://github.com/settings/developers by clicking on the **Register a new application**
+1. Log in to the GitHub and open the [Developer Settings](https://github.com/settings/developers) menu.
+2. Create an OAuth app by clicking on the **Register a new application** button and set the following values:
+    - **Application Name**: `authentik`
+    - **Homepage URL**: `www.my.company`
+    - **Authorization callback URL**: `https://authentik.company/source/oauth/callback/github`
 
-![Register OAuth App](./githubdeveloper1.png)
-
-2. **Application Name:** Choose a name users will recognize ie: authentik
-3. **Homepage URL:** www.my.company
-4. **Authorization callback URL:**: https://authentik.company/source/oauth/callback/github
-5. Click **Register Application**
-
-Example screenshot
-
-![](./githubdeveloperexample.png)
-
-6. Copy the **Client ID** and _save it for later_
-7. Click **Generate a new client secret** and _save it for later_ You will not be able to see the secret again, so be sure to copy it now.
+3. Click **Register Application**
+4. Click **Generate a new client secret** and take note of the **Client Secret** and **Client ID**. These values will be required in the next section.
 
 ## authentik configuration
 
-8. Under **Directory > Federation & Social login** click **Create Github OAuth Source**.
-9. **Name:** Choose a name (For the example I use Github)
-10. **Slug:** github (If you choose a different slug the URLs will need to be updated to reflect the change)
-11. **Consumer Key:** Client ID from step 6
-12. **Consumer Secret:** Client Secret from step 7
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **GitHub OAuth Source** as the source type.
+    - **Create Facebook OAuth Source**: provide a name, set the slug to `github`, and set the following required configurations:
+        - **User matching mode**: leave default option unless other configuration is needed.
+        - **User path**: leave default option unless other configuration is needed.
+        - **Icon**: optionally you can select a specific icon or logo to display on the login form.
+        - **Protocol settings**
+            - **Consumer Key**: <client_ID>
+            - **Consumer Secret**: <client_secret>
+            - **Scopes**_(optional)_: define any further access scopes.
+        - **Flow settings**
+            - **Authentication flow**: leave the default `default-source-authentication` option.
+            - **Enrollment flow**: leave the default `default-source-enrollment` option.
+3. Click **Finish** to save your settings.
 
-Here is an example of a complete authentik Github OAuth Source
-
-![](./githubexample2.png)
-
-Save, and you now have Github as a source.
-
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
 ### Checking for membership of a GitHub Organisation
 
-To check if the user is member of an organisation, you can use the following policy on your flows:
-
 :::info
-Make sure to include `read:org` in the sources' _Scopes_ setting.
+Ensure that the GitHub OAuth source in **Federation & Social login** has the additional `read:org` scope added under **Protocol settings** > **Scopes**.
 :::
 
+To check if the user is member of an organisation, you can use the following policy on your flows.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings**.
+3. Click **Create**, select **OAuth Source Property Mapping** and then **Next**.
+4. Provide a name for the mapping and set the following expression:
+
 ```python
+# Set this value
+accepted_org = "your_organization"
+
 # Ensure flow is only run during oauth logins via Github
 if not isinstance(context['source'], OAuthSource) or context["source"].provider_type != "github":
     return True
-
-accepted_org = "foo"
 
 # Get the user-source connection object from the context, and get the access token
 connection = context["goauthentik.io/sources/connection"]
@@ -71,7 +74,6 @@ access_token = connection.access_token
 github_username = context["oauth_userinfo"]
 
 # Github does not include Organisations in the userinfo endpoint, so we have to call another URL
-
 orgs_response = requests.get(
     "https://api.github.com/user/orgs",
     auth=(github_username["login"], access_token),
@@ -95,6 +97,12 @@ if not user_matched:
 return user_matched
 ```
 
-If a user is not member of the chosen organisation, they will see this message
+6. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the GitHub OAuth source.
+7. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
+8. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+9. Select the policy that you previously created and click **Create**.
+10. Optionally, repeat the process for any other flows that you want the policy applied to.
+
+If a user is not member of the chosen organisation, they will see this message:
 
 ![](./github_org_membership.png)
