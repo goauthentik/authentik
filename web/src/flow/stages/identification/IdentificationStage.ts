@@ -260,6 +260,12 @@ export class IdentificationStage extends BaseStage<
     }
 
     onSubmitFailure(): void {
+        const captchaInput = this.#captchaInputRef.value;
+
+        if (captchaInput) {
+            captchaInput.value = "";
+        }
+
         this.captchaRefreshedAt = new Date();
     }
 
