@@ -18,9 +18,7 @@ export const LOCALES = RAW_LOCALES.map((locale) =>
 );
 
 export function getBestMatchLocale(locale: string): AkLocale | undefined {
-    // Normalize "en-gb" and "en-us" to "en"
-    const normalizedLocale = locale.toLowerCase().startsWith("en-") ? "en" : locale;
-    return LOCALES.find((l) => l.match.test(normalizedLocale));
+    return LOCALES.find((l) => l.match.test(locale));
 }
 
 // This looks weird, but it's sensible: we have several candidates, and we want to find the first
