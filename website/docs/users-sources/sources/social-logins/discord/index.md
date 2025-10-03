@@ -421,3 +421,6 @@ return True
 9. Repeat the process for any other flows that you want the policy applied to.
 
 ## Resources
+
+- [Discord Developer Documentation](https://discord.com/developers/docs/intro)
+- [Discord Developer Documentation - OAuth2](https://discord.com/developers/docs/topics/oauth2#oauth2)

@@ -50,3 +50,5 @@ For instructions on embedding the new source within a flow, such as an authoriza
 :::
 
 ## Resources
+
+- [Twitch Developer Documentation](https://dev.twitch.tv/docs)

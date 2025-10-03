@@ -41,5 +41,3 @@ The following variables are available to OAuth source property mappings:
 
 - `info`: A Python dictionary containing Plex user data.
 - `auth_api`: A Plex client object to make requests to the Source with authentication built-in.
-
-## Resources
