@@ -51,8 +51,8 @@ export function autoDetectLanguage(userReq = TOMBSTONE, brandReq = TOMBSTONE): s
     const localeCandidates: string[] = [
         localeCodeFromUrl("locale"),
         //userReq,
-        brandReq,
         window.navigator?.language ?? TOMBSTONE,
+        brandReq,
         globalAK()?.locale ?? TOMBSTONE,
         DEFAULT_LOCALE,
     ].filter(isLocaleCandidate);
