@@ -17,16 +17,20 @@ export type ClickByRole = (
 export class PointerFixture extends PageFixture {
     public static fixtureName = "Pointer";
 
+    /**
+     * A high-level click function that simplifies clicking on buttons and links.
+     */
     public click = (
-        name: string,
+        name: string | RegExp,
         optionsOrRole?: ARIAOptions | ARIARole,
         context: LocatorContext = this.page,
     ): Promise<void> => {
         if (typeof optionsOrRole === "string") {
-            return context.getByRole(optionsOrRole, { name }).click();
+            return context.getByRole(optionsOrRole, { name }).first().click();
         }
 
         const options = {
+            exact: typeof name === "string",
             ...optionsOrRole,
             name,
         };

@@ -79,7 +79,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     render(): TemplateResult {
-        return html` <section class="pf-c-page__main-section">
+        return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
             <div class="pf-l-grid pf-m-gutter">
                 <!-- row 1 -->
                 <div
@@ -92,14 +92,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
                     <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-zone"
-                            header=${msg("Outpost status")}
+                            label=${msg("Outpost status")}
                             headerLink="#/outpost/outposts"
                         >
                             <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
+                        <ak-aggregate-card icon="fa fa-sync-alt" label=${msg("Sync status")}>
                             <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                         </ak-aggregate-card>
                     </div>
@@ -120,7 +120,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 >
                     <ak-aggregate-card
                         icon="pf-icon pf-icon-server"
-                        header=${msg("Logins and authorizations over the last week (per 8 hours)")}
+                        label=${msg("Logins and authorizations over the last week (per 8 hours)")}
                     >
                         <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
                     </ak-aggregate-card>
@@ -130,13 +130,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 >
                     <ak-aggregate-card
                         icon="pf-icon pf-icon-server"
-                        header=${msg("Apps with most usage")}
+                        label=${msg("Apps with most usage")}
                     >
                         <ak-top-applications-table></ak-top-applications-table>
                     </ak-aggregate-card>
                 </div>
             </div>
-        </section>`;
+        </main>`;
     }
 
     renderCards() {

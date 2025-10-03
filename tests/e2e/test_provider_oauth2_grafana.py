@@ -400,7 +400,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
 
         negative_policy = ExpressionPolicy.objects.create(
-            name="negative-static", expression="return False"
+            name=generate_id(), expression="return False"
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
         self.driver.get("http://localhost:3000")

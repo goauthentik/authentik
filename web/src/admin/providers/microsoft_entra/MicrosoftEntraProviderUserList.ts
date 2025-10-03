@@ -95,11 +95,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://en.wikipedia.org/wiki/Wiki.js
 
-:::note
+:::info
 This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ between versions.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `wiki.company` is the FQDN of Wiki.js installation.
 - `authentik.company` is the FQDN of authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -66,10 +66,10 @@ In Wiki.js, configure the authentication strategy with these settings:
 
 ![](./wiki-js_strategy.png)
 
-:::note
+:::info
 You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
 :::
 
-:::note
+:::info
 If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::

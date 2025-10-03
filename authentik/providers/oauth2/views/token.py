@@ -340,7 +340,7 @@ class TokenParams:
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
-            key=password, intent=TokenIntents.INTENT_APP_PASSWORD
+            key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
@@ -684,32 +684,8 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.refresh_token.user,
-            scope=self.params.refresh_token.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.refresh_token.id_token.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Mark old token as revoked
-        self.params.refresh_token.revoked = True
-        self.params.refresh_token.save()
-
-        return {
+        res = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
@@ -717,6 +693,37 @@ class TokenView(View):
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        if (
+            refresh_token_threshold.total_seconds() == 0
+            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+        ):
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.refresh_token.user,
+                scope=self.params.refresh_token.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.refresh_token.auth_time,
+                session=self.params.refresh_token.session,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+
+            # Mark old token as revoked
+            self.params.refresh_token.revoked = True
+            self.params.refresh_token.save()
+            res["refresh_token"] = refresh_token.token
+
+        return res
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""

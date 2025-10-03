@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `wazuh-indexer.company` is the FQDN of the Wazuh Indexer installation
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -80,7 +80,7 @@ To support the integration of authentik with Wazuh, you will need to configure S
 
 ### Wazuh Indexer SAML configuration
 
-:::note
+:::info
 The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metadata file. Ensure that the filename used in this context matches the name of your SAML Metadata file.
 :::
 
@@ -135,7 +135,7 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
                 type: noop
     ```
 
-:::note
+:::info
 Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
 
 And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `saml_auth_domain` section.

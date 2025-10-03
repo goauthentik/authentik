@@ -18,11 +18,11 @@ The following placeholders are used in this guide:
 - `drupal.company` is the FQDN of the Drupal installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::note
+:::info
 There are many different modules for Drupal that allow you to set up SSO using different authentication methods. This tutorial uses the [OpenID Connect / OAuth client](https://www.drupal.org/project/openid_connect) module.
 :::
 

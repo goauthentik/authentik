@@ -28,7 +28,7 @@ SSH private keys can be configured via several methods:
     ```
 5. Click **Update**.
 
-:::note
+:::info
 The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
 :::
 
@@ -53,7 +53,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
     ```
 6. Click **Update**.
 
-:::note
+:::info
 The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
 :::
 
@@ -104,6 +104,6 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 6.  Under **Protocol Settings**, add the newly created property mapping to **Selected Property Mappings**.
 7.  Click **Update**.
 
-:::note
+:::info
 For group attributes, the following expression can be used `request.user.group_attributes(request.http_request)`.
 :::
