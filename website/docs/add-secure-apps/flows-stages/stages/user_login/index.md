@@ -10,7 +10,7 @@ It can be used after `user_write` during an enrollment flow, or after a `passwor
 
 When creating or editing this stage in the Admin interface, you can set the following configuration options.
 
-### Session duration
+### `Session duration`
 
 By default, the authentik session expires when you close your browser (_seconds=0_).
 
@@ -30,19 +30,19 @@ You can set the session to expire after any duration using the syntax of `hours=
 
 All values accept floating-point values.
 
-### Stay signed in offset
+###`Stay signed in offset`
 
 When this is set to a higher value than the default _seconds=0_, the user logging in is shown a prompt, allowing the user to choose if their session should be extended or not. The same syntax as for _Session duration_ applies.
 
     ![](./stay_signed_in.png)
 
-### Remember device
+### `Remember device`
 
 If set to a duration above 0, a cookie is stored for the duration specified that informs authentik whether the user is signing in from a known or unknown (new) device.
 
 If there's an existing authenticated user session for the user with the same IP address, authentik also classifies this as a known device. See [here](../../../../sys-mgmt/events/notification_rule_expression_policies.mdx#trigger-alert-when-user-logs-in-from-unknown-device) for an example of how an alert can be configured for logins from unknown devices.
 
-### Network binding and GeoIP binding
+### `Network binding and GeoIP binding`
 
 When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
@@ -85,6 +85,6 @@ Sessions that break this binding will be terminated. The created [`logout`](../.
 }
 ```
 
-### Terminate other sessions
+### `Terminate other sessions`
 
 When enabled, previous sessions of the same user are revoked. This has no affect on OAuth refresh tokens.
