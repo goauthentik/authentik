@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.db import models
@@ -19,7 +19,7 @@ from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings
-from guardian.mixins import GuardianUserMixin
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -38,6 +38,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
+from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
@@ -62,6 +63,17 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 GROUP_RECURSION_LIMIT = 20
+
+MANAGED_ROLE_PREFIX_USER = "ak-managed-role--user"
+MANAGED_ROLE_PREFIX_GROUP = "ak-managed-role--group"
+
+
+def managed_role_name(user_or_group: models.Model):
+    if isinstance(user_or_group, User):
+        return f"{MANAGED_ROLE_PREFIX_USER}-{user_or_group.pk}"
+    if isinstance(user_or_group, Group):
+        return f"{MANAGED_ROLE_PREFIX_GROUP}-{user_or_group.pk}"
+    raise TypeError("Managed roles are only available for User or Group.")
 
 
 def default_token_duration() -> datetime:
@@ -142,6 +154,10 @@ class AttributesMixin(models.Model):
 
 
 class GroupQuerySet(QuerySet):
+    def with_descendants(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(Q(pk__in=pks) | Q(ancestor_nodes__ancestor__in=pks)).distinct()
+
     def with_ancestors(self):
         pks = self.values_list("pk", flat=True)
         return Group.objects.filter(
@@ -219,6 +235,27 @@ class Group(SerializerModel, AttributesMixin):
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this group and all of its ancestors."""
+        return Role.objects.filter(
+            ak_groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
+        ).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            role, created = Role.objects.get_or_create(name=managed_role_name(self))
+            if created:
+                role.groups.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def assign_perms_to_managed_role(
+        self, perm: str | list[str] | Permission | list[Permission], obj: models.Model | None = None
+    ):
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perm, obj)
+
 
 class GroupParentageNode(SerializerModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -226,10 +263,14 @@ class GroupParentageNode(SerializerModel):
     child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
     parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
 
-    # def serializer(self) -> type[BaseSerializer]:
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.core.api.groups import GroupParentageNodeSerializer
+
+        return GroupParentageNodeSerializer
 
     def __str__(self) -> str:
-        return f"Group Parentage Node #{self.child} to {self.parent}"
+        return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
 
     class Meta:
         verbose_name = _("Group Parentage Node")
@@ -253,7 +294,7 @@ class GroupAncestryNode(models.Model):
         managed = False
 
     def __str__(self) -> str:
-        return f"Group Ancestor #{self.descendant} to {self.ancestor}"
+        return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
 
 
 class UserQuerySet(models.QuerySet):
@@ -280,7 +321,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
+class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -290,6 +331,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -328,6 +370,56 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
         return self.ak_groups.all().with_ancestors()
+
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this user and all of its groups (recursively)."""
+        return Role.objects.filter(Q(users=self) | Q(ak_groups__in=self.all_groups())).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            role, created = Role.objects.get_or_create(name=managed_role_name(self))
+            if created:
+                role.users.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def get_all_model_perms_on_managed_role(self) -> QuerySet[RoleModelPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleModelPermission.objects.none()
+        return RoleModelPermission.objects.filter(role=role)
+
+    def get_all_obj_perms_on_managed_role(self) -> QuerySet[RoleObjectPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleObjectPermission.objects.none()
+        return RoleObjectPermission.objects.filter(role=role)
+
+    def assign_perms_to_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perms, obj)
+
+    def remove_perms_from_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        role.remove_perms(perms, obj)
+
+    def remove_all_perms_from_managed_role(self):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        RoleModelPermission.objects.filter(role=role).delete()
+        RoleObjectPermission.objects.filter(role=role).delete()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,

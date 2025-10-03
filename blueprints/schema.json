@@ -304,6 +304,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_core.groupparentagenode"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_core.groupparentagenode_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_core.groupparentagenode"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_core.groupparentagenode"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_core.token"
                         },
                         "id": {
@@ -4851,6 +4891,48 @@
                 }
             }
         },
+        "model_authentik_core.groupparentagenode": {
+            "type": "object",
+            "properties": {
+                "child": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Child"
+                },
+                "parent": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Parent"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_core.groupparentagenode_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupparentagenode",
+                            "change_groupparentagenode",
+                            "delete_groupparentagenode",
+                            "view_groupparentagenode"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_core.token": {
             "type": "object",
             "properties": {
@@ -5022,6 +5104,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -5035,6 +5119,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -5046,6 +5132,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -5065,6 +5153,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
@@ -7562,6 +7652,7 @@
                         null,
                         "authentik_tenants.domain",
                         "authentik_core.group",
+                        "authentik_core.groupparentagenode",
                         "authentik_core.user",
                         "authentik_core.application",
                         "authentik_core.applicationentitlement",
@@ -9748,6 +9839,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -9761,6 +9854,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -9772,6 +9867,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -9791,6 +9888,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
