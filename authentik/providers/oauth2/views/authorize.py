@@ -427,9 +427,10 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
                 )
 
-        # Add CORS headers based on the provider's redirect URIs
+        # Add CORS headers based on the provider's redirect URIs, if a provider exists and has
+        # redirect URIs configured
         allowed_origins = []
-        if self.provider and hasattr(self.provider, "redirect_uris"):
+        if hasattr(self, "provider") and self.provider and hasattr(self.provider, "redirect_uris"):
             allowed_origins = [x.url for x in self.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
 
