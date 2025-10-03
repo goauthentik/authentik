@@ -35,7 +35,7 @@ else:
 
 ### Change user attributes upon account deactivation
 
-This expression is triggered when a user account with the `sshPublicKey` attribute set is deactivated. It saves the `sshPublicKey` attribute to a new `inactivesshPublicKey` attribute, and subsequently nullifies the `sshPublicKey` attribute.
+This expression policy is triggered when a user account with the `sshPublicKey` attribute set is deactivated. It saves the `sshPublicKey` attribute to a new `inactivesshPublicKey` attribute, and subsequently nullifies the `sshPublicKey` attribute.
 
 ```python
 from authentik.core.models import User
