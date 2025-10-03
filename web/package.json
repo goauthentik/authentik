@@ -94,7 +94,7 @@
         "@eslint/js": "^9.31.0",
         "@floating-ui/dom": "^1.7.4",
         "@formatjs/intl-listformat": "^7.7.11",
-        "@fortawesome/fontawesome-free": "^7.0.1",
+        "@fortawesome/fontawesome-free": "^7.1.0",
         "@goauthentik/api": "^2025.10.0-rc1-1759331038",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.2.2",
