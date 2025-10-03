@@ -295,7 +295,7 @@ requires-dist = [
     { name = "django-postgres-cache", editable = "packages/django-postgres-cache" },
     { name = "django-prometheus", specifier = "==2.4.1" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tenants", specifier = "==3.8.0" },
+    { name = "django-tenants", specifier = "==3.9.0" },
     { name = "djangoql", specifier = "==0.18.1" },
     { name = "djangorestframework", git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian", specifier = "==0.4.0" },
@@ -1198,12 +1198,15 @@ wheels = [
 
 [[package]]
 name = "django-tenants"
-version = "3.8.0"
+version = "3.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/7b/22e3bb79d48e5a4fdcacdcdc27bbc5c2523a2b7892b440bfe229f313d823/django_tenants-3.8.0.tar.gz", hash = "sha256:07d009d5d01be2d65c3f5ddbf323d58d1228838fc1a64fded15c8e5c6f41cf8f", size = 154307, upload-time = "2025-05-23T16:07:24.307Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/54/c2e0e2dacd1caa9729c054da5bbdee4244ccd0de912b70dc2932a46ef177/django_tenants-3.9.0.tar.gz", hash = "sha256:6bc67c26be57f412e47c476261a977ef0ef74ec3740d50fd1eb6b69cb072eb03", size = 154244, upload-time = "2025-09-05T10:08:31.973Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/57/918cfca627fcdc3441981dddc72a22be02e57abdb5391eb7339ea77a5ef4/django_tenants-3.9.0-py3-none-any.whl", hash = "sha256:14421088a4336444e2c4af54f21a6af2e57e53dcf95ba5d19b5fa17142cb460b", size = 215955, upload-time = "2025-09-06T21:46:05.939Z" },
+]
 
 [[package]]
 name = "djangoql"

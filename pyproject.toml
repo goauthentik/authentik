@@ -24,7 +24,7 @@ dependencies = [
   "django-pgtrigger==4.15.2",
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
-  "django-tenants==3.8.0",
+  "django-tenants==3.9.0",
   "djangoql==0.18.1",
   "djangorestframework-guardian==0.4.0",
   "djangorestframework==3.16.0",
