@@ -188,6 +188,7 @@ class TestFlowExecutor(FlowTestCase):
         flow.designation = FlowDesignation.AUTHENTICATION
         flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
         flow.save()
+        self.client.force_login(create_test_user())
 
         dest = "/unique-string"
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
