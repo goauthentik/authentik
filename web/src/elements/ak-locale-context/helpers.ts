@@ -38,10 +38,11 @@ export function localeCodeFromUrl(param = "locale") {
 }
 
 // Get all locales we can, in order
-// - Global authentik settings (contains user settings)
 // - URL parameter
-// - A requested code passed in, if any
-// - Navigator
+// - User settings
+// - Brand settings
+// - Navigator (browser locale)
+// - authentik global locale
 // - Fallback (en)
 
 const isLocaleCandidate = (v: unknown): v is string =>
