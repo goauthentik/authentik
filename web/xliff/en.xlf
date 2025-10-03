@@ -175,10 +175,6 @@
         <source>Select an object.</source>
         <target>Select an object.</target>
       </trans-unit>
-      <trans-unit id="s04ceadb276bbe149">
-        <source>Loading options...</source>
-        <target>Loading options...</target>
-      </trans-unit>
       <trans-unit id="sfe629863ba1338c2">
         <source>Connection error, reconnecting...</source>
         <target>Connection error, reconnecting...</target>
@@ -402,10 +398,6 @@
       <trans-unit id="sae486938be80729c">
         <source>Everything is ok.</source>
         <target>Everything is ok.</target>
-      </trans-unit>
-      <trans-unit id="sea91c57b3d3969fe">
-        <source>System status</source>
-        <target>System status</target>
       </trans-unit>
       <trans-unit id="scefe482c547fb3f3">
         <source>Based on <x id="0" equiv-text="${value.versionCurrent}"/></source>
@@ -1717,10 +1709,6 @@
         <source>Last login</source>
         <target>Last login</target>
       </trans-unit>
-      <trans-unit id="s3e3bb9e7cb1de4fd">
-        <source>Select users to add</source>
-        <target>Select users to add</target>
-      </trans-unit>
       <trans-unit id="s75d5ff5dd8d3c6d2">
         <source>Successfully updated group.</source>
         <target>Successfully updated group.</target>
@@ -1728,14 +1716,6 @@
       <trans-unit id="s3079ca1184e77573">
         <source>Successfully created group.</source>
         <target>Successfully created group.</target>
-      </trans-unit>
-      <trans-unit id="s63cb05541b294335">
-        <source>Is superuser</source>
-        <target>Is superuser</target>
-      </trans-unit>
-      <trans-unit id="s29315e374008d0c5">
-        <source>Users added to this group will be superusers.</source>
-        <target>Users added to this group will be superusers.</target>
       </trans-unit>
       <trans-unit id="s4eb514ebcb80553d">
         <source>Parent</source>
@@ -2965,10 +2945,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Successfully added user(s).</source>
         <target>Successfully added user(s).</target>
       </trans-unit>
-      <trans-unit id="s306a35df5d0d38bb">
-        <source>Users to add</source>
-        <target>Users to add</target>
-      </trans-unit>
       <trans-unit id="s7d499be3b781a3ca">
         <source>User(s)</source>
         <target>User(s)</target>
@@ -3034,10 +3010,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Recovery link cannot be emailed, user has no email address saved.</source>
         <target>Recovery link cannot be emailed, user has no email address saved.</target>
       </trans-unit>
-      <trans-unit id="s720594461542943f">
-        <source>Add User</source>
-        <target>Add User</target>
-      </trans-unit>
       <trans-unit id="s4c41f3f4c23e8eaa">
         <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
         <target>Warning: This group is configured with superuser access. Added users will have superuser access.</target>
@@ -3046,17 +3018,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Add existing user</source>
         <target>Add existing user</target>
       </trans-unit>
-      <trans-unit id="sd600334ec2c39b74">
-        <source>Create user</source>
-        <target>Create user</target>
-      </trans-unit>
       <trans-unit id="s53ad3455d9523b54">
         <source>Create User</source>
         <target>Create User</target>
-      </trans-unit>
-      <trans-unit id="s06c163334767a381">
-        <source>Create Service account</source>
-        <target>Create Service account</target>
       </trans-unit>
       <trans-unit id="sc744f3691efe310d">
         <source>Hide service-accounts</source>
@@ -8249,6 +8213,93 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s76ea993fdc8503d8">
   <source>Click the button below to start.</source>
+</trans-unit>
+<trans-unit id="sd2fa988f1774cfde">
+  <source>System Status</source>
+</trans-unit>
+<trans-unit id="s66f26fdcbe2101eb">
+  <source>Chart</source>
+</trans-unit>
+<trans-unit id="s7b58d033cc5112ab">
+  <source>Event volume chart</source>
+</trans-unit>
+<trans-unit id="s0914f91b3f985f0f">
+  <source>Synchronization status chart</source>
+</trans-unit>
+<trans-unit id="s3f01dbc864d2a8b9">
+  <source>Outpost status chart</source>
+</trans-unit>
+<trans-unit id="s7f073c746d0f6324">
+  <source>Form actions</source>
+</trans-unit>
+<trans-unit id="sfd81bd296e2f7585">
+  <source>Submit action</source>
+</trans-unit>
+<trans-unit id="s5baec8151f4a4433">
+  <source>Cancel action</source>
+</trans-unit>
+<trans-unit id="s1ec022562e3d515b">
+  <source>Search for users by username or display name...</source>
+</trans-unit>
+<trans-unit id="s65f6a2f5e2b848e1">
+  <source>Search Users</source>
+</trans-unit>
+<trans-unit id="sd416adae573583d5">
+  <source>Select Users</source>
+</trans-unit>
+<trans-unit id="s93d69514c94ad635">
+  <source>Select users</source>
+</trans-unit>
+<trans-unit id="sb85774dc5d18ff0f">
+  <source>Confirm</source>
+</trans-unit>
+<trans-unit id="s9436f1bf4400f6a6">
+  <source>Type a group name...</source>
+</trans-unit>
+<trans-unit id="s2d9356347ff7c77f">
+  <source>Group Name</source>
+</trans-unit>
+<trans-unit id="sf45dac7c571f18bd">
+  <source>Superuser Privileges</source>
+</trans-unit>
+<trans-unit id="sbf8a7af4eafa87f8">
+  <source>Whether users added to this group will have superuser privileges.</source>
+</trans-unit>
+<trans-unit id="sb05313d80a8b531f">
+  <source>Select an optional parent group...</source>
+</trans-unit>
+<trans-unit id="sf0d94539428a0900">
+  <source>Search for a group by name…</source>
+</trans-unit>
+<trans-unit id="s77ec9e27e9ae81b8">
+  <source>Group Search</source>
+</trans-unit>
+<trans-unit id="s79683026e49e4866">
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s62dfa9c45cb3025a">
+  <source>New Group</source>
+</trans-unit>
+<trans-unit id="s3d0a5ad9bdb617e2">
+  <source>Open user selection dialog</source>
+</trans-unit>
+<trans-unit id="s362bf0ff6d7db6c9">
+  <source>Group User Search</source>
+</trans-unit>
+<trans-unit id="se040a9c3444c727c">
+  <source>Group Users</source>
+</trans-unit>
+<trans-unit id="sac6c67e92bd30229">
+  <source>Assign Additional Users</source>
+</trans-unit>
+<trans-unit id="sf6aec5a09661fe61">
+  <source>Add new user</source>
+</trans-unit>
+<trans-unit id="s0051b0d8e6decea6">
+  <source>New user...</source>
+</trans-unit>
+<trans-unit id="s384699f614f39071">
+  <source>New service account...</source>
 </trans-unit>
     </body>
   </file>
