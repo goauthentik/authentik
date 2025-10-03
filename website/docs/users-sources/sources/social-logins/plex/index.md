@@ -9,17 +9,17 @@ Allows users to authenticate using their Plex credentials.
 
 None
 
-## authentik > Sources
+## authentik configuration
 
-Add _Plex_ as a _source_
-
-- Name: Choose a name
-- Slug: Set a slug
-- Client ID: Set a unique Client Id or leave the generated ID
-- Press _Load Servers_ to login to plex and pick the authorized Plex Servers for "allowed users"
-- Decide if _anyone_ with a plex account can authenticate or only friends you share with
-
-Save, and you now have Plex as a source.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Plex Source** as the source type.
+    - **Create Plex Source**: provide a name, a slug, and set the following required configurations:
+        - **Protocol settings**
+            - **Client ID**: Set a unique Client ID or leave the generated ID
+                - Click **Load Servers** to login to Plex and pick the authorized Plex Servers for "allowed users".
+                - Decide if _anyone_ with a Plex account can authenticate or only friends you share access with.
+3. Click **Finish** to save your settings.
 
 :::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).

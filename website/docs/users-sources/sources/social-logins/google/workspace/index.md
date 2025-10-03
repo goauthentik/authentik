@@ -40,9 +40,9 @@ The key characteristic that makes this an IdP-to-IdP flow is that authentik is a
 
 ## Preparation
 
-The following placeholders are used:
+The following placeholders are used in this guide:
 
-- `authentik.company`: The Fully Qualified Domain Name of the authentik installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Google Workspace configuration
 
