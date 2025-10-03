@@ -78,10 +78,15 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		}
 
 		rs.KeyPrefix(RedisKeyPrefix)
+
+		cookieDomain, err := url.Parse("//" + (*p.CookieDomain))
+		if err != nil {
+			a.log.WithError(err).Panic("failed to parse cookie domain url")
+		}
 		rs.Options(sessions.Options{
 			HttpOnly: true,
 			Secure:   strings.ToLower(externalHost.Scheme) == "https",
-			Domain:   *p.CookieDomain,
+			Domain:   cookieDomain.Hostname(),
 			SameSite: http.SameSiteLaxMode,
 			MaxAge:   maxAge,
 			Path:     "/",
