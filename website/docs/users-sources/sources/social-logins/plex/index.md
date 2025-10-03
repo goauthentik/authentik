@@ -11,6 +11,8 @@ None
 
 ## authentik configuration
 
+To support the integration of Plex with authentik, you need to create a Plex source in authentik.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Plex Source** as the source type.
@@ -39,3 +41,5 @@ The following variables are available to OAuth source property mappings:
 
 - `info`: A Python dictionary containing Plex user data.
 - `auth_api`: A Plex client object to make requests to the Source with authentication built-in.
+
+## Resources

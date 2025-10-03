@@ -42,6 +42,8 @@ Finally, you need to publish the Facebook app.
 
 ## authentik configuration
 
+To support the integration of Facebook with authentik, you need to create a Facebook OAuth source in authentik.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Facebook OAuth Source** as the source type.
@@ -63,3 +65,5 @@ For instructions on embedding the new source within a flow, such as an authoriza
 ## Configuration verification
 
 TODO
+
+## Resources

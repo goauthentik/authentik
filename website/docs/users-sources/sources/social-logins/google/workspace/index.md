@@ -46,6 +46,8 @@ The following placeholders are used in this guide:
 
 ## Google Workspace configuration
 
+To integrate Google Workspace with authentik you will need to create a SAML application in the Google Workspace Admin Console.
+
 ### Create a new application
 
 1. Log in to the [Google Workspace Admin Console](https://admin.google.com/) as a super-admin.
@@ -89,6 +91,8 @@ Enabling signed responses indicates that the entire SAML authentication response
 You should now see the new application in the list of SAML apps. View the application details and confirm that the **SSO URL** and **Entity ID** are correct. You may need to **Enable the app** for your organization to allow users to authenticate.
 
 ## authentik configuration
+
+To support the integration of Google Workspace with authentik, you need to create an SAML source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:

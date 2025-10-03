@@ -60,10 +60,12 @@ To integrate Google with authentik you will need to create a new project, and OA
 
 ## authentik configuration
 
+To support the integration of Google with authentik, you need to create a Google OAuth source in authentik.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
-    - **Select type**: select **GitHub OAuth Source** as the source type.
-    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Google Workspace `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
+    - **Select type**: select **Google OAuth Source** as the source type.
+    - **Create Google OAuth Source**: provide a name, a slug which must match the slug used in the Google `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: `<client_ID>`
             - **Consumer Secret**: `<client_secret>`
@@ -113,3 +115,5 @@ If using the default enrollment flow the policy should be bound to the **default
 :::
 
 Afterwards, any new logins will automatically have their google email address used as their username. This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).
+
+## Resources

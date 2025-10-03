@@ -13,46 +13,33 @@ The following placeholders are used in this guide:
 
 ## Twitch configuration
 
-1. Click **Register Your Application** in the Twitch Developers Console https://dev.twitch.tv/console
+To integrate Twitch with authentik you will need to create an OAuth application in the Twitch Developers Console.
 
-![Register Your Application Button](./twitch1.png)
+1. Log in to the [Twitch Developers Console](https://dev.twitch.tv/console).
+2. Next to **Applications** click **Register Your Application** and set the following fields:
+    - **Name**: `authentik`
+    - **OAuth Redirect URLs**: `https://authentik.company/source/oauth/callback/twitch`
+    - **Category**: select a category for your application
 
-2. Name your Application
-
-3. Add https://authentik.company/source/oauth/callback/twitch in the **OAuth Redirect URLs** field
-
-4. Select a Category for your Application
-
-5. Click **Create** to finish the registration of your Application
-
-![Create Application](./twitch2.png)
-
-6. Click **Manage** on your newly created Application
-
-![Manage Application](./twitch3.png)
-
-7. Copy your Client ID and save it for later
-
-8. Click **New Secret** to create a new Secret
-
-9. Copy the above Secret and also save it for later
-
-![Copy Keys](./twitch4.png)
+3. Click **Create** to finish the registration of your application.
+4. Next to your newly created application, click **Manage**.
+5. Generate a secret by clicking **New Secret**.
+6. Take note of the **Client ID** and **Client Secret**. This value will be required in the next section.
+7. Click **Save**.
 
 ## authentik configuration
 
-10. Under _Directory > Federation & Social login_ Click **Create Twitch OAuth Source**
+To support the integration of Twitch with authentik, you need to create an Twitch OAuth source in authentik.
 
-11. **Name:** Choose a name (For the example I used Twitch)
-12. **Slug:** twitch (You can choose a different slug, if you do you will need to update the Twitch redirect URL and point it to the correct slug.)
-13. **Consumer Key:** Client ID from step 7
-14. **Consumer Secret:** Secret from step 9
-
-Here is an example of a complete authentik Twitch OAuth Source
-
-![Authentik Source Example](./twitch5.png)
-
-Save, and you now have Twitch as a source.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Twitch OAuth Source** as the source type.
+    - **Create OAuth Source**: provide a name, a slug which must match the slug used in the Twitch `OAuth Redirect URLs` field (e.g. `twitch`), and set the following required configurations:
+        - **Protocol settings**
+            - **Consumer Key**: `<client_ID>`
+            - **Consumer Secret**: `<client_secret>`
+            - **Scopes**_(optional)_: define any further access scopes.
+3. Click **Finish** to save your settings.
 
 :::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
@@ -61,3 +48,5 @@ For instructions on how to display the new source on the authentik login page, r
 :::info Embed new source in flow
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/). Note that this is an enterprise feature.
 :::
+
+## Resources

@@ -14,6 +14,8 @@ The following placeholders are used in this guide:
 
 ## Mailcow configuration
 
+To integrate Mailcow with authentik you will need to create an OAuth application in Mailcow.
+
 1. Log in to Mailcow as an administrator
 2. Navigate to **System** > **Configuration**, and then **Access** > **OAuth2 Apps**.
 3. Click **Add OAuth2 client** and provide the **Redirect URI**: `https://authentik.company/source/oauth/callback/mailcow/`
@@ -42,3 +44,5 @@ For instructions on how to display the new source on the authentik login page, r
 :::info Embed new source in flow
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/). Note that this is an enterprise feature.
 :::
+
+## Resources

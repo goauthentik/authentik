@@ -27,6 +27,8 @@ To integrate GitHub with authentik you will need to create an OAuth application 
 
 ## authentik configuration
 
+To support the integration of GitHub with authentik, you need to create an GitHub OAuth source in authentik.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **GitHub OAuth Source** as the source type.
@@ -112,3 +114,5 @@ return user_matched
 If a user is not member of the chosen organisation, they will see this message:
 
 ![](./github_org_membership.png)
+
+## Resources

@@ -18,6 +18,8 @@ The following placeholders are used in this guide:
 
 ## Entra ID configuration
 
+To integrate Entra ID with authentik you will need to create an App Registration in the Entra ID portal.
+
 1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
 3. Click **New registration** and set the following required configurations:
@@ -103,3 +105,5 @@ client_secret=<application_client_secret>
 ```
 
 The JWT returned from the request above can be used in authentik and exchanged for an authentik JWT.
+
+## Resources

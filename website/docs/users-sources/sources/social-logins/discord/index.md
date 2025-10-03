@@ -419,3 +419,5 @@ return True
 7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
 8. Select the policy that you previously created and click **Create**.
 9. Repeat the process for any other flows that you want the policy applied to.
+
+## Resources
