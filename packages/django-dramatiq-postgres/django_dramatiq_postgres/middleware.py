@@ -6,10 +6,7 @@ from http.server import HTTPServer as BaseHTTPServer
 from ipaddress import IPv6Address, ip_address
 from typing import Any
 
-from django.db import (
-    close_old_connections,
-    connections,
-)
+from django.db import DatabaseError, close_old_connections, connections
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
@@ -132,7 +129,10 @@ class CurrentTask(Middleware):
             if f.name not in fields_to_exclude and not f.auto_created and f.column
         ]
         if fields_to_update:
-            task.save(update_fields=fields_to_update)
+            try:
+                task.save(update_fields=fields_to_update)
+            except DatabaseError:
+                pass
         self._TASKS.set(tasks[:-1])
 
     def after_skip_message(self, broker: Broker, message: Message):
