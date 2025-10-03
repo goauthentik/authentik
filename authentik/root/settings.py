@@ -142,6 +142,7 @@ TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_MONKEY_PATCH_USER = False
+GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",

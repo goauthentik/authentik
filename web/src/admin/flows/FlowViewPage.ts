@@ -17,7 +17,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
-import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { Flow, FlowsApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
@@ -305,7 +305,7 @@ export class FlowViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

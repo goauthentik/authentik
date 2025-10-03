@@ -15,7 +15,7 @@ import {
     Endpoint,
     RacApi,
     RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -99,7 +99,7 @@ export class EndpointListPage extends Table<Endpoint> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

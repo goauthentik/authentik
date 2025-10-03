@@ -22,7 +22,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
@@ -246,7 +246,7 @@ export class ProxyProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

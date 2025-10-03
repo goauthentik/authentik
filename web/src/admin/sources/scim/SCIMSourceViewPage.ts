@@ -16,7 +16,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMSource,
     SourcesApi,
 } from "@goauthentik/api";
@@ -224,7 +224,7 @@ export class SCIMSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesScimScimsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

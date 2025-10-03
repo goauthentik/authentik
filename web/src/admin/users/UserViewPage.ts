@@ -42,7 +42,7 @@ import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/Us
 import {
     CapabilitiesEnum,
     CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SessionUser,
     User,
 } from "@goauthentik/api";
@@ -500,7 +500,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser}
                     objectPk=${this.user.pk}
                 >
                 </ak-rbac-object-permission-page>
