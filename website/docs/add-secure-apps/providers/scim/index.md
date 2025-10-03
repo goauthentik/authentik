@@ -11,9 +11,9 @@ A SCIM provider requires a SCIM base URL for the endpoint and a token. SCIM work
 In authentik, there are two options for how to configure authentication for a SCIM provider:
 
 - **Static token** provided by the application (default)
-- **OAuth token** sent to the application for validation
+- **OAuth token** authentik will retrieve an OAuth token from a specified source and use that token for authentication
 
-When you create a new SCIM provider, select which **Authentication Mode** you want to implement.
+When you create a new SCIM provider, select which **Authentication Mode** the application supports.
 
 ![Creating a SCIM provider](./scim_oauth.png)
 
