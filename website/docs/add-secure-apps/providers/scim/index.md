@@ -17,7 +17,7 @@ When you create a new SCIM provider, select which **Authentication Mode** the ap
 
 ![Creating a SCIM provider](./scim_oauth.png)
 
-Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint. The endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
+Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint.
 
 ### Default authentication method for a SCIM provider
 
