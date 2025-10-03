@@ -82,7 +82,9 @@ export class IdentificationStage extends BaseStage<
             }
 
             .captcha-container {
-                position: relative;
+                & {
+                    position: relative;
+                }
 
                 .faux-input {
                     position: absolute;
