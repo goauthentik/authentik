@@ -38,7 +38,7 @@ When this is set to a higher value than the default _seconds=0_, the user loggin
 
 ### Remember device
 
-If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know whether the user is signing in from a known or unknown (new) device.
+If set to a duration above 0, a cookie is stored for the duration specified that informs authentik whether the user is signing in from a known or unknown (new) device.
 
 If there's an existing authenticated user session for the user with the same IP address, authentik also classifies this as a known device. See [here](../../../../sys-mgmt/events/notification_rule_expression_policies.mdx#trigger-alert-when-user-logs-in-from-unknown-device) for an example of how an alert can be configured for logins from unknown devices.
 
