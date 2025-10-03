@@ -8,7 +8,7 @@ It can be used after `user_write` during an enrollment flow, or after a `passwor
 
 ## User login stage configuration options
 
-When creating or editing this stage, you can set the following configuration options.
+When creating or editing this stage in the Admin interface, you can set the following configuration options.
 
 ### Session duration
 
@@ -46,7 +46,7 @@ If there's an existing authenticated user session for the user with the same IP 
 
 When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
-Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/event-actions#logout) event will contain additional data related to what caused the binding to be broken:
+Sessions that break this binding will be terminated. The created [`logout`](../../../../sys-mgmt/events/event-actions#logout) event will contain additional data related to what caused the binding to be broken:
 
 ```json
 {
