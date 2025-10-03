@@ -87,4 +87,4 @@ Sessions that break this binding will be terminated on use. The created [`logout
 
 ### Terminate other sessions
 
-When enabled, previous sessions of the user logging in will be revoked. This has no affect on OAuth refresh tokens.
+When enabled, previous sessions of the same user are revoked. This has no affect on OAuth refresh tokens.
