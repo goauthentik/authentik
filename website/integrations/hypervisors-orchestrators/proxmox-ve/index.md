@@ -49,7 +49,7 @@ To support the integration of Proxmox with authentik, you need to create an appl
 
 ## Proxmox VE configuration (using the web interface)
 
-1. Log in to the Proxmox VE web interface using an admin account.
+1. Log in to the Proxmox VE web interface using an administrative account.
 2. Navigate to authentication source settings.
     - Go to **Datacenter** > **Permissions** > **Realms**.
     - Click **Add** and select **Realm** to open the Add Realm dialog.
