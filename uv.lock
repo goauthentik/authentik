@@ -1,10 +1,11 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = "==3.13.*"
 
 [manifest]
 members = [
     "authentik",
+    "channels-postgres",
     "django-dramatiq-postgres",
     "django-postgres-cache",
 ]
@@ -267,7 +268,7 @@ dev = [
 requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
-    { name = "channels-postgres", git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" },
+    { name = "channels-postgres", editable = "packages/channels-postgres" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
@@ -686,13 +687,21 @@ daphne = [
 
 [[package]]
 name = "channels-postgres"
-version = "1.1.4"
-source = { git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f#93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
+version = "0.1.0"
+source = { editable = "packages/channels-postgres" }
 dependencies = [
     { name = "asgiref" },
     { name = "channels" },
     { name = "msgpack" },
-    { name = "psycopg", extra = ["pool"] },
+    { name = "psycopg" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "asgiref", specifier = ">=3,<4" },
+    { name = "channels", specifier = ">=4,<5" },
+    { name = "msgpack", specifier = ">=1,<2" },
+    { name = "psycopg", specifier = ">=3,<4" },
 ]
 
 [[package]]
@@ -2819,15 +2828,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/0f/25911a9f080464c59fab9027482f822b86bf0608957a5fcc6eaac85aa515/PyYAML-6.0.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:68ccc6023a3400877818152ad9a1033e3db8625d899c72eacb5a668902e4d652", size = 751597, upload-time = "2024-08-06T20:32:56.985Z" },
     { url = "https://files.pythonhosted.org/packages/14/0d/e2c3b43bbce3cf6bd97c840b46088a3031085179e596d4929729d8d68270/PyYAML-6.0.2-cp313-cp313-win32.whl", hash = "sha256:bc2fa7c6b47d6bc618dd7fb02ef6fdedb1090ec036abab80d4681424b84c1183", size = 140527, upload-time = "2024-08-06T20:33:03.001Z" },
     { url = "https://files.pythonhosted.org/packages/fa/de/02b54f42487e3d3c6efb3f89428677074ca7bf43aae402517bc7cca949f3/PyYAML-6.0.2-cp313-cp313-win_amd64.whl", hash = "sha256:8388ee1976c416731879ac16da0aff3f63b286ffdd57cdeb95f3f2e085687563", size = 156446, upload-time = "2024-08-06T20:33:04.33Z" },
-]
-
-[[package]]
-name = "redis"
-version = "6.4.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0d/d6/e8b92798a5bd67d659d51a18170e91c16ac3b59738d91894651ee255ed49/redis-6.4.0.tar.gz", hash = "sha256:b01bc7282b8444e28ec36b261df5375183bb47a07eb9c603f284e89cbc5ef010", size = 4647399, upload-time = "2025-08-07T08:10:11.441Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/02/89e2ed7e85db6c93dfa9e8f691c5087df4e3551ab39081a4d7c6d1f90e05/redis-6.4.0-py3-none-any.whl", hash = "sha256:f0544fa9604264e9464cdf4814e7d4830f74b165d52f2a330a760a88dd248b7f", size = 279847, upload-time = "2025-08-07T08:10:09.84Z" },
 ]
 
 [[package]]
