@@ -10,7 +10,8 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    icon = "pf-icon pf-icon-bundle";
+    public override icon = "pf-icon pf-icon-bundle";
+    public override label = msg("Version");
 
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
@@ -48,15 +49,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         });
     }
 
-    renderHeader(): TemplateResult {
-        return html`${msg("Version")}`;
-    }
-
     renderValue(): TemplateResult {
         let text = this.value?.versionCurrent;
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();
-        let link = `https://goauthentik.io/docs/releases/${versionFamily?.join(".")}`;
+        let link = `https://docs.goauthentik.io/releases/${versionFamily?.join(".")}`;
         if (this.value?.buildHash) {
             text = this.value.buildHash?.substring(0, 7);
             link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;

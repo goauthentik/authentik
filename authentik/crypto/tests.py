@@ -27,7 +27,7 @@ class TestCrypto(APITestCase):
     def test_model_private(self):
         """Test model private key"""
         cert = CertificateKeyPair.objects.create(
-            name="test",
+            name=generate_id(),
             certificate_data="foo",
             key_data="foo",
         )
@@ -271,7 +271,7 @@ class TestCrypto(APITestCase):
         keypair = create_test_cert()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id="test",
+            client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
@@ -303,7 +303,7 @@ class TestCrypto(APITestCase):
         keypair = create_test_cert()
         OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id="test",
+            client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],

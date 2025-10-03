@@ -374,7 +374,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 return response;
             })
             .catch(async (error: unknown) => {
-                if (error instanceof PreventFormSubmit && error.element) {
+                if (
+                    error instanceof PreventFormSubmit &&
+                    error.element instanceof HorizontalFormElement
+                ) {
                     error.element.errorMessages = [error.message];
                 }
 
@@ -448,12 +451,16 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         }
 
         return html`<div class="pf-c-form__alert">
-            ${this.nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+            ${this.nonFieldErrors.map((err, idx) => {
+                return html`<div
+                    class="pf-c-alert pf-m-inline pf-m-danger"
+                    role="alert"
+                    aria-labelledby="error-message-${idx}"
+                >
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${err}</h4>
+                    <p id="error-message-${idx}" class="pf-c-alert__title">${err}</p>
                 </div>`;
             })}
         </div>`;

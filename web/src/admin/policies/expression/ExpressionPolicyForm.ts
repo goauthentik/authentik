@@ -87,9 +87,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink(
-                                    "/docs/customize/policies/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink("/customize/policies/expression")}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

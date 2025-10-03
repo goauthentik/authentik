@@ -11,7 +11,7 @@ import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
     prepareReleaseEnvironment,
-} from "@goauthentik/docusaurus-theme/releases/utils";
+} from "@goauthentik/docusaurus-theme/releases/node";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -343,8 +343,6 @@ const items = [
                             "add-secure-apps/outposts/upgrading",
                         ],
                     },
-                    "add-secure-apps/outposts/manual-deploy-docker-compose",
-                    "add-secure-apps/outposts/manual-deploy-kubernetes",
                 ],
             },
         ],
@@ -383,8 +381,9 @@ const items = [
                         },
                         items: [
                             "customize/policies/expression/unique_email",
-                            "customize/policies/expression/whitelist_email",
                             "customize/policies/expression/managing_flow_context_keys",
+                            "customize/policies/expression/source_switch",
+                            "customize/policies/expression/whitelist_email",
                         ],
                     },
                     "customize/policies/unique_password",
@@ -571,8 +570,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
-                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/telegram/index",
+                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
                         ],
                     },
@@ -618,6 +618,7 @@ const items = [
                 },
                 items: [
                     "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/notification_rule_expression_policies",
                     "sys-mgmt/events/transports",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
@@ -646,6 +647,11 @@ const items = [
                 label: "API Overview",
                 className: "api-overview",
             },
+            {
+                type: "doc",
+                id: "developer-docs/contributing",
+                label: "Contributing",
+            },
 
             {
                 //#endregion
@@ -653,10 +659,13 @@ const items = [
                 //#region Development environment
                 type: "category",
                 label: "Development environment",
+                link: {
+                    type: "doc",
+                    id: "developer-docs/setup/index",
+                },
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
                     "developer-docs/setup/debugging",
                 ],
             },
@@ -680,10 +689,10 @@ const items = [
                             id: "developer-docs/docs/templates/index",
                         },
                         items: [
+                            "developer-docs/docs/templates/combo",
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],

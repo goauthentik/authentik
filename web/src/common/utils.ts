@@ -32,17 +32,26 @@ export function truncate(string: string, length = 10): string {
     return string.length > length ? `${string.substring(0, length)}...` : string;
 }
 
-export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
-    const m = new Map<string, T[]>();
-    objects.forEach((obj) => {
-        const group = callback(obj);
-        if (!m.has(group)) {
-            m.set(group, []);
+export type GroupKeyCallback<T> = (item: T, index: number, array: T[]) => string;
+export type GroupResult<T> = [groupKey: string, items: T[]];
+
+export function groupBy<T>(items: T[], callback: GroupKeyCallback<T>): Array<GroupResult<T>> {
+    const map = new Map<string, T[]>();
+
+    items.forEach((item, index) => {
+        const groupKey = callback(item, index, items);
+        let tProviders = map.get(groupKey);
+
+        if (!tProviders) {
+            tProviders = [];
+
+            map.set(groupKey, tProviders);
         }
-        const tProviders = m.get(group) || [];
-        tProviders.push(obj);
+
+        tProviders.push(item);
     });
-    return Array.from(m).sort();
+
+    return Array.from(map).sort(([a], [b]) => a.localeCompare(b));
 }
 
 // Taken from python's string module

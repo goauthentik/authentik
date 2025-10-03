@@ -96,7 +96,11 @@ class EntraIDType(SourceType):
         }
 
     def get_base_group_properties(self, source, group_id, **kwargs):
-        raw_group = kwargs["info"]["raw_groups"][group_id]
+        raw_groups = kwargs["info"]["raw_groups"]
+        if group_id in raw_groups:
+            name = raw_groups[group_id]["displayName"]
+        else:
+            name = group_id
         return {
-            "name": raw_group["displayName"],
+            "name": name,
         }

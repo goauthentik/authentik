@@ -86,14 +86,19 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 navigator.clipboard
                                     .writeText(this.challenge?.configUrl)
                                     .then(() => {
-                                        showMessage({
-                                            level: MessageLevel.success,
-                                            message: msg("Successfully copied TOTP Config."),
-                                        });
+                                        showMessage(
+                                            {
+                                                level: MessageLevel.success,
+                                                message: msg("Successfully copied TOTP Config."),
+                                            },
+                                            true,
+                                        );
                                     });
                             }}
                         >
-                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
+                            <span class="pf-c-button__progress"
+                                ><i class="fas fa-copy" aria-hidden="true"></i
+                            ></span>
                             ${msg("Copy")}
                         </button>
                     </div>

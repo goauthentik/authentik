@@ -103,9 +103,7 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    pageTitle(): string {
-        return msg("My Applications");
-    }
+    public pageTitle = msg("My Applications");
 
     loading() {
         return html`<ak-empty-state default-label></ak-empty-state>`;

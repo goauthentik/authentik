@@ -55,7 +55,7 @@ The following placeholders are used in this guide:
 
 ## authentik
 
-20. Under _Directory -> Federation & Social login_ Click **Create Apple OAuth Source**
+20. Under **Directory > Federation & Social login** click **Create Apple OAuth Source**
 
 21. **Name**: `Apple`
 22. **Slug**: `apple`
@@ -67,6 +67,6 @@ The following placeholders are used in this guide:
 
 Save, and you now have Apple as a source.
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

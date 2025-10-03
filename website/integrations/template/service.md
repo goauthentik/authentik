@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `service.company` is the FQDN of the `<service-name>` installation. (Remove this for SaaS)
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -53,3 +53,11 @@ Insert service configuration
 Template sentence that you can typically use here: "To confirm that authentik is properly configured with `<service-name>`, log out and log back in via authentik."
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
+
+## References
+
+List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
+
+```text
+- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
+```

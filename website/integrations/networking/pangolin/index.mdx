@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `pangolin.company` is the FQDN of the Pangolin installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -57,7 +57,7 @@ To support the integration of Pangolin with authentik, you need to create an app
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Pangolin provider.
 3. Set the **Redirect URI** to the value taken from Pangolin (e.g. `https://pangolin.company/auth/idp/<identity-provider-number>/oidc/callback`).
 4. Click **Update**.

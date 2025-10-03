@@ -17,6 +17,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
@@ -27,20 +28,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
-    pageTitle(): string {
-        return msg("Outpost integrations");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Outpost integrations");
+    public pageDescription = msg(
+        "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+    );
+
+    public pageIcon = "pf-icon pf-icon-integration";
+    protected override searchEnabled = true;
 
     checkbox = true;
     expandable = true;
@@ -67,20 +61,18 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     @state()
     state: { [key: string]: ServiceConnectionState } = {};
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Local"), "local"),
-            new TableColumn(msg("State")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type")],
+        [msg("Local"), "local"],
+        [msg("State")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     @property()
     order = "name";
 
-    row(item: ServiceConnection): TemplateResult[] {
+    row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
         return [
             html`${item.name}`,
@@ -91,8 +83,8 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -103,7 +95,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -115,42 +107,38 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderExpanded(item: ServiceConnection): TemplateResult {
         const [appLabel, modelName] = item.metaModelName.split(".");
-        return html` <td role="cell" colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-schedule-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 
     renderToolbarSelected(): TemplateResult {

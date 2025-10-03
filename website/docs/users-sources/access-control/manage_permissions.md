@@ -25,7 +25,7 @@ To view _object_ permissions for a specific user or role:
 
 _These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page._
 
-1. Go to the Admin interface and navigate to **Flows and Stages -> Flows**.
+1. Go to the Admin interface and navigate to **Flows and Stages > Flows**.
 2. Click the name of the flow (this opens the details page).
 3. Click the **Permissions** tab at the top of the page.
 4. View the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
@@ -34,7 +34,7 @@ _These instructions apply to all objects that have a detail page, which can be a
 
 _These instructions apply to all objects that **do not** have a detail page._
 
-1. Go to the Admin interface and navigate to **Flows and Stages -> Stages**.
+1. Go to the Admin interface and navigate to **Flows and Stages > Stages**.
 2. On the row for the specific stage whose permissions you want to view, click the **lock icon**.
 3. On the **Update Permissions** window, you can view the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
 
@@ -46,7 +46,7 @@ You can assign or remove permissions to a user, role, group, flow, or stage.
 
 To assign or remove _object_ permissions for a specific user:
 
-1. Go to the Admin interface and navigate to **Directory -> Users**.
+1. Go to the Admin interface and navigate to **Directory > Users**.
 2. Select a specific user by clicking on the user's name.
 3. Click the **Permissions** tab at the top of the page.
 4. To assign or remove permissions that another _user_ has on this specific user:
@@ -62,7 +62,7 @@ To assign or remove _object_ permissions for a specific user:
 
 To assign or remove _global_ permissions for a user:
 
-1. Go to the Admin interface and navigate to **Directory -> Users**.
+1. Go to the Admin interface and navigate to **Directory > Users**.
 2. Select a specific user the clicking on the user's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.
@@ -76,7 +76,7 @@ You can grant regular users, who are not superusers nor Admins, the right to vie
 
 To assign the `Can view Admin interface` permission to a user (follow the same steps for a role):
 
-1. Go to the Admin interface and navigate to **Directory -> User**.
+1. Go to the Admin interface and navigate to **Directory > User**.
 2. Select a specific user the clicking on the user's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.
@@ -95,7 +95,7 @@ Also there are no global permissions for groups.
 
 To assign or remove _object_ permissions on a specific group for users and roles:
 
-1. Go to the Admin interface and navigate to **Directory -> Groups**.
+1. Go to the Admin interface and navigate to **Directory > Groups**.
 2. Select a specific group by clicking the group's name.
 3. Click the **Permissions** tab at the top of the page.
    To assign or remove permissions that another _user_ has on this specific group:
@@ -113,7 +113,7 @@ To assign or remove _object_ permissions on a specific group for users and roles
 
 To assign or remove _object_ permissions for a specific role:
 
-1. Go to the Admin interface and navigate to **Directory -> Roles**.
+1. Go to the Admin interface and navigate to **Directory > Roles**.
 2. Select a specific role the clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
    To assign or remove permissions that another _user_ has on this specific role:
@@ -129,7 +129,7 @@ To assign or remove _object_ permissions for a specific role:
 
 To assign or remove _global_ permissions for a role:
 
-1. Go to the Admin interface and navigate to **Directory -> Roles**.
+1. Go to the Admin interface and navigate to **Directory > Roles**.
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left, and then click **Assign Permission**.
@@ -138,13 +138,13 @@ To assign or remove _global_ permissions for a role:
 
 ### Assign or remove flow permissions
 
-1. Go to the Admin interface and navigate to **Flows and Stages -> Flows**.
+1. Go to the Admin interface and navigate to **Flows and Stages > Flows**.
 2. Click the name of the flow (this opens the details page).
 3. Click the **Permissions** tab at the top of the page.
 4. Add or remove permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.
 
 ### Assign or remove stage permissions
 
-1. Go to the Admin interface and navigate to **Flows and Stages -> Stagess**.
+1. Go to the Admin interface and navigate to **Flows and Stages > Stagess**.
 2. On the row for the specific stage that you want to manage permissions, click the **lock icon**.
 3. On the **Update Permissions** box, you can add or remove the assigned permissions using the **User Object Permissions** and the **Role Object Permissions** tabs.

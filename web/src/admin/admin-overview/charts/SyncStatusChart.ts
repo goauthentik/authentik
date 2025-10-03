@@ -29,6 +29,8 @@ export interface SummarizedSyncStatus {
 
 @customElement("ak-admin-status-chart-sync")
 export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
+    public override ariaLabel = msg("Synchronization status chart");
+
     getChartType(): string {
         return "doughnut";
     }

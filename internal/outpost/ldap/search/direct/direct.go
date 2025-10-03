@@ -182,7 +182,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					g[i].Users = []int32{flags.UserPk}
 					for _, u := range results.UsersObj {
 						if u.Pk == flags.UserPk {
-							g[i].UsersObj = []api.GroupMember{u}
+							g[i].UsersObj = []api.PartialUser{u}
 							break
 						}
 					}

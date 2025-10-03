@@ -43,10 +43,13 @@ jobs:
         with:
           dependencies: python
       - name: Create version branch
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
         run: |
           current_major_version="$(uv version --short | grep -oE "^[0-9]{4}\.[0-9]{1,2}")"
           git checkout -b "version-${current_major_version}"
           git push origin "version-${current_major_version}"
+          gh label create "backport/version-${current_major_version}" --description "Add this label to PRs to backport changes to version-${current_major_version}" --color "fbca04"
   bump-version-pr:
     name: Open version bump PR
     needs:

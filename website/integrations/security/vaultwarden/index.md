@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `vaultwarden.company` is the FQDN of the Vaultwarden installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -32,7 +32,7 @@ To support the integration of Vaultwarden with authentik, you need to create an 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://vaultwarden.company/identity/connect/oidc-signin`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
@@ -48,7 +48,7 @@ To configure authentik with Vaultwarden, you must add the following environment 
 
 ```yaml
 SSO_ENABLED=true
-SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>
+SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>/
 SSO_CLIENT_ID=<client_id>
 SSO_CLIENT_SECRET=<client_secret>
 SSO_SCOPES="openid email profile offline_access"

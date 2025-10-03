@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -60,7 +60,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 ## Aruba Orchestrator Configuration
 
 1. Log in to the Aruba Orchestrator.
-2. Create a new Remote Authentication Server under **Orchestrator** -> **Authentication** -> **Add New Server**.
+2. Create a new Remote Authentication Server under **Orchestrator** > **Authentication** > **Add New Server**.
     - **Type**: `SAML`
     - **Name**: `authentik`
     - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`

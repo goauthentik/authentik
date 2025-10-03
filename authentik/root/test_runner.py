@@ -62,6 +62,11 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         """Configure test environment settings"""
         settings.TEST = True
         settings.DRAMATIQ["test"] = True
+        settings.CHANNEL_LAYERS["default"]["CONFIG"] = {
+            **settings.DATABASES["default"],
+            **settings.DATABASES["default"]["TEST"],
+            "TIME_ZONE": None,
+        }
 
         # Test-specific configuration
         test_config = {
@@ -177,6 +182,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
                 return pytest.main(self.args)
-            except Exception as e:
+            except Exception as e:  # noqa
                 self.logger.error("Error running tests", error=str(e), test_files=self.args)
                 return 1

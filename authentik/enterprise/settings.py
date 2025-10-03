@@ -5,6 +5,8 @@ TENANT_APPS = [
     "authentik.enterprise.policies.unique_password",
     "authentik.enterprise.providers.google_workspace",
     "authentik.enterprise.providers.microsoft_entra",
+    "authentik.enterprise.providers.radius",
+    "authentik.enterprise.providers.scim",
     "authentik.enterprise.providers.ssf",
     "authentik.enterprise.search",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",

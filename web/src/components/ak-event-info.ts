@@ -11,7 +11,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -267,16 +267,16 @@ export class EventInfo extends AKElement {
                 clear?: boolean;
             };
         };
-        let diffBody = html``;
+        let diffBody: SlottedTemplateResult = nothing;
         if (diff) {
             diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
-                    <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
+                    <table class="pf-c-table pf-m-compact pf-m-grid-md">
                         <thead>
-                            <tr role="row">
-                                <th role="columnheader" scope="col">${msg("Key")}</th>
-                                <th role="columnheader" scope="col">${msg("Previous value")}</th>
-                                <th role="columnheader" scope="col">${msg("New value")}</th>
+                            <tr>
+                                <th scope="col">${msg("Key")}</th>
+                                <th scope="col">${msg("Previous value")}</th>
+                                <th scope="col">${msg("New value")}</th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup">
@@ -286,7 +286,7 @@ export class EventInfo extends AKElement {
                                     value.previous_value !== null
                                         ? JSON.stringify(value.previous_value, null, 4)
                                         : msg("-");
-                                let newCol = html``;
+                                let newCol: SlottedTemplateResult = nothing;
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">
                                         ${(value.add || value.remove)?.map((item) => {
@@ -306,12 +306,12 @@ export class EventInfo extends AKElement {
 ${JSON.stringify(value.new_value, null, 4)}</pre
                                     >`;
                                 }
-                                return html` <tr role="row">
-                                    <td role="cell"><pre>${key}</pre></td>
-                                    <td role="cell">
+                                return html` <tr>
+                                    <td><pre>${key}</pre></td>
+                                    <td>
                                         <pre>${previousCol}</pre>
                                     </td>
-                                    <td role="cell">${newCol}</td>
+                                    <td>${newCol}</td>
                                 </tr>`;
                             })}
                         </tbody>

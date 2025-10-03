@@ -60,7 +60,7 @@ export class LibraryPageApplicationEmptyList
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a rel="noopener noreferrer" href="${docLink("/docs/applications")}" target="_blank"
+                <a rel="noopener noreferrer" href=${docLink("/applications")} target="_blank"
                     >${msg("Refer to documentation")}</a
                 >
             </div>
@@ -71,7 +71,7 @@ export class LibraryPageApplicationEmptyList
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h1>
+                <h2 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h2>
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>

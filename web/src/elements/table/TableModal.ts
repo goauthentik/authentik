@@ -90,7 +90,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
     /**
      * @abstract
      */
-    protected renderModalInner(): TemplateResult {
+    protected renderModalInner(): SlottedTemplateResult {
         return this.renderTable();
     }
 
@@ -100,7 +100,13 @@ export abstract class TableModal<T extends object> extends Table<T> {
     protected renderModal(): SlottedTemplateResult {
         return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
-                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
+                <div
+                    class="pf-c-modal-box ${this.size}"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                >
                     <button
                         @click=${this.#closeListener}
                         class="pf-c-button pf-m-plain"

@@ -19,7 +19,7 @@ The following placeholders will be used in the examples below:
 - `vcenter.company` is the FQDN of the vCenter server.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -35,7 +35,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://vcenter.company/ui/login/oauth2/authcode`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -44,7 +44,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 
 ## vCenter configuration
 
-1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration -> Single Sign-on -> Configuration**.
+1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration > Single Sign-on > Configuration**.
 
 2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
@@ -63,7 +63,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 
 6. Click **Next**, and then **Finish**.
 
-7. On the **Single Sign On -> Configuration** page, in the **User Provisioning** area, take the following steps:
+7. On the **Single Sign On > Configuration** page, in the **User Provisioning** area, take the following steps:
     - Copy the **Tenant URL** and save to a safe place.
     - Click on **Generate** to generate a SCIM token.
     - Click **Generate** in the newly opened modal box.
@@ -80,7 +80,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Navigate to the provider and trigger a sync.
 
 9. Return to vCenter.
-    - Navigate to **Administration -> Access Control -> Global Permissions**.
+    - Navigate to **Administration > Access Control > Global Permissions**.
     - Click **Add**.
     - Select the Domain created above from the dropdown.
     - Enter the name of the group to which you want to assign permissions.

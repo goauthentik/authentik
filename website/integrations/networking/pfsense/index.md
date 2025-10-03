@@ -10,8 +10,8 @@ support_level: community
 >
 > -- https://www.pfsense.org/
 
-:::note
-This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
+:::info
+This is based on authentik 2022.3.3 and pfSense 2.6.0-amd64
 :::
 
 ## Preparation
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `pfsense-user` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -32,7 +32,7 @@ In authentik, create a service account (under _Directory/Users_) for pfSense to 
 
 In this example, we'll use `pfsense-user` as the Service account's username
 
-:::note
+:::info
 If you didn't keep the password, you can copy it from _Directory/Tokens & App password_.
 :::
 

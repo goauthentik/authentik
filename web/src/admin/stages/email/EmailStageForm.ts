@@ -5,12 +5,14 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -45,9 +47,9 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    renderConnectionSettings(): SlottedTemplateResult {
         if (!this.showConnectionSettings) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-group label="${msg("Connection settings")}">
             <div class="pf-c-form">

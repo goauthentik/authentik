@@ -224,6 +224,7 @@ export abstract class WizardStep extends AKElement {
     renderCloseButton(button: WizardButton) {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
+                data-test-id="wizard-navigation-abort"
                 class=${classMap(this.getButtonClasses(button))}
                 type="button"
                 @click=${this.onWizardCloseEvent}
@@ -300,43 +301,58 @@ export abstract class WizardStep extends AKElement {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
             ? html` <div class="pf-c-modal-box ak-wizard-box">
                   <div class="pf-c-wizard">
-                      <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
+                      <header class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
                           ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
-                          <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">
+                          <h1
+                              class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                              data-test-id="wizard-title"
+                          >
                               ${this.wizardTitle}
                           </h1>
                           <p class="pf-c-wizard__description">${this.wizardDescription}</p>
-                      </div>
+                      </header>
 
                       <div class="pf-c-wizard__outer-wrap">
                           <div class="pf-c-wizard__inner-wrap">
-                              <nav class="pf-c-wizard__nav" data-ouid-component-id="wizard-navbar">
+                              <aside
+                                  class="pf-c-wizard__nav"
+                                  role="group"
+                                  aria-label="${msg("Wizard steps")}"
+                              >
                                   <ol class="pf-c-wizard__nav-list">
                                       ${map(
                                           this.wizardStepState.stepLabels,
                                           this.renderSidebarStep,
                                       )}
                                   </ol>
-                              </nav>
+                              </aside>
                               <main class="pf-c-wizard__main">
-                                  <div
-                                      id="main-content"
-                                      class="pf-c-wizard__main-body"
-                                      data-ouid-component-id="wizard-body"
-                                  >
+                                  <div id="main-content" class="pf-c-wizard__main-body">
                                       ${this.renderMain()}
                                   </div>
                               </main>
                           </div>
-                          <footer
-                              class="pf-c-wizard__footer"
-                              data-ouid-component-id="wizard-footer"
-                          >
+                          <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
                               ${this.buttons.map(this.renderButton)}
-                          </footer>
+                          </nav>
                       </div>
                   </div>
               </div>`
             : nothing;
+    }
+}
+
+declare global {
+    interface WizardNavigationTestIDMap {
+        abort: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+        title: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
     }
 }

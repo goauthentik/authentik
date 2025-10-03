@@ -30,7 +30,7 @@ The following placeholders are used in this guide:
 
 ## authentik
 
-5. Under _Directory -> Federation & Social login_ Click **Create > Mailcow OAuth Source**
+5. Under **Directory > Federation & Social login** click **Create > Mailcow OAuth Source**
 
 ![Mailcow OAuth Source](./mailcow4.png)
 
@@ -48,6 +48,6 @@ Here is an example of a complete authentik Mailcow OAuth Source
 
 Save, and you now have Mailcow as a source.
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
