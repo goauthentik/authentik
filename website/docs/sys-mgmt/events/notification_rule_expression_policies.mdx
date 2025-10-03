@@ -133,7 +133,7 @@ return False
 
 ### Append user addition history to group attributes
 
-This expression is triggered when a user is added to a group. It then creates and updates a `UserAddedHistory` attribute to the group with a date/time stamp and the username of the added user. This functionality is already available within the changelog of a group, but this code can be used as a template to trigger alerts or other events.
+This expression policy is triggered when a user is added to a group. The policy then creates and updates a `UserAddedHistory` attribute to the group with a date/time stamp and the username of the added user. This functionality is already available within the changelog of a group, but this code can be used as a template to trigger alerts or other events.
 
 :::info
 This policy interacts with the `diff` event output. This field is only available with an enterprise license.
