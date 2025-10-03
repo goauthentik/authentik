@@ -161,8 +161,10 @@ html > form > input {
 /* #region Tabs */
 
 .pf-c-tabs {
+    --pf-c-tabs--inset: var(--pf-global--spacer--lg);
     --pf-c-tabs--m-vertical--m-box--inset: var(--pf-global--spacer--lg);
 
+    margin-block-start: var(--pf-global--spacer--xs);
     background-color: transparent;
 
     &.pf-m-box.pf-m-vertical {
