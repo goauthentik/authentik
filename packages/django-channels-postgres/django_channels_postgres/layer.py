@@ -3,10 +3,11 @@ import functools
 import types
 from base64 import b64decode
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
+from typing import Any, Pattern, cast
 from uuid import uuid4
 
 import msgpack
+from asgiref.sync import sync_to_async
 from channels.layers import BaseChannelLayer
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.utils.timezone import now
@@ -24,25 +25,30 @@ GROUP_CHANNEL_TABLE = GroupChannel._meta.db_table
 MESSAGE_TABLE = Message._meta.db_table
 
 
-async def _async_proxy(obj, name, *args, **kwargs):
+async def _async_proxy(
+    obj: "PostgresChannelLayerLoopProxy",
+    name: str,
+    *args: Any,
+    **kwargs: Any,
+) -> Any:
     # Must be defined as a function and not a method due to
     # https://bugs.python.org/issue38364
     layer = obj._get_layer()
     return await getattr(layer, name)(*args, **kwargs)
 
 
-def _wrap_close(proxy, loop):
+def _wrap_close(proxy: "PostgresChannelLayerLoopProxy", loop: asyncio.AbstractEventLoop) -> None:
     original_impl = loop.close
 
-    def _wrapper(self, *args, **kwargs):
+    def _wrapper(self: asyncio.AbstractEventLoop, *args: Any, **kwargs: Any) -> None:
         if loop in proxy._layers:
             layer = proxy._layers[loop]
             del proxy._layers[loop]
             loop.run_until_complete(layer.flush())
-        self.close = original_impl
+        self.close = original_impl  # type: ignore[method-assign]
         return self.close(*args, **kwargs)
 
-    loop.close = types.MethodType(_wrapper, loop)
+    loop.close = types.MethodType(_wrapper, loop)  # type: ignore[method-assign]
 
 
 class PostgresChannelLayerLoopProxy:
@@ -53,9 +59,10 @@ class PostgresChannelLayerLoopProxy:
     ) -> None:
         self._args = args
         self._kwargs = kwargs
-        self._layers = {}
+        self._kwargs["channel_layer"] = self
+        self._layers: dict[asyncio.AbstractEventLoop, PostgresChannelLoopLayer] = {}
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Any:
         if name in (
             "new_channel",
             "send",
@@ -83,7 +90,7 @@ class PostgresChannelLayerLoopProxy:
         try:
             layer = self._layers[loop]
         except KeyError:
-            layer = PostgresChannelLoopLayer(*self._args, **self._kwargs, channel_layer=self)
+            layer = PostgresChannelLoopLayer(*self._args, **self._kwargs)
             self._layers[loop] = layer
             _wrap_close(self, loop)
 
@@ -115,24 +122,24 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         expiry: int = 60,
         group_expiry: int = 86400,
         capacity: int = 100,
-        channel_capacity: dict[str, int] | None = None,
+        channel_capacity: dict[Pattern[str] | str, int] | None = None,
         using: str = DEFAULT_DB_ALIAS,
     ) -> None:
         super().__init__(expiry=expiry, capacity=capacity, channel_capacity=channel_capacity)
 
         self.group_expiry = group_expiry
         self.prefix = prefix
-        assert isinstance(self.prefix, str), "Prefix must be unicode"
+        assert isinstance(self.prefix, str), "Prefix must be unicode"  # nosec
         self.channel_layer = channel_layer
         self.using = using
 
         # Each consumer gets its own *specific* channel, created with the `new_channel()` method.
         # This dict maps `channel_name` to a queue of messages for that channel.
-        self.channels = {}
+        self.channels: dict[str, asyncio.Queue[bytes]] = {}
 
         self.connection = PostgresChannelLayerConnection(self.using, self)
 
-    async def _subscribe_to_channel(self, channel: str):
+    async def _subscribe_to_channel(self, channel: str) -> None:
         self.channels[channel] = asyncio.Queue()
         await self.connection.subscribe(channel)
 
@@ -145,10 +152,10 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Send a message onto a (general or specific) channel.
         """
         # Typecheck
-        assert isinstance(message, dict), "message is not a dict"
-        assert self.require_valid_channel_name(channel), "Channel name not valid"
+        assert isinstance(message, dict), "message is not a dict"  # nosec
+        assert self.require_valid_channel_name(channel), "Channel name not valid"  # nosec
         # Make sure the message does not contain reserved keys
-        assert "__asgi_channel__" not in message
+        assert "__asgi_channel__" not in message  # nosec
 
         await Message.objects.using(self.using).acreate(
             channel=channel,
@@ -156,7 +163,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
             expires=now() + timedelta(seconds=self.expiry),
         )
 
-    async def new_channel(self, prefix="specific"):
+    async def new_channel(self, prefix: str = "specific") -> str:
         """
         Returns a new channel name that can be used by something in our
         process as a specific channel.
@@ -218,8 +225,8 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Adds the channel name to a group.
         """
         # Check the inputs
-        assert self.require_valid_group_name(group), "Group name not valid"
-        assert self.require_valid_channel_name(channel), "Channel name not valid"
+        assert self.require_valid_group_name(group), "Group name not valid"  # nosec
+        assert self.require_valid_channel_name(channel), "Channel name not valid"  # nosec
 
         group_key = self._group_key(group)
 
@@ -237,8 +244,8 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         does nothing otherwise (does not error)
         """
         # Check the inputs
-        assert self.require_valid_group_name(group), "Group name not valid"
-        assert self.require_valid_channel_name(channel), "Channel name not valid"
+        assert self.require_valid_group_name(group), "Group name not valid"  # nosec
+        assert self.require_valid_channel_name(channel), "Channel name not valid"  # nosec
 
         group_key = self._group_key(group)
 
@@ -252,7 +259,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         """
         Sends a message to the entire group.
         """
-        assert self.require_valid_group_name(group), "Group name not valid"
+        assert self.require_valid_group_name(group), "Group name not valid"  # nosec
 
         group_key = self._group_key(group)
 
@@ -278,11 +285,22 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
     ### Flush extension ###
 
+    def _flush(self) -> None:
+        try:
+            with connections[self.using].cursor() as cursor:
+                cursor.execute(sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(MESSAGE_TABLE)))
+                cursor.execute(
+                    sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(GROUP_CHANNEL_TABLE))
+                )
+        finally:
+            pass
+
     async def flush(self) -> None:
         """
         Deletes all messages and groups.
         """
         self.channels = {}
+        await sync_to_async(self._flush)()
         await self.connection.flush()
 
 
@@ -290,23 +308,22 @@ class PostgresChannelLayerConnection:
     def __init__(self, using: str, channel_layer: PostgresChannelLoopLayer) -> None:
         self.using = using
         self.channel_layer = channel_layer
-        self._subscribed_to = set()
+        self._subscribed_to: set[str] = set()
+        self._locked_channels: set[str] = set()
         self._lock = asyncio.Lock()
-        self._connection = None
-        self._receive_task = None
+        self._receive_task: asyncio.Task[None] | None = None
 
     async def subscribe(self, channel: str) -> None:
         async with self._lock:
             if channel not in self._subscribed_to:
-                await self._ensure_connection()
                 self._ensure_receiver()
                 self._subscribed_to.add(channel)
 
     async def unsubscribe(self, channel: str) -> None:
         async with self._lock:
             if channel in self._subscribed_to:
-                await self._ensure_connection()
                 self._ensure_receiver()
+                self._subscribed_to.remove(channel)
 
     async def flush(self) -> None:
         async with self._lock:
@@ -317,31 +334,9 @@ class PostgresChannelLayerConnection:
                 except asyncio.CancelledError:
                     pass
                 self._receive_task = None
-            if self._connection is not None:
-                try:
-                    async with self._connection.cursor() as cursor:
-                        await asyncio.gather(
-                            cursor.execute(
-                                sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(MESSAGE_TABLE))
-                            ),
-                            cursor.execute(
-                                sql.SQL("TRUNCATE TABLE {}").format(
-                                    sql.Identifier(GROUP_CHANNEL_TABLE)
-                                )
-                            ),
-                        )
-                except PsycopgError:
-                    pass
-                try:
-                    # The connection was created just for this client, so make sure it is closed,
-                    # otherwise it will schedule the connection to be closed inside the
-                    # __del__ method, which doesn't have a loop running anymore.
-                    await self._connection.close()
-                finally:
-                    self._connection = None
             self._subscribed_to = set()
 
-    async def _do_receiving(self):
+    async def _do_receiving(self) -> None:
         while True:
             try:
                 async with await self._create_connection() as conn:
@@ -351,28 +346,36 @@ class PostgresChannelLayerConnection:
                         )
                         async for notify in conn.notifies(stop_after=1):
                             await self._receive_notify(conn, notify)
+                        await self._update_locks(conn)
             except (asyncio.CancelledError, TimeoutError, GeneratorExit):
                 raise
             except PsycopgError as exc:
                 LOGGER.warning("Postgres connection is not healthy", exc=exc)
+                self._locked_channels = set()
                 await asyncio.sleep(1)
             except BaseException as exc:  # noqa: BLE001
                 LOGGER.warning("Unexpected exception in receive task", exc=exc)
                 await asyncio.sleep(1)
+                self._locked_channels = set()
 
-    async def _receive_notify(self, conn: AsyncConnection, notify: Notify):
+    async def _update_locks(self, conn: AsyncConnection) -> None:
+        pass
+
+    async def _receive_notify(self, conn: AsyncConnection, notify: Notify) -> None:
         payload = notify.payload
         split_payload = payload.split(":")
         match len(split_payload):
             case 4:
                 message_id, channel, timestamp, base64_message = split_payload
-                if channel not in self._subscribed_to:
+                if channel not in self._locked_channels:
+                    return
+                expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
+                if expires < now():
                     return
                 message = b64decode(base64_message)
-                expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
             case 3:
                 message_id, channel, timestamp = split_payload
-                if channel not in self._subscribed_to:
+                if channel not in self._locked_channels:
                     return
                 expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
                 if expires < now():
@@ -390,28 +393,11 @@ class PostgresChannelLayerConnection:
                     message, expires = row
             case _:
                 return
-        if expires < now():
-            return
         self._receive_message(channel, message)
 
-    def _receive_message(self, channel, message):
+    def _receive_message(self, channel: str, message: bytes) -> None:
         if (q := self.channel_layer.channels.get(channel)) is not None:
             q.put_nowait(message)
-
-    async def _ensure_connection(self) -> None:
-        if self._connection is not None:
-            try:
-                async with self._connection.cursor() as cursor:
-                    await cursor.execute("SELECT 1")
-            except PsycopgError as exc:
-                LOGGER.warning("Postgres connection is not healthy", exc=exc)
-                try:
-                    await self._connection.close()
-                except PsycopgError as exc:
-                    LOGGER.info("Error while closing connection", exc=exc)
-                self._connection = None
-        if self._connection is None:
-            self._connection = await self._create_connection()
 
     def _ensure_receiver(self) -> None:
         if self._receive_task is None:

@@ -42,7 +42,7 @@ class GroupChannel(models.Model):
         return f"Group '{self.group_key}' on channel '{self.channel}'"
 
     @classmethod
-    def delete_expired(cls):
+    def delete_expired(cls) -> None:
         cls.objects.filter(expires__lt=now()).delete()
 
 
@@ -93,5 +93,5 @@ class Message(models.Model):
         return f"Message '{self.pk}' on channel '{self.channel}'"
 
     @classmethod
-    def delete_expired(cls):
+    def delete_expired(cls) -> None:
         cls.objects.filter(expires__lt=now()).delete()
