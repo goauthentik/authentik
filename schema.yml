@@ -8138,6 +8138,11 @@ paths:
           type: string
         description: Querystring as received
         required: true
+      - in: query
+        name: xid
+        schema:
+          type: string
+        description: Flow execution ID
       tags:
       - flows
       security:
@@ -8177,6 +8182,12 @@ paths:
         schema:
           type: string
         description: Querystring as received
+        required: true
+      - in: query
+        name: xid
+        schema:
+          type: string
+        description: Flow execution ID
         required: true
       tags:
       - flows
@@ -39574,6 +39585,8 @@ components:
         component:
           type: string
           default: ak-stage-access-denied
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -39696,6 +39709,8 @@ components:
         component:
           type: string
           default: ak-source-oauth-apple
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40031,6 +40046,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-duo
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40187,6 +40204,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-email
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40441,6 +40460,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-sms
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40601,6 +40622,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-static
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40719,6 +40742,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-totp
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40943,6 +40968,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-validate
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -40996,6 +41023,8 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-webauthn
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -41158,6 +41187,8 @@ components:
         component:
           type: string
           default: ak-stage-autosubmit
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -41452,6 +41483,8 @@ components:
         component:
           type: string
           default: ak-stage-captcha
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -41866,6 +41899,8 @@ components:
         component:
           type: string
           default: ak-stage-consent
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -42661,6 +42696,8 @@ components:
         component:
           type: string
           default: ak-stage-dummy
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -42863,6 +42900,8 @@ components:
         component:
           type: string
           default: ak-stage-email
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -43844,6 +43883,8 @@ components:
         component:
           type: string
           default: ak-stage-flow-error
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -44172,6 +44213,8 @@ components:
         component:
           type: string
           default: xak-flow-frame
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -45142,6 +45185,8 @@ components:
         component:
           type: string
           default: ak-stage-identification
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -47848,6 +47893,8 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -47876,6 +47923,8 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code-finish
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -50671,6 +50720,8 @@ components:
         component:
           type: string
           default: ak-stage-password
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -54630,6 +54681,8 @@ components:
         component:
           type: string
           default: ak-source-plex
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -55155,6 +55208,8 @@ components:
         component:
           type: string
           default: ak-stage-prompt
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -56368,6 +56423,8 @@ components:
         component:
           type: string
           default: xak-flow-redirect
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -58413,6 +58470,8 @@ components:
         component:
           type: string
           default: ak-stage-session-end
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -58583,6 +58642,8 @@ components:
         component:
           type: string
           default: xak-flow-shell
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -59270,6 +59331,8 @@ components:
         component:
           type: string
           default: ak-source-telegram
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
@@ -60255,6 +60318,8 @@ components:
         component:
           type: string
           default: ak-stage-user-login
+        xid:
+          type: string
         response_errors:
           type: object
           additionalProperties:
