@@ -70,3 +70,5 @@ Save, and you now have Apple as a source.
 :::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+## Resources

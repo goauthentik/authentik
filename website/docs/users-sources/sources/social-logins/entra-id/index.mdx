@@ -8,6 +8,8 @@ tags:
     - active-directory
 ---
 
+Allows users to authenticate using their Entra ID credentials.
+
 ## Preparation
 
 The following placeholders are used in this guide:
@@ -15,6 +17,8 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik install.
 
 ## Entra ID configuration
+
+To integrate Entra ID with authentik you will need to create an App Registration in the Entra ID portal.
 
 1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
@@ -71,12 +75,16 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 
 3. Click **Save**.
 
-:::info
+:::info Group Membership
 When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of.
 :::
 
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+:::
+
+:::info Embed new source in flow
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source). Note that this is an enterprise feature.
 :::
 
 ### Machine-to-machine authentication :ak-version[2024.12]
@@ -97,3 +105,5 @@ client_secret=<application_client_secret>
 ```
 
 The JWT returned from the request above can be used in authentik and exchanged for an authentik JWT.
+
+## Resources
