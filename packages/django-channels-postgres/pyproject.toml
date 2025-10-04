@@ -1,12 +1,12 @@
 [project]
-name = "django-dramatiq-postgres"
+name = "django-channels-postgres"
 version = "0.1.0"
-description = "Django and Dramatiq integration with postgres-specific features"
+description = "Django channels layer using PostgreSQL NOTIFY/LISTEN"
 requires-python = ">=3.9,<3.14"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
-keywords = ["django", "dramatiq", "postgres"]
+keywords = ["django", "channels", "postgres"]
 
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -31,19 +31,19 @@ classifiers = [
 ]
 
 dependencies = [
-  "cron-converter >=1,<2",
+  "channels >=4.3,<4.4",
   "django >=4.2,<6.0",
   "django-pglock >=1.7,<2",
   "django-pgtrigger >=4,<5",
-  "dramatiq[watch] >=1.17,<1.18",
-  "tenacity >=9,<10",
+  "msgpack >=1,<2",
+  "psycopg >=3,<4",
   "structlog >=25,<26",
 ]
 
 [project.urls]
-Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
-Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
-Repository = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
 
 [build-system]
 requires = ["hatchling"]

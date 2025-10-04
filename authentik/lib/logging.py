@@ -112,7 +112,6 @@ def get_logger_config():
         "hpack": "WARNING",
         "httpx": "WARNING",
         "azure": "WARNING",
-        "channels_postgres": "WARNING",
     }
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {
