@@ -920,6 +920,7 @@ source = { editable = "packages/django-channels-postgres" }
 dependencies = [
     { name = "channels" },
     { name = "django" },
+    { name = "django-pglock" },
     { name = "django-pgtrigger" },
     { name = "msgpack" },
     { name = "psycopg" },
@@ -930,6 +931,7 @@ dependencies = [
 requires-dist = [
     { name = "channels", specifier = ">=4.3,<4.4" },
     { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "msgpack", specifier = ">=1,<2" },
     { name = "psycopg", specifier = ">=3,<4" },
@@ -968,6 +970,7 @@ source = { editable = "packages/django-dramatiq-postgres" }
 dependencies = [
     { name = "cron-converter" },
     { name = "django" },
+    { name = "django-pglock" },
     { name = "django-pgtrigger" },
     { name = "dramatiq", extra = ["watch"] },
     { name = "structlog" },
@@ -978,6 +981,7 @@ dependencies = [
 requires-dist = [
     { name = "cron-converter", specifier = ">=1,<2" },
     { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "dramatiq", extras = ["watch"], specifier = ">=1.17,<1.18" },
     { name = "structlog", specifier = ">=25,<26" },
