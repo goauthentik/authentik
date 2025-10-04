@@ -21,9 +21,6 @@ from aws_cdk import (
     aws_efs as efs,
 )
 from aws_cdk import (
-    aws_elasticache as elasticache,
-)
-from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 from aws_cdk import (
@@ -60,21 +57,6 @@ class AuthentikStack(Stack):
             default=10,
             min_value=10,
             description="RDS PostgreSQL storage size in GB",
-        )
-
-        redis_instance_type = CfnParameter(
-            self,
-            "RedisInstanceType",
-            type="String",
-            default="cache.t4g.medium",
-            description="ElastiCache Redis instance type (with the leading cache.)",
-        )
-        redis_version = CfnParameter(
-            self,
-            "RedisVersion",
-            type="String",
-            default="7.1",
-            description="ElastiCache Redis version",
         )
 
         authentik_image = CfnParameter(
@@ -156,9 +138,6 @@ class AuthentikStack(Stack):
         db_security_group = ec2.SecurityGroup(
             self, "DatabaseSG", vpc=vpc, description="Security Group for authentik RDS PostgreSQL"
         )
-        redis_security_group = ec2.SecurityGroup(
-            self, "RedisSG", vpc=vpc, description="Security Group for authentik ElastiCache Redis"
-        )
         authentik_security_group = ec2.SecurityGroup(
             self, "AuthentikSG", vpc=vpc, description="Security Group for authentik services"
         )
@@ -166,11 +145,6 @@ class AuthentikStack(Stack):
             peer=authentik_security_group,
             connection=ec2.Port.tcp(5432),
             description="Allow authentik to connect to RDS PostgreSQL",
-        )
-        redis_security_group.add_ingress_rule(
-            peer=authentik_security_group,
-            connection=ec2.Port.tcp(6379),
-            description="Allow authentik to connect to ElastiCache Redis",
         )
 
         # Generated secrets
@@ -212,30 +186,6 @@ class AuthentikStack(Stack):
             removal_policy=RemovalPolicy.SNAPSHOT,
         )
 
-        # Redis
-
-        redis_subnet_group = elasticache.CfnSubnetGroup(
-            self,
-            "AuthentikRedisSubnetGroup",
-            subnet_ids=vpc.select_subnets(
-                subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
-            ).subnet_ids,
-            description="Subnet group for authentik ElastiCache Redis",
-        )
-
-        redis = elasticache.CfnReplicationGroup(
-            self,
-            "AuthentikRedis",
-            replication_group_description="Redis cluster for authentik",
-            engine="redis",
-            engine_version=redis_version.value_as_string,
-            cache_node_type=redis_instance_type.value_as_string,
-            num_cache_clusters=2,
-            automatic_failover_enabled=True,
-            security_group_ids=[redis_security_group.security_group_id],
-            cache_subnet_group_name=redis_subnet_group.ref,
-        )
-
         # Storage
 
         media_fs = efs.FileSystem(
@@ -270,7 +220,6 @@ class AuthentikStack(Stack):
         environment = {
             "AUTHENTIK_POSTGRESQL__HOST": database.instance_endpoint.hostname,
             "AUTHENTIK_POSTGRESQL__USER": "authentik",
-            "AUTHENTIK_REDIS__HOST": redis.attr_primary_end_point_address,
         }
 
         secrets = {

@@ -6,13 +6,13 @@ authentik can be easily monitored in multiple ways.
 
 ## Server monitoring
 
-Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 200` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if both PostgreSQL and Redis connections can be established correctly.
+Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 200` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if a PostgreSQL connection can be established correctly.
 
 ## Worker monitoring
 
-The worker container can be monitored by running `ak healthcheck` in the worker container. This will check that the worker is running and ensure that both PostgreSQL and Redis connections can be established correctly.
+The worker container can be monitored by running `ak healthcheck` in the worker container. This will check that the worker is running and ensure that a PostgreSQL connection can be established correctly.
 
-You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if both PostgreSQL and Redis connections can be established correctly.
+You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if a PostgreSQL connection can be established correctly.
 
 ## Outpost monitoring
 

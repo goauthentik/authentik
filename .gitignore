@@ -72,7 +72,7 @@ unittest.xml
 
 # Translations
 # Have to include binary mo files as they are annoying to compile at build time
-# since a full postgres and redis instance are required
+# since a full postgres instance is required
 # *.mo
 
 # Django stuff:

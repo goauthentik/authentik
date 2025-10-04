@@ -52,8 +52,6 @@ postgresql:
     enabled: true
     auth:
         password: "ThisIsNotASecurePassword"
-redis:
-    enabled: true
 ```
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
