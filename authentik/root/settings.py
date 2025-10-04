@@ -64,7 +64,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
-    "channels_postgres",
+    "django_channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
