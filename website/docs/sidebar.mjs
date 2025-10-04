@@ -83,6 +83,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
             "install-config/reverse-proxy",
