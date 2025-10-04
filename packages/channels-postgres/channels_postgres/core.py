@@ -4,21 +4,20 @@ import asyncio
 import functools
 import types
 from base64 import b64decode
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 from uuid import uuid4
 
 import msgpack
-from asgiref.sync import sync_to_async
 from channels.layers import BaseChannelLayer
-from django.db import DEFAULT_DB_ALIAS, connection, connections
+from django.db import DEFAULT_DB_ALIAS, connections
 from django.utils.timezone import now
 from psycopg import AsyncConnection, Notify, sql
 from psycopg.conninfo import make_conninfo
 from psycopg.errors import Error as PsycopgError
 from structlog.stdlib import get_logger
 
-from channels_postgres.models import GroupChannel, Message
+from channels_postgres.models import NOTIFY_CHANNEL, GroupChannel, Message
 
 LOGGER = get_logger()
 
@@ -259,10 +258,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
         group_key = self._group_key(group)
 
+        serialized_message = self.channel_layer.serialize(message)
         messages = [
             Message(
                 channel=channel,
-                message=self.serialize(message),
+                message=serialized_message,
                 expires=now() + timedelta(seconds=self.expiry),
             )
             async for channel in GroupChannel.objects.using(self.using)
@@ -280,17 +280,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
     ### Flush extension ###
 
-    def _flush(self) -> None:
-        with connections[self.using].cursor() as cursor:
-            cursor.execute(sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(MESSAGE_TABLE)))
-            cursor.execute(sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(GROUP_CHANNEL_TABLE)))
-
     async def flush(self) -> None:
         """
         Deletes all messages and groups.
         """
         self.channels = {}
-        await sync_to_async(self._flush)()
         await self.connection.flush()
 
 
@@ -326,44 +320,66 @@ class PostgresChannelLayerConnection:
                     pass
                 self._receive_task = None
             if self._connection is not None:
-                # The pool was created just for this client, so make sure it is closed,
-                # otherwise it will schedule the connection to be closed inside the
-                # __del__ method, which doesn't have a loop running anymore.
-                await self._connection.close()
-                self._connection = None
+                try:
+                    async with self._connection.cursor() as cursor:
+                        await asyncio.gather(
+                            cursor.execute(
+                                sql.SQL("TRUNCATE TABLE {}").format(sql.Identifier(MESSAGE_TABLE))
+                            ),
+                            cursor.execute(
+                                sql.SQL("TRUNCATE TABLE {}").format(
+                                    sql.Identifier(GROUP_CHANNEL_TABLE)
+                                )
+                            ),
+                        )
+                except PsycopgError:
+                    pass
+                try:
+                    # The connection was created just for this client, so make sure it is closed,
+                    # otherwise it will schedule the connection to be closed inside the
+                    # __del__ method, which doesn't have a loop running anymore.
+                    await self._connection.close()
+                finally:
+                    self._connection = None
             self._subscribed_to = set()
 
     async def _do_receiving(self):
         while True:
             try:
-                if self._connection:
-                    async for notify in self._connection.notifies(stop_after=1):
-                        await self._receive_notify(notify)
-                else:
-                    await asyncio.sleep(0.1)
+                async with await self._create_connection() as conn:
+                    while True:
+                        await conn.execute(
+                            sql.SQL("LISTEN {}").format(sql.Identifier(NOTIFY_CHANNEL))
+                        )
+                        async for notify in conn.notifies(stop_after=1):
+                            await self._receive_notify(conn, notify)
             except (asyncio.CancelledError, TimeoutError, GeneratorExit):
                 raise
+            except PsycopgError as exc:
+                LOGGER.warning("Postgres connection is not healthy", exc=exc)
+                await asyncio.sleep(1)
             except BaseException as exc:  # noqa: BLE001
                 LOGGER.warning("Unexpected exception in receive task", exc=exc)
                 await asyncio.sleep(1)
 
-    async def _receive_notify(self, notify: Notify):
-        if self._connection is None:
-            return
+    async def _receive_notify(self, conn: AsyncConnection, notify: Notify):
         payload = notify.payload
         split_payload = payload.split(":")
         match len(split_payload):
             case 4:
-                message_id, channel, base64_message, timestamp = split_payload
+                message_id, channel, timestamp, base64_message = split_payload
                 if channel not in self._subscribed_to:
                     return
                 message = b64decode(base64_message)
-                expires = datetime.fromtimestamp(int(timestamp))
-            case 2:
-                message_id, channel = split_payload
+                expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
+            case 3:
+                message_id, channel, timestamp = split_payload
                 if channel not in self._subscribed_to:
                     return
-                async with self._connection.cursor() as cursor:
+                expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
+                if expires < now():
+                    return
+                async with conn.cursor() as cursor:
                     await cursor.execute(
                         sql.SQL("DELETE FROM {} WHERE id=%s RETURNING message, expires").format(
                             sql.Identifier(MESSAGE_TABLE)
@@ -397,15 +413,16 @@ class PostgresChannelLayerConnection:
                     LOGGER.info("Error while closing connection", exc=exc)
                 self._connection = None
         if self._connection is None:
-            db_params = connection.get_connection_params()
-            # Prevent psycopg from using the custom synchronous cursor factory from django
-            db_params.pop("cursor_factory")
-            db_params.pop("context")
-            conninfo = make_conninfo(conninfo="", **db_params)
-            conn = await AsyncConnection.connect(conninfo=conninfo, autocommit=True)
-            self._connection = conn
-            await self._connection.execute("LISTEN channels_messages;")
+            self._connection = await self._create_connection()
 
     def _ensure_receiver(self) -> None:
         if self._receive_task is None:
             self._receive_task = asyncio.ensure_future(self._do_receiving())
+
+    async def _create_connection(self) -> AsyncConnection:
+        db_params = connections[self.using].get_connection_params()
+        # Prevent psycopg from using the custom synchronous cursor factory from django
+        db_params.pop("cursor_factory")
+        db_params.pop("context")
+        conninfo = make_conninfo(conninfo="", **db_params, connect_timeout=10)
+        return await AsyncConnection.connect(conninfo=conninfo, autocommit=True)

@@ -15,6 +15,9 @@ def _default_message_expiry() -> datetime:
     return now() + timedelta(minutes=1)
 
 
+NOTIFY_CHANNEL = "channels_messages"
+
+
 class GroupChannel(models.Model):
     """
     A model that represents a group channel.
@@ -37,6 +40,10 @@ class GroupChannel(models.Model):
 
     def __str__(self) -> str:
         return f"Group '{self.group_key}' on channel '{self.channel}'"
+
+    @classmethod
+    def delete_expired(cls):
+        cls.objects.filter(expires__lt=now()).delete()
 
 
 class Message(models.Model):
@@ -67,16 +74,16 @@ class Message(models.Model):
                     ("encoded_message", "text"),
                     ("epoch", "text"),
                 ],
-                func="""
+                func=f"""
                     encoded_message := encode(NEW.message, 'base64');
-                    epoch := extract(epoch from NEW.expire)::text;
-                    IF octet_length(NEW.pk::text) + octet_length(NEW.channel) + octet_length(encoded_message) + octet_length(epoch) + 3 <= 8000 THEN
-                        payload := NEW.id::text || ':' || NEW.channel || ':' || encoded_message || ':' || epoch;
+                    epoch := extract(epoch from NEW.expires)::text;
+                    IF octet_length(NEW.id::text) + octet_length(NEW.channel) + octet_length(epoch) + octet_length(encoded_message) + 3 <= 8000 THEN
+                        payload := NEW.id::text || ':' || NEW.channel || ':' || epoch || ':' || encoded_message;
                     ELSE
-                        payload := NEW.id::text || ':' || NEW.channel;
+                        payload := NEW.id::text || ':' || NEW.channel || ':' || epoch;
                     END IF;
 
-                    PERFORM pg_notify('channels_messages', payload);
+                    PERFORM pg_notify('{NOTIFY_CHANNEL}', payload);
                     RETURN NEW;
                 """,  # noqa: E501
             ),
@@ -84,3 +91,7 @@ class Message(models.Model):
 
     def __str__(self) -> str:
         return f"Message '{self.pk}' on channel '{self.channel}'"
+
+    @classmethod
+    def delete_expired(cls):
+        cls.objects.filter(expires__lt=now()).delete()
