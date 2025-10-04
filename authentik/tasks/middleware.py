@@ -63,7 +63,7 @@ class RelObjMiddleware(Middleware):
 
 
 class MessagesMiddleware(Middleware):
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
@@ -107,13 +107,13 @@ class MessagesMiddleware(Middleware):
                 "Task finished processing without errors",
             )
             return
-        if should_ignore_exception(exception):
-            return
         task.log(
             class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
+        if should_ignore_exception(exception):
+            return
         event_kwargs = {
             "actor": task.actor_name,
         }
@@ -235,6 +235,7 @@ class WorkerStatusMiddleware(Middleware):
                 sleep(10)
                 pass
 
+    @staticmethod
     def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
