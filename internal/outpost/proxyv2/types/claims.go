@@ -1,4 +1,4 @@
-package application
+package types
 
 type ProxyClaims struct {
 	UserAttributes  map[string]interface{} `json:"user_attributes"`

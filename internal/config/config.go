@@ -24,6 +24,9 @@ const defaultConfigPath = "./authentik/lib/default.yml"
 
 func getConfigPaths() []string {
 	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
+	if workspace := os.Getenv("WORKSPACE_DIR"); workspace != "" {
+		_ = os.Chdir(workspace)
+	}
 	globConfigPaths, _ := filepath.Glob("/etc/authentik/config.d/*.yml")
 	configPaths = append(configPaths, globConfigPaths...)
 

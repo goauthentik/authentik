@@ -30,6 +30,7 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
 )
@@ -56,7 +57,7 @@ type Application struct {
 	srv Server
 
 	errorTemplates  *template.Template
-	authHeaderCache *ttlcache.Cache[string, Claims]
+	authHeaderCache *ttlcache.Cache[string, types.Claims]
 
 	isEmbedded bool
 }
@@ -68,7 +69,7 @@ type Server interface {
 }
 
 func init() {
-	gob.Register(Claims{})
+	gob.Register(types.Claims{})
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, oldApp *Application) (*Application, error) {
@@ -145,7 +146,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		mux:                  mux,
 		errorTemplates:       templates.GetTemplates(),
 		ak:                   server.API(),
-		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
+		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, types.Claims]()),
 		srv:                  server,
 		isEmbedded:           isEmbedded,
 	}
@@ -304,12 +305,12 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		a.redirectToStart(rw, r)
 		return
 	}
-	cc := c.(Claims)
+	cc := c.(types.Claims)
 	uv := url.Values{
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(r.Context(), func(c Claims) bool {
+	err = a.Logout(r.Context(), func(c types.Claims) bool {
 		return c.Sub == cc.Sub
 	})
 	if err != nil {
