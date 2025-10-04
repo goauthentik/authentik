@@ -196,6 +196,13 @@ class Group(SerializerModel, AttributesMixin):
         on_delete=models.SET_NULL,
         related_name="children",
     )
+    parents = models.ManyToManyField(
+        "Group",
+        blank=True,
+        symmetrical=False,
+        through="GroupHierarchyNode",
+        # related_name="children",
+    )
 
     objects = GroupQuerySet.as_manager()
 
@@ -245,6 +252,38 @@ class Group(SerializerModel, AttributesMixin):
         if not isinstance(self, QuerySet):
             qs = Group.objects.filter(group_uuid=self.group_uuid)
         return qs.with_children_recursive()
+
+
+class GroupHierarchyNode(SerializerModel):
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
+    parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
+
+    # def serializer(self) -> type[BaseSerializer]:
+
+    def __str__(self) -> str:
+        return f"Group Hierarchy Node #{self.child} to {self.parent}"
+
+    class Meta:
+        verbose_name = _("Group Hierarchy Node")
+        verbose_name_plural = _("Group Hierarchy Nodes")
+
+        db_table = "authentik_core_grouphierarchy"
+
+
+class GroupAncestryNode(models.Model):
+    descendant = models.ForeignKey(Group, related_name="ancestors", on_delete=models.DO_NOTHING)
+    ancestor = models.ForeignKey(Group, related_name="descendants", on_delete=models.DO_NOTHING)
+
+    class Meta:
+        # tc here means transitive closure
+        # See https://en.wikipedia.org/wiki/Transitive_closure#In_graph_theory
+        db_table = "authentik_core_grouphierarchy_tc"
+        managed = False
+
+    def __str__(self) -> str:
+        return f"Group Ancestor #{self.descendant} to {self.ancestor}"
 
 
 class UserQuerySet(models.QuerySet):
