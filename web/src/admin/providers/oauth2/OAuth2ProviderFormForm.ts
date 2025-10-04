@@ -29,6 +29,7 @@ import {
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
+    OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
     SubModeEnum,
     ValidationError,
@@ -53,6 +54,20 @@ export const clientTypeOptions: RadioOption<ClientTypeEnum>[] = [
         description: html`${msg(
             "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
         )}`,
+    },
+];
+
+export const logoutMethodOptions: RadioOption<OAuth2ProviderLogoutMethodEnum>[] = [
+    {
+        label: msg("Back-channel"),
+        value: OAuth2ProviderLogoutMethodEnum.Backchannel,
+        default: true,
+        description: html`${msg("Server-to-server logout notifications")}`,
+    },
+    {
+        label: msg("Front-channel"),
+        value: OAuth2ProviderLogoutMethodEnum.Frontchannel,
+        description: html`${msg("Browser iframe logout notifications")}`,
     },
 ];
 
@@ -112,30 +127,25 @@ const redirectUriHelpMessages: string[] = [
     ),
 ];
 
-const backchannelLogoutUriHelpMessages: string[] = [
-    msg(
-        "URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
-    ),
-    msg(
-        "These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.",
-    ),
-];
-
 type ShowClientSecret = (show: boolean) => void;
-const defaultShowClientSecret: ShowClientSecret = (_show) => undefined;
+type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {
     provider?: Partial<OAuth2Provider>;
     errors?: ValidationError;
     showClientSecret?: boolean;
     showClientSecretCallback?: ShowClientSecret;
+    showLogoutMethod: boolean;
+    showLogoutMethodCallback: ShowLogoutMethod;
 }
 
 export function renderForm({
     provider = {},
     errors = {},
     showClientSecret = false,
-    showClientSecretCallback = defaultShowClientSecret,
+    showClientSecretCallback = (_show) => undefined,
+    showLogoutMethod = false,
+    showLogoutMethodCallback = (_show) => undefined,
 }: OAuth2ProviderFormProps) {
     return html` <ak-text-input
             name="name"
@@ -171,7 +181,7 @@ export function renderForm({
                     .value=${provider.clientType}
                     required
                     @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
-                        showClientSecretCallback(ev.detail.value !== ClientTypeEnum.Public);
+                        showClientSecretCallback?.(ev.detail.value !== ClientTypeEnum.Public);
                     }}
                     .options=${clientTypeOptions}
                 >
@@ -217,15 +227,33 @@ export function renderForm({
                 </ak-form-element-horizontal>
 
                 <ak-text-input
-                    label=${msg("Back-Channel Logout URI")}
-                    name="backchannelLogoutUri"
-                    value="${provider?.backchannelLogoutUri ?? ""}"
+                    label=${msg("Logout URI")}
+                    name="logoutUri"
+                    value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
                     placeholder="https://..."
-                    .help=${backchannelLogoutUriHelpMessages.map(
-                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    .help=${msg(
+                        "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
                     )}
+                    @input=${(ev: Event) => {
+                        const target = ev.target as HTMLInputElement;
+                        showLogoutMethodCallback?.(!!target.value);
+                    }}
                 ></ak-text-input>
+
+                ${showLogoutMethod
+                    ? html`<ak-radio-input
+                          label=${msg("Logout Method")}
+                          name="logoutMethod"
+                          .value=${provider.logoutMethod ||
+                          OAuth2ProviderLogoutMethodEnum.Backchannel}
+                          required
+                          .options=${logoutMethodOptions}
+                          .help=${msg(
+                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                          )}
+                      ></ak-radio-input>`
+                    : html``}
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->

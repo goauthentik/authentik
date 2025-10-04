@@ -2,7 +2,6 @@
 
 from collections.abc import Iterator
 from hashlib import sha256
-from typing import Optional
 
 import xmlsec  # nosec
 from django.http import HttpRequest
@@ -41,7 +40,7 @@ class MetadataProcessor:
         self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
     # Using type unions doesn't work with cython types (which is what lxml is)
-    def get_signing_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
+    def get_signing_key_descriptor(self) -> Element | None:
         """Get Signing KeyDescriptor, if enabled for the provider"""
         if not self.provider.signing_kp:
             return None

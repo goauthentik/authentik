@@ -18,6 +18,8 @@ PROMPT_NONE = "none"
 PROMPT_CONSENT = "consent"
 PROMPT_LOGIN = "login"
 
+PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS = "goauthentik.io/providers/oauth2/iframe_sessions"
+
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
