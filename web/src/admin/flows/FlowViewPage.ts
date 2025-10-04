@@ -314,11 +314,14 @@ export class FlowViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
-        setPageDetails({
-            icon: "pf-icon pf-icon-process-automation",
-            header: this.flow.name,
-            description: this.flow.title,
-        });
+
+        if (changed.has("flow")) {
+            setPageDetails({
+                icon: "pf-icon pf-icon-process-automation",
+                header: this.flow?.name,
+                description: this.flow?.title,
+            });
+        }
     }
 }
 
