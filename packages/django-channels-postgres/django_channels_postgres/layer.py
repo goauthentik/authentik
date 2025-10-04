@@ -3,11 +3,11 @@ import functools
 import types
 from base64 import b64decode
 from datetime import UTC, datetime, timedelta
-from typing import Any, Pattern, cast
+from re import Pattern
+from typing import Any, cast
 from uuid import uuid4
 
 import msgpack
-from asgiref.sync import sync_to_async
 from channels.layers import BaseChannelLayer
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.utils.timezone import now
@@ -355,14 +355,16 @@ class PostgresChannelLayerConnection:
             return
         async with conn.cursor() as cursor:
             await cursor.execute(
-                sql.SQL("""
+                sql.SQL(
+                    """
                     DELETE
                     FROM {table}
                     WHERE
                         {table}.{channel} IN (%s)
                         AND {table}.{expires} >= %s
                     RETURNING {table}.{channel}, {table}.{message}
-                """).format(
+                """
+                ).format(
                     table=sql.Identifier(MESSAGE_TABLE),
                     channel=sql.Identifier("channel"),
                     expires=sql.Identifier("expires"),
@@ -429,13 +431,15 @@ class PostgresChannelLayerConnection:
                     return
                 async with conn.cursor() as cursor:
                     await cursor.execute(
-                        sql.SQL("""
+                        sql.SQL(
+                            """
                             DELETE
                             FROM {table}
                             WHERE
                                 {table}.{id} = %s
                             RETURNING {table}.{message}, {table}.{expires}
-                        """).format(
+                        """
+                        ).format(
                             table=sql.Identifier(MESSAGE_TABLE),
                             id=sql.Identifier("id"),
                             message=sql.Identifier("message"),
