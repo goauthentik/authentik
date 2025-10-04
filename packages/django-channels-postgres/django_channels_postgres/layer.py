@@ -350,7 +350,7 @@ class PostgresChannelLayerConnection:
             self._locked_channels = set()
             await asyncio.sleep(1)
 
-    async def _process_backlog(self, conn) -> None:
+    async def _process_backlog(self, conn: AsyncConnection) -> None:
         if not self._locked_channels:
             return
         async with conn.cursor() as cursor:
