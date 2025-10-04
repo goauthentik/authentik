@@ -5,7 +5,7 @@ requires-python = "==3.13.*"
 [manifest]
 members = [
     "authentik",
-    "channels-postgres",
+    "django-channels-postgres",
     "django-dramatiq-postgres",
     "django-postgres-cache",
 ]
@@ -166,12 +166,12 @@ source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
     { name = "channels" },
-    { name = "channels-postgres" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
     { name = "defusedxml" },
     { name = "django" },
+    { name = "django-channels-postgres" },
     { name = "django-countries" },
     { name = "django-cte" },
     { name = "django-dramatiq-postgres" },
@@ -268,12 +268,12 @@ dev = [
 requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
-    { name = "channels-postgres", editable = "packages/channels-postgres" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
     { name = "defusedxml", specifier = "==0.7.1" },
     { name = "django", specifier = "==5.1.13" },
+    { name = "django-channels-postgres", editable = "packages/django-channels-postgres" },
     { name = "django-countries", specifier = "==7.6.1" },
     { name = "django-cte", specifier = "==2.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
@@ -686,25 +686,6 @@ daphne = [
 ]
 
 [[package]]
-name = "channels-postgres"
-version = "0.1.0"
-source = { editable = "packages/channels-postgres" }
-dependencies = [
-    { name = "asgiref" },
-    { name = "channels" },
-    { name = "msgpack" },
-    { name = "psycopg" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "asgiref", specifier = ">=3,<4" },
-    { name = "channels", specifier = ">=4,<5" },
-    { name = "msgpack", specifier = ">=1,<2" },
-    { name = "psycopg", specifier = ">=3,<4" },
-]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -928,6 +909,29 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/bb/57/ad9905d03a2ee39064ee7ba69f8e2790db4a7ffaef9c54f95e7a8f2cb0a1/django-5.1.13.tar.gz", hash = "sha256:543ff21679f15e80edfc01fe7ea35f8291b6d4ea589433882913626a7c1cf929", size = 10742756, upload-time = "2025-10-01T14:25:41.187Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6c/f2/4b39467b74de9bb698c95232011e97dc848f490baae8d78c2e58848c4562/django-5.1.13-py3-none-any.whl", hash = "sha256:06f257f79dc4c17f3f9e23b106a4c5ed1335abecbe731e83c598c941d14fbeed", size = 8277515, upload-time = "2025-10-01T14:25:28.65Z" },
+]
+
+[[package]]
+name = "django-channels-postgres"
+version = "0.1.0"
+source = { editable = "packages/django-channels-postgres" }
+dependencies = [
+    { name = "channels" },
+    { name = "django" },
+    { name = "django-pgtrigger" },
+    { name = "msgpack" },
+    { name = "psycopg" },
+    { name = "structlog" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "channels", specifier = ">=4.3,<4.4" },
+    { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-pgtrigger", specifier = ">=4,<5" },
+    { name = "msgpack", specifier = ">=1,<2" },
+    { name = "psycopg", specifier = ">=3,<4" },
+    { name = "structlog", specifier = ">=25,<26" },
 ]
 
 [[package]]

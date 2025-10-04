@@ -304,7 +304,7 @@ DATABASE_ROUTERS = (
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_postgres.core.PostgresChannelLayer",
+        "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
     },
 }
 

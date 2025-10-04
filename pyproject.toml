@@ -7,12 +7,12 @@ requires-python = "==3.13.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
-  "channels-postgres",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
   "django==5.1.13",
+  "django-channels-postgres",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
@@ -119,14 +119,14 @@ no-binary-package = [
 
 [tool.uv.sources]
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
 django-postgres-cache = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
-channels-postgres = { workspace = true }
 
 [tool.uv.workspace]
 members = [
-  "packages/channels-postgres",
+  "packages/django-channels-postgres",
   "packages/django-dramatiq-postgres",
   "packages/django-postgres-cache",
 ]

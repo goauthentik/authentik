@@ -1,9 +1,12 @@
 [project]
-name = "channels-postgres"
+name = "django-channels-postgres"
 version = "0.1.0"
-description = ""
+description = "Django channels layer using PostgreSQL NOTIFY/LISTEN"
 requires-python = ">=3.9,<3.14"
 readme = "README.md"
+license = "MIT"
+authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
+keywords = ["django", "channels", "postgres"]
 
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -28,11 +31,18 @@ classifiers = [
 ]
 
 dependencies = [
-  "asgiref >=3,<4",
-  "channels >=4,<5",
+  "channels >=4.3,<4.4",
+  "django >=4.2,<6.0",
+  "django-pgtrigger >=4,<5",
   "msgpack >=1,<2",
   "psycopg >=3,<4",
+  "structlog >=25,<26",
 ]
+
+[project.urls]
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
 
 [build-system]
 requires = ["hatchling"]

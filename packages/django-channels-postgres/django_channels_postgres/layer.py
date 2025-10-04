@@ -1,5 +1,3 @@
-"""channels_postgres core"""
-
 import asyncio
 import functools
 import types
@@ -17,7 +15,7 @@ from psycopg.conninfo import make_conninfo
 from psycopg.errors import Error as PsycopgError
 from structlog.stdlib import get_logger
 
-from channels_postgres.models import NOTIFY_CHANNEL, GroupChannel, Message
+from django_channels_postgres.models import NOTIFY_CHANNEL, GroupChannel, Message
 
 LOGGER = get_logger()
 

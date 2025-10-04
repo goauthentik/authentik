@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from channels_postgres.models import GroupChannel, Message
+from django_channels_postgres.models import GroupChannel, Message
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_postgres_cache.tasks import clear_expired_cache
