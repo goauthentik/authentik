@@ -5404,16 +5404,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Normal</target>
         
       </trans-unit>
-      <trans-unit id="s6e4c997a101b6abf">
-        <source>with current user</source>
-        <target>mevcut kullanıcı ile</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ecdbff1a7329b64">
-        <source>with inspector</source>
-        <target>müfettiş ile</target>
-        
-      </trans-unit>
       <trans-unit id="s3576aead3e68c5c9">
         <source>Export flow</source>
         <target>Akışı aktar</target>
@@ -10106,6 +10096,21 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s384699f614f39071">
   <source>New service account...</source>
+</trans-unit>
+<trans-unit id="s61e5043203e94d0a">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
+</trans-unit>
+<trans-unit id="s02eb960c270a837e">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
+</trans-unit>
+<trans-unit id="saf579a36a54c92e1">
+  <source>Current user</source>
+</trans-unit>
+<trans-unit id="sd149e44e50455923">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
+</trans-unit>
+<trans-unit id="s45c530a48bcf74ad">
+  <source>Use inspector</source>
 </trans-unit>
     </body>
   </file>
