@@ -116,6 +116,7 @@ ${prompt.initialValue}</textarea
                 return html`<input
                     type="email"
                     id=${fieldId}
+                    autocomplete="email"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -243,9 +244,10 @@ ${prompt.initialValue}</textarea
     }
 
     renderPromptHelpText(prompt: StagePrompt) {
-        if (prompt.subText === "") {
+        if (!prompt.subText) {
             return nothing;
         }
+
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
