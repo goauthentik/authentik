@@ -48,6 +48,14 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.handleSignOut(rw, r)
 		return
 	}
+
+	// Check for CORS preflight request and allow it to pass through unauthenticated
+	if a.isCORSPreflightRequest(r) {
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.Trace("allowing CORS preflight request to pass through unauthenticated")
+		return
+	}
+
 	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
@@ -55,7 +63,9 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(fwd) {
+	}
+
+	if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
@@ -91,6 +101,14 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		a.handleSignOut(rw, r)
 		return
 	}
+
+	// Check for CORS preflight request and allow it to pass through unauthenticated
+	if a.isCORSPreflightRequest(r) {
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.Trace("allowing CORS preflight request to pass through unauthenticated")
+		return
+	}
+
 	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
@@ -98,7 +116,9 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(fwd) {
+	}
+
+	if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
@@ -123,6 +143,13 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Check for CORS preflight request and allow it to pass through unauthenticated
+	if a.isCORSPreflightRequest(r) {
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.Trace("allowing CORS preflight request to pass through unauthenticated")
+		return
+	}
+
 	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
@@ -130,7 +157,9 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		rw.WriteHeader(200)
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(fwd) {
+	}
+
+	if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
@@ -158,6 +187,14 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	r.URL.Path = strings.TrimPrefix(r.URL.Path, envoyPrefix)
 	r.URL.Host = r.Host
 	fwd := r.URL
+
+	// Check for CORS preflight request and allow it to pass through unauthenticated
+	if a.isCORSPreflightRequest(r) {
+		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
+		a.log.Trace("allowing CORS preflight request to pass through unauthenticated")
+		return
+	}
+
 	// Check if we're authenticated, or the request path is on the allowlist
 	claims, err := a.checkAuth(rw, r)
 	if claims != nil && err == nil {
@@ -165,10 +202,13 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
 		return
-	} else if claims == nil && a.IsAllowlisted(fwd) {
+	}
+
+	if claims == nil && a.IsAllowlisted(fwd) {
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
+
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
