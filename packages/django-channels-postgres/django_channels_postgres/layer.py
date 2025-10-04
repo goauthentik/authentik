@@ -140,10 +140,6 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
         self.connection = PostgresChannelLayerConnection(self.using, self)
 
-    async def _subscribe_to_channel(self, channel: str) -> None:
-        self.channels[channel] = asyncio.Queue()
-        await self.connection.subscribe(channel)
-
     extensions = ["groups", "flush"]
 
     ### Channel layer API ###
@@ -169,9 +165,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Returns a new channel name that can be used by something in our
         process as a specific channel.
         """
-        channel = f"{self.prefix}.{prefix}.{uuid4().hex}"
-        await self._subscribe_to_channel(channel)
-        return channel
+        return f"{self.prefix}.{prefix}.{uuid4().hex}"
 
     async def receive(self, channel: str) -> dict[str, Any]:
         """
@@ -193,7 +187,8 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         """
         LOGGER.error("receive")
         if channel not in self.channels:
-            await self._subscribe_to_channel(channel)
+            self.channels[channel] = asyncio.Queue()
+            await self.connection.subscribe(channel)
 
         q = self.channels[channel]
         try:
