@@ -185,7 +185,6 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         subsequent calls to this method will repeatedly try to acquire the lock
         before proceeding to wait for a message.
         """
-        LOGGER.error("receive")
         if channel not in self.channels:
             self.channels[channel] = asyncio.Queue()
             await self.connection.subscribe(channel)
@@ -282,26 +281,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
     ### Flush extension ###
 
-    def _flush(self) -> None:
-        try:
-            with connections[self.using].cursor() as cursor:
-                cursor.execute(
-                    sql.SQL("TRUNCATE TABLE {table}").format(table=sql.Identifier(MESSAGE_TABLE))
-                )
-                cursor.execute(
-                    sql.SQL("TRUNCATE TABLE {table}").format(
-                        table=sql.Identifier(GROUP_CHANNEL_TABLE)
-                    )
-                )
-        except BaseException as exc:  # noqa: BLE001
-            LOGGER.warning("Failed to flush channels tables", exc=exc)
-
     async def flush(self) -> None:
         """
         Deletes all messages and groups.
         """
         self.channels = {}
-        await sync_to_async(self._flush)()
         await self.connection.flush()
 
 
@@ -338,7 +322,6 @@ class PostgresChannelLayerConnection:
             self._subscribed_to = set()
 
     async def _do_receiving(self) -> None:
-        LOGGER.error("do receiving")
         while True:
             try:
                 async with await self._create_connection() as conn:
@@ -368,7 +351,6 @@ class PostgresChannelLayerConnection:
             await asyncio.sleep(1)
 
     async def _process_backlog(self, conn) -> None:
-        LOGGER.error("process backlog")
         if not self._locked_channels:
             return
         async with conn.cursor() as cursor:
@@ -397,7 +379,6 @@ class PostgresChannelLayerConnection:
         return cast(int, lock_id)
 
     async def _update_locks(self, conn: AsyncConnection) -> None:
-        LOGGER.error("update locks")
         async with self._lock:
             locks_to_release = self._locked_channels - self._subscribed_to
             locks_to_acquire = self._subscribed_to - self._locked_channels
