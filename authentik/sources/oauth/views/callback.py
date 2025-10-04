@@ -60,13 +60,9 @@ class OAuthCallback(OAuthClientMixin, View):
                 raw_profile=exc.doc,
             ).from_http(self.request)
             return self.handle_login_failure("Could not retrieve profile.")
-        identifier = self.get_user_id(info=raw_info)
-        if identifier is None:
-            return self.handle_login_failure("Could not determine id.")
         sfm = OAuthSourceFlowManager(
             source=self.source,
             request=self.request,
-            identifier=identifier,
             user_info={
                 "info": raw_info,
                 "client": client,
@@ -89,12 +85,6 @@ class OAuthCallback(OAuthClientMixin, View):
     def get_error_redirect(self, source: OAuthSource, reason: str) -> str:
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
-
-    def get_user_id(self, info: dict[str, Any]) -> str | None:
-        """Return unique identifier from the profile info."""
-        if "id" in info:
-            return info["id"]
-        return None
 
     def handle_login_failure(self, reason: str) -> HttpResponse:
         "Message user and redirect on error."
