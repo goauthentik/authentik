@@ -304,11 +304,7 @@ DATABASE_ROUTERS = (
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "authentik.root.channels.PostgresChannelLayer",
-        "CONFIG": {
-            **DATABASES["default"],
-            "TIME_ZONE": None,
-        },
+        "BACKEND": "channels_postgres.core.PostgresChannelLayer",
     },
 }
 
