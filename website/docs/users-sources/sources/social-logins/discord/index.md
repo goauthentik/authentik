@@ -48,6 +48,8 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 TODO
 
+ALSO TODO: https://github.com/goauthentik/authentik/issues/12959#issuecomment-3368242796
+
 ## Optional additional configuration
 
 ### Checking for membership of a Discord Guild
