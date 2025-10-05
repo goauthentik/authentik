@@ -69,7 +69,12 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
                 <div class="pf-c-form__group">
                     <div class="qr-container">
-                        <qr-code data="${this.challenge.configUrl}"></qr-code>
+                        <qr-code
+                            role="img"
+                            aria-label=${msg("QR-Code to setup a time-based one-time password")}
+                            format="svg"
+                            data="${this.challenge.configUrl}"
+                        ></qr-code>
                         <button
                             type="button"
                             class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
