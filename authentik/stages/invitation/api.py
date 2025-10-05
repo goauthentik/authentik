@@ -4,7 +4,7 @@ from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.flows.api.flows import FlowSerializer
@@ -45,7 +45,7 @@ class InvitationStageViewSet(UsedByMixin, ModelViewSet):
 class InvitationSerializer(ModelSerializer):
     """Invitation Serializer"""
 
-    created_by = GroupMemberSerializer(read_only=True)
+    created_by = PartialUserSerializer(read_only=True)
     fixed_data = JSONDictField(required=False)
     flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 

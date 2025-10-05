@@ -3,14 +3,13 @@
 from json import dumps
 
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -21,7 +20,7 @@ LOGGER = get_logger()
     )
 )
 def update_well_known_jwks():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     session = get_http_session()
     for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):
         try:

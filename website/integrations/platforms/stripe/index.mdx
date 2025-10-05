@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -48,7 +48,7 @@ To support the integration of Stripe with authentik, you need to create a group,
         return request.user.group_attributes().get("stripe_role", "")
         ```
 
-    :::note
+    :::info
     To find your Stripe account ID, log in to your Stripe dashboard and navigate to **Settings** > **Account** > **Account details**. You'll find your account ID, which starts with `acct_`, displayed on the right-hand side.
     :::
 

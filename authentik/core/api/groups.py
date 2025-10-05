@@ -29,8 +29,8 @@ from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
 
-class GroupMemberSerializer(ModelSerializer):
-    """Stripped down user serializer to show relevant users for groups"""
+class PartialUserSerializer(ModelSerializer):
+    """Partial User Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
     uid = CharField(read_only=True)
@@ -94,11 +94,11 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_children", "false")).lower() == "true"
 
-    @extend_schema_field(GroupMemberSerializer(many=True))
-    def get_users_obj(self, instance: Group) -> list[GroupMemberSerializer] | None:
+    @extend_schema_field(PartialUserSerializer(many=True))
+    def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
-        return GroupMemberSerializer(instance.users, many=True).data
+        return PartialUserSerializer(instance.users, many=True).data
 
     @extend_schema_field(GroupChildSerializer(many=True))
     def get_children_obj(self, instance: Group) -> list[GroupChildSerializer] | None:

@@ -10,7 +10,8 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    icon = "pf-icon pf-icon-bundle";
+    public override icon = "pf-icon pf-icon-bundle";
+    public override label = msg("Version");
 
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
@@ -46,10 +47,6 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
         });
-    }
-
-    renderHeader(): TemplateResult {
-        return html`${msg("Version")}`;
     }
 
     renderValue(): TemplateResult {

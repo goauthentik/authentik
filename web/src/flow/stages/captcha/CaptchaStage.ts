@@ -74,9 +74,15 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 }
             }
 
-            #ak-captcha {
-                width: 100%;
-                min-height: 65px;
+            .ak-interactive-challenge {
+                /**
+                 * We use & here to hint to the ShadyDOM polyfill that this rule is meant
+                 * for the iframe itself, not the contents of the iframe.
+                 */
+                & {
+                    width: 100%;
+                    min-height: 65px;
+                }
 
                 &[data-ready="loading"] {
                     background-color: var(--captcha-background-from);
@@ -312,6 +318,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     ${ref(this.#iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready="${this.#iframeLoaded ? "ready" : "loading"}"
+                    class="ak-interactive-challenge"
                     id="ak-captcha"
                 ></iframe>
             `;
