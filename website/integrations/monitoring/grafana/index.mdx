@@ -128,7 +128,7 @@ environment:
     # Optionally enable auto-login (bypasses Grafana login screen)
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
     # Optionally map user groups to Grafana roles
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
     # Required if Grafana is running behind a reverse proxy
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
