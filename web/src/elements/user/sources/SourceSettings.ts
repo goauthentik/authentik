@@ -2,6 +2,7 @@ import "#elements/EmptyState";
 import "#elements/user/sources/SourceSettingsOAuth";
 import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
+import "#elements/user/sources/SourceSettingsTelegram";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -104,6 +105,13 @@ export class UserSourceSettingsPage extends AKElement {
                     .configureUrl=${this.canConnect ? source.configureUrl : undefined}
                 >
                 </ak-user-settings-source-saml>`;
+            case "ak-user-settings-source-telegram":
+                return html`<ak-user-settings-source-telegram
+                    objectId=${source.objectUid}
+                    title=${source.title}
+                    connectionPk=${connectionPk}
+                >
+                </ak-user-settings-source-telegram>`;
             default:
                 return html`<p>
                     ${msg(str`Error: unsupported source settings: ${source.component}`)}

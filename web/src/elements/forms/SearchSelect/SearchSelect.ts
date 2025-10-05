@@ -156,8 +156,12 @@ export abstract class SearchSelectBase<T>
     //#endregion
 
     public toForm(): string {
-        if (!this.objects) {
-            throw new PreventFormSubmit(msg("Loading options..."));
+        if (!this.objects && !this.blankable) {
+            // TODO: The loading state needs more exposure to forms.
+            // For E2E tests that run significantly faster than humans,
+            // there isn't enough context to know that the data is still being fetched.
+
+            throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
         return this.value(this.selectedObject) || "";
     }
@@ -243,7 +247,19 @@ export abstract class SearchSelectBase<T>
 
             return;
         }
-        const selected = this.objects?.find((obj) => this.value(obj) === value) || null;
+        const selected =
+            this.objects?.find((obj) => {
+                // TODO: Despite the return of `value()` being a string,
+                // a lack of type on the property can lead to non-string returns,
+                // a common occurrence in the user primary keys.
+                //
+                // We fix this by forcing a string cast here.
+                // Remove this after migrating to Lit JSX.
+
+                const serialized = `${this.value(obj)}`;
+
+                return serialized && serialized === value;
+            }) || null;
 
         if (!selected) {
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);

@@ -19,7 +19,7 @@ The following placeholders are used in this guide:
 - `GitHub Users` is an authentik group used for holding GitHub users.
 - `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of GitHub Enterprise Server with authentik, you need to create an application/provider pair in authentik.
 
-:::note
+:::info
 In order to use GitHub Enterprise Server, SCIM must also be set up.
 :::
 

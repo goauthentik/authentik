@@ -206,7 +206,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 
 	switch ch.GetComponent() {
 	case string(StageAccessDenied):
-		return false, nil
+		return false, errors.New(challenge.AccessDeniedChallenge.GetErrorMessage())
 	case string(StageRedirect):
 		return true, nil
 	default:

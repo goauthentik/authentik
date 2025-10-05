@@ -124,7 +124,8 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
@@ -150,64 +151,61 @@ export class OutpostListPage extends TablePage<Outpost> {
                               ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 
     renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-        return html`<td colspan="7">
-            <div class="pf-c-table__expandable-row-content">
-                <h3>
-                    ${msg(
-                        "Detailed health (one instance per column, data is cached so may be out of date)",
-                    )}
-                </h3>
-                <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                    ${this.health[item.pk].map((h) => {
-                        return html`<div class="pf-c-description-list__group">
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-outpost-health .outpostHealth=${h}></ak-outpost-health>
-                                </div>
-                            </dd>
-                        </div>`;
-                    })}
-                </dl>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                        </dt>
+        return html` <h3>
+                ${msg(
+                    "Detailed health (one instance per column, data is cached so may be out of date)",
+                )}
+            </h3>
+            <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                ${this.health[item.pk].map((h) => {
+                    return html`<div class="pf-c-description-list__group">
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-schedule-list>
+                                <ak-outpost-health .outpostHealth=${h}></ak-outpost-health>
                             </div>
                         </dd>
-                    </div>
-                </dl>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+                    </div>`;
+                })}
+            </dl>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 
     renderToolbarSelected(): TemplateResult {

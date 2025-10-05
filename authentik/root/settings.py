@@ -10,7 +10,7 @@ from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
-from authentik.lib.config import CONFIG, django_db_config, redis_url
+from authentik.lib.config import CONFIG, django_db_config
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -64,6 +64,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
@@ -72,6 +73,7 @@ TENANT_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "pgtrigger",
+    "django_postgres_cache",
     "authentik.admin",
     "authentik.api",
     "authentik.core",
@@ -103,6 +105,7 @@ TENANT_APPS = [
     "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.sources.scim",
+    "authentik.sources.telegram",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_email",
@@ -226,20 +229,11 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
-        "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-        "KEY_PREFIX": "authentik_cache",
+        "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
-DJANGO_REDIS_SCAN_ITERSIZE = 1000
-DJANGO_REDIS_IGNORE_EXCEPTIONS = True
-DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
@@ -297,16 +291,6 @@ TEMPLATES = [
 
 ASGI_APPLICATION = "authentik.root.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
-        "CONFIG": {
-            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
-            "prefix": "authentik_channels_",
-        },
-    },
-}
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -318,6 +302,16 @@ DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
     "django_tenants.routers.TenantSyncRouter",
 )
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "authentik.root.channels.PostgresChannelLayer",
+        "CONFIG": {
+            **DATABASES["default"],
+            "TIME_ZONE": None,
+        },
+    },
+}
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -400,8 +394,6 @@ DRAMATIQ = {
     ).total_seconds(),
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
-        # TODO: fixme
-        # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
@@ -418,10 +410,13 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.MessagesMiddleware", {}),

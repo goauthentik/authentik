@@ -1,33 +1,41 @@
 import socket
 from http.server import BaseHTTPRequestHandler
 from time import sleep
-from typing import Any
+from typing import Any, cast
 
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
+)
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.utils.reflection import class_to_path
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
-DB_ERRORS = (OperationalError, Error, RedisError)
+DB_ERRORS = (OperationalError, Error)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
 
 
 class TenantMiddleware(Middleware):
@@ -55,13 +63,13 @@ class RelObjMiddleware(Middleware):
 
 
 class MessagesMiddleware(Middleware):
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
             task._messages.append(
                 Task._make_message(
-                    str(type(self)),
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
                     delay=delay,
@@ -71,7 +79,7 @@ class MessagesMiddleware(Middleware):
             task._previous_messages.extend(task._messages)
             task._messages = [
                 Task._make_message(
-                    str(type(self)),
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
                     delay=delay,
@@ -81,7 +89,7 @@ class MessagesMiddleware(Middleware):
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(str(type(self)), TaskStatus.INFO, "Task is being processed")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task is being processed")
 
     def after_process_message(
         self,
@@ -93,15 +101,19 @@ class MessagesMiddleware(Middleware):
     ):
         task: Task = message.options["task"]
         if exception is None:
-            task.log(str(type(self)), TaskStatus.INFO, "Task finished processing without errors")
-            return
-        if should_ignore_exception(exception):
+            task.log(
+                class_to_path(type(self)),
+                TaskStatus.INFO,
+                "Task finished processing without errors",
+            )
             return
         task.log(
-            str(type(self)),
+            class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
+        if should_ignore_exception(exception):
+            return
         event_kwargs = {
             "actor": task.actor_name,
         }
@@ -115,7 +127,7 @@ class MessagesMiddleware(Middleware):
 
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(str(type(self)), TaskStatus.INFO, "Task has been skipped")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task has been skipped")
 
 
 class LoggingMiddleware(Middleware):
@@ -174,8 +186,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
         except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
@@ -225,6 +235,7 @@ class WorkerStatusMiddleware(Middleware):
                 sleep(10)
                 pass
 
+    @staticmethod
     def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):

@@ -2,11 +2,11 @@
 title: "Templates"
 ---
 
-In technical documentation, there are document "types" (similar to how there are data types). We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!
+In technical documentation, there are document "types" (similar to how there are data types). We have templates for the different types, to make it super-easy to divide longer topics into separate pages (one for each content type) if needed. And templates in general make it easy for whomever wants to contribute some documentation!
 
 The most common types are:
 
-- [**Combo**](./combo.md): For most topics (unless they are very large and complex), we can combine the procedural and conceptual information into a single document. A handy guideline to follow is: "If the actual 1., 2., 3. steps are buried at the bottom, and a reader has to scroll multiple times to find them, then the combo approach is _not_ the right one".
+- [**Combo**](./combo.md): For most topics (unless they are very large and complex), we can combine the procedural and conceptual information into a single document. A handy guideline to follow is: "If the actual 1., 2., 3. steps are buried at the bottom, and a reader has to scroll multiple times to find them, then the combo approach is _not_ the right one. Use separate topics.".
 
 - [**Procedural**](./procedural.md): these are How To docs, the HOW information, with step-by-step instructions for accomplishing a task. This is what most people are looking for when they open the docs... and best practice is to separate the procedural docs from long, lengthy conceptual or reference docs.
 

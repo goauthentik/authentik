@@ -35,11 +35,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     ];
 
     renderExpanded(item: SCIMSourceGroup): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 
     row(item: SCIMSourceGroup): SlottedTemplateResult[] {

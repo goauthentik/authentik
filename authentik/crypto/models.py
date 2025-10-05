@@ -20,6 +20,11 @@ from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 LOGGER = get_logger()
 
 
+def fingerprint_sha256(cert: Certificate) -> str:
+    """Get SHA256 Fingerprint of certificate"""
+    return hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8")
+
+
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
@@ -82,7 +87,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def fingerprint_sha256(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
-        return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode("utf-8")
+        return fingerprint_sha256(self.certificate)
 
     @property
     def fingerprint_sha1(self) -> str:
