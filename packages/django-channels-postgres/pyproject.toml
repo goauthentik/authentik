@@ -33,7 +33,6 @@ classifiers = [
 dependencies = [
   "channels >=4.3,<4.4",
   "django >=4.2,<6.0",
-  "django-pglock >=1.7,<2",
   "django-pgtrigger >=4,<5",
   "msgpack >=1,<2",
   "psycopg >=3,<4",

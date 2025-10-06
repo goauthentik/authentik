@@ -11,7 +11,6 @@ import msgpack
 from channels.layers import BaseChannelLayer
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.utils.timezone import now
-from pglock.core import _cast_lock_id
 from psycopg import AsyncConnection, Notify, sql
 from psycopg.conninfo import make_conninfo
 from psycopg.errors import Error as PsycopgError
@@ -178,18 +177,6 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Receive the first message that arrives on the channel.
         If more than one coroutine waits on the same channel, the first waiter
         will be given the message when it arrives.
-
-        This is done by acquiring an `advistory_lock` from the database
-        based on the channel name.
-
-        If the lock is acquired successfully, subsequent calls to this method
-        will not try to acquire the lock again.
-        _The lock is session based and should be released by postgres when
-        the session is closed_
-
-        If the lock is already acquired by another coroutine,
-        subsequent calls to this method will repeatedly try to acquire the lock
-        before proceeding to wait for a message.
         """
         if channel not in self.channels:
             await self._subscribe_to_channel(channel)
@@ -222,7 +209,6 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                     # We don't re-raise here because we want the CancelledError to be the one
                     # re-raised
             raise
-        await Message.objects.filter(pk=message_id).adelete()
         return self.channel_layer.deserialize(message)
 
     # ==============================================================
@@ -307,7 +293,6 @@ class PostgresChannelLayerConnection:
         self.using = using
         self.channel_layer = channel_layer
         self._subscribed_to: set[str] = set()
-        self._locked_channels: set[str] = set()
         self._lock = asyncio.Lock()
         self._receive_task: asyncio.Task[None] | None = None
 
@@ -338,28 +323,23 @@ class PostgresChannelLayerConnection:
         while True:
             try:
                 async with await self._create_connection() as conn:
-                    await self._update_locks(conn)
                     await self._process_backlog(conn)
+                    await conn.execute(
+                        sql.SQL("LISTEN {channel}").format(channel=sql.Identifier(NOTIFY_CHANNEL))
+                    )
                     while True:
-                        await conn.execute(
-                            sql.SQL("LISTEN {channel}").format(
-                                channel=sql.Identifier(NOTIFY_CHANNEL)
-                            )
-                        )
-                        async for notify in conn.notifies(timeout=30, stop_after=1):
-                            await self._receive_notify(conn, notify)
-                        await self._update_locks(conn)
+                        async for notify in conn.notifies(timeout=30):
+                            await self._receive_notify(notify)
             except (asyncio.CancelledError, TimeoutError, GeneratorExit):
                 raise
             except PsycopgError as exc:
                 LOGGER.warning("Postgres connection is not healthy", exc=exc)
             except BaseException as exc:  # noqa: BLE001
                 LOGGER.warning("Unexpected exception in receive task", exc=exc, exc_info=True)
-            self._locked_channels = set()
             await asyncio.sleep(1)
 
     async def _process_backlog(self, conn: AsyncConnection) -> None:
-        if not self._locked_channels:
+        if not self._subscribed_to:
             return
         async with conn.cursor() as cursor:
             await cursor.execute(
@@ -379,47 +359,20 @@ class PostgresChannelLayerConnection:
                     expires=sql.Identifier("expires"),
                     message=sql.Identifier("message"),
                 ),
-                (tuple(self._locked_channels), now()),
+                (tuple(self._subscribed_to), now()),
             )
             async for row in cursor:
                 message_id, channel, message = row
                 self._receive_message(channel, message_id, message)
 
-    def _get_lock_id(self, channel: str) -> int:
-        lock_id = _cast_lock_id(f"channels.{channel}")  # type: ignore[no-untyped-call]
-        return cast(int, lock_id)
-
-    async def _update_locks(self, conn: AsyncConnection) -> None:
-        async with self._lock:
-            locks_to_release = self._locked_channels - self._subscribed_to
-            locks_to_acquire = self._subscribed_to - self._locked_channels
-
-            for channel in locks_to_acquire:
-                lock_id = self._get_lock_id(channel)
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT pg_try_advisory_lock(%s)", (lock_id,))
-                    row = await cursor.fetchone()
-                    if row is not None:
-                        if row[0]:
-                            self._locked_channels.add(channel)
-
-            for channel in locks_to_release:
-                lock_id = self._get_lock_id(channel)
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT pg_advisory_unlock(%s)", (lock_id,))
-                    row = await cursor.fetchone()
-                    if row is not None:
-                        if row[0]:
-                            self._locked_channels.remove(channel)
-
-    async def _receive_notify(self, conn: AsyncConnection, notify: Notify) -> None:
+    async def _receive_notify(self, notify: Notify) -> None:
         payload = notify.payload
         split_payload = payload.split(":")
         message: bytes | None = None
         match len(split_payload):
             case 4:
                 message_id, channel, timestamp, base64_message = split_payload
-                if channel not in self._locked_channels:
+                if channel not in self._subscribed_to:
                     return
                 expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
                 if expires < now():
@@ -427,7 +380,7 @@ class PostgresChannelLayerConnection:
                 message = b64decode(base64_message)
             case 3:
                 message_id, channel, timestamp = split_payload
-                if channel not in self._locked_channels:
+                if channel not in self._subscribed_to:
                     return
                 expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
                 if expires < now():
