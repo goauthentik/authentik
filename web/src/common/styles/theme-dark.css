@@ -23,6 +23,18 @@ body {
     color-scheme: dark;
 }
 
+/* #region Scrollbars */
+
+:root {
+    /**
+     * Scrollbar colors derived from default user agent styles.
+     */
+    --ak-scrollbar-background-color: hsl(0 0% 18%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
+}
+
+/* #endregion */
+
 .pf-c-radio {
     --pf-c-radio__label--Color: var(--ak-dark-foreground);
 }
