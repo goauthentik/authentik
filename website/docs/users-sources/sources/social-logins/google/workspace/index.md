@@ -114,7 +114,7 @@ To support the integration of Google Workspace with authentik, you need to creat
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
 :::
 
-:::info Embed new source in flow
+:::info Embed new source in flow :ak-enterprise
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
 :::
 
