@@ -9,11 +9,11 @@ It can be used after `user_write` during an enrollment flow, or after a `passwor
 
 ## User login stage configuration options
 
-When creating or editing this stage in the Admin interface, you can set the following configuration options.
+When creating or editing this stage in the Admin interface, you can define configuration options using the following fields.
 
 #### Session duration
 
-By default, the authentik session expires when you close your browser (_seconds=0_).
+By default, the authentik session expires when you close your browser (_seconds=0_). Use the **Session duration** field to define a custom session length.
 
     :::warning
     Different browsers handle session cookies differently, and might not remove them even when the browser is closed. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#expiresdate) for more info.
@@ -33,7 +33,7 @@ All values accept floating-point values.
 
 #### Stay signed in offset
 
-When this is set to a higher value than the default _seconds=0_, the user logging in is shown a prompt, allowing the user to choose if their session should be extended or not. The same syntax as for _Session duration_ applies.
+When the value in **Stay signed in offset** is set to a higher value than the default _seconds=0_, the user logging in is shown a prompt, allowing the user to choose if their session should be extended or not. The same syntax as for **Session duration** applies.
 
     ![](./stay_signed_in.png)
 
