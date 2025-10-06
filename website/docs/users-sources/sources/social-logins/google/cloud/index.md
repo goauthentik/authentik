@@ -80,10 +80,6 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/). Note that this is an enterprise feature.
 :::
 
-## Configuration verification
-
-TODO
-
 ## Optional additional configuration
 
 ### Username mapping

@@ -115,9 +115,9 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md). Note that this is an enterprise feature.
 :::
 
-To test your configuration, navigate to the login page of your authentik instance and confirm the Google Workspace option is available as an alternative login method.
+## Source property mappings
 
-Next, click on the Google Workspace button and confirm that you are redirected to authenticate via your Google Workspace credentials. After successful authentication **with a non-super-admin account**, you should be redirected back to your authentik instance and logged in.
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
 
 ## Troubleshooting
 
