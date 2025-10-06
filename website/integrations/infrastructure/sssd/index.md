@@ -84,6 +84,13 @@ ldap_group_name = cn
 
 ldap_default_bind_dn = cn=${sssd.serviceAccount},ou=users,${ldap.baseDN}
 ldap_default_authtok = ${sssd.serviceAccountToken}
+
+# Authentik doesnt provide a shell by default
+#  This can cause issues with certian applications 
+#  (like XRDP) not having a user's shell returned.
+#  Adjust to a shell present on the system.
+
+default_shell = /bin/sh
 ```
 
 You should now be able to start sssd; however, the system may not yet be set up to use it. Depending on your platform, you might need to use `authconfig` or `pam-auth-update` to configure your system. See the additional resources section for details.
