@@ -202,7 +202,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                     m = await Message.objects.filter(pk=message_id).afirst()
                     if m is None:
                         continue
-                    message = m.message
+                    message = cast(bytes, m.message)
                 break
         except (asyncio.CancelledError, TimeoutError, GeneratorExit):
             # We assume here that the reason we are cancelled is because the consumer
@@ -415,6 +415,7 @@ class PostgresChannelLayerConnection:
     async def _receive_notify(self, conn: AsyncConnection, notify: Notify) -> None:
         payload = notify.payload
         split_payload = payload.split(":")
+        message: bytes | None = None
         match len(split_payload):
             case 4:
                 message_id, channel, timestamp, base64_message = split_payload
