@@ -24,6 +24,7 @@ Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
 CODEOWNERS                              @goauthentik/infrastructure
 # Backend packages
+packages/django-channels-postgres       @goauthentik/backend
 packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
