@@ -13,7 +13,7 @@
         "@goauthentik/api": "^2025.10.0-rc1-1759234079",
         "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^28.0.6",
-        "@rollup/plugin-node-resolve": "^16.0.1",
+        "@rollup/plugin-node-resolve": "^16.0.2",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.7.8",
         "@swc/core": "^1.13.19",
@@ -23,7 +23,7 @@
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",
-        "rollup": "^4.52.3",
+        "rollup": "^4.52.4",
         "rollup-plugin-copy": "^3.5.0",
         "weakmap-polyfill": "^2.0.4"
     },

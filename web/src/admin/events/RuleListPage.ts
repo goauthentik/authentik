@@ -121,33 +121,29 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
-        return html` <td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <p>
-                    ${msg(
-                        `These bindings control upon which events this rule triggers.
+        return html`<p>
+                ${msg(
+                    `These bindings control upon which events this rule triggers.
 Bindings to groups/users are checked against the user of the event.`,
-                    )}
-                </p>
-                <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+                )}
+            </p>
+            <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 }
 

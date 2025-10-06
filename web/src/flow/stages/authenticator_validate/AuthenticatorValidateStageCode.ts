@@ -1,7 +1,5 @@
 import "#flow/components/ak-flow-card";
 
-import { FocusTarget } from "#elements/utils/focus";
-
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -39,12 +37,6 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
             }
         `,
     ];
-
-    #focusTarget = new FocusTarget<HTMLInputElement>();
-
-    protected override firstUpdated(): void {
-        this.#focusTarget.focus();
-    }
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
@@ -95,7 +87,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         : msg("Authentication code"),
                 )}
                 <input
-                    ${this.#focusTarget.toRef()}
+                    ${this.autofocusTarget.toRef()}
                     id="validation-code-input"
                     type="text"
                     name="code"
@@ -107,6 +99,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         : "[0-9]*"}"
                     placeholder="${msg("Please enter your code")}"
                     autofocus
+                    spellcheck="false"
                     autocomplete="one-time-code"
                     class="pf-c-form-control"
                     value="${PasswordManagerPrefill.totp || ""}"

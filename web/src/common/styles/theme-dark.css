@@ -23,6 +23,18 @@ body {
     color-scheme: dark;
 }
 
+/* #region Scrollbars */
+
+:root {
+    /**
+     * Scrollbar colors derived from default user agent styles.
+     */
+    --ak-scrollbar-background-color: hsl(0 0% 18%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
+}
+
+/* #endregion */
+
 .pf-c-radio {
     --pf-c-radio__label--Color: var(--ak-dark-foreground);
 }
@@ -114,38 +126,6 @@ body {
 
 /* #endregion  */
 
-/* #region Tabs */
-
-.pf-c-tabs {
-    background-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__item.pf-m-current {
-    --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
-}
-
-.pf-c-tabs__link {
-    --pf-c-tabs__link--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
-    background-color: transparent;
-}
-
-/* #endregion */
-
 /* #Region Mobile Tables */
 @media screen and (max-width: 1200px) {
     .pf-m-grid-xl.pf-c-table tbody:first-of-type {
@@ -209,20 +189,28 @@ select.pf-c-form-control {
 }
 
 .pf-c-form-control {
+    /* !important is required to ensure priority when in compatibility mode. */
+
     --pf-c-form-control--BorderTopColor: transparent !important;
     --pf-c-form-control--BorderRightColor: transparent !important;
     --pf-c-form-control--BorderLeftColor: transparent !important;
     --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
-    --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--Color: var(--ak-dark-foreground);
+    --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
 
-    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
 }
 
-.pf-c-switch__input:checked ~ .pf-c-switch__label {
+/* #endregion */
+
+/* #region Switch */
+.pf-c-switch__label {
+    --pf-c-switch__input--not-checked__label--Color: var(--ak-dark-foreground);
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
 }
+
+/* #endregion */
 
 /* select toggle */
 .pf-c-select__toggle::before {

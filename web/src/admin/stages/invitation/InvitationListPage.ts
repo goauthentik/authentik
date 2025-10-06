@@ -140,16 +140,9 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     renderExpanded(item: Invitation): TemplateResult {
-        return html` <td colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-stage-invitation-list-link
-                        .invitation=${item}
-                    ></ak-stage-invitation-list-link>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-stage-invitation-list-link
+            .invitation=${item}
+        ></ak-stage-invitation-list-link>`;
     }
 
     renderObjectCreate(): TemplateResult {

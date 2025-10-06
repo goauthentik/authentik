@@ -22,6 +22,8 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { Pagination } from "@goauthentik/api";
 
+import { kebabCase } from "change-case";
+
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
@@ -53,6 +55,16 @@ export function hasPrimaryKey<T extends string | number = string | number>(
 ): item is { pk: T } {
     return Object.hasOwn(item, "pk");
 }
+
+/**
+ * An instance of a Table component.
+ *
+ * This is necessary to work around limitations in Lit's typing system
+ * not recognizing abstract properties.
+ */
+export type TableInstance = InstanceType<typeof Table> & {
+    columns: TableColumn[];
+};
 
 export abstract class Table<T extends object>
     extends WithLicenseSummary(AKElement)
@@ -88,10 +100,10 @@ export abstract class Table<T extends object>
             td:has(ak-action-button),
             td:has(ak-forms-modal),
             td:has(ak-rbac-object-permission-modal) {
-                .pf-c-button,
-                button[slot="trigger"]:has(i),
-                *::part(spinner-button),
-                ak-rbac-object-permission-modal::part(button) {
+                & > .pf-c-button,
+                & > button[slot="trigger"]:has(i),
+                & > *::part(spinner-button),
+                & > *::part(button) {
                     --pf-global--spacer--form-element: 0;
 
                     padding-inline: 0.5em !important;
@@ -138,6 +150,10 @@ export abstract class Table<T extends object>
 
             .pf-c-toolbar__group {
                 gap: var(--pf-global--spacer--sm);
+
+                .pf-c-card__title .pf-icon {
+                    margin-inline-end: var(--pf-global--spacer--sm);
+                }
             }
 
             .pf-c-table {
@@ -174,6 +190,13 @@ export abstract class Table<T extends object>
                     }
                 }
             }
+
+            /**
+             * TODO: Remove after <dialog> modals are implemented.
+             */
+            .pf-c-dropdown__menu:has(ak-forms-modal) {
+                z-index: var(--pf-global--ZIndex--lg);
+            }
         `,
     ];
 
@@ -191,6 +214,31 @@ export abstract class Table<T extends object>
      * @abstract
      */
     protected abstract row(item: T): SlottedTemplateResult[];
+
+    /**
+     * The total number of defined and additional columns in the table.
+     */
+    #columnCount = 0;
+
+    #columnIDs = new WeakMap<TableColumn, string>();
+
+    #synchronizeColumnProperties() {
+        let nextColumnCount = this.columns.length;
+
+        if (this.checkbox) nextColumnCount += 1;
+        if (this.expandable) nextColumnCount += 1;
+
+        this.#columnCount = nextColumnCount;
+
+        for (const column of this.columns) {
+            const [label] = column;
+
+            if (!label) continue;
+
+            const columnName = kebabCase(label);
+            this.#columnIDs.set(column, columnName);
+        }
+    }
 
     @state()
     protected loading = false;
@@ -336,6 +384,16 @@ export abstract class Table<T extends object>
         }
     }
 
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        if (
+            (changedProperties as PropertyValues<TableInstance>).has("columns") ||
+            changedProperties.has("checkbox") ||
+            changedProperties.has("expandable")
+        ) {
+            this.#synchronizeColumnProperties();
+        }
+    }
+
     firstUpdated(): void {
         this.fetch();
     }
@@ -397,7 +455,7 @@ export abstract class Table<T extends object>
 
     protected renderLoading(): TemplateResult {
         return html`<tr role="presentation">
-            <td role="presentation" colspan="25">
+            <td role="presentation" colspan=${this.#columnCount}>
                 <div class="pf-l-bullseye">
                     <ak-empty-state default-label></ak-empty-state>
                 </div>
@@ -408,7 +466,7 @@ export abstract class Table<T extends object>
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`
             <tr role="presentation">
-                <td role="presentation" colspan="8">
+                <td role="presentation" colspan=${this.#columnCount}>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
@@ -484,14 +542,12 @@ export abstract class Table<T extends object>
             }
         }
 
-        const columnCount = this.columns.length + (this.checkbox ? 1 : 0);
-
         return groups.map(([group, items], groupIndex) => {
             const groupHeaderID = `table-group-${groupIndex}`;
 
             return html`<thead>
                     <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${columnCount}>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
                             ${group}
                         </th>
                     </tr>
@@ -510,13 +566,7 @@ export abstract class Table<T extends object>
         return [["", items]];
     }
 
-    protected renderExpanded(_item: T): SlottedTemplateResult {
-        if (this.expandable) {
-            throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
-        }
-
-        return nothing;
-    }
+    protected renderExpanded?(item: T): SlottedTemplateResult;
 
     #toggleExpansion = (itemKey?: string | number, event?: PointerEvent) => {
         // An unlikely scenario but possible if items shift between fetches
@@ -633,6 +683,27 @@ export abstract class Table<T extends object>
             </td>`;
         };
 
+        let expansionContent: SlottedTemplateResult = nothing;
+
+        if (this.expandable) {
+            if (!this.renderExpanded) {
+                throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
+            }
+
+            expansionContent = html`<tr
+                class="pf-c-table__expandable-row ${classMap({
+                    "pf-m-expanded": expanded,
+                })}"
+            >
+                <td aria-hidden="true"></td>
+                <td colspan=${this.#columnCount - 1}>
+                    <div class="pf-c-table__expandable-row-content">
+                        ${this.renderExpanded(item)}
+                    </div>
+                </td>
+            </tr>`;
+        }
+
         return html`
             <tr
                 aria-selected=${selected ? "true" : "false"}
@@ -646,33 +717,21 @@ export abstract class Table<T extends object>
                 ${this.checkbox ? renderCheckbox() : nothing}
                 ${this.expandable ? renderExpansion() : nothing}
                 ${this.row(item).map((cell, columnIndex) => {
-                    const [columnLabel] = this.columns[columnIndex];
+                    const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
-                    const columnHeaderID = `table-header-${columnIndex}`;
                     const headers = groupHeaderID
-                        ? `${groupHeaderID} ${columnHeaderID}`
-                        : columnHeaderID;
+                        ? `${groupHeaderID} ${columnID}`.trim()
+                        : columnID;
 
                     return html`<td
-                        class=${classMap({
-                            presentational: !columnLabel,
-                        })}
-                        headers=${headers}
+                        class=${ifPresent(!columnID, "presentational")}
+                        headers=${ifPresent(headers)}
                     >
                         ${cell}
                     </td>`;
                 })}
             </tr>
-            ${this.expandable
-                ? html` <tr
-                      class="pf-c-table__expandable-row ${classMap({
-                          "pf-m-expanded": expanded,
-                      })}"
-                  >
-                      <td aria-hidden="true"></td>
-                      ${expanded ? this.renderExpanded(item) : nothing}
-                  </tr>`
-                : nothing}
+            ${expansionContent}
         `;
     }
 
@@ -701,15 +760,31 @@ export abstract class Table<T extends object>
     protected renderToolbarContainer(): SlottedTemplateResult {
         const label = this.toolbarLabel ?? msg(str`${this.label ?? "Table"} actions`);
 
-        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
-            <div class="pf-c-toolbar__content">
-                ${this.renderSearch()}
-                ${this.renderToolbarAfter
-                    ? html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`
-                    : nothing}
-            </div>
+        // We need to conditionally render the primary toolbar section
+        // to avoid an empty container which applies a gap unnecessarily.
+        // This may happen when a table toolbar has an unusual markup,
+        // such as in the Recent Events card.
 
-            <div class="pf-c-toolbar__content">
+        const primaryToolbar: SlottedTemplateResult[] = [];
+
+        if (this.searchEnabled) {
+            primaryToolbar.push(this.renderSearch());
+        }
+
+        if (this.renderToolbarAfter) {
+            primaryToolbar.push(
+                html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`,
+            );
+        }
+
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
+            ${primaryToolbar.length
+                ? html`<div class="pf-c-toolbar__content" name="toolbar-primary">
+                      ${primaryToolbar}
+                  </div>`
+                : nothing}
+
+            <div class="pf-c-toolbar__content" name="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
@@ -867,28 +942,34 @@ export abstract class Table<T extends object>
 
         return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
-            <table
-                aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
-                aria-rowcount=${totalItemCount}
-                class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
-            >
-                <thead aria-label=${msg("Column actions")}>
-                    <tr class="pf-c-table__header-row">
-                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                        ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                        ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
-                            renderTableColumn({
-                                label,
-                                ariaLabel,
-                                orderBy,
-                                table: this,
-                                columnIndex: idx,
-                            }),
-                        )}
-                    </tr>
-                </thead>
-                ${this.renderRows()}
-            </table>
+            <div part="table-container">
+                <table
+                    aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
+                    aria-rowcount=${totalItemCount}
+                    class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
+                >
+                    <thead aria-label=${msg("Column actions")}>
+                        <tr class="pf-c-table__header-row">
+                            ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
+                            ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                            ${this.columns.map((column, idx) => {
+                                const [label, orderBy, ariaLabel] = column;
+                                const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
+
+                                return renderTableColumn({
+                                    label,
+                                    id: columnID,
+                                    ariaLabel,
+                                    orderBy,
+                                    table: this,
+                                    columnIndex: idx,
+                                });
+                            })}
+                        </tr>
+                    </thead>
+                    ${this.renderRows()}
+                </table>
+            </div>
             ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 

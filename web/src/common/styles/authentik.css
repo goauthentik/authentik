@@ -39,6 +39,96 @@
     --pf-global--disabled-color--300: color-mix(in srgb, GrayText 100%, CanvasText 100%);
 }
 
+/* #endregion */
+
+/* #region Scrollbars */
+
+/**
+ * Scrollbar colors derived from default user agent styles.
+ *
+ * @remarks
+ *
+ * Scrollbar colors may be ignored by the browser depending on a few factors:
+ *
+ * - A preference for increased contrast
+ * - A preference for scrollbar visibility
+ * - The pointer precision available
+ * - Operating system differences
+ */
+:root {
+    --ak-scrollbar-background-color: hsl(0 0% 98%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 76%);
+}
+
+/* Applicable to browsers with a WebKit lineage (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    background: var(--ak-scrollbar-background-color);
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        max-height: 12px;
+        max-width: 12px;
+    }
+}
+
+/* Necessary to avoid background color mismatch. */
+::-webkit-scrollbar-track {
+    background: var(--ak-scrollbar-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ak-scrollbar-thumb-background-color);
+    /* Applies consistent shape across browsers and platforms */
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: content-box;
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        border: 3px solid transparent;
+        border-radius: 8px;
+    }
+}
+
+/**
+ * Hides arrow buttons on the scrollbar.
+ * Not applicable to Edge when scrollbars are set to always visible.
+ */
+::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+@supports (scrollbar-color: auto) {
+    :root {
+        /**
+         * Applies consistent colors across browsers and platforms.
+         * Not applicable when thin scrollbars are preferred.
+         */
+        scrollbar-color: var(--ak-scrollbar-thumb-background-color)
+            var(--ak-scrollbar-background-color);
+    }
+}
+
+@supports (scrollbar-width: thin) {
+    .pf-c-page__main,
+    .pf-c-nav__list,
+    .pf-c-card__body {
+        scrollbar-width: thin;
+
+        @media (pointer: coarse) {
+            /**
+             * Avoids issues on touch devices where thin scrollbars
+             * are difficult to interact with.
+             */
+            scrollbar-width: auto;
+        }
+    }
+}
+
+/* #endregion */
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -61,29 +151,6 @@
     margin-left: var(--pf-c-form__label-required--MarginLeft);
     font-size: var(--pf-c-form__label-required--FontSize);
     color: var(--pf-c-form__label-required--Color);
-}
-
-@supports selector(::-webkit-scrollbar) {
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-        background-color: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: var(--ak-accent);
-    }
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-    ::-webkit-scrollbar-corner {
-        background-color: transparent;
-    }
-}
-
-@supports not selector(::-webkit-scrollbar) {
-    :root {
-        scrollbar-color: var(--ak-accent) transparent;
-    }
 }
 
 html {
@@ -154,6 +221,58 @@ html > form > input {
 
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+}
+
+/* #endregion */
+
+/* #region Tabs */
+
+.pf-c-tabs {
+    --pf-c-tabs--inset: var(--pf-global--spacer--lg);
+    --pf-c-tabs--m-vertical--m-box--inset: var(--pf-global--spacer--lg);
+
+    margin-block-start: var(--pf-global--spacer--xs);
+    background-color: transparent;
+
+    &.pf-m-box.pf-m-vertical {
+        .pf-c-tabs__list::before {
+            border-color: transparent;
+        }
+    }
+
+    &.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
+        border-color: transparent;
+    }
+
+    &.pf-m-vertical {
+        .pf-c-tabs__link {
+            background-color: transparent;
+        }
+    }
+
+    &:not(.pf-m-vertical) .pf-c-tabs__item {
+        &.pf-m-current {
+            --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
+        }
+    }
+}
+
+ak-tabs[vertical] {
+    [role="tabpanel"] {
+        padding-inline-start: 0 !important;
+    }
+
+    .pf-c-card__body > *::part(table-container) {
+        overflow-x: auto;
+    }
+}
+
+.pf-c-tabs__link {
+    --pf-c-tabs__link--Color: var(--pf-global--Color--100);
+
+    &::before {
+        border-color: transparent;
+    }
 }
 
 /* #endregion */
@@ -252,6 +371,12 @@ html > form > input {
 }
 
 /* #region Fields */
+
+fieldset[name="actions"] {
+    border: none;
+    display: flex;
+    gap: var(--pf-global--spacer--sm);
+}
 
 /* #region Switch  */
 .pf-c-switch {
