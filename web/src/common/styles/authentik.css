@@ -372,6 +372,14 @@ ak-tabs[vertical] {
 
 /* #region Fields */
 
+fieldset.pf-c-card {
+    & > legend.pf-c-card__title {
+        padding: 0.5em;
+        margin-inline-start: calc(var(--pf-c-card--child--PaddingLeft) - 0.5em);
+        margin-inline-end: calc(var(--pf-c-card--child--PaddingRight) - 0.5em);
+    }
+}
+
 fieldset[name="actions"] {
     border: none;
     display: flex;

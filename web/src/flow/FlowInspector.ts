@@ -45,9 +45,19 @@ export class FlowInspector extends AKElement {
                 min-height: 100vh;
                 max-height: 100vh;
             }
+
+            .pf-c-notification-drawer__body {
+                padding-inline: var(--pf-global--spacer--md);
+
+                .pf-l-stack__item:last-child {
+                    padding-block-end: var(--pf-global--spacer--md);
+                }
+            }
+
             code.break {
                 word-break: break-all;
             }
+
             pre {
                 word-break: break-all;
                 overflow-x: hidden;
@@ -109,7 +119,7 @@ export class FlowInspector extends AKElement {
                         }}
                         class="pf-c-button pf-m-plain"
                         type="button"
-                        aria-label=${msg("Close")}
+                        aria-label=${msg("Close flow inspector")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
@@ -119,7 +129,10 @@ export class FlowInspector extends AKElement {
     }
 
     renderAccessDenied(): TemplateResult {
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
+        return html`<aside
+            aria-label=${msg("Flow inspector")}
+            class="pf-c-drawer__body pf-m-no-padding"
+        >
             <div class="pf-c-notification-drawer">
                 ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
@@ -132,7 +145,7 @@ export class FlowInspector extends AKElement {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 
     render(): TemplateResult {
@@ -141,7 +154,10 @@ export class FlowInspector extends AKElement {
         }
         if (!this.state) {
             this.advanceHandler();
-            return html`<div class="pf-c-drawer__body pf-m-no-padding">
+            return html`<aside
+                aria-label=${msg("Flow inspector loading")}
+                class="pf-c-drawer__body pf-m-no-padding"
+            >
                 <div class="pf-c-notification-drawer">
                     ${this.renderHeader()}
                     <div class="pf-c-notification-drawer__body"></div>
@@ -149,16 +165,17 @@ export class FlowInspector extends AKElement {
                 </div>
             </div>`;
         }
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
+        return html`<aside
+            aria-label=${msg("Flow inspector")}
+            class="pf-c-drawer__body pf-m-no-padding"
+        >
             <div class="pf-c-notification-drawer">
                 ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Next stage")}</div>
-                                </div>
+                            <fieldset class="pf-c-card">
+                                <legend class="pf-c-card__title">${msg("Next stage")}</legend>
                                 <div class="pf-c-card__body">
                                     <dl class="pf-c-description-list">
                                         <div class="pf-c-description-list__group">
@@ -209,13 +226,11 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                         </div>
                                     </dl>
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
                         <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Plan history")}</div>
-                                </div>
+                            <fieldset class="pf-c-card">
+                                <legend class="pf-c-card__title">${msg("Plan history")}</legend>
                                 <div class="pf-c-card__body">
                                     <ol class="pf-c-progress-stepper pf-m-vertical">
                                         ${this.state.plans.map((plan) => {
@@ -305,36 +320,32 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                             : nothing}
                                     </ol>
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
                         <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">
-                                        ${msg("Current plan context")}
-                                    </div>
-                                </div>
+                            <fieldset class="pf-c-card">
+                                <legend class="pf-c-card__title">
+                                    ${msg("Current plan context")}
+                                </legend>
                                 <div class="pf-c-card__body">
                                     <pre>
 ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
                                     >
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
                         <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Session ID")}</div>
-                                </div>
+                            <fieldset class="pf-c-card">
+                                <legend class="pf-c-card__title">${msg("Session ID")}</legend>
                                 <div class="pf-c-card__body">
                                     <code class="break">${this.state.currentPlan?.sessionId}</code>
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 
