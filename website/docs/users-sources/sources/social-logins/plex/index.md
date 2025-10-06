@@ -30,14 +30,3 @@ For instructions on how to display the new source on the authentik login page, r
 :::info Embed new source in flow
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/). Note that this is an enterprise feature.
 :::
-
-## Plex source property mappings
-
-See the [overview](../../property-mappings/index.md) for information on how property mappings work.
-
-### Expression data
-
-The following variables are available to OAuth source property mappings:
-
-- `info`: A Python dictionary containing Plex user data.
-- `auth_api`: A Plex client object to make requests to the Source with authentication built-in.
