@@ -5,6 +5,7 @@ requires-python = "==3.13.*"
 [manifest]
 members = [
     "authentik",
+    "django-channels-postgres",
     "django-dramatiq-postgres",
     "django-postgres-cache",
 ]
@@ -174,12 +175,12 @@ source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
     { name = "channels" },
-    { name = "channels-postgres" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
     { name = "defusedxml" },
     { name = "django" },
+    { name = "django-channels-postgres" },
     { name = "django-countries" },
     { name = "django-cte" },
     { name = "django-dramatiq-postgres" },
@@ -271,6 +272,7 @@ dev = [
     { name = "requests-mock" },
     { name = "ruff" },
     { name = "selenium" },
+    { name = "types-channels" },
     { name = "types-ldap3" },
 ]
 
@@ -278,12 +280,12 @@ dev = [
 requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
-    { name = "channels-postgres", git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
     { name = "defusedxml", specifier = "==0.7.1" },
     { name = "django", specifier = "==5.2.7" },
+    { name = "django-channels-postgres", editable = "packages/django-channels-postgres" },
     { name = "django-countries", specifier = "==7.6.1" },
     { name = "django-cte", specifier = "==2.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
@@ -375,6 +377,7 @@ dev = [
     { name = "requests-mock", specifier = "==1.12.1" },
     { name = "ruff", specifier = "==0.11.9" },
     { name = "selenium", specifier = "==4.32.0" },
+    { name = "types-channels", specifier = "==4.3.0.20250822" },
     { name = "types-ldap3", specifier = "==2.9.13.20250622" },
 ]
 
@@ -737,17 +740,6 @@ daphne = [
 ]
 
 [[package]]
-name = "channels-postgres"
-version = "1.1.4"
-source = { git = "https://github.com/rissson/channels_postgres?rev=93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f#93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
-dependencies = [
-    { name = "asgiref" },
-    { name = "channels" },
-    { name = "msgpack" },
-    { name = "psycopg", extra = ["pool"] },
-]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1002,6 +994,31 @@ wheels = [
 ]
 
 [[package]]
+name = "django-channels-postgres"
+version = "0.1.0"
+source = { editable = "packages/django-channels-postgres" }
+dependencies = [
+    { name = "channels" },
+    { name = "django" },
+    { name = "django-pglock" },
+    { name = "django-pgtrigger" },
+    { name = "msgpack" },
+    { name = "psycopg" },
+    { name = "structlog" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "channels", specifier = ">=4.3,<4.4" },
+    { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-pglock", specifier = ">=1.7,<2" },
+    { name = "django-pgtrigger", specifier = ">=4,<5" },
+    { name = "msgpack", specifier = ">=1,<2" },
+    { name = "psycopg", specifier = ">=3,<4" },
+    { name = "structlog", specifier = ">=25,<26" },
+]
+
+[[package]]
 name = "django-countries"
 version = "7.6.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1033,6 +1050,7 @@ source = { editable = "packages/django-dramatiq-postgres" }
 dependencies = [
     { name = "cron-converter" },
     { name = "django" },
+    { name = "django-pglock" },
     { name = "django-pgtrigger" },
     { name = "dramatiq", extra = ["watch"] },
     { name = "structlog" },
@@ -1043,6 +1061,7 @@ dependencies = [
 requires-dist = [
     { name = "cron-converter", specifier = ">=1,<2" },
     { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "dramatiq", extras = ["watch"], specifier = ">=1.17,<1.18" },
     { name = "structlog", specifier = ">=25,<26" },
@@ -3358,6 +3377,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3a/38/c61bfcf62a7b572b5e9363a802ff92559cb427ee963048e1442e3aef7490/typeguard-2.13.3.tar.gz", hash = "sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4", size = 40604, upload-time = "2021-12-10T21:09:39.158Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9a/bb/d43e5c75054e53efce310e79d63df0ac3f25e34c926be5dffb7d283fb2a8/typeguard-2.13.3-py3-none-any.whl", hash = "sha256:5e3e3be01e887e7eafae5af63d1f36c849aaa94e3a0112097312aabfa16284f1", size = 17605, upload-time = "2021-12-10T21:09:37.844Z" },
+]
+
+[[package]]
+name = "types-channels"
+version = "4.3.0.20250822"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django-stubs" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/22/3d/e0a164b7eaab18ab2302b7a3d90843824b729d9fe1d7bdbb3769dfc9d77b/types_channels-4.3.0.20250822.tar.gz", hash = "sha256:29a4928fdaed6d444b93b69d44fcdb5a8fe32fa72d6a41016c5d39fa7bd7f474", size = 15357, upload-time = "2025-08-22T03:04:26.444Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/52/4e3094e43d460feacb9051ec4c3498f8272f69d92b772647211478b25079/types_channels-4.3.0.20250822-py3-none-any.whl", hash = "sha256:d3fc0a1467c8cc901686826408c8a673822e07aa79cbe1a6d21946e7e55d9ddf", size = 21125, upload-time = "2025-08-22T03:04:25.539Z" },
 ]
 
 [[package]]

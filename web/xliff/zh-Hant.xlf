@@ -175,9 +175,6 @@
         <source>Select an object.</source>
         <target>选择一个对象。</target>
       </trans-unit>
-      <trans-unit id="s04ceadb276bbe149">
-        <source>Loading options...</source>
-      </trans-unit>
       <trans-unit id="sfe629863ba1338c2">
         <source>Connection error, reconnecting...</source>
         <target>连接错误，正在重新连接...</target>
@@ -398,10 +395,6 @@
       <trans-unit id="sae486938be80729c">
         <source>Everything is ok.</source>
         <target>一切正常。</target>
-      </trans-unit>
-      <trans-unit id="sea91c57b3d3969fe">
-        <source>System status</source>
-        <target>系统状态</target>
       </trans-unit>
       <trans-unit id="scefe482c547fb3f3">
         <source>Based on <x id="0" equiv-text="${value.versionCurrent}"/></source>
@@ -1625,10 +1618,6 @@
         <source>Last login</source>
         <target>上次登录</target>
       </trans-unit>
-      <trans-unit id="s3e3bb9e7cb1de4fd">
-        <source>Select users to add</source>
-        <target>选择要添加的用户</target>
-      </trans-unit>
       <trans-unit id="s75d5ff5dd8d3c6d2">
         <source>Successfully updated group.</source>
         <target>已成功更新组。</target>
@@ -1636,14 +1625,6 @@
       <trans-unit id="s3079ca1184e77573">
         <source>Successfully created group.</source>
         <target>已成功创建组。</target>
-      </trans-unit>
-      <trans-unit id="s63cb05541b294335">
-        <source>Is superuser</source>
-        <target>是超级用户</target>
-      </trans-unit>
-      <trans-unit id="s29315e374008d0c5">
-        <source>Users added to this group will be superusers.</source>
-        <target>添加到该组的用户均为超级用户。</target>
       </trans-unit>
       <trans-unit id="s4eb514ebcb80553d">
         <source>Parent</source>
@@ -2828,9 +2809,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sdb53ccdd6174e6e3">
         <source>Successfully added user(s).</source>
       </trans-unit>
-      <trans-unit id="s306a35df5d0d38bb">
-        <source>Users to add</source>
-      </trans-unit>
       <trans-unit id="s7d499be3b781a3ca">
         <source>User(s)</source>
         <target>用户</target>
@@ -2892,25 +2870,15 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Recovery link cannot be emailed, user has no email address saved.</source>
         <target>无法通过电子邮件发送恢复链接，用户没有保存电子邮件地址。</target>
       </trans-unit>
-      <trans-unit id="s720594461542943f">
-        <source>Add User</source>
-      </trans-unit>
       <trans-unit id="s4c41f3f4c23e8eaa">
         <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
       </trans-unit>
       <trans-unit id="scee721983b1c28d0">
         <source>Add existing user</source>
       </trans-unit>
-      <trans-unit id="sd600334ec2c39b74">
-        <source>Create user</source>
-      </trans-unit>
       <trans-unit id="s53ad3455d9523b54">
         <source>Create User</source>
         <target>创建用户</target>
-      </trans-unit>
-      <trans-unit id="s06c163334767a381">
-        <source>Create Service account</source>
-        <target>创建服务账户</target>
       </trans-unit>
       <trans-unit id="sc744f3691efe310d">
         <source>Hide service-accounts</source>
@@ -4138,14 +4106,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s9ff3121d30f88d52">
         <source>Normal</source>
         <target>正常</target>
-      </trans-unit>
-      <trans-unit id="s6e4c997a101b6abf">
-        <source>with current user</source>
-        <target>以当前用户</target>
-      </trans-unit>
-      <trans-unit id="s8ecdbff1a7329b64">
-        <source>with inspector</source>
-        <target>和检查员一起</target>
       </trans-unit>
       <trans-unit id="s3576aead3e68c5c9">
         <source>Export flow</source>
@@ -7960,6 +7920,108 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s76ea993fdc8503d8">
   <source>Click the button below to start.</source>
+</trans-unit>
+<trans-unit id="sd2fa988f1774cfde">
+  <source>System Status</source>
+</trans-unit>
+<trans-unit id="s66f26fdcbe2101eb">
+  <source>Chart</source>
+</trans-unit>
+<trans-unit id="s7b58d033cc5112ab">
+  <source>Event volume chart</source>
+</trans-unit>
+<trans-unit id="s0914f91b3f985f0f">
+  <source>Synchronization status chart</source>
+</trans-unit>
+<trans-unit id="s3f01dbc864d2a8b9">
+  <source>Outpost status chart</source>
+</trans-unit>
+<trans-unit id="s7f073c746d0f6324">
+  <source>Form actions</source>
+</trans-unit>
+<trans-unit id="sfd81bd296e2f7585">
+  <source>Submit action</source>
+</trans-unit>
+<trans-unit id="s5baec8151f4a4433">
+  <source>Cancel action</source>
+</trans-unit>
+<trans-unit id="s1ec022562e3d515b">
+  <source>Search for users by username or display name...</source>
+</trans-unit>
+<trans-unit id="s65f6a2f5e2b848e1">
+  <source>Search Users</source>
+</trans-unit>
+<trans-unit id="sd416adae573583d5">
+  <source>Select Users</source>
+</trans-unit>
+<trans-unit id="s93d69514c94ad635">
+  <source>Select users</source>
+</trans-unit>
+<trans-unit id="sb85774dc5d18ff0f">
+  <source>Confirm</source>
+</trans-unit>
+<trans-unit id="s9436f1bf4400f6a6">
+  <source>Type a group name...</source>
+</trans-unit>
+<trans-unit id="s2d9356347ff7c77f">
+  <source>Group Name</source>
+</trans-unit>
+<trans-unit id="sf45dac7c571f18bd">
+  <source>Superuser Privileges</source>
+</trans-unit>
+<trans-unit id="sbf8a7af4eafa87f8">
+  <source>Whether users added to this group will have superuser privileges.</source>
+</trans-unit>
+<trans-unit id="sb05313d80a8b531f">
+  <source>Select an optional parent group...</source>
+</trans-unit>
+<trans-unit id="sf0d94539428a0900">
+  <source>Search for a group by name…</source>
+</trans-unit>
+<trans-unit id="s77ec9e27e9ae81b8">
+  <source>Group Search</source>
+</trans-unit>
+<trans-unit id="s79683026e49e4866">
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s62dfa9c45cb3025a">
+  <source>New Group</source>
+</trans-unit>
+<trans-unit id="s3d0a5ad9bdb617e2">
+  <source>Open user selection dialog</source>
+</trans-unit>
+<trans-unit id="s362bf0ff6d7db6c9">
+  <source>Group User Search</source>
+</trans-unit>
+<trans-unit id="se040a9c3444c727c">
+  <source>Group Users</source>
+</trans-unit>
+<trans-unit id="sac6c67e92bd30229">
+  <source>Assign Additional Users</source>
+</trans-unit>
+<trans-unit id="sf6aec5a09661fe61">
+  <source>Add new user</source>
+</trans-unit>
+<trans-unit id="s0051b0d8e6decea6">
+  <source>New user...</source>
+</trans-unit>
+<trans-unit id="s384699f614f39071">
+  <source>New service account...</source>
+</trans-unit>
+<trans-unit id="s61e5043203e94d0a">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
+</trans-unit>
+<trans-unit id="s02eb960c270a837e">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
+</trans-unit>
+<trans-unit id="saf579a36a54c92e1">
+  <source>Current user</source>
+</trans-unit>
+<trans-unit id="sd149e44e50455923">
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
+</trans-unit>
+<trans-unit id="s45c530a48bcf74ad">
+  <source>Use inspector</source>
 </trans-unit>
     </body>
   </file>
