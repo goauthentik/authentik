@@ -1,5 +1,8 @@
 ---
 title: Discord
+tags:
+    - source
+    - discord
 ---
 
 Allows users to authenticate using their Discord credentials.
@@ -31,7 +34,7 @@ To integrate Discord with authentik you will need to create an OAuth application
         - Under **Protocol Settings**:
             - **Consumer key**: Client ID from Discord.
             - **Consumer secret**: Client Secret from Discord
-            - **Scopes**_(optional)_: if you need authentik to sync guild membership information from Disord, add the `guilds guilds.members.read` scope.
+            - **Scopes** _(optional)_: if you need authentik to sync guild membership information from Disord, add the `guilds guilds.members.read` scope.
 
 3. Click **Save**.
 

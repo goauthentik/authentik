@@ -1,5 +1,8 @@
 ---
 title: Twitch
+tags:
+    - source
+    - twitch
 ---
 
 Allows users to authenticate using their Twitch credentials.
@@ -37,7 +40,7 @@ To support the integration of Twitch with authentik, you need to create an Twitc
         - **Protocol settings**
             - **Consumer Key**: `<client_ID>`
             - **Consumer Secret**: `<client_secret>`
-            - **Scopes**_(optional)_: define any further access scopes.
+            - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish** to save your settings.
 
 :::info

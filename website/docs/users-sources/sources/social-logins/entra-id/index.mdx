@@ -59,7 +59,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
         - Under **Protocol Settings**:
             - **Consumer key**: `Application (client) ID` from Entra ID.
             - **Consumer secret**: value of the secret created in Entra ID.
-            - **Scopes**_(optional)_: if you need authentik to sync group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
+            - **Scopes** _(optional)_: if you need authentik to sync group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
         - Under **URL Settings**:
             - For **Single tenant** Entra ID applications:
                 - **Authorization URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/authorize`

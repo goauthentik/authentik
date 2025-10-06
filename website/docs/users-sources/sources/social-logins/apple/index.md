@@ -1,5 +1,8 @@
 ---
 title: Apple
+tags:
+    - source
+    - apple
 ---
 
 Allows users to authenticate using their Apple ID credentials.
@@ -8,15 +11,11 @@ Allows users to authenticate using their Apple ID credentials.
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
-
-:::caution
-Apple mandates the use of a [registered TLD](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains), therefore this source will not work with .local and other non-public TLDs.
-:::
+Apple mandates the use of a [registered TLD](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains), therefore this source will not work with `.local` and other non-public TLDs.
 
 ## Apple configuration
 
-To integrate Apple with authentik you will need to create two Identifiers and a Key in the Apple developer portal.
+To integrate Apple with authentik, you will need to create two Identifiers and a Key in the Apple developer portal.
 
 1. Log in to the [Apple Developer Portal](https://developer.apple.com/account/), and navigate to **Certificates, IDs & Profiles**, then click **Identifiers** in the sidebar.
 2. Register a new Identifier with the type of **App IDs**, and the subtype **App**.
@@ -48,7 +47,7 @@ To integrate Apple with authentik you will need to create two Identifiers and a 
 
 ![](./key.png)
 
-19. Take note of the Team ID, visible at the top of the page.
+19. Take note of the **Team ID**, visible at the top of the page.
 
 ## authentik configuration
 
@@ -59,9 +58,9 @@ To support the integration of Apple with authentik, you need to create an Apple 
     - **Select type**: select **Apple OAuth Source** as the source type.
     - **Create Apple OAuth Source**: provide a name, a slug which must match the slug used in the Apple `Return URL`, and the following required configurations:
         - Under **Protocol Settings**:
-            - **Consumer key**: The identifier from step 9, then `;`, then your Team ID from step 19, then `;`, then the Key ID from step 18. (e.g. `io.goauthentik.dev-local;JQNH45HN7V;XFBNJ82BV6`)
+            - **Consumer key**: The identifier from step 9, then `;`, then your Team ID from step 19, then `;`, then the Key ID from step 18. (e.g. `company.authentik;JQNH45HN7V;XFBNJ82BV6`)
             - **Consumer secret**: Paste the contents of the keyfile you've downloaded
-            - **Scopes**_(optional)_: define any further access scopes.
+            - **Scopes** _(optional)_: define any further access scopes.
 
 3. Click **Save**.
 

@@ -1,5 +1,8 @@
 ---
 title: Plex
+tags:
+    - source
+    - plex
 ---
 
 Allows users to authenticate using their Plex credentials.

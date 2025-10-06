@@ -1,5 +1,9 @@
 ---
 title: Facebook
+tags:
+    - source
+    - facebook
+    - meta
 ---
 
 Allows users to authenticate using their Facebook credentials.
@@ -50,7 +54,7 @@ To support the integration of Facebook with authentik, you need to create a Face
         - **Protocol settings**
             - **Consumer Key**: enter the **App ID** from Facebook.
             - **Consumer Secret**: enter the **App Secret** from Facebook.
-            - **Scopes**_(optional)_: define any further access scopes.
+            - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish** to save your settings.
 
 :::info Display new source on login screen

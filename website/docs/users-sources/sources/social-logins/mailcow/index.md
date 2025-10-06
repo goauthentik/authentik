@@ -1,5 +1,8 @@
 ---
 title: Mailcow
+tags:
+    - source
+    - mailcow
 ---
 
 Allows users to authenticate using their Mailcow credentials.
@@ -29,7 +32,7 @@ To integrate Mailcow with authentik you will need to create an OAuth application
         - **Protocol settings**
             - **Consumer Key**: `<client_ID>`
             - **Consumer Secret**: `<client_secret>`
-            - **Scopes**_(optional)_: define any further access scopes.
+            - **Scopes** _(optional)_: define any further access scopes.
         - **URL Settings**
             - **Authorization URL**: `https://mailcow.company/oauth/authorize`
             - **Access token URL**: `https://mailcow.company/oauth/token`
