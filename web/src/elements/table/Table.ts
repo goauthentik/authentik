@@ -22,6 +22,8 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { Pagination } from "@goauthentik/api";
 
+import { kebabCase } from "change-case";
+
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
@@ -98,10 +100,10 @@ export abstract class Table<T extends object>
             td:has(ak-action-button),
             td:has(ak-forms-modal),
             td:has(ak-rbac-object-permission-modal) {
-                .pf-c-button,
-                button[slot="trigger"]:has(i),
-                *::part(spinner-button),
-                ak-rbac-object-permission-modal::part(button) {
+                & > .pf-c-button,
+                & > button[slot="trigger"]:has(i),
+                & > *::part(spinner-button),
+                & > *::part(button) {
                     --pf-global--spacer--form-element: 0;
 
                     padding-inline: 0.5em !important;
@@ -218,13 +220,24 @@ export abstract class Table<T extends object>
      */
     #columnCount = 0;
 
-    #synchronizeColumnCount() {
+    #columnIDs = new WeakMap<TableColumn, string>();
+
+    #synchronizeColumnProperties() {
         let nextColumnCount = this.columns.length;
 
         if (this.checkbox) nextColumnCount += 1;
         if (this.expandable) nextColumnCount += 1;
 
         this.#columnCount = nextColumnCount;
+
+        for (const column of this.columns) {
+            const [label] = column;
+
+            if (!label) continue;
+
+            const columnName = kebabCase(label);
+            this.#columnIDs.set(column, columnName);
+        }
     }
 
     @state()
@@ -377,7 +390,7 @@ export abstract class Table<T extends object>
             changedProperties.has("checkbox") ||
             changedProperties.has("expandable")
         ) {
-            this.#synchronizeColumnCount();
+            this.#synchronizeColumnProperties();
         }
     }
 
@@ -704,18 +717,15 @@ export abstract class Table<T extends object>
                 ${this.checkbox ? renderCheckbox() : nothing}
                 ${this.expandable ? renderExpansion() : nothing}
                 ${this.row(item).map((cell, columnIndex) => {
-                    const [columnLabel] = this.columns[columnIndex];
+                    const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
-                    const columnHeaderID = `table-header-${columnIndex}`;
                     const headers = groupHeaderID
-                        ? `${groupHeaderID} ${columnHeaderID}`
-                        : columnHeaderID;
+                        ? `${groupHeaderID} ${columnID}`.trim()
+                        : columnID;
 
                     return html`<td
-                        class=${classMap({
-                            presentational: !columnLabel,
-                        })}
-                        headers=${headers}
+                        class=${ifPresent(!columnID, "presentational")}
+                        headers=${ifPresent(headers)}
                     >
                         ${cell}
                     </td>`;
@@ -942,15 +952,19 @@ export abstract class Table<T extends object>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                             ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                            ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
-                                renderTableColumn({
+                            ${this.columns.map((column, idx) => {
+                                const [label, orderBy, ariaLabel] = column;
+                                const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
+
+                                return renderTableColumn({
                                     label,
+                                    id: columnID,
                                     ariaLabel,
                                     orderBy,
                                     table: this,
                                     columnIndex: idx,
-                                }),
-                            )}
+                                });
+                            })}
                         </tr>
                     </thead>
                     ${this.renderRows()}
