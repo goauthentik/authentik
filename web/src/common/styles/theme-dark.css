@@ -99,6 +99,10 @@ fieldset {
     @media (prefers-contrast: more) {
         --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
     }
+
+    @media (prefers-contrast: less) {
+        --ak-fieldset-border-color: transparent;
+    }
 }
 
 /* #endregion */

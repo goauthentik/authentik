@@ -60,12 +60,6 @@ export class IdentificationStage extends BaseStage<
         PFButton,
         ...AkRememberMeController.styles,
         css`
-            .pf-c-form__group.pf-m-action {
-                display: flex;
-                gap: 1rem;
-                flex-direction: column;
-            }
-
             /* login page's icons */
             .pf-c-login__main-footer-links-item button {
                 background-color: transparent;
@@ -82,6 +76,7 @@ export class IdentificationStage extends BaseStage<
             }
 
             .captcha-container {
+                /* compatibility-mode-fix */
                 & {
                     position: relative;
                 }
