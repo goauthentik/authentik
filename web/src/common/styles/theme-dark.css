@@ -91,6 +91,18 @@ body {
 
 /* #endregion */
 
+/* #region Fields */
+
+fieldset {
+    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+    }
+}
+
+/* #endregion */
+
 .pf-c-toolbar {
     --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
 }

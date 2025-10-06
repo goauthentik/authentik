@@ -372,18 +372,73 @@ ak-tabs[vertical] {
 
 /* #region Fields */
 
-fieldset.pf-c-card {
-    & > legend.pf-c-card__title {
-        padding: 0.5em;
-        margin-inline-start: calc(var(--pf-c-card--child--PaddingLeft) - 0.5em);
-        margin-inline-end: calc(var(--pf-c-card--child--PaddingRight) - 0.5em);
-    }
-}
+fieldset {
+    --ak-fieldset-border-width: thin;
+    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
+    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
+    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
 
-fieldset[name="actions"] {
-    border: none;
-    display: flex;
-    gap: var(--pf-global--spacer--sm);
+    border-color: var(--ak-fieldset-border-color);
+    border-width: var(--ak-fieldset-border-width);
+
+    padding: var(--ak-legend-padding-inline-base) !important;
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+    }
+
+    @media (prefers-contrast: less) {
+        --ak-fieldset-border-color: transparent;
+    }
+
+    & > legend {
+        line-height: 1;
+        padding: var(--ak-legend-padding-inline-base) !important;
+        margin-inline-start: var(
+            --ak-legend-margin-inline-start,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+        margin-inline-end: var(
+            --ak-legend-margin-inline-end,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+    }
+
+    &:has(legend.sr-only) {
+        border-width: 0;
+    }
+
+    &.pf-c-card {
+        --ak-legend-margin-inline-start: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+        );
+    }
+
+    &.pf-c-card,
+    &.pf-c-form__group {
+        border-radius: var(--pf-global--BorderRadius--sm);
+    }
+
+    &.pf-c-form__group {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pf-m-action {
+            gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
+            margin-block-start: 0;
+            margin-block-end: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+        }
+    }
+
+    &.pf-c-modal-box__footer {
+        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
+        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        border-inline: none;
+        border-block-end: none;
+    }
 }
 
 /* #region Switch  */
