@@ -46,12 +46,12 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         };
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    provider ?? {},
-                    errors.provider ?? {},
-                    this.showClientSecret,
+                ${renderForm({
+                    provider,
+                    errors,
+                    showClientSecret: this.showClientSecret,
                     showClientSecretCallback,
-                )}
+                })}
             </form>`;
     }
 

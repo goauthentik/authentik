@@ -10,6 +10,7 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
+from authentik.lib.generators import generate_id
 from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
@@ -65,7 +66,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -77,7 +78,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider)
@@ -133,7 +134,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -145,7 +146,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider, True)
@@ -201,7 +202,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -213,7 +214,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider)
@@ -284,7 +285,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -296,7 +297,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider, True)
@@ -367,7 +368,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -379,7 +380,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider)
@@ -444,7 +445,7 @@ class TestProviderSAML(SeleniumTestCase):
             name="negative-static", expression="return False"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -456,7 +457,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
@@ -491,7 +492,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         invalidation_flow = Flow.objects.get(slug="default-provider-invalidation-flow")
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -504,7 +505,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider)
@@ -542,7 +543,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
-            name="saml-test",
+            name=generate_id(),
             acs_url=f"http://{self.host}:9009/saml/acs",
             audience="authentik-e2e",
             issuer="authentik-e2e",
@@ -554,7 +555,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="authentik-saml",
+            slug=generate_id(),
             provider=provider,
         )
         self.setup_client(provider, True, SP_ROOT_URL=f"http://{self.host}:9009")

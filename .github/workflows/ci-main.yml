@@ -34,6 +34,7 @@ jobs:
           - codespell
           - pending-migrations
           - ruff
+          - mypy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -112,6 +113,10 @@ jobs:
           CI_TOTAL_RUNS: "5"
         run: |
           uv run make ci-test
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: unit-migrate
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
@@ -138,17 +143,10 @@ jobs:
           CI_TOTAL_RUNS: "5"
         run: |
           uv run make ci-test
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: unit
-          use_oidc: true
-      - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          flags: unit
-          file: unittest.xml
-          use_oidc: true
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -162,17 +160,10 @@ jobs:
         run: |
           uv run coverage run manage.py test tests/integration
           uv run coverage xml
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: integration
-          use_oidc: true
-      - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          flags: integration
-          file: unittest.xml
-          use_oidc: true
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -221,17 +212,10 @@ jobs:
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: e2e
-          use_oidc: true
-      - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          flags: e2e
-          file: unittest.xml
-          use_oidc: true
   ci-core-mark:
     if: always()
     needs:

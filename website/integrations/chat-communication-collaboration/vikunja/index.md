@@ -10,8 +10,8 @@ support_level: community
 >
 > -- https://vikunja.io/
 
-:::note
-This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose install https://vikunja.io/docs/full-docker-example/. Instructions may differ between versions.
+:::info
+This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker Compose install https://vikunja.io/docs/full-docker-example/. Instructions may differ between versions.
 :::
 
 ## Preparation
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of authentik.
 - `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -38,7 +38,7 @@ To support the integration of Vikunja with authentik, you need to create an appl
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://vik.company/auth/openid/authentiklogin`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -83,11 +83,11 @@ auth:
         clientsecret: THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik
 ```
 
-:::note
+:::info
 You need to restart the Vikunja API after applying the OpenID configuration to Vikunja.
 :::
 
-:::note
+:::info
 Vikunja Configuration Reference: https://vikunja.io/docs/config-options/#auth
 :::
 

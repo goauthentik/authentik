@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProviderUser,
@@ -24,9 +25,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -75,11 +74,17 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: MicrosoftEntraProviderUser): string {
+        return item.userObj.name || item.userObj.username;
     }
 
-    row(item: MicrosoftEntraProviderUser): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
+
+    row(item: MicrosoftEntraProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -90,11 +95,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

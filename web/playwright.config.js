@@ -75,7 +75,7 @@ export default defineConfig({
                         log = logger.debug;
                     }
 
-                    log.call(logger, message.toString(), args);
+                    log.call(logger, message.toString());
                 },
             },
         },
@@ -84,8 +84,12 @@ export default defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
+            name: "prerequisites",
+            testMatch: /prerequisites\.setup\.ts/,
+        },
+        {
             name: "chromium",
-
+            dependencies: ["prerequisites"],
             use: {
                 ...devices["Desktop Chrome"],
             },

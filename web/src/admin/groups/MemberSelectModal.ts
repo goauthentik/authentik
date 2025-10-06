@@ -2,10 +2,10 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
 
@@ -22,6 +22,9 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
+    public override searchPlaceholder = msg("Search for users by username or display name...");
+    public override searchLabel = msg("Search Users");
+    public override label = msg("Select Users");
     static styles = [
         ...super.styles,
         css`
@@ -34,9 +37,7 @@ export class MemberSelectTable extends TableModal<User> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: User[]) => Promise<unknown>;
@@ -61,13 +62,15 @@ export class MemberSelectTable extends TableModal<User> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-        ];
+    protected override rowLabel(item: User): string | null {
+        return item.username ?? item.name ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+    ];
 
     renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {
@@ -99,15 +102,12 @@ export class MemberSelectTable extends TableModal<User> {
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
             html` <ak-status-label type="warning" ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
         ];
     }
 
@@ -116,13 +116,13 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<div class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Select users")}</h1>
                 </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
-            <footer class="pf-c-modal-box__footer">
+            </div>
+            <div class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</div>
+            <fieldset name="actions" class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm(this.selectedElements).then(() => {
@@ -130,18 +130,16 @@ export class MemberSelectTable extends TableModal<User> {
                         });
                     }}
                     class="pf-m-primary"
+                    >${msg("Confirm")}</ak-spinner-button
                 >
-                    ${msg("Add")} </ak-spinner-button
-                >&nbsp;
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
                     class="pf-m-secondary"
+                    >${msg("Cancel")}</ak-spinner-button
                 >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

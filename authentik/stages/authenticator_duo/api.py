@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
@@ -207,7 +207,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
 class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
 
-    user = GroupMemberSerializer(read_only=True)
+    user = PartialUserSerializer(read_only=True)
 
     class Meta:
         model = DuoDevice

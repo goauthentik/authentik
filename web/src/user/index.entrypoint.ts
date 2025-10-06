@@ -197,7 +197,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                 <div class="background-wrapper" style="${this.uiConfig.theme.background}">
                     ${(this.uiConfig.theme.background || "") === ""
                         ? html`<div class="background-default-slant"></div>`
-                        : html``}
+                        : nothing}
                 </div>
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
@@ -222,16 +222,14 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <div class="pf-c-page__main">
-                                        <ak-router-outlet
-                                            class="pf-l-bullseye__item pf-c-page__main"
-                                            tabindex="-1"
-                                            id="main-content"
-                                            defaultUrl="/library"
-                                            .routes=${ROUTES}
-                                        >
-                                        </ak-router-outlet>
-                                    </div>
+                                    <ak-router-outlet
+                                        class="pf-l-bullseye__item pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        defaultUrl="/library"
+                                        .routes=${ROUTES}
+                                    >
+                                    </ak-router-outlet>
                                 </div>
                             </div>
                             <ak-notification-drawer

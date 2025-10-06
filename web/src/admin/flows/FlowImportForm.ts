@@ -10,7 +10,7 @@ import { Form } from "#elements/forms/Form";
 import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -73,7 +73,7 @@ export class FlowImportForm extends Form<Flow> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

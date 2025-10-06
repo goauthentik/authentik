@@ -34,6 +34,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
@@ -44,20 +45,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    pageTitle(): string {
-        return msg("Stages");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-plugged";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Stages");
+    public pageDescription = msg(
+        "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+    );
+    public pageIcon = "pf-icon pf-icon-plugged";
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -69,13 +62,12 @@ export class StageListPage extends TablePage<Stage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Flows")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Flows")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -118,7 +110,7 @@ export class StageListPage extends TablePage<Stage> {
             : nothing;
     }
 
-    row(item: Stage): TemplateResult[] {
+    row(item: Stage): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,
@@ -131,9 +123,10 @@ export class StageListPage extends TablePage<Stage> {
                     </li>`;
                 })}
             </ul>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -144,13 +137,14 @@ export class StageListPage extends TablePage<Stage> {
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
-                ${this.renderStageActions(item)}`,
+                ${this.renderStageActions(item)}
+            </div>`,
         ];
     }
 

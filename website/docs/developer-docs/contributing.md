@@ -60,16 +60,17 @@ authentik
 │   ├── oauth2 - OIDC-compliant OAuth2 provider
 │   ├── proxy - Provides an identity-aware proxy using an outpost
 │   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 Provider
-│   └── scim - SCIM Provider
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
 │   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 Source
+│   ├── oauth - OAuth1 and OAuth2 source
 │   ├── plex - Plex source
-│   └── saml - SAML2 Source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
 │   ├── authenticator_duo - Configure a DUO authenticator
 │   ├── authenticator_static - Configure TOTP backup keys
@@ -93,7 +94,7 @@ authentik
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```
 
-This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to Go.
+This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application that reverse-proxies the application and handles static files.
 
 There are also several background tasks that run in Dramatiq, via the `django-dramatiq-postgres` package, with some additional helpers in `authentik.tasks`.
 

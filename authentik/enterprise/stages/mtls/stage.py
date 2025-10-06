@@ -7,6 +7,8 @@ from cryptography.x509 import (
     Certificate,
     NameOID,
     ObjectIdentifier,
+    RFC822Name,
+    SubjectAlternativeName,
     UnsupportedGeneralNameType,
     load_pem_x509_certificate,
 )
@@ -15,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
     MutualTLSStage,
@@ -137,7 +139,7 @@ class MTLSStageView(ChallengeStageView):
             case CertAttributes.COMMON_NAME:
                 cert_attr = self.get_cert_attribute(cert, NameOID.COMMON_NAME)
             case CertAttributes.EMAIL:
-                cert_attr = self.get_cert_attribute(cert, NameOID.EMAIL_ADDRESS)
+                cert_attr = self.get_cert_email(cert)
         match stage.user_attribute:
             case UserAttributes.USERNAME:
                 user_attr = "username"
@@ -171,7 +173,7 @@ class MTLSStageView(ChallengeStageView):
         self.executor.plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})
         self.executor.plan.context[PLAN_CONTEXT_PROMPT].update(
             {
-                "email": self.get_cert_attribute(cert, NameOID.EMAIL_ADDRESS),
+                "email": self.get_cert_email(cert),
                 "name": self.get_cert_attribute(cert, NameOID.COMMON_NAME),
             }
         )
@@ -182,6 +184,13 @@ class MTLSStageView(ChallengeStageView):
         if len(attr) < 1:
             return None
         return str(attr[0].value)
+
+    def get_cert_email(self, cert: Certificate) -> str | None:
+        ext = cert.extensions.get_extension_for_class(SubjectAlternativeName)
+        _cert_attr = ext.value.get_values_for_type(RFC822Name)
+        if len(_cert_attr) < 1:
+            return None
+        return str(_cert_attr[0])
 
     def dispatch(self, request, *args, **kwargs):
         stage: MutualTLSStage = self.executor.current_stage
@@ -210,6 +219,7 @@ class MTLSStageView(ChallengeStageView):
         if not cert and stage.mode == TLSMode.OPTIONAL:
             self.logger.info("No certificate given, continuing")
             return self.executor.stage_ok()
+        self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
         existing_user = self.check_if_user(cert)
         if self.executor.flow.designation == FlowDesignation.ENROLLMENT:
             self.enroll_prepare_user(cert)

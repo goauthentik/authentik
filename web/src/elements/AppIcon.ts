@@ -78,7 +78,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         // prettier-ignore
         return match([this.name, this.icon])
             .with([undefined, undefined],
-                () => html`<div><i class="icon fas fa-question-circle"></i></div>`)
+                () => html`<div><i class="icon fas fa-question-circle" aria-hidden="true"></i></div>`)
             .with([P._, P.string.startsWith("fa://")],
                 ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
             .with([P._, P.string],

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `openwebui.company` is the FQDN of the Open WebUI installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,7 +33,7 @@ To support the integration of Open WebUI with authentik, you need to create an a
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://openwebui.company/oauth/oidc/callback`.
     - Select any available signing key.
     - Make sure to leave the **Encryption Key** field empty.
@@ -73,7 +73,7 @@ Then restart Open WebUI to apply the changes.
 - After logging in, authentik will redirect you back to `https://openwebui.company`.
 - If you successfully return to the Open WebUI, the login is working correctly.
 
-:::note
+:::info
 Users are automatically created, but an administrator must update their role to at least **User** via the WebGUI.
 To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company`/admin/users).
 Click on the user whose role should be increased from **Pending** to at least **User**.

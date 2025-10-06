@@ -6,7 +6,7 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -144,7 +144,7 @@ export class ActionWizardPage extends WizardPage {
                                               >
                                                   ${state.action.subText}
                                               </div>`
-                                            : html``}
+                                            : nothing}
                                     </div>
                                 </li>`;
                             })}

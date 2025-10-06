@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, Endpoint, RacApi } from "@goauthentik/api";
 
@@ -12,9 +13,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     clickHandler = (item: Endpoint) => {
         if (!item.launchUrl) {
@@ -42,11 +41,12 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         return endpoints;
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+    ];
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [html`${item.name}`];
     }
 

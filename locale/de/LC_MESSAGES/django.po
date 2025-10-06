@@ -40,7 +40,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 00:10+0000\n"
+"POT-Creation-Date: 2025-09-26 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: datenschmutz, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
@@ -204,6 +204,10 @@ msgstr "Es sind keine führenden oder abschließenden Schrägstriche erlaubt."
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
 msgstr "Im Benutzerpfad sind keine leeren Segmente erlaubt."
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
 
 #: authentik/core/models.py
 msgid "name"
@@ -411,7 +415,7 @@ msgstr ""
 "Wie die Quelle entscheidet, ob eine existierende Gruppe genutzt oder eine "
 "neue Gruppe erstellt werden soll."
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
 msgstr "Token"
 
@@ -762,6 +766,14 @@ msgstr ""
 "Synchronisierungen für ein verbundenes Objekt (Mitgliedschaften) bei "
 "Microsoft-Entra-Providern auslösen."
 
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr "Für die Verwendung von EAP-TLS ist Enterprise erforderlich."
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr "Für die Verwendung des OAuth-Modus ist Enterprise erforderlich."
+
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
@@ -1014,14 +1026,6 @@ msgstr "Webhook Zuordnung"
 #: authentik/events/models.py
 msgid "Webhook Mappings"
 msgstr "Webhook Zuordnungen"
-
-#: authentik/events/models.py
-msgid "System Task"
-msgstr "Systemoperationen"
-
-#: authentik/events/models.py
-msgid "System Tasks"
-msgstr "Systemoperationen"
 
 #: authentik/events/tasks.py
 msgid "Dispatch new event notifications."
@@ -2412,6 +2416,10 @@ msgid "SAML Providers from Metadata"
 msgstr "SAML Provider aus Metadaten"
 
 #: authentik/providers/scim/models.py
+msgid "OAuth"
+msgstr "OAuth"
+
+#: authentik/providers/scim/models.py
 msgid "Default"
 msgstr "Standard"
 
@@ -2424,12 +2432,24 @@ msgid "Slack"
 msgstr "Slack"
 
 #: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr "Salesforce"
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Basis-URL für SCIM-Anfragen, endet normalerweise auf /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Authentifizierungstoken"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr "OAuth-Quelle für die Authentifizierung"
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
+msgstr "Zusätzliche OAuth-Parameter, z. B. grant_type"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Compatibility Mode"
@@ -3322,6 +3342,10 @@ msgstr "Code stimmt nicht überein"
 msgid "Invalid email"
 msgstr "Ungültige E-Mail"
 
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr "Der Benutzer hat bereits eine E-Mail-Adresse für MFA registriert."
+
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
 #, python-format
@@ -3925,6 +3949,10 @@ msgstr "Identifizierungs-Stage"
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
 msgstr "Identifizierungs-Stages"
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
+msgstr "Authentifizierung fehlgeschlagen."
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"

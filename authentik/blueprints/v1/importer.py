@@ -76,6 +76,7 @@ from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
+from authentik.stages.consent.models import UserConsent
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
@@ -135,6 +136,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceConnection,
         DeviceToken,
         StreamEvent,
+        UserConsent,
     )
 
 

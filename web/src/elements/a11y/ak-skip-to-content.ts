@@ -1,67 +1,66 @@
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-skip-to-content")
 export class AKSkipToContent extends AKElement {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
     static styles = [
         PFBase,
         css`
-            .show-on-focus:not(:focus) {
-                width: 1px !important;
-                height: 1px !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-                clip: rect(1px, 1px, 1px, 1px) !important;
-                border: 0 !important;
-            }
-
-            .show-on-focus {
+            [part="show-on-focus"] {
                 position: absolute !important;
-            }
-
-            .skip-to-content {
                 z-index: 99999;
-            }
+                color: var(--ak-dark-foreground, ButtonText);
+                background-color: var(--ak-accent, ButtonFace);
+                font-family: var(--pf-global--FontFamily--heading--sans-serif, sans-serif);
+                padding: var(--pf-global--spacer--md, 2em);
+                border-radius: var(--pf-global--BorderRadius--sm, 3px);
+                border-style: dotted;
+                border-width: 1px;
 
-            button {
-                color: var(--ak-dark-foreground);
-                z-index: 99999;
-                background-color: var(--ak-accent);
-                font-family: var(--pf-global--FontFamily--heading--sans-serif);
-                padding: var(--pf-global--spacer--md);
+                &:not(:focus) {
+                    width: 1px !important;
+                    height: 1px !important;
+                    padding: 0 !important;
+                    overflow: hidden !important;
+                    clip: rect(1px, 1px, 1px, 1px) !important;
+                    border: 0 !important;
+                }
             }
         `,
     ];
 
-    @property({ type: String })
-    public flowTo: string = "main-content";
+    #targetElement: WeakRef<HTMLElement> | null = null;
 
-    #skipToContent = () => {
-        const element =
-            this.parentElement?.querySelector<HTMLElement>(`#${this.flowTo}`) ||
-            document.getElementById(this.flowTo);
+    @property({ attribute: false })
+    public get targetElement(): HTMLElement | null {
+        return this.#targetElement?.deref() ?? null;
+    }
 
-        if (!element) {
-            console.warn(`Could not find element with ID "${this.flowTo}"`);
+    public set targetElement(value: HTMLElement | null) {
+        this.#targetElement = value ? new WeakRef(value) : null;
+    }
+
+    public activate = () => {
+        const { targetElement } = this;
+
+        if (!targetElement) {
+            console.warn(`Could not find target element for skip to content`);
             return;
         }
 
-        element.scrollIntoView();
-        element.focus?.();
+        targetElement.scrollIntoView();
+        targetElement.focus?.();
     };
 
     render() {
         return html`
-            <button
-                @click=${this.#skipToContent}
-                type="button"
-                class="show-on-focus js-skip-to-content"
-            >
+            <button tabindex="0" @click=${this.activate} type="button" part="show-on-focus">
                 ${msg("Skip to content")}
             </button>
         `;

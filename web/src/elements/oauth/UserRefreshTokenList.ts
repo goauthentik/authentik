@@ -4,9 +4,9 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
@@ -36,28 +36,24 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Provider"), "provider"),
-            new TableColumn(msg("Revoked?"), "revoked"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Scopes"), "scope"),
-        ];
+    protected override rowLabel(item: TokenModel): string | null {
+        return item.provider?.name ?? null;
     }
 
+    protected columns: TableColumn[] = [
+        [msg("Provider"), "provider"],
+        [msg("Revoked?"), "revoked"],
+        [msg("Expires"), "expires"],
+        [msg("Scopes"), "scope"],
+    ];
+
     renderExpanded(item: TokenModel): TemplateResult {
-        return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-l-flex">
-                        <div class="pf-l-flex__item">
-                            <h3>${msg("ID Token")}</h3>
-                            <pre>${item.idToken}</pre>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+        return html`<div class="pf-l-flex">
+            <div class="pf-l-flex__item">
+                <h3>${msg("ID Token")}</h3>
+                <pre>${item.idToken}</pre>
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -82,7 +78,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: TokenModel): TemplateResult[] {
+    row(item: TokenModel): SlottedTemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label
@@ -91,10 +87,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 good-label=${msg("No")}
                 bad-label=${msg("Yes")}
             ></ak-status-label>`,
-            html`${item.expires
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires),
             html`<ak-chip-group>
                 ${item.scope.sort().map((scope) => {
                     return html`<ak-chip>${scope}</ak-chip>`;

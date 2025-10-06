@@ -32,7 +32,7 @@ import {
 } from "chart.js";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 
 Chart.register(Legend, Tooltip);
@@ -44,6 +44,8 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
+    public role = "figure";
+
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
@@ -208,9 +210,13 @@ export abstract class AKChart<T> extends AKElement {
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `
-                    : html`${this.chart ? html`` : html`<ak-empty-state loading></ak-empty-state>`}`}
-                ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
-                <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
+                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
+                <canvas
+                    role="img"
+                    aria-label=${msg("Chart")}
+                    style="${!this.chart ? "display: none;" : ""}"
+                ></canvas>
             </div>
         `;
     }

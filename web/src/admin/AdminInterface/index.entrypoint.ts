@@ -24,16 +24,15 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
-import { SidebarToggleEventDetail } from "#components/ak-page-header";
+import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, eventOptions, property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -65,10 +64,9 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     @property({ type: Boolean, reflect: true })
     public sidebarOpen = false;
 
-    @eventOptions({ passive: true })
-    protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {
-        this.sidebarOpen = !!event.detail.open;
-    }
+    #onPageNavMenuEvent = (event: PageNavMenuToggle) => {
+        this.sidebarOpen = event.open;
+    };
 
     #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
@@ -86,6 +84,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         PFDrawer,
         PFNav,
         css`
+            .pf-c-page__main {
+                scrollbar-gutter: stable;
+            }
+
             .pf-c-page__main,
             .pf-c-drawer__content,
             .pf-c-page__drawer {
@@ -135,6 +137,9 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
+            passive: true,
+        });
     }
 
     public connectedCallback() {
@@ -197,9 +202,8 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
-            <ak-skip-to-content></ak-skip-to-content>
             <div class="pf-c-page">
-                <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
+                <ak-page-navbar ?open=${this.sidebarOpen}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
@@ -216,18 +220,15 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <div class="pf-c-page__main">
-                                        <ak-router-outlet
-                                            role="main"
-                                            aria-label="${msg("Main content")}"
-                                            class="pf-c-page__main"
-                                            tabindex="-1"
-                                            id="main-content"
-                                            defaultUrl="/administration/overview"
-                                            .routes=${ROUTES}
-                                        >
-                                        </ak-router-outlet>
-                                    </div>
+                                    <ak-router-outlet
+                                        role="presentation"
+                                        class="pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        defaultUrl="/administration/overview"
+                                        .routes=${ROUTES}
+                                    >
+                                    </ak-router-outlet>
                                 </div>
                             </div>
                             <ak-notification-drawer

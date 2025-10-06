@@ -12,7 +12,7 @@ from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask, CurrentTaskNotFound
+from django_dramatiq_postgres.middleware import CurrentTaskNotFound
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -38,6 +38,8 @@ from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
+from authentik.tasks.apps import PRIORITY_HIGH
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
@@ -111,6 +113,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
 @actor(
     description=_("Find blueprints as `blueprints_find` does, but return a safe dict."),
     throws=(DatabaseError, ProgrammingError, InternalError),
+    priority=PRIORITY_HIGH,
 )
 def blueprints_find_dict():
     blueprints = []
@@ -153,7 +156,7 @@ def blueprints_find() -> list[BlueprintFile]:
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_discovery(path: str | None = None):
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     count = 0
     for blueprint in blueprints_find():
         if path and blueprint.path != path:
@@ -193,7 +196,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 @actor(description=_("Apply single blueprint."))
 def apply_blueprint(instance_pk: UUID):
     try:
-        self: Task = CurrentTask.get_task()
+        self = CurrentTask.get_task()
     except CurrentTaskNotFound:
         self = Task()
     self.set_uid(str(instance_pk))

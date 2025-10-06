@@ -106,7 +106,7 @@ export class ModalForm extends ModalButton {
                 : nothing}
             <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">
                         <slot name="header"></slot>
                     </h1>
                 </div>
@@ -115,16 +115,27 @@ export class ModalForm extends ModalButton {
             <section class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>
                 <slot name="form"></slot>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <fieldset name="actions" class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 ${this.showSubmitButton
-                    ? html`<ak-spinner-button .callAction=${this.#confirm} class="pf-m-primary">
-                              <slot name="submit"></slot> </ak-spinner-button
-                          >&nbsp;`
+                    ? html`<button
+                          type="button"
+                          @click=${this.#confirm}
+                          class="pf-c-button pf-m-primary"
+                          aria-description=${msg("Submit action")}
+                      >
+                          <slot name="submit"></slot>
+                      </button>`
                     : nothing}
-                <ak-spinner-button .callAction=${this.#cancel} class="pf-m-secondary">
+                <button
+                    type="button"
+                    aria-description=${msg("Cancel action")}
+                    @click=${this.#cancel}
+                    class="pf-c-button pf-m-secondary"
+                >
                     ${this.cancelText}
-                </ak-spinner-button>
-            </footer>`;
+                </button>
+            </fieldset>`;
     }
 }
 
