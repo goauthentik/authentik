@@ -50,8 +50,11 @@ export class FlowInspector extends AKElement {
             }
 
             .pf-c-notification-drawer__body {
-                padding-inline: var(--pf-global--spacer--md);
+                /* compatibility-mode-fix */
 
+                & {
+                    padding-inline: var(--pf-global--spacer--md);
+                }
                 .pf-l-stack__item:last-child {
                     padding-block-end: var(--pf-global--spacer--md);
                 }

@@ -31,11 +31,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const customCSS = css`
     .authenticator-button {
-        align-items: center;
-        width: 100%;
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: var(--pf-global--spacer--md);
+        /* compatibility-mode-fix */
+        & {
+            align-items: center;
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: var(--pf-global--spacer--md);
+        }
 
         &:hover {
             background-color: var(--pf-global--Color--light-200);

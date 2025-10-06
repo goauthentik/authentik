@@ -76,6 +76,7 @@ export class IdentificationStage extends BaseStage<
             }
 
             .captcha-container {
+                /* compatibility-mode-fix */
                 & {
                     position: relative;
                 }
