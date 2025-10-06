@@ -61,4 +61,6 @@ class Command(BaseCommand):
         post_save.connect(Command.post_save_handler)
         pre_delete.connect(Command.pre_delete_handler)
 
+        print(get_banner_text())
+
         super().handle(**options)
