@@ -209,7 +209,7 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
-module = ["dramatiq.*", "pglock.*"]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
 follow_untyped_imports = true
 
 [[tool.mypy.overrides]]
