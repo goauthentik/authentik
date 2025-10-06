@@ -1,5 +1,6 @@
 ---
 title: User Login stage
+toc_max_heading_level: 4
 ---
 
 The User Login stage attaches a currently pending user to the current session.
