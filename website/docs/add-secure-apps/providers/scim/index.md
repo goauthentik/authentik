@@ -4,8 +4,6 @@ title: SCIM Provider
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
 
-## Important considerations
-
 A SCIM provider requires a SCIM base URL for the endpoint and a token. SCIM works via HTTP requests, so authentik must be able to reach the specified endpoint. This endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
 
 SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
@@ -14,9 +12,7 @@ For example, you can create an application and provider pair for Slack, creating
 
 1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
 2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
-3. Edit the application by going to **Applications** > **Applications** and clicking the edit icon.
-    - In the **Backchannel Providers** field, click the Add icon (**+**), select the backchannel provider that you just created, and click **Add**.
-    - Click **Update**.
+3. Edit the application and in the **Backchannel Providers** field add the backchannel provider that you just created.
 
 ## Authentication mode options
 
