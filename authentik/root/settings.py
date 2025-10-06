@@ -51,6 +51,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
 SHARED_APPS = [
+    "authentik.commands",
     "django_tenants",
     "authentik.tenants",
     "django.contrib.messages",
