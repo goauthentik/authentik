@@ -136,9 +136,13 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
         # Each consumer gets its own *specific* channel, created with the `new_channel()` method.
         # This dict maps `channel_name` to a queue of messages for that channel.
-        self.channels: dict[str, asyncio.Queue[bytes]] = {}
+        self.channels: dict[str, asyncio.Queue[tuple[str, bytes | None]]] = {}
 
         self.connection = PostgresChannelLayerConnection(self.using, self)
+
+    async def _subscribe_to_channel(self, channel: str) -> None:
+        self.channels[channel] = asyncio.Queue()
+        await self.connection.subscribe(channel)
 
     extensions = ["groups", "flush"]
 
@@ -165,7 +169,9 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Returns a new channel name that can be used by something in our
         process as a specific channel.
         """
-        return f"{self.prefix}.{prefix}.{uuid4().hex}"
+        channel = f"{self.prefix}.{prefix}.{uuid4().hex}"
+        await self._subscribe_to_channel(channel)
+        return channel
 
     async def receive(self, channel: str) -> dict[str, Any]:
         """
@@ -186,12 +192,18 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         before proceeding to wait for a message.
         """
         if channel not in self.channels:
-            self.channels[channel] = asyncio.Queue()
-            await self.connection.subscribe(channel)
+            await self._subscribe_to_channel(channel)
 
         q = self.channels[channel]
         try:
-            message = await q.get()
+            while True:
+                (message_id, message) = await q.get()
+                if message is None:
+                    m = await Message.objects.filter(pk=message_id).afirst()
+                    if m is None:
+                        continue
+                    message = m.message
+                break
         except (asyncio.CancelledError, TimeoutError, GeneratorExit):
             # We assume here that the reason we are cancelled is because the consumer
             # is exiting, therefore we need to cleanup by unsubscribe below. Indeed,
@@ -210,6 +222,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                     # We don't re-raise here because we want the CancelledError to be the one
                     # re-raised
             raise
+        await Message.objects.filter(pk=message_id).adelete()
         return self.channel_layer.deserialize(message)
 
     # ==============================================================
@@ -326,21 +339,16 @@ class PostgresChannelLayerConnection:
             try:
                 async with await self._create_connection() as conn:
                     await self._update_locks(conn)
+                    await self._process_backlog(conn)
                     while True:
-                        await self._process_backlog(conn)
                         await conn.execute(
                             sql.SQL("LISTEN {channel}").format(
                                 channel=sql.Identifier(NOTIFY_CHANNEL)
                             )
                         )
-                        first_loop = True
-                        async for notify in conn.notifies(stop_after=1, timeout=5):
-                            if first_loop:
-                                await self._update_locks(conn)
-                                first_loop = False
+                        async for notify in conn.notifies(timeout=30, stop_after=1):
                             await self._receive_notify(conn, notify)
-                        if first_loop:
-                            await self._update_locks(conn)
+                        await self._update_locks(conn)
             except (asyncio.CancelledError, TimeoutError, GeneratorExit):
                 raise
             except PsycopgError as exc:
@@ -362,10 +370,11 @@ class PostgresChannelLayerConnection:
                     WHERE
                         {table}.{channel} IN (%s)
                         AND {table}.{expires} >= %s
-                    RETURNING {table}.{channel}, {table}.{message}
+                    RETURNING {table}.{id}, {table}.{channel}, {table}.{message}
                 """
                 ).format(
                     table=sql.Identifier(MESSAGE_TABLE),
+                    id=sql.Identifier("id"),
                     channel=sql.Identifier("channel"),
                     expires=sql.Identifier("expires"),
                     message=sql.Identifier("message"),
@@ -373,8 +382,8 @@ class PostgresChannelLayerConnection:
                 (tuple(self._locked_channels), now()),
             )
             async for row in cursor:
-                channel, message = row
-                self._receive_message(channel, message)
+                message_id, channel, message = row
+                self._receive_message(channel, message_id, message)
 
     def _get_lock_id(self, channel: str) -> int:
         lock_id = _cast_lock_id(f"channels.{channel}")  # type: ignore[no-untyped-call]
@@ -415,13 +424,6 @@ class PostgresChannelLayerConnection:
                 if expires < now():
                     return
                 message = b64decode(base64_message)
-                async with conn.cursor() as cursor:
-                    await cursor.execute(
-                        sql.SQL("DELETE FROM {table} WHERE {table}.{id} = %s").format(
-                            table=sql.Identifier(MESSAGE_TABLE),
-                            id=sql.Identifier("id"),
-                        )
-                    )
             case 3:
                 message_id, channel, timestamp = split_payload
                 if channel not in self._locked_channels:
@@ -429,35 +431,14 @@ class PostgresChannelLayerConnection:
                 expires = datetime.fromtimestamp(float(timestamp), tz=UTC)
                 if expires < now():
                     return
-                async with conn.cursor() as cursor:
-                    await cursor.execute(
-                        sql.SQL(
-                            """
-                            DELETE
-                            FROM {table}
-                            WHERE
-                                {table}.{id} = %s
-                            RETURNING {table}.{message}, {table}.{expires}
-                        """
-                        ).format(
-                            table=sql.Identifier(MESSAGE_TABLE),
-                            id=sql.Identifier("id"),
-                            message=sql.Identifier("message"),
-                            expires=sql.Identifier("expires"),
-                        ),
-                        (message_id,),
-                    )
-                    row = await cursor.fetchone()
-                    if row is None:
-                        return
-                    message, expires = row
+                message = None
             case _:
                 return
-        self._receive_message(channel, message)
+        self._receive_message(channel, message_id, message)
 
-    def _receive_message(self, channel: str, message: bytes) -> None:
+    def _receive_message(self, channel: str, message_id: str, message: bytes | None) -> None:
         if (q := self.channel_layer.channels.get(channel)) is not None:
-            q.put_nowait(message)
+            q.put_nowait((message_id, message))
 
     def _ensure_receiver(self) -> None:
         if self._receive_task is None:
