@@ -22,6 +22,7 @@
         "!File scalar",
         "!File sequence",
         "!Find sequence",
+        "!FindMany sequence",
         "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
