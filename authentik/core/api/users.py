@@ -163,24 +163,26 @@ class UserSerializer(ModelSerializer):
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance: User = super().create(validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance = super().update(instance, validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def _set_password(self, instance: User, password: str | None):

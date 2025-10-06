@@ -76,7 +76,7 @@ class PermissionFilter(FilterSet):
 
     def filter_role(self, queryset: QuerySet, name, value: Role) -> QuerySet:
         """Filter permissions based on role"""
-        return queryset.filter(group__role=value)
+        return queryset.filter(rolemodelpermission__role=value)
 
     class Meta:
         model = Permission

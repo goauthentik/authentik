@@ -123,6 +123,7 @@ djangorestframework = { git = "https://github.com/goauthentik/django-rest-framew
 django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
 django-postgres-cache = { workspace = true }
+django-guardian = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 
 [tool.uv.workspace]
@@ -130,6 +131,7 @@ members = [
   "packages/django-channels-postgres",
   "packages/django-dramatiq-postgres",
   "packages/django-postgres-cache",
+  "packages/django-guardian",
 ]
 
 [project.scripts]

@@ -24,19 +24,25 @@ class RoleSerializer(ModelSerializer):
             )
 
     def create(self, validated_data: dict) -> Role:
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+
         instance: Role = super().create(validated_data)
-        instance.group.permissions.set(permissions)
+        instance.assign_perms(perms_list)
+
         return instance
 
     def update(self, instance: Role, validated_data: dict) -> Role:
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+
         instance: Role = super().update(instance, validated_data)
-        instance.group.permissions.set(permissions)
+        instance.assign_perms(perms_list)
+
         return instance
 
     class Meta:
@@ -49,6 +55,6 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
 
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
-    search_fields = ["group__name"]
-    ordering = ["group__name"]
-    filterset_fields = ["group__name"]
+    search_fields = ["name"]
+    ordering = ["name"]
+    filterset_fields = ["name"]
