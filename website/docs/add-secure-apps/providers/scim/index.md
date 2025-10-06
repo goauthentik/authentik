@@ -4,7 +4,19 @@ title: SCIM Provider
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
 
+## Important considerations
+
 A SCIM provider requires a SCIM base URL for the endpoint and a token. SCIM works via HTTP requests, so authentik must be able to reach the specified endpoint. This endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
+
+SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
+
+For example, you can create an application and provider pair for Slack, creating Slack as the application and OAuth as the provider. Say you then want to use SCIM for further authentication using a token. For this scenario use the following workflow:
+
+1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
+2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
+3. Edit the application by going to **Applications** > **Applications** and clicking the edit icon.
+    - In the **Backchannel Providers** field, click the Add icon (**+**), select the backchannel provider that you just created, and click **Add**.
+    - Click **Update**.
 
 ## Authentication mode options
 
@@ -23,10 +35,6 @@ Whichever mode you select you'll need to enter a SCIM base **URL**, for the endp
 
 With authentik's default mode, the token that you enter (provided by the application) is sent with all outgoing SCIM requests to authenticate each request.
 
-:::info
-When adding the SCIM provider, you must define the **Backchannel provider using the name of the SCIM provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps\*\*, which is not supported for SCIM).
-:::
-
 ### OAuth authentication for a SCIM provider :ak-enterprise
 
 Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
@@ -39,7 +47,9 @@ Some examples are:
 
 - `grant_type: password`
 
+:::info OAuth source required
 To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/oauth/).
+:::
 
 ### Syncing
 
