@@ -98,10 +98,10 @@ export abstract class Table<T extends object>
             td:has(ak-action-button),
             td:has(ak-forms-modal),
             td:has(ak-rbac-object-permission-modal) {
-                .pf-c-button,
-                button[slot="trigger"]:has(i),
-                *::part(spinner-button),
-                ak-rbac-object-permission-modal::part(button) {
+                & > .pf-c-button,
+                & > button[slot="trigger"]:has(i),
+                & > *::part(spinner-button),
+                & > *::part(button) {
                     --pf-global--spacer--form-element: 0;
 
                     padding-inline: 0.5em !important;
@@ -712,9 +712,7 @@ export abstract class Table<T extends object>
                         : columnHeaderID;
 
                     return html`<td
-                        class=${classMap({
-                            presentational: !columnLabel,
-                        })}
+                        class=${ifPresent(!columnLabel, "presentational")}
                         headers=${headers}
                     >
                         ${cell}
