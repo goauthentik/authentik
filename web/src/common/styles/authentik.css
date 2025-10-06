@@ -415,6 +415,8 @@ fieldset {
         --ak-legend-margin-inline-end: calc(
             var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
         );
+        --pf-c-card--BoxShadow: none;
+        --pf-c-card--BackgroundColor: transparent;
     }
 
     &.pf-c-card,
@@ -440,6 +442,16 @@ fieldset {
         border-block-end: none;
     }
 }
+
+/* #endregion */
+
+/* #region Notifications */
+
+.pf-c-notification-drawer {
+    --pf-c-notification-drawer--BackgroundColor: var(--pf-global--BackgroundColor--150);
+}
+
+/* #endregion */
 
 /* #region Switch  */
 .pf-c-switch {
