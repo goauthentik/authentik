@@ -989,7 +989,6 @@ source = { editable = "packages/django-channels-postgres" }
 dependencies = [
     { name = "channels" },
     { name = "django" },
-    { name = "django-pglock" },
     { name = "django-pgtrigger" },
     { name = "msgpack" },
     { name = "psycopg" },
@@ -1000,7 +999,6 @@ dependencies = [
 requires-dist = [
     { name = "channels", specifier = ">=4.3,<4.4" },
     { name = "django", specifier = ">=4.2,<6.0" },
-    { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "msgpack", specifier = ">=1,<2" },
     { name = "psycopg", specifier = ">=3,<4" },
