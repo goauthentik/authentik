@@ -137,11 +137,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         # This dict maps `channel_name` to a queue of messages for that channel.
         self.channels: dict[str, asyncio.Queue[tuple[str, bytes | None]]] = {}
 
-        self.connection = PostgresChannelLayerConnection(self.using, self)
+        self.receiver = PostgresChannelLayerReceiver(self.using, self)
 
     async def _subscribe_to_channel(self, channel: str) -> None:
         self.channels[channel] = asyncio.Queue()
-        await self.connection.subscribe(channel)
+        await self.receiver.subscribe(channel)
 
     extensions = ["groups", "flush"]
 
@@ -203,7 +203,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
             if channel in self.channels:
                 del self.channels[channel]
                 try:
-                    await self.connection.unsubscribe(channel)
+                    await self.receiver.unsubscribe(channel)
                 except BaseException as exc:  # noqa: BLE001
                     LOGGER.warning("Unexpected exception while cleaning-up channel", exc=exc)
                     # We don't re-raise here because we want the CancelledError to be the one
@@ -285,10 +285,10 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         Deletes all messages and groups.
         """
         self.channels = {}
-        await self.connection.flush()
+        await self.receiver.flush()
 
 
-class PostgresChannelLayerConnection:
+class PostgresChannelLayerReceiver:
     def __init__(self, using: str, channel_layer: PostgresChannelLoopLayer) -> None:
         self.using = using
         self.channel_layer = channel_layer
