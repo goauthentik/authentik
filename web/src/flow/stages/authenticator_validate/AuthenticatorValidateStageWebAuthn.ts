@@ -75,6 +75,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             // convert certain members of the PublicKeyCredentialRequestOptions into
             // byte arrays as expected by the spec.

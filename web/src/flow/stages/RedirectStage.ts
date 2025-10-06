@@ -5,7 +5,7 @@ import { BaseStage } from "#flow/stages/base";
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -41,7 +41,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    firstUpdated(): void {
+    firstUpdated(changed: PropertyValues<this>): void {
+        super.firstUpdated(changed);
+
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
