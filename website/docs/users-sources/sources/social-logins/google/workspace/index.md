@@ -117,7 +117,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ## Source property mappings
 
-Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../../property-mappings/index.md) for more information.
 
 ## Troubleshooting
 
