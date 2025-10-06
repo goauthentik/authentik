@@ -2,7 +2,6 @@
 title: Google Cloud (with OAuth)
 sidebar_label: Google Cloud (OAuth)
 tags: [integration, oauth, google]
-support_level: community
 ---
 
 Allows users to authenticate using their Google credentials.

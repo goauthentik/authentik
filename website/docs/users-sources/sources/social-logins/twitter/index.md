@@ -1,6 +1,5 @@
 ---
 title: X (Twitter)
-support_level: authentik
 ---
 
 Allows users to authenticate using their X credentials.

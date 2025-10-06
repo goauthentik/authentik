@@ -2,7 +2,6 @@
 title: Google Workspace (with SAML)
 sidebar_label: Google Workspace (SAML)
 tags: [integration, saml, google]
-support_level: authentik
 ---
 
 Allows users to authenticate using their Google Workspace credentials.

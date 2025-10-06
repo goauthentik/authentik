@@ -1,6 +1,5 @@
 ---
 title: Discord
-support_level: authentik
 ---
 
 Allows users to authenticate using their Discord credentials.

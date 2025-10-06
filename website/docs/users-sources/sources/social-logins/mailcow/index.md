@@ -1,6 +1,5 @@
 ---
 title: Mailcow
-support_level: community
 ---
 
 Allows users to authenticate using their Mailcow credentials.

@@ -1,6 +1,5 @@
 ---
 title: Twitch
-support_level: community
 ---
 
 Allows users to authenticate using their Twitch credentials.

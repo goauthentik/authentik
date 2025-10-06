@@ -1,6 +1,5 @@
 ---
 title: Apple
-support_level: authentik
 ---
 
 Allows users to authenticate using their Apple ID credentials.
