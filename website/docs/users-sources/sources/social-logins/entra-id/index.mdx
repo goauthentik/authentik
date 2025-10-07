@@ -42,9 +42,10 @@ The secret value is only displayed once at the time of creation. Make sure to co
 8. In the sidebar, navigate to **API Permissions**, then click **Add a permission** and select **Microsoft Graph** as the API.
 9. Select **Delegated permissions** as the permission type and assign the following permissions:
     - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
+    - Under **User**: select `User.Read`.
     - Under **Group Member** _(optional)_: if you need authentik to sync group membership information from Entra ID, select the `GroupMember.Read.All` permission.
 10. Click **Add permissions**.
-11. _(optional)_ If the `GroupMember.Read.All` permission has been selected, under **Configured permissions**, click **Grant admin consent for default directory**.
+11. Under **Configured permissions**, click **Grant admin consent for default directory**.
 
 ## authentik configuration
 
