@@ -48,13 +48,17 @@ export class FlowInspector extends AKElement {
             .pf-c-drawer__body {
                 height: 100dvh;
             }
+            :host {
+                background-color: var(--pf-c-notification-drawer--BackgroundColor) !important;
+            }
 
             .pf-c-notification-drawer__body {
                 /* compatibility-mode-fix */
-
                 & {
                     padding-inline: var(--pf-global--spacer--md);
+                    padding-block: var(--pf-global--spacer--xs);
                 }
+
                 .pf-l-stack__item:last-child {
                     padding-block-end: var(--pf-global--spacer--md);
                 }
