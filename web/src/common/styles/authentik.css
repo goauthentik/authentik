@@ -21,6 +21,9 @@
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 
+    --ak-flow-background-color-contrast: var(--pf-global--Color--100);
+    --ak-flow-footer-color: var(--pf-global--Color--light-100);
+
     /* PatternFly likes to override global variables for some reason */
     --ak-global--Color--100: var(--pf-global--Color--100);
 
@@ -330,13 +333,16 @@ ak-tabs[vertical] {
 }
 
 .pf-c-login__footer {
+    color: var(--ak-flow-footer-color);
     flex: 0 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
+}
 
-    @media (max-width: 768px) {
-        color: var(--pf-global--Color--300);
+@media (max-width: 768px) {
+    :root {
+        --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
     }
 }
 
@@ -550,6 +556,11 @@ fieldset {
     .pf-c-login.stacked .pf-c-login__main {
         margin-top: 13rem;
     }
+}
+
+.pf-c-login.sidebar_left,
+.pf-c-login.sidebar_right {
+    --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
 }
 
 .pf-c-data-list {
