@@ -31,7 +31,7 @@ To integrate Entra ID with authentik you will need to create an App Registration
 4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
 5. In the leftmost sidebar, navigate to **Certificates & secrets**.
 6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
-    - **Description**: provide a description for the secret (e.g. `authentik secret`.
+    - **Description**: provide a description for the secret (e.g. `authentik secret`).
     - **Expires**: choose an expiration period. As authentik does not yet support automatic secret rotation, either manual rotation or API-based updates are required. As a result, a duration of at least 12 months is recommended.
 7. Copy the secret's value from the **Value** column.
 
