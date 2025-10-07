@@ -553,13 +553,13 @@ fieldset {
 }
 
 @media (min-height: 60rem) {
-    .pf-c-login.stacked .pf-c-login__main {
+    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
         margin-top: 13rem;
     }
 }
 
-.pf-c-login.sidebar_left,
-.pf-c-login.sidebar_right {
+.pf-c-login[data-layout="sidebar_left"],
+.pf-c-login[data-layout="sidebar_right"] {
     --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
 }
 
