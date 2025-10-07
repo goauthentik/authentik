@@ -85,11 +85,8 @@ ldap_group_name = cn
 ldap_default_bind_dn = cn=${sssd.serviceAccount},ou=users,${ldap.baseDN}
 ldap_default_authtok = ${sssd.serviceAccountToken}
 
-# Authentik doesnt provide a shell by default
-#  This can cause issues with certian applications 
-#  (like XRDP) not having a user's shell returned.
-#  Adjust to a shell present on the system.
-
+# authentik does not define a loginShell attribute by default.
+# Users without an explicit shell setting will be assigned the following default shell:
 default_shell = /bin/sh
 ```
 
