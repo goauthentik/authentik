@@ -209,10 +209,11 @@ class PostgresBroker(Broker):
             if deadline and time.monotonic() >= deadline:
                 raise QueueJoinTimeout(queue_name)  # type: ignore[no-untyped-call]
 
-            if self.query_set.filter(
-                queue_name=queue_name,
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-            ).exists():
+            if (
+                not self.query_set.filter(queue_name=queue_name)
+                .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+                .exists()
+            ):
                 return
 
             time.sleep(interval / 1000)
@@ -288,7 +289,6 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
-            state=TaskState.CONSUMED,
         ).update(
             state=TaskState.DONE,
             message=message.encode(),
@@ -303,8 +303,6 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
-        ).exclude(
-            state=TaskState.REJECTED,
         ).update(
             state=TaskState.REJECTED,
             message=message.encode(),
@@ -328,11 +326,9 @@ class _PostgresConsumer(Consumer):
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug("Polling for lost messages", queue=self.queue_name)
         notifies = (
-            self.query_set.filter(
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-                queue_name=self.queue_name,
-            )
+            self.query_set.filter(queue_name=self.queue_name)
             .exclude(
+                state__in=(TaskState.DONE, TaskState.REJECTED),
                 message_id__in=self.in_processing,
             )
             .values_list("message_id", flat=True)
@@ -363,10 +359,8 @@ class _PostgresConsumer(Consumer):
             return False
 
         result = (
-            self.query_set.filter(
-                message_id=message.message_id,
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-            )
+            self.query_set.filter(message_id=message.message_id)
+            .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
             .extra(
                 where=["pg_try_advisory_lock(%s)"],
                 params=[self._get_message_lock_id(message.message_id)],

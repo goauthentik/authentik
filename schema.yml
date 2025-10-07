@@ -38920,8 +38920,11 @@ paths:
             - done
             - error
             - info
+            - postprocess
+            - preprocess
             - queued
             - rejected
+            - running
             - warning
         explode: true
         style: form
@@ -38956,8 +38959,11 @@ paths:
           enum:
           - consumed
           - done
+          - postprocess
+          - preprocess
           - queued
           - rejected
+          - running
         description: |+
           Task status
 
@@ -39607,6 +39613,7 @@ components:
       - name
     AppEnum:
       enum:
+      - authentik.commands
       - authentik.tenants
       - authentik.tasks
       - authentik.admin
@@ -46633,6 +46640,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       - info
@@ -58951,6 +58961,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       type: string
@@ -59219,6 +59232,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       - info

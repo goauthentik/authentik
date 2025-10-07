@@ -66,6 +66,9 @@ export class TaskList extends Table<Task> {
             ? [
                   TasksTasksListAggregatedStatusEnum.Queued,
                   TasksTasksListAggregatedStatusEnum.Consumed,
+                  TasksTasksListAggregatedStatusEnum.Preprocess,
+                  TasksTasksListAggregatedStatusEnum.Running,
+                  TasksTasksListAggregatedStatusEnum.Postprocess,
                   TasksTasksListAggregatedStatusEnum.Rejected,
                   TasksTasksListAggregatedStatusEnum.Warning,
                   TasksTasksListAggregatedStatusEnum.Error,
