@@ -3,9 +3,10 @@ import functools
 import types
 import zlib
 from base64 import b64decode
+from contextlib import AbstractAsyncContextManager
 from datetime import UTC, datetime, timedelta
 from re import Pattern
-from typing import Any, AsyncContextManager, cast
+from typing import Any, cast
 from uuid import uuid4
 
 import msgpack
@@ -153,7 +154,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         db_params.pop("context")
         return make_conninfo(conninfo="", **db_params, connect_timeout=10)
 
-    async def connection(self) -> AsyncContextManager[AsyncConnection]:
+    async def connection(self) -> AbstractAsyncContextManager[AsyncConnection]:
         if self._pool is None:
             async with self._pool_lock:
 
