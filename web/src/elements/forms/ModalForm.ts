@@ -115,7 +115,7 @@ export class ModalForm extends ModalButton {
             <section class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>
                 <slot name="form"></slot>
             </section>
-            <fieldset name="actions" class="pf-c-modal-box__footer">
+            <fieldset class="pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 ${this.showSubmitButton
                     ? html`<button
