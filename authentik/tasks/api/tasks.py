@@ -163,4 +163,17 @@ class TaskViewSet(
             .values("aggregated_status") \
             .annotate(count=Count("aggregated_status")):
             response[status["aggregated_status"]] = status["count"]
-        return Response(response)
+        return Response(
+            {
+                "queued": response.get("queued", 0),
+                "consumed": response.get("consumed", 0),
+                "preprocess": response.get("preprocess", 0),
+                "running": response.get("running", 0),
+                "postprocess": response.get("postprocess", 0),
+                "rejected": response.get("rejected", 0),
+                "done": response.get("done", 0),
+                "info": response.get("info", 0),
+                "warning": response.get("warning", 0),
+                "error": response.get("error", 0),
+            }
+        )
