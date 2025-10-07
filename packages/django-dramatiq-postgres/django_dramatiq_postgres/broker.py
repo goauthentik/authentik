@@ -1,9 +1,11 @@
 import functools
 import logging
+import sys
 import time
 from collections.abc import Callable, Iterable
 from datetime import timedelta
 from queue import Empty, Queue
+import traceback
 from typing import Any, ParamSpec, TypeVar, cast
 
 import tenacity
@@ -144,6 +146,7 @@ class PostgresBroker(Broker):
         ),
     )
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
+        traceback.print_stack(file=sys.stderr)
         canonical_queue_name = message.queue_name
         queue_name = canonical_queue_name
         if delay:
@@ -163,6 +166,12 @@ class PostgresBroker(Broker):
 
         message.options["model_defaults"] = self.model_defaults(message)
         self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
+
+        t = self.query_set.filter(message_id=message.message_id).first()
+        if t is None:
+            self.logger.error("non existent task")
+        else:
+            self.logger.error("current retries", retries=t.retries)
 
         with transaction.atomic(using=self.db_alias):
             query = {

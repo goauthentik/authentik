@@ -1,5 +1,6 @@
 """authentik admin tasks"""
 
+from time import sleep
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
@@ -34,6 +35,8 @@ def _set_prom_info():
 
 @actor(description=_("Update latest version info."))
 def update_latest_version():
+    sleep(5)
+    raise RuntimeError
     self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
