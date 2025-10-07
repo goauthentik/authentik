@@ -44,28 +44,28 @@ export class TaskOverview extends AKElement {
             >
                 <ak-aggregate-card
                     class="pf-l-grid__item"
-                    icon="pf-icon pf-icon-user"
+                    icon="pf-icon pf-icon-in-progress"
                     label=${msg("Running tasks")}
                 >
                     ${this.status.running + this.status.preprocess + this.status.postprocess}
                 </ak-aggregate-card>
                 <ak-aggregate-card
                     class="pf-l-grid__item"
-                    icon="pf-icon pf-icon-user"
+                    icon="pf-icon pf-icon-pending"
                     label=${msg("Queued tasks")}
                 >
                     ${this.status.queued + this.status.consumed}
                 </ak-aggregate-card>
                 <ak-aggregate-card
                     class="pf-l-grid__item"
-                    icon="pf-icon pf-icon-user"
+                    icon="fa fa-check-circle"
                     label=${msg("Successful tasks")}
                 >
                     ${this.status.done + this.status.info + this.status.warning}
                 </ak-aggregate-card>
                 <ak-aggregate-card
                     class="pf-l-grid__item"
-                    icon="pf-icon pf-icon-user"
+                    icon="fa fa-exclamation-triangle"
                     label=${msg("Error tasks")}
                 >
                     ${this.status.error + this.status.rejected}
