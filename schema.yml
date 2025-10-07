@@ -39607,6 +39607,7 @@ components:
       - name
     AppEnum:
       enum:
+      - authentik.commands
       - authentik.tenants
       - authentik.tasks
       - authentik.admin
@@ -59179,6 +59180,12 @@ components:
           type: string
           format: date-time
           description: Task last modified time
+        retries:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Number of retries
         rel_obj_app_label:
           type: string
           readOnly: true

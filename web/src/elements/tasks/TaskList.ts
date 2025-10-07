@@ -60,16 +60,16 @@ export class TaskList extends Table<Task> {
             typeof this.relObjId !== "undefined"
                 ? undefined
                 : this.showOnlyStandalone
-                  ? true
-                  : undefined;
+                    ? true
+                    : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                  TasksTasksListAggregatedStatusEnum.Queued,
-                  TasksTasksListAggregatedStatusEnum.Consumed,
-                  TasksTasksListAggregatedStatusEnum.Rejected,
-                  TasksTasksListAggregatedStatusEnum.Warning,
-                  TasksTasksListAggregatedStatusEnum.Error,
-              ]
+                TasksTasksListAggregatedStatusEnum.Queued,
+                TasksTasksListAggregatedStatusEnum.Consumed,
+                TasksTasksListAggregatedStatusEnum.Rejected,
+                TasksTasksListAggregatedStatusEnum.Warning,
+                TasksTasksListAggregatedStatusEnum.Error,
+            ]
             : undefined;
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
@@ -100,6 +100,7 @@ export class TaskList extends Table<Task> {
     protected columns: TableColumn[] = [
         [msg("Task"), "actor_name"],
         [msg("Queue"), "queue_name"],
+        [msg("Retries"), "retries"],
         [msg("Last updated"), "mtime"],
         [msg("Status"), "aggregated_status"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -111,7 +112,7 @@ export class TaskList extends Table<Task> {
                 <div class="pf-c-toolbar__item pf-m-search-filter">
                     <div class="pf-c-input-group">
                         ${this.relObjId === undefined
-                            ? html` <label class="pf-c-switch">
+                ? html` <label class="pf-c-switch">
                                   <input
                                       class="pf-c-switch__input"
                                       type="checkbox"
@@ -127,7 +128,7 @@ export class TaskList extends Table<Task> {
                                       ${msg("Show only standalone tasks")}
                                   </span>
                               </label>`
-                            : nothing}
+                : nothing}
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
@@ -154,26 +155,27 @@ export class TaskList extends Table<Task> {
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
+            html`${item.retries}`,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
-            item.state === TasksTasksListStateEnum.Done
+                item.state === TasksTasksListStateEnum.Done
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
-                          return new TasksApi(DEFAULT_CONFIG)
-                              .tasksTasksRetryCreate({
-                                  messageId: item.messageId ?? "",
-                              })
-                              .then(() => {
-                                  this.dispatchEvent(
-                                      new CustomEvent(EVENT_REFRESH, {
-                                          bubbles: true,
-                                          composed: true,
-                                      }),
-                                  );
-                              });
-                      }}
+                        return new TasksApi(DEFAULT_CONFIG)
+                            .tasksTasksRetryCreate({
+                                messageId: item.messageId ?? "",
+                            })
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    }),
+                                );
+                            });
+                    }}
                   >
                       <pf-tooltip position="top" content=${msg("Retry task")}>
                           <i class="fas fa-redo" aria-hidden="true"></i>

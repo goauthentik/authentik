@@ -7479,6 +7479,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik.commands",
                         "authentik.tenants",
                         "authentik.tasks",
                         "authentik.admin",

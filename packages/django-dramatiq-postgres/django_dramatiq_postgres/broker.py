@@ -18,6 +18,7 @@ from django.db import (
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
+from django.db.models.expressions import F
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
@@ -122,6 +123,7 @@ class PostgresBroker(Broker):
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
+            "retries": F("retries") + 1,
         }
 
     @tenacity.retry(
@@ -172,6 +174,7 @@ class PostgresBroker(Broker):
             create_defaults = {
                 **query,
                 **defaults,
+                "retries": 0,
             }
 
             task, created = self.query_set.update_or_create(
@@ -292,6 +295,7 @@ class _PostgresConsumer(Consumer):
         ).update(
             state=TaskState.DONE,
             message=message.encode(),
+            mtime=timezone.now(),
         )
         message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
@@ -308,6 +312,7 @@ class _PostgresConsumer(Consumer):
         ).update(
             state=TaskState.REJECTED,
             message=message.encode(),
+            mtime=timezone.now(),
         )
         message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
@@ -401,7 +406,6 @@ class _PostgresConsumer(Consumer):
         if processing >= self.prefetch:
             # If we have too many messages already processing, wait and don't consume a message
             # straight away, other workers will be faster.
-            # After waiting consume a message regardless.
             self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)  # type: ignore[no-untyped-call]
             self.logger.debug(
                 "Too many messages in processing, Sleeping",
@@ -409,8 +413,7 @@ class _PostgresConsumer(Consumer):
                 backoff_ms=backoff_ms,
             )
             time.sleep(backoff_ms / 1000)
-        else:
-            self.misses = 0
+            return None
 
         if not self.notifies:
             self.notifies += self._poll_for_notify()
@@ -430,6 +433,7 @@ class _PostgresConsumer(Consumer):
             message.options["task"] = task
             if self._consume_one(message):
                 self.in_processing.add(message.message_id)
+                self.misses = 0
                 return MessageProxy(message)  # type: ignore[no-untyped-call]
             else:
                 self.logger.debug(
