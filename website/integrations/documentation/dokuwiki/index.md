@@ -56,7 +56,7 @@ For **oauth**: Select `plugin»oauth»register-on-auth`
 :::warning
 When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. You can configure DokuWiki to use either the `sub` or `preferred_username` as the UID field under `plugin»oauthgeneric»json-user`. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
 
-DokuWiki supports switching between `sub` and `preferred_username` as the user identifier at any time, but this change only applies to users logging in for the first time after the switch. For all existing users, their contributions remain linked to the initial identifier type via a hash of either `sub` or `preferred_username`. Past contributions won't be re-associated with the new identifier when switching.
+DokuWiki supports switching between `sub` and `preferred_username` as the user identifier at any time, but this change only applies to users logging in for the first time after the switch. For all existing users, their contributions remain linked to the initial identifier type. Past contributions won't be re-associated with the new identifier when switching.
 
 It is strongly recommended to decide on the identifier during initial setup and avoid switching it later.
 :::
