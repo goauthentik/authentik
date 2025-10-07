@@ -9,6 +9,8 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { legacyRedirects } from "./legacy-redirects.mjs";
+
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
     createAlgoliaConfig,
@@ -89,6 +91,12 @@ export default createDocusaurusConfig(
 
                         return redirects;
                     },
+                    redirects: Array.from(legacyRedirects, ([from, to]) => {
+                        return {
+                            from,
+                            to,
+                        };
+                    }),
                 }),
             ],
         ],
