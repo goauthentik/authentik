@@ -564,7 +564,10 @@ export class FlowExecutor
                             <div class="pf-c-drawer__body">
                                 <div class="pf-c-login ${this.getLayout()}">
                                     <div class="${this.getLayoutClass()}">
-                                        <div class="pf-c-login__main">
+                                        <main
+                                            class="pf-c-login__main"
+                                            aria-label=${msg("Authentication form")}
+                                        >
                                             ${this.loading && this.challenge
                                                 ? html`<ak-loading-overlay></ak-loading-overlay>`
                                                 : nothing}
@@ -574,11 +577,14 @@ export class FlowExecutor
                                                 <img
                                                     src="${themeImage(this.brandingLogo)}"
                                                     alt="${msg("authentik Logo")}"
+                                                    role="presentation"
                                                 />
                                             </div>
                                             ${until(this.renderChallenge())}
-                                        </div>
+                                        </main>
                                         <ak-brand-links
+                                            role="contentinfo"
+                                            aria-label=${msg("Site footer")}
                                             class="pf-c-login__footer"
                                             .links=${this.brandingFooterLinks}
                                         ></ak-brand-links>
@@ -588,6 +594,10 @@ export class FlowExecutor
                         </div>
                         ${this.inspectorAvailable && !this.inspectorOpen
                             ? html`<button
+                                  aria-label=${this.inspectorOpen
+                                      ? msg("Close inspector")
+                                      : msg("Open inspector")}
+                                  aria-expanded=${this.inspectorOpen ? "true" : "false"}
                                   class="inspector-toggle pf-c-button pf-m-primary"
                                   @click=${() => {
                                       this.inspectorOpen = true;

@@ -51,6 +51,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
 SHARED_APPS = [
+    "authentik.commands",
     "django_tenants",
     "authentik.tenants",
     "django.contrib.messages",
@@ -64,7 +65,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
-    "channels_postgres",
+    "django_channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
@@ -305,11 +306,7 @@ DATABASE_ROUTERS = (
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "authentik.root.channels.PostgresChannelLayer",
-        "CONFIG": {
-            **DATABASES["default"],
-            "TIME_ZONE": None,
-        },
+        "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
     },
 }
 

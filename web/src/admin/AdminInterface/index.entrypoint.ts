@@ -84,6 +84,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         PFDrawer,
         PFNav,
         css`
+            .pf-c-page__main {
+                scrollbar-gutter: stable;
+            }
+
             .pf-c-page__main,
             .pf-c-drawer__content,
             .pf-c-page__drawer {
@@ -216,17 +220,15 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <div class="pf-c-page__main">
-                                        <ak-router-outlet
-                                            role="presentation"
-                                            class="pf-c-page__main"
-                                            tabindex="-1"
-                                            id="main-content"
-                                            defaultUrl="/administration/overview"
-                                            .routes=${ROUTES}
-                                        >
-                                        </ak-router-outlet>
-                                    </div>
+                                    <ak-router-outlet
+                                        role="presentation"
+                                        class="pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        defaultUrl="/administration/overview"
+                                        .routes=${ROUTES}
+                                    >
+                                    </ak-router-outlet>
                                 </div>
                             </div>
                             <ak-notification-drawer
