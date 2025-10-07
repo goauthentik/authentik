@@ -5,13 +5,35 @@ import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminS
 import { AdminApi, Version } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
     public override icon = "pf-icon pf-icon-bundle";
     public override label = msg("Version");
+
+    static styles = [
+        ...super.styles,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            .pf-c-card {
+                container-type: inline-size;
+            }
+
+            .pf-c-card__title {
+                @container (width < 200px) {
+                    font-size: var(--pf-global--FontSize--sm);
+                }
+            }
+
+            .status-container {
+                @container (width < 200px) {
+                    font-size: var(--pf-global--icon--FontSize--md);
+                }
+            }
+        `,
+    ];
 
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
