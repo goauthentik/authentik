@@ -25,7 +25,6 @@ export class AKFormGroup extends AKElement {
         PFForm,
         PFButton,
         PFFormControl,
-
         css`
             :host([theme="dark"]) {
                 --marker-color: var(--pf-global--Color--200);
@@ -36,10 +35,6 @@ export class AKFormGroup extends AKElement {
                         background: var(--ak-dark-background-light);
                     }
                 }
-            }
-
-            .pf-c-form__field-group-header-description {
-                text-wrap: balance;
             }
 
             details {
@@ -84,6 +79,12 @@ export class AKFormGroup extends AKElement {
                 &[open] summary {
                     list-style-type: "\\f107";
                 }
+            }
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            .pf-c-form__field-group-header-description {
+                text-wrap: balance;
             }
         `,
     ];

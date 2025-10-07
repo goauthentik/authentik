@@ -83,11 +83,13 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         PFButton,
         PFDrawer,
         PFNav,
-        css`
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
             .pf-c-page__main {
                 scrollbar-gutter: stable;
             }
-
+        `,
+        css`
             .pf-c-page__main,
             .pf-c-drawer__content,
             .pf-c-page__drawer {
