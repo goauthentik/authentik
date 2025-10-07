@@ -92,6 +92,14 @@ export class ModalForm extends ModalButton {
         }
     };
 
+    #refreshListener = (e: Event): void => {
+        // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
+        // to the parent components (which would cause table refreshes that destroy the modal)
+        if (!this.closeAfterSuccessfulSubmit) {
+            e.stopPropagation();
+        }
+    };
+
     #scrollListener = () => {
         window.dispatchEvent(
             new CustomEvent("scroll", {
@@ -99,6 +107,16 @@ export class ModalForm extends ModalButton {
             }),
         );
     };
+
+    override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
+
+    override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
 
     protected renderModalInner(): TemplateResult {
         return html`${this.loading
