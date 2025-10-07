@@ -73,7 +73,12 @@ export class FlowExecutor
                 --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+
+                @media (max-width: 768px) {
+                    background: var(--pf-c-login__main--BackgroundColor) !important;
+                }
             }
+
             .ak-hidden {
                 display: none;
             }

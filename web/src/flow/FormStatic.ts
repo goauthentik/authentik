@@ -25,6 +25,7 @@ export class FormStatic extends AKElement {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                flex-flow: wrap;
                 gap: var(--pf-global--spacer--sm);
             }
 

@@ -311,25 +311,33 @@ ak-tabs[vertical] {
     display: block;
     position: relative;
     width: 100%;
+    flex: 1 1 auto;
+    place-content: center;
+}
+
+@media (max-width: 1199px) {
+    .pf-c-login__container {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .ak-login-container {
-    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
-    width: 35rem;
+    max-width: 35rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-}
-
-.pf-c-login__header {
-    flex-grow: 1;
 }
 
 .pf-c-login__footer {
-    flex-grow: 2;
+    flex: 0 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
+
+    @media (max-width: 768px) {
+        color: var(--pf-global--Color--300);
+    }
 }
 
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
