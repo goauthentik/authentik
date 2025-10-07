@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -6,9 +7,9 @@ from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -136,3 +137,30 @@ class TaskViewSet(
         broker = get_broker()
         broker.enqueue(Message.decode(task.message))
         return Response(status=204)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            200: inline_serializer("GlobalTaskStatusSerializer", {
+                "queued": IntegerField(read_only=True),
+                "consumed": IntegerField(read_only=True),
+                "preprocess": IntegerField(read_only=True),
+                "running": IntegerField(read_only=True),
+                "postprocess": IntegerField(read_only=True),
+                "rejected": IntegerField(read_only=True),
+                "done": IntegerField(read_only=True),
+                "info": IntegerField(read_only=True),
+                "warning": IntegerField(read_only=True),
+                "error": IntegerField(read_only=True),
+            }),
+        },
+    )
+    @action(detail=False, methods=["GET"], permission_classes=[])
+    def status(self, request: Request) -> Response:
+        """Global status summary for all tasks"""
+        response = {}
+        for status in Task.objects.all() \
+            .values("aggregated_status") \
+            .annotate(count=Count("aggregated_status")):
+            response[status["aggregated_status"]] = status["count"]
+        return Response(response)
