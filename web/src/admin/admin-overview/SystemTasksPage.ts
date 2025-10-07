@@ -4,6 +4,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
+import "#elements/tasks/TaskOverview";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
@@ -46,6 +47,24 @@ export class SystemTasksPage extends AKElement {
                 <div
                     role="tabpanel"
                     tabindex="0"
+                    slot="page-tasks"
+                    id="page-tasks"
+                    aria-label="${msg("Tasks")}"
+                >
+                    <ak-task-overview></ak-task-overview>
+                    <div
+                        class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile"
+                    >
+                        <div
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <ak-task-list></ak-task-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-schedules"
                     id="page-schedules"
                     aria-label="${msg("Schedules")}"
@@ -56,22 +75,6 @@ export class SystemTasksPage extends AKElement {
                             class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                         >
                             <ak-schedule-list></ak-schedule-list>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-tasks"
-                    id="page-tasks"
-                    aria-label="${msg("Tasks")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                        >
-                            <ak-task-list></ak-task-list>
                         </div>
                     </div>
                 </div>
