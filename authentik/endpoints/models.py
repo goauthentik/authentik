@@ -3,8 +3,9 @@ from uuid import uuid4
 from deepmerge import always_merger
 from django.db import models
 from django.utils.functional import cached_property
+from model_utils.managers import InheritanceManager
 
-from authentik.core.models import User
+from authentik.core.models import Token, User
 from authentik.endpoints.common_data import CommonDeviceDataSerializer
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBindingModel
@@ -45,7 +46,13 @@ class Connector(SerializerModel):
 
     name = models.TextField()
 
+    objects = InheritanceManager()
+
 
 class DeviceGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
+
+
+class EnrollmentToken(Token):
+    pass

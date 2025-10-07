@@ -41,6 +41,14 @@ export const ROUTES: Route[] = [
         await import("#admin/endpoints/DeviceListPage");
         return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
     }),
+    new Route(new RegExp("^/endpoints/connectors$"), async () => {
+        await import("#admin/endpoints/ConnectorsListPage");
+        return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
+    }),
+    new Route(new RegExp("^/endpoints/groups$"), async () => {
+        await import("#admin/endpoints/DeviceGroupsListPage");
+        return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
+    }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
         return html`<ak-source-list></ak-source-list>`;

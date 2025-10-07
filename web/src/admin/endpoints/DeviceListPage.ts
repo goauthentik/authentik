@@ -9,7 +9,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -20,12 +20,17 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     public pageDescription = "";
     public pageIcon = "fa fa-laptop";
 
-    static styles: CSSResult[] = [...super.styles, PFGrid];
-
-    protected columns: TableColumn[] = [
-        [msg("Name")],
-        [msg("OS")],
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFGrid,
+        css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+        `,
     ];
+
+    protected columns: TableColumn[] = [[msg("Name")], [msg("OS")]];
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
@@ -40,9 +45,11 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
                 >
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="fa fa-laptop"
-                        header=${msg("Devices")}
+                        label=${msg("Total devices")}
+                        subtext=${msg("Total count of devices across all groups")}
                     >
                         ${this.data?.pagination.count}
                     </ak-aggregate-card>

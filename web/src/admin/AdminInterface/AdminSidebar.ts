@@ -61,6 +61,8 @@ export const AdminSidebarEntries: readonly SidebarEntry[] = [
     ],
     [null, msg("Endpoints"), null, [
         ["/endpoints/devices", msg("Devices")],
+        ["/endpoints/groups", msg("Device groups")],
+        ["/endpoints/connectors", msg("Connectors")],
     ]],
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
