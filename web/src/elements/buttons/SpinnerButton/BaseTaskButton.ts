@@ -39,12 +39,12 @@ const buttonStyles = [
     `,
 ];
 
-const StatusMap = new Map<TaskStatus, string>([
-    [TaskStatus.INITIAL, ""],
-    [TaskStatus.PENDING, PROGRESS_CLASS],
-    [TaskStatus.COMPLETE, SUCCESS_CLASS],
-    [TaskStatus.ERROR, ERROR_CLASS],
-]);
+const StatusMap = {
+    [TaskStatus.INITIAL]: "",
+    [TaskStatus.PENDING]: PROGRESS_CLASS,
+    [TaskStatus.COMPLETE]: SUCCESS_CLASS,
+    [TaskStatus.ERROR]: ERROR_CLASS,
+} as const satisfies Record<TaskStatus, string>;
 
 const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
 
@@ -131,7 +131,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     get buttonClasses() {
         return [
             ...this.classList,
-            StatusMap.get(this.actionTask.status),
+            StatusMap[this.actionTask.status],
             this.actionTask.status === TaskStatus.INITIAL ? "" : "working",
         ]
             .join(" ")
@@ -146,9 +146,12 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             @click=${this.onClick}
             type="button"
             aria-label=${ifPresent(this.label)}
+            aria-busy=${this.actionTask.status === TaskStatus.PENDING ? "true" : "false"}
             ?disabled=${this.disabled}
         >
-            ${this.actionTask.render({ pending: () => this.spinner })}
+            ${this.actionTask.render({
+                pending: () => this.spinner,
+            })}
             <slot></slot>
         </button>`;
     }

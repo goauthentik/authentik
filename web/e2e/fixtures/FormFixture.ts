@@ -79,6 +79,47 @@ export class FormFixture extends PageFixture {
     };
 
     /**
+     * Search for a row containing the given text.
+     */
+    public search = async (
+        query: string,
+        context: LocatorContext = this.page,
+    ): Promise<Locator> => {
+        const searchInput = await this.findTextualInput(/search/i, context);
+        // We have to wait for the user to appear in the table,
+        // but several UI elements will be rendered asynchronously.
+        // We attempt several times to find the user to avoid flakiness.
+
+        const tries = 10;
+        let found = false;
+
+        for (let i = 0; i < tries; i++) {
+            await this.fill(searchInput, query);
+            await searchInput.press("Enter");
+
+            const $rowEntry = context.getByRole("row", {
+                name: query,
+            });
+
+            this.logger.info(`${i + 1}/${tries} Waiting for "${query}" to appear in the table`);
+
+            found = await $rowEntry
+                .waitFor({
+                    timeout: 1500,
+                })
+                .then(() => true)
+                .catch(() => false);
+
+            if (found) {
+                this.logger.info(`"${query}" found in the table`);
+                return $rowEntry;
+            }
+        }
+
+        throw new Error(`"${query}" not found in the table`);
+    };
+
+    /**
      * Set the value of a radio or checkbox input.
      *
      * @param fieldName The name of the form element.
