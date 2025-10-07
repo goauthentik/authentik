@@ -48,12 +48,18 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
+<<<<<<< HEAD
             placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
             .errorMessages=${errors?.name}
+=======
+            placeholder=${msg("Provider name...")}
+            value=${ifDefined(provider.name)}
+            label=${msg("Name")}
+            .errorMessages=${errors.name}
+>>>>>>> 88583ae46 (web/admin: fix incorrect placeholder for scim provider (#17308))
             required
-            help=${msg("Method's display Name.")}
         ></ak-text-input>
         <ak-radio-input
             label=${msg("Bind mode")}
