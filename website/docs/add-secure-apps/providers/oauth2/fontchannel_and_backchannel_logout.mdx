@@ -89,7 +89,7 @@ Back-channel logout is triggered when:
 
 ### Front-channel logout
 
-With front-channel logout, authentik injects an iframe logout stage into the logout flow. This stage loads the Relying Party's front-channel logout URL in a hidden iframe within the user's browser. The logout URL includes session information as query parameters:
+With front-channel logout, authentik injects an iframe logout stage into the logout flow. This stage loads the RP's (relying party) front-channel logout URL in a hidden iframe within the user's browser. The logout URL includes session information as query parameters:
 
     - `iss`: The authentik issuer URL
     - `sid`: The session identifier
