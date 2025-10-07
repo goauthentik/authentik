@@ -10,3 +10,7 @@ class AuthentikEnterpriseEndpointsConnectorAgentAppConfig(ManagedAppConfig):
     label = "authentik_endpoints_connectors_agent"
     verbose_name = "authentik Enterprise.Endpoints.Connectors.Agent"
     default = True
+    mountpoints = {
+        "authentik.enterprise.endpoints.connectors.agent.urls": "endpoint/agent/",
+        "authentik.enterprise.endpoints.connectors.agent.urls_root": "",
+    }
