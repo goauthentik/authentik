@@ -34,9 +34,7 @@ export class TaskStatus extends AKElement {
             case TasksTasksListAggregatedStatusEnum.Consumed:
             case TaskAggregatedStatusEnum.Consumed:
             case LastTaskStatusEnum.Consumed:
-                return html`<ak-label color=${PFColor.Blue}
-                    >${msg("Task has been up by a worker")}</ak-label
-                >`;
+                return html`<ak-label color=${PFColor.Blue}>${msg("Consumed")}</ak-label>`;
             case TasksTasksListAggregatedStatusEnum.Preprocess:
             case TaskAggregatedStatusEnum.Preprocess:
             case LastTaskStatusEnum.Preprocess:
