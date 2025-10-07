@@ -66,12 +66,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 outline: none;
             }
 
-            @media not (prefers-contrast: more) {
-                .pf-c-search-input__text::before {
-                    border: none;
-                }
-            }
-
             .pf-c-search-input[aria-expanded="true"] {
                 .ql.pf-c-form-control {
                     --pf-c-form-control--BorderBottomColor: var(
@@ -124,6 +118,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 min-width: 0;
                 overflow-y: auto;
                 max-height: 50vh;
+            }
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            @media not (prefers-contrast: more) {
+                .pf-c-search-input__text::before {
+                    border: none;
+                }
             }
         `,
     ];

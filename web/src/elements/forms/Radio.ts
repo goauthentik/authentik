@@ -56,7 +56,9 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                     color: var(--pf-global--disabled-color--100);
                 }
             }
-
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
             .pf-c-radio__description {
                 text-wrap: balance;
             }

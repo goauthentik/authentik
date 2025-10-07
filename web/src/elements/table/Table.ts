@@ -81,10 +81,6 @@ export abstract class Table<T extends object>
         PFDropdown,
         PFPagination,
         css`
-            :host {
-                container-type: inline-size;
-            }
-
             [part="table-container"] {
                 @media (max-width: 1199px) {
                     overflow-x: auto;
@@ -94,9 +90,6 @@ export abstract class Table<T extends object>
             .pf-c-table {
                 .presentational {
                     --pf-c-table--cell--MinWidth: 0;
-                }
-                @container (width > 1200px) {
-                    --pf-c-table--cell--MinWidth: 9em;
                 }
             }
 
@@ -219,6 +212,18 @@ export abstract class Table<T extends object>
              */
             .pf-c-dropdown__menu:has(ak-forms-modal) {
                 z-index: var(--pf-global--ZIndex--lg);
+            }
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            :host {
+                container-type: inline-size;
+            }
+
+            .pf-c-table {
+                @container (width > 1200px) {
+                    --pf-c-table--cell--MinWidth: 9em;
+                }
             }
         `,
     ];
