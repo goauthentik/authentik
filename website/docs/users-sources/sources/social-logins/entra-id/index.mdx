@@ -26,7 +26,7 @@ To integrate Entra ID with authentik you will need to create an App Registration
     - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
     - Under **Redirect URI**:
         - **Platform**: `Web`
-        - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
+        - **URI**: `https://authentik.company/source/oauth/callback/entra-id/`
 
 4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
 5. In the leftmost sidebar, navigate to **Certificates & secrets**.
