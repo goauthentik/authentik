@@ -30,6 +30,12 @@ export class AKFormGroup extends AKElement {
             :host([theme="dark"]) {
                 --marker-color: var(--pf-global--Color--200);
                 --marker-color-hover: var(--ak-dark-foreground-darker);
+
+                details {
+                    @media (prefers-contrast: more) {
+                        background: var(--ak-dark-background-light);
+                    }
+                }
             }
 
             .pf-c-form__field-group-header-description {
@@ -37,10 +43,17 @@ export class AKFormGroup extends AKElement {
             }
 
             details {
+                @media (prefers-contrast: more) {
+                    border: 1px solid var(--pf-global--BorderColor--200);
+                    background: var(--pf-global--BackgroundColor--150);
+                }
+
                 &::details-content {
                     padding-inline-start: var(
                         --pf-c-form__field-group--GridTemplateColumns--toggle
                     );
+                    padding-inline-end: var(--pf-global--spacer--md);
+                    padding-block-end: var(--pf-global--spacer--md);
                 }
 
                 & > summary {
@@ -51,6 +64,9 @@ export class AKFormGroup extends AKElement {
                     list-style-type: "\\f105";
                     cursor: pointer;
                     user-select: none;
+
+                    font-weight: bold;
+                    text-decoration: underline;
 
                     &::marker {
                         color: var(--marker-color, var(--pf-global--Color--200));

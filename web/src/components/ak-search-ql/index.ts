@@ -66,6 +66,12 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 outline: none;
             }
 
+            @media not (prefers-contrast: more) {
+                .pf-c-search-input__text::before {
+                    border: none;
+                }
+            }
+
             .pf-c-search-input[aria-expanded="true"] {
                 .ql.pf-c-form-control {
                     --pf-c-form-control--BorderBottomColor: var(
@@ -110,10 +116,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                     --pf-c-search-input__menu-item--hover--BackgroundColor: var(
                         --ak-dark-background-light
                     );
-                }
-
-                .pf-c-search-input__text::before {
-                    border: 0;
                 }
             }
 
