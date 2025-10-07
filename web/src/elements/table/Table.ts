@@ -139,10 +139,19 @@ export abstract class Table<T extends object>
                 margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
             }
 
+            .pf-c-toolbar {
+                display: flex;
+                flex-flow: row wrap;
+                padding-inline: var(--pf-global--spacer--md);
+                gap: var(--pf-global--spacer--sm);
+            }
+
             .pf-c-toolbar__content {
+                flex: 1 1 auto;
+                margin: 0;
                 justify-content: space-between;
                 gap: var(--pf-global--spacer--sm);
-
+                padding-inline: 0;
                 .pf-c-switch {
                     --pf-c-switch--ColumnGap: var(--pf-c-toolbar__item--m-search-filter--spacer);
                 }
