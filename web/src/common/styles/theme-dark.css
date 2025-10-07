@@ -223,7 +223,6 @@ select.pf-c-form-control {
 
 .pf-c-form-control {
     /* !important is required to ensure priority when in compatibility mode. */
-    /* --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important; */
 
     --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
     --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
