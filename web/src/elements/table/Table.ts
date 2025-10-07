@@ -84,6 +84,12 @@ export abstract class Table<T extends object>
                 container-type: inline-size;
             }
 
+            [part="table-container"] {
+                @media (max-width: 1199px) {
+                    overflow-x: auto;
+                }
+            }
+
             .pf-c-table {
                 .presentational {
                     --pf-c-table--cell--MinWidth: 0;
@@ -131,6 +137,7 @@ export abstract class Table<T extends object>
 
             .pf-m-search-filter {
                 flex: 1 1 auto;
+                margin-inline: 0;
             }
             .pf-c-table thead .pf-c-table__check {
                 min-width: 3rem;
@@ -139,21 +146,36 @@ export abstract class Table<T extends object>
                 margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
             }
 
+            .pf-c-toolbar {
+                display: flex;
+                flex-flow: row wrap;
+                padding-inline: var(--pf-global--spacer--md);
+                gap: var(--pf-global--spacer--sm);
+            }
+
             .pf-c-toolbar__content {
+                flex: 1 1 auto;
+                flex-flow: row wrap;
+                margin: 0;
                 justify-content: space-between;
                 gap: var(--pf-global--spacer--sm);
-
+                padding-inline: 0;
                 .pf-c-switch {
                     --pf-c-switch--ColumnGap: var(--pf-c-toolbar__item--m-search-filter--spacer);
                 }
             }
 
             .pf-c-toolbar__group {
+                flex-flow: row wrap;
                 gap: var(--pf-global--spacer--sm);
 
                 .pf-c-card__title .pf-icon {
                     margin-inline-end: var(--pf-global--spacer--sm);
                 }
+            }
+
+            [part="toolbar-primary"] {
+                flex: 2 1 auto;
             }
 
             .pf-c-table {
@@ -773,18 +795,25 @@ export abstract class Table<T extends object>
 
         if (this.renderToolbarAfter) {
             primaryToolbar.push(
-                html`<div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>`,
+                html`<div class="pf-c-toolbar__group" part="toolbar-after">
+                    ${this.renderToolbarAfter()}
+                </div>`,
             );
         }
 
-        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
+        return html`<header
+            class="pf-c-toolbar"
+            role="toolbar"
+            aria-label="${label}"
+            part="toolbar"
+        >
             ${primaryToolbar.length
-                ? html`<div class="pf-c-toolbar__content" name="toolbar-primary">
+                ? html`<div class="pf-c-toolbar__content" part="toolbar-primary">
                       ${primaryToolbar}
                   </div>`
                 : nothing}
 
-            <div class="pf-c-toolbar__content" name="toolbar-secondary">
+            <div class="pf-c-toolbar__content" part="toolbar-secondary">
                 <div class="pf-c-toolbar__group">
                     ${this.renderToolbar()} ${this.renderToolbarSelected()}
                 </div>
@@ -814,6 +843,7 @@ export abstract class Table<T extends object>
 
         return html` <ak-table-search
             class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            part="toolbar-search"
             .defaultValue=${this.search}
             label=${ifDefined(this.searchLabel)}
             placeholder=${ifDefined(this.searchPlaceholder)}

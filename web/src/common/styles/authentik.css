@@ -440,6 +440,14 @@ fieldset {
         padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
         border-inline: none;
         border-block-end: none;
+
+        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
+            --pf-c-modal-box__footer--c-button--MarginRight
+        );
+
+        & > ak-spinner-button:not(:last-child) {
+            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+        }
     }
 }
 

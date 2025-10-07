@@ -60,16 +60,16 @@ export class TaskList extends Table<Task> {
             typeof this.relObjId !== "undefined"
                 ? undefined
                 : this.showOnlyStandalone
-                    ? true
-                    : undefined;
+                  ? true
+                  : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                TasksTasksListAggregatedStatusEnum.Queued,
-                TasksTasksListAggregatedStatusEnum.Consumed,
-                TasksTasksListAggregatedStatusEnum.Rejected,
-                TasksTasksListAggregatedStatusEnum.Warning,
-                TasksTasksListAggregatedStatusEnum.Error,
-            ]
+                  TasksTasksListAggregatedStatusEnum.Queued,
+                  TasksTasksListAggregatedStatusEnum.Consumed,
+                  TasksTasksListAggregatedStatusEnum.Rejected,
+                  TasksTasksListAggregatedStatusEnum.Warning,
+                  TasksTasksListAggregatedStatusEnum.Error,
+              ]
             : undefined;
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
@@ -107,47 +107,44 @@ export class TaskList extends Table<Task> {
     ];
 
     renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        ${this.relObjId === undefined
-                ? html` <label class="pf-c-switch">
-                                  <input
-                                      class="pf-c-switch__input"
-                                      type="checkbox"
-                                      ?checked=${this.showOnlyStandalone}
-                                      @change=${this.#toggleShowOnlyStandalone}
-                                  />
-                                  <span class="pf-c-switch__toggle">
-                                      <span class="pf-c-switch__toggle-icon">
-                                          <i class="fas fa-check" aria-hidden="true"> </i>
-                                      </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    ${this.relObjId === undefined
+                        ? html` <label class="pf-c-switch">
+                              <input
+                                  class="pf-c-switch__input"
+                                  type="checkbox"
+                                  ?checked=${this.showOnlyStandalone}
+                                  @change=${this.#toggleShowOnlyStandalone}
+                              />
+                              <span class="pf-c-switch__toggle">
+                                  <span class="pf-c-switch__toggle-icon">
+                                      <i class="fas fa-check" aria-hidden="true"> </i>
                                   </span>
-                                  <span class="pf-c-switch__label">
-                                      ${msg("Show only standalone tasks")}
-                                  </span>
-                              </label>`
-                : nothing}
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.excludeSuccessful}
-                                @change=${this.#toggleExcludeSuccessful}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"> </i>
-                                </span>
+                              </span>
+                              <span class="pf-c-switch__label">
+                                  ${msg("Show only standalone tasks")}
+                              </span>
+                          </label>`
+                        : nothing}
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.excludeSuccessful}
+                            @change=${this.#toggleExcludeSuccessful}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"> </i>
                             </span>
-                            <span class="pf-c-switch__label">
-                                ${msg("Exclude successful tasks")}
-                            </span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label"> ${msg("Exclude successful tasks")} </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     row(item: Task): SlottedTemplateResult[] {
@@ -159,23 +156,23 @@ export class TaskList extends Table<Task> {
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
-                item.state === TasksTasksListStateEnum.Done
+            item.state === TasksTasksListStateEnum.Done
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
-                        return new TasksApi(DEFAULT_CONFIG)
-                            .tasksTasksRetryCreate({
-                                messageId: item.messageId ?? "",
-                            })
-                            .then(() => {
-                                this.dispatchEvent(
-                                    new CustomEvent(EVENT_REFRESH, {
-                                        bubbles: true,
-                                        composed: true,
-                                    }),
-                                );
-                            });
-                    }}
+                          return new TasksApi(DEFAULT_CONFIG)
+                              .tasksTasksRetryCreate({
+                                  messageId: item.messageId ?? "",
+                              })
+                              .then(() => {
+                                  this.dispatchEvent(
+                                      new CustomEvent(EVENT_REFRESH, {
+                                          bubbles: true,
+                                          composed: true,
+                                      }),
+                                  );
+                              });
+                      }}
                   >
                       <pf-tooltip position="top" content=${msg("Retry task")}>
                           <i class="fas fa-redo" aria-hidden="true"></i>
