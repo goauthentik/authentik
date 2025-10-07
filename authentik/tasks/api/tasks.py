@@ -141,27 +141,32 @@ class TaskViewSet(
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
-            200: inline_serializer("GlobalTaskStatusSerializer", {
-                "queued": IntegerField(read_only=True),
-                "consumed": IntegerField(read_only=True),
-                "preprocess": IntegerField(read_only=True),
-                "running": IntegerField(read_only=True),
-                "postprocess": IntegerField(read_only=True),
-                "rejected": IntegerField(read_only=True),
-                "done": IntegerField(read_only=True),
-                "info": IntegerField(read_only=True),
-                "warning": IntegerField(read_only=True),
-                "error": IntegerField(read_only=True),
-            }),
+            200: inline_serializer(
+                "GlobalTaskStatusSerializer",
+                {
+                    "queued": IntegerField(read_only=True),
+                    "consumed": IntegerField(read_only=True),
+                    "preprocess": IntegerField(read_only=True),
+                    "running": IntegerField(read_only=True),
+                    "postprocess": IntegerField(read_only=True),
+                    "rejected": IntegerField(read_only=True),
+                    "done": IntegerField(read_only=True),
+                    "info": IntegerField(read_only=True),
+                    "warning": IntegerField(read_only=True),
+                    "error": IntegerField(read_only=True),
+                },
+            ),
         },
     )
     @action(detail=False, methods=["GET"], permission_classes=[])
     def status(self, request: Request) -> Response:
         """Global status summary for all tasks"""
         response = {}
-        for status in Task.objects.all() \
-            .values("aggregated_status") \
-            .annotate(count=Count("aggregated_status")):
+        for status in (
+            Task.objects.all()
+            .values("aggregated_status")
+            .annotate(count=Count("aggregated_status"))
+        ):
             response[status["aggregated_status"]] = status["count"]
         return Response(
             {
