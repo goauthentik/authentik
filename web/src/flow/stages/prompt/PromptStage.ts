@@ -299,7 +299,7 @@ ${prompt.initialValue}</textarea
 
     renderContinue(): TemplateResult {
         return html`<fieldset class="pf-c-form__group pf-m-action">
-            <legend>${msg("Form actions")}</legend>
+            <legend class="sr-only">${msg("Form actions")}</legend>
             <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>

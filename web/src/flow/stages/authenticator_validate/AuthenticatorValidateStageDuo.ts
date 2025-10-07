@@ -64,7 +64,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
             </ak-empty-state>
             ${this.showBackButton
                 ? html`<fieldset class="pf-c-form__group pf-m-action">
-                      <legend>${msg("Form actions")}</legend>
+                      <legend class="sr-only">${msg("Form actions")}</legend>
                       ${this.renderReturnToDevicePicker()}
                   </fieldset>`
                 : nothing}
