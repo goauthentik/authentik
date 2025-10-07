@@ -110,7 +110,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         placeholder="${msg("Please enter the code you received via email")}"
                         autofocus=""
                         autocomplete="one-time-code"
-                        class="pf-c-form-control"
+                        class="pf-c-form-control pf-m-monospace"
                         required
                     />
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
