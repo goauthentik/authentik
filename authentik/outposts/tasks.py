@@ -12,7 +12,6 @@ from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
@@ -21,7 +20,7 @@ from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.lib.config import CONFIG
-from authentik.outposts.consumer import OUTPOST_GROUP
+from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
 from authentik.outposts.controllers.kubernetes import KubernetesClient
@@ -41,7 +40,7 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
@@ -108,7 +107,7 @@ def outpost_service_connection_monitor(connection_pk: Any):
 @actor(description=_("Create/update/monitor/delete the deployment of an Outpost."))
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     self.set_uid(outpost_pk)
     logs = []
     if from_cache:
@@ -142,7 +141,7 @@ def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
     """
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
@@ -161,7 +160,7 @@ def outpost_send_update(pk: Any):
     _ = outpost.token
     outpost.build_user_permissions(outpost.user)
     layer = get_channel_layer()
-    group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
+    group = build_outpost_group(outpost.pk)
     LOGGER.debug("sending update", channel=group, outpost=outpost)
     async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
@@ -169,7 +168,7 @@ def outpost_send_update(pk: Any):
 @actor(description=_("Checks the local environment and create Service connections."))
 def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     if not CONFIG.get_bool("outposts.discover"):
         self.info("Outpost integration discovery is disabled")
         return
@@ -213,7 +212,7 @@ def outpost_session_end(session_id: str):
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.all():
         LOGGER.info("Sending session end signal to outpost", outpost=outpost)
-        group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
+        group = build_outpost_group(outpost.pk)
         async_to_sync(layer.group_send)(
             group,
             {

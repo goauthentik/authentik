@@ -19,6 +19,9 @@ class TaskStatus(models.TextChoices):
 
     QUEUED = TaskState.QUEUED
     CONSUMED = TaskState.CONSUMED
+    PREPROCESS = TaskState.PREPROCESS
+    RUNNING = TaskState.RUNNING
+    POSTPROCESS = TaskState.POSTPROCESS
     REJECTED = TaskState.REJECTED
     DONE = TaskState.DONE
     INFO = "info"

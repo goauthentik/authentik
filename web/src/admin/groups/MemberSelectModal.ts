@@ -22,11 +22,18 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
+    public override searchPlaceholder = msg("Search for users by username or display name...");
+    public override searchLabel = msg("Search Users");
+    public override label = msg("Select Users");
     static styles = [
         ...super.styles,
         css`
             .show-disabled-toggle-group {
                 margin-inline-start: 0.5rem;
+            }
+
+            [part="toolbar"] {
+                gap: var(--pf-global--spacer--md);
             }
         `,
     ];
@@ -76,27 +83,26 @@ export class MemberSelectTable extends TableModal<User> {
             this.fetch();
         };
 
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group show-disabled-toggle-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.userListFilter === "all"}
-                                @change=${toggleShowDisabledUsers}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group show-disabled-toggle-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.userListFilter === "all"}
+                            @change=${toggleShowDisabledUsers}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     row(item: User): SlottedTemplateResult[] {
@@ -113,13 +119,14 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<div class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Select users")}</h1>
                 </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
-            <footer class="pf-c-modal-box__footer">
+            </div>
+            <div class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</div>
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm(this.selectedElements).then(() => {
@@ -127,18 +134,16 @@ export class MemberSelectTable extends TableModal<User> {
                         });
                     }}
                     class="pf-m-primary"
+                    >${msg("Confirm")}</ak-spinner-button
                 >
-                    ${msg("Add")} </ak-spinner-button
-                >&nbsp;
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
                     class="pf-m-secondary"
+                    >${msg("Cancel")}</ak-spinner-button
                 >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

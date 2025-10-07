@@ -68,9 +68,7 @@ class OutgoingSyncProviderStatusMixin:
             return Response(SyncStatusSerializer(status).data)
 
         last_task: Task = (
-            sync_schedule.tasks.exclude(
-                aggregated_status__in=(TaskStatus.CONSUMED, TaskStatus.QUEUED)
-            )
+            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
             .order_by("-mtime")
             .first()
         )

@@ -39,6 +39,96 @@
     --pf-global--disabled-color--300: color-mix(in srgb, GrayText 100%, CanvasText 100%);
 }
 
+/* #endregion */
+
+/* #region Scrollbars */
+
+/**
+ * Scrollbar colors derived from default user agent styles.
+ *
+ * @remarks
+ *
+ * Scrollbar colors may be ignored by the browser depending on a few factors:
+ *
+ * - A preference for increased contrast
+ * - A preference for scrollbar visibility
+ * - The pointer precision available
+ * - Operating system differences
+ */
+:root {
+    --ak-scrollbar-background-color: hsl(0 0% 98%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 76%);
+}
+
+/* Applicable to browsers with a WebKit lineage (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    background: var(--ak-scrollbar-background-color);
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        max-height: 12px;
+        max-width: 12px;
+    }
+}
+
+/* Necessary to avoid background color mismatch. */
+::-webkit-scrollbar-track {
+    background: var(--ak-scrollbar-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ak-scrollbar-thumb-background-color);
+    /* Applies consistent shape across browsers and platforms */
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: content-box;
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        border: 3px solid transparent;
+        border-radius: 8px;
+    }
+}
+
+/**
+ * Hides arrow buttons on the scrollbar.
+ * Not applicable to Edge when scrollbars are set to always visible.
+ */
+::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+@supports (scrollbar-color: auto) {
+    :root {
+        /**
+         * Applies consistent colors across browsers and platforms.
+         * Not applicable when thin scrollbars are preferred.
+         */
+        scrollbar-color: var(--ak-scrollbar-thumb-background-color)
+            var(--ak-scrollbar-background-color);
+    }
+}
+
+@supports (scrollbar-width: thin) {
+    .pf-c-page__main,
+    .pf-c-nav__list,
+    .pf-c-card__body {
+        scrollbar-width: thin;
+
+        @media (pointer: coarse) {
+            /**
+             * Avoids issues on touch devices where thin scrollbars
+             * are difficult to interact with.
+             */
+            scrollbar-width: auto;
+        }
+    }
+}
+
+/* #endregion */
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -61,29 +151,6 @@
     margin-left: var(--pf-c-form__label-required--MarginLeft);
     font-size: var(--pf-c-form__label-required--FontSize);
     color: var(--pf-c-form__label-required--Color);
-}
-
-@supports selector(::-webkit-scrollbar) {
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-        background-color: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: var(--ak-accent);
-    }
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-    ::-webkit-scrollbar-corner {
-        background-color: transparent;
-    }
-}
-
-@supports not selector(::-webkit-scrollbar) {
-    :root {
-        scrollbar-color: var(--ak-accent) transparent;
-    }
 }
 
 html {
@@ -154,6 +221,58 @@ html > form > input {
 
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+}
+
+/* #endregion */
+
+/* #region Tabs */
+
+.pf-c-tabs {
+    --pf-c-tabs--inset: var(--pf-global--spacer--lg);
+    --pf-c-tabs--m-vertical--m-box--inset: var(--pf-global--spacer--lg);
+
+    margin-block-start: var(--pf-global--spacer--xs);
+    background-color: transparent;
+
+    &.pf-m-box.pf-m-vertical {
+        .pf-c-tabs__list::before {
+            border-color: transparent;
+        }
+    }
+
+    &.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
+        border-color: transparent;
+    }
+
+    &.pf-m-vertical {
+        .pf-c-tabs__link {
+            background-color: transparent;
+        }
+    }
+
+    &:not(.pf-m-vertical) .pf-c-tabs__item {
+        &.pf-m-current {
+            --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
+        }
+    }
+}
+
+ak-tabs[vertical] {
+    [role="tabpanel"] {
+        padding-inline-start: 0 !important;
+    }
+
+    .pf-c-card__body > *::part(table-container) {
+        overflow-x: auto;
+    }
+}
+
+.pf-c-tabs__link {
+    --pf-c-tabs__link--Color: var(--pf-global--Color--100);
+
+    &::before {
+        border-color: transparent;
+    }
 }
 
 /* #endregion */
@@ -252,6 +371,95 @@ html > form > input {
 }
 
 /* #region Fields */
+
+fieldset {
+    --ak-fieldset-border-width: thin;
+    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
+    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
+    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
+
+    border-color: var(--ak-fieldset-border-color);
+    border-width: var(--ak-fieldset-border-width);
+
+    padding: var(--ak-legend-padding-inline-base) !important;
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+    }
+
+    @media (prefers-contrast: less) {
+        --ak-fieldset-border-color: transparent;
+    }
+
+    & > legend {
+        line-height: 1;
+        padding: var(--ak-legend-padding-inline-base) !important;
+        margin-inline-start: var(
+            --ak-legend-margin-inline-start,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+        margin-inline-end: var(
+            --ak-legend-margin-inline-end,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+    }
+
+    &:has(legend.sr-only) {
+        border-width: 0;
+    }
+
+    &.pf-c-card {
+        --ak-legend-margin-inline-start: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+        );
+        --pf-c-card--BoxShadow: none;
+        --pf-c-card--BackgroundColor: transparent;
+    }
+
+    &.pf-c-card,
+    &.pf-c-form__group {
+        border-radius: var(--pf-global--BorderRadius--sm);
+    }
+
+    &.pf-c-form__group {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pf-m-action {
+            gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
+            margin-block-start: 0;
+            margin-block-end: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+        }
+    }
+
+    &.pf-c-modal-box__footer {
+        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
+        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        border-inline: none;
+        border-block-end: none;
+
+        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
+            --pf-c-modal-box__footer--c-button--MarginRight
+        );
+
+        & > ak-spinner-button:not(:last-child) {
+            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+        }
+    }
+}
+
+/* #endregion */
+
+/* #region Notifications */
+
+.pf-c-notification-drawer {
+    --pf-c-notification-drawer--BackgroundColor: var(--pf-global--BackgroundColor--150);
+}
+
+/* #endregion */
 
 /* #region Switch  */
 .pf-c-switch {

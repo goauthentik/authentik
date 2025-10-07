@@ -12,6 +12,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProv
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import {
     CurrentBrand,
     FlowsInstancesListDesignationEnum,
@@ -101,10 +103,8 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
                     input-hint="code"
                 ></ak-text-input>
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                    <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
-                        certificate=${ifDefined(provider?.certificate ?? undefined)}
-                        singleton
+                        certificate=${ifPresent(provider?.certificate)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

@@ -1,21 +1,22 @@
 import socket
 from http.server import BaseHTTPRequestHandler
 from time import sleep
-from typing import Any
+from typing import Any, cast
 
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
+)
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
@@ -28,7 +29,13 @@ from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
-DB_ERRORS = (OperationalError, Error, RedisError)
+DB_ERRORS = (OperationalError, Error)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
 
 
 class TenantMiddleware(Middleware):
@@ -56,7 +63,7 @@ class RelObjMiddleware(Middleware):
 
 
 class MessagesMiddleware(Middleware):
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
@@ -100,13 +107,13 @@ class MessagesMiddleware(Middleware):
                 "Task finished processing without errors",
             )
             return
-        if should_ignore_exception(exception):
-            return
         task.log(
             class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
+        if should_ignore_exception(exception):
+            return
         event_kwargs = {
             "actor": task.actor_name,
         }
@@ -179,8 +186,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
         except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
@@ -230,6 +235,7 @@ class WorkerStatusMiddleware(Middleware):
                 sleep(10)
                 pass
 
+    @staticmethod
     def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
