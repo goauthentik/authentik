@@ -21,6 +21,9 @@
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 
+    --ak-flow-background-color-contrast: var(--pf-global--Color--100);
+    --ak-flow-footer-color: var(--pf-global--Color--light-100);
+
     /* PatternFly likes to override global variables for some reason */
     --ak-global--Color--100: var(--pf-global--Color--100);
 
@@ -311,25 +314,36 @@ ak-tabs[vertical] {
     display: block;
     position: relative;
     width: 100%;
+    flex: 1 1 auto;
+    place-content: center;
+}
+
+@media (max-width: 1199px) {
+    .pf-c-login__container {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .ak-login-container {
-    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
-    width: 35rem;
+    max-width: 35rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-}
-
-.pf-c-login__header {
-    flex-grow: 1;
 }
 
 .pf-c-login__footer {
-    flex-grow: 2;
+    color: var(--ak-flow-footer-color);
+    flex: 0 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
+    }
 }
 
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
@@ -539,9 +553,14 @@ fieldset {
 }
 
 @media (min-height: 60rem) {
-    .pf-c-login.stacked .pf-c-login__main {
+    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
         margin-top: 13rem;
     }
+}
+
+.pf-c-login[data-layout="sidebar_left"],
+.pf-c-login[data-layout="sidebar_right"] {
+    --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
 }
 
 .pf-c-data-list {

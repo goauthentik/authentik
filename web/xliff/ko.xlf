@@ -6654,7 +6654,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>내부 사용자 예측</target>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
   <target><x id="0" equiv-text="${this.forecast?.internalUsers}"/> 명의 내부 사용자를 기준으로 예상하는 일 년후 예상 사용자수는 <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> 입니다.</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
@@ -6662,7 +6662,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>외부 사용자 예측</target>
 </trans-unit>
 <trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.externalUsers}"/> current external users and <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> forecasted external users.</source>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
   <target><x id="0" equiv-text="${this.forecast?.externalUsers}"/> 명의 외부 사용자를 기준으로 예상하는 일 년후 예상 사용자수는 <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> 입니다.</target>
 </trans-unit>
 <trans-unit id="s6196153c4b0c1ea0">
@@ -6893,10 +6893,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>애플리케이션 저장됨</target>
-</trans-unit>
-<trans-unit id="s67d858051b34c38b">
-  <source>Method's display Name.</source>
-  <target>Method의 표시 이름.</target>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -9775,6 +9771,33 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s34dcdae237b89744">
   <source>Open inspector</source>
+</trans-unit>
+<trans-unit id="s2f06038e5cfd09df">
+  <source>Consumed</source>
+</trans-unit>
+<trans-unit id="s556a7cc7c0c9f032">
+  <source>Pre-processing</source>
+</trans-unit>
+<trans-unit id="sb37a630168e1e0e5">
+  <source>Post-processing</source>
+</trans-unit>
+<trans-unit id="s94f08f46277af7d6">
+  <source>Running tasks</source>
+</trans-unit>
+<trans-unit id="s8b551364b894d1ee">
+  <source>Queued tasks</source>
+</trans-unit>
+<trans-unit id="s2139d19009989a19">
+  <source>Successful tasks</source>
+</trans-unit>
+<trans-unit id="s0787cd9eab5aa6e3">
+  <source>Error tasks</source>
+</trans-unit>
+<trans-unit id="s531571491deb239a">
+  <source>Approximately</source>
+</trans-unit>
+<trans-unit id="sc62e587718608e85">
+  <source>No expiry</source>
 </trans-unit>
     </body>
   </file>

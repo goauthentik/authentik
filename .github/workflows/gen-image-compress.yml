@@ -40,7 +40,7 @@ jobs:
         id: compress
         uses: calibreapp/image-actions@main
         with:
-          githubToken: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
       - uses: peter-evans/create-pull-request@v7
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"

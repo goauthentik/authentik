@@ -17,6 +17,7 @@ import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
@@ -40,21 +41,28 @@ export class LibraryPageApplicationSearch extends AKElement {
     static styles = [
         PFBase,
         PFDisplay,
+        PFFormControl,
         css`
-            input {
-                width: 30ch;
-                box-sizing: border-box;
-                border: 0;
-                border-bottom: 1px solid;
-                border-bottom-color: var(--ak-accent);
+            input[name="application-search"] {
                 background-color: transparent;
+                width: 30ch;
                 font-size: 1.5rem;
+
+                border-inline: none;
+                border-block-start: none;
+
+                &:focus,
+                &:hover {
+                    --pf-c-form-control--BorderBottomColor: var(--ak-accent);
+                }
             }
-            input:focus {
-                outline: 0;
-            }
-            :host([theme="dark"]) input {
-                color: var(--ak-dark-foreground) !important;
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            input[name="application-search"] {
+                @media not (prefers-contrast: more) {
+                    outline: none;
+                }
             }
         `,
     ];
@@ -151,13 +159,14 @@ export class LibraryPageApplicationSearch extends AKElement {
 
     render() {
         return html`<input
+            name="application-search"
             @input=${this.onInput}
             @keydown=${this.onKeyDown}
-            type="text"
-            class="pf-u-display-none pf-u-display-block-on-md"
+            type="search"
+            class="pf-c-form-control pf-u-display-none pf-u-display-block-on-md"
             autofocus
-            aria-label=${msg("Search for an application by name")}
-            placeholder=${msg("Search...")}
+            aria-label=${msg("Application search")}
+            placeholder=${msg("Search for an application by name...")}
             value=${ifDefined(this.query)}
         />`;
     }

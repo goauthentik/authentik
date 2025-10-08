@@ -15,6 +15,7 @@ from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django_channels_postgres.models import GroupChannel, Message
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
@@ -137,6 +138,8 @@ def excluded_models() -> list[type[Model]]:
         DeviceToken,
         StreamEvent,
         UserConsent,
+        Message,
+        GroupChannel,
     )
 
 

@@ -38920,8 +38920,11 @@ paths:
             - done
             - error
             - info
+            - postprocess
+            - preprocess
             - queued
             - rejected
+            - running
             - warning
         explode: true
         style: form
@@ -38956,8 +38959,11 @@ paths:
           enum:
           - consumed
           - done
+          - postprocess
+          - preprocess
           - queued
           - rejected
+          - running
         description: |+
           Task status
 
@@ -39041,6 +39047,33 @@ paths:
           description: Task is not in a retryable state
         '404':
           description: Task not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/tasks/status/:
+    get:
+      operationId: tasks_tasks_status_retrieve
+      description: Global status summary for all tasks
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalTaskStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
         '403':
           content:
             application/json:
@@ -44342,6 +44375,50 @@ components:
       - bind_continent_country
       - bind_continent_country_city
       type: string
+    GlobalTaskStatus:
+      type: object
+      properties:
+        queued:
+          type: integer
+          readOnly: true
+        consumed:
+          type: integer
+          readOnly: true
+        preprocess:
+          type: integer
+          readOnly: true
+        running:
+          type: integer
+          readOnly: true
+        postprocess:
+          type: integer
+          readOnly: true
+        rejected:
+          type: integer
+          readOnly: true
+        done:
+          type: integer
+          readOnly: true
+        info:
+          type: integer
+          readOnly: true
+        warning:
+          type: integer
+          readOnly: true
+        error:
+          type: integer
+          readOnly: true
+      required:
+      - consumed
+      - done
+      - error
+      - info
+      - postprocess
+      - preprocess
+      - queued
+      - rejected
+      - running
+      - warning
     GoogleWorkspaceProvider:
       type: object
       description: GoogleWorkspaceProvider Serializer
@@ -46634,6 +46711,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       - info
@@ -58952,6 +59032,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       type: string
@@ -59226,6 +59309,9 @@ components:
       enum:
       - queued
       - consumed
+      - preprocess
+      - running
+      - postprocess
       - rejected
       - done
       - info

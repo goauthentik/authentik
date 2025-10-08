@@ -391,6 +391,7 @@ DRAMATIQ = {
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+        ("django_dramatiq_postgres.middleware.TaskStateBeforeMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
             "dramatiq.middleware.time_limit.TimeLimit",
@@ -426,6 +427,7 @@ DRAMATIQ = {
                 "prefix": "authentik",
             },
         ),
+        ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
     ),
     "test": TEST,
 }

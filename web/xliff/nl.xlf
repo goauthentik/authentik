@@ -6660,7 +6660,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <target>Voorspel interne gebruikers</target>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
   <target>Geschat aantal gebruikers over één jaar op basis van <x id="0" equiv-text="${this.forecast?.internalUsers}"/> huidige interne gebruikers en <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> voorspelde interne gebruikers.</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
@@ -6668,7 +6668,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <target>Voorspel externe gebruikers</target>
 </trans-unit>
 <trans-unit id="sf52479d6daa0a4a8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.externalUsers}"/> current external users and <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> forecasted external users.</source>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
   <target>Geschat aantal gebruikers over één jaar op basis van <x id="0" equiv-text="${this.forecast?.externalUsers}"/> huidige externe gebruikers en <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> voorspelde externe gebruikers.</target>
 </trans-unit>
 <trans-unit id="s6196153c4b0c1ea0">
@@ -6872,9 +6872,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
-</trans-unit>
-<trans-unit id="s67d858051b34c38b">
-  <source>Method's display Name.</source>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -9680,6 +9677,33 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s34dcdae237b89744">
   <source>Open inspector</source>
+</trans-unit>
+<trans-unit id="s2f06038e5cfd09df">
+  <source>Consumed</source>
+</trans-unit>
+<trans-unit id="s556a7cc7c0c9f032">
+  <source>Pre-processing</source>
+</trans-unit>
+<trans-unit id="sb37a630168e1e0e5">
+  <source>Post-processing</source>
+</trans-unit>
+<trans-unit id="s94f08f46277af7d6">
+  <source>Running tasks</source>
+</trans-unit>
+<trans-unit id="s8b551364b894d1ee">
+  <source>Queued tasks</source>
+</trans-unit>
+<trans-unit id="s2139d19009989a19">
+  <source>Successful tasks</source>
+</trans-unit>
+<trans-unit id="s0787cd9eab5aa6e3">
+  <source>Error tasks</source>
+</trans-unit>
+<trans-unit id="s531571491deb239a">
+  <source>Approximately</source>
+</trans-unit>
+<trans-unit id="sc62e587718608e85">
+  <source>No expiry</source>
 </trans-unit>
     </body>
   </file>

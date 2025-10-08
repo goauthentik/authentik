@@ -107,7 +107,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
-        return html` <div class="status-container">
+        return html`<div class="status-container">
             <h2 class="status-heading">
                 <i class="${status.icon}" aria-hidden="true"></i>${this.renderValue()}
             </h2>

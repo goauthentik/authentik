@@ -31,6 +31,9 @@ class TaskState(models.TextChoices):
 
     QUEUED = "queued"
     CONSUMED = "consumed"
+    PREPROCESS = "preprocess"
+    RUNNING = "running"
+    POSTPROCESS = "postprocess"
     REJECTED = "rejected"
     DONE = "done"
 
