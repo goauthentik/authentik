@@ -50,6 +50,8 @@ class TaskBase(models.Model):
         help_text=_("Task status"),
     )
     mtime = models.DateTimeField(default=now, help_text=_("Task last modified time"))
+    retries = models.PositiveBigIntegerField(default=0, help_text=_("Number of retries"))
+    eta = models.DateTimeField(null=True, help_text=_("Planned execution time"))
 
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
