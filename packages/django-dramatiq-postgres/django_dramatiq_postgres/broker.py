@@ -18,7 +18,6 @@ from django.db import (
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
-from django.db.models.expressions import F
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
