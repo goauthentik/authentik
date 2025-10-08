@@ -62,17 +62,25 @@ Attribute mapping from authentik to SCIM users is done via property mappings as 
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
-### Filtering
+### Filtering remote users
 
 By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
 
-### Supported features
+### Supported options
 
-SCIM defines multiple optional features, some of which are supported by the SCIM provider.
+SCIM defines multiple optional settings to facilitate discovery of a SCIM service provider's features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
+
+- Filtering
+
+    With a [`filter`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2) query parameter that has a defined filter expression, you can specify a subset of resources and provide a maximum number to be returned.
+
+- Bulk
+
+    The [`bulk`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.7) parameter enables clients to send large collections of resource operations in a single request. The `bulk.maxOperations` attribute tells clients what the maximum number of individual operations a server can process within a single bulk request.
 
 - Patch updates
 
-    If the service provider supports patch updates, authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
+    If the service provider supports [PATCH updates](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2), authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
 
 ### Using in conjunction with other providers
 
