@@ -118,15 +118,13 @@ class PostgresBroker(Broker):
             self.delay_queues.add(delayed_name)
             self.emit_after("declare_delay_queue", delayed_name)  # type: ignore[no-untyped-call]
 
-    def model_defaults(self, message: Message[Any], incr_retries: bool = False) -> dict[str, Any]:
+    def model_defaults(self, message: Message[Any]) -> dict[str, Any]:
         defaults = {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
-            "retries": F("retries") + 1,
+            "retries": message.options.get("retries", 0),
         }
-        if incr_retries:
-            defaults["retries"] = F("retries") + 1
         return defaults
 
     @tenacity.retry(
@@ -149,7 +147,6 @@ class PostgresBroker(Broker):
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
         canonical_queue_name = message.queue_name
         queue_name = canonical_queue_name
-        incr_retries = True
         if delay:
             queue_name = dq_name(queue_name)  # type: ignore[no-untyped-call]
             message_eta = current_millis() + delay  # type: ignore[no-untyped-call]
@@ -159,14 +156,13 @@ class PostgresBroker(Broker):
                     "eta": message_eta,
                 },
             )
-            incr_retries = False
 
         self.declare_queue(canonical_queue_name)
         self.logger.debug(
             "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
         )
 
-        message.options["model_defaults"] = self.model_defaults(message, incr_retries)
+        message.options["model_defaults"] = self.model_defaults(message)
         self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
 
         with transaction.atomic(using=self.db_alias):
