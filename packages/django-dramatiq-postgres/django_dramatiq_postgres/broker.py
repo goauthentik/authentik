@@ -5,7 +5,6 @@ from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
 from typing import Any, ParamSpec, TypeVar, cast
 
-from django.db.models.expressions import F
 import tenacity
 from django.core.exceptions import ImproperlyConfigured
 from django.db import (
@@ -18,6 +17,7 @@ from django.db import (
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
+from django.db.models.expressions import F
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
@@ -146,7 +146,7 @@ class PostgresBroker(Broker):
     )
     @raise_connection_error
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
-        queue_name = q_name(message.queue_name)
+        queue_name = q_name(message.queue_name)  # type: ignore[no-untyped-call]
         if delay:
             message_eta = current_millis() + delay  # type: ignore[no-untyped-call]
             message.options["eta"] = message_eta
@@ -301,18 +301,18 @@ class _PostgresConsumer(Consumer):
             pending=len(pending),
             queue=self.queue_name,
         )
-        return pending
+        return {str(message_id) for message_id in pending}
 
     def _poll_for_notify(self) -> set[str]:
         self.logger.debug("Polling for message notifications", queue=self.queue_name)
         with self.listen_connection.cursor() as cursor:
             notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
             self.logger.debug(
-                "Finished receving postgres notifies on channel",
+                "Finished receiving postgres notifies on channel",
                 notifies=len(notifies),
                 channel=self.postgres_channel,
             )
-            return {notify.payload for notify in notifies}
+            return {str(notify.payload) for notify in notifies}
 
     def _consume_one(self, message_id: str) -> Message[Any] | None:
         if message_id in self.in_processing:

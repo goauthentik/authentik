@@ -7,7 +7,6 @@ import pgtrigger.migrations
 from django.db import migrations, models
 
 
-
 def remove_non_default_messages(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Task = apps.get_model("authentik_tasks", "task")
 
