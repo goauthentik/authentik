@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::warning
-Please note that this feature is currently only available on `:testing` images. More information can be found in [Vaultwarden's "Enabling SSO support using OpenID Connection"](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect) documentation.
+Please note that this feature is currently only available on `:testing` images. More information can be found in [Vaultwarden's "Enabling SSO support using OpenID Connect"](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect) documentation.
 :::
 
 ## authentik configuration
