@@ -167,6 +167,7 @@ class CurrentTask(Middleware):
             "state",
             "mtime",
             "retries",
+            "eta",
             "result",
             "result_expiry",
         }

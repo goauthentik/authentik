@@ -45,6 +45,7 @@ class TaskSerializer(ModelSerializer):
             "state",
             "mtime",
             "retries",
+            "eta",
             "rel_obj_app_label",
             "rel_obj_model",
             "rel_obj_id",

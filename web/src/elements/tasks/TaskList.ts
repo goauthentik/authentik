@@ -104,6 +104,7 @@ export class TaskList extends Table<Task> {
         [msg("Task"), "actor_name"],
         [msg("Queue"), "queue_name"],
         [msg("Retries"), "retries"],
+        [msg("Planned execution time")],
         [msg("Last updated"), "mtime"],
         [msg("Status"), "aggregated_status"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -156,6 +157,7 @@ export class TaskList extends Table<Task> {
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
             html`${item.retries}`,
+            item.eta !== undefined ? Timestamp(item.eta) : html``,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||

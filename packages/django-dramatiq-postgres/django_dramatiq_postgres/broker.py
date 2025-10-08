@@ -2,7 +2,7 @@ import functools
 import logging
 import time
 from collections.abc import Callable, Iterable
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from queue import Empty, Queue
 from typing import Any, ParamSpec, TypeVar, cast
 
@@ -118,13 +118,16 @@ class PostgresBroker(Broker):
             self.emit_after("declare_delay_queue", delayed_name)  # type: ignore[no-untyped-call]
 
     def model_defaults(self, message: Message[Any]) -> dict[str, Any]:
-        defaults = {
+        eta = None
+        if "eta" in message.options:
+            eta = datetime.fromtimestamp(message.options["eta"] / 1000, tz=UTC)
+        return {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
             "retries": message.options.get("retries", 0),
+            "eta": eta,
         }
-        return defaults
 
     @tenacity.retry(
         retry=tenacity.retry_if_exception_type(
@@ -295,6 +298,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.DONE,
             message=message.encode(),
             mtime=timezone.now(),
+            eta=None,
         )
         message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
@@ -310,6 +314,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.REJECTED,
             message=message.encode(),
             mtime=timezone.now(),
+            eta=None,
         )
         message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
