@@ -30,7 +30,6 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             label=${msg("Name")}
             .errorMessages=${errors?.name}
             required
-            help=${msg("Method's display Name.")}
         ></ak-text-input>
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
