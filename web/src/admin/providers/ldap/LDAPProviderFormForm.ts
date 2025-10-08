@@ -49,9 +49,9 @@ export function renderForm(
         <ak-text-input
             name="name"
             placeholder=${msg("Provider name...")}
-            value=${ifDefined(provider.name)}
+            value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors.name}
+            .errorMessages=${errors?.name}
             required
         ></ak-text-input>
         <ak-radio-input
