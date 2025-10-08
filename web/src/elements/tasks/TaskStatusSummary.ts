@@ -21,7 +21,7 @@ export class TaskStatusSummary extends AKElement {
         PFCard,
         css`
             section {
-                padding-bottom: 1.5rem;
+                padding-block-end: var(--pf-global--spacer--lg);
             }
         `,
     ];
