@@ -4355,6 +4355,11 @@ paths:
           type: boolean
           default: false
       - in: query
+        name: include_parents
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_users
         schema:
           type: boolean
@@ -4458,6 +4463,11 @@ paths:
         required: true
       - in: query
         name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_parents
         schema:
           type: boolean
           default: false
@@ -44038,12 +44048,15 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
+        parents_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
           readOnly: true
           nullable: true
         users:
@@ -44074,45 +44087,22 @@ components:
           items:
             type: string
             format: uuid
+          readOnly: true
         children_obj:
           type: array
           items:
-            $ref: '#/components/schemas/GroupChild'
+            $ref: '#/components/schemas/RelatedGroup'
           readOnly: true
           nullable: true
       required:
+      - children
       - children_obj
       - name
       - num_pk
-      - parent_name
+      - parents_obj
       - pk
       - roles_obj
       - users_obj
-    GroupChild:
-      type: object
-      description: Stripped down group serializer to show relevant children for groups
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-        group_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-      required:
-      - group_uuid
-      - name
-      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -44341,10 +44331,11 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
         users:
           type: array
           items:
@@ -44353,11 +44344,6 @@ components:
           type: object
           additionalProperties: {}
         roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        children:
           type: array
           items:
             type: string
@@ -49968,21 +49954,12 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
-          readOnly: true
-          nullable: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - name
       - num_pk
-      - parent_name
       - pk
     PartialUser:
       type: object
@@ -51407,10 +51384,11 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
         users:
           type: array
           items:
@@ -51419,11 +51397,6 @@ components:
           type: object
           additionalProperties: {}
         roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        children:
           type: array
           items:
             type: string
@@ -55827,6 +55800,32 @@ components:
       required:
       - matching_mode
       - url
+    RelatedGroup:
+      type: object
+      description: Stripped down group serializer to show relevant children/parents
+        for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
     Reputation:
       type: object
       description: Reputation Serializer

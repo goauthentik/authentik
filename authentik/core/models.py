@@ -177,31 +177,17 @@ class Group(SerializerModel, AttributesMixin):
 
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
 
-    parent = models.ForeignKey(
-        "Group",
-        blank=True,
-        null=True,
-        default=None,
-        on_delete=models.SET_NULL,
-        related_name="children",
-    )
     parents = models.ManyToManyField(
         "Group",
         blank=True,
         symmetrical=False,
         through="GroupParentageNode",
-        # related_name="children",
+        related_name="children",
     )
 
     objects = GroupQuerySet.as_manager()
 
     class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
         indexes = (
             models.Index(fields=["name"]),
             models.Index(fields=["is_superuser"]),

@@ -95,20 +95,6 @@ class TestGroupsAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 404)
 
-    def test_parent_self(self):
-        """Test parent"""
-        group = Group.objects.create(name=generate_id())
-        self.login_user.assign_perms_to_managed_role("view_group", group)
-        self.login_user.assign_perms_to_managed_role("change_group", group)
-        self.client.force_login(self.login_user)
-        res = self.client.patch(
-            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
-            data={
-                "parent": group.pk,
-            },
-        )
-        self.assertEqual(res.status_code, 400)
-
     def test_superuser_no_perm(self):
         """Test creating a superuser group without permission"""
         self.login_user.assign_perms_to_managed_role("authentik_core.add_group")

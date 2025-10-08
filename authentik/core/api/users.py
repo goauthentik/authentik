@@ -101,7 +101,6 @@ class PartialGroupSerializer(ModelSerializer):
     """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
-    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     class Meta:
         model = Group
@@ -110,8 +109,6 @@ class PartialGroupSerializer(ModelSerializer):
             "num_pk",
             "name",
             "is_superuser",
-            "parent",
-            "parent_name",
             "attributes",
         ]
 

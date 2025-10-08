@@ -4825,10 +4825,13 @@
                     "title": "Is superuser",
                     "description": "Users added to this group will be superusers."
                 },
-                "parent": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Parent"
+                "parents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Parents"
                 },
                 "users": {
                     "type": "array",
@@ -4849,14 +4852,6 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
-                },
-                "children": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Children"
                 }
             },
             "required": []
