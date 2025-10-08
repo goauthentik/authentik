@@ -29,10 +29,10 @@ jobs:
        github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
@@ -49,7 +49,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
           title: "*: Auto compress images"
           branch-suffix: timestamp
-          commit-messsage: "*: compress images"
+          commit-message: "*: compress images"
           body: ${{ steps.compress.outputs.markdown }}
           delete-branch: true
           signoff: true
