@@ -180,6 +180,7 @@ class PostgresBroker(Broker):
                 **query,
                 **defaults,
             }
+            del create_defaults["retries"]
 
             task, created = self.query_set.update_or_create(
                 **query,
