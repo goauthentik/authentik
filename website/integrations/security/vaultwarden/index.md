@@ -21,7 +21,9 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-It's important to know that this currently [only works while using the testing branch](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect).
+:::warning
+Please note that this feature is currently only available on `:testing` images. More information can be found in [Vaultwarden's "Enabling SSO support using OpenID Connection"](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect) documentation.
+:::
 
 ## authentik configuration
 
