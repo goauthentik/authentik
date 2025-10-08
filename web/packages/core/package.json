@@ -50,7 +50,7 @@
         "@types/node": "^24.7.0",
         "@types/semver": "^7.7.1",
         "prettier": "^3.6.2",
-        "semver": "^7.7.2",
+        "semver": "^7.7.3",
         "typescript": "^5.8.3"
     },
     "engines": {
