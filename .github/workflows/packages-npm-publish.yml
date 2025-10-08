@@ -26,16 +26,16 @@ jobs:
           - packages/tsconfig
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # was: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # was: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version-file: ${{ matrix.package }}/package.json
           registry-url: "https://registry.npmjs.org"
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # was: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
