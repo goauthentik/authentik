@@ -5,6 +5,7 @@ import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskStatus";
+import "#elements/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -14,6 +15,7 @@ import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/tabl
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    GlobalTaskStatus,
     Task,
     TasksApi,
     TasksTasksListAggregatedStatusEnum,
@@ -22,7 +24,7 @@ import {
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -46,10 +48,16 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
+    @property({ type: Boolean, attribute: "include-overview" })
+    includeOverview: boolean = false;
+
     protected override searchEnabled = true;
 
     @property()
     order = "-mtime";
+
+    @state()
+    status?: GlobalTaskStatus;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
@@ -74,6 +82,9 @@ export class TaskList extends Table<Task> {
                   TasksTasksListAggregatedStatusEnum.Error,
               ]
             : undefined;
+        if (this.includeOverview) {
+            this.status = await new TasksApi(DEFAULT_CONFIG).tasksTasksStatusRetrieve();
+        }
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -109,6 +120,12 @@ export class TaskList extends Table<Task> {
         [msg("Status"), "aggregated_status"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    render(): TemplateResult {
+        return html`${this.includeOverview
+            ? html`<ak-task-status-summary .status=${this.status}></ak-task-status-summary>`
+            : nothing}${super.render()}`;
+    }
 
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
