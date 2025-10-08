@@ -114,7 +114,6 @@ class MessagesMiddleware(Middleware):
         )
         if should_ignore_exception(exception):
             return
-        return
         event_kwargs = {
             "actor": task.actor_name,
         }

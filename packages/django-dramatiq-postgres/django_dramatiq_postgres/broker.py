@@ -1,11 +1,9 @@
 import functools
 import logging
-import sys
 import time
 from collections.abc import Callable, Iterable
 from datetime import timedelta
 from queue import Empty, Queue
-import traceback
 from typing import Any, ParamSpec, TypeVar, cast
 
 import tenacity
@@ -120,13 +118,16 @@ class PostgresBroker(Broker):
             self.delay_queues.add(delayed_name)
             self.emit_after("declare_delay_queue", delayed_name)  # type: ignore[no-untyped-call]
 
-    def model_defaults(self, message: Message[Any]) -> dict[str, Any]:
-        return {
+    def model_defaults(self, message: Message[Any], incr_retries: bool = False) -> dict[str, Any]:
+        defaults = {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
             "retries": F("retries") + 1,
         }
+        if incr_retries:
+            defaults["retries"] = F("retries") + 1
+        return defaults
 
     @tenacity.retry(
         retry=tenacity.retry_if_exception_type(
@@ -146,9 +147,9 @@ class PostgresBroker(Broker):
         ),
     )
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
-        traceback.print_stack(file=sys.stderr)
         canonical_queue_name = message.queue_name
         queue_name = canonical_queue_name
+        incr_retries = True
         if delay:
             queue_name = dq_name(queue_name)  # type: ignore[no-untyped-call]
             message_eta = current_millis() + delay  # type: ignore[no-untyped-call]
@@ -158,20 +159,15 @@ class PostgresBroker(Broker):
                     "eta": message_eta,
                 },
             )
+            incr_retries = False
 
         self.declare_queue(canonical_queue_name)
         self.logger.debug(
             "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
         )
 
-        message.options["model_defaults"] = self.model_defaults(message)
+        message.options["model_defaults"] = self.model_defaults(message, incr_retries)
         self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
-
-        t = self.query_set.filter(message_id=message.message_id).first()
-        if t is None:
-            self.logger.error("non existent task")
-        else:
-            self.logger.error("current retries", retries=t.retries)
 
         with transaction.atomic(using=self.db_alias):
             query = {
@@ -183,7 +179,6 @@ class PostgresBroker(Broker):
             create_defaults = {
                 **query,
                 **defaults,
-                "retries": 0,
             }
 
             task, created = self.query_set.update_or_create(
@@ -416,7 +411,8 @@ class _PostgresConsumer(Consumer):
                 backoff_ms=backoff_ms,
             )
             time.sleep(backoff_ms / 1000)
-            return None
+        else:
+            self.misses = 0
 
         if not self.notifies:
             self.notifies += self._poll_for_notify()
@@ -436,7 +432,6 @@ class _PostgresConsumer(Consumer):
             message.options["task"] = task
             if self._consume_one(message):
                 self.in_processing.add(message.message_id)
-                self.misses = 0
                 return MessageProxy(message)  # type: ignore[no-untyped-call]
             else:
                 self.logger.debug(
