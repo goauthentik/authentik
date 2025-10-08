@@ -28,9 +28,17 @@ ifeq ($(UNAME), Darwin)
 	ifdef BREW_EXISTS
 		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
 		ifdef LIBXML2_EXISTS
-			BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
-			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
-			BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+			_pref = $(shell brew --prefix libxml2)
+			BREW_LDFLAGS := -L${_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I${_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := ${_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			_pref = $(shell brew --prefix krb5)
+			BREW_LDFLAGS := -L${_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I${_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := ${_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
 		endif
 	endif
 endif
