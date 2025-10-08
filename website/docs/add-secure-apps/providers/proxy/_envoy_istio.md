@@ -16,15 +16,17 @@ spec:
                   port: "9000"
                   pathPrefix: "/outpost.goauthentik.io/auth/envoy"
                   headersToDownstreamOnAllow:
-                      - cookie
-                  headersToUpstreamOnAllow:
                       - set-cookie
+                  headersToUpstreamOnAllow:
+                      - cookie
                       - x-authentik-*
                       # Add authorization headers to the allow list if you need proxy providers which
                       # send a custom HTTP-Basic Authentication header based on values from authentik
                       # - authorization
                   includeRequestHeadersInCheck:
                       - cookie
+                      # Needed for CORS requests to work properly when renewing a proxy ticket
+                      - origin
 ```
 
 Afterwards, you can create _AuthorizationPolicy_ resources to protect your applications like this:

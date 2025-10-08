@@ -62,7 +62,7 @@ from authentik.providers.oauth2.models import (
     ResponseTypes,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
+from authentik.providers.oauth2.utils import HttpResponseRedirectScheme, TokenResponse, cors_allow
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
@@ -347,6 +347,10 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
     def pre_permission_check(self):
         """Check prompt parameter before checking permission/authentication,
         see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.6"""
+        # Allow unauthenticated CORS preflight requests
+        if self.request.method == "OPTIONS":
+            return
+
         # Quick sanity check at the beginning to prevent event spamming
         if len(self.request.GET) < 1:
             raise Http404
@@ -422,14 +426,31 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
                 response["Location"] = urlunparse(
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
                 )
+
+        # Add CORS headers based on the provider's redirect URIs, if a provider exists and has
+        # redirect URIs configured
+        allowed_origins = []
+        if hasattr(self, "provider") and self.provider and hasattr(self.provider, "redirect_uris"):
+            allowed_origins = [x.url for x in self.provider.redirect_uris]
+        cors_allow(self.request, response, *allowed_origins)
+
+        # Override Access-Control-Allow-Methods to only allow GET and OPTIONS
+        # POST is not defined for this endpoint
+        if "Access-Control-Allow-Methods" in response:
+            response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+
         return response
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         # Activate language before parsing params (error messages should be localised)
         return self.dispatch_with_language(request, *args, **kwargs)
 
+    def options(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # Return an empty response. The dispatch method will add the CORS headers.
+        return TokenResponse({})
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Start FlowPLanner, return to flow executor shell"""
+        """Start FlowPlanner, return to flow executor shell"""
         # Require a login event to be set, otherwise make the user re-login
         login_event = get_login_event(request)
         if not login_event:

@@ -26,6 +26,13 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, f
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
 	}
+
+	// Add CORS headers if origin is allowed
+	if a.isOriginAllowed(r) {
+		a.addCORSHeaders(rw, r)
+		return
+	}
+
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
 
