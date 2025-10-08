@@ -116,10 +116,11 @@ export class FlowExecutor
             }
             .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
             .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
-                height: 100vh;
+                height: 100%;
+                min-height: 100dvh;
                 background-color: var(--pf-c-login__main--BackgroundColor);
-                padding-left: var(--pf-global--spacer--lg);
-                padding-right: var(--pf-global--spacer--lg);
+                padding-inline: var(--pf-global--spacer--lg);
+                padding-block-end: var(--pf-global--spacer--xs);
             }
             .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
             .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
@@ -546,6 +547,7 @@ export class FlowExecutor
         return import("#flow/FlowInspector").then(
             () =>
                 html`<ak-flow-inspector
+                    id="flow-inspector"
                     class="pf-c-drawer__panel pf-m-width-33"
                     .flowSlug=${this.flowSlug}
                 ></ak-flow-inspector>`,
@@ -600,10 +602,11 @@ export class FlowExecutor
                         ${this.inspectorAvailable && !this.inspectorOpen
                             ? html`<button
                                   aria-label=${this.inspectorOpen
-                                      ? msg("Close inspector")
-                                      : msg("Open inspector")}
+                                      ? msg("Close flow inspector")
+                                      : msg("Open flow inspector")}
                                   aria-expanded=${this.inspectorOpen ? "true" : "false"}
                                   class="inspector-toggle pf-c-button pf-m-primary"
+                                  aria-controls="flow-inspector"
                                   @click=${() => {
                                       this.inspectorOpen = true;
                                   }}
