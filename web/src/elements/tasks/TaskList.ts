@@ -157,7 +157,7 @@ export class TaskList extends Table<Task> {
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
             html`${item.retries}`,
-            item.eta !== undefined ? Timestamp(item.eta) : html``,
+            item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
