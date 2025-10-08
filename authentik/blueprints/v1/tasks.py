@@ -111,7 +111,6 @@ class BlueprintEventHandler(FileSystemEventHandler):
 
 @actor(
     description=_("Find blueprints as `blueprints_find` does, but return a safe dict."),
-    throws=(DatabaseError, ProgrammingError, InternalError),
     priority=PRIORITY_HIGH,
 )
 def blueprints_find_dict():
@@ -150,10 +149,7 @@ def blueprints_find() -> list[BlueprintFile]:
     return blueprints
 
 
-@actor(
-    description=_("Find blueprints and check if they need to be created in the database."),
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
+@actor(description=_("Find blueprints and check if they need to be created in the database."))
 def blueprints_discovery(path: str | None = None):
     self: Task = CurrentTask.get_task()
     count = 0
