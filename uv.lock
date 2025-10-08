@@ -316,7 +316,7 @@ requires-dist = [
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pyrad", specifier = "==2.4" },
-    { name = "python-kadmin-rs", specifier = "==0.6.1" },
+    { name = "python-kadmin-rs", specifier = "==0.6.3" },
     { name = "pyyaml", specifier = "==6.0.2" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
@@ -2706,9 +2706,9 @@ wheels = [
 
 [[package]]
 name = "python-kadmin-rs"
-version = "0.6.1"
+version = "0.6.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/14/64/05942061f851c0973ce351dfa7a6358fe14e7622527ecc883ce2eccd3177/python_kadmin_rs-0.6.1.tar.gz", hash = "sha256:0fdcf5310504eeb51a8a82d89313a88ef7f7141a596a6cf609d82eed425f21f4", size = 89030, upload-time = "2025-06-18T13:24:55.839Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8f/f2/cc5996a02557d731c9c038dc9bec5ee6653e662ae3f0a3659f48d1bcd7f0/python_kadmin_rs-0.6.3.tar.gz", hash = "sha256:ee66576a598b8a33f62ac77e470543bca21aa6af90033030f1448fc65f073896", size = 89401, upload-time = "2025-10-08T12:12:13.353Z" }
 
 [[package]]
 name = "pywin32"
