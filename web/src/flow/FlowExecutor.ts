@@ -97,6 +97,9 @@ export class FlowExecutor
             .pf-c-drawer__content {
                 background-color: transparent;
             }
+            .pf-c-login {
+                align-items: baseline;
+            }
             /* layouts */
             @media (min-height: 60rem) {
                 .pf-c-login[data-layout="stacked"] .pf-c-login__main {
