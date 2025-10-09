@@ -339,7 +339,7 @@ func (s *PostgresStore) delete(session *sessions.Session) error {
 
 // CleanupExpired removes expired sessions by checking MaxAge in session_data
 func (s *PostgresStore) CleanupExpired() error {
-	result := s.db.Where("'expires' < ?", time.Now().UTC()).Delete(&ProxySession{})
+	result := s.db.Where(`"expires" < ?`, time.Now().UTC().Format(time.RFC3339)).Delete(&ProxySession{})
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete expired sessions: %w", result.Error)
 	}

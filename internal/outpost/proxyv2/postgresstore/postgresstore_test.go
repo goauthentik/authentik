@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/stretchr/testify/assert"
@@ -54,19 +56,23 @@ func CleanupTestDB(t *testing.T, db *gorm.DB) {
 	assert.NoError(t, sdb.Close())
 }
 
-func TestPostgresStore_New(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
-
-	store := &PostgresStore{
+func store(db *gorm.DB) *PostgresStore {
+	return &PostgresStore{
 		db: db,
 		options: sessions.Options{
 			Path:   "/",
 			MaxAge: 3600,
 		},
 		keyPrefix: "test_session_",
+		log:       log.WithField("logger", "test"),
 	}
+}
 
+func TestPostgresStore_New(t *testing.T) {
+	db := SetupTestDB(t)
+	defer CleanupTestDB(t, db)
+
+	store := store(db)
 	req := httptest.NewRequest("GET", "/", nil)
 	session, err := store.New(req, "test_session")
 
@@ -79,15 +85,7 @@ func TestPostgresStore_Save(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	session, err := store.New(req, "test_session")
@@ -129,15 +127,7 @@ func TestPostgresStore_Load(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create a session directly in the database
 	userID := uuid.New()
 	sessionKey := "test_session_123"
@@ -184,15 +174,7 @@ func TestPostgresStore_Delete(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create a session in the database
 	sessionKey := "test_session_456"
 
@@ -221,15 +203,7 @@ func TestPostgresStore_CleanupExpired(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create some sessions
 	expiredSession := ProxySession{
 		UUID:        uuid.New(),
@@ -268,15 +242,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create multiple sessions for different users
 	user1 := uuid.New()
 	user2 := uuid.New()
@@ -338,15 +304,7 @@ func TestPostgresStore_LogoutSessions_ByEmail(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create sessions with different emails
 	sessions := []ProxySession{
 		{
@@ -404,18 +362,11 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create sessions with different group memberships
 	sessions := []ProxySession{
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_user",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email":  "admin@example.com",
@@ -423,6 +374,7 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_regular_user",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email":  "user@example.com",
@@ -430,6 +382,7 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_guest",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email":  "guest@example.com",
@@ -478,15 +431,7 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Create an expired session
 	sessionKey := "test_expired_load"
 	expiredData := map[string]interface{}{
@@ -524,15 +469,7 @@ func TestPostgresStore_ConcurrentSessionAccess(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	// Test concurrent access by creating separate sessions for each goroutine
 	// This tests that the connection pool handles concurrent operations correctly
 	const numGoroutines = 10
@@ -766,15 +703,7 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)
 
-	store := &PostgresStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 3600,
-		},
-		keyPrefix: "test_session_",
-	}
-
+	store := store(db)
 	sqlDB, err := store.db.DB()
 	require.NoError(t, err)
 
