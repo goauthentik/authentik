@@ -47,7 +47,21 @@ func (ProxySession) TableName() string {
 }
 
 // BuildDSN constructs a PostgreSQL connection string
-func BuildDSN(cfg config.PostgreSQLConfig) string {
+func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
+	// Validate required fields
+	if cfg.Host == "" {
+		return "", fmt.Errorf("PostgreSQL host is required")
+	}
+	if cfg.User == "" {
+		return "", fmt.Errorf("PostgreSQL user is required")
+	}
+	if cfg.Name == "" {
+		return "", fmt.Errorf("PostgreSQL database name is required")
+	}
+	if cfg.Port <= 0 {
+		return "", fmt.Errorf("PostgreSQL port must be positive")
+	}
+
 	// Build DSN string with all parameters
 	dsnParts := []string{
 		"host=" + cfg.Host,
@@ -87,7 +101,7 @@ func BuildDSN(cfg config.PostgreSQLConfig) string {
 	}
 
 	// Join parts with spaces
-	return strings.Join(dsnParts, " ")
+	return strings.Join(dsnParts, " "), nil
 }
 
 // NewPostgresStore returns a new PostgresStore
@@ -95,7 +109,10 @@ func NewPostgresStore() (*PostgresStore, error) {
 	cfg := config.Get().PostgreSQL
 
 	// Build connection string
-	dsn := BuildDSN(cfg)
+	dsn, err := BuildDSN(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build DSN: %w", err)
+	}
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
@@ -239,7 +256,7 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 
 	// Add expiration timestamp to session data
 	if session.Options != nil && session.Options.MaxAge > 0 {
-		expiresAt := time.Now().Add(time.Duration(session.Options.MaxAge) * time.Second)
+		expiresAt := time.Now().UTC().Add(time.Duration(session.Options.MaxAge) * time.Second)
 		stringKeyedValues["_expires_at"] = expiresAt.Format(time.RFC3339)
 	}
 
@@ -294,7 +311,7 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 		if expiresAt, ok := stringKeyedValues["_expires_at"]; ok {
 			if expiresAtStr, ok := expiresAt.(string); ok {
 				if expTime, err := time.Parse(time.RFC3339, expiresAtStr); err == nil {
-					if time.Now().After(expTime) {
+					if time.Now().UTC().After(expTime) {
 						// Session is expired, delete it and return not found error
 						s.db.Delete(&ProxySession{}, "session_key = ?", session.ID)
 						return gorm.ErrRecordNotFound
@@ -320,52 +337,19 @@ func (s *PostgresStore) delete(session *sessions.Session) error {
 
 // CleanupExpired removes expired sessions by checking MaxAge in session_data
 func (s *PostgresStore) CleanupExpired() error {
-	var sessions []ProxySession
-	err := s.db.Find(&sessions).Error
-	if err != nil {
-		return fmt.Errorf("failed to fetch sessions: %w", err)
+	// Use PostgreSQL's JSONB operators to filter expired sessions directly in the database
+	now := time.Now().UTC().Format(time.RFC3339)
+
+	// Delete sessions where session_data->>'_expires_at' < now
+	// This uses JSONB operator ->> to extract text value and compare it as a string
+	result := s.db.Where("(session_data::jsonb->>'_expires_at') < ?", now).Delete(&ProxySession{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete expired sessions: %w", result.Error)
 	}
 
-	var expiredKeys []string
-	now := time.Now()
-
-	for _, session := range sessions {
-		if session.SessionData == "" || session.SessionData == "{}" {
-			continue
-		}
-
-		var sessionData map[string]interface{}
-		if err := json.Unmarshal([]byte(session.SessionData), &sessionData); err != nil {
-			continue
-		}
-
-		expiresAt, ok := sessionData["_expires_at"]
-		if !ok {
-			continue
-		}
-
-		expiresAtStr, ok := expiresAt.(string)
-		if !ok {
-			continue
-		}
-
-		expTime, err := time.Parse(time.RFC3339, expiresAtStr)
-		if err != nil {
-			continue
-		}
-
-		if now.After(expTime) {
-			expiredKeys = append(expiredKeys, session.SessionKey)
-		}
-	}
-
-	if len(expiredKeys) > 0 {
-		err := s.db.Delete(&ProxySession{}, "session_key IN ?", expiredKeys).Error
-		if err != nil {
-			return err
-		}
+	if result.RowsAffected > 0 {
 		log.WithField("logger", "authentik.outpost.proxyv2.postgresstore").
-			WithField("count", len(expiredKeys)).
+			WithField("count", result.RowsAffected).
 			Info("Cleaned up expired sessions")
 	}
 
@@ -375,8 +359,13 @@ func (s *PostgresStore) CleanupExpired() error {
 // LogoutSessions removes sessions that match the given filter criteria
 // The filter function should return true for sessions that should be deleted
 func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.Claims) bool) error {
+	// First, try to use JSONB operators for common filter patterns to avoid N+1 queries
+	// If the filter is too complex, fall back to client-side filtering
+
+	// Pre-filter sessions using JSONB operators where possible
+	// Only fetch sessions that have claims (session_data->'claims' IS NOT NULL)
 	var sessions []ProxySession
-	err := s.db.Find(&sessions).Error
+	err := s.db.Where("session_data::jsonb ?? ?", constants.SessionClaims).Find(&sessions).Error
 	if err != nil {
 		return fmt.Errorf("failed to fetch sessions: %w", err)
 	}

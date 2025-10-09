@@ -23,7 +23,8 @@ import (
 // SetupTestDB creates a test database connection for testing
 func SetupTestDB(t *testing.T) *gorm.DB {
 	cfg := config.Get().PostgreSQL
-	dsn := BuildDSN(cfg)
+	dsn, err := BuildDSN(cfg)
+	require.NoError(t, err)
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
@@ -509,6 +510,309 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	var count int64
 	db.Model(&ProxySession{}).Where("session_key = ?", sessionKey).Count(&count)
 	assert.Equal(t, int64(0), count)
+}
+
+func TestPostgresStore_ConcurrentSessionAccess(t *testing.T) {
+	db := SetupTestDB(t)
+	defer CleanupTestDB(t, db)
+
+	store := &PostgresStore{
+		db: db,
+		options: sessions.Options{
+			Path:   "/",
+			MaxAge: 3600,
+		},
+		keyPrefix: "test_session_",
+	}
+
+	// Create a shared session ID
+	sessionKey := "test_concurrent_session_" + uuid.New().String()
+
+	// Initial session data
+	initialData := map[string]interface{}{
+		"_expires_at": time.Now().Add(time.Hour).Format(time.RFC3339),
+		"counter":     0,
+	}
+	initialDataJSON, _ := json.Marshal(initialData)
+
+	proxySession := ProxySession{
+		SessionKey:  sessionKey,
+		SessionData: string(initialDataJSON),
+	}
+	err := db.Create(&proxySession).Error
+	require.NoError(t, err)
+
+	// Simulate concurrent access from multiple goroutines
+	const numGoroutines = 10
+	done := make(chan bool, numGoroutines)
+
+	for i := 0; i < numGoroutines; i++ {
+		go func(id int) {
+			defer func() { done <- true }()
+
+			session := sessions.NewSession(store, "test_session")
+			session.ID = sessionKey
+
+			// Load session
+			err := store.load(session)
+			if err != nil {
+				t.Logf("Goroutine %d failed to load: %v", id, err)
+				return
+			}
+
+			// Modify session data
+			session.Values["goroutine_"+string(rune('0'+id))] = id
+
+			// Save session
+			req := httptest.NewRequest("GET", "/", nil)
+			w := httptest.NewRecorder()
+			err = store.Save(req, w, session)
+			if err != nil {
+				t.Logf("Goroutine %d failed to save: %v", id, err)
+			}
+		}(i)
+	}
+
+	// Wait for all goroutines to complete
+	for i := 0; i < numGoroutines; i++ {
+		<-done
+	}
+
+	// Verify session still exists and is valid
+	var finalSession ProxySession
+	err = db.Where("session_key = ?", sessionKey).First(&finalSession).Error
+	assert.NoError(t, err)
+
+	// Verify we can unmarshal the final session data
+	var sessionData map[string]interface{}
+	err = json.Unmarshal([]byte(finalSession.SessionData), &sessionData)
+	assert.NoError(t, err)
+}
+
+func TestBuildDSN_Validation(t *testing.T) {
+	tests := []struct {
+		name        string
+		cfg         config.PostgreSQLConfig
+		expectError bool
+		errorMsg    string
+	}{
+		{
+			name: "missing host",
+			cfg: config.PostgreSQLConfig{
+				Port: 5432,
+				User: "testuser",
+				Name: "testdb",
+			},
+			expectError: true,
+			errorMsg:    "PostgreSQL host is required",
+		},
+		{
+			name: "missing user",
+			cfg: config.PostgreSQLConfig{
+				Host: "localhost",
+				Port: 5432,
+				Name: "testdb",
+			},
+			expectError: true,
+			errorMsg:    "PostgreSQL user is required",
+		},
+		{
+			name: "missing database name",
+			cfg: config.PostgreSQLConfig{
+				Host: "localhost",
+				Port: 5432,
+				User: "testuser",
+			},
+			expectError: true,
+			errorMsg:    "PostgreSQL database name is required",
+		},
+		{
+			name: "invalid port (zero)",
+			cfg: config.PostgreSQLConfig{
+				Host: "localhost",
+				Port: 0,
+				User: "testuser",
+				Name: "testdb",
+			},
+			expectError: true,
+			errorMsg:    "PostgreSQL port must be positive",
+		},
+		{
+			name: "invalid port (negative)",
+			cfg: config.PostgreSQLConfig{
+				Host: "localhost",
+				Port: -1,
+				User: "testuser",
+				Name: "testdb",
+			},
+			expectError: true,
+			errorMsg:    "PostgreSQL port must be positive",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := BuildDSN(tt.cfg)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errorMsg)
+				assert.Empty(t, result)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestBuildDSN(t *testing.T) {
+	tests := []struct {
+		name     string
+		cfg      config.PostgreSQLConfig
+		expected string
+	}{
+		{
+			name: "basic configuration",
+			cfg: config.PostgreSQLConfig{
+				Host: "localhost",
+				Port: 5432,
+				User: "testuser",
+				Name: "testdb",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer",
+		},
+		{
+			name: "with password",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: "testpass",
+				Name:     "testdb",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb password=testpass sslmode=prefer",
+		},
+		{
+			name: "with custom SSL mode",
+			cfg: config.PostgreSQLConfig{
+				Host:    "localhost",
+				Port:    5432,
+				User:    "testuser",
+				Name:    "testdb",
+				SSLMode: "require",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=require",
+		},
+		{
+			name: "with SSL certificates",
+			cfg: config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				SSLMode:     "verify-full",
+				SSLRootCert: "/path/to/root.crt",
+				SSLCert:     "/path/to/client.crt",
+				SSLKey:      "/path/to/client.key",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=verify-full sslrootcert=/path/to/root.crt sslcert=/path/to/client.crt sslkey=/path/to/client.key",
+		},
+		{
+			name: "with custom schema",
+			cfg: config.PostgreSQLConfig{
+				Host:          "localhost",
+				Port:          5432,
+				User:          "testuser",
+				Name:          "testdb",
+				DefaultSchema: "custom_schema",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer search_path=custom_schema",
+		},
+		{
+			name: "with connection options",
+			cfg: config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				ConnOptions: "connect_timeout=10",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer connect_timeout=10",
+		},
+		{
+			name: "full configuration",
+			cfg: config.PostgreSQLConfig{
+				Host:          "db.example.com",
+				Port:          5433,
+				User:          "admin",
+				Password:      "secret",
+				Name:          "production",
+				SSLMode:       "verify-full",
+				SSLRootCert:   "/certs/root.crt",
+				SSLCert:       "/certs/client.crt",
+				SSLKey:        "/certs/client.key",
+				DefaultSchema: "app_schema",
+				ConnOptions:   "application_name=authentik",
+			},
+			expected: "host=db.example.com port=5433 user=admin dbname=production password=secret sslmode=verify-full sslrootcert=/certs/root.crt sslcert=/certs/client.crt sslkey=/certs/client.key search_path=app_schema application_name=authentik",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := BuildDSN(tt.cfg)
+			require.NoError(t, err)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
+	db := SetupTestDB(t)
+	defer CleanupTestDB(t, db)
+
+	store := &PostgresStore{
+		db: db,
+		options: sessions.Options{
+			Path:   "/",
+			MaxAge: 3600,
+		},
+		keyPrefix: "test_session_",
+	}
+
+	sqlDB, err := store.db.DB()
+	require.NoError(t, err)
+
+	// Verify connection pool is configured
+	stats := sqlDB.Stats()
+	assert.GreaterOrEqual(t, stats.MaxOpenConnections, 1, "Connection pool should be configured")
+
+	// Test that we can create multiple sessions concurrently
+	// This indirectly tests connection pool handling
+	const numConcurrentOps = 20
+	done := make(chan error, numConcurrentOps)
+
+	for i := 0; i < numConcurrentOps; i++ {
+		go func(id int) {
+			req := httptest.NewRequest("GET", "/", nil)
+			w := httptest.NewRecorder()
+
+			session, err := store.New(req, "test_session")
+			if err != nil {
+				done <- err
+				return
+			}
+
+			session.Values["test"] = id
+			err = store.Save(req, w, session)
+			done <- err
+		}(i)
+	}
+
+	// Collect results
+	for i := 0; i < numConcurrentOps; i++ {
+		err := <-done
+		assert.NoError(t, err, "Concurrent operation %d should succeed", i)
+	}
 }
 
 // Helper function to create session data JSON

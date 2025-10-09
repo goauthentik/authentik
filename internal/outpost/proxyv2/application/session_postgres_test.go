@@ -41,7 +41,11 @@ func CleanupTestDB(t *testing.T, db *gorm.DB) {
 }
 
 func buildDSN(cfg config.PostgreSQLConfig) string {
-	return postgresstore.BuildDSN(cfg)
+	dsn, err := postgresstore.BuildDSN(cfg)
+	if err != nil {
+		panic(err)
+	}
+	return dsn
 }
 
 func NewTestStore(db *gorm.DB) *postgresstore.PostgresStore {
