@@ -455,5 +455,6 @@ func NewTestStore(db *gorm.DB) *PostgresStore {
 			MaxAge: 3600,
 		},
 		keyPrefix: "test_session_",
+		log:       log.WithField("logger", "test"),
 	}
 }
