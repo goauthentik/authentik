@@ -4456,7 +4456,7 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
-msgstr "Activer/désactiver l'appropriation utilisateur de manière globale."
+msgstr "Activer/désactiver l'usurpation d'identité de manière globale."
 
 #: authentik/tenants/models.py
 msgid "Require administrators to provide a reason for impersonating a user."
