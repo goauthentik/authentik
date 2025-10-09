@@ -162,7 +162,7 @@ class TaskLog(models.Model):
         indexes = (models.Index(fields=("task", "previous")),)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
     @classmethod
     def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self:
