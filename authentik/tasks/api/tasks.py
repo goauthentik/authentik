@@ -1,4 +1,5 @@
 from typing import cast
+
 from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
@@ -135,14 +136,12 @@ class TaskViewSet(
     ordering = ("-mtime",)
 
     def get_queryset(self):
-        qs = (
+        return (
             Task.objects.select_related("rel_obj_content_type")
+            .prefetch_related("tasklogs")
             .defer("message", "result")
             .filter(tenant=get_current_tenant())
         )
-        if self.action == "logs":
-            qs = qs.prefetch_related("tasklogs")
-        return qs
 
     @permission_required(None, ["authentik_tasks.retry_task"])
     @extend_schema(
