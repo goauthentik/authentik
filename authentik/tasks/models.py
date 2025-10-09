@@ -146,19 +146,20 @@ class Task(SerializerModel, TaskBase):
 class TaskLog(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
 
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasklogs")
     event = models.TextField()
     log_level = models.TextField()
     logger = models.TextField()
     timestamp = models.DateTimeField()
     attributes = models.JSONField()
 
-    previous = models.BooleanField(default=False)
+    previous = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         default_permissions = []
         verbose_name = _("Task log")
         verbose_name_plural = _("Task logs")
+        indexes = (models.Index(fields=("task", "previous")),)
 
     def __str__(self):
         return self.pk
@@ -188,6 +189,15 @@ class TaskLog(models.Model):
                 )
                 for log_event in log_events
             ]
+        )
+
+    def to_log_event(self) -> LogEvent:
+        return LogEvent(
+            event=self.event,
+            log_level=self.log_level,
+            logger=self.logger,
+            timestamp=self.timestamp,
+            attributes=self.attributes,
         )
 
 

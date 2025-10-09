@@ -30682,6 +30682,33 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /tasks/tasks/{message_id}/logs/:
+    get:
+      operationId: tasks_tasks_logs_retrieve
+      description: Global status summary for all tasks
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskLogs'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /tasks/tasks/{message_id}/retry/:
     post:
       operationId: tasks_tasks_retry_create
@@ -50696,16 +50723,6 @@ components:
         uid:
           type: string
           readOnly: true
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-        previous_messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
         aggregated_status:
           $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         description:
@@ -50716,8 +50733,6 @@ components:
       - actor_name
       - aggregated_status
       - description
-      - messages
-      - previous_messages
       - rel_obj_app_label
       - rel_obj_model
       - uid
@@ -50734,6 +50749,20 @@ components:
       - warning
       - error
       type: string
+    TaskLogs:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+        previous_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+      required:
+      - logs
+      - previous_logs
     TelegramChallengeResponseRequest:
       type: object
       description: Base class for all challenge responses
