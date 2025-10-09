@@ -68,7 +68,7 @@ By default service accounts are excluded from being synchronized. This can be co
 
 ### Supported options
 
-SCIM defines multiple optional settings to facilitate discovery of a SCIM service provider's features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
+SCIM defines several optional settings that allow clients to discover a service provider's supported features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
 
 - Filtering
 
