@@ -12,18 +12,14 @@ tags:
 
 Entra ID provides several services that can be integrated with authentik:
 
-    - OAuth integration allows users to sign into authentik using their Entra ID credentials. Accounts and groups are created upon first login.
-    - SCIM integration provisions users and groups from Entra ID to authentik.
-    - Optionally, both integrations can be used in conjunction so that users and groups are provisioned before a user signs in.
+    - **OAuth integration** allows users to sign into authentik using their Entra ID credentials. Accounts and groups are created upon first login.
+    - **SCIM integration** provisions users and groups from Entra ID to authentik.
+    - Optionally, both integrations can be used in conjunction so that users and groups are provisioned before a user signs in using their Entra ID credentials. This is the recommended setup for organizations with large numbers of users and groups.
 
 ## OAuth
 
-Entra ID provides OAuth 2.0 as a federated identity provider. This guide covers how to set up OAuth 2.0 as an authentication method between Entra ID and authentik.
-
-[Configure Entra ID OAuth with authentik](./oauth/index.mdx)
+The [Entra ID OAuth](./oauth/index.mdx) guide explains how to set up OAuth 2.0 as an authentication method between Entra ID and authentik.
 
 ## SCIM
 
-This guide covers how to provision users and groups from Entra ID into authentik via SCIM.
-
-[Configure Entra ID SCIM with authentik](./scim/index.mdx)
+The [Entra ID SCIM](./scim/index.mdx) guide explains how you can provision users and groups from Entra ID into authentik via SCIM.
