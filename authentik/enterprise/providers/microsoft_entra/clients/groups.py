@@ -220,11 +220,11 @@ class MicrosoftEntraGroupClient(
         )
         if not matching_authentik_group:
             return
-        MicrosoftEntraProviderGroup.objects.get_or_create(
+        MicrosoftEntraProviderGroup.objects.update_or_create(
             provider=self.provider,
             group=matching_authentik_group,
             microsoft_id=group.id,
-            attributes=self.entity_as_dict(group),
+            defaults={"attributes": self.entity_as_dict(group)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderGroup):
