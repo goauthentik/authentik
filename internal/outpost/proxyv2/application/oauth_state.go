@@ -68,11 +68,19 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	return u.String(), true
 }
 
-func (a *Application) createState(r *http.Request, fwd string) (string, error) {
-	s, _ := a.sessions.Get(r, a.SessionName())
+func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
 	if s.ID == "" {
 		// Ensure session has an ID
 		s.ID = base32RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+		// Save the session immediately so it persists
+		err := s.Save(r, w)
+		if err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
 	}
 	st := &OAuthState{
 		Issuer:    fmt.Sprintf("goauthentik.io/outpost/%s", a.proxyConfig.GetClientId()),
@@ -116,7 +124,11 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 		a.log.WithError(err).Warning("failed to mapdecode")
 		return nil
 	}
-	s, _ := a.sessions.Get(r, a.SessionName())
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to get session")
+		return nil
+	}
 	if claims.SessionID != s.ID {
 		a.log.WithField("is", claims.SessionID).WithField("should", s.ID).Warning("mismatched session ID")
 		return nil
