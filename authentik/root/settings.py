@@ -416,7 +416,7 @@ DRAMATIQ = {
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
-        ("authentik.tasks.middleware.RelObjMiddleware", {}),
+        ("authentik.tasks.middleware.ModelDataMiddleware", {}),
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
