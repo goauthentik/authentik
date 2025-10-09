@@ -267,7 +267,7 @@ msgstr "Réinitialiser le mot de passe"
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr "Peut se faire passer pour d'autres utilisateurs"
+msgstr "Peut usurper l'identité d'autres utilisateurs"
 
 #: authentik/core/models.py
 msgid "Can assign permissions to users"
