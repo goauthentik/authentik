@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -6,9 +7,9 @@ from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -43,6 +44,8 @@ class TaskSerializer(ModelSerializer):
             "actor_name",
             "state",
             "mtime",
+            "retries",
+            "eta",
             "rel_obj_app_label",
             "rel_obj_model",
             "rel_obj_id",
@@ -136,3 +139,48 @@ class TaskViewSet(
         broker = get_broker()
         broker.enqueue(Message.decode(task.message))
         return Response(status=204)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            200: inline_serializer(
+                "GlobalTaskStatusSerializer",
+                {
+                    "queued": IntegerField(read_only=True),
+                    "consumed": IntegerField(read_only=True),
+                    "preprocess": IntegerField(read_only=True),
+                    "running": IntegerField(read_only=True),
+                    "postprocess": IntegerField(read_only=True),
+                    "rejected": IntegerField(read_only=True),
+                    "done": IntegerField(read_only=True),
+                    "info": IntegerField(read_only=True),
+                    "warning": IntegerField(read_only=True),
+                    "error": IntegerField(read_only=True),
+                },
+            ),
+        },
+    )
+    @action(detail=False, methods=["GET"], permission_classes=[])
+    def status(self, request: Request) -> Response:
+        """Global status summary for all tasks"""
+        response = {}
+        for status in (
+            Task.objects.all()
+            .values("aggregated_status")
+            .annotate(count=Count("aggregated_status"))
+        ):
+            response[status["aggregated_status"]] = status["count"]
+        return Response(
+            {
+                "queued": response.get("queued", 0),
+                "consumed": response.get("consumed", 0),
+                "preprocess": response.get("preprocess", 0),
+                "running": response.get("running", 0),
+                "postprocess": response.get("postprocess", 0),
+                "rejected": response.get("rejected", 0),
+                "done": response.get("done", 0),
+                "info": response.get("info", 0),
+                "warning": response.get("warning", 0),
+                "error": response.get("error", 0),
+            }
+        )

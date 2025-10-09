@@ -62,15 +62,20 @@ export class UserSettingsPage extends AKElement {
             :host([theme="dark"]) .pf-c-page__main-section {
                 --pf-c-page__main-section--BackgroundColor: transparent;
             }
+
             .pf-c-page__main {
                 min-height: 100vh;
-                overflow-y: auto;
             }
+            .pf-c-page__main,
+            .pf-c-page__main {
+                overflow: unset;
+            }
+
             @media screen and (min-width: 1200px) {
                 :host {
                     width: 90rem;
-                    margin-left: auto;
-                    margin-right: auto;
+                    width: 90rem;
+                    align-self: center;
                 }
             }
         `,

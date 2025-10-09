@@ -49,6 +49,9 @@
     "go.testFlags": [
         "-count=1"
     ],
+    "go.testEnvVars": {
+        "WORKSPACE_DIR": "${workspaceFolder}"
+    },
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/ci-main.yml"
     ]

@@ -116,6 +116,7 @@ ${prompt.initialValue}</textarea
                 return html`<input
                     type="email"
                     id=${fieldId}
+                    autocomplete="email"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -243,9 +244,10 @@ ${prompt.initialValue}</textarea
     }
 
     renderPromptHelpText(prompt: StagePrompt) {
-        if (prompt.subText === "") {
+        if (!prompt.subText) {
             return nothing;
         }
+
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
@@ -296,11 +298,12 @@ ${prompt.initialValue}</textarea
     }
 
     renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
+        return html`<fieldset class="pf-c-form__group pf-m-action">
+            <legend class="sr-only">${msg("Form actions")}</legend>
             <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
-        </div>`;
+        </fieldset>`;
     }
 
     render(): TemplateResult {

@@ -27,20 +27,21 @@ export class Tabs extends AKElement {
         PFGlobal,
         PFTabs,
         css`
-            ::slotted(*) {
-                flex-grow: 2;
-            }
             :host([vertical]) {
-                display: flex;
-            }
-            :host([vertical]) .pf-c-tabs {
-                width: auto !important;
-            }
-            :host([vertical]) .pf-c-tabs__list {
-                height: 100%;
-            }
-            :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                border-color: transparent;
+                display: grid;
+                grid-template-columns: auto 1fr;
+
+                .pf-c-tabs {
+                    width: auto !important;
+                }
+
+                .pf-c-tabs__list {
+                    height: 100%;
+                }
+
+                .pf-c-tabs .pf-c-tabs__list::before {
+                    border-color: transparent;
+                }
             }
         `,
     ];
@@ -75,6 +76,7 @@ export class Tabs extends AKElement {
         updateURLParams(params);
         const page = this.querySelector(`[slot='${this.currentPage}']`);
         if (!page) return;
+
         page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
         page.dispatchEvent(new CustomEvent("activate"));
     }
