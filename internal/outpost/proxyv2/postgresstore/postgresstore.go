@@ -33,6 +33,7 @@ type PostgresStore struct {
 	// key prefix with which the session will be stored
 	keyPrefix      string
 	cleanupManager *sessionstore.CleanupManager
+	log            *log.Entry
 }
 
 // ProxySession represents the session data structure in PostgreSQL
@@ -149,19 +150,15 @@ func NewPostgresStore() (*PostgresStore, error) {
 			MaxAge: 86400 * 30, // 30 days default (but overwritten in postgresstore creation based on token validation)
 		},
 		keyPrefix: "authentik_proxy_session_",
+		log:       log.WithField("logger", "authentik.outpost.proxyv2.postgresstore"),
 	}
 
 	// Initialize cleanup manager
-	ps.cleanupManager = sessionstore.NewCleanupManager(
-		ps,
-		log.WithField("logger", "authentik.outpost.proxyv2.postgresstore"),
-	)
+	ps.cleanupManager = sessionstore.NewCleanupManager(ps, ps.log)
 
 	// Run cleanup once immediately on connect
 	if err := ps.CleanupExpired(); err != nil {
-		log.WithField("logger", "authentik.outpost.proxyv2.postgresstore").
-			WithError(err).
-			Warn("Failed to run initial cleanup")
+		ps.log.WithError(err).Warn("Failed to run initial cleanup")
 	}
 
 	ps.cleanupManager.Start()
@@ -353,9 +350,7 @@ func (s *PostgresStore) CleanupExpired() error {
 	}
 
 	if result.RowsAffected > 0 {
-		log.WithField("logger", "authentik.outpost.proxyv2.postgresstore").
-			WithField("count", result.RowsAffected).
-			Info("Cleaned up expired sessions")
+		s.log.WithField("count", result.RowsAffected).Info("Cleaned up expired sessions")
 	}
 
 	return nil
