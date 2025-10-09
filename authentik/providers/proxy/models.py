@@ -11,6 +11,7 @@ from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
+from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
@@ -26,14 +27,13 @@ SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
-class OutpostProxySession(models.Model):
+class OutpostProxySession(ExpiringModel):
     """Session storage for proxyv2 outposts using PostgreSQL"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
     session_key = models.TextField(unique=True, db_index=True)
     user_id = models.UUIDField(null=True, blank=True, db_index=True)
 
-    # Session data
     session_data = models.JSONField(default=dict, blank=True)
 
     class Meta:

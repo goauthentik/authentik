@@ -150,7 +150,6 @@ func TestPostgresStore_Load(t *testing.T) {
 			"exp":                time.Now().Add(time.Hour).Unix(),
 			"custom_claim":       "custom_value",
 		},
-		"_expires_at": time.Now().Add(time.Hour).Format(time.RFC3339),
 	}
 
 	sessionDataJSON, err := json.Marshal(sessionData)
@@ -161,6 +160,7 @@ func TestPostgresStore_Load(t *testing.T) {
 		SessionKey:  sessionKey,
 		UserID:      &userID,
 		SessionData: string(sessionDataJSON),
+		Expires:     time.Now().Add(time.Hour),
 	}
 	err = db.Create(&proxySession).Error
 	require.NoError(t, err)
@@ -195,15 +195,12 @@ func TestPostgresStore_Delete(t *testing.T) {
 
 	// Create a session in the database
 	sessionKey := "test_session_456"
-	sessionData := map[string]interface{}{
-		"_expires_at": time.Now().Add(time.Hour).Format(time.RFC3339),
-	}
-	sessionDataJSON, _ := json.Marshal(sessionData)
 
 	proxySession := ProxySession{
 		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
-		SessionData: string(sessionDataJSON),
+		SessionData: "{}",
+		Expires:     time.Now().Add(time.Hour),
 	}
 	err := db.Create(&proxySession).Error
 	require.NoError(t, err)
@@ -234,25 +231,17 @@ func TestPostgresStore_CleanupExpired(t *testing.T) {
 	}
 
 	// Create some sessions
-	expiredData := map[string]interface{}{
-		"_expires_at": time.Now().Add(-time.Hour).Format(time.RFC3339),
-	}
-	expiredDataJSON, _ := json.Marshal(expiredData)
-
-	validData := map[string]interface{}{
-		"_expires_at": time.Now().Add(time.Hour).Format(time.RFC3339),
-	}
-	validDataJSON, _ := json.Marshal(validData)
-
 	expiredSession := ProxySession{
 		UUID:        uuid.New(),
 		SessionKey:  "test_expired_session",
-		SessionData: string(expiredDataJSON),
+		SessionData: "{}",
+		Expires:     time.Now().Add(-time.Hour),
 	}
 	validSession := ProxySession{
 		UUID:        uuid.New(),
 		SessionKey:  "test_valid_session",
-		SessionData: string(validDataJSON),
+		SessionData: "{}",
+		Expires:     time.Now().Add(time.Hour),
 	}
 
 	err := db.Create(&expiredSession).Error
@@ -294,6 +283,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 
 	sessions := []ProxySession{
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_user1_1",
 			UserID:     &user1,
 			SessionData: createSessionData(t, map[string]interface{}{
@@ -302,6 +292,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_user1_2",
 			UserID:     &user1,
 			SessionData: createSessionData(t, map[string]interface{}{
@@ -310,6 +301,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_user2_1",
 			UserID:     &user2,
 			SessionData: createSessionData(t, map[string]interface{}{
@@ -358,18 +350,21 @@ func TestPostgresStore_LogoutSessions_ByEmail(t *testing.T) {
 	// Create sessions with different emails
 	sessions := []ProxySession{
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_1",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email": "admin@example.com",
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_2",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email": "admin@example.com",
 			}),
 		},
 		{
+			UUID:       uuid.New(),
 			SessionKey: "test_session_user_1",
 			SessionData: createSessionData(t, map[string]interface{}{
 				"email": "user@example.com",
@@ -495,7 +490,6 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	// Create an expired session
 	sessionKey := "test_expired_load"
 	expiredData := map[string]interface{}{
-		"_expires_at": time.Now().Add(-time.Hour).Format(time.RFC3339),
 		constants.SessionClaims: map[string]interface{}{
 			"sub": "test-user",
 		},
@@ -506,6 +500,7 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
 		SessionData: string(expiredDataJSON),
+		Expires:     time.Now().Add(-time.Hour),
 	}
 	err := db.Create(&proxySession).Error
 	require.NoError(t, err)
@@ -820,7 +815,6 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 func createSessionData(t *testing.T, claims map[string]interface{}) string {
 	sessionData := map[string]interface{}{
 		constants.SessionClaims: claims,
-		"_expires_at":           time.Now().Add(time.Hour).Format(time.RFC3339),
 	}
 	sessionDataJSON, err := json.Marshal(sessionData)
 	require.NoError(t, err)

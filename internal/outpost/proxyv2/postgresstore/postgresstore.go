@@ -42,6 +42,8 @@ type ProxySession struct {
 	SessionKey  string     `gorm:"column:session_key"`
 	UserID      *uuid.UUID `gorm:"column:user_id"`
 	SessionData string     `gorm:"type:jsonb;column:session_data"`
+	Expires     time.Time  `gorm:"column:expires"`
+	Expiring    bool       `gorm:"column:expiring"`
 }
 
 // TableName specifies the table name for GORM
@@ -256,12 +258,6 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 		}
 	}
 
-	// Add expiration timestamp to session data
-	if session.Options != nil && session.Options.MaxAge > 0 {
-		expiresAt := time.Now().UTC().Add(time.Duration(session.Options.MaxAge) * time.Second)
-		stringKeyedValues["_expires_at"] = expiresAt.Format(time.RFC3339)
-	}
-
 	// Serialize all session values to JSON
 	sessionData, err := json.Marshal(stringKeyedValues)
 	if err != nil {
@@ -288,6 +284,13 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 		UserID:      userID,
 		SessionData: string(sessionData),
 	}
+
+	// Add expiration timestamp to session data
+	if session.Options != nil && session.Options.MaxAge > 0 {
+		expiresAt := time.Now().UTC().Add(time.Duration(session.Options.MaxAge) * time.Second)
+		proxySession.Expires = expiresAt
+	}
+
 	return s.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "session_key"}},
 		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data"}),
@@ -303,6 +306,13 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 		return err
 	}
 
+	// Check if session is expired
+	if time.Now().UTC().After(proxySession.Expires) {
+		// Session is expired, delete it and return not found error
+		s.db.Delete(&ProxySession{}, "session_key = ?", session.ID)
+		return gorm.ErrRecordNotFound
+	}
+
 	// Deserialize session data from JSON
 	if proxySession.SessionData != "" && proxySession.SessionData != "{}" {
 		// First unmarshal to map[string]interface{}
@@ -310,19 +320,6 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 		err = json.Unmarshal([]byte(proxySession.SessionData), &stringKeyedValues)
 		if err != nil {
 			return fmt.Errorf("failed to unmarshal session data: %w", err)
-		}
-
-		// Check if session is expired
-		if expiresAt, ok := stringKeyedValues["_expires_at"]; ok {
-			if expiresAtStr, ok := expiresAt.(string); ok {
-				if expTime, err := time.Parse(time.RFC3339, expiresAtStr); err == nil {
-					if time.Now().UTC().After(expTime) {
-						// Session is expired, delete it and return not found error
-						s.db.Delete(&ProxySession{}, "session_key = ?", session.ID)
-						return gorm.ErrRecordNotFound
-					}
-				}
-			}
 		}
 
 		// Convert back to map[interface{}]interface{} for gorilla/sessions compatibility
@@ -342,12 +339,7 @@ func (s *PostgresStore) delete(session *sessions.Session) error {
 
 // CleanupExpired removes expired sessions by checking MaxAge in session_data
 func (s *PostgresStore) CleanupExpired() error {
-	// Use PostgreSQL's JSONB operators to filter expired sessions directly in the database
-	now := time.Now().UTC().Format(time.RFC3339)
-
-	// Delete sessions where session_data->>'_expires_at' < now
-	// This uses JSONB operator ->> to extract text value and compare it as a string
-	result := s.db.Where("(session_data::jsonb->>'_expires_at') < ?", now).Delete(&ProxySession{})
+	result := s.db.Where("'expires' < ?", time.Now().UTC()).Delete(&ProxySession{})
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete expired sessions: %w", result.Error)
 	}
