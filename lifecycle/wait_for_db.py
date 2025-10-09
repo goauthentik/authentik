@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 """This file needs to be run from the root of the project to correctly
 import authentik. This is done by the dockerfile."""
+
 from sys import exit as sysexit
 from time import sleep
 
 from psycopg import OperationalError, connect
-from redis import Redis
-from redis.exceptions import RedisError
 
-from authentik.lib.config import CONFIG, redis_url
+from authentik.lib.config import CONFIG
 
 CHECK_THRESHOLD = 30
 
@@ -40,24 +39,6 @@ def check_postgres():
     CONFIG.log("info", "PostgreSQL connection successful")
 
 
-def check_redis():
-    url = CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db"))
-    attempt = 0
-    while True:
-        if attempt >= CHECK_THRESHOLD:
-            sysexit(1)
-        try:
-            redis = Redis.from_url(url)
-            redis.ping()
-            break
-        except RedisError as exc:
-            sleep(1)
-            CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})")
-        finally:
-            attempt += 1
-    CONFIG.log("info", "Redis Connection successful")
-
-
 def wait_for_db():
     CONFIG.log("info", "Starting authentik bootstrap")
     # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
@@ -69,7 +50,6 @@ def wait_for_db():
         CONFIG.log("info", "----------------------------------------------------------------------")
         sysexit(1)
     check_postgres()
-    check_redis()
     CONFIG.log("info", "Finished authentik bootstrap")
 
 

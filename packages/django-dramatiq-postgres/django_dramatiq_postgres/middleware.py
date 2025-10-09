@@ -5,12 +5,9 @@ from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer as BaseHTTPServer
 from ipaddress import IPv6Address, ip_address
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
-from django.db import (
-    close_old_connections,
-    connections,
-)
+from django.db import DatabaseError, close_old_connections, connections
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
@@ -19,7 +16,10 @@ from dramatiq.middleware.middleware import Middleware
 from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
-from django_dramatiq_postgres.models import TaskBase
+from django_dramatiq_postgres.models import TaskBase, TaskState
+
+if TYPE_CHECKING:
+    from django_dramatiq_postgres.broker import PostgresBroker
 
 
 class HTTPServer(BaseHTTPServer):
@@ -68,6 +68,47 @@ class DbConnectionMiddleware(Middleware):
     before_consumer_thread_shutdown = _close_connections
     before_worker_thread_shutdown = _close_connections
     before_worker_shutdown = _close_connections
+
+
+class TaskStateBeforeMiddleware(Middleware):
+    def before_process_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.CONSUMED,
+        ).update(
+            state=TaskState.PREPROCESS,
+        )
+
+
+class TaskStateAfterMiddleware(Middleware):
+    def before_process_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.PREPROCESS,
+        ).update(
+            state=TaskState.RUNNING,
+        )
+
+    def after_skip_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.RUNNING,
+        ).update(
+            state=TaskState.POSTPROCESS,
+        )
+
+    def after_process_message(
+        self,
+        broker: "PostgresBroker",
+        message: Message[Any],
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ) -> None:
+        self.after_skip_message(broker, message)
 
 
 class FullyQualifiedActorName(Middleware):
@@ -125,6 +166,8 @@ class CurrentTask(Middleware):
             "message",
             "state",
             "mtime",
+            "retries",
+            "eta",
             "result",
             "result_expiry",
         }
@@ -137,7 +180,10 @@ class CurrentTask(Middleware):
             and not f.many_to_many
         ]
         if fields_to_update:
-            task.save(update_fields=fields_to_update)
+            try:
+                task.save(update_fields=fields_to_update)
+            except DatabaseError:
+                pass
         self._TASKS.set(tasks[:-1])
 
     def after_skip_message(self, broker: Broker, message: Message[Any]) -> None:

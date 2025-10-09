@@ -10,7 +10,6 @@ from urllib.parse import urlparse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
@@ -20,7 +19,7 @@ from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.lib.config import CONFIG
-from authentik.outposts.consumer import OUTPOST_GROUP
+from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
 from authentik.outposts.controllers.kubernetes import KubernetesClient
@@ -108,7 +107,6 @@ def outpost_service_connection_monitor(connection_pk: Any):
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
     self = CurrentTask.get_task()
-    self.set_uid(outpost_pk)
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -119,7 +117,6 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
     if not outpost:
         LOGGER.warning("No outpost")
         return
-    self.set_uid(slugify(outpost.name))
     try:
         controller_type = controller_for_outpost(outpost)
         if not controller_type:
@@ -160,7 +157,7 @@ def outpost_send_update(pk: Any):
     _ = outpost.token
     outpost.build_user_permissions(outpost.user)
     layer = get_channel_layer()
-    group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
+    group = build_outpost_group(outpost.pk)
     LOGGER.debug("sending update", channel=group, outpost=outpost)
     async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
@@ -212,7 +209,7 @@ def outpost_session_end(session_id: str):
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.all():
         LOGGER.info("Sending session end signal to outpost", outpost=outpost)
-        group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
+        group = build_outpost_group(outpost.pk)
         async_to_sync(layer.group_send)(
             group,
             {

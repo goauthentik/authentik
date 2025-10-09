@@ -13,12 +13,10 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
-from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
@@ -31,7 +29,7 @@ from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
-DB_ERRORS = (OperationalError, Error, RedisError)
+DB_ERRORS = (OperationalError, Error)
 
 
 class CurrentTask(BaseCurrentTask):
@@ -42,7 +40,7 @@ class CurrentTask(BaseCurrentTask):
 
 class TenantMiddleware(Middleware):
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        message.options["model_defaults"]["tenant"] = get_current_tenant()
+        message.options["model_create_defaults"]["tenant"] = get_current_tenant()
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
@@ -54,18 +52,20 @@ class TenantMiddleware(Middleware):
     after_skip_message = after_process_message
 
 
-class RelObjMiddleware(Middleware):
+class ModelDataMiddleware(Middleware):
     @property
     def actor_options(self):
-        return {"rel_obj"}
+        return {"rel_obj", "uid"}
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         if "rel_obj" in message.options:
             message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
+        if "uid" in message.options:
+            message.options["model_defaults"]["_uid"] = message.options.pop("uid")
 
 
 class MessagesMiddleware(Middleware):
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
@@ -109,13 +109,13 @@ class MessagesMiddleware(Middleware):
                 "Task finished processing without errors",
             )
             return
-        if should_ignore_exception(exception):
-            return
         task.log(
             class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
+        if should_ignore_exception(exception):
+            return
         event_kwargs = {
             "actor": task.actor_name,
         }
@@ -188,8 +188,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
         except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
@@ -239,6 +237,7 @@ class WorkerStatusMiddleware(Middleware):
                 sleep(10)
                 pass
 
+    @staticmethod
     def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):

@@ -16,7 +16,9 @@ import type { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchE
 
 import { Application } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { kebabCase } from "change-case";
+
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -52,39 +54,53 @@ export class LibraryApplication extends AKElement {
                 justify-content: space-between;
                 flex-direction: column;
             }
-            .pf-c-card__header a {
+
+            .launch-wrapper {
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+
+                &:hover {
+                    text-decoration: none;
+                }
             }
-            a:hover {
-                text-decoration: none;
-            }
+
             .expander {
                 flex-grow: 1;
             }
+
             .pf-c-card__title {
                 text-align: center;
-                /* This is not ideal as it hard limits us to 2 lines of text for the title
-                    of the application. In theory that should be fine for most cases, but ideally
-                    we don't do this */
-                height: 48px;
+
+                display: box;
+                display: -webkit-box;
+                line-clamp: 2;
+                -webkit-line-clamp: 2;
+                box-orient: vertical;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
         `,
     ];
 
+    #openRACLaunchModal = () => {
+        this.racEndpointLaunch?.show();
+    };
+
     renderExpansion(application: Application) {
         const { me, uiConfig } = rootInterface<UserInterface>();
 
-        return html`<ak-expand textOpen=${msg("Fewer details")} textClosed=${msg("More details")}>
-            <div class="pf-c-content">
+        return html`<ak-expand text-open=${msg("Details")} text-closed=${msg("Details")}>
+            <div class="pf-c-content" part="card-expansion">
                 <small>${application.metaPublisher}</small>
             </div>
-            ${truncateWords(application.metaDescription || "", 10)}
+            <div id="app-description" part="card-description">
+                ${truncateWords(application.metaDescription || "", 10)}
+            </div>
             ${uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
+                          aria-label=${msg(str`Edit "${application.name}"`)}
                           href="${globalAK().api
                               .base}if/admin/#/core/applications/${application?.slug}"
                       >
@@ -99,51 +115,55 @@ export class LibraryApplication extends AKElement {
         if (!this.application) {
             return nothing;
         }
-        if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
-            return html`<div class="pf-c-card__header">
-                    <a
-                        @click=${() => {
-                            this.racEndpointLaunch?.show();
-                        }}
-                    >
-                        <ak-app-icon
-                            size=${PFSize.Large}
-                            name=${this.application.name}
-                            icon=${ifPresent(this.application.metaIcon)}
-                        ></ak-app-icon>
-                    </a>
-                </div>
-                <div class="pf-c-card__title">
-                    <a
-                        @click=${() => {
-                            this.racEndpointLaunch?.show();
-                        }}
-                    >
-                        ${this.application.name}
-                    </a>
-                </div>
-                <ak-library-rac-endpoint-launch .app=${this.application}>
-                </ak-library-rac-endpoint-launch>`;
-        }
-        return html`<div class="pf-c-card__header">
-                <a
-                    href="${ifPresent(this.application.launchUrl ?? "")}"
-                    target="${ifPresent(this.application.openInNewTab, "_blank")}"
+
+        if (this.application.launchUrl === "goauthentik.io://providers/rac/launch") {
+            return html`<div
+                    part="card-header"
+                    class="pf-c-card__header pf-m-pressable"
+                    role="button"
+                    aria-label=${msg(
+                        str`Open Remote Access Control launcher for "${this.application.name}"`,
+                    )}
+                    @click=${this.#openRACLaunchModal}
                 >
                     <ak-app-icon
+                        part="card-header-icon"
                         size=${PFSize.Large}
                         name=${this.application.name}
                         icon=${ifPresent(this.application.metaIcon)}
                     ></ak-app-icon>
-                </a>
-            </div>
-            <div class="pf-c-card__title">
-                <a
-                    href="${ifPresent(this.application.launchUrl ?? "")}"
-                    target="${ifPresent(this.application.openInNewTab, "_blank")}"
-                    >${this.application.name}</a
+                </div>
+                <div
+                    @click=${this.#openRACLaunchModal}
+                    id="app-title"
+                    class="pf-c-card__title pf-m-pressable"
+                    part="card-title"
                 >
-            </div>`;
+                    ${this.application.name}
+                </div>
+                <ak-library-rac-endpoint-launch .app=${this.application}>
+                </ak-library-rac-endpoint-launch>`;
+        }
+
+        return html`<a
+            class="launch-wrapper"
+            part="card-header-link"
+            aria-label=${msg(str`Open "${this.application.name}"`)}
+            href=${ifPresent(this.application.launchUrl)}
+            target=${ifPresent(this.application.openInNewTab, "_blank")}
+        >
+            <div class="pf-c-card__header" part="card-header">
+                <ak-app-icon
+                    part="card-header-icon"
+                    size=${PFSize.Large}
+                    name=${this.application.name}
+                    icon=${ifPresent(this.application.metaIcon)}
+                ></ak-app-icon>
+            </div>
+            <div id="app-title" class="pf-c-card__title" part="card-title">
+                ${this.application.name}
+            </div>
+        </a>`;
     }
 
     render(): TemplateResult {
@@ -158,11 +178,21 @@ export class LibraryApplication extends AKElement {
             this.application.metaPublisher !== "" ||
             this.application.metaDescription !== "";
 
-        const classes = { "pf-m-selectable": this.selected, "pf-m-selected": this.selected };
+        const classes = {
+            "pf-m-selectable": this.selected,
+            "pf-m-selected": this.selected,
+        };
+
         const styles = this.background ? { background: this.background } : {};
-        return html` <div
+        const applicationName = kebabCase(this.application.name);
+
+        return html`<div
+            role="gridcell"
             class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}"
             style=${styleMap(styles)}
+            data-application-name=${ifPresent(applicationName)}
+            aria-labelledby="app-title"
+            aria-describedby="app-description"
         >
             ${this.renderLaunch()}
             <div class="expander"></div>

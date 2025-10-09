@@ -39,6 +39,7 @@ def outpost_pre_save(sender, instance: Outpost, **_):
             args=(instance.pk.hex,),
             kwargs={"action": "down", "from_cache": True},
             rel_obj=instance,
+            uid=instance.name,
         )
 
 
@@ -51,15 +52,25 @@ def outpost_m2m_changed(sender, instance: Outpost | Provider, action: str, **_):
         outpost_controller.send_with_options(
             args=(instance.pk,),
             rel_obj=instance.service_connection,
+            uid=instance.name,
         )
-        outpost_send_update.send_with_options(args=(instance.pk,), rel_obj=instance)
+        outpost_send_update.send_with_options(
+            args=(instance.pk,),
+            rel_obj=instance,
+            uid=instance.name,
+        )
     elif isinstance(instance, OutpostModel):
         for outpost in instance.outpost_set.all():
             outpost_controller.send_with_options(
                 args=(instance.pk,),
                 rel_obj=instance.service_connection,
+                uid=instance.name,
             )
-            outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
+            outpost_send_update.send_with_options(
+                args=(outpost.pk,),
+                rel_obj=outpost,
+                uid=outpost.name,
+            )
 
 
 @receiver(post_save, sender=Outpost)
@@ -67,13 +78,25 @@ def outpost_post_save(sender, instance: Outpost, created: bool, **_):
     if created:
         LOGGER.info("New outpost saved, ensuring initial token and user are created")
         _ = instance.token
-    outpost_controller.send_with_options(args=(instance.pk,), rel_obj=instance.service_connection)
-    outpost_send_update.send_with_options(args=(instance.pk,), rel_obj=instance)
+    outpost_controller.send_with_options(
+        args=(instance.pk,),
+        rel_obj=instance.service_connection,
+        uid=instance.name,
+    )
+    outpost_send_update.send_with_options(
+        args=(instance.pk,),
+        rel_obj=instance,
+        uid=instance.name,
+    )
 
 
 def outpost_related_post_save(sender, instance: OutpostServiceConnection | OutpostModel, **_):
     for outpost in instance.outpost_set.all():
-        outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
+        outpost_send_update.send_with_options(
+            args=(outpost.pk,),
+            rel_obj=outpost,
+            uid=outpost.name,
+        )
 
 
 post_save.connect(outpost_related_post_save, sender=OutpostServiceConnection, weak=False)
@@ -102,7 +125,11 @@ def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Bra
         for reverse in getattr(instance, field_name).all():
             if isinstance(reverse, OutpostModel):
                 for outpost in reverse.outpost_set.all():
-                    outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
+                    outpost_send_update.send_with_options(
+                        args=(outpost.pk,),
+                        rel_obj=outpost,
+                        uid=outpost.name,
+                    )
 
 
 post_save.connect(outpost_reverse_related_post_save, sender=Brand, weak=False)
@@ -114,7 +141,11 @@ def outpost_pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()
     cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
-    outpost_controller.send(instance.pk.hex, action="down", from_cache=True)
+    outpost_controller.send_with_options(
+        args=(instance.pk.hex,),
+        kwargs={"action": "down", "from_cache": True},
+        uid=instance.name,
+    )
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
