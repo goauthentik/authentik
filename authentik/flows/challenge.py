@@ -54,6 +54,7 @@ class Challenge(PassiveSerializer):
 
     flow_info = ContextualFlowInfo(required=False)
     component = CharField(default="")
+    xid = CharField(required=False)
 
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
