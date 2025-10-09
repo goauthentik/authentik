@@ -4,6 +4,7 @@ import string
 from collections.abc import Iterable
 from random import SystemRandom
 from urllib.parse import urljoin
+from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
