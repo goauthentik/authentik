@@ -14,7 +14,7 @@ authentik dynamically injects logout stages into the user's current logout flow 
     - **OIDC providers**: Queries for providers with front-channel or back-channel logout enabled
 3. For each logout method with active sessions, the appropriate logout stage is injected:
     - **iframe logout stage** - Injected at index 1 (immediately after the logout stage) for front-channel iframe logout
-    - **Native logout stage** - Injected at index 2 (after iframe logout, if present) for front-channel native logout
+    - **Native logout stage** - Injected at index 2 (after the iframe logout, if present) for front-channel native logout
     - **Back-channel logout** - Executed server-side without injecting additional stages
 4. The user progresses through these injected stages before logout completes
 
