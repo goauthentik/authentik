@@ -76,6 +76,7 @@ func TestPostgresStore_SessionLifecycle(t *testing.T) {
 	require.NoError(t, err)
 
 	session := postgresstore.ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
 		UserID:      &userID,
 		SessionData: string(sessionDataJSON),
@@ -130,18 +131,21 @@ func TestPostgresStore_LogoutSessions(t *testing.T) {
 
 	sessions := []postgresstore.ProxySession{
 		{
+			UUID:        uuid.New(),
 			SessionKey:  "session_user1_1",
 			UserID:      &user1,
 			SessionData: createSessionData(user1, "user1@example.com"),
 			Expires:     time.Now().Add(time.Hour),
 		},
 		{
+			UUID:        uuid.New(),
 			SessionKey:  "session_user1_2",
 			UserID:      &user1,
 			SessionData: createSessionData(user1, "user1@example.com"),
 			Expires:     time.Now().Add(time.Hour),
 		},
 		{
+			UUID:        uuid.New(),
 			SessionKey:  "session_user2_1",
 			UserID:      &user2,
 			SessionData: createSessionData(user2, "user2@example.com"),
