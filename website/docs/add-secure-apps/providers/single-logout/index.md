@@ -2,7 +2,7 @@
 title: Single Logout (SLO)
 ---
 
-Single Logout is a security feature that logs a user out of all their applications with active sessions when they log out of authentik. It uses the OAuth2/OpenID Connect front-channel and back-channel logout specifications in combination with SAML's Single Logout specification.
+Single Logout (SLO) is a security feature that logs users out of all active applications when they log out of authentik. It uses the OAuth2/OpenID Connect front-channel and back-channel logout specifications in combination with SAML's Single Logout specification.
 
 For example, if a user is concurrently logged into an OIDC application and two SAML applications, when the user logs out of authentik, they will automatically be logged out of all three applications. Without SLO configured, users with active sessions across multiple applications would need to manually log out of each one.
 
