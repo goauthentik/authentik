@@ -25,6 +25,9 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 
 	gormConfig := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
+		NowFunc: func() time.Time {
+			return time.Now().UTC()
+		},
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
