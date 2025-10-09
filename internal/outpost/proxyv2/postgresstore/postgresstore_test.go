@@ -34,6 +34,12 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
 	require.NoError(t, err)
 
+	// Configure connection pool
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+
 	// Auto-migrate the schema
 	err = db.AutoMigrate(&ProxySession{})
 	require.NoError(t, err)
