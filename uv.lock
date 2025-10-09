@@ -991,7 +991,7 @@ dependencies = [
     { name = "django" },
     { name = "django-pgtrigger" },
     { name = "msgpack" },
-    { name = "psycopg" },
+    { name = "psycopg", extra = ["pool"] },
     { name = "structlog" },
 ]
 
@@ -1001,7 +1001,7 @@ requires-dist = [
     { name = "django", specifier = ">=4.2,<6.0" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "msgpack", specifier = ">=1,<2" },
-    { name = "psycopg", specifier = ">=3,<4" },
+    { name = "psycopg", extras = ["pool"], specifier = ">=3,<4" },
     { name = "structlog", specifier = ">=25,<26" },
 ]
 

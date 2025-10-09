@@ -3,7 +3,6 @@
 from json import loads
 
 from django.test import TestCase
-from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
@@ -436,7 +435,7 @@ class SCIMUserTests(TestCase):
         task = list(
             Task.objects.filter(
                 actor_name=scim_sync_objects.actor_name,
-                _uid__startswith=slugify(self.provider.name),
+                _uid__startswith=self.provider.name,
             ).order_by("-mtime")
         )[1]
         self.assertIsNotNone(task)

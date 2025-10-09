@@ -1,7 +1,9 @@
 import asyncio
 import functools
 import types
+import zlib
 from base64 import b64decode
+from contextlib import AbstractAsyncContextManager
 from datetime import UTC, datetime, timedelta
 from re import Pattern
 from typing import Any, cast
@@ -14,6 +16,7 @@ from django.utils.timezone import now
 from psycopg import AsyncConnection, Notify, sql
 from psycopg.conninfo import make_conninfo
 from psycopg.errors import Error as PsycopgError
+from psycopg_pool import AsyncConnectionPool
 from structlog.stdlib import get_logger
 
 from django_channels_postgres.models import NOTIFY_CHANNEL, GroupChannel, Message
@@ -78,11 +81,14 @@ class PostgresChannelLayerLoopProxy:
 
     def serialize(self, message: dict[str, Any]) -> bytes:
         """Serializes message to a byte string."""
-        return cast(bytes, msgpack.packb(message, use_bin_type=True))
+        m = cast(bytes, msgpack.packb(message, use_bin_type=True))
+        c = zlib.compress(m, 6)
+        return c
 
     def deserialize(self, message: bytes) -> dict[str, Any]:
         """Deserializes from a byte string."""
-        return cast(dict[str, Any], msgpack.unpackb(message, raw=False))
+        m = zlib.decompress(message)
+        return cast(dict[str, Any], msgpack.unpackb(m, raw=False))
 
     def _get_layer(self) -> "PostgresChannelLoopLayer":
         loop = asyncio.get_running_loop()
@@ -132,12 +138,40 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         assert isinstance(self.prefix, str), "Prefix must be unicode"  # nosec
         self.channel_layer = channel_layer
         self.using = using
+        self._pool_lock = asyncio.Lock()
 
         # Each consumer gets its own *specific* channel, created with the `new_channel()` method.
         # This dict maps `channel_name` to a queue of messages for that channel.
         self.channels: dict[str, asyncio.Queue[tuple[str, bytes | None]]] = {}
 
+        self._pool: AsyncConnectionPool | None = None
         self.receiver = PostgresChannelLayerReceiver(self.using, self)
+
+    def make_conninfo(self) -> str:
+        db_params = connections[self.using].get_connection_params()
+        # Prevent psycopg from using the custom synchronous cursor factory from django
+        db_params.pop("cursor_factory")
+        db_params.pop("context")
+        return make_conninfo(conninfo="", **db_params, connect_timeout=10)
+
+    async def connection(self) -> AbstractAsyncContextManager[AsyncConnection]:
+        if self._pool is None:
+            async with self._pool_lock:
+
+                async def _configure_connection(conn: AsyncConnection) -> None:
+                    await conn.set_autocommit(True)
+                    conn.prepare_threshold = 0  # All statements should be prepared
+                    conn.prepared_max = None  # No limit on the number of prepared statements
+
+                self._pool = AsyncConnectionPool(
+                    conninfo=self.make_conninfo(),
+                    open=False,
+                    configure=_configure_connection,
+                    min_size=1,
+                    max_size=4,
+                )
+                await self._pool.open(wait=True)
+        return self._pool.connection()
 
     async def _subscribe_to_channel(self, channel: str) -> None:
         self.channels[channel] = asyncio.Queue()
@@ -157,11 +191,29 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         # Make sure the message does not contain reserved keys
         assert "__asgi_channel__" not in message  # nosec
 
-        await Message.objects.using(self.using).acreate(
-            channel=channel,
-            message=self.channel_layer.serialize(message),
-            expires=now() + timedelta(seconds=self.expiry),
-        )
+        async with await self.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    sql.SQL(
+                        """
+                        INSERT INTO {table}
+                        ({id}, {channel}, {message}, {expires})
+                        VALUES (%s, %s, %s, %s)
+                        """
+                    ).format(
+                        table=sql.Identifier(MESSAGE_TABLE),
+                        id=sql.Identifier("id"),
+                        channel=sql.Identifier("channel"),
+                        message=sql.Identifier("message"),
+                        expires=sql.Identifier("expires"),
+                    ),
+                    (
+                        uuid4(),
+                        channel,
+                        self.channel_layer.serialize(message),
+                        now() + timedelta(seconds=self.expiry),
+                    ),
+                )
 
     async def new_channel(self, prefix: str = "specific") -> str:
         """
@@ -186,10 +238,26 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
             while True:
                 (message_id, message) = await q.get()
                 if message is None:
-                    m = await Message.objects.filter(pk=message_id).afirst()
-                    if m is None:
-                        continue
-                    message = cast(bytes, m.message)
+                    async with await self.connection() as conn:
+                        async with conn.cursor() as cursor:
+                            await cursor.execute(
+                                sql.SQL(
+                                    """
+                                    SELECT {table}.{message}
+                                    FROM {table}
+                                    WHERE {table}.{id} = %s
+                                    """
+                                ).format(
+                                    table=sql.Identifier(MESSAGE_TABLE),
+                                    id=sql.Identifier("id"),
+                                    message=sql.Identifier("message"),
+                                ),
+                                (message_id,),
+                            )
+                            row = await cursor.fetchone()
+                            if row is None:
+                                continue
+                            message = row[0]
                 break
         except (asyncio.CancelledError, TimeoutError, GeneratorExit):
             # We assume here that the reason we are cancelled is because the consumer
@@ -225,13 +293,29 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
         group_key = self._group_key(group)
 
-        await GroupChannel.objects.using(self.using).aupdate_or_create(
-            group_key=group_key,
-            channel=channel,
-            defaults={
-                "expires": now() + timedelta(seconds=self.group_expiry),
-            },
-        )
+        async with await self.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    sql.SQL(
+                        """
+                        INSERT INTO {table}
+                        ({id}, {group_key}, {channel}, {expires})
+                        VALUES (%s, %s, %s, %s)
+                        """
+                    ).format(
+                        table=sql.Identifier(GROUP_CHANNEL_TABLE),
+                        id=sql.Identifier("id"),
+                        group_key=sql.Identifier("group_key"),
+                        channel=sql.Identifier("channel"),
+                        expires=sql.Identifier("expires"),
+                    ),
+                    (
+                        uuid4(),
+                        group_key,
+                        channel,
+                        now() + timedelta(seconds=self.group_expiry),
+                    ),
+                )
 
     async def group_discard(self, group: str, channel: str) -> None:
         """
@@ -244,11 +328,23 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
 
         group_key = self._group_key(group)
 
-        await (
-            GroupChannel.objects.using(self.using)
-            .filter(group_key=group_key, channel=channel)
-            .adelete()
-        )
+        async with await self.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    sql.SQL(
+                        """
+                        DELETE
+                        FROM {table}
+                        WHERE {table}.{group_key} = %s
+                          AND {table}.{channel} = %s
+                        """
+                    ).format(
+                        table=sql.Identifier(GROUP_CHANNEL_TABLE),
+                        group_key=sql.Identifier("group_key"),
+                        channel=sql.Identifier("channel"),
+                    ),
+                    (group_key, channel),
+                )
 
     async def group_send(self, group: str, message: dict[str, Any]) -> None:
         """
@@ -259,18 +355,45 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         group_key = self._group_key(group)
 
         serialized_message = self.channel_layer.serialize(message)
-        messages = [
-            Message(
-                channel=channel,
-                message=serialized_message,
-                expires=now() + timedelta(seconds=self.expiry),
-            )
-            async for channel in GroupChannel.objects.using(self.using)
-            .filter(group_key=group_key, expires__gte=now())
-            .values_list("channel", flat=True)
-            .distinct()
-        ]
-        await Message.objects.using(self.using).abulk_create(messages)
+
+        async with await self.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    sql.SQL(
+                        """
+                        SELECT DISTINCT {table}.{channel}
+                        FROM {table}
+                        WHERE {table}.{group_key} = %s
+                        """
+                    ).format(
+                        table=sql.Identifier(GROUP_CHANNEL_TABLE),
+                        channel=sql.Identifier("channel"),
+                        group_key=sql.Identifier("group_key"),
+                    ),
+                    (group_key,),
+                )
+                channels = [row[0] for row in await cursor.fetchall()]
+            messages = [
+                (uuid4(), channel, serialized_message, now() + timedelta(seconds=self.expiry))
+                for channel in channels
+            ]
+            async with conn.cursor() as cursor:
+                await cursor.executemany(
+                    sql.SQL(
+                        """
+                        INSERT INTO {table}
+                        ({id}, {channel}, {message}, {expires})
+                        VALUES (%s, %s, %s, %s)
+                        """
+                    ).format(
+                        table=sql.Identifier(MESSAGE_TABLE),
+                        id=sql.Identifier("id"),
+                        channel=sql.Identifier("channel"),
+                        message=sql.Identifier("message"),
+                        expires=sql.Identifier("expires"),
+                    ),
+                    messages,
+                )
 
     def _group_key(self, group: str) -> str:
         """
@@ -322,7 +445,10 @@ class PostgresChannelLayerReceiver:
     async def _do_receiving(self) -> None:
         while True:
             try:
-                async with await self._create_connection() as conn:
+                async with await AsyncConnection.connect(
+                    conninfo=self.channel_layer.make_conninfo(),
+                    autocommit=True,
+                ) as conn:
                     await self._process_backlog(conn)
                     await conn.execute(
                         sql.SQL("LISTEN {channel}").format(channel=sql.Identifier(NOTIFY_CHANNEL))
@@ -347,9 +473,8 @@ class PostgresChannelLayerReceiver:
                     """
                     DELETE
                     FROM {table}
-                    WHERE
-                        {table}.{channel} IN (%s)
-                        AND {table}.{expires} >= %s
+                    WHERE {table}.{channel} IN (%s)
+                      AND {table}.{expires} >= %s
                     RETURNING {table}.{id}, {table}.{channel}, {table}.{message}
                 """
                 ).format(
@@ -397,11 +522,3 @@ class PostgresChannelLayerReceiver:
     def _ensure_receiver(self) -> None:
         if self._receive_task is None:
             self._receive_task = asyncio.ensure_future(self._do_receiving())
-
-    async def _create_connection(self) -> AsyncConnection:
-        db_params = connections[self.using].get_connection_params()
-        # Prevent psycopg from using the custom synchronous cursor factory from django
-        db_params.pop("cursor_factory")
-        db_params.pop("context")
-        conninfo = make_conninfo(conninfo="", **db_params, connect_timeout=10)
-        return await AsyncConnection.connect(conninfo=conninfo, autocommit=True)
