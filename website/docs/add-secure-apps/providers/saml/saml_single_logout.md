@@ -40,7 +40,7 @@ With front-channel native logout, authentik chains logout requests sequentially 
 
 ### Back-channel logout
 
-With back-channel logout, authentik sends SAML logout requests directly from the server to each provider's SLS URL using HTTP POST. This happens asynchronously and does not require browser interaction. Back-channel logout is also triggered automatically when:
+With back-channel logout, authentik sends SAML logout requests directly from the server to each provider's SLS URL via HTTP POST. This happens asynchronously and does not require browser interaction. Back-channel logout is also triggered automatically when:
 
     - A user's session is administratively deleted.
     - A user account is deactivated.
