@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
-from django.utils.text import slugify
 from dramatiq.actor import Actor
 from dramatiq.composition import group
 from dramatiq.errors import Retry
