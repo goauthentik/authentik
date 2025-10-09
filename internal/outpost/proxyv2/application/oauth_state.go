@@ -69,7 +69,10 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 }
 
 func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
-	s, _ := a.sessions.Get(r, a.SessionName())
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
 	if s.ID == "" {
 		// Ensure session has an ID
 		s.ID = base32RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
@@ -121,7 +124,11 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 		a.log.WithError(err).Warning("failed to mapdecode")
 		return nil
 	}
-	s, _ := a.sessions.Get(r, a.SessionName())
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to get session")
+		return nil
+	}
 	if claims.SessionID != s.ID {
 		a.log.WithField("is", claims.SessionID).WithField("should", s.ID).Warning("mismatched session ID")
 		return nil
