@@ -69,9 +69,9 @@ class TaskLogMiddleware(Middleware):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
-            TaskLog.objects.create(
-                task=task,
-                log=Task._make_log(
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
@@ -80,9 +80,9 @@ class TaskLogMiddleware(Middleware):
             )
         else:
             TaskLog.objects.filter(task=task).update(previous=True)
-            TaskLog.objects.create(
-                task=task,
-                log=Task._make_log(
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
