@@ -6675,10 +6675,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
   <target>服務帳號應用於機器對機器的身份認證或其他自動化操作。</target>
 </trans-unit>
-<trans-unit id="s8fa26f65aed77c96">
-  <source>More details</source>
-  <target>顯示更多資訊</target>
-</trans-unit>
 <trans-unit id="s08df8d0a773a3ea0">
   <source>Remove item</source>
   <target>移除物件</target>
@@ -8563,9 +8559,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sfc2c3bd345c0128a">
   <source>Disconnected</source>
 </trans-unit>
-<trans-unit id="s47b7ce63a543564c">
-  <source>Fewer details</source>
-</trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
 </trans-unit>
@@ -9307,9 +9300,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="saa25eac2952d918d">
   <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
-<trans-unit id="s021258b2c04e722f">
-  <source>Search for an application by name</source>
-</trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
 </trans-unit>
@@ -9746,12 +9736,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
 </trans-unit>
-<trans-unit id="s6af56cad861de0da">
-  <source>Close inspector</source>
-</trans-unit>
-<trans-unit id="s34dcdae237b89744">
-  <source>Open inspector</source>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
 </trans-unit>
@@ -9778,6 +9762,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc62e587718608e85">
   <source>No expiry</source>
+</trans-unit>
+<trans-unit id="s84fb675fb17d4455">
+  <source>Retries</source>
+</trans-unit>
+<trans-unit id="s1d300a2f13c19ab4">
+  <source>Planned execution time</source>
+</trans-unit>
+<trans-unit id="s3736936aac1adc2e">
+  <source>Open flow inspector</source>
+</trans-unit>
+<trans-unit id="se45c122d3b2aa43d">
+  <source>Open Remote Access Control launcher for "<x id="0" equiv-text="${this.application.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s1ff2128af96d843f">
+  <source>Available applications</source>
+</trans-unit>
+<trans-unit id="sda842e40ed1d9a2f">
+  <source>Application search</source>
+</trans-unit>
+<trans-unit id="s65b433c52c2ad8eb">
+  <source>Search for an application by name...</source>
 </trans-unit>
     </body>
   </file>
