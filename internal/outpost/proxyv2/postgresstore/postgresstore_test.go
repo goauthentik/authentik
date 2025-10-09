@@ -185,45 +185,6 @@ func TestPostgresStore_Delete(t *testing.T) {
 	assert.Equal(t, int64(0), count)
 }
 
-func TestPostgresStore_CleanupExpired(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
-
-	store := NewTestStore(db)
-	// Create some sessions
-	expiredSession := ProxySession{
-		UUID:        uuid.New(),
-		SessionKey:  "test_expired_session",
-		SessionData: "{}",
-		Expires:     time.Now().Add(-time.Hour),
-	}
-	validSession := ProxySession{
-		UUID:        uuid.New(),
-		SessionKey:  "test_valid_session",
-		SessionData: "{}",
-		Expires:     time.Now().Add(time.Hour),
-	}
-
-	err := db.Create(&expiredSession).Error
-	require.NoError(t, err)
-	err = db.Create(&validSession).Error
-	require.NoError(t, err)
-
-	// Clean up expired sessions
-	err = store.CleanupExpired()
-	assert.NoError(t, err)
-
-	// Verify only valid session remains
-	var count int64
-	db.Model(&ProxySession{}).Where("session_key LIKE 'test_%'").Count(&count)
-	assert.Equal(t, int64(1), count)
-
-	var remaining ProxySession
-	err = db.Where("session_key LIKE 'test_%'").First(&remaining).Error
-	assert.NoError(t, err)
-	assert.Equal(t, "test_valid_session", remaining.SessionKey)
-}
-
 func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 	db := SetupTestDB(t)
 	defer CleanupTestDB(t, db)

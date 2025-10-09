@@ -21,7 +21,6 @@ import (
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
-	"goauthentik.io/internal/outpost/proxyv2/sessionstore"
 	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
@@ -31,9 +30,8 @@ type PostgresStore struct {
 	// default options to use when a new session is created
 	options sessions.Options
 	// key prefix with which the session will be stored
-	keyPrefix      string
-	cleanupManager *sessionstore.CleanupManager
-	log            *log.Entry
+	keyPrefix string
+	log       *log.Entry
 }
 
 // ProxySession represents the session data structure in PostgreSQL
@@ -158,16 +156,6 @@ func NewPostgresStore() (*PostgresStore, error) {
 		log:       log.WithField("logger", "authentik.outpost.proxyv2.postgresstore"),
 	}
 
-	// Initialize cleanup manager
-	ps.cleanupManager = sessionstore.NewCleanupManager(ps, ps.log)
-
-	// Run cleanup once immediately on connect
-	if err := ps.CleanupExpired(); err != nil {
-		ps.log.WithError(err).Warn("Failed to run initial cleanup")
-	}
-
-	ps.cleanupManager.Start()
-
 	return ps, nil
 }
 
@@ -236,11 +224,6 @@ func (s *PostgresStore) KeyPrefix(keyPrefix string) {
 
 // Close closes the PostgreSQL store
 func (s *PostgresStore) Close() error {
-	// Stop cleanup manager
-	if s.cleanupManager != nil {
-		s.cleanupManager.Stop()
-	}
-
 	sqlDB, err := s.db.DB()
 	if err != nil {
 		return err
