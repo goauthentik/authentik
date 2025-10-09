@@ -157,18 +157,19 @@ class PostgresBroker(Broker):
         )
 
         message.options["model_defaults"] = self.model_defaults(message)
+        message.options["model_create_defaults"] = {}
         self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
 
         with transaction.atomic(using=self.db_alias):
             query = {
                 "message_id": message.message_id,
             }
-            defaults = message.options["model_defaults"]
-            del message.options["model_defaults"]
+            defaults = message.options.pop("model_defaults")
             defaults["message"] = message.encode()
             create_defaults = {
                 **query,
                 **defaults,
+                **message.options.pop("model_create_defaults"),
             }
 
             task, created = self.query_set.update_or_create(
