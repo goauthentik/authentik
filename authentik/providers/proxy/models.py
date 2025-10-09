@@ -28,7 +28,7 @@ OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 class OutpostProxySession(models.Model):
     """Session storage for proxyv2 outposts using PostgreSQL"""
 
-    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
     session_key = models.TextField(unique=True, db_index=True)
     user_id = models.UUIDField(null=True, blank=True, db_index=True)
 
