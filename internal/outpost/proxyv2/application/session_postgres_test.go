@@ -30,9 +30,6 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
 	require.NoError(t, err)
 
-	err = db.AutoMigrate(&postgresstore.ProxySession{})
-	require.NoError(t, err)
-
 	return db
 }
 
