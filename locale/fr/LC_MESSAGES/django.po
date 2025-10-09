@@ -4461,7 +4461,8 @@ msgstr "Activer/désactiver l'usurpation d'identité de manière globale."
 #: authentik/tenants/models.py
 msgid "Require administrators to provide a reason for impersonating a user."
 msgstr ""
-"Forcer les administrateurs à fournir une raison d'appropriation utilisateur."
+"Forcer les administrateurs à fournir une raison lors de l'usurpation "
+"d'identité."
 
 #: authentik/tenants/models.py
 msgid "Default token duration"
