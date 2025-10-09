@@ -1,5 +1,4 @@
 from typing import cast
-
 from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
@@ -12,6 +11,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiResponse,
     extend_schema,
+    extend_schema_field,
     inline_serializer,
 )
 from rest_framework.decorators import action
@@ -39,6 +39,9 @@ class TaskSerializer(ModelSerializer):
     rel_obj_app_label = ReadOnlyField(source="rel_obj_content_type.app_label")
     rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
 
+    logs = SerializerMethodField()
+    previous_logs = SerializerMethodField()
+
     description = SerializerMethodField()
 
     class Meta:
@@ -55,9 +58,23 @@ class TaskSerializer(ModelSerializer):
             "rel_obj_model",
             "rel_obj_id",
             "uid",
+            "logs",
+            "previous_logs",
             "aggregated_status",
             "description",
         ]
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_logs(self, instance: Task):
+        return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
+            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=False), many=True).data
+        )
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_previous_logs(self, instance: Task):
+        return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
+            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=True), many=True).data
+        )
 
     def get_description(self, instance: Task) -> str | None:
         try:
@@ -188,36 +205,5 @@ class TaskViewSet(
                 "info": response.get("info", 0),
                 "warning": response.get("warning", 0),
                 "error": response.get("error", 0),
-            }
-        )
-
-    @extend_schema(
-        request=OpenApiTypes.NONE,
-        responses={
-            200: inline_serializer(
-                "TaskLogsSerializer",
-                {
-                    "logs": LogEventSerializer(many=True),
-                    "previous_logs": LogEventSerializer(many=True),
-                },
-            ),
-        },
-    )
-    @action(detail=True, methods=["GET"], permission_classes=[])
-    def logs(self, request: Request, pk: str) -> Response:
-        """Global status summary for all tasks"""
-        task: Task = self.get_object()
-        logs = task.tasklogs.filter(previous=False)
-        previous_logs = task.tasklogs.filter(previous=True)
-        return Response(
-            {
-                "logs": (
-                    cast(ReturnList, LogEventSerializer(logs, many=True).data)
-                    + cast(ReturnList, LogEventSerializer(task._messages, many=True).data)
-                ),
-                "previous_logs": (
-                    cast(ReturnList, LogEventSerializer(previous_logs, many=True).data)
-                    + cast(ReturnList, LogEventSerializer(task._previous_messages, many=True).data)
-                ),
             }
         )
