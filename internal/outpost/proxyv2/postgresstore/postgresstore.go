@@ -36,7 +36,8 @@ type PostgresStore struct {
 
 // ProxySession represents the session data structure in PostgreSQL
 type ProxySession struct {
-	SessionKey  string     `gorm:"primaryKey;column:session_key"`
+	UUID        uuid.UUID  `gorm:"type:uuid;primaryKey;column:uuid;default:gen_random_uuid()"`
+	SessionKey  string     `gorm:"uniqueIndex;column:session_key"`
 	UserID      *uuid.UUID `gorm:"column:user_id"`
 	SessionData string     `gorm:"type:jsonb;column:session_data"`
 }
