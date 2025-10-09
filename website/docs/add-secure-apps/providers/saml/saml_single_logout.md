@@ -2,7 +2,7 @@
 title: SAML Single Logout
 ---
 
-[Single logout (SLO)](../single-logout/index.md) allows you to configure authentik to log out a user from all supported providers simultaneously when signing out of authentik. For SAML providers, this requires your service provider to support Single Logout via a Single Logout Service URL. Check with your provider to see if they support Single Logout, as not all providers do.
+[Single Logout (SLO)](../single-logout/index.md) allows authentik to log out users from all configured providers simultaneously when they sign out of authentik. For SAML providers, this requires your service provider to support Single Logout via a Single Logout Service URL. Check your provider's documentation to confirm Single Logout support.
 
 ## Configure your SAML provider
 
