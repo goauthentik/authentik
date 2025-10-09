@@ -79,7 +79,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 3. Click **Save**.
 
 :::info Group Membership
-When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of. This sync process is carried out upon each user login which can cause login delays for organizations with large numbers of groups.
+When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of. This sync process is carried out upon each user login, which can cause login delays for organizations with large numbers of groups.
 
 For organizations with larger numbers of users and groups, we recommend using the [Entra ID SCIM integration](../scim/) to provision users and groups. These users are then automatically linked to matching users logging in via this Entra ID OAuth source.
 :::
