@@ -48,7 +48,7 @@ type ProxySession struct {
 
 // TableName specifies the table name for GORM
 func (ProxySession) TableName() string {
-	return "authentik_outposts_proxy_session"
+	return "authentik_providers_proxy_proxysession"
 }
 
 // BuildDSN constructs a PostgreSQL connection string

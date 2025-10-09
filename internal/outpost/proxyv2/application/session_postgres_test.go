@@ -37,7 +37,7 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 }
 
 func CleanupTestDB(t *testing.T, db *gorm.DB) {
-	assert.NoError(t, db.Exec("DELETE FROM authentik_outposts_proxy_session").Error)
+	assert.NoError(t, db.Exec("DELETE FROM authentik_providers_proxy_proxysession").Error)
 	sdb, err := db.DB()
 	assert.NoError(t, err)
 	assert.NoError(t, sdb.Close())

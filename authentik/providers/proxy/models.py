@@ -27,7 +27,7 @@ SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
-class OutpostProxySession(ExpiringModel):
+class ProxySession(ExpiringModel):
     """Session storage for proxyv2 outposts using PostgreSQL"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
@@ -37,9 +37,8 @@ class OutpostProxySession(ExpiringModel):
     session_data = models.JSONField(default=dict, blank=True)
 
     class Meta:
-        verbose_name = _("Outpost Proxy Session")
-        verbose_name_plural = _("Outpost Proxy Sessions")
-        db_table = "authentik_outposts_proxy_session"
+        verbose_name = _("Proxy Session")
+        verbose_name_plural = _("Proxy Sessions")
         indexes = [
             models.Index(fields=["user_id"]),
         ]
