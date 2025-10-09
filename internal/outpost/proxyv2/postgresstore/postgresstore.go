@@ -16,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
 	"goauthentik.io/internal/config"
@@ -282,12 +283,15 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 	}
 
 	proxySession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  session.ID,
 		UserID:      userID,
 		SessionData: string(sessionData),
 	}
-
-	return s.db.Save(&proxySession).Error
+	return s.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "session_key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data"}),
+	}).Create(&proxySession).Error
 }
 
 // load reads session from PostgreSQL
