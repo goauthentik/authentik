@@ -51,6 +51,7 @@ class SyncTasks:
                 time_limit=PAGE_TIMEOUT_MS,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
+                uid=f"{provider.name}:{object_type._meta.model_name}:{page}",
                 **options,
             )
             tasks.append(page_sync)
@@ -73,7 +74,6 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
         task.info("Starting full provider sync")
         self.logger.debug("Starting provider sync")
         with provider.sync_lock as lock_acquired:
@@ -125,14 +125,13 @@ class SyncTasks:
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(f"{slugify(provider.name)}:{_object_type._meta.model_name}:{page}")
         # Override dry run mode if requested, however don't save the provider
         # so that scheduled sync tasks still run in dry_run mode
         if override_dry_run:
@@ -192,12 +191,14 @@ class SyncTasks:
         pk: str | int,
         raw_op: str,
     ):
+        model_class: type[Model] = path_to_class(model)
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
             task_sync_signal_direct.send_with_options(
                 args=(model, pk, provider.pk, raw_op),
                 rel_obj=provider,
+                uid=f"{provider.name}:{model_class._meta.model_name}:{pk}:direct",
             )
 
     def sync_signal_direct(
@@ -222,7 +223,6 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
         operation = Direction(raw_op)
         client = provider.client_for_model(instance.__class__)
         # Check if the object is allowed within the provider's restrictions
@@ -266,12 +266,14 @@ class SyncTasks:
                 task_sync_signal_m2m.send_with_options(
                     args=(instance_pk, provider.pk, action, list(pk_set)),
                     rel_obj=provider,
+                    uid=f"{provider.name}:group:{instance_pk}:m2m",
                 )
             else:
                 for pk in pk_set:
                     task_sync_signal_m2m.send_with_options(
                         args=(pk, provider.pk, action, [instance_pk]),
                         rel_obj=provider,
+                        uid=f"{provider.name}:group:{pk}:m2m",
                     )
 
     def sync_signal_m2m(
@@ -295,7 +297,6 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
 
         # Check if the object is allowed within the provider's restrictions
         queryset: QuerySet = provider.get_object_qs(Group)
