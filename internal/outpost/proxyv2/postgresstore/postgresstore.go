@@ -365,7 +365,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	// Pre-filter sessions using JSONB operators where possible
 	// Only fetch sessions that have claims (session_data->'claims' IS NOT NULL)
 	var sessions []ProxySession
-	err := s.db.Where("session_data::jsonb ?? ?", constants.SessionClaims).Find(&sessions).Error
+	err := s.db.Where("session_data::jsonb ? ?", constants.SessionClaims).Find(&sessions).Error
 	if err != nil {
 		return fmt.Errorf("failed to fetch sessions: %w", err)
 	}
