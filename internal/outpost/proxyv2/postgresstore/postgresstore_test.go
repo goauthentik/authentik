@@ -151,6 +151,7 @@ func TestPostgresStore_Load(t *testing.T) {
 	require.NoError(t, err)
 
 	proxySession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
 		UserID:      &userID,
 		SessionData: string(sessionDataJSON),
@@ -194,6 +195,7 @@ func TestPostgresStore_Delete(t *testing.T) {
 	sessionDataJSON, _ := json.Marshal(sessionData)
 
 	proxySession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
 		SessionData: string(sessionDataJSON),
 	}
@@ -237,10 +239,12 @@ func TestPostgresStore_CleanupExpired(t *testing.T) {
 	validDataJSON, _ := json.Marshal(validData)
 
 	expiredSession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  "test_expired_session",
 		SessionData: string(expiredDataJSON),
 	}
 	validSession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  "test_valid_session",
 		SessionData: string(validDataJSON),
 	}
@@ -493,6 +497,7 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	expiredDataJSON, _ := json.Marshal(expiredData)
 
 	proxySession := ProxySession{
+		UUID:        uuid.New(),
 		SessionKey:  sessionKey,
 		SessionData: string(expiredDataJSON),
 	}
