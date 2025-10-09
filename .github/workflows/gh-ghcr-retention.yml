@@ -18,7 +18,7 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Delete 'dev' containers older than a week
-        uses: snok/container-retention-policy@b56f4ff7539c1f94f01e5dc726671cd619aa8072 # v2
+        uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v2
         with:
           image-names: dev-server,dev-ldap,dev-proxy
           cut-off: One week ago UTC
