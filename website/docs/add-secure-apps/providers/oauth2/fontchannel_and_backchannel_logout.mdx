@@ -60,7 +60,7 @@ https://api.service.com/logout
 
 ### Back-channel logout
 
-With back-channel logout, authentik sends logout requests directly from the server to the Relying Party's back-channel logout endpoint using HTTP POST. The logout request includes a signed JWT logout token that contains:
+With back-channel logout, authentik sends logout requests directly from the server to the RP’s logout endpoint via HTTP POST. The logout request includes a signed JWT logout token that contains the following JWT claims:
 
     - `iss` (issuer): The authentik issuer URL
     - `sub` (subject): The user's unique identifier
