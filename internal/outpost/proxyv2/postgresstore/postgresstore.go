@@ -266,6 +266,7 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 		SessionKey:  session.ID,
 		UserID:      userID,
 		SessionData: string(sessionData),
+		Expiring:    true,
 	}
 
 	// Add expiration timestamp to session data
@@ -276,7 +277,7 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 
 	return s.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "session_key"}},
-		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data"}),
+		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data", "expires"}),
 	}).Create(&proxySession).Error
 }
 
