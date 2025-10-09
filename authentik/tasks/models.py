@@ -97,7 +97,7 @@ class Task(SerializerModel, TaskBase):
             self.save()
 
     @classmethod
-    def _make_message(
+    def _make_log(
         cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
     ) -> dict[str, Any]:
         if isinstance(message, Exception):
@@ -115,7 +115,7 @@ class Task(SerializerModel, TaskBase):
         return sanitize_item(log)
 
     def logs(self, logs: list[LogEvent]):
-        TaskLog.objects.bulk_create([TaskLog(task=self, message=log) for log in logs])
+        TaskLog.objects.bulk_create([TaskLog(task=self, log=log) for log in logs])
 
     def log(
         self,
@@ -124,13 +124,13 @@ class Task(SerializerModel, TaskBase):
         message: str | Exception,
         **attributes,
     ) -> None:
-        log = self._make_message(
+        log = self._make_log(
             logger,
             log_level,
             message,
             **attributes,
         )
-        TaskLog.objects.create(task=self, message=log)
+        TaskLog.objects.create(task=self, log=log)
 
     def info(self, message: str | Exception, **attributes) -> None:
         self.log(self.uid, TaskStatus.INFO, message, **attributes)

@@ -71,7 +71,7 @@ class TaskLogMiddleware(Middleware):
         if task_created:
             TaskLog.objects.create(
                 task=task,
-                log=Task._make_message(
+                log=Task._make_log(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
@@ -82,7 +82,7 @@ class TaskLogMiddleware(Middleware):
             TaskLog.objects.filter(task=task).update(previous=True)
             TaskLog.objects.create(
                 task=task,
-                log=Task._make_message(
+                log=Task._make_log(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
