@@ -7,7 +7,7 @@ import Tabs from "@theme/Tabs";
 
 This page covers both configuring authentik to send emails and testing that email delivery is working.
 
-authentik can be configured with global email settings used to notify administrators about alerts, configuration issues, and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik.
+authentik can be configured with global email settings used to notify administrators about alerts, configuration issues, and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
 
 authentik also provides [Email stages](../add-secure-apps/flows-stages/stages/email/index.mdx), which are used to send emails to users for actions such as account recovery and verification. Email stages can be configured to use the global email settings or their own specific email settings.
 
@@ -27,7 +27,7 @@ Some hosting providers block outgoing SMTP ports, in which case you will need to
 >
   <TabItem value="docker">
 
-To configure global email settings, append this block to your `.env` file
+To configure global email settings, append the following block to your `.env` file:
 
 ```sh
 # SMTP Host Emails are sent to
@@ -48,7 +48,7 @@ AUTHENTIK_EMAIL__FROM=authentik@localhost
   </TabItem>
   <TabItem value="kubernetes">
 
-To configure global email settings, append this block to your `values.yaml` file:
+To configure global email settings, append the following block to your `values.yaml` file:
 
 ```yaml
 # add this block under the `authentik:` block in your values.yaml file
@@ -146,7 +146,7 @@ AUTHENTIK_EMAIL__USE_SSL=false
 AUTHENTIK_EMAIL__TIMEOUT=30
 ```
 
-Redeploy the authentik containers, and use the `ak test_email` command to confirm that email is working.
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
 
   </TabItem>
   <TabItem value="kubernetes">
@@ -162,14 +162,14 @@ email:
     timeout: 30
 ```
 
-Redeploy the authentik containers, and use the `ak test_email` command to confirm that email is working.
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
 
   </TabItem>
 </Tabs>
 
 ## SMTP server with TLS verification
 
-If you're configuring authentik to send email via an SMTP server that has TLS enabled you must mount the authenticating certificate in your authentik worker and server containers:
+If you're configuring authentik to send email via an SMTP server with TLS enabled, you must mount the certificate used for authentication in your authentik worker and server containers:
 
 <Tabs
   groupId="deployment"

@@ -89,27 +89,4 @@ We recommend using another installation method for PostgreSQL than the one provi
 
 It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
 
-To configure email settings, append this block to your `values.yaml` file:
-
-```yaml
-# add this block under the `authentik:` block in your values.yaml file
-# authentik:
-email:
-    # -- SMTP Server emails are sent from, fully optional
-    host: ""
-    port: 587
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    username: ""
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    password: ""
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_tls: false
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_ssl: false
-    # -- Connection timeout in seconds
-    timeout: 30
-    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: ""
-```
-
 For more information, refer to our [Email configuration](../email.mdx) documentation.
