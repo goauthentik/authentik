@@ -23,7 +23,7 @@ from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
-from authentik.tasks.models import Task, TaskStatus, WorkerStatus
+from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -62,30 +62,31 @@ class RelObjMiddleware(Middleware):
             message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
 
 
-class MessagesMiddleware(Middleware):
+class TaskLogMiddleware(Middleware):
     def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
-            task._messages.append(
-                Task._make_message(
+            TaskLog.objects.create(
+                task=task,
+                log=Task._make_message(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
                     delay=delay,
-                )
+                ),
             )
         else:
-            task._previous_messages.extend(task._messages)
-            task._messages = [
-                Task._make_message(
+            TaskLog.objects.filter(task=task).update(previous=True)
+            TaskLog.objects.create(
+                task=task,
+                log=Task._make_message(
                     class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
                     delay=delay,
-                )
-            ]
-        task.save(update_fields=("_messages", "_previous_messages"))
+                ),
+            )
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]

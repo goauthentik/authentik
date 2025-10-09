@@ -7,7 +7,12 @@ from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import (
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+    inline_serializer,
+)
 from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
 from rest_framework.mixins import (
@@ -32,8 +37,8 @@ class TaskSerializer(ModelSerializer):
     rel_obj_app_label = ReadOnlyField(source="rel_obj_content_type.app_label")
     rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
 
-    messages = LogEventSerializer(many=True, source="_messages")
-    previous_messages = LogEventSerializer(many=True, source="_previous_messages")
+    messages = SerializerMethodField()
+    previous_messages = SerializerMethodField()
     description = SerializerMethodField()
 
     class Meta:
@@ -55,6 +60,18 @@ class TaskSerializer(ModelSerializer):
             "aggregated_status",
             "description",
         ]
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_messages(self, instance: Task) -> LogEventSerializer:
+        messages: list = instance._messages
+        messages.extend([log for log in instance.tasklog_set.objects.filter(previous=False)])
+        return LogEventSerializer(messages, many=True)
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_previous_messages(self, instance: Task) -> LogEventSerializer:
+        messages: list = instance._previous_messages
+        messages.extend([log for log in instance.tasklog_set.objects.filter(previous=True)])
+        return LogEventSerializer(messages, many=True)
 
     def get_description(self, instance: Task) -> str | None:
         try:

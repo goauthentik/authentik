@@ -50700,10 +50700,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+          readOnly: true
         previous_messages:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+          readOnly: true
         aggregated_status:
           $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         description:

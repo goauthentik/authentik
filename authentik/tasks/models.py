@@ -115,37 +115,48 @@ class Task(SerializerModel, TaskBase):
         return sanitize_item(log)
 
     def logs(self, logs: list[LogEvent]):
-        for log in logs:
-            self._messages.append(sanitize_item(log))
+        TaskLog.objects.bulk_create([TaskLog(task=self, message=log) for log in logs])
 
     def log(
         self,
         logger: str,
         log_level: TaskStatus,
         message: str | Exception,
-        save: bool = False,
         **attributes,
-    ):
-        self._messages: list
-        self._messages.append(
-            self._make_message(
-                logger,
-                log_level,
-                message,
-                **attributes,
-            )
+    ) -> None:
+        log = self._make_message(
+            logger,
+            log_level,
+            message,
+            **attributes,
         )
-        if save:
-            self.save()
+        TaskLog.objects.create(task=self, message=log)
 
-    def info(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.INFO, message, save=save, **attributes)
+    def info(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.INFO, message, **attributes)
 
-    def warning(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.WARNING, message, save=save, **attributes)
+    def warning(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.WARNING, message, **attributes)
 
-    def error(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.ERROR, message, save=save, **attributes)
+    def error(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.ERROR, message, **attributes)
+
+
+class TaskLog(models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    log = models.JSONField()
+    previous = models.BooleanField(default=False)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Task log")
+        verbose_name_plural = _("Task logs")
+
+    def __str__(self):
+        return self.pk
 
 
 class TasksModel(models.Model):

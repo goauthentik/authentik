@@ -417,7 +417,7 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
-        ("authentik.tasks.middleware.MessagesMiddleware", {}),
+        ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
         ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
