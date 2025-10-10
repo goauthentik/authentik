@@ -50882,14 +50882,16 @@ components:
         uid:
           type: string
           readOnly: true
-        messages:
+        logs:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
-        previous_messages:
+          readOnly: true
+        previous_logs:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+          readOnly: true
         aggregated_status:
           $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         description:
@@ -50900,8 +50902,8 @@ components:
       - actor_name
       - aggregated_status
       - description
-      - messages
-      - previous_messages
+      - logs
+      - previous_logs
       - rel_obj_app_label
       - rel_obj_model
       - uid
