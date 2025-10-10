@@ -159,7 +159,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
 
     return html`<div
         role="gridcell"
-        part="library-app"
+        part="app-card"
         data-application-name=${ifPresent(dataID)}
         aria-labelledby="app-title"
         aria-describedby="app-description"
