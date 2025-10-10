@@ -18,7 +18,7 @@ export interface IExpand {
 
 @customElement("ak-expand")
 export class Expand extends AKElement implements IExpand {
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     public expanded = false;
 
     @property({ type: String, attribute: "text-open" })
@@ -34,9 +34,20 @@ export class Expand extends AKElement implements IExpand {
             .pf-c-expandable-section {
                 display: grid;
                 grid-template-columns: 1fr;
+                font-family: var(--pf-global--FontFamily--heading--sans-serif);
+                --pf-c-expandable-section__toggle-icon--Transition: 100ms ease-in 0s;
             }
+
             .pf-c-expandable-section__toggle {
                 user-select: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .attachment-target {
+                position: relative;
             }
         `,
     ];
@@ -46,9 +57,11 @@ export class Expand extends AKElement implements IExpand {
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"
                 : ""}"
+            part="container"
         >
             <button
                 type="button"
+                part="toggle"
                 class="pf-c-expandable-section__toggle"
                 aria-expanded=${this.expanded ? "true" : "false"}
                 aria-controls="expandable-content"
@@ -63,12 +76,18 @@ export class Expand extends AKElement implements IExpand {
                     >${this.expanded ? this.textOpen : this.textClosed}</span
                 >
             </button>
-            <div
-                id="expandable-content"
-                class="pf-c-expandable-section__content"
-                ?hidden=${!this.expanded}
-            >
-                <slot></slot>
+
+            <div class="attachment-target" part="attachment-target" ?hidden=${!this.expanded}>
+                ${this.hasSlotted(null)
+                    ? html`<div
+                          id="expandable-content"
+                          part="content"
+                          class="pf-c-expandable-section__content"
+                      >
+                          <slot></slot>
+                      </div>`
+                    : nothing}
+                <slot name="actions"></slot>
             </div>
         </div>`;
     }
