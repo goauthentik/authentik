@@ -39,12 +39,12 @@ export function transformCredentialCreateOptions(
     // So to get the base64 encoded byte array, we first need to convert it to a regular
     // string, then a byte array, re-encode it and wrap that in an array.
     const stringId = decodeURIComponent(window.atob(userId));
-    user.id = u8arr(b64enc(u8arr(stringId)));
+    user.id = u8arr(b64enc(u8arr(stringId))) as BufferSource;
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
     return {
         ...credentialCreateOptions,
-        challenge,
+        challenge: challenge as BufferSource,
         user,
     };
 }
@@ -99,7 +99,7 @@ export function transformCredentialRequestOptions(
 
     return {
         ...credentialRequestOptions,
-        challenge,
+        challenge: challenge as BufferSource,
         allowCredentials,
     };
 }
