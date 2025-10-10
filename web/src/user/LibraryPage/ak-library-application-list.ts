@@ -22,20 +22,11 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const LayoutClasses = {
-    [LayoutType.row]: [
-        "pf-m-12-col",
-        "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-4-col-on-lg pf-m-all-2-col-on-xl",
-    ],
-    [LayoutType.column_2]: [
-        "pf-m-6-col",
-        "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl",
-    ],
-    [LayoutType.column_3]: [
-        "pf-m-4-col",
-        "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-6-col-on-lg pf-m-all-6-col-on-xl",
-    ],
-} as const satisfies Record<LayoutType, [groupClass: string, groupGrid: string]>;
+const LayoutColumnCount = {
+    [LayoutType.row]: 1,
+    [LayoutType.column_2]: 2,
+    [LayoutType.column_3]: 3,
+} as const satisfies Record<LayoutType, number>;
 
 /**
  * @element ak-library-application-list
@@ -70,11 +61,12 @@ export class LibraryPageApplicationList extends AKElement {
     public apps: AppGroupEntry[] = [];
 
     render() {
-        const [groupClass, groupGrid] = LayoutClasses[this.layout] || LayoutClasses[LayoutType.row];
+        // const [groupClass, groupGrid] = LayoutClasses[this.layout] || LayoutClasses[LayoutType.row];
+        // const [groupClass, groupGrid] = LayoutClasses[LayoutType.column_2];
 
         return html`<div
-            class="pf-l-grid pf-m-gutter"
             part="app-list"
+            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.column_2] ?? 1}"
             role="grid"
             aria-label=${msg("Available applications")}
         >
@@ -86,23 +78,22 @@ export class LibraryPageApplicationList extends AKElement {
                         role="rowgroup"
                         data-group-id=${ifPresent(kebabCase(groupLabel))}
                         aria-labelledby="app-group-${idx}"
+                        part="app-group"
                     >
                         <div class="pf-c-content" part="app-group-header">
                             <h2 id="app-group-${idx}">${groupLabel}</h2>
                         </div>
-                        <div part="app-group">
-                            ${repeat(
-                                apps,
-                                (app) => app.pk,
-                                (app) =>
-                                    AKLibraryApp({
-                                        part: "app-card",
-                                        application: app,
-                                        background: this.background,
-                                        selected: app.slug === this.selected,
-                                    }),
-                            )}
-                        </div>
+                        ${repeat(
+                            apps,
+                            (app) => app.pk,
+                            (app) =>
+                                AKLibraryApp({
+                                    part: "app-card",
+                                    application: app,
+                                    background: this.background,
+                                    selected: app.slug === this.selected,
+                                }),
+                        )}
                     </div> `;
                 },
             )}
