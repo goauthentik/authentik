@@ -74,6 +74,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.proxy.models import ProxySession
 from authentik.providers.rac.models import ConnectionToken
+from authentik.providers.saml.models import SAMLSession
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
@@ -140,6 +141,7 @@ def excluded_models() -> list[type[Model]]:
         DeviceToken,
         StreamEvent,
         UserConsent,
+        SAMLSession,
         Message,
         GroupChannel,
     )
