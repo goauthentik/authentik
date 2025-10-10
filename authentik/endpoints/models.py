@@ -52,6 +52,7 @@ class Connector(SerializerModel):
 class DeviceGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
+    tokens = models.ManyToManyField("EnrollmentToken")
 
 
 class EnrollmentToken(Token):

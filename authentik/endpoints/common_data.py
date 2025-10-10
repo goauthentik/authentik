@@ -32,6 +32,7 @@ class NetworkSerializer(Serializer):
 class HardwareSerializer(Serializer):
     model = CharField()
     manufacturer = CharField()
+    serial = CharField()
 
 
 class SoftwareSerializer(Serializer):

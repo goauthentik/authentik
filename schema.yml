@@ -4715,39 +4715,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/connectors/{connector_uuid}/report/:
-    post:
-      operationId: endpoints_agents_connectors_report_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
-      parameters:
-      - in: path
-        name: connector_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this agent connector.
-        required: true
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommonDeviceDataRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AgentConnector'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/{connector_uuid}/used_by/:
     get:
       operationId: endpoints_agents_connectors_used_by_list
@@ -4773,6 +4740,53 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/enroll/:
+    post:
+      operationId: endpoints_agents_connectors_enroll_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/report/:
+    post:
+      operationId: endpoints_agents_connectors_report_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommonDeviceDataRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          description: Report created.
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -31512,10 +31526,7 @@ components:
           format: uuid
         name:
           type: string
-        enroll_secret:
-          type: string
       required:
-      - enroll_secret
       - name
     AgentConnectorRequest:
       type: object
@@ -31526,11 +31537,7 @@ components:
         name:
           type: string
           minLength: 1
-        enroll_secret:
-          type: string
-          minLength: 1
       required:
-      - enroll_secret
       - name
     AlgEnum:
       enum:
@@ -35269,6 +35276,26 @@ components:
       - name
       - protocol
       - provider
+    EnrollRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        enrollment_token:
+          type: string
+          minLength: 1
+        device:
+          $ref: '#/components/schemas/HardwareRequest'
+      required:
+      - device
+      - enrollment_token
+    EnrollResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        token:
+          type: string
+      required:
+      - token
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -37288,9 +37315,12 @@ components:
           type: string
         manufacturer:
           type: string
+        serial:
+          type: string
       required:
       - manufacturer
       - model
+      - serial
     HardwareRequest:
       type: object
       properties:
@@ -37300,9 +37330,13 @@ components:
         manufacturer:
           type: string
           minLength: 1
+        serial:
+          type: string
+          minLength: 1
       required:
       - manufacturer
       - model
+      - serial
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -43367,9 +43401,6 @@ components:
           type: string
           format: uuid
         name:
-          type: string
-          minLength: 1
-        enroll_secret:
           type: string
           minLength: 1
     PatchedApplicationEntitlementRequest:
