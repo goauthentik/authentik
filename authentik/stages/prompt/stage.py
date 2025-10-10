@@ -33,6 +33,13 @@ from authentik.stages.prompt.signals import password_validate
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
+class PromptChoiceSerializer(PassiveSerializer):
+    """Serializer for a single Choice field"""
+
+    value = CharField(allow_blank=True, required=True)
+    label = CharField(allow_blank=True, required=True)
+
+
 class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
@@ -44,7 +51,7 @@ class StagePromptSerializer(PassiveSerializer):
     initial_value = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
-    choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
+    choices = ListField(child=PromptChoiceSerializer(), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -210,12 +217,13 @@ class PromptStageView(ChallengeStageView):
         serializers = []
         for field in fields:
             data = StagePromptSerializer(field).data
-            # Ensure all choices, placeholders and initial values are str, as
+            # Ensure all placeholders and initial values are str, as
             # otherwise further in we can fail serializer validation if we return
             # some types such as bool
+            # choices can be a dict with value and label
             choices = field.get_choices(context, self.get_pending_user(), self.request, dry_run)
             if choices:
-                data["choices"] = [str(choice) for choice in choices]
+                data["choices"] = self.clean_choices(choices)
             else:
                 data["choices"] = None
             data["placeholder"] = str(
@@ -226,6 +234,18 @@ class PromptStageView(ChallengeStageView):
             )
             serializers.append(data)
         return serializers
+
+    def clean_choices(self, choices):
+        clean = []
+        for choice in choices:
+            if isinstance(choice, dict):
+                clean.append(
+                    {"value": str(choice.get("value", "")), "label": str(choice.get("label", ""))}
+                )
+            else:
+                clean.append({"value": str(choice), "label": str(choice)})
+
+        return clean
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
