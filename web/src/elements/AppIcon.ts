@@ -66,11 +66,11 @@ export class AppIcon extends AKElement implements IAppIcon {
                 padding: var(--icon-border);
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                 line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                filter: drop-shadow(hsl(0deg 0% 85%) 5px 5px 5px);
+                filter: drop-shadow(hsl(0deg 0% 33% / 0.15) 5px 5px 3px);
             }
 
             :host([theme="dark"]) .icon {
-                filter: drop-shadow(hsl(0deg 0% 11%) 5px 5px 4px);
+                filter: drop-shadow(hsl(0deg 0% 2% / 0.3) 5px 5px 3px);
             }
 
             div {
