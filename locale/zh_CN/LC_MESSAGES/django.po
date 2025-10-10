@@ -1126,7 +1126,7 @@ msgstr "启用时，提供程序将不会在远程系统上修改或创建对象
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr "%(value)s 的格式不正确，应为 'hours=3;minutes=1'。"
+msgstr "%(value)s 的格式不正确，应为 “hours=3;minutes=1“。"
 
 #: authentik/lib/validators.py
 #, python-brace-format
