@@ -4,205 +4,184 @@ import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
 import { globalAK } from "#common/global";
+import { truncateWords } from "#common/strings";
 import { rootInterface } from "#common/theme";
-import { truncateWords } from "#common/utils";
 
-import { AKElement } from "#elements/Base";
-import { SlottedTemplateResult } from "#elements/types";
+import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import type { UserInterface } from "#user/index.entrypoint";
-import type { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchEndpointModal";
+import { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { Application } from "@goauthentik/api";
 
+import { spread } from "@open-wc/lit-helpers";
 import { kebabCase } from "change-case";
+import type { HTMLAttributes } from "react";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
 
-@customElement("ak-library-app")
-export class LibraryApplication extends AKElement {
-    @property({ attribute: false })
-    application?: Application;
+interface CardHeaderProps {
+    application: Application;
+}
 
-    @property({ type: Boolean })
-    selected = false;
+const CardHeader: LitFC<CardHeaderProps> = ({ application }) => {
+    return html`<a
+        class="pf-c-card__header launch-wrapper"
+        part="card-header"
+        aria-label=${msg(str`Open "${application.name}"`)}
+        title=${ifPresent(application.name)}
+        href=${ifPresent(application.launchUrl)}
+        target=${ifPresent(application.openInNewTab, "_blank")}
+    >
+        <ak-app-icon
+            part="card-header-icon"
+            size=${PFSize.Large}
+            name=${application.name}
+            icon=${ifPresent(application.metaIcon)}
+        ></ak-app-icon>
+        <div id="app-title" class="pf-c-card__title" part="card-title">
+            <div class="clamp-wrapper">${application.name}</div>
+        </div>
+    </a>`;
+};
 
-    @property()
-    background = "";
-
-    @query("ak-library-rac-endpoint-launch")
-    racEndpointLaunch?: RACLaunchEndpointModal;
-
-    static styles: CSSResult[] = [
-        PFBase,
-        PFCard,
-        PFButton,
-        css`
-            .pf-c-card {
-                --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
-            }
-            .pf-c-card__header {
-                justify-content: space-between;
-                flex-direction: column;
-            }
-
-            .launch-wrapper {
-                display: flex;
-                flex-direction: column;
-
-                &:hover {
-                    text-decoration: none;
-                }
-            }
-
-            .expander {
-                flex-grow: 1;
-            }
-
-            .pf-c-card__title {
-                text-align: center;
-
-                display: box;
-                display: -webkit-box;
-                line-clamp: 2;
-                -webkit-line-clamp: 2;
-                box-orient: vertical;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-        `,
-    ];
-
-    #openRACLaunchModal = () => {
-        this.racEndpointLaunch?.show();
+const RACCardHeader: LitFC<CardHeaderProps> = ({ application }) => {
+    const modalRef = createRef<RACLaunchEndpointModal>();
+    const launchModal = () => {
+        modalRef.value?.show();
     };
 
-    renderExpansion(application: Application) {
-        const { me, uiConfig } = rootInterface<UserInterface>();
-
-        return html`<ak-expand text-open=${msg("Details")} text-closed=${msg("Details")}>
-            <div class="pf-c-content" part="card-expansion">
-                <small>${application.metaPublisher}</small>
-            </div>
-            <div id="app-description" part="card-description">
-                ${truncateWords(application.metaDescription || "", 10)}
-            </div>
-            ${uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
-                ? html`
-                      <a
-                          class="pf-c-button pf-m-control pf-m-small pf-m-block"
-                          aria-label=${msg(str`Edit "${application.name}"`)}
-                          href="${globalAK().api
-                              .base}if/admin/#/core/applications/${application?.slug}"
-                      >
-                          <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;${msg("Edit")}
-                      </a>
-                  `
-                : nothing}
-        </ak-expand>`;
-    }
-
-    renderLaunch(): SlottedTemplateResult {
-        if (!this.application) {
-            return nothing;
-        }
-
-        if (this.application.launchUrl === "goauthentik.io://providers/rac/launch") {
-            return html`<div
-                    part="card-header"
-                    class="pf-c-card__header pf-m-pressable"
-                    role="button"
-                    aria-label=${msg(
-                        str`Open Remote Access Control launcher for "${this.application.name}"`,
-                    )}
-                    @click=${this.#openRACLaunchModal}
-                >
-                    <ak-app-icon
-                        part="card-header-icon"
-                        size=${PFSize.Large}
-                        name=${this.application.name}
-                        icon=${ifPresent(this.application.metaIcon)}
-                    ></ak-app-icon>
-                </div>
-                <div
-                    @click=${this.#openRACLaunchModal}
-                    id="app-title"
-                    class="pf-c-card__title pf-m-pressable"
-                    part="card-title"
-                >
-                    ${this.application.name}
-                </div>
-                <ak-library-rac-endpoint-launch .app=${this.application}>
-                </ak-library-rac-endpoint-launch>`;
-        }
-
-        return html`<a
-            class="launch-wrapper"
-            part="card-header-link"
-            aria-label=${msg(str`Open "${this.application.name}"`)}
-            href=${ifPresent(this.application.launchUrl)}
-            target=${ifPresent(this.application.openInNewTab, "_blank")}
+    return html`<div
+            part="card-header"
+            class="pf-c-card__header pf-m-pressable"
+            title=${ifPresent(application.name)}
+            role="button"
+            aria-label=${msg(str`Open Remote Access Control launcher for "${application.name}"`)}
+            @click=${launchModal}
         >
-            <div class="pf-c-card__header" part="card-header">
-                <ak-app-icon
-                    part="card-header-icon"
-                    size=${PFSize.Large}
-                    name=${this.application.name}
-                    icon=${ifPresent(this.application.metaIcon)}
-                ></ak-app-icon>
-            </div>
-            <div id="app-title" class="pf-c-card__title" part="card-title">
-                ${this.application.name}
-            </div>
-        </a>`;
-    }
-
-    render(): TemplateResult {
-        if (!this.application) {
-            return html`<ak-spinner></ak-spinner>`;
-        }
-
-        const { me, uiConfig } = rootInterface<UserInterface>();
-
-        const expandable =
-            (uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser) ||
-            this.application.metaPublisher !== "" ||
-            this.application.metaDescription !== "";
-
-        const classes = {
-            "pf-m-selectable": this.selected,
-            "pf-m-selected": this.selected,
-        };
-
-        const styles = this.background ? { background: this.background } : {};
-        const applicationName = kebabCase(this.application.name);
-
-        return html`<div
-            role="gridcell"
-            class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}"
-            style=${styleMap(styles)}
-            data-application-name=${ifPresent(applicationName)}
-            aria-labelledby="app-title"
-            aria-describedby="app-description"
+            <ak-app-icon
+                part="card-header-icon"
+                size=${PFSize.Large}
+                name=${application.name}
+                icon=${ifPresent(application.metaIcon)}
+            ></ak-app-icon>
+        </div>
+        <div
+            @click=${launchModal}
+            id="app-title"
+            class="pf-c-card__title pf-m-pressable"
+            part="card-title"
         >
-            ${this.renderLaunch()}
-            <div class="expander"></div>
-            ${expandable ? this.renderExpansion(this.application) : nothing}
-        </div>`;
-    }
+            <div class="clamp-wrapper">${application.name}</div>
+        </div>
+        <ak-library-rac-endpoint-launch ${ref(modalRef)} .app=${application}>
+        </ak-library-rac-endpoint-launch>`;
+};
+
+interface CardDetailsProps extends Pick<Application, "name" | "metaDescription" | "metaPublisher"> {
+    editURL?: string | null;
 }
 
-declare global {
-    interface HTMLElementTagNameMap {
-        "ak-library-app": LibraryApplication;
-    }
+const CardDetails: LitFC<CardDetailsProps> = ({
+    metaPublisher,
+    metaDescription,
+    name,
+    editURL,
+}) => {
+    const truncatedDescription = truncateWords(metaDescription, 10);
+    const expansionLabel = msg("Details");
+
+    return html`<ak-expand
+        class="app-details"
+        text-open=${expansionLabel}
+        text-closed=${expansionLabel}
+        >${metaPublisher || truncatedDescription
+            ? html`<div class="pf-c-content" part="card-expansion">
+                      <small>${metaPublisher}</small>
+                  </div>
+                  <div id="app-description" part="card-description">${truncatedDescription}</div>`
+            : nothing}
+        ${editURL
+            ? html`
+                  <a
+                      slot="actions"
+                      class="pf-c-button pf-m-link pf-m-small pf-m-block"
+                      aria-label=${msg(str`Edit "${name}"`)}
+                      href=${editURL}
+                  >
+                      <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;${msg("Edit")}
+                  </a>
+              `
+            : nothing}</ak-expand
+    >`;
+};
+
+export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
+    application?: Application;
+    selected?: boolean;
+    background?: string | null;
 }
+
+export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
+    application,
+    selected = false,
+    background,
+    className = "",
+    ...props
+}) => {
+    if (!application) {
+        return html`<ak-spinner></ak-spinner>`;
+    }
+
+    const { name, metaDescription, metaPublisher } = application;
+
+    const classes = {
+        [className]: className.length,
+        "pf-m-selectable": selected,
+        "pf-m-selected": selected,
+    };
+
+    const dataID = kebabCase(application.name);
+
+    const { me, uiConfig } = rootInterface<UserInterface>();
+
+    const editURL =
+        uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+            ? `${globalAK().api.base}if/admin/#/core/applications/${application?.slug}`
+            : null;
+
+    return html`<div
+        role="gridcell"
+        part="library-app"
+        data-application-name=${ifPresent(dataID)}
+        aria-labelledby="app-title"
+        aria-describedby="app-description"
+        style=${styleMap({ background: background || null })}
+        ${spread(props)}
+    >
+        <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
+            <div class="card-header-aspect-wrapper">
+                ${application.launchUrl !== RAC_LAUNCH_URL
+                    ? RACCardHeader({
+                          application,
+                      })
+                    : CardHeader({
+                          application,
+                      })}
+            </div>
+            ${CardDetails({
+                name,
+                metaDescription,
+                metaPublisher,
+                editURL,
+            })}
+        </div>
+    </div>`;
+};

@@ -14,24 +14,6 @@ export function getCookie(name: string): string {
     return cookieValue;
 }
 
-/**
- * Truncate a string based on maximum word count
- */
-export function truncateWords(string: string, length = 10): string {
-    string = string || "";
-    const array = string.trim().split(" ");
-    const ellipsis = array.length > length ? "..." : "";
-
-    return array.slice(0, length).join(" ") + ellipsis;
-}
-
-/**
- * Truncate a string based on character count
- */
-export function truncate(string: string, length = 10): string {
-    return string.length > length ? `${string.substring(0, length)}...` : string;
-}
-
 export type GroupKeyCallback<T> = (item: T, index: number, array: T[]) => string;
 export type GroupResult<T> = [groupKey: string, items: T[]];
 
