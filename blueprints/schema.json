@@ -5943,11 +5943,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "enroll_secret": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Enroll secret"
                 }
             },
             "required": []
