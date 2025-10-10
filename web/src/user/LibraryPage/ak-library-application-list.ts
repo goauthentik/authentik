@@ -83,22 +83,19 @@ export class LibraryPageApplicationList extends AKElement {
                 ([groupLabel]) => groupLabel,
                 ([groupLabel, apps], idx) => {
                     return html`<div
-                        class="pf-l-grid__item ${groupClass}"
                         role="rowgroup"
-                        part="app-group"
                         data-group-id=${ifPresent(kebabCase(groupLabel))}
                         aria-labelledby="app-group-${idx}"
                     >
-                        <div class="pf-c-content app-group-header">
+                        <div class="pf-c-content" part="app-group-header">
                             <h2 id="app-group-${idx}">${groupLabel}</h2>
                         </div>
-                        <div class="pf-l-grid pf-m-gutter app-group ${groupGrid}">
+                        <div part="app-group">
                             ${repeat(
                                 apps,
                                 (app) => app.pk,
                                 (app) =>
                                     AKLibraryApp({
-                                        className: "pf-l-grid__item",
                                         part: "app-card",
                                         application: app,
                                         background: this.background,

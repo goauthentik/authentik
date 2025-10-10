@@ -34,6 +34,9 @@ export class AppIcon extends AKElement implements IAppIcon {
         css`
             :host {
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+
+                display: flex;
+                place-content: center;
             }
             :host([size="pf-m-lg"]) {
                 --icon-height: 4rem;
