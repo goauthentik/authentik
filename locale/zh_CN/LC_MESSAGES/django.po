@@ -2946,7 +2946,7 @@ msgid ""
 "your IDP uses the NameID Format 'transient', and the user doesn't log out "
 "manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式 'transient' "
+"删除临时用户的时间偏移。这仅适用于您的 IDP 使用 NameID 格式 “transient” "
 "且用户未手动登出的情况。（格式：hours=1;minutes=2;seconds=3）。"
 
 #: authentik/sources/saml/models.py
