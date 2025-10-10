@@ -152,7 +152,7 @@ msgstr "用户没有访问此应用程序的权限。"
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
-msgstr "'{slug}' 是被保留的 slug 并且不能被用于应用程序。"
+msgstr "“{slug}” 是被保留的 slug 并且不能被用于应用程序。"
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
