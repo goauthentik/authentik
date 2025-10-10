@@ -27,7 +27,7 @@ def check_plex_token(source_pk: str):
         error = exception_to_string(exc)
         if len(source.plex_token) > 0:
             error = error.replace(source.plex_token, "$PLEX_TOKEN")
-        self.error("Plex token is invalid/an error occured")
+        self.error("Plex token is invalid/an error occurred")
         self.error(error)
         Event.new(
             EventAction.CONFIGURATION_ERROR,
