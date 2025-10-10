@@ -3465,7 +3465,7 @@ msgid ""
 "attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 "近期帐户恢复尝试次数的时间窗口。如果在此期间尝试次数超过 "
-"recovery_max_attempts，则后续尝试将受到速率限制。（格式：hours=1；minutes=2；seconds=3）。"
+"recovery_max_attempts，则后续尝试将受到速率限制。（格式：hours=1;minutes=2;seconds=3）。"
 
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
