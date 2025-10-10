@@ -33416,13 +33416,10 @@ components:
           type: integer
         cache_timeout_policies:
           type: integer
-        cache_timeout_reputation:
-          type: integer
       required:
       - cache_timeout
       - cache_timeout_flows
       - cache_timeout_policies
-      - cache_timeout_reputation
       - capabilities
       - error_reporting
     ConnectionToken:

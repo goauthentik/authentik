@@ -209,7 +209,7 @@ jobs:
           echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> .env
           docker compose pull -q
           docker compose up --no-start
-          docker compose start postgresql redis
+          docker compose start postgresql
           docker compose run -u root server test-all
   sentry-release:
     needs:

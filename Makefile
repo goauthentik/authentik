@@ -16,7 +16,6 @@ GEN_API_GO = gen-go-api
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
-redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
 UNAME := $(shell uname)
 
@@ -107,7 +106,6 @@ dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	redis-cli -n ${redis_db} flushall
 
 dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
