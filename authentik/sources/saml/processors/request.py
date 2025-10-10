@@ -18,6 +18,7 @@ from authentik.sources.saml.processors.constants import (
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
     SIGN_ALGORITHM_TRANSFORM_MAP,
+    SAML_BINDING_POST,
 )
 
 SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
@@ -63,7 +64,7 @@ class RequestProcessor:
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
-        auth_n_request.attrib["ProtocolBinding"] = SAMLBindingTypes(self.source.binding_type).uri
+        auth_n_request.attrib["ProtocolBinding"] = SAML_BINDING_POST
         auth_n_request.attrib["Version"] = "2.0"
         # Create issuer object
         auth_n_request.append(self.get_issuer())
