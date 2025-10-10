@@ -72,6 +72,7 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     RefreshToken,
 )
+from authentik.providers.proxy.models import ProxySession
 from authentik.providers.rac.models import ConnectionToken
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
@@ -125,6 +126,7 @@ def excluded_models() -> list[type[Model]]:
         AuthorizationCode,
         AccessToken,
         RefreshToken,
+        ProxySession,
         Reputation,
         WebAuthnDeviceType,
         SCIMSourceUser,
