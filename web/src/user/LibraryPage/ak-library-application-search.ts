@@ -45,8 +45,8 @@ export class LibraryPageApplicationSearch extends AKElement {
         css`
             input[name="application-search"] {
                 background-color: transparent;
-                width: 30ch;
-                font-size: 1.5rem;
+                width: 28ch;
+                font-size: var(--pf-global--FontSize--xl);
 
                 border-inline: none;
                 border-block-start: none;
