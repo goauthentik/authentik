@@ -29,6 +29,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -574,8 +575,10 @@ class Application(SerializerModel, PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if "://" in self.meta_icon.name or self.meta_icon.name.startswith("/static"):
+        if self.meta_icon.name.startswith("http"):
             return self.meta_icon.name
+        if self.meta_icon.name.startswith("/"):
+            return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
         return self.meta_icon.url
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
@@ -777,8 +780,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         starts with http it is returned as-is"""
         if not self.icon:
             return None
-        if "://" in self.icon.name or self.icon.name.startswith("/static"):
+        if self.icon.name.startswith("http"):
             return self.icon.name
+        if self.icon.name.startswith("/"):
+            return CONFIG.get("web.path", "/")[:-1] + self.icon.name
         return self.icon.url
 
     def get_user_path(self) -> str:

@@ -20,6 +20,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         PFSidebar,
         css`
             .pf-c-sidebar__panel {
+                --pf-c-sidebar__panel--Position: static;
                 flex: 0 1 25%;
             }
             .pf-c-sidebar__content {

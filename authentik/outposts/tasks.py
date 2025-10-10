@@ -10,7 +10,6 @@ from urllib.parse import urlparse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
@@ -108,7 +107,6 @@ def outpost_service_connection_monitor(connection_pk: Any):
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
     self = CurrentTask.get_task()
-    self.set_uid(outpost_pk)
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -119,7 +117,6 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
     if not outpost:
         LOGGER.warning("No outpost")
         return
-    self.set_uid(slugify(outpost.name))
     try:
         controller_type = controller_for_outpost(outpost)
         if not controller_type:

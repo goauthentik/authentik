@@ -15,6 +15,7 @@ from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django_channels_postgres.models import GroupChannel, Message
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
@@ -71,6 +72,7 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     RefreshToken,
 )
+from authentik.providers.proxy.models import ProxySession
 from authentik.providers.rac.models import ConnectionToken
 from authentik.providers.saml.models import SAMLSession
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
@@ -125,6 +127,7 @@ def excluded_models() -> list[type[Model]]:
         AuthorizationCode,
         AccessToken,
         RefreshToken,
+        ProxySession,
         Reputation,
         WebAuthnDeviceType,
         SCIMSourceUser,
@@ -139,6 +142,8 @@ def excluded_models() -> list[type[Model]]:
         StreamEvent,
         UserConsent,
         SAMLSession,
+        Message,
+        GroupChannel,
     )
 
 
