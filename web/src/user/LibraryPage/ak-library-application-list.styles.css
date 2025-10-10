@@ -19,7 +19,6 @@
 }
 
 .card-header-aspect-wrapper {
-    /* aspect-ratio: var(--app-card-aspect-ratio); */
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto;
@@ -40,57 +39,57 @@
     &:hover {
         --pf-c-card--m-hoverable--hover--BoxShadow: var(--pf-global--BoxShadow--xl-bottom);
     }
-}
 
-.pf-c-card__header {
-    padding: 0 !important;
+    .pf-c-card__header {
+        padding: 0 !important;
 
-    display: flex;
-    flex: 1 1 auto;
-    gap: var(--pf-global--spacer--md);
-    justify-content: center;
+        display: flex;
+        flex: 1 1 auto;
+        flex-flow: column;
+        gap: var(--pf-global--spacer--md);
+        justify-content: center;
 
-    &:hover {
-        text-decoration: none;
+        &:hover {
+            text-decoration: none;
 
-        .pf-c-card__title {
-            text-decoration: underline;
+            .pf-c-card__title {
+                text-decoration: underline;
+            }
+        }
+
+        ak-app-icon {
+            --icon-height: 2em;
+            width: 50%;
+            max-height: 5em;
+
+            &::part(icon) {
+                padding: 0em;
+            }
         }
     }
 
-    ak-app-icon {
-        --icon-height: 2em;
-        width: 50%;
-        max-height: 5em;
+    .pf-c-card__title {
+        padding: 0 !important;
+        place-content: end;
 
-        &::part(icon) {
-            padding: 0em;
+        .clamp-wrapper {
+            display: box;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            box-orient: vertical;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-align: start;
+            text-wrap: balance;
+
+            max-height: calc(var(--pf-global--LineHeight--md) * 2em);
         }
-    }
-}
-
-.pf-c-card__title {
-    padding: 0 !important;
-    place-content: end;
-
-    .clamp-wrapper {
-        display: box;
-        display: -webkit-box;
-        line-clamp: 2;
-        -webkit-line-clamp: 2;
-        box-orient: vertical;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-align: start;
-        text-wrap: balance;
-
-        max-height: calc(var(--pf-global--LineHeight--md) * 2em);
     }
 }
 
 [part="app-group-header"] {
-    margin-block-start: var(--pf-global--spacer--md);
-    margin-block-end: var(--pf-global--spacer--lg);
+    grid-column: 1 / -1;
 }
 
 .app-details {
@@ -125,6 +124,13 @@
 
 [part="app-list"]:has([expanded]) {
     padding-block-end: 15rem;
+}
+
+[part="app-list"] {
+    display: grid;
+    gap: var(--pf-global--spacer--md);
+
+    grid-template-columns: repeat(var(--app-list-column-count, 1), 1fr);
 }
 
 [part="app-card"] {

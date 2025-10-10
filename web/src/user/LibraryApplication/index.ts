@@ -32,9 +32,9 @@ interface CardHeaderProps {
 }
 
 const CardHeader: LitFC<CardHeaderProps> = ({ application }) => {
-    return html`<a
-        class="pf-c-card__header launch-wrapper"
+    return html`<div
         part="card-header"
+        class="pf-c-card__header pf-m-pressable"
         aria-label=${msg(str`Open "${application.name}"`)}
         title=${ifPresent(application.name)}
         href=${ifPresent(application.launchUrl)}
@@ -46,43 +46,10 @@ const CardHeader: LitFC<CardHeaderProps> = ({ application }) => {
             name=${application.name}
             icon=${ifPresent(application.metaIcon)}
         ></ak-app-icon>
-        <div id="app-title" class="pf-c-card__title" part="card-title">
-            <div class="clamp-wrapper">${application.name}</div>
+        <div id="app-title" class="pf-c-card__title pf-m-pressable" part="card-title">
+            <div class="clamp-wrapper">${"Acme Corp VPN"}</div>
         </div>
-    </a>`;
-};
-
-const RACCardHeader: LitFC<CardHeaderProps> = ({ application }) => {
-    const modalRef = createRef<RACLaunchEndpointModal>();
-    const launchModal = () => {
-        modalRef.value?.show();
-    };
-
-    return html`<div
-            part="card-header"
-            class="pf-c-card__header pf-m-pressable"
-            title=${ifPresent(application.name)}
-            role="button"
-            aria-label=${msg(str`Open Remote Access Control launcher for "${application.name}"`)}
-            @click=${launchModal}
-        >
-            <ak-app-icon
-                part="card-header-icon"
-                size=${PFSize.Large}
-                name=${application.name}
-                icon=${ifPresent(application.metaIcon)}
-            ></ak-app-icon>
-        </div>
-        <div
-            @click=${launchModal}
-            id="app-title"
-            class="pf-c-card__title pf-m-pressable"
-            part="card-title"
-        >
-            <div class="clamp-wrapper">${application.name}</div>
-        </div>
-        <ak-library-rac-endpoint-launch ${ref(modalRef)} .app=${application}>
-        </ak-library-rac-endpoint-launch>`;
+    </div>`;
 };
 
 interface CardDetailsProps extends Pick<Application, "name" | "metaDescription" | "metaPublisher"> {
@@ -129,6 +96,8 @@ export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     background?: string | null;
 }
 
+let counter = 0;
+
 export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     selected = false,
@@ -157,6 +126,18 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
             ? `${globalAK().api.base}if/admin/#/core/applications/${application?.slug}`
             : null;
 
+    counter += 1;
+    const modalRef = createRef<RACLaunchEndpointModal>();
+    const launchModal = () => {
+        modalRef.value?.show();
+    };
+
+    const cardHeader = CardHeader({
+        application,
+    });
+
+    const rac = application.launchUrl === RAC_LAUNCH_URL;
+
     return html`<div
         role="gridcell"
         part="app-card"
@@ -167,14 +148,31 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         ${spread(props)}
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
-            <div class="card-header-aspect-wrapper">
-                ${application.launchUrl !== RAC_LAUNCH_URL
-                    ? RACCardHeader({
-                          application,
-                      })
-                    : CardHeader({
-                          application,
-                      })}
+                ${
+                    rac
+                        ? html`<div
+                              role="button"
+                              tabindex="0"
+                              @click=${launchModal}
+                              class="card-header-aspect-wrapper"
+                              aria-label=${msg(str`Open "${application.name}"`)}
+                              title=${ifPresent(application.name)}
+                          >
+                              ${cardHeader}
+                              <ak-library-rac-endpoint-launch
+                                  ${ref(modalRef)}
+                                  .app=${application}
+                              ></ak-library-rac-endpoint-launch>
+                          </div>`
+                        : html`<a
+                              class="card-header-aspect-wrapper"
+                              aria-label=${msg(str`Open "${application.name}"`)}
+                              title=${ifPresent(application.name)}
+                              href=${ifPresent(application.launchUrl)}
+                              target=${ifPresent(application.openInNewTab, "_blank")}
+                              >${cardHeader}</a
+                          >`
+                }
             </div>
             ${CardDetails({
                 name,
