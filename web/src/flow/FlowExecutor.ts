@@ -48,6 +48,15 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const FlowLayoutClasses = {
+    [FlowLayoutEnum.ContentLeft]: "pf-c-login__container",
+    [FlowLayoutEnum.ContentRight]: "pf-c-login__container content-right",
+    [FlowLayoutEnum.SidebarLeft]: "ak-login-container",
+    [FlowLayoutEnum.SidebarRight]: "ak-login-container",
+    [FlowLayoutEnum.Stacked]: "ak-login-container",
+    [FlowLayoutEnum.UnknownDefaultOpenApi]: "ak-login-container",
+} as const satisfies Record<FlowLayoutEnum, string>;
+
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
@@ -73,7 +82,12 @@ export class FlowExecutor
                 --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+
+                @media (max-width: 768px) {
+                    background: var(--pf-c-login__main--BackgroundColor) !important;
+                }
             }
+
             .ak-hidden {
                 display: none;
             }
@@ -83,9 +97,12 @@ export class FlowExecutor
             .pf-c-drawer__content {
                 background-color: transparent;
             }
+            .pf-c-login {
+                align-items: baseline;
+            }
             /* layouts */
             @media (min-height: 60rem) {
-                .pf-c-login.stacked .pf-c-login__main {
+                .pf-c-login[data-layout="stacked"] .pf-c-login__main {
                     margin-top: 13rem;
                 }
             }
@@ -95,33 +112,34 @@ export class FlowExecutor
                     "footer main"
                     ". main";
             }
-            .pf-c-login.sidebar_left {
+            .pf-c-login[data-layout="sidebar_left"] {
                 justify-content: flex-start;
                 padding-top: 0;
                 padding-bottom: 0;
             }
-            .pf-c-login.sidebar_left .ak-login-container,
-            .pf-c-login.sidebar_right .ak-login-container {
-                height: 100vh;
+            .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
+            .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
+                height: 100%;
+                min-height: 100dvh;
                 background-color: var(--pf-c-login__main--BackgroundColor);
-                padding-left: var(--pf-global--spacer--lg);
-                padding-right: var(--pf-global--spacer--lg);
+                padding-inline: var(--pf-global--spacer--lg);
+                padding-block-end: var(--pf-global--spacer--xs);
             }
-            .pf-c-login.sidebar_left .pf-c-list,
-            .pf-c-login.sidebar_right .pf-c-list {
+            .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
+            .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
                 color: #000;
             }
-            .pf-c-login.sidebar_right {
+            .pf-c-login[data-layout="sidebar_right"] {
                 justify-content: flex-end;
                 padding-top: 0;
                 padding-bottom: 0;
             }
-            :host([theme="dark"]) .pf-c-login.sidebar_left .ak-login-container,
-            :host([theme="dark"]) .pf-c-login.sidebar_right .ak-login-container {
+            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
+            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
                 background-color: var(--ak-dark-background);
             }
-            :host([theme="dark"]) .pf-c-login.sidebar_left .pf-c-list,
-            :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
+            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
+            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
                 color: var(--ak-dark-foreground);
             }
             .pf-c-brand {
@@ -352,26 +370,10 @@ export class FlowExecutor
 
     //#region Render
 
-    getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
-        if (this.challenge) {
-            return this.challenge?.flowInfo?.layout || prefilledFlow;
-        }
-        return prefilledFlow;
-    }
-
-    getLayoutClass(): string {
-        const layout = this.getLayout();
-
-        switch (layout) {
-            case FlowLayoutEnum.ContentLeft:
-                return "pf-c-login__container";
-            case FlowLayoutEnum.ContentRight:
-                return "pf-c-login__container content-right";
-            case FlowLayoutEnum.Stacked:
-            default:
-                return "ak-login-container";
-        }
+    get layout(): FlowLayoutEnum {
+        return (
+            this.challenge?.flowInfo?.layout || globalAK()?.flow?.layout || FlowLayoutEnum.Stacked
+        );
     }
 
     async renderChallenge(): Promise<TemplateResult> {
@@ -515,6 +517,18 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-session-end>`;
+            case "ak-provider-saml-native-logout":
+                await import("#flow/providers/saml/NativeLogoutStage");
+                return html`<ak-provider-saml-native-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-provider-saml-native-logout>`;
+            case "ak-provider-iframe-logout":
+                await import("#flow/providers/IFrameLogoutStage");
+                return html`<ak-provider-iframe-logout
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-provider-iframe-logout>`;
             // Internal stages
             case "ak-stage-flow-error":
                 return html`<ak-stage-flow-error
@@ -548,6 +562,7 @@ export class FlowExecutor
         return import("#flow/FlowInspector").then(
             () =>
                 html`<ak-flow-inspector
+                    id="flow-inspector"
                     class="pf-c-drawer__panel pf-m-width-33"
                     .flowSlug=${this.flowSlug}
                 ></ak-flow-inspector>`,
@@ -555,18 +570,24 @@ export class FlowExecutor
     }
 
     render(): TemplateResult {
-        return html` <ak-locale-context>
-            <div class="pf-c-background-image"></div>
-            <div class="pf-c-page__drawer">
-                <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
-                    <div class="pf-c-drawer__main">
-                        <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <div class="pf-c-login ${this.getLayout()}">
-                                    <div class="${this.getLayoutClass()}">
+        const { layout } = this;
+
+        return html`<ak-locale-context>
+            <div class="pf-c-background-image" part="background-image"></div>
+            <div class="pf-c-page__drawer" part="page-drawer">
+                <div
+                    class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
+                    part="drawer"
+                >
+                    <div class="pf-c-drawer__main" part="drawer-main">
+                        <div class="pf-c-drawer__content" part="drawer-content">
+                            <div class="pf-c-drawer__body" part="drawer-body">
+                                <div class="pf-c-login" data-layout=${layout} part="flow">
+                                    <div class=${FlowLayoutClasses[layout]} part="flow-container">
                                         <main
                                             class="pf-c-login__main"
                                             aria-label=${msg("Authentication form")}
+                                            part="flow-main"
                                         >
                                             ${this.loading && this.challenge
                                                 ? html`<ak-loading-overlay></ak-loading-overlay>`
@@ -583,6 +604,7 @@ export class FlowExecutor
                                             ${until(this.renderChallenge())}
                                         </main>
                                         <ak-brand-links
+                                            part="brand-links"
                                             role="contentinfo"
                                             aria-label=${msg("Site footer")}
                                             class="pf-c-login__footer"
@@ -595,10 +617,11 @@ export class FlowExecutor
                         ${this.inspectorAvailable && !this.inspectorOpen
                             ? html`<button
                                   aria-label=${this.inspectorOpen
-                                      ? msg("Close inspector")
-                                      : msg("Open inspector")}
+                                      ? msg("Close flow inspector")
+                                      : msg("Open flow inspector")}
                                   aria-expanded=${this.inspectorOpen ? "true" : "false"}
                                   class="inspector-toggle pf-c-button pf-m-primary"
+                                  aria-controls="flow-inspector"
                                   @click=${() => {
                                       this.inspectorOpen = true;
                                   }}

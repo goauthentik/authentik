@@ -50,6 +50,8 @@ class TaskBase(models.Model):
         help_text=_("Task status"),
     )
     mtime = models.DateTimeField(default=now, help_text=_("Task last modified time"))
+    retries = models.PositiveBigIntegerField(default=0, help_text=_("Number of retries"))
+    eta = models.DateTimeField(null=True, help_text=_("Planned execution time"))
 
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
@@ -58,13 +60,20 @@ class TaskBase(models.Model):
         abstract = True
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
-        indexes = (models.Index(fields=("state", "mtime")),)
+        indexes = (
+            models.Index(fields=("queue_name",)),
+            models.Index(fields=("queue_name", "state")),
+            models.Index(fields=("message_id", "queue_name", "state", "eta")),
+            models.Index(fields=("message_id", "state", "eta")),
+            models.Index(fields=("message_id", "queue_name", "state")),
+            models.Index(fields=("state", "mtime", "result_expiry")),
+        )
         triggers = (
             pgtrigger.Trigger(
                 name="notify_enqueueing",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.After,
-                condition=pgtrigger.Q(new__state=TaskState.QUEUED),
+                condition=pgtrigger.Q(new__state=TaskState.QUEUED, new__eta=None),
                 timing=pgtrigger.Deferred,
                 func=f"""
                     PERFORM pg_notify(

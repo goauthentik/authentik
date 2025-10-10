@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 type TokenResponse struct {
@@ -16,7 +18,7 @@ type TokenResponse struct {
 
 const JWTUsername = "goauthentik.io/token"
 
-func (a *Application) attemptBasicAuth(username, password string) *Claims {
+func (a *Application) attemptBasicAuth(username, password string) *types.Claims {
 	if username == JWTUsername {
 		res := a.attemptBearerAuth(password)
 		if res != nil {
@@ -72,13 +74,13 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	}
 
 	// Extract custom claims
-	var claims *Claims
+	var claims *types.Claims
 	if err := idToken.Claims(&claims); err != nil {
 		a.log.WithError(err).Warning("failed to convert token to claims")
 		return nil
 	}
 	if claims.Proxy == nil {
-		claims.Proxy = &ProxyClaims{}
+		claims.Proxy = &types.ProxyClaims{}
 	}
 	claims.RawToken = token.IDToken
 	return claims

@@ -51,7 +51,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     autofocus
                     spellcheck="false"
                     autocomplete="one-time-code"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
                     value="${PasswordManagerPrefill.totp || ""}"
                     required
                 />

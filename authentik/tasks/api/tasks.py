@@ -44,6 +44,8 @@ class TaskSerializer(ModelSerializer):
             "actor_name",
             "state",
             "mtime",
+            "retries",
+            "eta",
             "rel_obj_app_label",
             "rel_obj_model",
             "rel_obj_id",

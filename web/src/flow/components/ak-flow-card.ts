@@ -45,6 +45,12 @@ export class FlowCard extends AKElement {
                 padding: 0;
                 margin-top: 1em;
             }
+
+            .pf-c-login__main-body {
+                --pf-c-login__main-body--md--PaddingLeft: var(--pf-global--spacer--md);
+                --pf-c-login__main-body--md--PaddingRight: var(--pf-global--spacer--md);
+            }
+
             .pf-c-login__main-body:last-child {
                 padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
             }

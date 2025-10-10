@@ -40,7 +40,7 @@ class CurrentTask(BaseCurrentTask):
 
 class TenantMiddleware(Middleware):
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        message.options["model_defaults"]["tenant"] = get_current_tenant()
+        message.options["model_create_defaults"]["tenant"] = get_current_tenant()
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
@@ -52,14 +52,16 @@ class TenantMiddleware(Middleware):
     after_skip_message = after_process_message
 
 
-class RelObjMiddleware(Middleware):
+class ModelDataMiddleware(Middleware):
     @property
     def actor_options(self):
-        return {"rel_obj"}
+        return {"rel_obj", "uid"}
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         if "rel_obj" in message.options:
             message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
+        if "uid" in message.options:
+            message.options["model_defaults"]["_uid"] = message.options.pop("uid")
 
 
 class MessagesMiddleware(Middleware):
