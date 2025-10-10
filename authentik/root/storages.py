@@ -3,13 +3,13 @@
 import os
 from urllib.parse import parse_qsl, urlsplit
 
+from botocore.awsrequest import AWSRequest
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.files.storage import FileSystemStorage
 from django.db import connection
 from storages.backends.s3 import S3Storage as BaseS3Storage
 from storages.utils import clean_name, safe_join
-import botocore
 
 from authentik.lib.config import CONFIG
 
@@ -99,8 +99,10 @@ class S3Storage(BaseS3Storage):
 
         if self.custom_domain:
             custom_url = f"{self.url_protocol}//{self.custom_domain}/{name}"
-            request = botocore.awsrequest.AWSRequest(http_method or "GET", custom_url)
-            self.bucket.meta.client._request_signer.sign("GetObject", request, signing_type="presign-url", expires_in=expire)
+            request = AWSRequest(http_method or "GET", custom_url)
+            self.bucket.meta.client._request_signer.sign(
+                "GetObject", request, signing_type="presign-url", expires_in=expire
+            )
             prepared_request = request.prepare()
             url = prepared_request.url
 
