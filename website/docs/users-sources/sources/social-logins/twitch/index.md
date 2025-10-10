@@ -5,7 +5,7 @@ tags:
     - twitch
 ---
 
-Allows users to authenticate using their Twitch credentials.
+Allows users to authenticate using their Twitch credentials, by configuring Twitch as a federated identity provider via OAuth2.
 
 ## Preparation
 

@@ -5,7 +5,7 @@ tags:
     - discord
 ---
 
-Allows users to authenticate using their Discord credentials.
+Allows users to authenticate using their Discord credentials, by configuring Discord as a federated identity provider via OAuth2.
 
 ## Preparation
 

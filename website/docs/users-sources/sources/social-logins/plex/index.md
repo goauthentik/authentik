@@ -5,7 +5,7 @@ tags:
     - plex
 ---
 
-Allows users to authenticate using their Plex credentials.
+Allows users to authenticate using their Plex credentials, by configuring Plex as a federated identity provider via OAuth2.
 
 ## Preparation
 

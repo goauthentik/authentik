@@ -6,7 +6,7 @@ tags:
     - meta
 ---
 
-Allows users to authenticate using their Facebook credentials.
+Allows users to authenticate using their Facebook credentials, , by configuring Facebook as a federated identity provider via OAuth2.
 
 ## Preparation
 

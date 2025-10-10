@@ -8,7 +8,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their Google Workspace credentials.
+Allows users to authenticate using their Google Workspace credentials, by configuring Googlw Workspace as a federated identity provider via SAML.
 
 ## What is Google Workspace?
 
