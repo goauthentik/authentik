@@ -1726,7 +1726,7 @@ msgid ""
 "renewed. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 "刷新令牌时，如果刷新令牌的有效期少于此时长，则会进行续订。设置为 seconds=0 "
-"时，令牌将始终进行续订。（格式：hours=1；minutes=2；seconds=3）。"
+"时，令牌将始终进行续订。（格式：hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
