@@ -165,7 +165,9 @@ class TaskLog(models.Model):
         return str(self.pk)
 
     @classmethod
-    def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self:
+    def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self | None:
+        if not task.message:
+            return None
         return cls.objects.create(
             task=task,
             event=log_event.event,
@@ -176,7 +178,13 @@ class TaskLog(models.Model):
         )
 
     @classmethod
-    def bulk_create_from_log_events(cls, task: Task, log_events: Iterable[LogEvent]) -> list[Self]:
+    def bulk_create_from_log_events(
+        cls,
+        task: Task,
+        log_events: Iterable[LogEvent],
+    ) -> list[Self] | None:
+        if not task.message:
+            return None
         return cls.objects.bulk_create(
             [
                 cls(
