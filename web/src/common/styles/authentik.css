@@ -499,16 +499,6 @@ fieldset {
 
 /* #endregion */
 
-.pf-c-form__helper-text {
-    text-wrap: pretty;
-}
-
-::placeholder {
-    font-style: italic;
-}
-
-/* #endregion */
-
 /* #region Fonts */
 
 .pf-m-monospace {
@@ -529,6 +519,17 @@ fieldset {
 .pf-m-pressable {
     cursor: pointer;
     user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
 }
 
 /* Flow-card adjustments for static pages */
