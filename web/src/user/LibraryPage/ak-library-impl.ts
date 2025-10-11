@@ -5,13 +5,13 @@ import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
 import "./ak-library-application-search.js";
 
+import Styles from "./ak-library-impl.css";
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,
     LibraryPageSearchSelected,
     LibraryPageSearchUpdated,
 } from "./events.js";
-import styles from "./LibraryPageImpl.styles.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import type { PageUIConfig } from "./types.js";
 
@@ -27,6 +27,12 @@ import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+
 /**
  * List of Applications available
  *
@@ -38,10 +44,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
  *   - Filter that list using the search bar
  *
  */
-
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static styles = styles;
+    static styles = [
+        // ---
+        PFBase,
+        PFDisplay,
+        PFEmptyState,
+        PFPage,
+        PFContent,
+        Styles,
+    ];
 
     /**
      * Controls showing the "Switch to Admin" button.
@@ -186,8 +199,8 @@ export class LibraryPage extends AKElement {
             tabindex="-1"
             id="main-content"
         >
-            <div class="pf-c-content header">
-                <h1>${msg("My applications")}</h1>
+            <div class="pf-c-page__header pf-c-content">
+                <h1 class="pf-c-page__title">${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <section class="pf-c-page__main-section">${this.renderState()}</section>

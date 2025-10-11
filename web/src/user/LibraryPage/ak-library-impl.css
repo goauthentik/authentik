@@ -1,0 +1,18 @@
+:host {
+    display: block;
+    padding: 3% 5%;
+}
+
+.pf-c-page__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.pf-c-page__main {
+    overflow: hidden;
+}
+
+.pf-c-page__main-section {
+    background-color: transparent;
+}
