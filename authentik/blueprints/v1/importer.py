@@ -313,6 +313,7 @@ class Importer:
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
+        override_serializer_instance = False
         if (
             not isinstance(model(), BaseMetaModel)
             and model_instance
@@ -341,11 +342,7 @@ class Importer:
                 model=model,
                 **cleanse_dict(updated_identifiers),
             )
-            model_instance = model()
-            # pk needs to be set on the model instance otherwise a new one will be generated
-            if "pk" in updated_identifiers:
-                model_instance.pk = updated_identifiers["pk"]
-            serializer_kwargs["instance"] = model_instance
+            override_serializer_instance = True
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
@@ -368,6 +365,12 @@ class Importer:
                 entry=entry,
                 serializer=serializer,
             ) from exc
+        if override_serializer_instance:
+            model_instance = model()
+            # pk needs to be set on the model instance otherwise a new one will be generated
+            if "pk" in updated_identifiers:
+                model_instance.pk = updated_identifiers["pk"]
+            serializer.instance = model_instance
         return serializer
 
     def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
@@ -446,7 +449,7 @@ class Importer:
                 self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
-                if instance.pk:
+                if instance and instance.pk:
                     instance.delete()
                     self.logger.debug("Deleted model", mode=instance)
                     continue
