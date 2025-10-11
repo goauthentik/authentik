@@ -79,6 +79,7 @@ TENANT_APPS = [
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
+    "authentik.endpoints",
     "authentik.enterprise",
     "authentik.events",
     "authentik.flows",
