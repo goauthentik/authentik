@@ -25,7 +25,7 @@ The first step is to create the RAC application and provider pair.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with provider**.
-3. Follow these [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
+3. Follow these [instructions](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) to create your RAC application and provider.
 
 ### Create RAC property mappings
 
