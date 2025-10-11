@@ -1,0 +1,13 @@
+.docCardListItem {
+    margin-bottom: 2rem;
+}
+
+.docCardListItem > * {
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .docCardListItem {
+        margin-bottom: 0.75rem;
+    }
+}
