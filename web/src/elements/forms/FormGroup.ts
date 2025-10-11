@@ -25,22 +25,30 @@ export class AKFormGroup extends AKElement {
         PFForm,
         PFButton,
         PFFormControl,
-
         css`
             :host([theme="dark"]) {
                 --marker-color: var(--pf-global--Color--200);
                 --marker-color-hover: var(--ak-dark-foreground-darker);
-            }
 
-            .pf-c-form__field-group-header-description {
-                text-wrap: balance;
+                details {
+                    @media (prefers-contrast: more) {
+                        background: var(--ak-dark-background-light);
+                    }
+                }
             }
 
             details {
+                @media (prefers-contrast: more) {
+                    border: 1px solid var(--pf-global--BorderColor--200);
+                    background: var(--pf-global--BackgroundColor--150);
+                }
+
                 &::details-content {
                     padding-inline-start: var(
                         --pf-c-form__field-group--GridTemplateColumns--toggle
                     );
+                    padding-inline-end: var(--pf-global--spacer--md);
+                    padding-block-end: var(--pf-global--spacer--md);
                 }
 
                 & > summary {
@@ -51,6 +59,9 @@ export class AKFormGroup extends AKElement {
                     list-style-type: "\\f105";
                     cursor: pointer;
                     user-select: none;
+
+                    font-weight: bold;
+                    text-decoration: underline;
 
                     &::marker {
                         color: var(--marker-color, var(--pf-global--Color--200));
@@ -68,6 +79,12 @@ export class AKFormGroup extends AKElement {
                 &[open] summary {
                     list-style-type: "\\f107";
                 }
+            }
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            .pf-c-form__field-group-header-description {
+                text-wrap: balance;
             }
         `,
     ];
