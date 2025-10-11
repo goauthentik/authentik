@@ -34,6 +34,9 @@ export class AppIcon extends AKElement implements IAppIcon {
         css`
             :host {
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+
+                display: flex;
+                place-content: center;
             }
             :host([size="pf-m-lg"]) {
                 --icon-height: 4rem;
@@ -66,11 +69,11 @@ export class AppIcon extends AKElement implements IAppIcon {
                 padding: var(--icon-border);
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                 line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                filter: drop-shadow(hsl(0deg 0% 85%) 5px 5px 5px);
+                filter: drop-shadow(hsl(0deg 0% 33% / 0.15) 5px 5px 3px);
             }
 
             :host([theme="dark"]) .icon {
-                filter: drop-shadow(hsl(0deg 0% 11%) 5px 5px 4px);
+                filter: drop-shadow(hsl(0deg 0% 2% / 0.3) 5px 5px 3px);
             }
 
             div {
@@ -83,13 +86,13 @@ export class AppIcon extends AKElement implements IAppIcon {
         // prettier-ignore
         return match([this.name, this.icon])
             .with([P.nullish, P.nullish],
-                () => html`<div><i aria-hidden="true" class="icon fas fa-question-circle"></i></div>`)
+                () => html`<div><i part="icon" aria-hidden="true" class="icon fas fa-question-circle"></i></div>`)
             .with([P._, P.string.startsWith("fa://")],
-                ([_name, icon]) => html`<div><i aria-hidden="true" class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
+                ([_name, icon]) => html`<div><i part="icon" aria-hidden="true" class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
             .with([P._, P.string],
-                ([_name, icon]) => html`<img aria-hidden="true" class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
+                ([_name, icon]) => html`<img part="icon" aria-hidden="true" class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
             .with([P.string, P.nullish],
-                ([name]) => html`<span aria-hidden="true" class="icon">${name.charAt(0).toUpperCase()}</span>`)
+                ([name]) => html`<span part="icon" aria-hidden="true" class="icon">${name.charAt(0).toUpperCase()}</span>`)
             .exhaustive();
     }
 }
