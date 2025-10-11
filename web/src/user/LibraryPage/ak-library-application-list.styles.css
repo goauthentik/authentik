@@ -135,11 +135,13 @@
 
 [part="app-card"] {
     aspect-ratio: var(--app-card-aspect-ratio);
-    /* outline: 1px dashed white; */
+
+    &[aria-selected="true"] {
+        outline: auto var(--ak-accent);
+    }
 }
 
 [part="app-group"] {
-    /* outline: 1px dashed red; */
     display: grid;
     gap: var(--pf-global--spacer--md);
     grid-template-columns: var(--app-group-template-columns, 1fr);

@@ -7,6 +7,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    .pf-c-page__title {
+        margin: 0;
+    }
 }
 
 .pf-c-page__main {

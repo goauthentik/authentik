@@ -27,18 +27,19 @@ import { styleMap } from "lit/directives/style-map.js";
 
 const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
 
-interface CardHeaderProps {
+interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
     application: Application;
 }
 
-const CardHeader: LitFC<CardHeaderProps> = ({ application }) => {
+const CardHeader: LitFC<CardHeaderProps> = ({ application, ...props }) => {
     return html`<div
         part="card-header"
         class="pf-c-card__header pf-m-pressable"
-        aria-label=${msg(str`Open "${application.name}"`)}
+        aria-label=${ifPresent(application.name)}
         title=${ifPresent(application.name)}
         href=${ifPresent(application.launchUrl)}
         target=${ifPresent(application.openInNewTab, "_blank")}
+        ${spread(props)}
     >
         <ak-app-icon
             part="card-header-icon"
@@ -47,23 +48,32 @@ const CardHeader: LitFC<CardHeaderProps> = ({ application }) => {
             icon=${ifPresent(application.metaIcon)}
         ></ak-app-icon>
         <div id="app-title" class="pf-c-card__title pf-m-pressable" part="card-title">
-            <div class="clamp-wrapper">${"Acme Corp VPN"}</div>
+            <div class="clamp-wrapper">${application.name}</div>
         </div>
     </div>`;
 };
 
-interface CardDetailsProps extends Pick<Application, "name" | "metaDescription" | "metaPublisher"> {
-    editURL?: string | null;
+interface CardDetailsProps extends HTMLAttributes<HTMLDivElement> {
+    application: Application;
 }
 
 const CardDetails: LitFC<CardDetailsProps> = ({
-    metaPublisher,
-    metaDescription,
-    name,
-    editURL,
+    application: { slug, name, metaDescription, metaPublisher },
+    ...props
 }) => {
+    const { me, uiConfig } = rootInterface<UserInterface>();
+
+    const editURL =
+        uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+            ? `${globalAK().api.base}if/admin/#/core/applications/${slug}`
+            : null;
+
     const truncatedDescription = truncateWords(metaDescription, 10);
     const expansionLabel = msg("Details");
+
+    if (!metaPublisher && !truncatedDescription && !editURL) {
+        return nothing;
+    }
 
     return html`<ak-expand
         class="app-details"
@@ -73,7 +83,7 @@ const CardDetails: LitFC<CardDetailsProps> = ({
             ? html`<div class="pf-c-content" part="card-expansion">
                       <small>${metaPublisher}</small>
                   </div>
-                  <div id="app-description" part="card-description">${truncatedDescription}</div>`
+                  <div part="card-description" ${spread(props)}>${truncatedDescription}</div>`
             : nothing}
         ${editURL
             ? html`
@@ -92,16 +102,16 @@ const CardDetails: LitFC<CardDetailsProps> = ({
 
 export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
-    selected?: boolean;
     background?: string | null;
+    appIndex: number;
+    groupIndex: number;
 }
-
-let counter = 0;
 
 export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
-    selected = false,
     background,
+    appIndex,
+    groupIndex,
     className = "",
     ...props
 }) => {
@@ -113,27 +123,22 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
 
     const classes = {
         [className]: className.length,
-        "pf-m-selectable": selected,
-        "pf-m-selected": selected,
     };
 
     const dataID = kebabCase(application.name);
 
-    const { me, uiConfig } = rootInterface<UserInterface>();
-
-    const editURL =
-        uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
-            ? `${globalAK().api.base}if/admin/#/core/applications/${application?.slug}`
-            : null;
-
-    counter += 1;
     const modalRef = createRef<RACLaunchEndpointModal>();
+
     const launchModal = () => {
         modalRef.value?.show();
     };
 
+    const titleID = `app-title-${groupIndex}-${appIndex}`;
+    const descriptionID = `app-description-${groupIndex}-${appIndex}`;
+
     const cardHeader = CardHeader({
         application,
+        id: titleID,
     });
 
     const rac = application.launchUrl === RAC_LAUNCH_URL;
@@ -142,8 +147,8 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         role="gridcell"
         part="app-card"
         data-application-name=${ifPresent(dataID)}
-        aria-labelledby="app-title"
-        aria-describedby="app-description"
+        aria-labelledby=${titleID}
+        aria-describedby=${descriptionID}
         style=${styleMap({ background: background || null })}
         ${spread(props)}
     >
@@ -165,6 +170,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                               ></ak-library-rac-endpoint-launch>
                           </div>`
                         : html`<a
+                              tabindex="0"
                               class="card-header-aspect-wrapper"
                               aria-label=${msg(str`Open "${application.name}"`)}
                               title=${ifPresent(application.name)}
@@ -175,10 +181,8 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 }
             </div>
             ${CardDetails({
-                name,
-                metaDescription,
-                metaPublisher,
-                editURL,
+                application,
+                id: descriptionID,
             })}
         </div>
     </div>`;

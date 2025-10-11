@@ -8,6 +8,8 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLibraryApp } from "#user/LibraryApplication/index";
 
+import { Application } from "@goauthentik/api";
+
 import { kebabCase } from "change-case";
 
 import { msg } from "@lit/localize";
@@ -54,47 +56,47 @@ export class LibraryPageApplicationList extends AKElement {
     @property({ attribute: true })
     public background: string | null = null;
 
-    @property({ attribute: true })
-    public selected: string | null = null;
+    @property({ attribute: false })
+    public selected: Application | null = null;
 
     @property({ attribute: false })
     public apps: AppGroupEntry[] = [];
 
     render() {
-        // const [groupClass, groupGrid] = LayoutClasses[this.layout] || LayoutClasses[LayoutType.row];
-        // const [groupClass, groupGrid] = LayoutClasses[LayoutType.column_2];
-
         return html`<div
             part="app-list"
-            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.column_2] ?? 1}"
+            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.row] ?? 1}"
             role="grid"
             aria-label=${msg("Available applications")}
         >
             ${repeat(
                 this.apps,
                 ([groupLabel]) => groupLabel,
-                ([groupLabel, apps], idx) => {
-                    return html`<div
+                ([groupLabel, apps], groupIndex) => {
+                    return html` <div
                         role="rowgroup"
                         data-group-id=${ifPresent(kebabCase(groupLabel))}
-                        aria-labelledby="app-group-${idx}"
+                        aria-labelledby="app-group-${groupIndex}"
                         part="app-group"
                     >
                         <div class="pf-c-content" part="app-group-header">
-                            <h2 id="app-group-${idx}">${groupLabel}</h2>
+                            <h2 id="app-group-${groupIndex}">${groupLabel}</h2>
                         </div>
                         ${repeat(
                             apps,
-                            (app) => app.pk,
-                            (app) =>
+                            (application) => application.pk,
+                            (application, appIndex) =>
                                 AKLibraryApp({
-                                    part: "app-card",
-                                    application: app,
-                                    background: this.background,
-                                    selected: app.slug === this.selected,
+                                    application,
+                                    appIndex,
+                                    groupIndex,
+                                    "part": "app-card",
+                                    "background": this.background,
+                                    "aria-live": "polite",
+                                    "aria-selected": this.selected === application,
                                 }),
                         )}
-                    </div> `;
+                    </div>`;
                 },
             )}
         </div>`;
