@@ -12,6 +12,11 @@ on:
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   publish:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
@@ -46,5 +51,3 @@ jobs:
           npm ci
           npm run build
           npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
