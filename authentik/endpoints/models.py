@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from model_utils.managers import InheritanceManager
 
-from authentik.core.models import Token, User
+from authentik.core.models import User
 from authentik.endpoints.common_data import CommonDeviceDataSerializer
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBindingModel
@@ -14,6 +14,7 @@ from authentik.policies.models import PolicyBindingModel
 class Device(SerializerModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
+    name = models.TextField()
     identifier = models.TextField(unique=True)
     users = models.ManyToManyField(User, through="DeviceUser")
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
@@ -52,8 +53,3 @@ class Connector(SerializerModel):
 class DeviceGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
-    tokens = models.ManyToManyField("EnrollmentToken")
-
-
-class EnrollmentToken(Token):
-    pass

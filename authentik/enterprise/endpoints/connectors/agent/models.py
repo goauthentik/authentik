@@ -1,9 +1,22 @@
+from uuid import uuid4
+
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
+from authentik.core.models import ExpiringModel, default_token_key
 from authentik.endpoints.models import Connector
 
 
 class AgentConnector(Connector):
+
+    tokens = models.ManyToManyField("EnrollmentToken")
+
+    nss_uid_offset = models.PositiveIntegerField(default=1000)
+    nss_gid_offset = models.PositiveIntegerField(default=1000)
+    authentication_flow = models.ForeignKey(
+        "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -14,6 +27,16 @@ class AgentConnector(Connector):
         return AgentConnectorSerializer
 
 
-# class AgentDeviceConnection(DeviceConnection):
+class EnrollmentToken(ExpiringModel):
+    token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    key = models.TextField(default=default_token_key)
 
-#     pass
+    class Meta:
+        verbose_name = _("Enrollment Token")
+        verbose_name_plural = _("Enrollment Tokens")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["key"]),
+        ]
+        permissions = [
+            ("view_token_key", _("View token's key")),
+        ]

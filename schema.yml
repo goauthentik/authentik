@@ -4744,11 +4744,36 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/agent_config/:
+    get:
+      operationId: endpoints_agents_connectors_agent_config_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/enroll/:
     post:
       operationId: endpoints_agents_connectors_enroll_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: header
+        name: authorization
+        schema:
+          type: string
       tags:
       - endpoints
       requestBody:
@@ -4757,8 +4782,6 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -18694,7 +18717,6 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
-          - authentik_endpoints.enrollmenttoken
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
@@ -18906,7 +18928,6 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
-          - authentik_endpoints.enrollmenttoken
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
@@ -31518,6 +31539,20 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AgentConfig:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        nss_uid_offset:
+          type: integer
+        nss_gid_offset:
+          type: integer
+        authentication_flow:
+          type: string
+      required:
+      - authentication_flow
+      - nss_gid_offset
+      - nss_uid_offset
     AgentConnector:
       type: object
       properties:
@@ -31526,8 +31561,26 @@ components:
           format: uuid
         name:
           type: string
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
+      - tokens
     AgentConnectorRequest:
       type: object
       properties:
@@ -31537,8 +31590,26 @@ components:
         name:
           type: string
           minLength: 1
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
+      - tokens
     AlgEnum:
       enum:
       - rsa
@@ -35280,14 +35351,15 @@ components:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
-        enrollment_token:
+        device_serial:
           type: string
           minLength: 1
-        device:
-          $ref: '#/components/schemas/HardwareRequest'
+        device_name:
+          type: string
+          minLength: 1
       required:
-      - device
-      - enrollment_token
+      - device_name
+      - device_serial
     EnrollResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -39342,7 +39414,6 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_crypto.certificatekeypair
-      - authentik_endpoints.enrollmenttoken
       - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -43403,6 +43474,23 @@ components:
         name:
           type: string
           minLength: 1
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer

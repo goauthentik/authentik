@@ -424,46 +424,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_endpoints.enrollmenttoken"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints.enrollmenttoken_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints.enrollmenttoken"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints.enrollmenttoken"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "id": {
@@ -5203,29 +5163,30 @@
                             "authentik_endpoints.add_deviceconnection",
                             "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuser",
-                            "authentik_endpoints.add_enrollmenttoken",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
                             "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuser",
-                            "authentik_endpoints.change_enrollmenttoken",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
                             "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuser",
-                            "authentik_endpoints.delete_enrollmenttoken",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
                             "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuser",
-                            "authentik_endpoints.view_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_endpoints_connectors_fleet.add_fleetconnector",
                             "authentik_endpoints_connectors_fleet.change_fleetconnector",
                             "authentik_endpoints_connectors_fleet.delete_fleetconnector",
@@ -5848,89 +5809,6 @@
                 }
             }
         },
-        "model_authentik_endpoints.enrollmenttoken": {
-            "type": "object",
-            "properties": {
-                "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
-                    "title": "Managed by authentik",
-                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
-                },
-                "identifier": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
-                    "title": "Identifier"
-                },
-                "intent": {
-                    "type": "string",
-                    "enum": [
-                        "verification",
-                        "api",
-                        "recovery",
-                        "app_password"
-                    ],
-                    "title": "Intent"
-                },
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
-                "description": {
-                    "type": "string",
-                    "title": "Description"
-                },
-                "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "date-time",
-                    "title": "Expires"
-                },
-                "expiring": {
-                    "type": "boolean",
-                    "title": "Expiring"
-                },
-                "key": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Key"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_endpoints.enrollmenttoken_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_enrollmenttoken",
-                            "change_enrollmenttoken",
-                            "delete_enrollmenttoken",
-                            "view_enrollmenttoken"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_endpoints_connectors_agent.agentconnector": {
             "type": "object",
             "properties": {
@@ -5943,6 +5821,31 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "nss_uid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss uid offset"
+                },
+                "nss_gid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss gid offset"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow"
+                },
+                "tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Tokens"
                 }
             },
             "required": []
@@ -7798,7 +7701,6 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
-                        "authentik_endpoints.enrollmenttoken",
                         "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -10080,29 +9982,30 @@
                             "authentik_endpoints.add_deviceconnection",
                             "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuser",
-                            "authentik_endpoints.add_enrollmenttoken",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
                             "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuser",
-                            "authentik_endpoints.change_enrollmenttoken",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
                             "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuser",
-                            "authentik_endpoints.delete_enrollmenttoken",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
                             "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuser",
-                            "authentik_endpoints.view_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_endpoints_connectors_fleet.add_fleetconnector",
                             "authentik_endpoints_connectors_fleet.change_fleetconnector",
                             "authentik_endpoints_connectors_fleet.delete_fleetconnector",
