@@ -33,24 +33,24 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 const CardHeader: LitFC<CardHeaderProps> = ({ application, ...props }) => {
     return html`<div
-        part="card-header"
-        class="pf-c-card__header pf-m-pressable"
-        aria-label=${ifPresent(application.name)}
-        title=${ifPresent(application.name)}
-        href=${ifPresent(application.launchUrl)}
-        target=${ifPresent(application.openInNewTab, "_blank")}
-        ${spread(props)}
-    >
-        <ak-app-icon
-            part="card-header-icon"
-            size=${PFSize.Large}
-            name=${application.name}
-            icon=${ifPresent(application.metaIcon)}
-        ></ak-app-icon>
+            part="card-header"
+            class="pf-c-card__header pf-m-pressable"
+            aria-label=${ifPresent(application.name)}
+            title=${ifPresent(application.name)}
+            href=${ifPresent(application.launchUrl)}
+            target=${ifPresent(application.openInNewTab, "_blank")}
+            ${spread(props)}
+        >
+            <ak-app-icon
+                part="card-header-icon"
+                size=${PFSize.Large}
+                name=${application.name}
+                icon=${ifPresent(application.metaIcon)}
+            ></ak-app-icon>
+        </div>
         <div id="app-title" class="pf-c-card__title pf-m-pressable" part="card-title">
             <div class="clamp-wrapper">${application.name}</div>
-        </div>
-    </div>`;
+        </div>`;
 };
 
 interface CardDetailsProps extends HTMLAttributes<HTMLDivElement> {

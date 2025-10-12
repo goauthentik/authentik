@@ -2,14 +2,10 @@
     --app-details-border-color: var(--pf-global--BorderColor--100);
     --app-details-divider-color: var(--pf-global--BackgroundColor--100);
     --app-card-aspect-ratio: 4 / 3;
-    /* --app-card-aspect-ratio: 1.5 / 1; */
-
-    /* @media (min-width: 576px) { */
-    /* } */
 
     @media (min-width: 390px) {
         --app-card-aspect-ratio: 1;
-        --app-group-template-columns: repeat(auto-fill, minmax(8em, max-content));
+        --app-group-template-columns: repeat(auto-fill, minmax(8em, auto));
     }
 }
 
@@ -117,6 +113,7 @@
             z-index: var(--pf-global--ZIndex--xs);
         }
     }
+
     &::part(content) {
         padding-block-start: var(--pf-global--spacer--md);
     }
@@ -130,7 +127,11 @@
     display: grid;
     gap: var(--pf-global--spacer--md);
 
-    grid-template-columns: repeat(var(--app-list-column-count, 1), 1fr);
+    grid-template-columns: var(--app-list-template-columns, 1fr);
+
+    @media (min-width: 768px) {
+        --app-list-template-columns: repeat(var(--app-list-column-count, 1), 1fr);
+    }
 }
 
 [part="app-card"] {
@@ -145,5 +146,6 @@
     display: grid;
     gap: var(--pf-global--spacer--md);
     grid-template-columns: var(--app-group-template-columns, 1fr);
-    grid-auto-rows: max-content;
+    grid-template-rows: minmax(0, max-content);
+    grid-auto-rows: minmax(min-content, 8em);
 }

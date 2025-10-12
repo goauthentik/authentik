@@ -73,7 +73,7 @@ export class LibraryPageApplicationList extends AKElement {
                 this.apps,
                 ([groupLabel]) => groupLabel,
                 ([groupLabel, apps], groupIndex) => {
-                    return html` <div
+                    return html`<div
                         role="rowgroup"
                         data-group-id=${ifPresent(kebabCase(groupLabel))}
                         aria-labelledby="app-group-${groupIndex}"
@@ -82,6 +82,7 @@ export class LibraryPageApplicationList extends AKElement {
                         <div class="pf-c-content" part="app-group-header">
                             <h2 id="app-group-${groupIndex}">${groupLabel}</h2>
                         </div>
+
                         ${repeat(
                             apps,
                             (application) => application.pk,

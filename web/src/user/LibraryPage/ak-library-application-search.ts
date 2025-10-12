@@ -96,7 +96,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.query = "";
 
         updateURLParams({
-            search: this.query,
+            q: this.query,
         });
 
         this.dispatchEvent(new LibraryPageSearchReset());
