@@ -221,10 +221,6 @@ html > form > input {
     --pf-global--BackgroundColor--100: transparent;
 }
 
-.pf-c-content {
-    /* --pf-c-content--Color: var(--pf-global--Color--100) !important; */
-}
-
 /* #endregion */
 
 /* #region Form controls */
