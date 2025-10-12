@@ -145,11 +145,12 @@ export class LibraryPageApplicationSearch extends AKElement {
     render() {
         return html`<input
             ${ref(this.searchInput)}
+            part="search-input"
             name="application-search"
             @input=${this.#inputListener}
             @keydown=${this.#keyDownListener}
             type="search"
-            class="pf-c-form-control pf-u-display-none pf-u-display-block-on-md"
+            class="pf-c-form-control"
             autofocus
             aria-label=${msg("Application search")}
             placeholder=${msg("Search for an application by name...")}

@@ -65,8 +65,8 @@ export class LibraryPage extends AKElement {
         };
 
         Promise.all([this.fetchApplications(), me()]).then(([applications, meStatus]) => {
-            this.isAdmin = meStatus.user.isSuperuser;
             this.apps = applications;
+            this.admin = meStatus.user.isSuperuser;
             this.ready = true;
         });
     }

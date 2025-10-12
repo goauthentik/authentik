@@ -119,8 +119,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         return html`<ak-spinner></ak-spinner>`;
     }
 
-    const { name, metaDescription, metaPublisher } = application;
-
     const classes = {
         [className]: className.length,
     };

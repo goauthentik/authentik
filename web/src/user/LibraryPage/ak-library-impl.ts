@@ -176,6 +176,7 @@ export class LibraryPage extends AKElement {
 
     renderSearch() {
         return html`<ak-library-application-search
+            class="search-container"
             .apps=${this.apps}
         ></ak-library-application-search>`;
     }

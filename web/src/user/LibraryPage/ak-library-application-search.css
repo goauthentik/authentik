@@ -1,6 +1,7 @@
 input[name="application-search"] {
     background-color: transparent;
-    width: 28ch;
+    display: block;
+    width: 100%;
     font-size: var(--pf-global--FontSize--xl);
 
     border-inline: none;

@@ -64,16 +64,19 @@ export class AppIcon extends AKElement implements IAppIcon {
                 );
             }
             .icon {
+                --app-icon-shadow-blend-color: color-mix(
+                    in srgb,
+                    var(--app-icon--shadow-background-color, var(--pf-global--BackgroundColor--150))
+                        100%,
+                    black 100%
+                );
+
                 font-size: var(--icon-height);
                 color: var(--ak-global--Color--100);
                 padding: var(--icon-border);
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                 line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                filter: drop-shadow(hsl(0deg 0% 33% / 0.15) 5px 5px 3px);
-            }
-
-            :host([theme="dark"]) .icon {
-                filter: drop-shadow(hsl(0deg 0% 2% / 0.3) 5px 5px 3px);
+                filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));
             }
 
             div {
