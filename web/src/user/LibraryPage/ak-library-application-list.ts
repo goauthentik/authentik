@@ -69,7 +69,7 @@ export class LibraryPageApplicationList extends AKElement {
     render() {
         return html`<div
             part="app-list"
-            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.column_2] ?? 1}"
+            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.row] ?? 1}"
             role="grid"
             aria-label=${msg("Available applications")}
         >
