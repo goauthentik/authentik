@@ -326,20 +326,11 @@ select.pf-c-form-control {
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }
-
 .pf-c-dropdown__menu {
-    --pf-c-dropdown__menu--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-dropdown__menu-item {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-dropdown__menu-item:hover,
-.pf-c-dropdown__menu-item:focus {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background-light-ish);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
+    --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
+    --pf-c-dropdown__menu-item--hover--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
+    --pf-c-dropdown__menu-item--hover--Color: var(--pf-global--Color--light-100);
 }
 
 .pf-c-toggle-group__button {

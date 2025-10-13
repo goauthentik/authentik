@@ -20,6 +20,8 @@ import { repeat } from "lit/directives/repeat.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -43,10 +45,12 @@ export class LibraryPageApplicationList extends AKElement {
         // ---
         PFBase,
         PFEmptyState,
+        PFDropdown,
         PFContent,
         PFGrid,
         PFButton,
         PFCard,
+        PFDivider,
         Styles,
     ];
 
@@ -65,7 +69,7 @@ export class LibraryPageApplicationList extends AKElement {
     render() {
         return html`<div
             part="app-list"
-            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.row] ?? 1}"
+            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.column_2] ?? 1}"
             role="grid"
             aria-label=${msg("Available applications")}
         >
@@ -82,7 +86,6 @@ export class LibraryPageApplicationList extends AKElement {
                         <div class="pf-c-content" part="app-group-header">
                             <h2 id="app-group-${groupIndex}">${groupLabel}</h2>
                         </div>
-
                         ${repeat(
                             apps,
                             (application) => application.pk,
@@ -97,6 +100,7 @@ export class LibraryPageApplicationList extends AKElement {
                                     "aria-selected": this.selected === application,
                                 }),
                         )}
+                        <hr part="app-group-separator" aria-hidden="true" />
                     </div>`;
                 },
             )}
