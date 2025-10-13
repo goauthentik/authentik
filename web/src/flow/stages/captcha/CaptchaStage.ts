@@ -315,6 +315,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (this.challenge?.interactive) {
             return html`
                 <iframe
+                    aria-label=${msg("CAPTCHA challenge")}
                     ${ref(this.#iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready="${this.#iframeLoaded ? "ready" : "loading"}"
@@ -383,7 +384,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    public firstUpdated(changedProperties: PropertyValues<this>) {
+    public override firstUpdated(changedProperties: PropertyValues<this>) {
+        super.firstUpdated(changedProperties);
+
         if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
             return;
         }
@@ -392,6 +395,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }

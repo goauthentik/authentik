@@ -7,12 +7,12 @@ requires-python = "==3.13.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
-  "channels-postgres==1.1.2",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.1.13",
+  "django==5.2.7",
+  "django-channels-postgres",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
@@ -24,7 +24,7 @@ dependencies = [
   "django-pgtrigger==4.15.2",
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
-  "django-tenants==3.8.0",
+  "django-tenants==3.9.0",
   "djangoql==0.18.1",
   "djangorestframework-guardian==0.4.0",
   "djangorestframework==3.16.0",
@@ -79,6 +79,7 @@ dev = [
   "aws-cdk-lib==2.188.0",
   "bandit==1.8.3",
   "black==25.1.0",
+  "bpython==0.25",
   "channels[daphne]==4.3.1",
   "codespell==2.4.1",
   "colorama==0.4.6",
@@ -102,6 +103,7 @@ dev = [
   "requests-mock==1.12.1",
   "ruff==0.11.9",
   "selenium==4.32.0",
+  "types-channels==4.3.0.20250822",
   "types-ldap3==2.9.13.20250622",
 ]
 
@@ -119,14 +121,15 @@ no-binary-package = [
 
 [tool.uv.sources]
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
 django-postgres-cache = { workspace = true }
 django-guardian = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
-channels-postgres = { git = "https://github.com/rissson/channels_postgres", rev = "93ed24e3c5317d7ccf7e8b1ce913c0f365d1728f" }
 
 [tool.uv.workspace]
 members = [
+  "packages/django-channels-postgres",
   "packages/django-dramatiq-postgres",
   "packages/django-postgres-cache",
   "packages/django-guardian",
@@ -207,11 +210,11 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
-module = ["dramatiq.*", "pglock.*"]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
 follow_untyped_imports = true
 
 [[tool.mypy.overrides]]
-module = ["cron_converter.*"]
+module = ["cron_converter.*", "msgpack.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

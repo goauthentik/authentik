@@ -209,7 +209,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-                <div slot="primary">
+                <fieldset class="pf-c-form__group pf-m-action" slot="primary">
+                    <legend class="sr-only">${msg("Policy actions")}</legend>
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
                         showBindingPage
@@ -229,7 +230,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                             ${msg("Bind existing policy/group/user")}
                         </button>
                     </ak-forms-modal>
-                </div>
+                </fieldset>
             </ak-empty-state>`,
         );
     }

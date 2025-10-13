@@ -64,10 +64,6 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         PFCard,
         PFFlex,
         css`
-            .pf-c-card {
-                container-type: inline-size;
-            }
-
             .pf-c-card.pf-c-card-aggregate {
                 height: 100%;
             }
@@ -79,10 +75,6 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 align-items: center;
                 gap: var(--pf-global--spacer--sm);
                 flex: 1 1 auto;
-
-                @container (width < 200px) {
-                    font-size: var(--pf-global--FontSize--sm);
-                }
             }
 
             .subtext {
@@ -94,13 +86,10 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
                 padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
             }
+
             .status-container {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;
-
-                @container (width < 200px) {
-                    font-size: var(--pf-global--icon--FontSize--md);
-                }
 
                 .status-heading {
                     display: flex;
@@ -119,10 +108,20 @@ export class AggregateCard extends AKElement implements IAggregateCard {
             .pf-c-card__footer {
                 min-height: 1ex;
             }
+
+            :host([role="status"]) {
+                text-align: center;
+            }
         `,
     ];
 
     renderInner(): SlottedTemplateResult {
+        if (this.role === "status") {
+            return html`<div class="status-container">
+                <slot class="status-heading"></slot>
+            </div>`;
+        }
+
         return html`<slot></slot>`;
     }
 

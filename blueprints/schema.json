@@ -5343,9 +5343,13 @@
                             "authentik_providers_oauth2.view_refreshtoken",
                             "authentik_providers_oauth2.view_scopemapping",
                             "authentik_providers_proxy.add_proxyprovider",
+                            "authentik_providers_proxy.add_proxysession",
                             "authentik_providers_proxy.change_proxyprovider",
+                            "authentik_providers_proxy.change_proxysession",
                             "authentik_providers_proxy.delete_proxyprovider",
+                            "authentik_providers_proxy.delete_proxysession",
                             "authentik_providers_proxy.view_proxyprovider",
+                            "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
                             "authentik_providers_rac.add_endpoint",
                             "authentik_providers_rac.add_racpropertymapping",
@@ -5372,12 +5376,16 @@
                             "authentik_providers_radius.view_radiusproviderpropertymapping",
                             "authentik_providers_saml.add_samlpropertymapping",
                             "authentik_providers_saml.add_samlprovider",
+                            "authentik_providers_saml.add_samlsession",
                             "authentik_providers_saml.change_samlpropertymapping",
                             "authentik_providers_saml.change_samlprovider",
+                            "authentik_providers_saml.change_samlsession",
                             "authentik_providers_saml.delete_samlpropertymapping",
                             "authentik_providers_saml.delete_samlprovider",
+                            "authentik_providers_saml.delete_samlsession",
                             "authentik_providers_saml.view_samlpropertymapping",
                             "authentik_providers_saml.view_samlprovider",
+                            "authentik_providers_saml.view_samlsession",
                             "authentik_providers_scim.add_scimmapping",
                             "authentik_providers_scim.add_scimprovider",
                             "authentik_providers_scim.add_scimprovidergroup",
@@ -7564,6 +7572,7 @@
                     ],
                     "enum": [
                         null,
+                        "authentik.commands",
                         "authentik.tenants",
                         "authentik.tasks",
                         "authentik.admin",
@@ -8712,9 +8721,18 @@
                     },
                     "title": "Redirect uris"
                 },
-                "backchannel_logout_uri": {
+                "logout_uri": {
                     "type": "string",
-                    "title": "Back-Channel Logout URI"
+                    "title": "Logout URI"
+                },
+                "logout_method": {
+                    "type": "string",
+                    "enum": [
+                        "backchannel",
+                        "frontchannel"
+                    ],
+                    "title": "Logout Method",
+                    "description": "Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser"
                 },
                 "sub_mode": {
                     "type": "string",
@@ -9440,6 +9458,11 @@
                     "minLength": 1,
                     "title": "ACS URL"
                 },
+                "sls_url": {
+                    "type": "string",
+                    "title": "SLS URL",
+                    "description": "Single Logout Service URL where the logout response should be sent."
+                },
                 "audience": {
                     "type": "string",
                     "title": "Audience",
@@ -9530,6 +9553,10 @@
                     "type": "boolean",
                     "title": "Sign response"
                 },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign logout request"
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [
@@ -9538,6 +9565,25 @@
                     ],
                     "title": "Service Provider Binding",
                     "description": "This determines how authentik sends the response back to the Service Provider."
+                },
+                "sls_binding": {
+                    "type": "string",
+                    "enum": [
+                        "redirect",
+                        "post"
+                    ],
+                    "title": "SLS Binding",
+                    "description": "This determines how authentik sends the logout response back to the Service Provider."
+                },
+                "logout_method": {
+                    "type": "string",
+                    "enum": [
+                        "frontchannel_iframe",
+                        "frontchannel_native",
+                        "backchannel"
+                    ],
+                    "title": "Logout method",
+                    "description": "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding)."
                 },
                 "default_relay_state": {
                     "type": "string",
@@ -10078,9 +10124,13 @@
                             "authentik_providers_oauth2.view_refreshtoken",
                             "authentik_providers_oauth2.view_scopemapping",
                             "authentik_providers_proxy.add_proxyprovider",
+                            "authentik_providers_proxy.add_proxysession",
                             "authentik_providers_proxy.change_proxyprovider",
+                            "authentik_providers_proxy.change_proxysession",
                             "authentik_providers_proxy.delete_proxyprovider",
+                            "authentik_providers_proxy.delete_proxysession",
                             "authentik_providers_proxy.view_proxyprovider",
+                            "authentik_providers_proxy.view_proxysession",
                             "authentik_providers_rac.add_connectiontoken",
                             "authentik_providers_rac.add_endpoint",
                             "authentik_providers_rac.add_racpropertymapping",
@@ -10107,12 +10157,16 @@
                             "authentik_providers_radius.view_radiusproviderpropertymapping",
                             "authentik_providers_saml.add_samlpropertymapping",
                             "authentik_providers_saml.add_samlprovider",
+                            "authentik_providers_saml.add_samlsession",
                             "authentik_providers_saml.change_samlpropertymapping",
                             "authentik_providers_saml.change_samlprovider",
+                            "authentik_providers_saml.change_samlsession",
                             "authentik_providers_saml.delete_samlpropertymapping",
                             "authentik_providers_saml.delete_samlprovider",
+                            "authentik_providers_saml.delete_samlsession",
                             "authentik_providers_saml.view_samlpropertymapping",
                             "authentik_providers_saml.view_samlprovider",
+                            "authentik_providers_saml.view_samlsession",
                             "authentik_providers_scim.add_scimmapping",
                             "authentik_providers_scim.add_scimprovider",
                             "authentik_providers_scim.add_scimprovidergroup",
@@ -15351,105 +15405,6 @@
                     "minimum": -2147483648,
                     "maximum": 2147483647,
                     "title": "Order"
-                },
-                "promptstage_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "flow_set": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "name": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "title": "Name"
-                                        },
-                                        "slug": {
-                                            "type": "string",
-                                            "maxLength": 50,
-                                            "minLength": 1,
-                                            "pattern": "^[-a-zA-Z0-9_]+$",
-                                            "title": "Slug",
-                                            "description": "Visible in the URL."
-                                        },
-                                        "title": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "title": "Title",
-                                            "description": "Shown as the Title in Flow pages."
-                                        },
-                                        "designation": {
-                                            "type": "string",
-                                            "enum": [
-                                                "authentication",
-                                                "authorization",
-                                                "invalidation",
-                                                "enrollment",
-                                                "unenrollment",
-                                                "recovery",
-                                                "stage_configuration"
-                                            ],
-                                            "title": "Designation",
-                                            "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                                        },
-                                        "policy_engine_mode": {
-                                            "type": "string",
-                                            "enum": [
-                                                "all",
-                                                "any"
-                                            ],
-                                            "title": "Policy engine mode"
-                                        },
-                                        "compatibility_mode": {
-                                            "type": "boolean",
-                                            "title": "Compatibility mode",
-                                            "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                                        },
-                                        "layout": {
-                                            "type": "string",
-                                            "enum": [
-                                                "stacked",
-                                                "content_left",
-                                                "content_right",
-                                                "sidebar_left",
-                                                "sidebar_right"
-                                            ],
-                                            "title": "Layout"
-                                        },
-                                        "denied_action": {
-                                            "type": "string",
-                                            "enum": [
-                                                "message_continue",
-                                                "message",
-                                                "continue"
-                                            ],
-                                            "title": "Denied action",
-                                            "description": "Configure what should happen when a flow denies access to a user."
-                                        }
-                                    },
-                                    "required": [
-                                        "name",
-                                        "slug",
-                                        "title",
-                                        "designation"
-                                    ]
-                                },
-                                "title": "Flow set"
-                            }
-                        },
-                        "required": [
-                            "name"
-                        ]
-                    },
-                    "title": "Promptstage set"
                 },
                 "sub_text": {
                     "type": "string",

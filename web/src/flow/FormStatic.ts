@@ -1,6 +1,6 @@
 import { AKElement } from "#elements/Base";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -8,6 +8,9 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
 export class FormStatic extends AKElement {
+    public override role = "banner";
+    public override ariaLabel = msg("User information");
+
     @property()
     userAvatar?: string;
 
@@ -22,6 +25,7 @@ export class FormStatic extends AKElement {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                flex-flow: wrap;
                 gap: var(--pf-global--spacer--sm);
             }
 
@@ -33,7 +37,7 @@ export class FormStatic extends AKElement {
                 display: flex;
                 align-items: center;
                 flex: 1 1 auto;
-                gap: 1rem;
+                gap: var(--pf-global--spacer--md);
             }
 
             .username {
@@ -70,10 +74,10 @@ export class FormStatic extends AKElement {
                     ? html`<img
                           class="pf-c-avatar"
                           src=${this.userAvatar}
-                          alt=${msg("User's avatar")}
+                          alt=${this.user ? msg(str`Avatar for ${this.user}`) : msg("User avatar")}
                       />`
                     : nothing}
-                <div class="username" aria-label=${msg("Username")}>${this.user}</div>
+                <div class="username" aria-description=${msg("Username")}>${this.user}</div>
             </div>
             <div class="links">
                 <slot name="link"></slot>

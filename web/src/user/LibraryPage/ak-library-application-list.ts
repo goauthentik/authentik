@@ -1,4 +1,4 @@
-import type { AppGroupEntry, AppGroupList } from "./types.js";
+import type { AppGroupList } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
 
@@ -6,6 +6,7 @@ import { AKElement } from "#elements/Base";
 
 import type { Application } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -78,11 +79,19 @@ export class LibraryPageApplicationList extends AKElement {
     render() {
         const [groupClass, groupGrid] = this.currentLayout;
 
-        return html`<div class="pf-l-grid pf-m-gutter">
-            ${this.apps.map(([group, apps]: AppGroupEntry) => {
-                return html`<div class="pf-l-grid__item ${groupClass}">
+        return html`<div
+            class="pf-l-grid pf-m-gutter"
+            role="grid"
+            aria-label=${msg("Available applications")}
+        >
+            ${this.apps.map(([group, apps], idx) => {
+                return html`<div
+                    class="pf-l-grid__item ${groupClass}"
+                    role="rowgroup"
+                    aria-labelledby="app-group-${idx}"
+                >
                     <div class="pf-c-content app-group-header">
-                        <h2>${group}</h2>
+                        <h2 id="app-group-${idx}">${group}</h2>
                     </div>
                     <div class="pf-l-grid pf-m-gutter ${groupGrid}">
                         ${apps.map((app: Application) => {

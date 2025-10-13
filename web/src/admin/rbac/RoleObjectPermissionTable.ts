@@ -66,9 +66,11 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             return value.codename !== `add_${modelName}`;
         });
         this.modelPermissions = modelPermissions;
+        this.requestUpdate("columns");
         return perms;
     }
 
+    @state()
     protected get columns(): TableColumn[] {
         const permissions = this.modelPermissions?.results ?? [];
 
