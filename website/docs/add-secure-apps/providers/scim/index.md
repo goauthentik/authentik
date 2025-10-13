@@ -62,7 +62,7 @@ Attribute mapping from authentik to SCIM users is done via property mappings as 
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
-### Filtering remote users
+### Filtering users
 
 By default service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
 
