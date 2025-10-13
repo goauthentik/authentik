@@ -182,6 +182,27 @@ func (c *Config) parseScheme(rawVal string) string {
 	return rawVal
 }
 
+// RefreshPostgreSQLConfig re-reads PostgreSQL configuration from file:// and env:// URIs
+// This enables hot-reloading when credentials are rotated by updating the referenced files.
+// Note: Plain environment variables (without file:// or env:// prefixes) are read from the
+// process environment and will not change unless the process is restarted or os.Setenv is called.
+func (c *Config) RefreshPostgreSQLConfig() PostgreSQLConfig {
+	// Start with current config as base
+	refreshed := c.PostgreSQL
+
+	// Re-process from environment variables (this handles all AUTHENTIK_POSTGRESQL__* vars)
+	ctx := context.Background()
+	if err := env.Process(ctx, &refreshed); err != nil {
+		log.WithError(err).Warn("Failed to refresh PostgreSQL config from environment")
+		return c.PostgreSQL // Return original config on error
+	}
+
+	// Process file:// and env:// URI schemes
+	c.walkScheme(&refreshed)
+
+	return refreshed
+}
+
 func (c *Config) configureLogger() {
 	switch strings.ToLower(c.LogLevel) {
 	case "trace":

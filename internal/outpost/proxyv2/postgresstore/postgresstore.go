@@ -14,7 +14,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
@@ -26,7 +25,8 @@ import (
 
 // PostgresStore stores gorilla sessions in PostgreSQL using GORM
 type PostgresStore struct {
-	db *gorm.DB
+	db   *gorm.DB
+	pool *RefreshableConnPool // Keep reference to pool for cleanup
 	// default options to use when a new session is created
 	options sessions.Options
 	// key prefix with which the session will be stored
@@ -125,29 +125,32 @@ func NewPostgresStore() (*PostgresStore, error) {
 		},
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
+	// Determine connection pool settings
+	maxIdleConns := 10
+	maxOpenConns := 100
+	var connMaxLifetime time.Duration
+	if cfg.ConnMaxAge > 0 {
+		connMaxLifetime = time.Duration(cfg.ConnMaxAge) * time.Second
+	} else {
+		connMaxLifetime = time.Hour // Default 1 hour
+	}
+
+	// Create refreshable connection pool
+	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
 	if err != nil {
+		return nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+
+	// Create GORM DB using the refreshable connection pool
+	db, err := pool.NewGORMDB()
+	if err != nil {
+		_ = pool.Close()
 		return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
 
-	// Configure connection pool
-	sqlDB, err := db.DB()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get underlying sql.DB: %w", err)
-	}
-
-	// Set connection pool settings
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(100)
-
-	if cfg.ConnMaxAge > 0 {
-		sqlDB.SetConnMaxLifetime(time.Duration(cfg.ConnMaxAge) * time.Second)
-	} else {
-		sqlDB.SetConnMaxLifetime(time.Hour) // Default 1 hour
-	}
-
 	ps := &PostgresStore{
-		db: db,
+		db:   db,
+		pool: pool,
 		options: sessions.Options{
 			Path:   "/",
 			MaxAge: 86400 * 30, // 30 days default (but overwritten in postgresstore creation based on token validation)
@@ -224,11 +227,10 @@ func (s *PostgresStore) KeyPrefix(keyPrefix string) {
 
 // Close closes the PostgreSQL store
 func (s *PostgresStore) Close() error {
-	sqlDB, err := s.db.DB()
-	if err != nil {
-		return err
+	if s.pool != nil {
+		return s.pool.Close()
 	}
-	return sqlDB.Close()
+	return nil
 }
 
 // save writes session to PostgreSQL
