@@ -8,7 +8,7 @@ A SCIM provider requires a SCIM base URL for the endpoint and an authentication 
 
 SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
 
-For example, you can create an application and provider pair for Slack, creating Slack as the application and OAuth as the provider. Say you then want to use SCIM for further authentication using a token. For this scenario use the following workflow:
+For example, you can create an application and provider pair for Slack, creating Slack as the application and SAML as the provider. Say you then want to use SCIM for further authentication using a token. For this scenario use the following workflow:
 
 1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
 2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
