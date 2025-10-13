@@ -31,7 +31,7 @@ Whichever mode you select you'll need to enter a SCIM base **URL**, for the endp
 
 With authentik's default mode, the token that you enter (provided by the application) is sent with all outgoing SCIM requests to authenticate each request.
 
-### OAuth authentication for a SCIM provider :ak-enterprise
+### OAuth authentication for a SCIM provider :ak-enterprise :ak-version[2025.10]
 
 Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
 
@@ -72,7 +72,7 @@ SCIM defines several optional settings that allow clients to discover a service 
 
 - Filtering
 
-    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses this operation to filter users and groups in the remote system to match them to existing authentik users and groups.  
+    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses this operation to filter users and groups in the remote system to match them to existing authentik users and groups.
 
 - Bulk
 
