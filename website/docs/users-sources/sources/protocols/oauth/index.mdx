@@ -18,7 +18,7 @@ This source allows users to enroll themselves with an external OAuth-based Ident
 
 ### Well-known
 
-Instead of configuring the URLs for a source manually, and the application you're configuring implements the [OpenID Connect Discovery Spec](https://openid.net/specs/openid-connect-discovery-1_0.html), you can configure the source with a single URL. The URL should always end with `.well-known/openid-configuration`. Many applications don't explicitly mention this URL, but for most of them it will be `https://application.company/.well-known/openid-configuration`.
+Instead of configuring the URLs for a source manually, if the application you're configuring implements the [OpenID Connect Discovery Spec](https://openid.net/specs/openid-connect-discovery-1_0.html), you can configure the source with a single URL. The URL should always end with `.well-known/openid-configuration`. Many applications don't explicitly mention this URL, but for most of them it will be `https://application.company/.well-known/openid-configuration`.
 
 This URL is fetched upon saving the source, and all the URLs will be replaced by the ones from the Discovery document. No automatic re-fetching is done.
 
