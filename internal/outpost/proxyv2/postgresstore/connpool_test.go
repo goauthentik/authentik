@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
@@ -359,8 +360,48 @@ func TestIsAuthError(t *testing.T) {
 			expected: false,
 		},
 		{
-			name:     "password authentication failed",
+			name:     "generic error",
 			err:      assert.AnError,
+			expected: false,
+		},
+		{
+			name: "postgres error code 28000 - invalid_authorization_specification",
+			err: &pgconn.PgError{
+				Code:    "28000",
+				Message: "invalid authorization specification",
+			},
+			expected: true,
+		},
+		{
+			name: "postgres error code 28P01 - invalid_password",
+			err: &pgconn.PgError{
+				Code:    "28P01",
+				Message: "password authentication failed for user",
+			},
+			expected: true,
+		},
+		{
+			name: "postgres error code 28P02 - invalid_password (deprecated)",
+			err: &pgconn.PgError{
+				Code:    "28P02",
+				Message: "invalid password",
+			},
+			expected: true,
+		},
+		{
+			name: "postgres error code 42P01 - undefined_table (not auth error)",
+			err: &pgconn.PgError{
+				Code:    "42P01",
+				Message: "relation does not exist",
+			},
+			expected: false,
+		},
+		{
+			name: "postgres error code 23505 - unique_violation (not auth error)",
+			err: &pgconn.PgError{
+				Code:    "23505",
+				Message: "duplicate key value violates unique constraint",
+			},
 			expected: false,
 		},
 	}

@@ -190,11 +190,27 @@ func (c *Config) RefreshPostgreSQLConfig() PostgreSQLConfig {
 	// Start with current config as base
 	refreshed := c.PostgreSQL
 
-	// Re-process from environment variables (this handles all AUTHENTIK_POSTGRESQL__* vars)
-	ctx := context.Background()
-	if err := env.Process(ctx, &refreshed); err != nil {
-		log.WithError(err).Warn("Failed to refresh PostgreSQL config from environment")
-		return c.PostgreSQL // Return original config on error
+	// Manually read from environment variables with proper prefix
+	// We can't use env.Process directly on PostgreSQLConfig because it loses the AUTHENTIK_POSTGRESQL__ prefix
+	// Map of environment variable suffix to config field pointer
+	envVars := map[string]*string{
+		"HOST":           &refreshed.Host,
+		"USER":           &refreshed.User,
+		"PASSWORD":       &refreshed.Password,
+		"NAME":           &refreshed.Name,
+		"SSLMODE":        &refreshed.SSLMode,
+		"SSLROOTCERT":    &refreshed.SSLRootCert,
+		"SSLCERT":        &refreshed.SSLCert,
+		"SSLKEY":         &refreshed.SSLKey,
+		"DEFAULT_SCHEMA": &refreshed.DefaultSchema,
+		"CONN_OPTIONS":   &refreshed.ConnOptions,
+	}
+
+	// Read each environment variable if it exists
+	for suffix, field := range envVars {
+		if val, ok := os.LookupEnv("AUTHENTIK_POSTGRESQL__" + suffix); ok {
+			*field = val
+		}
 	}
 
 	// Process file:// and env:// URI schemes
