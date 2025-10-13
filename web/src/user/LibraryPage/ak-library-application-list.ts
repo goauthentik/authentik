@@ -1,4 +1,4 @@
-import Styles from "./ak-library-application-list.styles.css";
+import Styles from "./ak-library-application-list.css";
 import type { AppGroupEntry } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
