@@ -3,7 +3,6 @@
     --app-card-min-width: 6.5rem;
     --app-group-header-min-height: calc(var(--app-card-min-width) / 4);
     --app-icon-offset: 1rem;
-    --app-group-border-color: var(--pf-global--BorderColor--100);
     --app-card-title-padding: 0.5rem;
 
     @media (min-width: 390px) {
@@ -19,10 +18,6 @@
     @media (min-width: 768px) {
         --app-icon-offset: 0.5rem;
         --app-card-min-width: 11rem;
-    }
-
-    @media (prefers-contrast: more) {
-        --app-group-border-color: var(--pf-global--BorderColor--200);
     }
 }
 
@@ -127,6 +122,8 @@
 }
 
 [part="app-group"] {
+    --app-group-border-color: transparent;
+
     display: grid;
     gap: var(--pf-global--spacer--md);
     grid-template-columns: var(--app-group-template-columns, 1fr);
@@ -141,6 +138,12 @@
     @media (min-width: 768px) {
         border-inline-start: 0.5px solid var(--app-group-border-color);
         padding-inline-start: calc(1rem - 0.5px);
+    }
+
+    @media (prefers-contrast: more) {
+        &:not([data-group-index="0"]) {
+            --app-group-border-color: var(--pf-global--BorderColor--200);
+        }
     }
 }
 

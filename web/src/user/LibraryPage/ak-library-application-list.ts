@@ -67,9 +67,11 @@ export class LibraryPageApplicationList extends AKElement {
     public apps: AppGroupEntry[] = [];
 
     render() {
+        const columnCount = LayoutColumnCount[this.layout] ?? 1;
         return html`<div
             part="app-list"
-            style="--app-list-column-count: ${LayoutColumnCount[LayoutType.row] ?? 1}"
+            style="--app-list-column-count: ${columnCount}"
+            aria-colcount=${columnCount}
             role="grid"
             aria-label=${msg("Available applications")}
         >
@@ -82,6 +84,8 @@ export class LibraryPageApplicationList extends AKElement {
                         data-group-id=${ifPresent(kebabCase(groupLabel))}
                         aria-labelledby="app-group-${groupIndex}"
                         part="app-group"
+                        data-group-index=${groupIndex}
+                        data-app-count=${apps.length}
                     >
                         <div class="pf-c-content" part="app-group-header">
                             <h2 id="app-group-${groupIndex}">${groupLabel}</h2>
