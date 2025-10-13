@@ -56,7 +56,7 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
-        cd web && npm ci
+        cd web && npm i
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}
