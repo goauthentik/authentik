@@ -3,11 +3,10 @@
     --app-card-min-width: 6.5rem;
     --app-group-header-min-height: calc(var(--app-card-min-width) / 4);
     --app-icon-offset: 1rem;
-    --app-card-title-padding: 0.5rem;
+    --app-card-row-coefficient: 3.5;
 
     @media (min-width: 390px) {
-        --app-card-title-padding: 0.25rem;
-        --app-card-aspect-ratio: 1 / 1.13;
+        --app-card-aspect-ratio: 1;
         --app-group-template-columns: repeat(auto-fill, var(--app-card-min-width));
     }
 
@@ -17,7 +16,7 @@
 
     @media (min-width: 768px) {
         --app-icon-offset: 0.5rem;
-        --app-card-min-width: 11rem;
+        --app-card-min-width: 10rem;
     }
 }
 
@@ -46,11 +45,11 @@
     .pf-c-card__header {
         padding: 0 !important;
 
-        display: flex;
-        flex: 1 1 auto;
-        flex-flow: column;
-        gap: var(--pf-global--spacer--md);
-        justify-content: center;
+        display: grid;
+        grid-template-rows: repeat(
+            auto-fill,
+            minmax(calc(var(--app-card-min-width) / var(--app-card-row-coefficient)), auto)
+        );
 
         &:hover {
             text-decoration: none;
@@ -63,7 +62,6 @@
 
     .pf-c-card__title {
         padding: 0 !important;
-        place-content: end;
         z-index: 1;
         text-stroke-width: 0.15em;
         text-stroke-color: var(--pf-c-card--BackgroundColor);
@@ -72,7 +70,15 @@
         -webkit-text-stroke-color: var(--pf-c-card--BackgroundColor);
         paint-order: stroke fill;
 
+        display: flex;
+        grid-row: -2 / -2;
+        justify-content: center;
+        height: 100%;
+        align-items: center;
+
         .clamp-wrapper {
+            --clamp-padding: calc(0.1em * var(--app-card-row-coefficient));
+
             display: box;
             display: -webkit-box;
             line-clamp: 2;
@@ -83,9 +89,10 @@
             text-align: center;
             text-wrap: balance;
             line-height: 1.2;
-            min-height: 2.4rem;
-
-            max-height: calc(var(--pf-global--LineHeight--md) * 2rem);
+            padding-block: var(--clamp-padding);
+            max-height: calc(
+                (var(--pf-global--LineHeight--md) * 2rem) - (var(--clamp-padding) / 2)
+            );
         }
     }
 }
