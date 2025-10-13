@@ -201,6 +201,28 @@ html > form > input {
 
 /* #endregion */
 
+/* #region Page */
+
+.pf-c-page {
+    --pf-c-page__header--BackgroundColor: transparent;
+}
+
+/**
+ * We reverse the page header colors because PatternFly assumes a dark header
+ * on light themes. The opposite must be done for dark themes.
+ */
+.pf-c-page__header {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: transparent;
+}
+
+/* #endregion */
+
 /* #region Form controls */
 
 .pf-c-form-control {
@@ -224,6 +246,19 @@ html > form > input {
 
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+}
+
+/* #endregion */
+
+/* #region Dropdown */
+
+.pf-c-dropdown__menu-item[role="contentinfo"] {
+    &,
+    &:hover,
+    &:focus {
+        --pf-c-dropdown__menu-item--hover--Color: initial;
+        --pf-c-dropdown__menu-item--hover--BackgroundColor: initial;
+    }
 }
 
 /* #endregion */
@@ -298,14 +333,6 @@ ak-tabs[vertical] {
 }
 
 /* #endregion */
-
-/* #region Page layout */
-
-.pf-c-page__header {
-    z-index: 0;
-    background-color: var(--ak-dark-background-light);
-    box-shadow: var(--pf-global--BoxShadow--lg-bottom);
-}
 
 /* #region Login adjustments */
 
@@ -499,16 +526,6 @@ fieldset {
 
 /* #endregion */
 
-.pf-c-form__helper-text {
-    text-wrap: pretty;
-}
-
-::placeholder {
-    font-style: italic;
-}
-
-/* #endregion */
-
 /* #region Fonts */
 
 .pf-m-monospace {
@@ -529,6 +546,17 @@ fieldset {
 .pf-m-pressable {
     cursor: pointer;
     user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
 }
 
 /* Flow-card adjustments for static pages */
