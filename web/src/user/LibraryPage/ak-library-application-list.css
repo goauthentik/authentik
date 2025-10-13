@@ -18,7 +18,7 @@
 
     @media (min-width: 768px) {
         --app-icon-offset: 0.5rem;
-        --app-card-min-width: 10rem;
+        --app-card-min-width: 11rem;
     }
 
     @media (prefers-contrast: more) {
