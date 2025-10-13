@@ -106,7 +106,6 @@ export class RelatedGroupList extends Table<Group> {
 
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
         [msg("Superuser privileges?")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -140,7 +139,6 @@ export class RelatedGroupList extends Table<Group> {
     row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
-            html`${item.parentName || msg("-")}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>

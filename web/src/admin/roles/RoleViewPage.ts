@@ -14,7 +14,7 @@ import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
+import { RbacApi, RbacPermissionsAssignedByRolesListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -132,7 +132,7 @@ export class RoleViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this._role.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

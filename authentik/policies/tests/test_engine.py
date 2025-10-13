@@ -174,7 +174,8 @@ class TestPolicyEngine(TestCase):
     def test_engine_group_complex(self):
         """Test more complex group setups"""
         group_a = Group.objects.create(name=generate_id())
-        group_b = Group.objects.create(name=generate_id(), parent=group_a)
+        group_b = Group.objects.create(name=generate_id())
+        group_b.parents.add(group_a)
         user = create_test_user()
         group_b.users.add(user)
         pbm = PolicyBindingModel.objects.create()
