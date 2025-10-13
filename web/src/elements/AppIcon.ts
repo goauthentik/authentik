@@ -71,7 +71,7 @@ export class AppIcon extends AKElement implements IAppIcon {
                     black 100%
                 );
 
-                font-size: var(--icon-height);
+                font-size: var(--icon-font-size, var(--icon-height));
                 color: var(--ak-global--Color--100);
                 padding: var(--icon-border);
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));

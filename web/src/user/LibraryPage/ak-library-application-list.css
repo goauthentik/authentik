@@ -96,6 +96,7 @@
 
 [part="card-header-icon"] {
     --icon-height: 50%;
+    --icon-font-size: calc(var(--app-card-min-width) / 1.5);
 
     &::part(icon) {
         --app-icon--shadow-background-color: var(--pf-c-card--BackgroundColor);
