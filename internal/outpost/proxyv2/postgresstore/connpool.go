@@ -116,14 +116,6 @@ func (p *RefreshableConnPool) refreshCredentials(ctx context.Context) error {
 
 	p.log.Info("PostgreSQL credentials changed, reconnecting...")
 
-	// Close old connection
-	oldDB := p.db
-	if oldDB != nil {
-		if err := oldDB.Close(); err != nil {
-			p.log.WithError(err).Warn("Failed to close old database connection")
-		}
-	}
-
 	// Open new connection with fresh credentials
 	newDB, err := sql.Open("postgres", newDSN)
 	if err != nil {
@@ -136,15 +128,27 @@ func (p *RefreshableConnPool) refreshCredentials(ctx context.Context) error {
 	newDB.SetMaxOpenConns(p.maxOpenConns)
 	newDB.SetConnMaxLifetime(p.connMaxLifetime)
 
-	// Verify the connection works
+	// Verify the connection works BEFORE closing old connection
 	if err := newDB.PingContext(ctx); err != nil {
 		p.log.WithError(err).Error("Failed to ping database with new credentials")
 		_ = newDB.Close()
+		// Old connection remains active, pool is still functional
 		return err
 	}
 
+	// Only after successful verification, swap connections
+	oldDB := p.db
 	p.db = newDB
 	p.currentDSN = newDSN
+
+	// Close old connection after swap
+	if oldDB != nil {
+		if err := oldDB.Close(); err != nil {
+			p.log.WithError(err).Warn("Failed to close old database connection")
+			// Not fatal cause new connection is already active
+		}
+	}
+
 	p.log.Info("Successfully reconnected with new PostgreSQL credentials")
 
 	return nil
