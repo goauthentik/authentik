@@ -304,46 +304,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_core.groupparentagenode"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.groupparentagenode_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.groupparentagenode"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.groupparentagenode"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_core.token"
                         },
                         "id": {
@@ -4886,48 +4846,6 @@
                 }
             }
         },
-        "model_authentik_core.groupparentagenode": {
-            "type": "object",
-            "properties": {
-                "child": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Child"
-                },
-                "parent": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Parent"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_core.groupparentagenode_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_groupparentagenode",
-                            "change_groupparentagenode",
-                            "delete_groupparentagenode",
-                            "view_groupparentagenode"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_core.token": {
             "type": "object",
             "properties": {
@@ -7656,7 +7574,6 @@
                         null,
                         "authentik_tenants.domain",
                         "authentik_core.group",
-                        "authentik_core.groupparentagenode",
                         "authentik_core.user",
                         "authentik_core.application",
                         "authentik_core.applicationentitlement",

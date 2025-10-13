@@ -244,26 +244,20 @@ class Group(SerializerModel, AttributesMixin):
         role.assign_perms(perm, obj)
 
 
-class GroupParentageNode(SerializerModel):
+class GroupParentageNode(models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
     parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
-
-    @property
-    def serializer(self) -> Serializer:
-        from authentik.core.api.groups import GroupParentageNodeSerializer
-
-        return GroupParentageNodeSerializer
-
-    def __str__(self) -> str:
-        return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
 
     class Meta:
         verbose_name = _("Group Parentage Node")
         verbose_name_plural = _("Group Parentage Nodes")
 
         db_table = "authentik_core_groupparentage"
+
+    def __str__(self) -> str:
+        return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
 
 
 class GroupAncestryNode(models.Model):

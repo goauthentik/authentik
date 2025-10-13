@@ -18188,7 +18188,6 @@ paths:
           - authentik_core.application
           - authentik_core.applicationentitlement
           - authentik_core.group
-          - authentik_core.groupparentagenode
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
@@ -38265,7 +38264,6 @@ components:
       enum:
       - authentik_tenants.domain
       - authentik_core.group
-      - authentik_core.groupparentagenode
       - authentik_core.user
       - authentik_core.application
       - authentik_core.applicationentitlement

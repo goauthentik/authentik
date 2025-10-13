@@ -25,7 +25,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
-from authentik.core.models import Group, GroupParentageNode, User
+from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -48,12 +48,6 @@ class PartialUserSerializer(ModelSerializer):
             "attributes",
             "uid",
         ]
-
-
-class GroupParentageNodeSerializer(ModelSerializer):
-    class Meta:
-        model = GroupParentageNode
-        fields = ["pk", "child", "parent"]
 
 
 class RelatedGroupSerializer(ModelSerializer):
