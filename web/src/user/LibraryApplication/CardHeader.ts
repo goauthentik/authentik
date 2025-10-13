@@ -14,15 +14,14 @@ interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export const CardHeader: LitFC<CardHeaderProps> = ({ application, ...props }) => {
     return html`<div
-            part="card-header"
-            class="pf-c-card__header pf-m-pressable"
-            aria-label=${ifPresent(application.name)}
-            title=${ifPresent(application.name)}
-            href=${ifPresent(application.launchUrl)}
-            target=${ifPresent(application.openInNewTab, "_blank")}
-            ${spread(props)}
-        ></div>
+        part="card-header"
+        class="pf-c-card__header pf-m-pressable"
+        aria-label=${ifPresent(application.name)}
+        title=${ifPresent(application.name)}
+        ${spread(props)}
+    >
         <div id="app-title" class="pf-c-card__title pf-m-pressable" part="card-title">
             <div class="clamp-wrapper">${application.name}</div>
-        </div>`;
+        </div>
+    </div>`;
 };
