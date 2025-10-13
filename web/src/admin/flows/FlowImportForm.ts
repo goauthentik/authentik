@@ -21,9 +21,9 @@ export class FlowImportForm extends Form<Flow> {
     @state()
     result?: FlowImportResult;
 
-    getSuccessMessage(): string {
-        return msg("Successfully imported flow.");
-    }
+    protected override readonly actionName = "$import";
+
+    protected override entityLabel = msg("flow");
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

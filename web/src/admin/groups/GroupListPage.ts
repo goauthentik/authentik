@@ -6,6 +6,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -22,8 +23,11 @@ export class GroupListPage extends TablePage<Group> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
+    protected override entityLabel: EntityLabel = {
+        singular: msg("group"),
+        plural: msg("groups"),
+    };
     public searchPlaceholder = msg("Search for a group by name…");
-    public searchLabel = msg("Group Search");
     public pageTitle = msg("Groups");
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",

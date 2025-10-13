@@ -5,10 +5,13 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatSuccessMessage } from "#common/i18n/actions";
+import { MessageLevel } from "#common/messages";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { APIMessage } from "#elements/messages/Message";
 
 import {
     CoreApi,
@@ -44,12 +47,21 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
 
     //#endregion
 
-    getSuccessMessage(): string {
+    protected override formatAPISuccessMessage(): APIMessage | null {
         if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+            return {
+                level: MessageLevel.success,
+                message: formatSuccessMessage(msg(str`user and added to group ${this.group.name}`)),
+            };
         }
-        return msg("Successfully created user.");
+
+        return {
+            level: MessageLevel.success,
+            message: formatSuccessMessage(msg("user")),
+        };
     }
+
+    protected override readonly actionName = "create";
 
     async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
         const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({

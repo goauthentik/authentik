@@ -48,11 +48,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated group.")
-            : msg("Successfully created group.");
-    }
+    protected override entityLabel = msg("group");
 
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};

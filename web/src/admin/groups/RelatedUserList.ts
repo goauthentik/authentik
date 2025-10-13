@@ -48,9 +48,9 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
     @state()
     usersToAdd: User[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user(s).");
-    }
+    protected override readonly actionName = "add";
+
+    protected override entityLabel = msg("user(s)");
 
     async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
@@ -124,7 +124,6 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     public override searchPlaceholder = msg("Search for users by username or display name...");
-    public override searchLabel = msg("Group User Search");
     public override label = msg("Group Users");
 
     expandable = true;

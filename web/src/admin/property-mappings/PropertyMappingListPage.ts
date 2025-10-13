@@ -22,6 +22,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -44,6 +45,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("property mapping"),
+        plural: msg("property mappings"),
+    };
 
     @property()
     order = "name";

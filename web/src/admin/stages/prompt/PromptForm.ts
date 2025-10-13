@@ -97,11 +97,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated prompt.")
-            : msg("Successfully created prompt.");
-    }
+    protected override entityLabel = msg("prompt");
 
     static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 

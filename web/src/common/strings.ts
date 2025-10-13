@@ -2,12 +2,7 @@
  * @file String utilities.
  */
 
-import { msg } from "@lit/localize";
-
-const truncationEllipsis = msg("...", {
-    desc: "Truncation ellipsis",
-    id: "ellipsis",
-});
+import { truncationEllipsis } from "#common/i18n/punctuation";
 
 /**
  * Truncate a string based on character count.

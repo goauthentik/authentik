@@ -146,8 +146,8 @@ export class FlowListPage extends TablePage<Flow> {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm
-                successMessage=${msg("Successfully cleared flow cache")}
-                errorMessage=${msg("Failed to delete flow cache")}
+                success-message=${msg("Successfully cleared flow cache")}
+                error-message=${msg("Failed to delete flow cache")}
                 action=${msg("Clear cache")}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();

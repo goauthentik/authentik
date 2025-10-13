@@ -7,11 +7,7 @@ import { APIMessage } from "#elements/messages/Message";
 import { msg } from "@lit/localize";
 
 export abstract class BaseProviderForm<T> extends ModelForm<T, number> {
-    public override getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated provider.")
-            : msg("Successfully created provider.");
-    }
+    protected override entityLabel = msg("provider");
 
     protected override formatAPIErrorMessage(error: APIError): APIMessage {
         return {

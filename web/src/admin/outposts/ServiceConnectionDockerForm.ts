@@ -21,11 +21,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated integration.")
-            : msg("Successfully created integration.");
-    }
+    protected override entityLabel = msg("integration");
 
     async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
         if (this.instance) {

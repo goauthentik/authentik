@@ -91,7 +91,6 @@ export class UserListPage extends WithBrandConfig(
 
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by username, email, etc...");
-    public override searchLabel = msg("User Search");
 
     public pageTitle = msg("Users");
     public pageDescription = "";

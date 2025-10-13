@@ -210,7 +210,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                                     <span class="pf-c-form__label-text">${msg("Bind DN")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${`cn=${this.currentUser?.username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
@@ -223,7 +223,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                                     )}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${msg("Your authentik password")}
@@ -234,7 +234,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                                     <span class="pf-c-form__label-text">${msg("Search base")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${ifDefined(this.provider?.baseDn?.toLowerCase())}

@@ -31,12 +31,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        }
-        return msg("Successfully created provider.");
-    }
+    protected override entityLabel = msg("RAC provider");
 
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {

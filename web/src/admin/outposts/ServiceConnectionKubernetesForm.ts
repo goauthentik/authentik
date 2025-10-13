@@ -26,11 +26,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated integration.")
-            : msg("Successfully created integration.");
-    }
+    protected override entityLabel = msg("integration");
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {

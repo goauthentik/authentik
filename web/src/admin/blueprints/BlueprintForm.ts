@@ -46,11 +46,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         return inst;
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated instance.")
-            : msg("Successfully created instance.");
-    }
+    protected override entityLabel = msg("instance");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 

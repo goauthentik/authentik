@@ -5,6 +5,9 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
+import { formatSuccessActionMessage } from "#common/i18n/actions";
+import { DefaultEntityLabel } from "#common/i18n/nouns";
+import { ActionName, ActionTenseRecord } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 
@@ -221,7 +224,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Properties
 
-    @property({ type: String })
+    @property({ type: String, attribute: "success-message" })
     public successMessage?: string;
 
     @property({ type: String })
@@ -266,19 +269,24 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * An overridable method for returning a success message after a successful submission.
-     *
-     * @deprecated Use `formatAPISuccessMessage` instead.
+     * The label for the type of entity being listed.
      */
-    protected getSuccessMessage(): string | undefined {
-        return this.successMessage;
-    }
+    protected entityLabel: string = DefaultEntityLabel.singular;
+
+    /**
+     * The label for the action performed when submitting the form.
+     * @abstract
+     */
+    protected abstract actionName?: ActionName;
 
     /**
      * An overridable method for returning a formatted message after a successful submission.
      */
     protected formatAPISuccessMessage(response: unknown): APIMessage | null {
-        const message = this.getSuccessMessage();
+        const actionName: ActionName = this.actionName || "create";
+        const action = ActionTenseRecord[actionName].past;
+
+        const message = formatSuccessActionMessage(action, this.entityLabel);
 
         if (!message) return null;
 

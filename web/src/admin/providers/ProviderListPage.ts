@@ -17,6 +17,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -46,8 +47,10 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     public order = "name";
 
-    public searchLabel = msg("Provider Search");
-    public searchPlaceholder = msg("Search for providers…");
+    protected override entityLabel: EntityLabel = {
+        singular: msg("provider"),
+        plural: msg("providers"),
+    };
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(

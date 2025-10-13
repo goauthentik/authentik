@@ -5,6 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -23,6 +24,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("initial permission"),
+        plural: msg("initial permissions"),
+    };
+
     public pageTitle = msg("Initial Permissions");
     public pageDescription = msg("Set initial permissions for newly created objects.");
     public pageIcon = "fa fa-lock";

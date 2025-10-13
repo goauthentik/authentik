@@ -5,6 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -23,6 +24,11 @@ export class RoleListPage extends TablePage<Role> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
+    protected override entityLabel: EntityLabel = {
+        singular: msg("role"),
+        plural: msg("roles"),
+    };
+
     public pageTitle = msg("Roles");
     public pageDescription = msg(
         "Manage roles which grant permissions to objects within authentik.",
@@ -91,10 +97,12 @@ export class RoleListPage extends TablePage<Role> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Role")}</span>
-                <ak-role-form slot="form"> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <span slot="submit">${this.createEntityActionLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
+                <ak-role-form slot="form"></ak-role-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

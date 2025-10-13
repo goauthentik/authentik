@@ -43,9 +43,8 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
 
     //#endregion
 
-    public override getSuccessMessage(): string {
-        return msg("Successfully updated password.");
-    }
+    protected override readonly actionName = "save";
+    protected override entityLabel = msg("password");
 
     public override async send(data: UserPasswordSetRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersSetPasswordCreate({

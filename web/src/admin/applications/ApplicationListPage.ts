@@ -183,8 +183,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
-                successMessage=${msg("Successfully cleared application cache")}
-                errorMessage=${msg("Failed to delete application cache")}
+                success-message=${msg("Successfully cleared application cache")}
+                error-message=${msg("Failed to delete application cache")}
                 action=${msg("Clear cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();

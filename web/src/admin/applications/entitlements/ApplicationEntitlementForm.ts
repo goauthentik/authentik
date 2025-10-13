@@ -29,12 +29,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     @property()
     targetPk?: string;
 
-    getSuccessMessage(): string {
-        if (this.instance?.pbmUuid) {
-            return msg("Successfully updated entitlement.");
-        }
-        return msg("Successfully created entitlement.");
-    }
+    protected override entityLabel = msg("entitlement");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 

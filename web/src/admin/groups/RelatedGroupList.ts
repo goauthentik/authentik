@@ -28,9 +28,9 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @state()
     groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user to group(s).");
-    }
+    protected override readonly actionName = "add";
+
+    protected override entityLabel = msg("user to group(s)");
 
     async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(

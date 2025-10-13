@@ -11,6 +11,8 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { DefaultEntityLabel, EntityLabel } from "#common/i18n/nouns";
+import { truncationEllipsis } from "#common/i18n/punctuation";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -31,7 +33,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -132,13 +133,36 @@ export abstract class Table<T extends object>
     @state()
     protected lastRefreshedAt: Date | null = null;
 
+    /**
+     * The label for the type of entity being listed.
+     *
+     * Typically used in the empty state.
+     */
+    protected entityLabel: EntityLabel = DefaultEntityLabel;
+
+    protected get newEntityActionLabel(): string {
+        return msg(str`New ${this.entityLabel.singular}`);
+    }
+
+    protected get createEntityActionLabel(): string {
+        return msg(str`Create ${this.entityLabel.singular}`);
+    }
+
+    protected get editEntityActionLabel(): string {
+        return msg(str`Edit ${this.entityLabel.singular}`);
+    }
+
+    protected get updateEntityActionLabel(): string {
+        return msg(str`Update ${this.entityLabel.singular}`);
+    }
+
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
 
+    //#region Properties
+
     @property({ type: Boolean })
     public supportsQL: boolean = false;
-
-    //#region Properties
 
     @property({ type: String })
     public toolbarLabel: string | null = null;
@@ -219,10 +243,7 @@ export abstract class Table<T extends object>
     public expandable = false;
 
     @property({ attribute: false })
-    public searchLabel?: string;
-
-    @property({ attribute: false })
-    public searchPlaceholder?: string;
+    public searchPlaceholder: string | null = null;
 
     //#endregion
 
@@ -370,7 +391,7 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span>${msg(str`No ${this.entityLabel.plural} found.`)}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -397,7 +418,7 @@ export abstract class Table<T extends object>
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
-            ><span>${msg("Failed to fetch objects.")}</span>
+            ><span>${msg(str`Failed to fetch ${this.entityLabel.plural}.`)}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }
@@ -762,14 +783,27 @@ export abstract class Table<T extends object>
             return nothing;
         }
 
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
+        const qlAvailable = this.supportsQL && this.hasEnterpriseLicense;
+
+        const searchLabel = msg(str`${this.entityLabel.singular} search`);
+
+        let searchPlaceholder = this.searchPlaceholder;
+
+        if (!searchPlaceholder) {
+            if (qlAvailable) {
+                searchPlaceholder = msg("Search by <field>") + truncationEllipsis;
+            } else if (this.entityLabel !== DefaultEntityLabel) {
+                searchPlaceholder =
+                    msg(str`Search ${this.entityLabel.plural}`) + truncationEllipsis;
+            }
+        }
 
         return html` <ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            class="pf-c-toolbar__item pf-m-search-filter ${qlAvailable ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
-            label=${ifDefined(this.searchLabel)}
-            placeholder=${ifDefined(this.searchPlaceholder)}
+            label=${searchLabel}
+            placeholder=${ifPresent(searchPlaceholder)}
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}

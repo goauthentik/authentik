@@ -19,11 +19,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
 > {
     protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated mapping.")
-            : msg("Successfully created mapping.");
-    }
+    protected override entityLabel = msg("mapping");
 
     renderExtraFields(): SlottedTemplateResult {
         return nothing;
