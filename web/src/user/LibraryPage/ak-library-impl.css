@@ -21,6 +21,10 @@
 
         @container (width < 650px) {
             flex: 1 1 36ch;
+
+            &::part(search-input) {
+                font-size: var(--pf-global--FontSize--md);
+            }
         }
     }
 }
