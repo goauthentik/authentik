@@ -35,7 +35,7 @@ jobs:
       - name: Check changes have been applied
         run: |
           uv run make aws-cfn
-          git diff lifecycle/aws/template.yaml --exit-code
+          git diff --exit-code lifecycle/aws/template.yaml
   ci-aws-cfn-mark:
     if: always()
     needs:
