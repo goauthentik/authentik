@@ -53,6 +53,8 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
     - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`
     - Select your signing certificate
     - Under **Advanced Protocol Settings**:
+        - Set **Signing certificate** to use any available certificate
+            - Enable both **Sign assertions** and **Sign responses**
         - Set **Assertion valid not before** to `minutes=5`
         - Set **Assertion valid not on or after** to `minutes=5`
         - Set **Digest algorithm** to `sha256`
