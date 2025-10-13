@@ -7,7 +7,7 @@
 
     @media (min-width: 390px) {
         --app-card-title-padding: 0.25rem;
-        --app-card-aspect-ratio: 1;
+        --app-card-aspect-ratio: 1 / 1.13;
         --app-group-template-columns: repeat(auto-fill, var(--app-card-min-width));
     }
 
@@ -80,9 +80,10 @@
             box-orient: vertical;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-align: start;
+            text-align: center;
             text-wrap: balance;
             line-height: 1.2;
+            min-height: 2.4rem;
 
             max-height: calc(var(--pf-global--LineHeight--md) * 2rem);
         }
@@ -99,6 +100,7 @@
         inset: 0;
         object-fit: contain;
         place-self: center;
+        inset-block-start: -1.5rem;
         inset-block-end: var(--app-icon-offset, 0);
         padding: 0;
     }
