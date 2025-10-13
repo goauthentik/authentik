@@ -90,11 +90,11 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                       aria-label=${msg(str`Open "${application.name}"`)}
                       title=${ifPresent(application.name)}
                   >
-                      ${cardHeader}
                       <ak-library-rac-endpoint-launch
                           ${ref(modalRef)}
                           .app=${application}
                       ></ak-library-rac-endpoint-launch>
+                      ${cardHeader}
                   </div>`
                 : html`<a
                       tabindex="0"
