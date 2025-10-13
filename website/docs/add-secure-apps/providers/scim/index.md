@@ -76,7 +76,7 @@ SCIM defines several optional settings that allow clients to discover a service 
 
 - Bulk
 
-    The [`bulk`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.7) parameter enables clients to send large collections of resource operations in a single request. The `bulk.maxOperations` attribute tells clients what the maximum number of individual operations a server can process within a single bulk request.
+    The [`bulk`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.7) configuration enables clients to send large collections of resource operations in a single request. If the remote system sets this attribute, authentik will respect the `maxOperations` value to determine the maximum number of individual operations a server can process within a single bulk request.
 
 - Patch updates
 
