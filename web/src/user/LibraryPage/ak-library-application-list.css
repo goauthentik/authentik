@@ -1,6 +1,4 @@
 :host {
-    --app-details-border-color: var(--pf-global--BorderColor--100);
-    --app-details-divider-color: var(--pf-global--BackgroundColor--100);
     --app-card-aspect-ratio: 4 / 3;
     --app-card-min-width: 6.5rem;
     --app-group-header-min-height: calc(var(--app-card-min-width) / 4);
@@ -26,11 +24,6 @@
     @media (prefers-contrast: more) {
         --app-group-border-color: var(--pf-global--BorderColor--200);
     }
-}
-
-:host([theme="dark"]) {
-    --app-details-border-color: var(--ak-dark-background-lighter);
-    --app-details-divider-color: var(--pf-global--Color--300);
 }
 
 .card-header-aspect-wrapper {
