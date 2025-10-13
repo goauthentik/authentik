@@ -202,7 +202,16 @@ export class LibraryPage extends AKElement {
     }
 
     render() {
+<<<<<<< HEAD
         return html`<div class="pf-c-page__main">
+=======
+        return html`<main
+            aria-label=${msg("Applications library")}
+            class="pf-c-page__main"
+            tabindex="-1"
+            id="main-content"
+        >
+>>>>>>> 472b7c662 (web: User library UI fixes (#17376))
             <div class="pf-c-page__header pf-c-content">
                 <h1 class="pf-c-page__title">${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}

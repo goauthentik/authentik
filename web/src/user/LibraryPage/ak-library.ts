@@ -34,6 +34,7 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
+<<<<<<< HEAD
     protected createRenderRoot(): HTMLElement | DocumentFragment {
         return this;
     }
@@ -42,6 +43,12 @@ export class LibraryPage extends AKElement {
     protected ready = false;
 
     @state()
+=======
+    @state()
+    protected ready = false;
+
+    @state()
+>>>>>>> 472b7c662 (web: User library UI fixes (#17376))
     protected admin = false;
 
     /**

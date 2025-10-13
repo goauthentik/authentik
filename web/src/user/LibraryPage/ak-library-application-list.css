@@ -99,7 +99,11 @@
 
 [part="card-header-icon"] {
     --icon-height: 50%;
+<<<<<<< HEAD
     --icon-font-size: calc(var(--app-card-min-width) / 2.3);
+=======
+    --icon-font-size: calc(var(--app-card-min-width) / 1.5);
+>>>>>>> 472b7c662 (web: User library UI fixes (#17376))
 
     &::part(icon) {
         --app-icon--shadow-background-color: var(--pf-c-card--BackgroundColor);
