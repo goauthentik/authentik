@@ -577,6 +577,8 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
         if self.meta_icon.name.startswith("http"):
             return self.meta_icon.name
+        if self.meta_icon.name.startswith("fa://"):
+            return self.meta_icon.name
         if self.meta_icon.name.startswith("/"):
             return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
         return self.meta_icon.url
@@ -781,6 +783,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
         if self.icon.name.startswith("http"):
+            return self.icon.name
+        if self.icon.name.startswith("fa://"):
             return self.icon.name
         if self.icon.name.startswith("/"):
             return CONFIG.get("web.path", "/")[:-1] + self.icon.name
