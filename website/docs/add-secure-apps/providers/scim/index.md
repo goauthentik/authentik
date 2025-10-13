@@ -72,7 +72,7 @@ SCIM defines several optional settings that allow clients to discover a service 
 
 - Filtering
 
-    With a [`filter`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2) query parameter that has a defined filter expression, you can specify a subset of resources and provide a maximum number to be returned.
+    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses this operation to filter users and groups in the remote system to match them to existing authentik users and groups.  
 
 - Bulk
 
