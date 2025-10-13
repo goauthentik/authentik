@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"database/sql/driver"
-	"strings"
+	"errors"
 	"sync"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -61,26 +62,20 @@ func NewRefreshableConnPool(initialDSN string, gormConfig *gorm.Config, maxIdleC
 }
 
 // isAuthError checks if an error is a PostgreSQL authentication error
-// This checks for common authentication error patterns in the error message
 func isAuthError(err error) bool {
 	if err == nil {
 		return false
 	}
 
-	// Check for common authentication error message patterns
-	// These patterns match PostgreSQL error codes:
-	// 28P01: invalid_password
-	// 28000: invalid_authorization_specification
-	// 28P02: invalid_password (deprecated but still used)
-	errMsg := strings.ToLower(err.Error())
-	return strings.Contains(errMsg, "password authentication failed") ||
-		strings.Contains(errMsg, "no password supplied") ||
-		strings.Contains(errMsg, "invalid authorization specification") ||
-		strings.Contains(errMsg, "pq: password authentication failed") ||
-		strings.Contains(errMsg, "authentication failed") ||
-		strings.Contains(errMsg, "28p01") || // PostgreSQL error code
-		strings.Contains(errMsg, "28000") || // PostgreSQL error code
-		strings.Contains(errMsg, "28p02") // PostgreSQL error code (deprecated)
+	// Unwrap the error to find the underlying pgconn.PgError
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		// Check for any PostgreSQL error code in Class 28 (Invalid Authorization Specification)
+		// See https://www.postgresql.org/docs/current/errcodes-appendix.html
+		return len(pgErr.Code) >= 2 && pgErr.Code[:2] == "28"
+	}
+
+	return false
 }
 
 // refreshCredentials checks if credentials have changed and reconnects if needed
