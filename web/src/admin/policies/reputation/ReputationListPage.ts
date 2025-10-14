@@ -25,7 +25,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Reputation scores");
+    protected override entityLabel = {
+        singular: msg("Reputation score"),
+        plural: msg("Reputation scores"),
+    };
     public pageDescription = msg(
         "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
     );

@@ -31,7 +31,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Policies");
+    protected override entityLabel = {
+        singular: msg("Policy"),
+        plural: msg("Policies"),
+    };
     public pageDescription = msg(
         "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
     );

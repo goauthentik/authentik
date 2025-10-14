@@ -28,7 +28,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Tokens");
+    protected override entityLabel = {
+        singular: msg("Token"),
+        plural: msg("Tokens"),
+    };
     public pageDescription = msg(
         "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
     );

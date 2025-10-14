@@ -8,6 +8,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -89,6 +90,11 @@ export class RelatedGroupList extends Table<Group> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("group"),
+        plural: msg("groups"),
+    };
 
     @property()
     order = "name";

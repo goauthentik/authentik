@@ -24,7 +24,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Flows");
+    protected override entityLabel = {
+        singular: msg("Flow"),
+        plural: msg("Flows"),
+    };
     public pageDescription = msg(
         "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
     );

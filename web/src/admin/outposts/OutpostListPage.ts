@@ -54,7 +54,10 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
-    public pageTitle = msg("Outposts");
+    protected override entityLabel = {
+        singular: msg("Outpost"),
+        plural: msg("Outposts"),
+    };
     public pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
     );

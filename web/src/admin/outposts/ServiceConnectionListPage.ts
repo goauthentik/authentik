@@ -28,7 +28,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
-    public pageTitle = msg("Outpost integrations");
+    protected override entityLabel = {
+        singular: msg("Outpost integration"),
+        plural: msg("Outpost integrations"),
+    };
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
     );

@@ -27,7 +27,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Notification Transports");
+    protected override entityLabel = {
+        singular: msg("Notification Transport"),
+        plural: msg("Notification Transports"),
+    };
     public pageDescription = msg(
         "Define how notifications are sent to users, like Email or Webhook.",
     );

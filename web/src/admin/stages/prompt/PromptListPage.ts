@@ -22,7 +22,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Prompts");
+    protected override entityLabel = {
+        singular: msg("Prompt"),
+        plural: msg("Prompts"),
+    };
     public pageDescription = msg("Single Prompts that can be used for Prompt Stages.");
     public pageIcon = "pf-icon pf-icon-plugged";
 

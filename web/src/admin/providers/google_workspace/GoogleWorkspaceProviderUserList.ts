@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,6 +23,11 @@ import { customElement, property } from "lit/decorators.js";
 export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProviderUser> {
     @property({ type: Number })
     providerId?: number;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Google Workspace user"),
+        plural: msg("Google Workspace users"),
+    };
 
     protected override searchEnabled = true;
 

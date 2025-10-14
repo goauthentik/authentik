@@ -7,6 +7,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -29,6 +30,11 @@ export class EndpointListPage extends Table<Endpoint> {
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("endpoint"),
+        plural: msg("endpoints"),
+    };
 
     protected override searchEnabled = true;
 

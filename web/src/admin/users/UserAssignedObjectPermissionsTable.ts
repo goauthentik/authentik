@@ -2,6 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -20,6 +21,11 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
 
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("permission"),
+        plural: msg("permissions"),
+    };
 
     async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({

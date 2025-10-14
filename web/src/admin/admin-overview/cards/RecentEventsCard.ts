@@ -7,6 +7,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EntityLabel } from "#common/i18n/nouns";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -28,6 +29,11 @@ export class RecentEventsCard extends Table<Event> {
     public override role = "region";
     public override ariaLabel = msg("Recent events");
     public override label = msg("Events");
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("event"),
+        plural: msg("events"),
+    };
 
     @property()
     order = "-created";

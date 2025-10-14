@@ -24,11 +24,14 @@ export class GroupListPage extends TablePage<Group> {
     clearOnRefresh = true;
     protected override searchEnabled = true;
     protected override entityLabel: EntityLabel = {
-        singular: msg("group"),
-        plural: msg("groups"),
+        singular: msg("Group"),
+        plural: msg("Groups"),
     };
-    public searchPlaceholder = msg("Search for a group by name…");
-    public pageTitle = msg("Groups");
+
+    protected override get searchPlaceholder() {
+        return msg("Search for a group by name...");
+    }
+
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",
     );

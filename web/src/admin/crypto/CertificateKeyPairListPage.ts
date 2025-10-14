@@ -33,7 +33,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Certificate-Key Pairs");
+    protected override entityLabel = {
+        singular: msg("Certificate-Key Pair"),
+        plural: msg("Certificate-Key Pairs"),
+    };
     public pageDescription = msg(
         "Import certificates of external providers or create certificates to sign requests with.",
     );

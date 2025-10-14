@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -24,6 +25,11 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     providerId?: number;
 
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Microsoft Entra user"),
+        plural: msg("Microsoft Entra users"),
+    };
 
     protected override searchEnabled = true;
 

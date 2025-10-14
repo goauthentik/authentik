@@ -15,6 +15,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { EntityLabel } from "#common/i18n/nouns";
 import { MessageLevel } from "#common/messages";
 import { me } from "#common/users";
 
@@ -123,8 +124,16 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
-    public override searchPlaceholder = msg("Search for users by username or display name...");
+    protected override get searchPlaceholder() {
+        return msg("Search for users by username or display name...");
+    }
+
     public override label = msg("Group Users");
+
+    public override entityLabel: EntityLabel = {
+        singular: msg("user"),
+        plural: msg("users"),
+    };
 
     expandable = true;
     checkbox = true;

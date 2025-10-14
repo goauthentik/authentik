@@ -33,7 +33,10 @@ export class RuleListPage extends TablePage<NotificationRule> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Notification Rules");
+    protected override entityLabel = {
+        singular: msg("Notification Rule"),
+        plural: msg("Notification Rules"),
+    };
     public pageDescription = msg(
         "Send notifications whenever a specific Event is created and matched by policies.",
     );

@@ -34,7 +34,10 @@ export class InvitationListPage extends TablePage<Invitation> {
     expandable = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Invitations");
+    protected override entityLabel = {
+        singular: msg("Invitation"),
+        plural: msg("Invitations"),
+    };
     public pageDescription = msg(
         "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
     );

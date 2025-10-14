@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
@@ -14,6 +15,11 @@ import { customElement, property } from "lit/decorators.js";
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("RAC endpoint"),
+        plural: msg("RAC endpoints"),
+    };
 
     protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {
         if (!item.launchUrl) {

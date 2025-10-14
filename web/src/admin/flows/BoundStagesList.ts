@@ -8,6 +8,7 @@ import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -30,6 +31,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     clearOnRefresh = true;
 
     order = "order";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("bound stage"),
+        plural: msg("bound stages"),
+    };
 
     @property()
     target?: string;

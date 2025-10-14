@@ -28,7 +28,15 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
     supportsQL = true;
 
-    public pageTitle = msg("Event Log");
+    protected override entityLabel = {
+        singular: msg("Event Log"),
+        plural: msg("Event Log"),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for an event by action or user...");
+    }
+
     public pageDescription = "";
 
     public pageIcon = "pf-icon pf-icon-catalog";

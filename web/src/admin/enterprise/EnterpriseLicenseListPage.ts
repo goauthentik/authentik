@@ -41,7 +41,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Licenses");
+    protected override entityLabel = {
+        singular: msg("License"),
+        plural: msg("Licenses"),
+    };
     public pageDescription = msg("Manage enterprise licenses");
     public pageIcon = "pf-icon pf-icon-key";
 

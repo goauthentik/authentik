@@ -25,7 +25,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
-    public pageTitle = msg("Federation and Social login");
+    protected override entityLabel = {
+        singular: msg("Federation and Social login"),
+        plural: msg("Federation and Social login"),
+    };
     public pageDescription = msg(
         "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
     );

@@ -33,13 +33,14 @@ export abstract class TablePage<T extends object> extends Table<T> {
         `,
     ];
 
-    //#region Abstract properties
-
     /**
      * The title of the page.
-     * @abstract
      */
-    public abstract pageTitle: string;
+    public get pageTitle(): string {
+        return this.entityLabel.plural;
+    }
+
+    //#region Abstract properties
 
     /**
      * The description of the page.
@@ -119,7 +120,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg(str`No ${this.entityLabel.plural} found.`)}</span>
+                      ><span>${msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`)}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>

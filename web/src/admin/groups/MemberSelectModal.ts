@@ -28,7 +28,10 @@ export class MemberSelectTable extends TableModal<User> {
         plural: msg("users"),
     };
 
-    public override searchPlaceholder = msg("Search for users by username or display name...");
+    protected override get searchPlaceholder() {
+        return msg("Search for users by username or display name...");
+    }
+
     public override label = msg("Select Users");
     static styles = [
         ...super.styles,

@@ -8,6 +8,7 @@ import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
@@ -26,6 +27,11 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("token"),
+        plural: msg("tokens"),
+    };
 
     expandable = true;
     checkbox = true;

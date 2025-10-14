@@ -9,6 +9,7 @@ import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -36,6 +37,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     expandable = true;
 
     order = "order";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("application entitlement"),
+        plural: msg("application entitlements"),
+    };
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({

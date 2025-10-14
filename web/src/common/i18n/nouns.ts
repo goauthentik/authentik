@@ -8,13 +8,13 @@ import { msg } from "@lit/localize";
  */
 export interface EntityLabel {
     /**
-     * Singular, common-noun.
+     * Singular, typically a lowercased common-noun.
      *
      * e.g. "user", "application", "policy"
      */
     singular: string;
     /**
-     * Plural, common-noun.
+     * Plural, typically lowercased common-noun.
      *
      * e.g. "users", "applications", "policies"
      */

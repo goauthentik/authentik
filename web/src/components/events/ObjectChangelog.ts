@@ -6,6 +6,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EntityLabel } from "#common/i18n/nouns";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -22,6 +23,11 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("event"),
+        plural: msg("events"),
+    };
 
     @property()
     order = "-created";

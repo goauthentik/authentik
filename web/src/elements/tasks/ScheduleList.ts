@@ -9,6 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -25,6 +26,11 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export class ScheduleList extends Table<Schedule> {
     expandable = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("schedule"),
+        plural: msg("schedules"),
+    };
 
     protected override searchEnabled = true;
 

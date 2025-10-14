@@ -2,6 +2,7 @@ import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -17,6 +18,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
+    protected override entityLabel: EntityLabel = {
+        singular: msg("user"),
+        plural: msg("users"),
+    };
+
     @property({ attribute: false })
     user?: User;
 

@@ -39,7 +39,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Property Mappings");
     public pageDescription = msg("Control how authentik exposes and interprets information.");
     public pageIcon = "pf-icon pf-icon-blueprint";
 
@@ -47,8 +46,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("property mapping"),
-        plural: msg("property mappings"),
+        singular: msg("Property Mapping"),
+        plural: msg("Property Mappings"),
     };
 
     @property()

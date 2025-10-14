@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -28,6 +29,11 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     checkbox = true;
     clearOnRefresh = true;
     order = "-expires";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("session"),
+        plural: msg("sessions"),
+    };
 
     protected override rowLabel(item: AuthenticatedSession): string | null {
         return item.lastIp ?? null;

@@ -8,6 +8,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
+import { EntityLabel } from "#common/i18n/nouns";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
@@ -31,6 +32,11 @@ export class MFADevicesPage extends Table<Device> {
 
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("device"),
+        plural: msg("devices"),
+    };
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();

@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
@@ -20,6 +21,11 @@ export class UserDeviceTable extends Table<Device> {
 
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("device"),
+        plural: msg("devices"),
+    };
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)

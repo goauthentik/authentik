@@ -26,11 +26,10 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("initial permission"),
-        plural: msg("initial permissions"),
+        singular: msg("Initial Permission"),
+        plural: msg("Initial Permissions"),
     };
 
-    public pageTitle = msg("Initial Permissions");
     public pageDescription = msg("Set initial permissions for newly created objects.");
     public pageIcon = "fa fa-lock";
 

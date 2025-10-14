@@ -90,9 +90,14 @@ export class UserListPage extends WithBrandConfig(
     supportsQL = true;
 
     protected override searchEnabled = true;
-    public override searchPlaceholder = msg("Search by username, email, etc...");
+    public override get searchPlaceholder() {
+        return msg("Search by username, email, etc...");
+    }
 
-    public pageTitle = msg("Users");
+    protected override entityLabel = {
+        singular: msg("User"),
+        plural: msg("Users"),
+    };
     public pageDescription = "";
     public pageIcon = "pf-icon pf-icon-user";
 

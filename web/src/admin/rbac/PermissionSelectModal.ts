@@ -1,6 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -19,6 +20,11 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 export class PermissionSelectModal extends TableModal<Permission> {
     checkbox = true;
     checkboxChip = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("permission"),
+        plural: msg("permissions"),
+    };
 
     protected override searchEnabled = true;
 

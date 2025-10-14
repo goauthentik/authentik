@@ -11,6 +11,7 @@ import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -54,6 +55,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     clearOnRefresh = true;
 
     order = "order";
+
+    protected entityLabel: EntityLabel = {
+        singular: msg("policy binding"),
+        plural: msg("policy bindings"),
+    };
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFSpacing);

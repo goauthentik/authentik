@@ -10,6 +10,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -34,6 +35,11 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 export class TaskList extends Table<Task> {
     expandable = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("task"),
+        plural: msg("tasks"),
+    };
 
     @property()
     relObjAppLabel?: string;

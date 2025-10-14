@@ -3,6 +3,7 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -28,6 +29,11 @@ export class UserConsentList extends Table<UserConsent> {
     checkbox = true;
     clearOnRefresh = true;
     order = "-expires";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("consent"),
+        plural: msg("consents"),
+    };
 
     protected override rowLabel(item: UserConsent): string | null {
         return item.application?.name ?? null;
