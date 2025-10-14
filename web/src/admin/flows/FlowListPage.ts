@@ -33,6 +33,10 @@ export class FlowListPage extends TablePage<Flow> {
     );
     public pageIcon = "pf-icon pf-icon-process-automation";
 
+    protected override get searchPlaceholder(): string {
+        return msg("Search by flow name or identifier...");
+    }
+
     checkbox = true;
     clearOnRefresh = true;
 
@@ -89,7 +93,7 @@ export class FlowListPage extends TablePage<Flow> {
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button
@@ -131,16 +135,24 @@ export class FlowListPage extends TablePage<Flow> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Flow")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
                 <span slot="header">${msg("Import Flow")}</span>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
+                <button
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                    aria-label=${msg("Import Flow")}
+                >
+                    ${msg("Import")}
+                </button>
             </ak-forms-modal>
         `;
     }

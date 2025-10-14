@@ -11,8 +11,10 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatCreateMessage, formatEditMessage, formatNewMessage } from "#common/i18n/actions";
 import { DefaultEntityLabel, EntityLabel } from "#common/i18n/nouns";
 import { truncationEllipsis } from "#common/i18n/punctuation";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -154,20 +156,32 @@ export abstract class Table<T extends object>
         return msg("Search") + truncationEllipsis;
     }
 
+    /**
+     * Label for opening a "new entity" modal or page.
+     */
     protected get newEntityActionLabel(): string {
-        return msg(str`New ${this.entityLabel.singular}`);
+        return formatNewMessage(this.entityLabel);
     }
 
-    protected get createEntityActionLabel(): string {
-        return msg(str`Create ${this.entityLabel.singular}`);
+    /**
+     * Label for a "create entity" button.
+     */
+    protected get createEntityLabel(): string {
+        return formatCreateMessage(this.entityLabel);
     }
 
-    protected get editEntityActionLabel(): string {
-        return msg(str`Edit ${this.entityLabel.singular}`);
+    /**
+     * Label for an "edit entity" button.
+     */
+    protected get editEntityLabel(): string {
+        return formatEditMessage(this.entityLabel);
     }
 
-    protected get updateEntityActionLabel(): string {
-        return msg(str`Update ${this.entityLabel.singular}`);
+    /**
+     * Label for an "Apply" button.
+     */
+    protected get updateEntityLabel(): string {
+        return ActionTenseRecord.apply.present;
     }
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;

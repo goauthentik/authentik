@@ -140,7 +140,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
@@ -181,10 +181,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 </button>
             </ak-application-wizard>
             <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Application")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>`;
     }
 

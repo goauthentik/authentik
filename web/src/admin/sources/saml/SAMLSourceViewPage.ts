@@ -9,6 +9,9 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { CodeMirrorMode } from "#elements/CodeMirror";
@@ -38,6 +41,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("SAML Source"),
+        plural: msg("SAML Sources"),
+    };
+
     @property({ type: String })
     set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
@@ -143,15 +151,17 @@ export class SAMLSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
-                                    <span slot="header">${msg("Update SAML Source")}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="header"
+                                        >${formatEditMessage(this.entityLabel)}</span
+                                    >
                                     <ak-source-saml-form
                                         slot="form"
                                         .instancePk=${this.source.slug}
                                     >
                                     </ak-source-saml-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
+                                        ${formatEditMessage(this.entityLabel)}
                                     </button>
                                 </ak-forms-modal>
                             </div>

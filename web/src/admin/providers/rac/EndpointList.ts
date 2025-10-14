@@ -7,7 +7,9 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatCreateMessage, formatEditMessage, formatNewMessage } from "#common/i18n/actions";
 import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -32,8 +34,8 @@ export class EndpointListPage extends Table<Endpoint> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("endpoint"),
-        plural: msg("endpoints"),
+        singular: msg("Endpoint"),
+        plural: msg("Endpoints"),
     };
 
     protected override searchEnabled = true;
@@ -94,8 +96,8 @@ export class EndpointListPage extends Table<Endpoint> {
             html`${item.host}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Endpoint")}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                    <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
                     </ak-rac-endpoint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -127,11 +129,13 @@ export class EndpointListPage extends Table<Endpoint> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Endpoint")}</span>
+                <span slot="submit">${formatCreateMessage(this.entityLabel)}</span>
+                <span slot="header">${formatNewMessage(this.entityLabel)}</span>
                 <ak-rac-endpoint-form slot="form" .providerID=${this.provider?.pk}>
                 </ak-rac-endpoint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${formatNewMessage(this.entityLabel)}
+                </button>
             </ak-forms-modal>
         `;
     }

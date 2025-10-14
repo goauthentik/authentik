@@ -88,10 +88,12 @@ export class TokenListPage extends TablePage<Token> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-token-form slot="form"> </ak-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.createEntityLabel}
+                </button>
             </ak-forms-modal>
         `;
     }
@@ -109,7 +111,7 @@ export class TokenListPage extends TablePage<Token> {
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>
-                          <span slot="submit">${msg("Update")}</span>
+                          <span slot="submit">${this.updateEntityLabel}</span>
                           <span slot="header">${msg("Update Token")}</span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">

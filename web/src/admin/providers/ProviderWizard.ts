@@ -10,6 +10,7 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatNewMessage } from "#common/i18n/actions";
 
 import { AKElement } from "#elements/Base";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
@@ -30,7 +31,7 @@ export class ProviderWizard extends AKElement {
     static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    createText = formatNewMessage(msg("Provider"));
 
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
@@ -79,14 +80,13 @@ export class ProviderWizard extends AKElement {
                     `;
                 })}
                 <button
-                    aria-label=${msg("New Provider")}
                     aria-description="${msg("Open the wizard to create a new provider.")}"
                     type="button"
                     part="button trigger"
                     slot="trigger"
                     class="pf-c-button pf-m-primary"
                 >
-                    ${msg("Create")}
+                    ${formatNewMessage(msg("Provider"))}
                 </button>
             </ak-wizard>
         `;

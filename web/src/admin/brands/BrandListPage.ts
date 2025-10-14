@@ -85,7 +85,7 @@ export class BrandListPage extends TablePage<Brand> {
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Brand")}</span>
                     <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -107,7 +107,7 @@ export class BrandListPage extends TablePage<Brand> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${this.createEntityActionLabel}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
                 <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-brand-form slot="form"> </ak-brand-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">

@@ -92,8 +92,8 @@ export class RelatedGroupList extends Table<Group> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("group"),
-        plural: msg("groups"),
+        singular: msg("Group"),
+        plural: msg("Groups"),
     };
 
     @property()
@@ -149,8 +149,8 @@ export class RelatedGroupList extends Table<Group> {
             html`${item.parentName || msg("-")}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Group")}</span>
+                <span slot="submit">${this.updateEntityLabel}</span>
+                <span slot="header">${this.editEntityLabel}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
@@ -175,8 +175,8 @@ export class RelatedGroupList extends Table<Group> {
                   </ak-forms-modal>`
                 : nothing}
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Group")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Add new group")}

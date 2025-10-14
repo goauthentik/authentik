@@ -224,7 +224,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
                     </ak-enterprise-license-form>

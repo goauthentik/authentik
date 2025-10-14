@@ -55,6 +55,10 @@ export class StageListPage extends TablePage<Stage> {
     public pageIcon = "pf-icon pf-icon-plugged";
     protected override searchEnabled = true;
 
+    protected override get searchPlaceholder(): string {
+        return msg("Search by stage name...");
+    }
+
     checkbox = true;
     clearOnRefresh = true;
 
@@ -128,7 +132,7 @@ export class StageListPage extends TablePage<Stage> {
             </ul>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

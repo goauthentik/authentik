@@ -15,6 +15,9 @@ import "#elements/tasks/TaskList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -47,6 +50,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("SCIM Provider"),
+        plural: msg("SCIM Providers"),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -236,12 +244,12 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update SCIM Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-scim-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>

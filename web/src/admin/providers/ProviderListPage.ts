@@ -17,6 +17,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -33,8 +34,8 @@ export class ProviderListPage extends TablePage<Provider> {
     protected override searchEnabled = true;
 
     protected override entityLabel = {
-        singular: msg("provider"),
-        plural: msg("providers"),
+        singular: msg("Provider"),
+        plural: msg("Providers"),
     };
 
     protected override get searchPlaceholder() {
@@ -117,7 +118,7 @@ export class ProviderListPage extends TablePage<Provider> {
             html`${item.verboseName}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

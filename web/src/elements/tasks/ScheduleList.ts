@@ -142,7 +142,7 @@ export class ScheduleList extends Table<Schedule> {
                     </pf-tooltip>
                 </ak-action-button>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Schedule")}</span>
                     <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

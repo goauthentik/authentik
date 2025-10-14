@@ -81,12 +81,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Initial Permissions")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
                     </ak-initial-permissions-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -98,10 +98,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Initial Permissions")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-initial-permissions-form slot="form"> </ak-initial-permissions-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

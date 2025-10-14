@@ -12,6 +12,9 @@ import "#elements/sync/SyncStatusCard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage, formatNewMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -41,6 +44,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Kerberos Source"),
+        plural: msg("Kerberos Sources"),
+    };
+
     @property({ type: String })
     set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
@@ -130,15 +138,15 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
-                                    <span slot="header">${msg("Update Kerberos Source")}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="header">${formatNewMessage(this.entityLabel)}</span>
                                     <ak-source-kerberos-form
                                         slot="form"
                                         .instancePk=${this.source.slug}
                                     >
                                     </ak-source-kerberos-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
+                                        ${formatEditMessage(this.entityLabel)}
                                     </button>
                                 </ak-forms-modal>
                             </div>

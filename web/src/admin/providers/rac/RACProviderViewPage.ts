@@ -13,6 +13,9 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -41,6 +44,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("RAC Provider"),
+        plural: msg("RAC Providers"),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -189,12 +197,12 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update RAC Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-rac-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-rac-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>

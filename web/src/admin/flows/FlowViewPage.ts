@@ -129,7 +129,7 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit"> ${msg("Update")} </span>
+                                                    <span slot="submit">${msg("Update")}</span>
                                                     <span slot="header">
                                                         ${msg("Update Flow")}
                                                     </span>

@@ -69,7 +69,7 @@ export class PolicyListPage extends TablePage<Policy> {
                       </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

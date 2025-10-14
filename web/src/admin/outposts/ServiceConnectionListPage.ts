@@ -86,7 +86,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

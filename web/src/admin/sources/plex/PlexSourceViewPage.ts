@@ -9,6 +9,9 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -35,6 +38,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Plex Source"),
+        plural: msg("Plex Sources"),
+    };
+
     @property({ type: String })
     set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
@@ -101,15 +109,17 @@ export class PlexSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
-                                    <span slot="header">${msg("Update Plex Source")}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="header"
+                                        >${formatEditMessage(this.entityLabel)}</span
+                                    >
                                     <ak-source-plex-form
                                         slot="form"
                                         .instancePk=${this.source.slug}
                                     >
                                     </ak-source-plex-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
+                                        ${formatEditMessage(this.entityLabel)}
                                     </button>
                                 </ak-forms-modal>
                             </div>

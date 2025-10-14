@@ -16,7 +16,7 @@ import { renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -69,7 +69,7 @@ export class UserEvents extends Table<Event> {
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
+                ><span>${msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`)}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

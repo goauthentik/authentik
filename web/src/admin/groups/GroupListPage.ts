@@ -90,11 +90,11 @@ export class GroupListPage extends TablePage<Group> {
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Group")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -106,10 +106,12 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create Group")}</span>
-                <span slot="header">${msg("New Group")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Group")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

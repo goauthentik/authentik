@@ -82,7 +82,7 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal size=${PFSize.XLarge}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Prompt")}</span>
                     <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -102,10 +102,12 @@ export class PromptListPage extends TablePage<Prompt> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal size=${PFSize.XLarge}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Prompt")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-prompt-form slot="form"> </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

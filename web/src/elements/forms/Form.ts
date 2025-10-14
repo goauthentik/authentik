@@ -5,7 +5,12 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
-import { formatSuccessActionMessage } from "#common/i18n/actions";
+import {
+    formatCreateMessage,
+    formatEditMessage,
+    formatNewMessage,
+    formatSuccessActionMessage,
+} from "#common/i18n/actions";
 import { DefaultEntityLabel } from "#common/i18n/nouns";
 import { ActionName, ActionTenseRecord } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
@@ -278,6 +283,34 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * @abstract
      */
     protected abstract actionName?: ActionName;
+
+    /**
+     * Label for opening a "new entity" modal or page.
+     */
+    protected get newEntityActionLabel(): string {
+        return formatNewMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for a "create entity" button.
+     */
+    protected get createEntityLabel(): string {
+        return formatCreateMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "edit entity" button.
+     */
+    protected get editEntityLabel(): string {
+        return formatEditMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "Apply" button.
+     */
+    protected get updateEntityLabel(): string {
+        return ActionTenseRecord.apply.present;
+    }
 
     /**
      * An overridable method for returning a formatted message after a successful submission.

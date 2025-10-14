@@ -39,8 +39,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     order = "order";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("application entitlement"),
-        plural: msg("application entitlements"),
+        singular: msg("Entitlement"),
+        plural: msg("Entitlements"),
     };
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
@@ -82,8 +82,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Entitlement")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-application-entitlement-form
                         slot="form"
                         .instancePk=${item.pbmUuid}
@@ -91,7 +91,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     >
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${msg(this.editEntityLabel)}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -132,12 +132,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("Create Entitlement")}</span>
+            <span slot="submit">${this.createEntityLabel}</span>
+            <span slot="header">${this.newEntityActionLabel}</span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Create entitlement")}
+                ${this.newEntityActionLabel}
             </button>
         </ak-forms-modal> `;
     }

@@ -59,8 +59,8 @@ export function formatBlueprintDescription(item: BlueprintInstance): string | nu
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Blueprints"),
-        plural: msg("Blueprints"),
+        singular: msg("Blueprint Instance"),
+        plural: msg("Blueprint Instances"),
     };
     public pageDescription = msg("Automate and template configuration within authentik.");
     public pageIcon = "pf-icon pf-icon-blueprint";
@@ -159,7 +159,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button
@@ -207,10 +207,12 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Blueprint Instance")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

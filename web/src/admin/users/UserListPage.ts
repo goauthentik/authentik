@@ -260,11 +260,11 @@ export class UserListPage extends WithBrandConfig(
             html`${userTypeToLabel(item.type)}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -351,7 +351,7 @@ export class UserListPage extends WithBrandConfig(
                                 .instancePk=${item.pk}
                             ></ak-user-password-form>
                             <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Set password")}
+                                ${msg("Set Password")}
                             </button>
                         </ak-forms-modal>
                         ${this.brand.flowRecovery
@@ -360,7 +360,7 @@ export class UserListPage extends WithBrandConfig(
                                       class="pf-m-secondary"
                                       .apiRequest=${() => requestRecoveryLink(item)}
                                   >
-                                      ${msg("Create recovery link")}
+                                      ${msg("Create Recovery Link")}
                                   </ak-action-button>
                                   ${item.email
                                       ? renderRecoveryEmailRequest(item)
@@ -384,10 +384,12 @@ export class UserListPage extends WithBrandConfig(
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create User")}</span>
-                <span slot="header">${msg("New User")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
                 <span slot="submit">${msg("Create Service Account")}</span>

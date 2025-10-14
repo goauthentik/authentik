@@ -11,7 +11,9 @@ import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { formatEditMessage } from "#common/i18n/actions";
 import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -57,8 +59,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     order = "order";
 
     protected entityLabel: EntityLabel = {
-        singular: msg("policy binding"),
-        plural: msg("policy bindings"),
+        singular: msg("Policy Binding"),
+        plural: msg("Policy Bindings"),
     };
 
     static get styles(): CSSResult[] {
@@ -113,7 +115,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${this.updateEntityLabel}</span>
                 <span slot="header">${msg(str`Update ${item.policyObj?.name}`)}</span>
                 <ak-proxy-form
                     slot="form"
@@ -129,20 +131,20 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Group")}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="header">${formatEditMessage(msg("Group"))}</span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit Group")}
+                    ${formatEditMessage(msg("Group"))}
                 </button>
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update User")}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="header">${formatEditMessage(msg("User"))}</span>
                 <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit User")}
+                    ${formatEditMessage(msg("User"))}
                 </button>
             </ak-forms-modal>`;
         }
@@ -188,8 +190,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Binding")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-policy-binding-form
                         slot="form"
                         .instancePk=${item.pk}
@@ -199,7 +201,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     >
                     </ak-policy-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
-                        ${msg("Edit Binding")}
+                        ${this.updateEntityLabel}
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
@@ -223,8 +225,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
-                        <span slot="submit">${msg("Create")}</span>
-                        <span slot="header">${msg("Create Binding")}</span>
+                        <span slot="submit">${this.createEntityLabel}</span>
+                        <span slot="header">${this.newEntityActionLabel}</span>
                         <ak-policy-binding-form
                             slot="form"
                             targetPk=${ifDefined(this.target)}
@@ -250,8 +252,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                   ></ak-policy-wizard>`
                 : nothing}
             <ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Binding")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-policy-binding-form
                     slot="form"
                     targetPk=${ifDefined(this.target)}

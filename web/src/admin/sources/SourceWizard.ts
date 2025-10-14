@@ -10,6 +10,7 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatNewMessage } from "#common/i18n/actions";
 
 import { AKElement } from "#elements/Base";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
@@ -77,7 +78,9 @@ export class SourceWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${formatNewMessage(msg("Source"))}
+                </button>
             </ak-wizard>
         `;
     }

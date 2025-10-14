@@ -28,6 +28,9 @@ import "#elements/ak-mdx/ak-mdx";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 import { userTypeToLabel } from "#common/labels";
 import { me } from "#common/users";
 
@@ -66,6 +69,11 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
+    protected entityLabel: EntityLabel = {
+        singular: msg("User"),
+        plural: msg("Users"),
+    };
+
     @property({ type: Number })
     set userId(id: number) {
         me().then((me) => {
@@ -163,11 +171,11 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update User")}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                 <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">
-                    ${msg("Edit")}
+                    ${formatEditMessage(this.entityLabel)}
                 </button>
             </ak-forms-modal>
             <ak-user-active-form

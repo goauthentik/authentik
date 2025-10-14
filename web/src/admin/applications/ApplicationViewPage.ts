@@ -12,6 +12,9 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 
@@ -59,6 +62,11 @@ export class ApplicationViewPage extends AKElement {
     //#endregion
 
     //#region State
+
+    protected entityLabel: EntityLabel = {
+        singular: msg("Application"),
+        plural: msg("Applications"),
+    };
 
     @state()
     protected application?: Application;
@@ -219,9 +227,11 @@ export class ApplicationViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit">${msg("Update")}</span>
+                                                    <span slot="submit"
+                                                        >${ActionTenseRecord.apply.present}</span
+                                                    >
                                                     <span slot="header">
-                                                        ${msg("Update Application")}
+                                                        ${formatEditMessage(this.entityLabel)}
                                                     </span>
                                                     <ak-application-form
                                                         slot="form"
@@ -232,7 +242,7 @@ export class ApplicationViewPage extends AKElement {
                                                         slot="trigger"
                                                         class="pf-c-button pf-m-secondary"
                                                     >
-                                                        ${msg("Edit")}
+                                                        ${formatEditMessage(this.entityLabel)}
                                                     </button>
                                                 </ak-forms-modal>
                                             </div>

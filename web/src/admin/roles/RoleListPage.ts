@@ -80,7 +80,7 @@ export class RoleListPage extends TablePage<Role> {
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Role")}</span>
                     <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -96,7 +96,7 @@ export class RoleListPage extends TablePage<Role> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${this.createEntityActionLabel}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
                 <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-role-form slot="form"></ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">

@@ -10,6 +10,9 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -76,6 +79,11 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("OAuth Source"),
+        plural: msg("OAuth Sources"),
+    };
+
     @property({ type: String })
     set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
@@ -205,15 +213,17 @@ export class OAuthSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
-                                    <span slot="header">${msg("Update OAuth Source")}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="header"
+                                        >${formatEditMessage(this.entityLabel)}</span
+                                    >
                                     <ak-source-oauth-form
                                         slot="form"
                                         .instancePk=${this.source.slug}
                                     >
                                     </ak-source-oauth-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
+                                        ${formatEditMessage(this.entityLabel)}
                                     </button>
                                 </ak-forms-modal>
                             </div>

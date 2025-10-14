@@ -9,18 +9,18 @@ export const ActionTenseRecord = {
     //#region Constructive
 
     create: {
-        past: msg("created"),
-        present: msg("create"),
+        past: msg("Created"),
+        present: msg("Create"),
     },
 
     add: {
-        past: msg("added"),
-        present: msg("add"),
+        past: msg("Added"),
+        present: msg("Add"),
     },
 
     generate: {
-        past: msg("generated"),
-        present: msg("generate"),
+        past: msg("Generated"),
+        present: msg("Generate"),
     },
 
     //#endregion
@@ -28,18 +28,18 @@ export const ActionTenseRecord = {
     //#region Destructive
 
     $delete: {
-        past: msg("deleted"),
-        present: msg("delete"),
+        past: msg("Deleted"),
+        present: msg("Delete"),
     },
 
     revoke: {
-        past: msg("revoked"),
-        present: msg("revoke"),
+        past: msg("Revoked"),
+        present: msg("Revoke"),
     },
 
     remove: {
-        past: msg("removed"),
-        present: msg("remove"),
+        past: msg("Removed"),
+        present: msg("Remove"),
     },
 
     //#endregion
@@ -47,42 +47,52 @@ export const ActionTenseRecord = {
     //#region Directive
 
     $import: {
-        past: msg("imported"),
-        present: msg("import"),
+        past: msg("Imported"),
+        present: msg("Import"),
     },
 
     send: {
-        past: msg("sent"),
-        present: msg("send"),
+        past: msg("Sent"),
+        present: msg("Send"),
     },
 
     assign: {
-        past: msg("assigned"),
-        present: msg("assign"),
+        past: msg("Assigned"),
+        present: msg("Assign"),
     },
 
     trigger: {
-        past: msg("triggered"),
-        present: msg("trigger"),
+        past: msg("Triggered"),
+        present: msg("Trigger"),
     },
 
     impersonate: {
-        past: msg("impersonated"),
-        present: msg("impersonate"),
+        past: msg("Impersonated"),
+        present: msg("Impersonate"),
     },
 
     //#endregion
 
     //#region Modificative
 
+    edit: {
+        past: msg("Edited"),
+        present: msg("Edit"),
+    },
+
     update: {
-        past: msg("updated"),
-        present: msg("update"),
+        past: msg("Updated"),
+        present: msg("Update"),
     },
 
     save: {
-        past: msg("saved"),
-        present: msg("save"),
+        past: msg("Saved"),
+        present: msg("Save"),
+    },
+
+    apply: {
+        past: msg("Applied Changes"),
+        present: msg("Apply Changes"),
     },
 
     //#endregion

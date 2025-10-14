@@ -19,8 +19,8 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
     protected override entityLabel: EntityLabel = {
-        singular: msg("user"),
-        plural: msg("users"),
+        singular: msg("Application"),
+        plural: msg("Applications"),
     };
 
     @property({ attribute: false })
@@ -60,12 +60,12 @@ export class UserApplicationTable extends Table<Application> {
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Application")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
