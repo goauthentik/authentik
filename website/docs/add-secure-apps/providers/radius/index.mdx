@@ -7,7 +7,7 @@ import { HashSupport } from "./HashSupport";
 You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
 
 :::info
-This provider requires the deployment of the [RADIUS outpost](../../outposts/index.mdx).
+This provider requires the deployment of a [RADIUS outpost](../../outposts/index.mdx).
 :::
 
 Currently, only authentication requests are supported.
@@ -23,7 +23,7 @@ The following stages are supported:
     - [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
 
     :::info
-    Authenticator validation currently only supports DUO, TOTP, and static auNothenticators.
+    Authenticator validation currently only supports DUO, TOTP, and static authenticator.
     :::
 
     For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the MFA token `123456`, the input must be `example-password;123456`.
@@ -65,8 +65,12 @@ return packet
 
 After creation, make sure to select the RADIUS property mapping in the RADIUS provider.
 
-### Limitations
+### Protocol support
 
-The RADIUS provider only supports the [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol:
+The RADIUS provider supports EAP-TLS and [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol. For password-based authentication, only [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol is supported due to other password hashing methods requiring reversible password hashes, which we don’t support for security reasons.
+
+<details>
+  <summary>RADIUS protocol support for password-based authentication</summary>
 
 <HashSupport />
+</details>
