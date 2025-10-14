@@ -7,22 +7,6 @@
     --__AK_UI_DARK__: 1;
 }
 
-/* #region Global */
-
-:root {
-    --pf-global--Color--100: var(--ak-dark-foreground) !important;
-    --ak-global--Color--100: var(--ak-dark-foreground) !important;
-    --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
-    --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
-    --pf-global--link--Color: var(--pf-global--link--Color--light);
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-}
-
-body {
-    background-color: var(--ak-dark-background) !important;
-    color-scheme: dark;
-}
-
 /* #region Scrollbars */
 
 :root {
