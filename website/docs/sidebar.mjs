@@ -83,6 +83,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
             "install-config/reverse-proxy",
@@ -553,8 +554,19 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
-                            "users-sources/sources/social-logins/entra-id/index",
                             "users-sources/sources/social-logins/discord/index",
+                            {
+                                type: "category",
+                                label: "Entra ID",
+                                link: {
+                                    type: "doc",
+                                    id: "users-sources/sources/social-logins/entra-id/index",
+                                },
+                                items: [
+                                    "users-sources/sources/social-logins/entra-id/oauth/index",
+                                    "users-sources/sources/social-logins/entra-id/scim/index",
+                                ],
+                            },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
                             {
@@ -570,8 +582,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
-                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/telegram/index",
+                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
                         ],
                     },
@@ -688,10 +701,10 @@ const items = [
                             id: "developer-docs/docs/templates/index",
                         },
                         items: [
+                            "developer-docs/docs/templates/combo",
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],

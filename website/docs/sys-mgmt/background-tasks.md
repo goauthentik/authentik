@@ -35,7 +35,10 @@ A task can have the following statuses:
 - **Warning**: the task emitted a warning. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
 - **Error**: the task failed to process. Either the task threw an exception, or reported an other error. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
 - **Waiting to run**: the task has been queued for running, but no worker has picked it up yet, either because none are available, they are already busy, or because it's just been queued.
+- **Consumed**: the task has been picked up by a worker.
+- **Pre-processing**: the task is being prepared to run.
 - **Running**: the task is currently running.
+- **Post-processing**: the task has finished running and is being cleaned up.
 
 ## Manage background tasks
 

@@ -1,3 +1,4 @@
+import Styles from "./ak-library-application-search.css";
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,
@@ -7,16 +8,18 @@ import {
 
 import { AKElement } from "#elements/Base";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 
 import type { Application } from "@goauthentik/api";
 
 import Fuse, { FuseResult } from "fuse.js";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
@@ -38,25 +41,11 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 @customElement("ak-library-application-search")
 export class LibraryPageApplicationSearch extends AKElement {
     static styles = [
+        // ---
         PFBase,
         PFDisplay,
-        css`
-            input {
-                width: 30ch;
-                box-sizing: border-box;
-                border: 0;
-                border-bottom: 1px solid;
-                border-bottom-color: var(--ak-accent);
-                background-color: transparent;
-                font-size: 1.5rem;
-            }
-            input:focus {
-                outline: 0;
-            }
-            :host([theme="dark"]) input {
-                color: var(--ak-dark-foreground) !important;
-            }
-        `,
+        PFFormControl,
+        Styles,
     ];
 
     @property({ attribute: false })
@@ -64,101 +53,108 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.fuse.setCollection(value);
     }
 
-    @property()
-    query = getURLParam<string | undefined>("search", undefined);
+    @state()
+    protected query = getURLParam<string | null>("q", "");
 
-    @query("input")
-    searchInput?: HTMLInputElement;
+    protected searchInput = createRef<HTMLInputElement>();
 
-    fuse: Fuse<Application>;
+    protected fuse = new Fuse<Application>([], {
+        keys: [
+            { name: "name", weight: 3 },
+            "slug",
+            "group",
+            { name: "metaDescription", weight: 0.5 },
+            { name: "metaPublisher", weight: 0.5 },
+        ],
+        findAllMatches: true,
+        includeScore: true,
+        shouldSort: true,
+        ignoreFieldNorm: true,
+        useExtendedSearch: true,
+        threshold: 0.3,
+    });
 
-    constructor() {
-        super();
-        this.fuse = new Fuse([], {
-            keys: [
-                { name: "name", weight: 3 },
-                "slug",
-                "group",
-                { name: "metaDescription", weight: 0.5 },
-                { name: "metaPublisher", weight: 0.5 },
-            ],
-            findAllMatches: true,
-            includeScore: true,
-            shouldSort: true,
-            ignoreFieldNorm: true,
-            useExtendedSearch: true,
-            threshold: 0.3,
-        });
-    }
-
-    onSelected(apps: FuseResult<Application>[]) {
-        this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
-    }
-
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
-        if (!this.query) {
-            return;
+
+        if (this.query) {
+            const matchingApps = this.fuse.search(this.query);
+
+            if (matchingApps.length) {
+                this.#dispatchSelected(matchingApps);
+            }
         }
-        const matchingApps = this.fuse.search(this.query);
-        if (matchingApps.length < 1) {
-            return;
-        }
-        this.onSelected(matchingApps);
     }
 
-    resetSearch(): void {
-        if (this.searchInput) {
-            this.searchInput.value = "";
+    public reset(): void {
+        const searchInput = this.searchInput.value;
+
+        if (searchInput) {
+            searchInput.value = "";
         }
+
         this.query = "";
+
         updateURLParams({
-            search: this.query,
+            q: this.query,
         });
+
         this.dispatchEvent(new LibraryPageSearchReset());
     }
 
-    onInput(ev: InputEvent) {
-        this.query = (ev.target as HTMLInputElement).value;
-        if (this.query === "") {
-            return this.resetSearch();
+    #dispatchSelected = (apps: FuseResult<Application>[]) => {
+        this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
+    };
+
+    #inputListener = (event: InputEvent) => {
+        this.query = (event.target as HTMLInputElement).value;
+
+        if (!this.query) {
+            return this.reset();
         }
+
         updateURLParams({
-            search: this.query,
+            q: this.query,
         });
 
         const apps = this.fuse.search(this.query);
-        if (apps.length < 1) {
+
+        if (!apps.length) {
             this.dispatchEvent(new LibraryPageSearchEmpty());
             return;
         }
 
-        this.onSelected(apps);
-    }
+        this.#dispatchSelected(apps);
+    };
 
-    onKeyDown(ev: KeyboardEvent) {
-        switch (ev.key) {
+    #keyDownListener = (event: KeyboardEvent) => {
+        switch (event.key) {
             case "Escape": {
-                this.resetSearch();
+                event.preventDefault();
+                this.reset();
                 return;
             }
             case "Enter": {
+                event.preventDefault();
                 this.dispatchEvent(new LibraryPageSearchSelected());
                 return;
             }
         }
-    }
+    };
 
     render() {
         return html`<input
-            @input=${this.onInput}
-            @keydown=${this.onKeyDown}
-            type="text"
-            class="pf-u-display-none pf-u-display-block-on-md"
+            ${ref(this.searchInput)}
+            part="search-input"
+            name="application-search"
+            @input=${this.#inputListener}
+            @keydown=${this.#keyDownListener}
+            type="search"
+            class="pf-c-form-control"
             autofocus
-            aria-label=${msg("Search for an application by name")}
-            placeholder=${msg("Search...")}
-            value=${ifDefined(this.query)}
+            aria-label=${msg("Application search")}
+            placeholder=${msg("Search for an application by name...")}
+            value=${ifPresent(this.query)}
         />`;
     }
 }

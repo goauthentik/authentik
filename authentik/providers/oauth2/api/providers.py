@@ -25,6 +25,7 @@ from authentik.core.models import Provider
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
+    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURIMatchingMode,
     ScopeMapping,
@@ -56,6 +57,21 @@ class OAuth2ProviderSerializer(ProviderSerializer):
                     ) from None
         return data
 
+    def validate(self, attrs):
+        """Validate logout method is only set when logout URI is present"""
+        logout_uri = attrs.get("logout_uri", "")
+        logout_method = attrs.get("logout_method", "")
+
+        if logout_method and not logout_uri:
+            raise ValidationError(
+                {"logout_method": _("Logout method cannot be set without a logout URI")}
+            )
+
+        if logout_uri and not logout_method:
+            attrs["logout_method"] = OAuth2LogoutMethod.BACKCHANNEL
+
+        return super().validate(attrs)
+
     class Meta:
         model = OAuth2Provider
         fields = ProviderSerializer.Meta.fields + [
@@ -66,11 +82,13 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",
+            "refresh_token_threshold",
             "include_claims_in_id_token",
             "signing_key",
             "encryption_key",
             "redirect_uris",
-            "backchannel_logout_uri",
+            "logout_uri",
+            "logout_method",
             "sub_mode",
             "property_mappings",
             "issuer_mode",

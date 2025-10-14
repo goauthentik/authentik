@@ -139,6 +139,16 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     renderSectionBefore(): TemplateResult {
+        const {
+            externalUsers = 0,
+            internalUsers = 0,
+            forecastedExternalUsers = 0,
+            forecastedInternalUsers = 0,
+        } = this.forecast || {};
+
+        const totalInternalUserEstimate = internalUsers + forecastedInternalUsers;
+        const totalExternalUserEstimate = externalUsers + forecastedExternalUsers;
+
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -146,38 +156,40 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
                     ${this.renderGetLicenseCard()}
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast internal users")}
+                        label=${msg("Forecast internal users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.internalUsers} current internal users and ${this.forecast?.forecastedInternalUsers} forecasted internal users.`,
+                            str`Estimated user count one year from now based on ${internalUsers} current internal users and ${forecastedInternalUsers} forecasted internal users.`,
                         )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalInternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
                     >
-                        ~&nbsp;${(this.forecast?.internalUsers || 0) +
-                        (this.forecast?.forecastedInternalUsers || 0)}
-                    </ak-aggregate-card>
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast external users")}
+                        label=${msg("Forecast external users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.externalUsers} current external users and ${this.forecast?.forecastedExternalUsers} forecasted external users.`,
+                            str`Estimated user count one year from now based on ${externalUsers} current external users and ${forecastedExternalUsers} forecasted external users.`,
                         )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalExternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
                     >
-                        ~&nbsp;${(this.forecast?.externalUsers || 0) +
-                        (this.forecast?.forecastedExternalUsers || 0)}
-                    </ak-aggregate-card>
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Expiry")}
+                        label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
-                    >
-                        ${this.summary &&
+                        >${this.summary &&
                         this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
                             ? Timestamp(this.summary.latestValid)
-                            : "-"}
-                    </ak-aggregate-card>
+                            : html`<span aria-label=${msg("No expiry")}
+                                  >-</span
+                              >`}</ak-aggregate-card
+                    >
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
@@ -207,7 +219,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
@@ -222,7 +235,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
-                </ak-rbac-object-permission-modal> `,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

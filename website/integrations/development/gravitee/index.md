@@ -19,7 +19,7 @@ The following placeholders are used in this guide:
 - `gravitee.company` is the FQDN of the Gravitee installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -46,7 +46,7 @@ To support the integration of Gravitee with authentik, you need to create an app
 
 In the Gravitee Management Console, navigate to _Organizations_ (gravitee.company/console/#!/organization/settings/identities) , under **Console** > **Authentication**. Click _Add an identity provider_, select _OpenID Connect_, and fill in the following:
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 :::
 

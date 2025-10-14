@@ -97,6 +97,13 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class OAuth2LogoutMethod(models.TextChoices):
+    """OAuth2/OIDC Logout methods"""
+
+    BACKCHANNEL = "backchannel", _("Back-channel")
+    FRONTCHANNEL = "frontchannel", _("Front-channel")
+
+
 @dataclass
 class RedirectURI:
     """A single redirect URI entry"""
@@ -199,10 +206,19 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=list,
         verbose_name=_("Redirect URIs"),
     )
-    backchannel_logout_uri = models.TextField(
+    logout_uri = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
-        verbose_name=_("Back-Channel Logout URI"),
+        verbose_name=_("Logout URI"),
         blank=True,
+    )
+    logout_method = models.TextField(
+        choices=OAuth2LogoutMethod.choices,
+        default=OAuth2LogoutMethod.BACKCHANNEL,
+        verbose_name=_("Logout Method"),
+        help_text=_(
+            "Backchannel logs out with server to server calls. "
+            "Frontchannel uses iframes in your browser"
+        ),
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -235,6 +251,16 @@ class OAuth2Provider(WebfingerProvider, Provider):
         validators=[timedelta_string_validator],
         help_text=_(
             "Tokens not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_threshold = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "When refreshing a token, if the refresh token is valid for less than "
+            "this duration, it will be renewed. "
+            "When set to seconds=0, token will always be renewed. "
             "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )

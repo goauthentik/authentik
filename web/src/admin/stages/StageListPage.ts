@@ -123,7 +123,8 @@ export class StageListPage extends TablePage<Stage> {
                     </li>`;
                 })}
             </ul>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
@@ -142,7 +143,8 @@ export class StageListPage extends TablePage<Stage> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
-                ${this.renderStageActions(item)}`,
+                ${this.renderStageActions(item)}
+            </div>`,
         ];
     }
 

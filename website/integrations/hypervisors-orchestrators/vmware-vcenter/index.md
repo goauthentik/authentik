@@ -19,7 +19,7 @@ The following placeholders will be used in the examples below:
 - `vcenter.company` is the FQDN of the vCenter server.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

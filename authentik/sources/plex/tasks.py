@@ -1,7 +1,6 @@
 """Plex tasks"""
 
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
 
@@ -9,13 +8,13 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 
 @actor(description=_("Check the validity of a Plex source."))
 def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     sources = PlexSource.objects.filter(pk=source_pk)
     if not sources.exists():
         return
@@ -28,10 +27,8 @@ def check_plex_token(source_pk: str):
         error = exception_to_string(exc)
         if len(source.plex_token) > 0:
             error = error.replace(source.plex_token, "$PLEX_TOKEN")
-        self.error(
-            "Plex token is invalid/an error occurred:",
-            error,
-        )
+        self.error("Plex token is invalid/an error occurred")
+        self.error(error)
         Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=f"Plex token invalid, please re-authenticate source.\n{error}",

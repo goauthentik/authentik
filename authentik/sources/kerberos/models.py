@@ -188,7 +188,7 @@ class KerberosSource(ScheduledModel, Source):
 
     @property
     def sync_lock(self) -> pglock.advisory:
-        """Redis lock for syncing Kerberos to prevent multiple parallel syncs happening"""
+        """Lock for syncing Kerberos to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/kerberos/sync/{self.slug}",
             timeout=0,

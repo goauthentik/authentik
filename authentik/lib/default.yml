@@ -47,16 +47,6 @@ listen:
     - fe80::/10
     - ::1/128
 
-redis:
-  host: localhost
-  port: 6379
-  db: 0
-  username: ""
-  password: ""
-  tls: false
-  tls_reqs: "none"
-  tls_ca_cert: null
-
 http_timeout: 30
 
 cache:
@@ -152,7 +142,7 @@ worker:
   processes: 1
   threads: 2
   consumer_listen_timeout: "seconds=30"
-  task_max_retries: 20
+  task_max_retries: 5
   task_default_time_limit: "minutes=10"
   lock_purge_interval: "minutes=1"
   task_purge_interval: "days=1"

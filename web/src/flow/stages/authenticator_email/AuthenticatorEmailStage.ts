@@ -73,11 +73,12 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.email })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }
@@ -109,17 +110,18 @@ export class AuthenticatorEmailStage extends BaseStage<
                         placeholder="${msg("Please enter the code you received via email")}"
                         autofocus=""
                         autocomplete="one-time-code"
-                        class="pf-c-form-control"
+                        class="pf-c-form-control pf-m-monospace"
                         required
                     />
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }
