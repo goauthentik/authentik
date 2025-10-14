@@ -10088,9 +10088,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
 </trans-unit>
-<trans-unit id="s9447a684b989a474">
-  <source>The user's display name. 150 characters or fewer.</source>
-</trans-unit>
 <trans-unit id="s755bfddac3729eaa">
   <source>Managed by authentik and cannot be assigned manually.</source>
 </trans-unit>
@@ -10454,9 +10451,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
 </trans-unit>
-<trans-unit id="se45c122d3b2aa43d">
-  <source>Open Remote Access Control launcher for "<x id="0" equiv-text="${this.application.name}"/>"</source>
-</trans-unit>
 <trans-unit id="s1ff2128af96d843f">
   <source>Available applications</source>
 </trans-unit>
@@ -10543,6 +10537,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+</trans-unit>
+<trans-unit id="sc82cf82ad6cb26cc">
+  <source>The user's display name.</source>
+</trans-unit>
+<trans-unit id="s33b2f30214a2e99d">
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sfa660d9e563c346f">
+  <source>Edit application...</source>
+</trans-unit>
+<trans-unit id="ellipsis">
+  <source>...</source>
+  <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
     </body>
   </file>
