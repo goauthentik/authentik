@@ -5,7 +5,8 @@
 /* #region Global */
 
 :root {
-    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
+    /* TODO: We've seemed to have drifted from PF's dark-100 usage. Revisit this after PF 5. */
+    --pf-global--BackgroundColor--100: #18191a !important;
     --pf-global--BackgroundColor--150: var(--pf-global--BackgroundColor--dark-100) !important;
     --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;
     --pf-global--BackgroundColor--300: var(--pf-global--BackgroundColor--dark-300) !important;

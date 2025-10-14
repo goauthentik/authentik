@@ -26,6 +26,16 @@
     --ak-scrollbar-thumb-background-color: hsl(0 0% 76%);
 }
 
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
+}
+
 /* Applicable to browsers with a WebKit lineage (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
     background: var(--ak-scrollbar-background-color);
@@ -286,41 +296,146 @@ ak-tabs[vertical] {
 
 /* #region Login adjustments */
 
-/* Ensure card is displayed on small screens */
 .pf-c-login__main {
     display: block;
     position: relative;
     width: 100%;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     place-content: center;
-}
-
-@media (max-width: 1199px) {
-    .pf-c-login__container {
-        display: flex;
-        flex-direction: column;
-    }
+    max-width: var(--ak--login-max-width);
+    justify-self: center;
 }
 
 .ak-login-container {
-    max-width: 35rem;
-    width: 100%;
+    --ak--login-max-width: 35rem;
+
+    --ak-login--padding-max: 8%;
+    --ak-login--padding: clamp(
+        var(--pf-global--spacer--md),
+        var(--pf-global--spacer--2xl),
+        var(--ak-login--padding-max)
+    );
+    --ak-login--margin-block: clamp(0.1rem, 2rem, calc(100vw - var(--ak--login-max-width)));
+
     display: flex;
-    flex-direction: column;
+    flex-flow: column wrap;
+    place-content: center;
+
+    width: 100%;
+    flex: 1 1 auto;
+    margin-block-start: var(--ak-login--margin-block);
+}
+
+/* #region Layouts */
+
+.pf-c-login {
+    flex: 1 1 auto;
+    flex-flow: column;
+    place-items: center;
+
+    padding-block-start: 0;
+
+    display: flex;
+
+    &[data-layout="content_left"],
+    &[data-layout="content_right"] {
+        .ak-login-container {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            gap: var(--pf-global--spacer--xl);
+            place-items: center;
+            max-width: 75rem;
+
+            .pf-c-login__main {
+                flex: 1 1 auto;
+            }
+
+            .pf-c-login__footer {
+                flex: 1 1 auto;
+                align-self: center;
+            }
+        }
+    }
+
+    &[data-layout="content_right"] .ak-login-container {
+        flex-direction: row-reverse;
+    }
+
+    &[data-layout="sidebar_left"] {
+        place-items: start;
+    }
+
+    &[data-layout="sidebar_right"] {
+        place-items: end;
+    }
+
+    &[data-layout="sidebar_left"],
+    &[data-layout="sidebar_right"] {
+        padding: 0;
+
+        .ak-login-container {
+            --ak-login--padding-max: var(--pf-global--spacer--lg);
+            background-color: var(--pf-c-login__main--BackgroundColor);
+            max-width: var(--ak--login-max-width);
+            margin: 0;
+            height: 100dvh;
+            padding-block-end: var(--pf-global--spacer--xs);
+            flex-wrap: nowrap;
+        }
+    }
+}
+
+@media (min-height: 60rem) {
+    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
+        margin-top: 13rem;
+    }
+}
+
+.pf-c-login__main-body {
+    padding-inline: var(--ak-login--padding);
+    padding-block-end: var(--ak-login--padding);
+}
+
+.pf-c-login__main-header {
+    padding-inline: var(--ak-login--padding);
+    padding-block: clamp(var(--pf-global--spacer--xs), 6dvw, var(--pf-global--spacer--lg));
+
+    .pf-c-title {
+        font-size: clamp(1rem, var(--pf-c-title--m-3xl--FontSize), 7dvw);
+    }
+}
+
+.pf-c-login__main-header.pf-c-brand {
+    padding-inline: calc(var(--ak-login--padding) / 4);
+    padding-block-start: clamp(var(--pf-global--spacer--xs), 7dvw, var(--pf-global--spacer--3xl));
+
+    display: flex;
+    justify-content: center;
+
+    [part="branding-logo"] {
+        display: block;
+        width: 75%;
+        min-height: 4rem;
+    }
+}
+
+padding-block-start: clamp(1rem, 3dvh, var(--pf-global--spacer--xl));
+
+.pf-c-login__main-body:last-child {
+    padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
+}
+
+.pf-c-data-list {
+    padding-inline-start: 0;
 }
 
 .pf-c-login__footer {
-    color: var(--ak-flow-footer-color);
+    color: var(--pf-global--Color--200);
     flex: 0 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
-}
-
-@media (max-width: 768px) {
-    :root {
-        --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
-    }
 }
 
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
@@ -501,42 +616,6 @@ fieldset {
         color: var(--pf-global--link--Color--hover);
         text-decoration: underline;
     }
-}
-
-/* Flow-card adjustments for static pages */
-.pf-c-brand {
-    padding-top: calc(
-        var(--pf-c-login__main-footer-links--PaddingTop) +
-            var(--pf-c-login__main-footer-links--PaddingBottom) +
-            var(--pf-c-login__main-body--PaddingBottom)
-    );
-    max-height: 9rem;
-}
-
-.ak-brand {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.ak-brand img {
-    padding: 0 2rem;
-    max-height: inherit;
-}
-
-@media (min-height: 60rem) {
-    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
-        margin-top: 13rem;
-    }
-}
-
-.pf-c-login[data-layout="sidebar_left"],
-.pf-c-login[data-layout="sidebar_right"] {
-    --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
-}
-
-.pf-c-data-list {
-    padding-inline-start: 0;
 }
 
 /* #region Code blocks */

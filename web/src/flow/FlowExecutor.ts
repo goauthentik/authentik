@@ -50,15 +50,6 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const FlowLayoutClasses = {
-    [FlowLayoutEnum.ContentLeft]: "pf-c-login__container",
-    [FlowLayoutEnum.ContentRight]: "pf-c-login__container content-right",
-    [FlowLayoutEnum.SidebarLeft]: "ak-login-container",
-    [FlowLayoutEnum.SidebarRight]: "ak-login-container",
-    [FlowLayoutEnum.Stacked]: "ak-login-container",
-    [FlowLayoutEnum.UnknownDefaultOpenApi]: "ak-login-container",
-} as const satisfies Record<FlowLayoutEnum, string>;
-
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
@@ -310,7 +301,6 @@ export class FlowExecutor
     //#region Render
 
     get layout(): FlowLayoutEnum {
-        if (Date.now()) return FlowLayoutEnum.Stacked; // Temporary lock to stacked layout
         return (
             this.challenge?.flowInfo?.layout || globalAK()?.flow?.layout || FlowLayoutEnum.Stacked
         );
@@ -522,7 +512,7 @@ export class FlowExecutor
                         <div class="pf-c-drawer__content" part="drawer-content">
                             <div class="pf-c-drawer__body" part="drawer-body">
                                 <div class="pf-c-login" data-layout=${layout} part="flow">
-                                    <div class=${FlowLayoutClasses[layout]} part="flow-container">
+                                    <div class="ak-login-container" part="flow-container">
                                         <main
                                             class="pf-c-login__main"
                                             aria-label=${msg("Authentication form")}
@@ -532,9 +522,11 @@ export class FlowExecutor
                                                 ? html`<ak-loading-overlay></ak-loading-overlay>`
                                                 : nothing}
                                             <div
-                                                class="pf-c-login__main-header pf-c-brand ak-brand"
+                                                class="pf-c-login__main-header pf-c-brand"
+                                                part="branding"
                                             >
                                                 <img
+                                                    part="branding-logo"
                                                     src="${themeImage(this.brandingLogo)}"
                                                     alt="${msg("authentik Logo")}"
                                                     role="presentation"
@@ -546,7 +538,10 @@ export class FlowExecutor
                                             part="brand-links"
                                             role="contentinfo"
                                             aria-label=${msg("Site footer")}
-                                            class="pf-c-login__footer"
+                                            class="pf-c-login__footer ${layout !==
+                                            FlowLayoutEnum.Stacked
+                                                ? "pf-m-dark"
+                                                : ""}"
                                             .links=${this.brandingFooterLinks}
                                         ></ak-brand-links>
                                     </div>

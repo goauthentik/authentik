@@ -16,8 +16,7 @@
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 
-    --ak-flow-background-color-contrast: var(--pf-global--Color--100);
-    --ak-flow-footer-color: var(--pf-global--Color--light-100);
+    --ak-global--background-contrast: var(--pf-global--Color--100);
 
     /* PatternFly likes to override global variables for some reason */
     --ak-global--Color--100: var(--pf-global--Color--100);
@@ -54,14 +53,17 @@ body {
         content: "";
         position: fixed;
         inset: 0;
+        pointer-events: none;
 
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: local;
-        background-image: var(--ak-global--background-image, none);
+        background-image: none;
 
-        pointer-events: none;
+        @media (min-width: 35rem) {
+            background-image: var(--ak-global--background-image, none);
+        }
     }
 }
 
