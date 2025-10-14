@@ -33,20 +33,15 @@ The following stages are supported:
 - [Deny](../../flows-stages/stages/deny.md)
 - [Mutual TLS stage](../../flows-stages/stages/mtls/index.md)
 
-### EAP
+### EAP :ak-enterprise :ak-version[2025.10]
 
-<div className="badge-group">
-
-:ak-version[2025.10]
-:ak-enterprise
-
-</div>
-
-authentik supports EAP with TLS as the inner protocol. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
+authentik supports EAP with TLS as the inner protocol, between the application and transport layers to encrypt and secure communications. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
 
 #### EAP-TLS
 
-Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your certificate authority. Afterwards a certificate needs to be generated for the RADIUS outpost, which can be configured in the RADIUS provider. Once the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your certificate authority. Afterwards a certificate needs to be generated for the RADIUS outpost, which can be configured in the RADIUS provider. After the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+
+For certificates, we recommend using Public Key Infrastructure (PKI) to enable the EAP-TLS method. The PKI issues digital certificates to authenticate both the user and the server.
 
 ### RADIUS attributes
 

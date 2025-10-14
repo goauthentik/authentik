@@ -115,3 +115,7 @@ When using authentik without a reverse proxy, select the certificate authorities
         - **User attribute**: Select the attribute of the user the certificate should be compared against.
 
 4. Click **Finish**.
+
+:::info Use PKI for certificates
+For certificates, we recommend using Public Key Infrastructure (PKI) with the mTLS stage. The PKI issues digital certificates to authenticate both the user and the server.
+:::
