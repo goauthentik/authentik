@@ -18,22 +18,13 @@
 
         <link rel="prefetch" href="/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg" />
         <style>
-            .pf-c-background-image::before {
-                --ak-flow-background: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
-            }
             :root {
-                --ak-flow-background: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
-                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+                --ak-global--background-color: var(--pf-global--BackgroundColor--150);
+                --ak-global--background-image: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
             }
         </style>
     </head>
     <body>
-        <div class="pf-c-background-image">
-        </div>
         <div class="pf-c-login" data-layout="stacked">
             <div class="ak-login-container">
                 <main class="pf-c-login__main">

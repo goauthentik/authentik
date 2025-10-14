@@ -9,6 +9,8 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
+import Styles from "./FlowExecutor.css";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
@@ -35,7 +37,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -72,99 +74,7 @@ export class FlowExecutor
         PFTitle,
         PFList,
         PFBackgroundImage,
-        css`
-            :host {
-                --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
-            }
-            .pf-c-background-image::before {
-                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
-
-                @media (max-width: 768px) {
-                    background: var(--pf-c-login__main--BackgroundColor) !important;
-                }
-            }
-
-            .ak-hidden {
-                display: none;
-            }
-            :host {
-                position: relative;
-            }
-            .pf-c-drawer__content {
-                background-color: transparent;
-            }
-            .pf-c-login {
-                align-items: baseline;
-            }
-            /* layouts */
-            @media (min-height: 60rem) {
-                .pf-c-login[data-layout="stacked"] .pf-c-login__main {
-                    margin-top: 13rem;
-                }
-            }
-            .pf-c-login__container.content-right {
-                grid-template-areas:
-                    "header main"
-                    "footer main"
-                    ". main";
-            }
-            .pf-c-login[data-layout="sidebar_left"] {
-                justify-content: flex-start;
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-            .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
-            .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
-                height: 100%;
-                min-height: 100dvh;
-                background-color: var(--pf-c-login__main--BackgroundColor);
-                padding-inline: var(--pf-global--spacer--lg);
-                padding-block-end: var(--pf-global--spacer--xs);
-            }
-            .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
-            .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
-                color: #000;
-            }
-            .pf-c-login[data-layout="sidebar_right"] {
-                justify-content: flex-end;
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
-                background-color: var(--ak-dark-background);
-            }
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
-                color: var(--ak-dark-foreground);
-            }
-            .pf-c-brand {
-                padding-top: calc(
-                    var(--pf-c-login__main-footer-links--PaddingTop) +
-                        var(--pf-c-login__main-footer-links--PaddingBottom) +
-                        var(--pf-c-login__main-body--PaddingBottom)
-                );
-                max-height: 9rem;
-            }
-            .ak-brand {
-                display: flex;
-                justify-content: center;
-            }
-            .ak-brand img {
-                padding: 0 2rem;
-                max-height: inherit;
-            }
-            .inspector-toggle {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                z-index: 100;
-            }
-        `,
+        Styles,
     ];
 
     //#endregion
@@ -298,7 +208,7 @@ export class FlowExecutor
     // DOM post-processing has to happen after the render.
     public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowInfo") && this.flowInfo) {
-            this.#setShadowStyles(this.flowInfo);
+            this.#synchronizeBackgroundStyles(this.flowInfo);
         }
     }
 
@@ -358,19 +268,49 @@ export class FlowExecutor
             });
     };
 
-    #setShadowStyles(value: ContextualFlowInfo) {
-        if (!value) return;
+    /**
+     * Synchronize background styles with flow information.
+     *
+     * This method is very defensive to avoid unnecessary DOM repaints.
+     */
+    #synchronizeBackgroundStyles(value?: ContextualFlowInfo) {
+        const fallbackOrigin = window.location.origin;
 
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
-            });
+        if (!value?.background || !URL.canParse(value.background, fallbackOrigin)) {
+            return;
+        }
+
+        const nextBackgroundURL = new URL(value.background, fallbackOrigin);
+
+        const currentBackgroundImage = getComputedStyle(document.body, "::before").backgroundImage;
+        let currentBackgroundImageURL: URL | null = null;
+
+        if (currentBackgroundImage && currentBackgroundImage !== "none") {
+            // Extract URL from background-image property
+            const [, urlMatch] = currentBackgroundImage.match(/url\(["']?([^"']*)["']?\)/) || [];
+
+            if (URL.canParse(urlMatch)) {
+                currentBackgroundImageURL = new URL(urlMatch, fallbackOrigin);
+            }
+        }
+
+        if (
+            currentBackgroundImageURL &&
+            currentBackgroundImageURL.href === nextBackgroundURL.href
+        ) {
+            return;
+        }
+
+        document.body.style.setProperty(
+            "--ak-global--background-image",
+            `url("${nextBackgroundURL.href}")`,
+        );
     }
 
     //#region Render
 
     get layout(): FlowLayoutEnum {
+        if (Date.now()) return FlowLayoutEnum.Stacked; // Temporary lock to stacked layout
         return (
             this.challenge?.flowInfo?.layout || globalAK()?.flow?.layout || FlowLayoutEnum.Stacked
         );
@@ -573,7 +513,6 @@ export class FlowExecutor
         const { layout } = this;
 
         return html`<ak-locale-context>
-            <div class="pf-c-background-image" part="background-image"></div>
             <div class="pf-c-page__drawer" part="page-drawer">
                 <div
                     class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}"

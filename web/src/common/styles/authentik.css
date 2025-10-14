@@ -343,12 +343,6 @@ ak-tabs[vertical] {
     margin-right: var(--pf-global--spacer--sm);
 }
 
-/* ensure background on non-flow pages match */
-.pf-c-background-image::before {
-    background-image: var(--ak-flow-background);
-    background-position: center;
-}
-
 .pf-m-success {
     color: var(--pf-global--success-color--100) !important;
 }
