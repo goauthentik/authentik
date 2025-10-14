@@ -68,9 +68,16 @@ export class FlowImportForm extends Form<Flow> {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
-                    )}
+                    ${msg(".yaml files, which can be found on")}
+                    <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/examples/flows/"
+                        )}
+                    >
+                        ${msg("Example flows section")}
+                    </a>
+                    ${msg(" in the official documentation, can be exported by authentik.")}
                 </p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : nothing}`;
