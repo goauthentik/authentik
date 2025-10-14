@@ -101,7 +101,7 @@
         "@goauthentik/eslint-config": "^1.0.5",
         "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
-        "@hcaptcha/types": "^1.0.4",
+        "@hcaptcha/types": "^1.1.0",
         "@lit/context": "^1.1.6",
         "@lit/localize": "^0.12.2",
         "@lit/localize-tools": "^0.8.0",
