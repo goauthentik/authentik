@@ -9,7 +9,7 @@ require (
 	beryju.io/radius-eap v0.1.0
 	github.com/avast/retry-go/v4 v4.6.1
 	github.com/coreos/go-oidc/v3 v3.16.0
-	github.com/getsentry/sentry-go v0.35.3
+	github.com/getsentry/sentry-go v0.36.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.12
 	github.com/go-openapi/runtime v0.29.0
