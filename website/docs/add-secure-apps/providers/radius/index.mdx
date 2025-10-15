@@ -41,9 +41,9 @@ authentik supports EAP with TLS as the inner protocol, between the application a
 
 #### EAP-TLS
 
-Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your certificate authority. Afterwards a certificate needs to be generated for the RADIUS outpost, which can be configured in the RADIUS provider. After the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your CA's certificate. Afterwards a server certificate needs to be selected in the RADIUS provider (which serves as an outpost). Then, configure your RADIUS provider to use this authentication flow to enable EAP-TLS authentication. After the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
 
-For certificates, we recommend using Public Key Infrastructure (PKI) to enable the EAP-TLS method. The PKI issues digital certificates to authenticate both the user and the server.
+For certificates, ensure that you use a client certificate and a server certificate that are created by a certificate authority, not a self-generated certificate.
 
 ### RADIUS attributes
 
