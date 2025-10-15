@@ -82,7 +82,7 @@ With the `hidden` prompt, the initial value will also be the actual value, becau
 By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
 will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/expression.mdx).
 
-In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice. When a choice is defined as an object `{"label": "Option", "value": "internal-value"}` the initial value needs to be set to the value string `internal-value` in this case.
+In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice. When a choice is defined as an object `{"label": "Option", "value": "internal-value"}`, the initial value needs to be set to the value string `internal-value` in this case.
 
 :::info
 The default choice defined for any fixed choice field **must** be one of the valid choices specified in the prompt's placeholder.
