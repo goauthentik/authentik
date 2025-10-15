@@ -64,14 +64,29 @@ export class MFADevicesPage extends Table<Device> {
             return stage.configureUrl;
         });
         return html`<ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                <button
+                    class="pf-m-primary pf-c-dropdown__toggle"
+                    type="button"
+                    id="add-mfa-toggle"
+                    aria-haspopup="menu"
+                    aria-controls="add-mfa-menu"
+                    tabindex="0"
+                >
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul class="pf-c-dropdown__menu" hidden>
+                <ul
+                    class="pf-c-dropdown__menu"
+                    hidden
+                    role="menu"
+                    id="add-mfa-menu"
+                    aria-labelledby="add-mfa-toggle"
+                    tabindex="-1"
+                >
                     ${settings.map((stage) => {
-                        return html`<li>
+                        return html`<li role="presentation">
                             <a
+                                role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
                                     `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",

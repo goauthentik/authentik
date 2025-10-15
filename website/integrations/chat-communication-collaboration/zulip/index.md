@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `zulip.company` is the FQDN of the Zulip instance.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -75,7 +75,7 @@ SOCIAL_AUTH_SAML_ENABLED_IDPS: Dict[str, Any] = {
 Place the certificate you associated with the SAML provider in authentik inside the `/etc/zulip/saml/idps` directory.
 The certificate file name must match the idp identifier name you set in the configuration (i.e. authentik.crt).
 
-:::note
+:::info
 Remember to restart Zulip.
 :::
 

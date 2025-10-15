@@ -177,36 +177,11 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 - `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 - `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 
-## Redis Settings
-
-- `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
-- `AUTHENTIK_REDIS__PORT`: Redis server port when not using configuration URL
-- `AUTHENTIK_REDIS__DB`: Redis server database when not using configuration URL
-- `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
-- `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
-- `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
-- `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL. Defaults to `"none"`. Allowed values are `"none"` and `"required"`.
-- `AUTHENTIK_REDIS__TLS_CA_CERT`: Path to the Redis server TLS CA root when not using configuration URL. Defaults to `null`.
-
-## Result Backend Settings
-
-- `AUTHENTIK_RESULT_BACKEND__URL`: Result backend configuration URL, uses [the Redis Settings](#redis-settings) by default
-
 ## Cache Settings
 
-- `AUTHENTIK_CACHE__URL`: Cache configuration URL, uses [the Redis Settings](#redis-settings) by default
 - `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 - `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
 - `AUTHENTIK_CACHE__TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
-- `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
-
-    :::info
-    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
-    :::
-
-## Channel Layer Settings (inter-instance communication)
-
-- `AUTHENTIK_CHANNEL__URL`: Channel layers configuration URL, uses [the Redis Settings](#redis-settings) by default
 
 ## Worker settings
 
@@ -232,7 +207,7 @@ Defaults to `seconds=30`.
 
 Configure how many times a failing task will be retried before abandoning.
 
-Defaults to 20.
+Defaults to 5.
 
 ##### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
 
@@ -496,7 +471,7 @@ Defaults to `null`.
 
 ### `AUTHENTIK_REPUTATION__EXPIRY`
 
-Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
+Configure how long reputation scores should be saved for in seconds.
 
 Defaults to `86400`.
 

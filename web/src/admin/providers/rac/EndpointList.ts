@@ -86,7 +86,8 @@ export class EndpointListPage extends Table<Endpoint> {
         return [
             html`${item.name}`,
             html`${item.host}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Endpoint")}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
@@ -101,24 +102,20 @@ export class EndpointListPage extends Table<Endpoint> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
     renderExpanded(item: Endpoint): TemplateResult {
-        return html` <td></td>
-            <td colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>
+                ${msg(
+                    "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
+                )}
+            </p>
+            <ak-bound-policies-list .target=${item.pk}></ak-bound-policies-list>
+        </div>`;
     }
 
     renderObjectCreate(): TemplateResult {

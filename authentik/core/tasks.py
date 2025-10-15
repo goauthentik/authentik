@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django_channels_postgres.models import GroupChannel, Message
+from django_postgres_cache.tasks import clear_expired_cache
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
@@ -25,13 +27,18 @@ def clean_expired_models():
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
+            cls.objects.all()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
         for obj in chunked_queryset(objects):
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    clear_expired_cache()
+    Message.delete_expired()
+    GroupChannel.delete_expired()
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))
@@ -39,7 +46,9 @@ def clean_temporary_users():
     self = CurrentTask.get_task()
     _now = datetime.now()
     deleted_users = 0
-    for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
+    for user in User.objects.filter(
+        **{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}
+    ):
         if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
             continue
         delta: timedelta = _now - datetime.fromtimestamp(

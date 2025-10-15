@@ -4,7 +4,7 @@ sidebar_label: Sonarr
 support_level: community
 ---
 
-:::note
+:::info
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `sonarr.company` is the FQDN of the Sonarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

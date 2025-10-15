@@ -71,6 +71,3 @@ def update_latest_version() -> None:
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         raise exc
-
-
-_set_prom_info()

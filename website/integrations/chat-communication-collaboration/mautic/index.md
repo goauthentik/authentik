@@ -81,7 +81,7 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
 
 ## Mautic configuration
 
-:::note
+:::info
 
 When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Configuration > System Settings**, make sure that:
 

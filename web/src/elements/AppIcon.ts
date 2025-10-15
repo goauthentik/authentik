@@ -34,6 +34,9 @@ export class AppIcon extends AKElement implements IAppIcon {
         css`
             :host {
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+
+                display: flex;
+                place-content: center;
             }
             :host([size="pf-m-lg"]) {
                 --icon-height: 4rem;
@@ -61,13 +64,21 @@ export class AppIcon extends AKElement implements IAppIcon {
                 );
             }
             .icon {
-                font-size: var(--icon-height);
+                --app-icon-shadow-blend-color: color-mix(
+                    in srgb,
+                    var(--app-icon--shadow-background-color, var(--pf-global--BackgroundColor--150))
+                        100%,
+                    black 100%
+                );
+
+                font-size: var(--icon-font-size, var(--icon-height));
                 color: var(--ak-global--Color--100);
                 padding: var(--icon-border);
                 max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                 line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                filter: drop-shadow(5px 5px 5px rgba(128, 128, 128, 0.25));
+                filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));
             }
+
             div {
                 height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
             }
@@ -77,14 +88,14 @@ export class AppIcon extends AKElement implements IAppIcon {
     render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
-            .with([undefined, undefined],
-                () => html`<div><i class="icon fas fa-question-circle" aria-hidden="true"></i></div>`)
+            .with([P.nullish, P.nullish],
+                () => html`<div><i part="icon" aria-hidden="true" class="icon fas fa-question-circle"></i></div>`)
             .with([P._, P.string.startsWith("fa://")],
-                ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
+                ([_name, icon]) => html`<div><i part="icon" aria-hidden="true" class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
             .with([P._, P.string],
-                ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
-            .with([P.string, undefined],
-                ([name]) => html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`)
+                ([_name, icon]) => html`<img part="icon" aria-hidden="true" class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
+            .with([P.string, P.nullish],
+                ([name]) => html`<span part="icon" aria-hidden="true" class="icon">${name.charAt(0).toUpperCase()}</span>`)
             .exhaustive();
     }
 }

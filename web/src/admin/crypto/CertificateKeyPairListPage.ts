@@ -112,7 +112,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             >
             </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
@@ -127,78 +128,67 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCryptoCertificatekeypair}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
     renderExpanded(item: CertificateKeyPair): TemplateResult {
-        return html`<td colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Certificate Fingerprint (SHA1)")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.fingerprintSha1}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Certificate Fingerprint (SHA256)")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.fingerprintSha256}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Certificate Subject")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">${item.certSubject}</div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Download")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <a
-                                        class="pf-c-button pf-m-secondary"
-                                        target="_blank"
-                                        href=${item.certificateDownloadUrl}
-                                    >
-                                        ${msg("Download Certificate")}
-                                    </a>
-                                    ${item.privateKeyAvailable
-                                        ? html`<a
-                                              class="pf-c-button pf-m-secondary"
-                                              target="_blank"
-                                              href=${item.privateKeyDownloadUrl}
-                                          >
-                                              ${msg("Download Private key")}
-                                          </a>`
-                                        : nothing}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("Certificate Fingerprint (SHA1)")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.fingerprintSha1}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("Certificate Fingerprint (SHA256)")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.fingerprintSha256}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Certificate Subject")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.certSubject}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Download")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <a
+                            class="pf-c-button pf-m-secondary"
+                            target="_blank"
+                            href=${item.certificateDownloadUrl}
+                        >
+                            ${msg("Download Certificate")}
+                        </a>
+                        ${item.privateKeyAvailable
+                            ? html`<a
+                                  class="pf-c-button pf-m-secondary"
+                                  target="_blank"
+                                  href=${item.privateKeyDownloadUrl}
+                              >
+                                  ${msg("Download Private key")}
+                              </a>`
+                            : nothing}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderObjectCreate(): TemplateResult {

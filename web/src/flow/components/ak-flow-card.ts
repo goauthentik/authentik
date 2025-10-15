@@ -22,6 +22,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-flow-card")
 export class FlowCard extends AKElement {
+    role = "presentation";
+
     @property({ type: Object })
     challenge?: ChallengeTypes;
 
@@ -43,6 +45,12 @@ export class FlowCard extends AKElement {
                 padding: 0;
                 margin-top: 1em;
             }
+
+            .pf-c-login__main-body {
+                --pf-c-login__main-body--md--PaddingLeft: var(--pf-global--spacer--md);
+                --pf-c-login__main-body--md--PaddingRight: var(--pf-global--spacer--md);
+            }
+
             .pf-c-login__main-body:last-child {
                 padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
             }
@@ -61,9 +69,7 @@ export class FlowCard extends AKElement {
         } else if (this.challenge?.flowInfo?.title) {
             title = html`<h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo.title}</h1>`;
         }
-        return html`${title
-                ? html`<header class="pf-c-login__main-header">${title}</header>`
-                : nothing}
+        return html`${title ? html`<div class="pf-c-login__main-header">${title}</div>` : nothing}
             <div class="pf-c-login__main-body">${inner}</div>
             ${this.hasSlotted("footer") || this.hasSlotted("footer-band")
                 ? html`<footer class="pf-c-login__main-footer">
