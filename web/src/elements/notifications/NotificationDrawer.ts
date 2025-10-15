@@ -4,7 +4,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "#common/constants";
 import { globalAK } from "#common/global";
-import { actionToLabel } from "#common/labels";
+import { actionToLabel, severityToLevel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
@@ -12,11 +12,12 @@ import { me } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { EventsApi, Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -77,29 +78,16 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
-    renderItem(item: Notification): TemplateResult {
-        let level = "";
-        switch (item.severity) {
-            case "notice":
-                level = "pf-m-info";
-                break;
-            case "warning":
-                level = "pf-m-warning";
-                break;
-            case "alert":
-                level = "pf-m-danger";
-                break;
-            default:
-                break;
-        }
+    #renderItem = (item: Notification): TemplateResult => {
+        const label = actionToLabel(item.event?.action);
+        const level = severityToLevel(item.severity);
+
         return html`<li class="pf-c-notification-drawer__list-item">
             <div class="pf-c-notification-drawer__list-item-header">
                 <span class="pf-c-notification-drawer__list-item-header-icon ${level}">
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </span>
-                <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${actionToLabel(item.event?.action)}
-                </h2>
+                <h2 class="pf-c-notification-drawer__list-item-header-title">${label}</h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
                 ${item.event &&
@@ -107,9 +95,10 @@ export class NotificationDrawer extends AKElement {
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
                         href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
+                        aria-label=${msg(str`View details for ${label}`)}
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
-                            <i class="fas fa-share-square"></i>
+                            <i class="fas fa-share-square" aria-hidden="true"></i>
                         </pf-tooltip>
                     </a>
                 `}
@@ -134,8 +123,9 @@ export class NotificationDrawer extends AKElement {
                                 );
                             });
                     }}
+                    aria-label=${msg("Mark as read")}
                 >
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
@@ -145,7 +135,7 @@ export class NotificationDrawer extends AKElement {
                 </pf-tooltip></small
             >
         </li>`;
-    }
+    };
 
     clearNotifications() {
         new EventsApi(DEFAULT_CONFIG).eventsNotificationsMarkAllSeenCreate().then(() => {
@@ -176,18 +166,26 @@ export class NotificationDrawer extends AKElement {
         </ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.notifications) {
-            return html``;
+            return nothing;
         }
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
+
+        const { results } = this.notifications;
+
+        return html`<div
+            class="pf-c-drawer__body pf-m-no-padding"
+            aria-label=${msg("Notification drawer")}
+            role="region"
+            tabindex="0"
+        >
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("Notifications")}
                         </h1>
-                        <span> ${msg(str`${this.unread} unread`)} </span>
+                        <span> ${msg(str`${this.unread} unread`)}</span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div>
@@ -222,11 +220,11 @@ export class NotificationDrawer extends AKElement {
                     </div>
                 </div>
                 <div class="pf-c-notification-drawer__body">
-                    <ul class="pf-c-notification-drawer__list">
-                        ${this.notifications.pagination.count < 1
-                            ? this.renderEmpty()
-                            : this.notifications.results.map((n) => this.renderItem(n))}
-                    </ul>
+                    ${results.length
+                        ? html`<ul class="pf-c-notification-drawer__list" role="list">
+                              ${results.map((n) => this.#renderItem(n))}
+                          </ul>`
+                        : this.renderEmpty()}
                 </div>
             </div>
         </div>`;

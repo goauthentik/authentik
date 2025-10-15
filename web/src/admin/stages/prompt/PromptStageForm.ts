@@ -68,8 +68,8 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         ></ak-dual-select-dynamic-selected>
                         ${this.instance
                             ? html`<ak-forms-modal size=${PFSize.XLarge}>
-                                  <span slot="submit"> ${msg("Create")} </span>
-                                  <span slot="header"> ${msg("Create Prompt")} </span>
+                                  <span slot="submit">${msg("Create")}</span>
+                                  <span slot="header">${msg("Create Prompt")}</span>
                                   <ak-prompt-form slot="form"> </ak-prompt-form>
                                   <button
                                       type="button"

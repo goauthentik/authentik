@@ -25,7 +25,7 @@ class GoogleWorkspaceGroupClient(
     """Google client for groups"""
 
     connection_type = GoogleWorkspaceProviderGroup
-    connection_attr = "googleworkspaceprovidergroup_set"
+    connection_type_query = "group"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
@@ -208,11 +208,11 @@ class GoogleWorkspaceGroupClient(
         )
         if not matching_authentik_group:
             return
-        GoogleWorkspaceProviderGroup.objects.get_or_create(
+        GoogleWorkspaceProviderGroup.objects.update_or_create(
             provider=self.provider,
             group=matching_authentik_group,
             google_id=google_id,
-            attributes=group,
+            defaults={"attributes": group},
         )
 
     def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):

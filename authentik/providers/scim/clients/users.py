@@ -18,7 +18,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
     """SCIM client for users"""
 
     connection_type = SCIMProviderUser
-    connection_attr = "scimprovideruser_set"
+    connection_type_query = "user"
     mapper: PropertyMappingManager
 
     def __init__(self, provider: SCIMProvider):
@@ -72,7 +72,8 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 if not self._config.filter.supported:
                     raise exc
                 users = self._request(
-                    "GET", f"/Users?{urlencode({'filter': f'userName eq {scim_user.userName}'})}"
+                    "GET",
+                    f"/Users?{urlencode({'filter': f'userName eq \"{scim_user.userName}\"'})}",
                 )
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:

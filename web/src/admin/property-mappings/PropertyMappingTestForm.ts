@@ -57,7 +57,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             ${this.result?.successful
                 ? html`<ak-codemirror
                       mode=${CodeMirrorMode.JavaScript}
-                      readOnly
+                      readonly
                       value="${ifDefined(this.result?.result)}"
                   >
                   </ak-codemirror>`
@@ -82,6 +82,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     renderExampleLDAP(): TemplateResult {
         return html`
             <button
+                type="button"
                 class="pf-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {
@@ -105,6 +106,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 ${msg("Active Directory User")}
             </button>
             <button
+                type="button"
                 class="pf-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {
@@ -188,7 +190,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

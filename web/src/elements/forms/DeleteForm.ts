@@ -10,7 +10,7 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -93,7 +93,7 @@ export class DeleteForm extends ModalButton {
                 ? until(
                       this.usedBy().then((usedBy) => {
                           if (usedBy.length < 1) {
-                              return html``;
+                              return nothing;
                           }
                           return html`
                               <section class="pf-c-modal-box__body pf-m-light">
@@ -132,7 +132,7 @@ export class DeleteForm extends ModalButton {
                           `;
                       }),
                   )
-                : html``}
+                : nothing}
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {

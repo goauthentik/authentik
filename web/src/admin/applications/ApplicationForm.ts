@@ -21,6 +21,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -165,7 +166,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             <ak-provider-search-input
                 name="provider"
                 label=${msg("Provider")}
-                value=${ifDefined(this.instance?.provider ?? undefined)}
+                value=${ifPresent(this.instance?.provider)}
                 help=${msg("Select a provider that this application should use.")}
                 blankable
             ></ak-provider-search-input>
@@ -216,7 +217,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         ? html`<ak-file-input
                                   label="${msg("Icon")}"
                                   name="metaIcon"
-                                  value=${ifDefined(this.instance?.metaIcon ?? undefined)}
+                                  value=${ifPresent(this.instance?.metaIcon)}
                                   current=${msg("Currently set to:")}
                               ></ak-file-input>
                               ${this.instance?.metaIcon
@@ -228,7 +229,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                                             @change=${this.handleClearIcon}
                                         ></ak-switch-input>
                                     `
-                                  : html``}`
+                                  : nothing}`
                         : html` <ak-text-input
                               label=${msg("Icon")}
                               name="metaIcon"

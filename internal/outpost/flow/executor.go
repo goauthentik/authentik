@@ -82,6 +82,11 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
+	config.Servers = api.ServerConfigurations{
+		{
+			URL: refConfig.Servers[0].URL,
+		},
+	}
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
 		Transport: fe,
@@ -92,6 +97,10 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config.AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
 	fe.api = api.NewAPIClient(config)
 	return fe
+}
+
+func (fe *FlowExecutor) AddHeader(name string, value string) {
+	fe.api.GetConfig().AddDefaultHeader(name, value)
 }
 
 func (fe *FlowExecutor) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -197,7 +206,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 
 	switch ch.GetComponent() {
 	case string(StageAccessDenied):
-		return false, nil
+		return false, errors.New(challenge.AccessDeniedChallenge.GetErrorMessage())
 	case string(StageRedirect):
 		return true, nil
 	default:

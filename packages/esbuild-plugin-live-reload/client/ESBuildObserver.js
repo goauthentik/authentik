@@ -1,13 +1,17 @@
-/// <reference types="./types.js" />
-
 /**
  * @file Client-side observer for ESBuild events.
  *
+ * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
  * @import { Message as ESBuildMessage } from "esbuild";
  */
 
-const logPrefix = "authentik/dev/web: ";
-const log = console.debug.bind(console, logPrefix);
+/// <reference types="./types.js" />
+
+import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+
+if (typeof EventSource === "undefined") {
+    throw new TypeError("Environment doesn't appear to have an EventSource constructor");
+}
 
 /**
  * @template {unknown} [Data=unknown]
@@ -32,6 +36,11 @@ const log = console.debug.bind(console, logPrefix);
  * runtime browser
  */
 export class ESBuildObserver extends EventSource {
+    /**
+     * @type {Logger}
+     */
+    #logger;
+
     /**
      * Whether the watcher has a recent connection to the server.
      */
@@ -78,7 +87,7 @@ export class ESBuildObserver extends EventSource {
      */
     #startListener = () => {
         this.#trackActivity();
-        log("⏰ Build started...");
+        this.#logger.info("⏰ Build started...");
     };
 
     #internalErrorListener = () => {
@@ -88,7 +97,7 @@ export class ESBuildObserver extends EventSource {
             clearTimeout(this.#keepAliveInterval);
 
             this.close();
-            log("⛔️ Closing connection");
+            this.#logger.info("⛔️ Closing connection");
         }
     };
 
@@ -98,7 +107,7 @@ export class ESBuildObserver extends EventSource {
     #errorListener = (event) => {
         this.#trackActivity();
 
-        console.group(logPrefix, "⛔️⛔️⛔️  Build error...");
+        this.#logger.warn("⛔️⛔️⛔️  Build error...");
 
         /**
          * @type {ESBuildMessage[]}
@@ -106,17 +115,15 @@ export class ESBuildObserver extends EventSource {
         const esbuildErrorMessages = JSON.parse(event.data);
 
         for (const error of esbuildErrorMessages) {
-            console.warn(error.text);
+            this.#logger.warn(error.text);
 
             if (error.location) {
-                console.debug(
+                this.#logger.debug(
                     `file://${error.location.file}:${error.location.line}:${error.location.column}`,
                 );
-                console.debug(error.location.lineText);
+                this.#logger.debug(error.location.lineText);
             }
         }
-
-        console.groupEnd();
     };
 
     /**
@@ -128,13 +135,13 @@ export class ESBuildObserver extends EventSource {
         this.#trackActivity();
 
         if (!this.online) {
-            log("🚫 Build finished while offline.");
+            this.#logger.info("🚫 Build finished while offline.");
             this.deferredReload = true;
 
             return;
         }
 
-        log("🛎️ Build completed! Reloading...");
+        this.#logger.info("🛎️ Build completed! Reloading...");
 
         // We use an animation frame to keep the reload from happening before the
         // event loop has a chance to process the message.
@@ -148,7 +155,7 @@ export class ESBuildObserver extends EventSource {
      */
     #keepAliveListener = () => {
         this.#trackActivity();
-        log("🏓 Keep-alive");
+        this.#logger.info("🏓 Keep-alive");
     };
 
     /**
@@ -167,13 +174,16 @@ export class ESBuildObserver extends EventSource {
     /**
      *
      * @param {string | URL} [url]
+     * @param {Logger} [logger]
      */
-    constructor(url) {
+    constructor(url, logger = createLogger()) {
         if (!url) {
             throw new TypeError("ESBuildObserver: Cannot construct without a URL");
         }
 
         super(url);
+
+        this.#logger = logger;
 
         this.addEventListener("esbuild:start", this.#startListener);
         this.addEventListener("esbuild:end", this.#endListener);
@@ -191,13 +201,13 @@ export class ESBuildObserver extends EventSource {
 
             if (!this.deferredReload) return;
 
-            log("🛎️ Reloading after offline build...");
+            this.#logger.info("🛎️ Reloading after offline build...");
             this.deferredReload = false;
 
             window.location.reload();
         });
 
-        log("🛎️ Listening for build changes...");
+        this.#logger.info("🛎️ Listening for build changes...");
 
         this.#keepAliveInterval = setInterval(() => {
             const now = Date.now();
@@ -205,7 +215,7 @@ export class ESBuildObserver extends EventSource {
             if (now - this.lastUpdatedAt < 10_000) return;
 
             this.alive = false;
-            log("👋 Waiting for build to start...");
+            this.#logger.info("👋 Waiting for build to start...");
         }, 15_000);
     }
 

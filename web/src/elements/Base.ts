@@ -13,7 +13,7 @@ import {
 import { UiThemeEnum } from "@goauthentik/api";
 
 import { localized } from "@lit/localize";
-import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
+import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export interface AKElementProps {
@@ -53,6 +53,25 @@ export class AKElement extends LitElement implements AKElementProps {
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
             : null;
+
+        if (process.env.NODE_ENV === "development") {
+            const updatedCallback = this.updated;
+
+            this.updated = function (args: PropertyValues) {
+                updatedCallback?.call(this, args);
+
+                const unregisteredElements = this.renderRoot.querySelectorAll(":not(:defined)");
+
+                if (!unregisteredElements.length) return;
+
+                for (const element of unregisteredElements) {
+                    console.debug("Unregistered custom element found in the DOM", element);
+                }
+                throw new TypeError(
+                    `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
+                );
+            };
+        }
     }
 
     public override disconnectedCallback(): void {

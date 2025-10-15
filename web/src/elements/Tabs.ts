@@ -2,6 +2,7 @@ import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants
 
 import { AKElement } from "#elements/Base";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -26,20 +27,21 @@ export class Tabs extends AKElement {
         PFGlobal,
         PFTabs,
         css`
-            ::slotted(*) {
-                flex-grow: 2;
-            }
             :host([vertical]) {
-                display: flex;
-            }
-            :host([vertical]) .pf-c-tabs {
-                width: auto !important;
-            }
-            :host([vertical]) .pf-c-tabs__list {
-                height: 100%;
-            }
-            :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                border-color: transparent;
+                display: grid;
+                grid-template-columns: auto 1fr;
+
+                .pf-c-tabs {
+                    width: auto !important;
+                }
+
+                .pf-c-tabs__list {
+                    height: 100%;
+                }
+
+                .pf-c-tabs .pf-c-tabs__list::before {
+                    border-color: transparent;
+                }
             }
         `,
     ];
@@ -74,6 +76,7 @@ export class Tabs extends AKElement {
         updateURLParams(params);
         const page = this.querySelector(`[slot='${this.currentPage}']`);
         if (!page) return;
+
         page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
         page.dispatchEvent(new CustomEvent("activate"));
     }
@@ -81,8 +84,16 @@ export class Tabs extends AKElement {
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
+            <button
+                type="button"
+                role="tab"
+                id=${`${slot}-tab`}
+                aria-selected=${slot === this.currentPage ? "true" : "false"}
+                aria-controls=${ifPresent(slot)}
+                class="pf-c-tabs__link"
+                @click=${() => this.onClick(slot)}
+            >
+                <span class="pf-c-tabs__item-text"> ${page.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
@@ -108,7 +119,7 @@ export class Tabs extends AKElement {
             this.onClick(wantedPage);
         }
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list">
+                <ul class="pf-c-tabs__list" role="tablist">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>

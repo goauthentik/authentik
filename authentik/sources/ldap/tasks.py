@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from dramatiq.message import Message
@@ -21,6 +20,7 @@ from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDele
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 LOGGER = get_logger()
@@ -53,11 +53,10 @@ def ldap_connectivity_check(pk: str | None = None):
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
-    task: Task = CurrentTask.get_task()
+    task = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
-    task.set_uid(f"{source.slug}")
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
             task.info("Synchronization is already running. Skipping")
@@ -111,11 +110,13 @@ def ldap_sync_paginator(
     sync_inst: BaseLDAPSynchronizer = sync(source, task)
     messages = []
     for page in sync_inst.get_objects():
-        page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
+        page_uid = str(uuid4())
+        page_cache_key = CACHE_KEY_PREFIX + page_uid
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
         page_sync = ldap_sync_page.message_with_options(
             args=(source.pk, class_to_path(sync), page_cache_key),
             rel_obj=task.rel_obj,
+            uid=f"{source.slug}:{sync_inst.name()}:{page_uid}",
         )
         messages.append(page_sync)
     return messages
@@ -127,15 +128,13 @@ def ldap_sync_paginator(
 )
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
         return
     sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
-    uid = page_cache_key.replace(CACHE_KEY_PREFIX, "")
-    self.set_uid(f"{source.slug}:{sync.name()}:{uid}")
     try:
         sync_inst: BaseLDAPSynchronizer = sync(source, self)
         page = cache.get(page_cache_key)

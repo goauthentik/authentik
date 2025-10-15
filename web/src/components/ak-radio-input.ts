@@ -7,10 +7,11 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends HorizontalLightComponent<T> {
+    public override role = "radiogroup";
+
     @property({ type: Object })
     value!: T;
 
@@ -28,10 +29,9 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
     }
 
     renderControl() {
-        const helpText = this.help.trim();
+        const helpText = this.help?.trim();
 
         return html`<ak-radio
-                label=${ifDefined(this.label)}
                 .options=${this.options}
                 .value=${this.value}
                 @input=${this.handleInput}

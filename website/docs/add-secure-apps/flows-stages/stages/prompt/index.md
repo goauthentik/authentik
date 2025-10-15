@@ -29,7 +29,7 @@ The prompt can be any of the following types:
 | Static                | Display arbitrary value as is                                                              |
 | authentik: Locale     | Display a list of all locales authentik supports.                                          |
 
-:::note
+:::info
 `TextArea`, `TextArea (Read only)`, `Radio Button Group` and `Dropdown` options require authentik 2023.4+
 :::
 
@@ -84,7 +84,7 @@ will be evaluated as a Python expression. This happens in the same environment a
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice. When a choice is defined as an object `{"label": "Option", "value": "internal-value"}` the initial value needs to be set to the value string `internal-value` in this case.
 
-:::note
+:::info
 The default choice defined for any fixed choice field **must** be one of the valid choices specified in the prompt's placeholder.
 :::
 

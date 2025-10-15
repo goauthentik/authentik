@@ -1,6 +1,6 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -52,7 +52,7 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
             @input=${setValue}
             value=${ifDefined(this.value)}
             class="${classMap(classes)}"
-            placeholder=${ifNotEmpty(this.placeholder)}
+            placeholder=${ifPresent(this.placeholder)}
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
             ?required=${this.required}

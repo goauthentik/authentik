@@ -14,35 +14,26 @@ export function getCookie(name: string): string {
     return cookieValue;
 }
 
-/**
- * Truncate a string based on maximum word count
- */
-export function truncateWords(string: string, length = 10): string {
-    string = string || "";
-    const array = string.trim().split(" ");
-    const ellipsis = array.length > length ? "..." : "";
+export type GroupKeyCallback<T> = (item: T, index: number, array: T[]) => string;
+export type GroupResult<T> = [groupKey: string, items: T[]];
 
-    return array.slice(0, length).join(" ") + ellipsis;
-}
+export function groupBy<T>(items: T[], callback: GroupKeyCallback<T>): Array<GroupResult<T>> {
+    const map = new Map<string, T[]>();
 
-/**
- * Truncate a string based on character count
- */
-export function truncate(string: string, length = 10): string {
-    return string.length > length ? `${string.substring(0, length)}...` : string;
-}
+    items.forEach((item, index) => {
+        const groupKey = callback(item, index, items);
+        let tProviders = map.get(groupKey);
 
-export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
-    const m = new Map<string, T[]>();
-    objects.forEach((obj) => {
-        const group = callback(obj);
-        if (!m.has(group)) {
-            m.set(group, []);
+        if (!tProviders) {
+            tProviders = [];
+
+            map.set(groupKey, tProviders);
         }
-        const tProviders = m.get(group) || [];
-        tProviders.push(obj);
+
+        tProviders.push(item);
     });
-    return Array.from(m).sort();
+
+    return Array.from(map).sort(([a], [b]) => a.localeCompare(b));
 }
 
 // Taken from python's string module

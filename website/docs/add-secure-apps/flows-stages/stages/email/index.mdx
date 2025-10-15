@@ -2,15 +2,19 @@
 title: Email stage
 ---
 
-This stage can be used for email verification. authentik's background worker will send an email using the specified connection details. When an email can't be delivered, delivery is automatically retried periodically.
+This stage can be used for email verification. authentik's background worker will send an email using the specified connection details.
 
-![](./email_recovery.png)
+When an email can't be delivered, authentik automatically retries periodically.
+
+You can also configure rate-limiting for emails requested by users. See the [configure rate limiting](#configure-rate-limiting-for-emails) section for more information.
+
+For information about creating a stage, refer to our [documentation](../#create-a-stage).
 
 ## Behaviour
 
 By default, the email is sent to the currently pending user. To override this, you can set `email` in the plan's context to another email address, which will override the user's email address (the user won't be changed).
 
-For example, create this expression policy and bind it to the email stage:
+For example, create this [expression policy](../../../../customize/policies/expression.mdx) and bind it to the email stage:
 
 ```python
 request.context["flow_plan"].context["email"] = "foo@bar.baz"
@@ -20,6 +24,15 @@ request.context["flow_plan"].context["email"] = "foo@bar.baz"
 # request.context["flow_plan"].context["email"] = request.context["pending_user"].attributes.get("otherEmail")
 return True
 ```
+
+## Configure rate limiting for emails
+
+You can configure the Email stage with _a maximum number of emails_ that can be sent within _a specified time period_.
+
+To configure the rate limiting for recovery emails use these two fields when you create or edit an Email stage:
+
+- **Account Recovery Max Attempts**: set the maximum number of emails to send.
+- **Account Recovery Cache Timeout**: specify the time window used to count recent recovery emails sent to the user (account recovery attempts).
 
 ## Custom Templates
 
@@ -35,11 +48,11 @@ import Tabs from "@theme/Tabs";
 <Tabs
   defaultValue="docker-compose"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker-compose'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker-compose">
-Place any custom templates in the `custom-templates` Folder, which is in the same folder as your docker-compose file. Afterwards, you'll be able to select the template when creating/editing an Email stage.
+Place any custom templates in the `custom-templates` Folder, which is in the same folder as your Compose file. Afterwards, you'll be able to select the template when creating/editing an Email stage.
 
   </TabItem>
   <TabItem value="kubernetes">
@@ -72,7 +85,7 @@ volumeMounts:
 </Tabs>
 
 :::info
-If you've add the line and created a file, and can't see if, check the worker logs using `docker compose logs -f worker` or `kubectl logs -f deployment/authentik-worker`.
+If you have added the line and created a file, and can't see it, check the worker logs using `docker compose logs -f worker` or `kubectl logs -f deployment/authentik-worker`.
 :::
 
 ![](./custom_template.png)
@@ -98,7 +111,7 @@ Templates are rendered using Django's templating engine. The following variables
 {% block content %}
 <tr>
     <td class="alert alert-success">
-        {% blocktrans with username=user.username %} Hi {{ username }}, 
+        {% blocktrans with username=user.username %} Hi {{ username }},
         {% endblocktrans %}
     </td>
 </tr>
@@ -107,7 +120,7 @@ Templates are rendered using Django's templating engine. The following variables
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="content-block">
-                    {% trans 'You recently requested to change your password for you authentik account. Use the button below to set a new password.' %}                    
+                    {% trans 'You recently requested to change your password for you authentik account. Use the button below to set a new password.' %}
                 </td>
             </tr>
             <tr>

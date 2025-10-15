@@ -32,7 +32,7 @@ export class BrandLinks extends AKElement {
     render() {
         const links = [...(this.links ?? [])];
 
-        return html` <ul class="pf-c-list pf-m-inline">
+        return html` <ul aria-label=${msg("Site links")} class="pf-c-list pf-m-inline">
             ${map(links, (link) => {
                 const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
 
@@ -41,7 +41,7 @@ export class BrandLinks extends AKElement {
                 }
 
                 return html`<li>
-                    <span> ${children} </span>
+                    <span> ${children}</span>
                 </li>`;
             })}
             <li><span>${msg("Powered by authentik")}</span></li>

@@ -130,7 +130,7 @@ export class HorizontalFormElement extends AKElement {
     render(): TemplateResult {
         this.#synchronizeAttributes();
 
-        return html`<div class="pf-c-form__group" role="group">
+        return html`<div class="pf-c-form__group">
             <div class="pf-c-form__group-label">
                 ${this.label
                     ? html`

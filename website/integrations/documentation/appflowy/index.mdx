@@ -1,0 +1,174 @@
+---
+title: Integrate with AppFlowy
+sidebar_label: AppFlowy
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is AppFlowy
+
+> AppFlowy is an open-source workspace collaboration platform (similar to Notion) that lets teams create, manage, and collaborate on documents, databases, and projects.
+>
+> -- https://appflowy.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `appflowy.company` is the FQDN of the AppFlowy installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of AppFlowy with authentik, you need to create a certificate and an application/provider pair in authentik.
+
+### Create a certificate-key pair
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and click **Generate**.
+3. Set the following required fields:
+    - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
+    - **Validity days**: set an appropriate certificate validity period (or keep the default value of `365`).
+    - **Private key algorithm**: `RSA`
+4. Click **Generate** and take note of the **Certificate** and **Private key** values as they will be required later on.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://appflowy.company/gotrue/sso/saml/acs`
+        - **Issuer**: `authentik`
+        - **Service Provider Binding**: `Post`
+        - **Audience**: `https://appflowy.company/gotrue/sso/saml/metadata`
+        - Under **Advanced protocol settings**:
+            - **Signing certificate**: select the certificate created earlier
+            - **Sign assertions**: enabled
+            - **Sign responses**: enabled
+            - **Verification certificate**: select the same certificate
+            - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
+            - **Default relay state**: `https://appflowy.company/auth/callback`
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+3. Click **Submit** to create the application and provider.
+
+### Copy metadata download link
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+3. Under **Related objects** > **Metadata**, click on **Copy download URL**. This URL is your **SAML Metadata URL** and it will be required in the next section.
+
+## AppFlowy configuration
+
+Configure AppFlowy Cloud to use authentik as its SAML IdP.
+
+### Convert the certificate and private key
+
+AppFlowy requires the private key in [PKCS#1](https://en.wikipedia.org/wiki/PKCS_1) and base64 (single-line) format, so you'll need to convert the certificate and private key to these formats.
+
+<Tabs>
+<TabItem value="linuxmac" label="Linux and MacOS" default>
+
+1.  Convert the private key to PKCS#1 format:
+
+```bash
+openssl rsa -in <certificate_private_key>.pem -traditional -out key_pkcs1.pem
+```
+
+2.  Convert the PKCS#1 private key to a single-line base64 string:
+
+```bash
+sed -n '/^-----BEGIN RSA PRIVATE KEY-----$/,/^-----END RSA PRIVATE KEY-----$/p' key_pkcs1.pem      | grep -v '^-----'      | tr -d '\n'
+```
+
+The output of this command will be required for the `GOTRUE_SAML_PRIVATE_KEY` value in a later section.
+
+3.  Convert the certificate to a single-line format with `\n` escapes:
+
+```bash
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0}' <certificate>.pem
+```
+
+The output of this command will be required for the `AUTH_SAML_CERT` value in a later section. See the [AppFlowy documentation](https://appflowy.com/docs/How-to-log-in-using-SAML-2) for more information.
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+1.  Convert the private key to PKCS#1 format:
+
+```powershell
+openssl rsa -in <certificate_private_key>.pem -traditional -out key_pkcs1.pem
+```
+
+2. Convert the PKCS#1 private key to a single-line base64 string:
+
+```powershell
+(Get-Content key_pkcs1.pem) -join "`n" `
+  | Select-String -Pattern '^-{5}' -NotMatch `
+  | ForEach-Object { $_ -replace '\s','' } `
+  | ForEach-Object { $_ } `
+  | Out-String -Stream | ForEach-Object { $_.Trim() }
+```
+
+3. Convert the certificate to a single-line format with `\n` escapes:
+
+```powershell
+(Get-Content <certificate>.pem) `
+  | ForEach-Object { ($_ -replace "`r","") + "\n" } `
+  | Out-String -Stream `
+  | ForEach-Object { $_.TrimEnd() } `
+  | ForEach-Object { $_ -replace "`n", "\\n" }
+```
+
+The output of this command will be required for the `AUTH_SAML_CERT` value in a later section.
+
+</TabItem>
+</Tabs>
+
+### Configure Metadata URL
+
+1. Log in the AppFlowy Admin Console at `https://appflowy.company/console`.
+2. Navigate to **Admin** > **Create SSO**.
+3. Set the **Metadata URL** to the **SAML Metadata URL** from authentik.
+4. Click **Create**.
+
+### Configure AppFlowy environment file
+
+Add the following environment variables to your AppFlowy installation:
+
+```bash
+AUTH_SAML_ENABLED=true
+GOTRUE_SAML_ENABLED=true
+
+AUTH_SAML_ENTRY_POINT="https://authentik.company/application/saml/<application_slug>/sso/binding/post"
+
+AUTH_SAML_ISSUER="authentik"
+AUTH_SAML_CALLBACK_URL="https://appflowy.company/gotrue/sso/saml/acs"
+AUTH_SAML_DEFAULT_REDIRECT_URL="https://appflowy.company/app"
+
+# From the conversion steps above
+GOTRUE_SAML_PRIVATE_KEY="<Base64 private key (single line)>"
+AUTH_SAML_CERT="<Certificate with \\n escapes (single line)>"
+```
+
+:::info
+Ensure `GOTRUE_DISABLE_SIGNUP=false` is set so that first-time SAML users can sign in.
+:::
+
+Restart AppFlowy to apply the changes.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with AppFlowy, log out and then log back in by clicking the application created for AppFlowy in the authentik User interface. You should be automatically redirected and signed in to AppFlowy.
+
+## Resources
+
+- [AppFlowy Documentation - How to login using Okta SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-Okta-SAML-2)
+- [AppFlowy Documentation - How to login using SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-SAML-2)

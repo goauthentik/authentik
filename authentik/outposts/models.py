@@ -357,7 +357,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                             message=(
                                 "While setting the permissions for the service-account, a "
                                 "permission was not found: Check "
-                                "https://goauthentik.io/docs/troubleshooting/missing_permission"
+                                "https://docs.goauthentik.io/troubleshooting/missing_permission"
                             ),
                         ).with_exception(exc).set_user(user).save()
                 else:
