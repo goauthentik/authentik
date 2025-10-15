@@ -8,6 +8,11 @@ on:
       - "schema.yml"
   workflow_dispatch:
 
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   build:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
@@ -21,7 +26,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
         with:
           node-version-file: web/package.json
           registry-url: "https://registry.npmjs.org"
@@ -32,8 +37,6 @@ jobs:
         run: |
           npm i
           npm publish --tag generated
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
         working-directory: web
         run: |

@@ -159,11 +159,11 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         matching_authentik_user = self.provider.get_object_qs(User).filter(email=user.mail).first()
         if not matching_authentik_user:
             return
-        MicrosoftEntraProviderUser.objects.get_or_create(
+        MicrosoftEntraProviderUser.objects.update_or_create(
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
-            attributes=self.entity_as_dict(user),
+            defaults={"attributes": self.entity_as_dict(user)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderUser):

@@ -72,13 +72,15 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     RefreshToken,
 )
+from authentik.providers.proxy.models import ProxySession
 from authentik.providers.rac.models import ConnectionToken
+from authentik.providers.saml.models import SAMLSession
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.stages.consent.models import UserConsent
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskLog
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
@@ -121,10 +123,12 @@ def excluded_models() -> list[type[Model]]:
         SCIMProviderUser,
         Tenant,
         Task,
+        TaskLog,
         ConnectionToken,
         AuthorizationCode,
         AccessToken,
         RefreshToken,
+        ProxySession,
         Reputation,
         WebAuthnDeviceType,
         SCIMSourceUser,
@@ -138,6 +142,7 @@ def excluded_models() -> list[type[Model]]:
         DeviceToken,
         StreamEvent,
         UserConsent,
+        SAMLSession,
         Message,
         GroupChannel,
     )

@@ -6685,10 +6685,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
   <target>서비스 계정은 M2M(기계 간 인증) 또는 기타 자동화에 사용되어야 합니다.</target>
 </trans-unit>
-<trans-unit id="s8fa26f65aed77c96">
-  <source>More details</source>
-  <target>자세히 보기</target>
-</trans-unit>
 <trans-unit id="s08df8d0a773a3ea0">
   <source>Remove item</source>
   <target>항목 제거</target>
@@ -8583,9 +8579,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sfc2c3bd345c0128a">
   <source>Disconnected</source>
 </trans-unit>
-<trans-unit id="s47b7ce63a543564c">
-  <source>Fewer details</source>
-</trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
 </trans-unit>
@@ -9132,15 +9125,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
 </trans-unit>
-<trans-unit id="s418c59028ef6bc2a">
-  <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
-</trans-unit>
-<trans-unit id="sa091b3064afa00f5">
-  <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
-</trans-unit>
-<trans-unit id="s6d364031a996b540">
-  <source>Back-Channel Logout URI</source>
-</trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
 </trans-unit>
@@ -9327,9 +9311,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="saa25eac2952d918d">
   <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
-<trans-unit id="s021258b2c04e722f">
-  <source>Search for an application by name</source>
-</trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
 </trans-unit>
@@ -9435,9 +9416,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
-</trans-unit>
-<trans-unit id="s9447a684b989a474">
-  <source>The user's display name. 150 characters or fewer.</source>
 </trans-unit>
 <trans-unit id="s755bfddac3729eaa">
   <source>Managed by authentik and cannot be assigned manually.</source>
@@ -9766,12 +9744,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
 </trans-unit>
-<trans-unit id="s6af56cad861de0da">
-  <source>Close inspector</source>
-</trans-unit>
-<trans-unit id="s34dcdae237b89744">
-  <source>Open inspector</source>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
 </trans-unit>
@@ -9798,6 +9770,115 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc62e587718608e85">
   <source>No expiry</source>
+</trans-unit>
+<trans-unit id="s84fb675fb17d4455">
+  <source>Retries</source>
+</trans-unit>
+<trans-unit id="s1d300a2f13c19ab4">
+  <source>Planned execution time</source>
+</trans-unit>
+<trans-unit id="s3736936aac1adc2e">
+  <source>Open flow inspector</source>
+</trans-unit>
+<trans-unit id="s1ff2128af96d843f">
+  <source>Available applications</source>
+</trans-unit>
+<trans-unit id="sda842e40ed1d9a2f">
+  <source>Application search</source>
+</trans-unit>
+<trans-unit id="s65b433c52c2ad8eb">
+  <source>Search for an application by name...</source>
+</trans-unit>
+<trans-unit id="sa3056b3252b4b52c">
+  <source>Back-channel</source>
+</trans-unit>
+<trans-unit id="saa3d821fc889a636">
+  <source>Server-to-server logout notifications</source>
+</trans-unit>
+<trans-unit id="s9f448d01a0354e8e">
+  <source>Front-channel</source>
+</trans-unit>
+<trans-unit id="s83ba71823baf9a51">
+  <source>Browser iframe logout notifications</source>
+</trans-unit>
+<trans-unit id="s145480489b87a109">
+  <source>Logout URI</source>
+</trans-unit>
+<trans-unit id="s37018999e29f65b3">
+  <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+</trans-unit>
+<trans-unit id="s2dcb6d1fd145b834">
+  <source>Logout Method</source>
+</trans-unit>
+<trans-unit id="s2e527acc2a73da87">
+  <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+</trans-unit>
+<trans-unit id="sa4bd902fbc432ab8">
+  <source>Sign logout requests</source>
+</trans-unit>
+<trans-unit id="sb1e6dc6d91ce352e">
+  <source>When enabled, SAML logout requests will be signed.</source>
+</trans-unit>
+<trans-unit id="sd1ab93a011b2f1f5">
+  <source>Front-channel (Iframe)</source>
+</trans-unit>
+<trans-unit id="s885ea9abccda30d8">
+  <source>Front-channel (Native)</source>
+</trans-unit>
+<trans-unit id="s34cd8ae3ee828045">
+  <source>Back-channel (POST)</source>
+</trans-unit>
+<trans-unit id="s7f7be294b1bef506">
+  <source>SLS Binding</source>
+</trans-unit>
+<trans-unit id="s9104cd1063aa6a4a">
+  <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+</trans-unit>
+<trans-unit id="sd1fba3c745c016a8">
+  <source>Method to use for logout when SLS URL is configured.</source>
+</trans-unit>
+<trans-unit id="sc71892084574cf32">
+  <source>SLS URL</source>
+</trans-unit>
+<trans-unit id="s21658078c6fdf964">
+  <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+</trans-unit>
+<trans-unit id="scbf29ce484222325">
+  <source></source>
+</trans-unit>
+<trans-unit id="s78869b8b2bc26d0d">
+  <source>SAML Provider</source>
+</trans-unit>
+<trans-unit id="sca83a1f9227f74b9">
+  <source>SAML logout complete</source>
+</trans-unit>
+<trans-unit id="s7b90eab7969ae056">
+  <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s3e6174b645d96835">
+  <source>Posting logout request to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s0b1ffff8bedd6b8a">
+  <source>Unknown Provider</source>
+</trans-unit>
+<trans-unit id="s777e86d562523c85">
+  <source>Logging out of providers...</source>
+</trans-unit>
+<trans-unit id="s4980379bf8461c2d">
+  <source>Single Logout</source>
+</trans-unit>
+<trans-unit id="sc82cf82ad6cb26cc">
+  <source>The user's display name.</source>
+</trans-unit>
+<trans-unit id="s33b2f30214a2e99d">
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sfa660d9e563c346f">
+  <source>Edit application...</source>
+</trans-unit>
+<trans-unit id="ellipsis">
+  <source>...</source>
+  <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
     </body>
   </file>

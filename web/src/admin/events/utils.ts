@@ -1,5 +1,5 @@
 import { EventUser, EventWithContext } from "#common/events";
-import { truncate } from "#common/utils";
+import { truncate } from "#common/strings";
 
 import { SlottedTemplateResult } from "#elements/types";
 

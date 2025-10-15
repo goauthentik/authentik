@@ -60,13 +60,20 @@ class TaskBase(models.Model):
         abstract = True
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
-        indexes = (models.Index(fields=("state", "mtime")),)
+        indexes = (
+            models.Index(fields=("queue_name",)),
+            models.Index(fields=("queue_name", "state")),
+            models.Index(fields=("message_id", "queue_name", "state", "eta")),
+            models.Index(fields=("message_id", "state", "eta")),
+            models.Index(fields=("message_id", "queue_name", "state")),
+            models.Index(fields=("state", "mtime", "result_expiry")),
+        )
         triggers = (
             pgtrigger.Trigger(
                 name="notify_enqueueing",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.After,
-                condition=pgtrigger.Q(new__state=TaskState.QUEUED),
+                condition=pgtrigger.Q(new__state=TaskState.QUEUED, new__eta=None),
                 timing=pgtrigger.Deferred,
                 func=f"""
                     PERFORM pg_notify(

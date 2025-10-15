@@ -12,6 +12,11 @@ on:
       - main
       - version-*
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   lint-golint:
     runs-on: ubuntu-latest
@@ -45,6 +50,9 @@ jobs:
         uses: ./.github/actions/setup
       - name: Generate API
         run: make gen-client-go
+      - name: prepare database
+        run: |
+          uv run make migrate
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
@@ -144,7 +152,7 @@ jobs:
       - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
