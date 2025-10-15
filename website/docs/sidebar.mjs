@@ -236,10 +236,14 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/saml/index",
                         },
+<<<<<<< HEAD
                         items: [
                             "add-secure-apps/providers/saml/create-saml-provider",
                             "add-secure-apps/providers/saml/saml_single_logout",
                         ],
+=======
+                        items: ["add-secure-apps/providers/saml/saml_single_logout"],
+>>>>>>> 734de9b2c (website/docs: Update docs for single logout (#17169))
                     },
                     "add-secure-apps/providers/scim/index",
                     {
