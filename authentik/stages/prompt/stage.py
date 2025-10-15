@@ -36,8 +36,8 @@ PLAN_CONTEXT_PROMPT = "prompt_data"
 class PromptChoiceSerializer(PassiveSerializer):
     """Serializer for a single Choice field"""
 
-    value = CharField(allow_blank=True, required=True)
-    label = CharField(allow_blank=True, required=True)
+    value = CharField(required=True)
+    label = CharField(required=True)
 
 
 class StagePromptSerializer(PassiveSerializer):
@@ -223,7 +223,7 @@ class PromptStageView(ChallengeStageView):
             # choices can be a dict with value and label
             choices = field.get_choices(context, self.get_pending_user(), self.request, dry_run)
             if choices:
-                data["choices"] = self.clean_choices(choices)
+                data["choices"] = list(self.clean_choices(choices))
             else:
                 data["choices"] = None
             data["placeholder"] = str(
@@ -236,16 +236,12 @@ class PromptStageView(ChallengeStageView):
         return serializers
 
     def clean_choices(self, choices):
-        clean = []
         for choice in choices:
+            label, value = choice, choice
             if isinstance(choice, dict):
-                clean.append(
-                    {"value": str(choice.get("value", "")), "label": str(choice.get("label", ""))}
-                )
-            else:
-                clean.append({"value": str(choice), "label": str(choice)})
-
-        return clean
+                label = choice.get("label", "")
+                value = choice.get("value", "")
+            yield {"label": str(label), "value": str(value)}
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
