@@ -134,7 +134,7 @@
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
-        "chart.js": "^4.5.0",
+        "chart.js": "^4.5.1",
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
         "core-js": "^3.46.0",
