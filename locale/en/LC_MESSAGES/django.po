@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 00:10+0000\n"
+"POT-Creation-Date: 2025-10-15 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1532,10 +1532,6 @@ msgstr ""
 #: authentik/providers/oauth2/api/providers.py
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
-msgstr ""
-
-#: authentik/providers/oauth2/api/providers.py
-msgid "Logout method cannot be set without a logout URI"
 msgstr ""
 
 #: authentik/providers/oauth2/constants.py
