@@ -189,34 +189,28 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
-                        const value = choice.value;
-                        const label = choice.label;
-
                         return html`<option
-                            value="${value}"
-                            ?selected=${prompt.initialValue === value}
+                            value="${choice.value}"
+                            ?selected=${prompt.initialValue === choice.value}
                         >
-                            ${label}
+                            ${choice.label}
                         </option>`;
                     })}
                 </select>`;
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
-                    const value = choice.value;
-                    const label = choice.label;
-
-                    const id = `${prompt.fieldKey}-${value}`;
+                    const id = `${prompt.fieldKey}-${choice.value}`;
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
                             class="pf-c-check__input"
                             name="${prompt.fieldKey}"
                             id="${id}"
-                            ?checked="${prompt.initialValue === value}"
+                            ?checked="${prompt.initialValue === choice.value}"
                             ?required="${prompt.required}"
-                            value="${value}"
+                            value="${choice.value}"
                         />
-                        <label class="pf-c-check__label" for=${id}>${label}</label>
+                        <label class="pf-c-check__label" for=${id}>${choice.label}</label>
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
