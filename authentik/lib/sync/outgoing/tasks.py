@@ -78,9 +78,7 @@ class SyncTasks:
         with provider.sync_lock as lock_acquired:
             if not lock_acquired:
                 task.info("Synchronization is already running. Skipping.")
-                self.logger.debug(
-                    "Failed to acquire sync lock, skipping", provider=provider.name
-                )
+                self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
                 users_tasks = group(
@@ -101,17 +99,11 @@ class SyncTasks:
                         object_type=Group,
                     )
                 )
-                users_tasks.run().wait(
-                    timeout=provider.get_object_sync_time_limit_ms(User)
-                )
-                group_tasks.run().wait(
-                    timeout=provider.get_object_sync_time_limit_ms(Group)
-                )
+                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
+                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
-                task.warning(
-                    "Sync encountered a transient exception. Retrying", exc=exc
-                )
+                task.warning("Sync encountered a transient exception. Retrying", exc=exc)
                 raise Retry() from exc
             except StopSync as exc:
                 task.error(exc)
@@ -147,9 +139,7 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return
-        paginator = Paginator(
-            provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE
-        )
+        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()

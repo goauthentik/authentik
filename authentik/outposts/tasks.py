@@ -82,9 +82,7 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
 def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
-        OutpostServiceConnection.objects.filter(pk=connection_pk)
-        .select_subclasses()
-        .first()
+        OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
     )
     if not connection:
         return
@@ -124,13 +122,9 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
         if not controller_type:
             return
         with controller_type(outpost, outpost.service_connection) as controller:
-            LOGGER.debug(
-                "---------------Outpost Controller logs starting----------------"
-            )
+            LOGGER.debug("---------------Outpost Controller logs starting----------------")
             logs = getattr(controller, f"{action}_with_logs")()
-            LOGGER.debug(
-                "-----------------Outpost Controller logs end-------------------"
-            )
+            LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.error(exc)
     else:
@@ -139,9 +133,7 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
         self.logs(logs)
 
 
-@actor(
-    description=_("Ensure that all Outposts have valid Service Accounts and Tokens.")
-)
+@actor(description=_("Ensure that all Outposts have valid Service Accounts and Tokens."))
 def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
@@ -191,9 +183,7 @@ def outpost_connection_discovery():
     if kubeconfig_path.exists():
         self.info("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
-        if not KubernetesServiceConnection.objects.filter(
-            name=kubeconfig_local_name
-        ).exists():
+        if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             self.info("Creating kubeconfig Service Connection")
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(

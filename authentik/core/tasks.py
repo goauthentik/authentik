@@ -27,9 +27,7 @@ def clean_expired_models():
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
-            cls.objects.all()
-            .exclude(expiring=False)
-            .exclude(expiring=True, expires__gt=now())
+            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
         for obj in chunked_queryset(objects):
@@ -46,9 +44,7 @@ def clean_temporary_users():
     self = CurrentTask.get_task()
     _now = datetime.now()
     deleted_users = 0
-    for user in User.objects.filter(
-        **{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}
-    ):
+    for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
         if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
             continue
         delta: timedelta = _now - datetime.fromtimestamp(
