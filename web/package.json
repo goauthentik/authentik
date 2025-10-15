@@ -158,7 +158,7 @@
         "mermaid": "^11.12.0",
         "npm-run-all": "^4.1.5",
         "pino": "^10.0.0",
-        "pino-pretty": "^13.1.1",
+        "pino-pretty": "^13.1.2",
         "playwright": "^1.55.1",
         "prettier": "^3.6.2",
         "pseudolocale": "^2.1.0",
