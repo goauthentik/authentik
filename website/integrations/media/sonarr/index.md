@@ -21,6 +21,20 @@ The following placeholders are used in this guide:
 - `sonarr.company` is the FQDN of the Sonarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+```mermaid
+architecture-beta
+    service client(server)[Client]
+    service revprox(server)[Reverse Proxy]
+    service outpost(server)[Outpost]
+    service sonarr(server)[Sonarr]
+    service auth(server)[Authentik]
+
+    client:R -- L:revprox
+    revprox:R -- L:outpost
+    outpost:R -- L:sonarr
+    outpost:T -- B:auth
+```
+
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -62,4 +76,4 @@ Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and 
 
 ## Reverse Proxy Setup
 
-Finally, in your reverse proxy setup for Sonarr, replace the current value with your Authentik Server
+Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your Authentik Outpost Porxy Provider address.
