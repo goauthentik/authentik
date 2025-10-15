@@ -39737,6 +39737,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
         callback_url:
@@ -39916,6 +39918,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
@@ -40163,6 +40167,12 @@ components:
       - ldap
       - radius
       - rac
+      type: string
+    PKCEMethodEnum:
+      enum:
+      - none
+      - plain
+      - S256
       type: string
     PaginatedApplicationEntitlementList:
       type: object
@@ -44709,6 +44719,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
