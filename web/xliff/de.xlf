@@ -5315,11 +5315,6 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
         <target>Flow erfolgreich importiert.</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml-Dateien, die auf goauthentik.io zu finden sind und von Authentik exportiert werden können.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Flows beschreiben eine Kette von Stages zum Authentifizieren, Registrieren oder Wiederherstellen eines Benutzers. Stages werden basierend auf den auf sie angewendeten Richtlinien ausgewählt.</target>
@@ -10684,6 +10679,9 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>

@@ -3780,9 +3780,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sb904f23f17b60c3a">
   <source>Successfully imported flow.</source>
 </trans-unit>
-<trans-unit id="s344c4a2a48997e18">
-  <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-</trans-unit>
 <trans-unit id="sc816360d6f5a1eeb">
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
 </trans-unit>
@@ -7127,6 +7124,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
 </body>
 </file>

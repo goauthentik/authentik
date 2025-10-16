@@ -5317,11 +5317,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Flux importé avec succès</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>Fichiers .yaml, qui peuvent être trouvés sur goauthentik.io et exportés par authentik.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Les flux décrivent une succession d'étapes pour authentifier, inscrire ou récupérer un utilisateur. Les étapes sont choisies en fonction des politiques qui leur sont appliquées.</target>
@@ -10851,6 +10846,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>...</source>
   <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>

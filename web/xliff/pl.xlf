@@ -5319,11 +5319,6 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
         <target>Pomyślnie zaimportowano przepływ.</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>Pliki .yaml, które można znaleźć na goauthentik.io i mogą być wyeksportowane przez authentik.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Przepływy opisują łańcuch etapów do uwierzytelniania, rejestracji lub odzyskiwania użytkownika. Etapy są wybierane na podstawie stosowanych do nich zasad.</target>
@@ -10196,6 +10191,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>

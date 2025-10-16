@@ -5318,11 +5318,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>已成功导入流程。</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml 文件，可以在 goauthentik.io 上找到，也可以通过 authentik 导出。</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>流程描述了一系列用于对用户进行身份验证、注册或恢复的阶段。阶段是根据应用于它们的策略来选择的。</target>
@@ -10550,6 +10545,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>
