@@ -10,7 +10,7 @@ export function b64RawEnc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-export function u8arr(input: string): Uint8Array {
+export function u8arr(input: string): Uint8Array<ArrayBuffer> {
     return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
         c.charCodeAt(0),
     );
@@ -39,12 +39,12 @@ export function transformCredentialCreateOptions(
     // So to get the base64 encoded byte array, we first need to convert it to a regular
     // string, then a byte array, re-encode it and wrap that in an array.
     const stringId = decodeURIComponent(window.atob(userId));
-    user.id = u8arr(b64enc(u8arr(stringId))) as BufferSource;
+    user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
     return {
         ...credentialCreateOptions,
-        challenge: challenge as BufferSource,
+        challenge,
         user,
     };
 }
@@ -99,7 +99,7 @@ export function transformCredentialRequestOptions(
 
     return {
         ...credentialRequestOptions,
-        challenge: challenge as BufferSource,
+        challenge,
         allowCredentials,
     };
 }
