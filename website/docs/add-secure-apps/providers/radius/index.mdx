@@ -45,6 +45,10 @@ Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stage
 
 For certificates, ensure that you use a client certificate and a server certificate that are created by a certificate authority, not a self-generated certificate.
 
+import Eap from "../../../expressions/_eap.md";
+
+<Eap />
+
 ### RADIUS attributes
 
 Starting with authentik 2024.8, you can create RADIUS provider property mappings, which make it possible to add custom attributes to the RADIUS response packets.
@@ -70,7 +74,7 @@ After creation, make sure to select the RADIUS property mapping in the RADIUS pr
 The RADIUS provider supports EAP-TLS and [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol. For password-based authentication, only [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol is supported due to other password hashing methods requiring reversible password hashes, which we don’t support for security reasons.
 
 <details>
-  <summary>RADIUS protocol support for password-based authentication</summary>
+  <summary>RADIUS protocol support for password-based authentication (PAP):</summary>
 
 <HashSupport />
 </details>
