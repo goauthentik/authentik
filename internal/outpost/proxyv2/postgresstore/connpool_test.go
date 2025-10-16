@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -17,20 +18,19 @@ import (
 )
 
 func TestRefreshableConnPool_CredentialRefresh(t *testing.T) {
-	// Skip if no PostgreSQL available
-	if os.Getenv("AUTHENTIK_POSTGRESQL__HOST") == "" {
-		t.Skip("Skipping test: no PostgreSQL configured")
-	}
-
 	// Create a temporary file for password rotation
 	tmpDir := t.TempDir()
 	passwordFile := filepath.Join(tmpDir, "db_password")
 
-	// Write initial password
-	initialPassword := os.Getenv("AUTHENTIK_POSTGRESQL__PASSWORD")
+	cfg := config.Get()
+	initialConfig := cfg.RefreshPostgreSQLConfig()
+
+	// Determine the current database password as the baseline for the rotation test.
+	initialPassword := initialConfig.Password
 	if initialPassword == "" {
 		initialPassword = "postgres"
 	}
+
 	err := os.WriteFile(passwordFile, []byte(initialPassword), 0600)
 	require.NoError(t, err)
 
@@ -46,11 +46,10 @@ func TestRefreshableConnPool_CredentialRefresh(t *testing.T) {
 	}()
 
 	// Reload config
-	cfg := &config.Config{}
-	cfg.Setup()
+	refreshedConfig := cfg.RefreshPostgreSQLConfig()
 
 	// Build initial DSN
-	dsn, err := BuildDSN(cfg.PostgreSQL)
+	dsn, err := BuildDSN(refreshedConfig)
 	require.NoError(t, err)
 
 	gormConfig := &gorm.Config{
@@ -105,11 +104,6 @@ func TestRefreshableConnPool_Interfaces(t *testing.T) {
 }
 
 func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
-	// Skip if no PostgreSQL available
-	if os.Getenv("AUTHENTIK_POSTGRESQL__HOST") == "" {
-		t.Skip("Skipping test: no PostgreSQL configured")
-	}
-
 	cfg := config.Get()
 	dsn, err := BuildDSN(cfg.PostgreSQL)
 	require.NoError(t, err)
@@ -125,18 +119,26 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 	db, err := pool.NewGORMDB()
 	require.NoError(t, err)
 
-	// Test concurrent queries
+	// Test that the connection is working
 	ctx := context.Background()
+	var result int
+	err = db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
+	require.NoError(t, err, "Initial connection test should succeed")
+
+	// Test concurrent queries
 	numGoroutines := 10
 	numQueries := 5
 
+	var wg sync.WaitGroup
 	errChan := make(chan error, numGoroutines*numQueries)
 
 	for i := 0; i < numGoroutines; i++ {
+		wg.Add(1)
 		go func(goroutineID int) {
+			defer wg.Done()
 			for j := 0; j < numQueries; j++ {
 				var result int
-				err := db.WithContext(ctx).Raw("SELECT ?", goroutineID*numQueries+j).Scan(&result).Error
+				err := db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
 				if err != nil {
 					errChan <- err
 				}
@@ -144,8 +146,8 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 		}(i)
 	}
 
-	// Wait a bit for goroutines to complete
-	time.Sleep(2 * time.Second)
+	// Wait for all goroutines to complete, then close the channel
+	wg.Wait()
 	close(errChan)
 
 	// Check for any errors
