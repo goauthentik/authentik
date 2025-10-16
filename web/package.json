@@ -179,7 +179,7 @@
         "ts-pattern": "^5.8.0",
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.1.0",
-        "typescript": "^5.8.3",
+        "typescript": "^5.9.3",
         "typescript-eslint": "^8.46.1",
         "unist-util-visit": "^5.0.0",
         "vite": "^7.1.10",
