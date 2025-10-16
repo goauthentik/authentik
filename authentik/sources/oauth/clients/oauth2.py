@@ -1,7 +1,5 @@
 """OAuth 2 Clients"""
 
-from base64 import urlsafe_b64encode
-from hashlib import sha256
 from json import loads
 from typing import Any
 from urllib.parse import parse_qsl
@@ -14,6 +12,7 @@ from requests.models import Response
 from structlog.stdlib import get_logger
 
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.models import (
     AuthorizationCodeAuthMethod,
@@ -150,12 +149,7 @@ class OAuth2Client(BaseOAuthClient):
             if pkce_mode == PKCEMethod.PLAIN:
                 args["code_challenge"] = verifier
             elif pkce_mode == PKCEMethod.S256:
-                challenge = (
-                    urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
-                    .decode("utf-8")
-                    .replace("=", "")
-                )
-                args["code_challenge"] = challenge
+                args["code_challenge"] = pkce_s256_challenge(verifier)
             args["code_challenge_method"] = str(pkce_mode)
         return args
 

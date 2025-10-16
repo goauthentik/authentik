@@ -1,7 +1,5 @@
 """OAuth Source tests"""
 
-from base64 import urlsafe_b64encode
-from hashlib import sha256
 from urllib.parse import parse_qs
 
 from django.urls import reverse
@@ -14,6 +12,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.api.source import OAuthSourceSerializer
 from authentik.sources.oauth.clients.oauth2 import SESSION_KEY_OAUTH_PKCE
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
@@ -206,11 +205,7 @@ class TestOAuthSource(APITestCase):
         session = self.client.session
         state = session[f"oauth-client-{self.source.name}-request-state"]
         verifier = session[SESSION_KEY_OAUTH_PKCE]
-        challenge = (
-            urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
-            .decode("utf-8")
-            .replace("=", "")
-        )
+        challenge = pkce_s256_challenge(verifier)
 
         self.assertEqual(qs["redirect_uri"], ["http://testserver/source/oauth/callback/test/"])
         self.assertEqual(qs["response_type"], ["code"])
