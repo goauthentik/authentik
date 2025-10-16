@@ -17,6 +17,7 @@ import type { PageUIConfig } from "./types.js";
 
 import { groupBy } from "#common/utils";
 
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
 import { ifPresent } from "#elements/utils/attributes";
@@ -201,17 +202,19 @@ export class LibraryPage extends AKElement {
     }
 
     render() {
-        return html`<main
-            aria-label=${msg("Applications library")}
-            class="pf-c-page__main"
-            tabindex="-1"
-            id="main-content"
-        >
+        return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
                 <h1 class="pf-c-page__title">${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
             </div>
-            <section class="pf-c-page__main-section">${this.renderState()}</section>
-        </main>`;
+            <main
+                ${AKSkipToContent.ref}
+                tabindex="-1"
+                id="main-content"
+                class="pf-c-page__main-section"
+            >
+                ${this.renderState()}
+            </main>
+        </div>`;
     }
 }

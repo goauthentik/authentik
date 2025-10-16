@@ -34,6 +34,10 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
+
     @state()
     protected ready = false;
 
