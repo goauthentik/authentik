@@ -5265,11 +5265,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>플로우를 성공적으로 가져왔습니다.</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml 파일로 내보낼 수 있으며, 이 파일은 goauthentik.io에서 찾을 수 있고 authentik을 통해 내보낼 수 있습니다.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>플로우는 사용자를 인증, 등록 또는 복구하기 위한 일련의 단계를 설명합니다. 스테이지에 적용되는 정책에 따라 스테이지가 선택됩니다.</target>
@@ -9879,6 +9874,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>

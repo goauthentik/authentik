@@ -5271,11 +5271,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Flow succesvol geïmporteerd.</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml-bestanden, die te vinden zijn op goauthentik.io en geëxporteerd kunnen worden door authentik.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Flows beschrijven een reeks fases om een gebruiker te authenticeren, in te schrijven of te herstellen. Fases worden gekozen op basis van toegepaste beleidsregels.</target>
@@ -9785,6 +9780,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>
