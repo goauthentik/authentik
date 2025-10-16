@@ -12,7 +12,7 @@ const SessionCleanupInterval = 5 * time.Minute
 
 // CleanupStore defines the interface for stores that support cleanup
 type CleanupStore interface {
-	CleanupExpired() error
+	CleanupExpired(ctx context.Context) error
 }
 
 // CleanupManager manages periodic cleanup for session stores
@@ -90,7 +90,7 @@ func (cm *CleanupManager) runCleanup() {
 	}()
 
 	cm.log.Debug("Running session cleanup")
-	if err := cm.store.CleanupExpired(); err != nil {
+	if err := cm.store.CleanupExpired(cleanupCtx); err != nil {
 		cm.log.WithError(err).Warn("Session cleanup returned error")
 	} else {
 		cm.log.Debug("Session cleanup completed successfully")

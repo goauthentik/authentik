@@ -209,7 +209,7 @@ func (s *PostgresStore) New(r *http.Request, name string) (*sessions.Session, er
 	}
 	session.ID = c.Value
 
-	err = s.load(session)
+	err = s.load(r.Context(), session)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return session, nil
@@ -224,7 +224,7 @@ func (s *PostgresStore) New(r *http.Request, name string) (*sessions.Session, er
 func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
 	// Delete if max-age is <= 0
 	if session.Options.MaxAge <= 0 {
-		if err := s.delete(session); err != nil {
+		if err := s.delete(r.Context(), session); err != nil {
 			return fmt.Errorf("failed to delete session: %w", err)
 		}
 		http.SetCookie(w, sessions.NewCookie(session.Name(), "", session.Options))
@@ -236,7 +236,7 @@ func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *se
 		session.ID = s.keyPrefix + generateSessionID()
 	}
 
-	if err := s.save(session); err != nil {
+	if err := s.save(r.Context(), session); err != nil {
 		return fmt.Errorf("failed to save session: %w", err)
 	}
 
@@ -263,7 +263,7 @@ func (s *PostgresStore) Close() error {
 }
 
 // save writes session to PostgreSQL
-func (s *PostgresStore) save(session *sessions.Session) error {
+func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) error {
 	// Convert session.Values (map[interface{}]interface{}) to map[string]interface{} for JSON marshaling
 	stringKeyedValues := make(map[string]interface{})
 	for k, v := range session.Values {
@@ -306,16 +306,16 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 		proxySession.Expires = expiresAt
 	}
 
-	return s.db.Clauses(clause.OnConflict{
+	return s.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "session_key"}},
 		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data", "expires"}),
 	}).Create(&proxySession).Error
 }
 
 // load reads session from PostgreSQL
-func (s *PostgresStore) load(session *sessions.Session) error {
+func (s *PostgresStore) load(ctx context.Context, session *sessions.Session) error {
 	var proxySession ProxySession
-	err := s.db.Where("session_key = ?", session.ID).First(&proxySession).Error
+	err := s.db.WithContext(ctx).Where("session_key = ?", session.ID).First(&proxySession).Error
 
 	if err != nil {
 		return fmt.Errorf("failed to load session: %w", err)
@@ -324,12 +324,12 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 	// Check if session is expired
 	if time.Now().UTC().After(proxySession.Expires) {
 		// Session is expired, delete it and return not found error
-		s.db.Delete(&ProxySession{}, "session_key = ?", session.ID)
+		s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key = ?", session.ID)
 		return gorm.ErrRecordNotFound
 	}
 
 	// Deserialize session data from JSON
-	if proxySession.SessionData != "" && proxySession.SessionData != "{}" {
+	if proxySession.SessionData != "" {
 		// First unmarshal to map[string]interface{}
 		var stringKeyedValues map[string]interface{}
 		err = json.Unmarshal([]byte(proxySession.SessionData), &stringKeyedValues)
@@ -348,13 +348,13 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 }
 
 // delete removes session from PostgreSQL
-func (s *PostgresStore) delete(session *sessions.Session) error {
-	return s.db.Delete(&ProxySession{}, "session_key = ?", session.ID).Error
+func (s *PostgresStore) delete(ctx context.Context, session *sessions.Session) error {
+	return s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key = ?", session.ID).Error
 }
 
 // CleanupExpired removes expired sessions by checking MaxAge in session_data
-func (s *PostgresStore) CleanupExpired() error {
-	result := s.db.Where(`"expires" < ?`, time.Now().UTC().Format(time.RFC3339)).Delete(&ProxySession{})
+func (s *PostgresStore) CleanupExpired(ctx context.Context) error {
+	result := s.db.WithContext(ctx).Where(`"expires" < ?`, time.Now().UTC()).Delete(&ProxySession{})
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete expired sessions: %w", result.Error)
 	}
@@ -375,7 +375,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	// Pre-filter sessions using JSONB operators where possible
 	// Only fetch sessions that have claims (session_data->'claims' IS NOT NULL)
 	var sessions []ProxySession
-	err := s.db.Where(fmt.Sprintf("session_data::jsonb ? '%s'", constants.SessionClaims)).Find(&sessions).Error
+	err := s.db.WithContext(ctx).Where(fmt.Sprintf("session_data::jsonb ? '%s'", constants.SessionClaims)).Find(&sessions).Error
 	if err != nil {
 		return fmt.Errorf("failed to fetch sessions: %w", err)
 	}
@@ -383,7 +383,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	var sessionKeysToDelete []string
 
 	for _, session := range sessions {
-		if session.SessionData == "" || session.SessionData == "{}" {
+		if session.SessionData == "" {
 			continue
 		}
 
@@ -414,7 +414,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	}
 
 	if len(sessionKeysToDelete) > 0 {
-		err = s.db.Delete(&ProxySession{}, "session_key IN ?", sessionKeysToDelete).Error
+		err = s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key IN ?", sessionKeysToDelete).Error
 		if err != nil {
 			return fmt.Errorf("failed to delete sessions: %w", err)
 		}

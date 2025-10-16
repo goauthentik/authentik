@@ -77,8 +77,8 @@ func NewStore(storePath string, keyPairs ...[]byte) (*Store, error) {
 }
 
 // CleanupExpired implements the CleanupStore interface for use with CleanupManager
-func (s *Store) CleanupExpired() error {
-	return s.SessionCleanup(context.Background())
+func (s *Store) CleanupExpired(ctx context.Context) error {
+	return s.SessionCleanup(ctx)
 }
 
 // SessionCleanup acquires a file lock to ensure only one instance runs at a time,

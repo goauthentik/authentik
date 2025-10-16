@@ -134,7 +134,7 @@ func TestPostgresStore_Load(t *testing.T) {
 	// Load the session
 	session := sessions.NewSession(store, "test_session")
 	session.ID = sessionKey
-	err = store.load(session)
+	err = store.load(context.Background(), session)
 	assert.NoError(t, err)
 
 	// Verify claims were loaded correctly
@@ -166,7 +166,7 @@ func TestPostgresStore_Delete(t *testing.T) {
 	// Delete the session
 	session := sessions.NewSession(store, "test_session")
 	session.ID = sessionKey
-	err = store.delete(session)
+	err = store.delete(context.Background(), session)
 	assert.NoError(t, err)
 
 	// Verify session was deleted
@@ -390,7 +390,7 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	// Try to load the expired session
 	session := sessions.NewSession(store, "test_session")
 	session.ID = sessionKey
-	err = store.load(session)
+	err = store.load(context.Background(), session)
 
 	// Should return ErrRecordNotFound because session is expired
 	assert.Error(t, err)
@@ -442,7 +442,7 @@ func TestPostgresStore_ConcurrentSessionAccess(t *testing.T) {
 				return
 			}
 			session2.ID = session.ID
-			err = store.load(session2)
+			err = store.load(context.Background(), session2)
 			if err != nil {
 				done <- fmt.Errorf("goroutine %d failed to load: %w", id, err)
 				return
