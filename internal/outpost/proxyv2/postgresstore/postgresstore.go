@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -107,15 +108,50 @@ func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
 	return strings.Join(dsnParts, " "), nil
 }
 
-// NewPostgresStore returns a new PostgresStore
-func NewPostgresStore() (*PostgresStore, error) {
-	cfg := config.Get().PostgreSQL
-
+// SetupGORMWithRefreshablePool creates a GORM DB with a refreshable connection pool.
+// This is the standardized way to create database connections for both production and tests.
+//
+// The RefreshableConnPool wraps database/sql and automatically detects PostgreSQL
+// authentication errors (SQLSTATE 28xxx), refreshes credentials from config sources
+// (file://, env://, or plain environment variables), and reconnects without downtime.
+//
+// Parameters:
+//   - cfg: PostgreSQL configuration (host, port, user, password, etc.)
+//   - gormConfig: GORM configuration (logger, naming strategy, etc.)
+//   - maxIdleConns: Maximum number of idle connections in the pool
+//   - maxOpenConns: Maximum number of open connections to the database
+//   - connMaxLifetime: Maximum lifetime of a connection
+//
+// Returns:
+//   - *gorm.DB: GORM database instance for ORM operations
+//   - *RefreshableConnPool: Connection pool reference (caller must Close when done)
+//   - error: Any error encountered during setup
+func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.Config, maxIdleConns, maxOpenConns int, connMaxLifetime time.Duration) (*gorm.DB, *RefreshableConnPool, error) {
 	// Build connection string
 	dsn, err := BuildDSN(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to build DSN: %w", err)
+		return nil, nil, fmt.Errorf("failed to build DSN: %w", err)
 	}
+
+	// Create refreshable connection pool
+	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+
+	// Create GORM DB using the refreshable connection pool
+	db, err := pool.NewGORMDB()
+	if err != nil {
+		_ = pool.Close()
+		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
+	}
+
+	return db, pool, nil
+}
+
+// NewPostgresStore returns a new PostgresStore
+func NewPostgresStore() (*PostgresStore, error) {
+	cfg := config.Get().PostgreSQL
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
@@ -135,17 +171,10 @@ func NewPostgresStore() (*PostgresStore, error) {
 		connMaxLifetime = time.Hour // Default 1 hour
 	}
 
-	// Create refreshable connection pool
-	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
+	// Use standardized setup
+	db, pool, err := SetupGORMWithRefreshablePool(cfg, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connection pool: %w", err)
-	}
-
-	// Create GORM DB using the refreshable connection pool
-	db, err := pool.NewGORMDB()
-	if err != nil {
-		_ = pool.Close()
-		return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
+		return nil, fmt.Errorf("failed to setup database: %w", err)
 	}
 
 	ps := &PostgresStore{
@@ -196,7 +225,7 @@ func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *se
 	// Delete if max-age is <= 0
 	if session.Options.MaxAge <= 0 {
 		if err := s.delete(session); err != nil {
-			return err
+			return fmt.Errorf("failed to delete session: %w", err)
 		}
 		http.SetCookie(w, sessions.NewCookie(session.Name(), "", session.Options))
 		return nil
@@ -208,7 +237,7 @@ func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *se
 	}
 
 	if err := s.save(session); err != nil {
-		return err
+		return fmt.Errorf("failed to save session: %w", err)
 	}
 
 	http.SetCookie(w, sessions.NewCookie(session.Name(), session.ID, session.Options))
@@ -289,7 +318,7 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 	err := s.db.Where("session_key = ?", session.ID).First(&proxySession).Error
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to load session: %w", err)
 	}
 
 	// Check if session is expired
@@ -413,7 +442,7 @@ func GetPersistentStore() (*PostgresStore, error) {
 	if globalStore == nil {
 		store, err := NewPostgresStore()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to create persistent store: %w", err)
 		}
 		globalStore = store
 	}
@@ -432,10 +461,12 @@ func StopPersistentStore() {
 	}
 }
 
-// NewTestStore creates a PostgresStore for testing with the given database
-func NewTestStore(db *gorm.DB) *PostgresStore {
+// NewTestStore creates a PostgresStore for testing with the given database and pool.
+// The pool reference is required to properly close connections in test cleanup.
+func NewTestStore(db *gorm.DB, pool *RefreshableConnPool) *PostgresStore {
 	return &PostgresStore{
-		db: db,
+		db:   db,
+		pool: pool,
 		options: sessions.Options{
 			Path:   "/",
 			MaxAge: 3600,

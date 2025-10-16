@@ -17,11 +17,6 @@ import (
 )
 
 func TestRefreshableConnPool_CredentialRefresh(t *testing.T) {
-	// Skip if no PostgreSQL available
-	if os.Getenv("AUTHENTIK_POSTGRESQL__HOST") == "" {
-		t.Skip("Skipping test: no PostgreSQL configured")
-	}
-
 	// Create a temporary file for password rotation
 	tmpDir := t.TempDir()
 	passwordFile := filepath.Join(tmpDir, "db_password")
@@ -105,10 +100,6 @@ func TestRefreshableConnPool_Interfaces(t *testing.T) {
 }
 
 func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
-	// Skip if no PostgreSQL available
-	if os.Getenv("AUTHENTIK_POSTGRESQL__HOST") == "" {
-		t.Skip("Skipping test: no PostgreSQL configured")
-	}
 
 	cfg := config.Get()
 	dsn, err := BuildDSN(cfg.PostgreSQL)
