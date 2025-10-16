@@ -10,7 +10,7 @@ authentik provides several [standard policy types](./index.md#standard-policies)
 You can add expressions to our standard policies to further customize them.
 :::
 
-To learn more, see the [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when the application is created](../../add-secure-apps/applications/manage_apps.mdx#instructions) documentation (for example, to configure application-specific access).
+To learn more, see the [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when the application is created](../../add-secure-apps/applications/manage_apps.mdx#create-an-application-and-provider-pair) documentation (for example, to configure application-specific access).
 
 ## Create a policy
 

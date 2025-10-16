@@ -43,12 +43,14 @@ class Conf:
                 "middlewares",
                 (
                     ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+                    ("django_dramatiq_postgres.middleware.TaskStateBeforeMiddleware", {}),
                     ("dramatiq.middleware.age_limit.AgeLimit", {}),
                     ("dramatiq.middleware.time_limit.TimeLimit", {}),
                     ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
                     ("dramatiq.middleware.callbacks.Callbacks", {}),
                     ("dramatiq.middleware.pipelines.Pipelines", {}),
                     ("dramatiq.middleware.retries.Retries", {}),
+                    ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
                 ),
             ),
         )

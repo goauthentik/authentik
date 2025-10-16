@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 
 from authentik.api.pagination import Pagination
-from authentik.enterprise.search.ql import AUTOCOMPLETE_COMPONENT_NAME, QLSearch
+from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA, QLSearch
 
 
 class AutocompletePagination(Pagination):
@@ -46,8 +46,6 @@ class AutocompletePagination(Pagination):
 
     def get_paginated_response_schema(self, schema):
         final_schema = super().get_paginated_response_schema(schema)
-        final_schema["properties"]["autocomplete"] = {
-            "$ref": f"#/components/schemas/{AUTOCOMPLETE_COMPONENT_NAME}"
-        }
+        final_schema["properties"]["autocomplete"] = AUTOCOMPLETE_SCHEMA.ref
         final_schema["required"].append("autocomplete")
         return final_schema

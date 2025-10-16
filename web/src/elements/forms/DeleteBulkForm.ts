@@ -58,6 +58,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         return name || null;
     }
 
+    @state()
     protected get columns(): TableColumn[] {
         return this.metadata(this.objects[0]).map((element) => [element.key]);
     }

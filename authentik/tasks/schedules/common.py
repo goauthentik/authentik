@@ -34,7 +34,10 @@ class ScheduleSpec:
         return pickle.dumps(self.kwargs)
 
     def get_options(self) -> bytes:
-        return pickle.dumps(self.options)
+        options = self.options
+        if self.uid is not None:
+            options["uid"] = self.uid
+        return pickle.dumps(options)
 
     def update_or_create(self) -> "Schedule":
         from authentik.tasks.schedules.models import Schedule

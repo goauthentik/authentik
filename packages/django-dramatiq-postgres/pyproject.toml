@@ -33,6 +33,7 @@ classifiers = [
 dependencies = [
   "cron-converter >=1,<2",
   "django >=4.2,<6.0",
+  "django-pglock >=1.7,<2",
   "django-pgtrigger >=4,<5",
   "dramatiq[watch] >=1.17,<1.18",
   "tenacity >=9,<10",

@@ -3,7 +3,7 @@
 from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from authentik.providers.rac.consumer_client import RAC_CLIENT_GROUP
+from authentik.providers.rac.consumer_client import build_rac_client_group
 
 
 class RACOutpostConsumer(AsyncWebsocketConsumer):
@@ -15,7 +15,7 @@ class RACOutpostConsumer(AsyncWebsocketConsumer):
         self.dest_channel_id = self.scope["url_route"]["kwargs"]["channel"]
         await self.accept()
         await self.channel_layer.group_send(
-            RAC_CLIENT_GROUP,
+            build_rac_client_group(),
             {
                 "type": "event.outpost.connected",
                 "outpost_channel": self.channel_name,

@@ -15,7 +15,6 @@ import { match } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -58,13 +57,34 @@ export class NavigationButtons extends AKElement {
             .pf-c-page__header-tools {
                 display: flex;
             }
-            :host([theme="dark"]) .pf-c-page__header-tools {
-                color: var(--ak-dark-foreground) !important;
+
+            .pf-c-avatar {
+                background-color: var(--pf-global--BackgroundColor--light-200);
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    aspect-ratio: 1 / 1;
+                }
             }
-            :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-            :host([theme="light"]) .pf-c-notification-badge__count,
-            :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
-                color: var(--ak-global--Color--100) !important;
+
+            :host([theme="dark"]) {
+                .pf-c-page__header-tools {
+                    color: var(--ak-dark-foreground) !important;
+                }
+
+                .pf-c-avatar {
+                    background-color: var(--pf-global--BackgroundColor--dark-300);
+                }
+            }
+
+            :host([theme="light"]) {
+                .pf-c-page__header-tools-item .fas,
+                .pf-c-notification-badge__count,
+                .pf-c-page__header-tools-group .pf-c-button {
+                    color: var(--ak-global--Color--100) !important;
+                }
             }
         `,
     ];
@@ -172,12 +192,14 @@ export class NavigationButtons extends AKElement {
     }
 
     renderAvatar() {
-        return html`<img
+        return html`<div
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
-            src=${ifDefined(this.me?.user.avatar)}
             aria-hidden="true"
-            alt="${msg("Avatar image")}"
-        />`;
+        >
+            ${this.me?.user.avatar
+                ? html`<img src=${this.me.user.avatar} alt=${msg("Avatar image")} />`
+                : nothing}
+        </div>`;
     }
 
     get userDisplayName() {

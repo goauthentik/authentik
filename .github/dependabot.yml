@@ -146,6 +146,7 @@ updates:
   - package-ecosystem: docker-compose
     directories:
       # - /scripts # Maybe
+      - /scripts/api
       - /tests/e2e
     schedule:
       interval: daily

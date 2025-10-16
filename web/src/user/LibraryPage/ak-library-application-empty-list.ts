@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 export interface ILibraryPageApplicationEmptyList {
-    isAdmin: boolean;
+    admin: boolean;
 }
 
 /**
@@ -43,8 +43,8 @@ export class LibraryPageApplicationEmptyList
         `,
     ];
 
-    @property({ attribute: "isadmin", type: Boolean })
-    public isAdmin = false;
+    @property({ type: Boolean })
+    public admin = false;
 
     #renderNewAppButton() {
         const href = paramURL("/core/applications", {
@@ -75,7 +75,7 @@ export class LibraryPageApplicationEmptyList
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
-                ${this.isAdmin ? this.#renderNewAppButton() : nothing}
+                ${this.admin ? this.#renderNewAppButton() : nothing}
             </div>
         </div>`;
     }

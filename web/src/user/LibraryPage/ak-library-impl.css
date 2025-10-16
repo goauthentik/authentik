@@ -1,0 +1,39 @@
+:host {
+    display: block;
+    padding: 3% 5%;
+}
+
+.pf-c-page__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-flow: row wrap;
+    gap: var(--pf-global--spacer--lg);
+    container-type: inline-size;
+
+    .pf-c-page__title {
+        margin: 0;
+        flex: 1 1 auto;
+    }
+
+    .search-container {
+        flex: 0 0 36ch;
+
+        @container (width < 650px) {
+            flex: 1 1 36ch;
+
+            &::part(search-input) {
+                font-size: var(--pf-global--FontSize--md);
+            }
+        }
+    }
+}
+
+.pf-c-page__main {
+    overflow: hidden;
+}
+
+.pf-c-page__main-section {
+    background-color: transparent;
+    padding-inline: 0;
+}

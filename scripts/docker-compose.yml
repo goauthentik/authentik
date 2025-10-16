@@ -12,12 +12,6 @@ services:
     ports:
       - 127.0.0.1:5432:5432
     restart: always
-  redis:
-    container_name: redis
-    image: docker.io/library/redis
-    ports:
-      - 127.0.0.1:6379:6379
-    restart: always
   s3:
     container_name: s3
     image: docker.io/zenko/cloudserver

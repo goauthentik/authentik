@@ -269,7 +269,7 @@ class GoogleWorkspaceUserTests(TestCase):
                 ).exists()
             )
 
-    def test_sync_task(self):
+    def test_sync_discover(self):
         """Test user discovery"""
         uid = generate_id()
         http = MockHTTP()
@@ -310,3 +310,63 @@ class GoogleWorkspaceUserTests(TestCase):
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 5)
+
+    def test_sync_discover_multiple(self):
+        """Test user discovery, running multiple times"""
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"users": [{"primaryEmail": f"{uid}@goauthentik.io"}]},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"groups": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"primaryEmail": f"{uid}@goauthentik.io"},
+        )
+        self.app.backchannel_providers.remove(self.provider)
+        different_user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+        )
+        self.app.backchannel_providers.add(self.provider)
+        # Sync once
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.send(self.provider.pk).get_result()
+            self.assertTrue(
+                GoogleWorkspaceProviderUser.objects.filter(
+                    user=different_user, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 5)
+            # Change response, which will trigger a discovery update
+            http.add_response(
+                f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+                method="GET",
+                body={
+                    "users": [
+                        {"primaryEmail": f"{uid}@goauthentik.io", "foo": "bar"},
+                    ]
+                },
+            )
+            google_workspace_sync.send(self.provider.pk).get_result()
+            self.assertTrue(
+                GoogleWorkspaceProviderUser.objects.filter(
+                    user=different_user, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())

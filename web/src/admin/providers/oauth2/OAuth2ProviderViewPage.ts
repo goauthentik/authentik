@@ -23,6 +23,7 @@ import {
     CoreUsersListRequest,
     ModelEnum,
     OAuth2Provider,
+    OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
@@ -268,12 +269,28 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${msg("Back-Channel Logout URI")}</span
+                                        >${msg("Logout URI")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.backchannelLogoutUri}
+                                        ${this.provider.logoutUri}
+                                    </div>
+                                </dd>
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Logout Method")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.logoutMethod ===
+                                        OAuth2ProviderLogoutMethodEnum.Backchannel
+                                            ? msg("Back-channel")
+                                            : this.provider.logoutMethod ===
+                                                OAuth2ProviderLogoutMethodEnum.Frontchannel
+                                              ? msg("Front-channel")
+                                              : msg("")}
                                     </div>
                                 </dd>
                             </div>

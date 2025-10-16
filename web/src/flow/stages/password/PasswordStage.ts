@@ -71,11 +71,12 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     ?allow-show-password=${this.challenge.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
             ${this.challenge.recoveryUrl
                 ? html`<div slot="footer-band" class="pf-c-login__main-footer-band">

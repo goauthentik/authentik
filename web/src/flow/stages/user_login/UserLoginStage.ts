@@ -67,12 +67,13 @@ export class PasswordStage extends BaseStage<
                     </p>
                 </div>
 
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" data-remember-me class="pf-c-button pf-m-primary">
                         ${msg("Yes")}
                     </button>
                     <button type="submit" class="pf-c-button pf-m-secondary">${msg("No")}</button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

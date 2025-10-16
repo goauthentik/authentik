@@ -46,34 +46,22 @@ export class SystemTasksPage extends AKElement {
                 <div
                     role="tabpanel"
                     tabindex="0"
-                    slot="page-schedules"
-                    id="page-schedules"
-                    aria-label="${msg("Schedules")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                        >
-                            <ak-schedule-list></ak-schedule-list>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
                     slot="page-tasks"
                     id="page-tasks"
                     aria-label="${msg("Tasks")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                        >
-                            <ak-task-list></ak-task-list>
-                        </div>
-                    </div>
+                    <ak-task-list include-overview></ak-task-list>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-schedules"
+                    id="page-schedules"
+                    aria-label="${msg("Schedules")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <ak-schedule-list></ak-schedule-list>
                 </div>
             </ak-tabs>
         </main>`;

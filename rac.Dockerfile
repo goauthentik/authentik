@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.1-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,7 +31,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/beryju/guacd:1.5.5-fips
+FROM ghcr.io/goauthentik/guacd:v1.6.0-fips
 
 ARG VERSION
 ARG GIT_BUILD_HASH

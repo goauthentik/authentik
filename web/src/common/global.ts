@@ -1,10 +1,16 @@
-import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
+import {
+    Config,
+    ConfigFromJSON,
+    CurrentBrand,
+    CurrentBrandFromJSON,
+    FlowLayoutEnum,
+} from "@goauthentik/api";
 
 export interface GlobalAuthentik {
     _converted?: boolean;
     locale?: string;
     flow?: {
-        layout: string;
+        layout: FlowLayoutEnum;
     };
     config: Config;
     brand: CurrentBrand;

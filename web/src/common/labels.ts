@@ -1,6 +1,14 @@
-import { Device, EventActions, IntentEnum, SeverityEnum, UserTypeEnum } from "@goauthentik/api";
+import {
+    Device,
+    DeviceChallenge,
+    DeviceClassesEnum,
+    EventActions,
+    IntentEnum,
+    SeverityEnum,
+    UserTypeEnum,
+} from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 
 /* Various tables in the API for which we need to supply labels */
 
@@ -67,7 +75,10 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
     return "pf-m-info";
 }
 
-// TODO: Add verbose_name field to now vendored OTP devices
+/**
+ * @todo Add verbose_name field to now vendored OTP devices
+ * @todo We seem to have these constants in the `ModelEnum` object in lowercase.
+ */
 export const deviceTypeToLabel = new Map<string, string>([
     ["authentik_stages_authenticator_static.StaticDevice", msg("Static tokens")],
     ["authentik_stages_authenticator_totp.TOTPDevice", msg("TOTP Device")],
@@ -75,6 +86,26 @@ export const deviceTypeToLabel = new Map<string, string>([
 
 export const deviceTypeName = (device: Device) =>
     deviceTypeToLabel.get(device.type) ?? device?.verboseName ?? "";
+
+export function formatDeviceChallengeMessage(deviceChallenge?: DeviceChallenge | null): string {
+    switch (deviceChallenge?.deviceClass) {
+        case DeviceClassesEnum.Email: {
+            const { email } = deviceChallenge.challenge;
+
+            return email
+                ? msg(str`A code has been sent to your address: ${email}`)
+                : msg("A code has been sent to your email address.");
+        }
+        case DeviceClassesEnum.Sms:
+            return msg("A one-time use code has been sent to you via SMS text message.");
+        case DeviceClassesEnum.Totp:
+            return msg("Open your authenticator app to retrieve a one-time use code.");
+        case DeviceClassesEnum.Static:
+            return msg("Enter a one-time recovery code for this user.");
+    }
+
+    return msg("Enter the code from your authenticator device.");
+}
 
 const _userTypeToLabel = new Map<UserTypeEnum | undefined, string>([
     [UserTypeEnum.Internal, msg("Internal")],

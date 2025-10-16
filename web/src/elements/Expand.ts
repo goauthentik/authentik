@@ -19,20 +19,24 @@ export interface IExpand {
 @customElement("ak-expand")
 export class Expand extends AKElement implements IExpand {
     @property({ type: Boolean })
-    expanded = false;
+    public expanded = false;
 
     @property({ type: String, attribute: "text-open" })
-    textOpen = msg("Show less");
+    public textOpen = msg("Show less");
 
     @property({ type: String, attribute: "text-closed" })
-    textClosed = msg("Show more");
+    public textClosed = msg("Show more");
 
     static styles = [
         PFBase,
         PFExpandableSection,
         css`
-            .pf-c-expandable-section.pf-m-display-lg {
-                background-color: var(--pf-global--BackgroundColor--100);
+            .pf-c-expandable-section {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .pf-c-expandable-section__toggle {
+                user-select: none;
             }
         `,
     ];
@@ -46,7 +50,8 @@ export class Expand extends AKElement implements IExpand {
             <button
                 type="button"
                 class="pf-c-expandable-section__toggle"
-                aria-expanded="${this.expanded}"
+                aria-expanded=${this.expanded ? "true" : "false"}
+                aria-controls="expandable-content"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
@@ -58,7 +63,11 @@ export class Expand extends AKElement implements IExpand {
                     >${this.expanded ? this.textOpen : this.textClosed}</span
                 >
             </button>
-            <div class="pf-c-expandable-section__content" ?hidden=${!this.expanded}>
+            <div
+                id="expandable-content"
+                class="pf-c-expandable-section__content"
+                ?hidden=${!this.expanded}
+            >
                 <slot></slot>
             </div>
         </div>`;

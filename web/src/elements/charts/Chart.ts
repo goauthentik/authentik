@@ -44,6 +44,8 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
+    public role = "figure";
+
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
@@ -210,7 +212,11 @@ export abstract class AKChart<T> extends AKElement {
                       `
                     : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
-                <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
+                <canvas
+                    role="img"
+                    aria-label=${msg("Chart")}
+                    style="${!this.chart ? "display: none;" : ""}"
+                ></canvas>
             </div>
         `;
     }

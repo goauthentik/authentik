@@ -82,6 +82,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     renderExampleLDAP(): TemplateResult {
         return html`
             <button
+                type="button"
                 class="pf-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {
@@ -105,6 +106,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 ${msg("Active Directory User")}
             </button>
             <button
+                type="button"
                 class="pf-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {

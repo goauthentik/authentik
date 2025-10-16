@@ -19,7 +19,7 @@ import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -85,7 +85,7 @@ export class FlowViewPage extends AKElement {
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Flow Info")}</div>
                             <div class="pf-c-card__body">
@@ -155,6 +155,9 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" normally`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
                                                         const finalURL = `${
@@ -168,6 +171,9 @@ export class FlowViewPage extends AKElement {
                                                     ${msg("Normal")}
                                                 </button>
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" as current user`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
@@ -182,9 +188,12 @@ export class FlowViewPage extends AKElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${msg("with current user")}
+                                                    ${msg("Current user")}
                                                 </button>
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" with inspector`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
@@ -209,7 +218,7 @@ export class FlowViewPage extends AKElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${msg("with inspector")}
+                                                    ${msg("Use inspector")}
                                                 </button>
                                             </div>
                                         </dd>
@@ -233,7 +242,7 @@ export class FlowViewPage extends AKElement {
                             </div>
                         </div>
                         <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Diagram")}</div>
                             <div class="pf-c-card__body">
@@ -305,11 +314,14 @@ export class FlowViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
-        setPageDetails({
-            icon: "pf-icon pf-icon-process-automation",
-            header: this.flow.name,
-            description: this.flow.title,
-        });
+
+        if (changed.has("flow")) {
+            setPageDetails({
+                icon: "pf-icon pf-icon-process-automation",
+                header: this.flow?.name,
+                description: this.flow?.title,
+            });
+        }
     }
 }
 

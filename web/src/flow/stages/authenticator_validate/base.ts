@@ -3,7 +3,7 @@ import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "#flow/stages
 import { DeviceChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -32,15 +32,6 @@ export class BaseDeviceStage<
         PFInputGroup,
         PFTitle,
         PFButton,
-        css`
-            .pf-c-form__group.pf-m-action {
-                display: flex;
-                gap: 1rem;
-                margin-top: 0;
-                margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
-                flex-direction: column;
-            }
-        `,
     ];
 
     submit(payload: Tin): Promise<boolean> {

@@ -11,11 +11,14 @@ from authentik.outposts.api.service_connections import (
 from authentik.outposts.channels import TokenOutpostMiddleware
 from authentik.outposts.consumer import OutpostConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
+from authentik.tenants.channels import TenantsAwareMiddleware
 
 websocket_urlpatterns = [
     path(
         "ws/outpost/<uuid:pk>/",
-        ChannelsLoggingMiddleware(TokenOutpostMiddleware(OutpostConsumer.as_asgi())),
+        ChannelsLoggingMiddleware(
+            TenantsAwareMiddleware(TokenOutpostMiddleware(OutpostConsumer.as_asgi()))
+        ),
     ),
 ]
 

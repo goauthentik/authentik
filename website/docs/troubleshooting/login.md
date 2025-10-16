@@ -26,7 +26,7 @@ or, for CLI, run
 uv run ak create_recovery_key 10 akadmin
 ```
 
-This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.
+This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of minutes specified above, in this case, 10 minutes.
 
 ## Can't access initial setup flow during installation steps
 

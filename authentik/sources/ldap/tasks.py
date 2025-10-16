@@ -57,7 +57,6 @@ def ldap_sync(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
-    task.set_uid(f"{source.slug}")
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
             task.info("Synchronization is already running. Skipping")
@@ -111,11 +110,13 @@ def ldap_sync_paginator(
     sync_inst: BaseLDAPSynchronizer = sync(source, task)
     messages = []
     for page in sync_inst.get_objects():
-        page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
+        page_uid = str(uuid4())
+        page_cache_key = CACHE_KEY_PREFIX + page_uid
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
         page_sync = ldap_sync_page.message_with_options(
             args=(source.pk, class_to_path(sync), page_cache_key),
             rel_obj=task.rel_obj,
+            uid=f"{source.slug}:{sync_inst.name()}:{page_uid}",
         )
         messages.append(page_sync)
     return messages
@@ -134,8 +135,6 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
         # to set the state with
         return
     sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
-    uid = page_cache_key.replace(CACHE_KEY_PREFIX, "")
-    self.set_uid(f"{source.slug}:{sync.name()}:{uid}")
     try:
         sync_inst: BaseLDAPSynchronizer = sync(source, self)
         page = cache.get(page_cache_key)

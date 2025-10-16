@@ -31,13 +31,12 @@ function formatSortDirection(table: TableLike, orderBy?: string | null): SortDir
 
 export type TableColumn = [label: string, orderBy?: string | null, ariaLabel?: string | null];
 
-const formatColumnID = (columnIndex: number): string => `table-header-${columnIndex}`;
-
 export interface TableColumnProps {
     label: string;
     ariaLabel?: string | null;
     orderBy?: string | null;
     table: TableLike;
+    id?: string;
     columnIndex: number;
 }
 
@@ -46,7 +45,7 @@ export function renderTableColumn({
     ariaLabel,
     orderBy,
     table,
-    columnIndex,
+    id,
 }: TableColumnProps): TemplateResult {
     const classes = {
         "presentational": !label,
@@ -81,9 +80,8 @@ export function renderTableColumn({
         : html`${label}`;
 
     return html`<th
-        id=${formatColumnID(columnIndex)}
+        id=${ifPresent(id)}
         aria-label=${ifPresent(resolvedLabel)}
-        data-column-id=${ifPresent(orderBy)}
         scope="col"
         aria-sort=${direction}
         class="${classMap(classes)}"

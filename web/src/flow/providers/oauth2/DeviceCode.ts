@@ -1,8 +1,6 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
-import { FocusTarget } from "#elements/utils/focus";
-
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -42,12 +40,6 @@ export class OAuth2DeviceCode extends BaseStage<
         PFInputGroup,
     ];
 
-    #focusTarget = new FocusTarget<HTMLInputElement>();
-
-    protected override firstUpdated(): void {
-        this.#focusTarget.focus();
-    }
-
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
@@ -55,7 +47,7 @@ export class OAuth2DeviceCode extends BaseStage<
                     ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
 
                     <input
-                        ${this.#focusTarget.toRef()}
+                        ${this.autofocusTarget.toRef()}
                         id="device-code-input"
                         type="text"
                         name="code"

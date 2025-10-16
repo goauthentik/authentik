@@ -3,7 +3,6 @@
 from json import loads
 
 from django.test import TestCase
-from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
@@ -436,12 +435,12 @@ class SCIMUserTests(TestCase):
         task = list(
             Task.objects.filter(
                 actor_name=scim_sync_objects.actor_name,
-                _uid__startswith=slugify(self.provider.name),
+                _uid__startswith=self.provider.name,
             ).order_by("-mtime")
         )[1]
         self.assertIsNotNone(task)
-        drop_msg = task._messages[3]
-        self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
-        self.assertIsNotNone(drop_msg["attributes"]["url"])
-        self.assertIsNotNone(drop_msg["attributes"]["body"])
-        self.assertIsNotNone(drop_msg["attributes"]["method"])
+        log = task.tasklogs.filter(event="Dropping mutating request due to dry run").first()
+        self.assertIsNotNone(log)
+        self.assertIsNotNone(log.attributes["url"])
+        self.assertIsNotNone(log.attributes["body"])
+        self.assertIsNotNone(log.attributes["method"])
