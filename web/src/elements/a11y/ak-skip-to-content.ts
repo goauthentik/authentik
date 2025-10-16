@@ -74,7 +74,12 @@ export class AKSkipToContent extends AKElement {
         `,
     ];
 
-    protected static delegate: RefOrCallback<Element> = (nextTarget) => {
+    /**
+     * Assign a target element to all skip to content buttons.
+     *
+     * @see {@linkcode AKSkipToContent.ref} for more information on Lit's ref directive.
+     */
+    protected static assign: RefOrCallback<Element> = (nextTarget) => {
         if (!(nextTarget instanceof HTMLElement)) return;
 
         const skipToContentElement = document.getElementsByTagName("ak-skip-to-content");
@@ -84,7 +89,18 @@ export class AKSkipToContent extends AKElement {
         }
     };
 
-    public static ref = ref(AKSkipToContent.delegate);
+    /**
+     * Assign a target element to the skip to content button via Lit's directive system.
+     *
+     * ```ts
+     * function render() {
+     *   return html`<main ${AKSkipToContent.ref}></main>`;
+     * }
+     * ```
+     *
+     * @see {@linkcode ref} for more information on Lit's ref directive.
+     */
+    public static ref = ref(AKSkipToContent.assign);
 
     #targetElement: WeakRef<HTMLElement> | null = null;
 
