@@ -54,7 +54,7 @@ export const CardMenu: LitFC<CardMenuProps> = ({
             aria-controls=${menuID}
             popovertarget=${menuID}
             popovertargetaction="toggle"
-            tabindex="0"
+            tabindex="-1"
             aria-label=${msg(str`Actions for "${application.name}"`)}
         >
             <span part="card-header-actions-icon" class="pf-c-dropdown__toggle-text">&vellip;</span>

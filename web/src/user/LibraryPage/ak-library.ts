@@ -34,6 +34,8 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
+    static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
+
     protected createRenderRoot(): HTMLElement | DocumentFragment {
         return this;
     }
