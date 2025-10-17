@@ -228,6 +228,19 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     filterset_class = GroupFilter
     ordering = ["name"]
 
+    def get_ql_fields(self):
+        from djangoql.schema import BoolField, StrField
+
+        from authentik.enterprise.search.fields import (
+            JSONSearchField,
+        )
+
+        return [
+            StrField(Group, "name"),
+            BoolField(Group, "is_superuser", nullable=True),
+            JSONSearchField(Group, "attributes", suggest_nested=False),
+        ]
+
     def get_queryset(self):
         base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
 
