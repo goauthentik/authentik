@@ -202,7 +202,7 @@ class BaseEvaluator:
         validity: str = "seconds=60",
     ) -> str | None:
         """Issue a JWT for a given provider"""
-        request: HttpRequest = self._context.get("http_request")
+        request: HttpRequest | None = self._context.get("http_request")
         if not request:
             return None
         if not isinstance(provider, OAuth2Provider):
@@ -336,7 +336,8 @@ class BaseEvaluator:
                 # So, this is a bit questionable. Essentially, we are edit the stacktrace
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling
-                exc.__traceback__ = exc.__traceback__.tb_next
+                if exc.__traceback__ is not None:
+                    exc.__traceback__ = exc.__traceback__.tb_next
                 if not isinstance(exc, ControlFlowException):
                     self.handle_error(exc, expression_source)
                 raise exc
