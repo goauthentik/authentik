@@ -18717,6 +18717,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
@@ -18928,6 +18929,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
@@ -39414,6 +39416,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_endpoints.endpointstage
       - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport

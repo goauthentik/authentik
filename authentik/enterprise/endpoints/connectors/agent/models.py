@@ -6,6 +6,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
 from authentik.endpoints.models import Connector
+from authentik.flows.stage import StageView
 
 
 class AgentConnector(Connector):
@@ -25,6 +26,18 @@ class AgentConnector(Connector):
         )
 
         return AgentConnectorSerializer
+
+    @property
+    def stage(self) -> type[StageView] | None:
+        from authentik.enterprise.endpoints.connectors.agent.stage import (
+            AuthenticatorEndpointStageView,
+        )
+
+        return AuthenticatorEndpointStageView
+
+    @property
+    def component(self) -> str:
+        return "ak-endpoints-connector-agent"
 
 
 class EnrollmentToken(ExpiringModel):

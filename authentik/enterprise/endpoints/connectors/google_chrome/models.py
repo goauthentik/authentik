@@ -3,6 +3,7 @@ from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
 from authentik.endpoints.models import Connector
+from authentik.flows.stage import StageView
 
 
 class GoogleChromeConnector(Connector):
@@ -22,3 +23,11 @@ class GoogleChromeConnector(Connector):
         )
 
         return GoogleChromeConnectorSerializer
+
+    @property
+    def stage(self) -> type[StageView] | None:
+        from authentik.enterprise.endpoints.connectors.google_chrome.stage import (
+            AuthenticatorEndpointStageView,
+        )
+
+        return AuthenticatorEndpointStageView
