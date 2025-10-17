@@ -27,11 +27,12 @@ Your OAuth application (Relying Party) must:
 
 ### Set up single logout
 
-1. Log in to the authentik Admin interface and navigate to **Applications** > **Providers**.
-2. Edit or create an OAuth2 provider.
-3. In the **Logout URI** field, enter the logout endpoint provided by your RP, if supported.
-4. Select the **Logout Method** to choose **Front-channel** or **Back-channel** based on RP support.
-5. Click **Finish** to save your changes.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers**.
+3. Edit or create an OAuth2 provider.
+4. In the **Logout URI** field, enter the logout endpoint provided by your RP, if supported.
+5. Select the **Logout Method** to choose **Front-channel** or **Back-channel** based on RP support.
+6. Click **Finish** to save your changes.
 
 :::info
 Back-channel logout is the only way to ensure that users are logged out of the provider when their session is administratively terminated (e.g., when a user is deactivated or their session is deleted).
