@@ -1,3 +1,5 @@
+from typing import cast
+
 from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
@@ -7,7 +9,12 @@ from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import (
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+    inline_serializer,
+)
 from rest_framework.decorators import action
 from rest_framework.fields import IntegerField, ReadOnlyField, SerializerMethodField
 from rest_framework.mixins import (
@@ -16,6 +23,7 @@ from rest_framework.mixins import (
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
@@ -32,8 +40,9 @@ class TaskSerializer(ModelSerializer):
     rel_obj_app_label = ReadOnlyField(source="rel_obj_content_type.app_label")
     rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
 
-    messages = LogEventSerializer(many=True, source="_messages")
-    previous_messages = LogEventSerializer(many=True, source="_previous_messages")
+    logs = SerializerMethodField()
+    previous_logs = SerializerMethodField()
+
     description = SerializerMethodField()
 
     class Meta:
@@ -50,11 +59,23 @@ class TaskSerializer(ModelSerializer):
             "rel_obj_model",
             "rel_obj_id",
             "uid",
-            "messages",
-            "previous_messages",
+            "logs",
+            "previous_logs",
             "aggregated_status",
             "description",
         ]
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_logs(self, instance: Task):
+        return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
+            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=False), many=True).data
+        )
+
+    @extend_schema_field(LogEventSerializer(many=True))
+    def get_previous_logs(self, instance: Task):
+        return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
+            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=True), many=True).data
+        )
 
     def get_description(self, instance: Task) -> str | None:
         try:
@@ -117,6 +138,7 @@ class TaskViewSet(
     def get_queryset(self):
         return (
             Task.objects.select_related("rel_obj_content_type")
+            .prefetch_related("tasklogs")
             .defer("message", "result")
             .filter(tenant=get_current_tenant())
         )

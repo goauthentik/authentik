@@ -439,8 +439,8 @@ class SCIMUserTests(TestCase):
             ).order_by("-mtime")
         )[1]
         self.assertIsNotNone(task)
-        drop_msg = task._messages[3]
-        self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
-        self.assertIsNotNone(drop_msg["attributes"]["url"])
-        self.assertIsNotNone(drop_msg["attributes"]["body"])
-        self.assertIsNotNone(drop_msg["attributes"]["method"])
+        log = task.tasklogs.filter(event="Dropping mutating request due to dry run").first()
+        self.assertIsNotNone(log)
+        self.assertIsNotNone(log.attributes["url"])
+        self.assertIsNotNone(log.attributes["body"])
+        self.assertIsNotNone(log.attributes["method"])

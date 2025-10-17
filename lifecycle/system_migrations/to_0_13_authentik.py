@@ -1,5 +1,4 @@
 # flake8: noqa
-
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """BEGIN TRANSACTION;

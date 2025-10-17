@@ -1,4 +1,4 @@
-templateDir: /local/scripts/api-ts-templates/
+templateDir: /local/scripts/api/ts-templates/
 additionalProperties:
   typescriptThreePlus: true
   supportsES6: true

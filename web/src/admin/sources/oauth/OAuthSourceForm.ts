@@ -28,6 +28,7 @@ import {
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PKCEMethodEnum,
     ProviderTypeEnum,
     SourcesApi,
     SourceType,
@@ -48,6 +49,22 @@ const authorizationCodeAuthMethodOptions = [
     {
         label: msg("Include the client ID and secret as request parameters"),
         value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
+
+const pkceMethodOptions = [
+    {
+        label: msg("None"),
+        value: PKCEMethodEnum.None,
+        default: true,
+    },
+    {
+        label: msg("Plain"),
+        value: PKCEMethodEnum.Plain,
+    },
+    {
+        label: msg("S256"),
+        value: PKCEMethodEnum.S256,
     },
 ];
 
@@ -242,6 +259,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
                     : nothing}
+                <ak-radio-input
+                    label=${msg("PKCE Method")}
+                    name="pkce"
+                    required
+                    .options=${pkceMethodOptions}
+                    .value=${this.instance?.pkce}
+                    help=${msg("Configure Proof Key for Code Exchange for this source.")}
+                >
+                </ak-radio-input>
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect
                     ? html`<ak-radio-input
                           label=${msg("Authorization code authentication method")}

@@ -77,7 +77,7 @@ from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.stages.consent.models import UserConsent
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskLog
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
@@ -121,6 +121,7 @@ def excluded_models() -> list[type[Model]]:
         SCIMProviderUser,
         Tenant,
         Task,
+        TaskLog,
         ConnectionToken,
         AuthorizationCode,
         AccessToken,

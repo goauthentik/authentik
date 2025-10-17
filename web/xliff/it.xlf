@@ -5318,11 +5318,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Importazione del flusso riuscita.</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml Files, che possono essere trovati su goauthentik.io e possono essere esportati da authentik.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>I flussi descrivono una catena di fasi per autenticare, iscrivere o recuperare un utente. Le fasi vengono scelte in base alle politiche applicate a loro.</target>
@@ -9795,15 +9790,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
 </trans-unit>
-<trans-unit id="s418c59028ef6bc2a">
-  <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
-</trans-unit>
-<trans-unit id="sa091b3064afa00f5">
-  <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
-</trans-unit>
-<trans-unit id="s6d364031a996b540">
-  <source>Back-Channel Logout URI</source>
-</trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
 </trans-unit>
@@ -10095,9 +10081,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
-</trans-unit>
-<trans-unit id="s9447a684b989a474">
-  <source>The user's display name. 150 characters or fewer.</source>
 </trans-unit>
 <trans-unit id="s755bfddac3729eaa">
   <source>Managed by authentik and cannot be assigned manually.</source>
@@ -10462,9 +10445,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
 </trans-unit>
-<trans-unit id="se45c122d3b2aa43d">
-  <source>Open Remote Access Control launcher for "<x id="0" equiv-text="${this.application.name}"/>"</source>
-</trans-unit>
 <trans-unit id="s1ff2128af96d843f">
   <source>Available applications</source>
 </trans-unit>
@@ -10473,6 +10453,100 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
+</trans-unit>
+<trans-unit id="sa3056b3252b4b52c">
+  <source>Back-channel</source>
+</trans-unit>
+<trans-unit id="saa3d821fc889a636">
+  <source>Server-to-server logout notifications</source>
+</trans-unit>
+<trans-unit id="s9f448d01a0354e8e">
+  <source>Front-channel</source>
+</trans-unit>
+<trans-unit id="s83ba71823baf9a51">
+  <source>Browser iframe logout notifications</source>
+</trans-unit>
+<trans-unit id="s145480489b87a109">
+  <source>Logout URI</source>
+</trans-unit>
+<trans-unit id="s37018999e29f65b3">
+  <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+</trans-unit>
+<trans-unit id="s2dcb6d1fd145b834">
+  <source>Logout Method</source>
+</trans-unit>
+<trans-unit id="s2e527acc2a73da87">
+  <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+</trans-unit>
+<trans-unit id="sa4bd902fbc432ab8">
+  <source>Sign logout requests</source>
+</trans-unit>
+<trans-unit id="sb1e6dc6d91ce352e">
+  <source>When enabled, SAML logout requests will be signed.</source>
+</trans-unit>
+<trans-unit id="sd1ab93a011b2f1f5">
+  <source>Front-channel (Iframe)</source>
+</trans-unit>
+<trans-unit id="s885ea9abccda30d8">
+  <source>Front-channel (Native)</source>
+</trans-unit>
+<trans-unit id="s34cd8ae3ee828045">
+  <source>Back-channel (POST)</source>
+</trans-unit>
+<trans-unit id="s7f7be294b1bef506">
+  <source>SLS Binding</source>
+</trans-unit>
+<trans-unit id="s9104cd1063aa6a4a">
+  <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+</trans-unit>
+<trans-unit id="sd1fba3c745c016a8">
+  <source>Method to use for logout when SLS URL is configured.</source>
+</trans-unit>
+<trans-unit id="sc71892084574cf32">
+  <source>SLS URL</source>
+</trans-unit>
+<trans-unit id="s21658078c6fdf964">
+  <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+</trans-unit>
+<trans-unit id="scbf29ce484222325">
+  <source></source>
+</trans-unit>
+<trans-unit id="s78869b8b2bc26d0d">
+  <source>SAML Provider</source>
+</trans-unit>
+<trans-unit id="sca83a1f9227f74b9">
+  <source>SAML logout complete</source>
+</trans-unit>
+<trans-unit id="s7b90eab7969ae056">
+  <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s3e6174b645d96835">
+  <source>Posting logout request to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="s0b1ffff8bedd6b8a">
+  <source>Unknown Provider</source>
+</trans-unit>
+<trans-unit id="s777e86d562523c85">
+  <source>Logging out of providers...</source>
+</trans-unit>
+<trans-unit id="s4980379bf8461c2d">
+  <source>Single Logout</source>
+</trans-unit>
+<trans-unit id="sc82cf82ad6cb26cc">
+  <source>The user's display name.</source>
+</trans-unit>
+<trans-unit id="s33b2f30214a2e99d">
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sfa660d9e563c346f">
+  <source>Edit application...</source>
+</trans-unit>
+<trans-unit id="ellipsis">
+  <source>...</source>
+  <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
     </body>
   </file>

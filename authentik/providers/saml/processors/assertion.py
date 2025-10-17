@@ -6,6 +6,7 @@ from types import GeneratorType
 
 import xmlsec
 from django.http import HttpRequest
+from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from structlog.stdlib import get_logger
@@ -73,14 +74,14 @@ class AssertionProcessor:
         self._response_id = get_random_id()
 
         _login_event = get_login_event(self.http_request)
-        _login_time = datetime.now()
+        _login_time = now()
         if _login_event:
             _login_time = _login_event.created
         self._auth_instant = get_time_string(_login_time)
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
-        self.session_not_on_or_after_datetime = datetime.now() + timedelta_from_string(
+        self.session_not_on_or_after_datetime = now() + timedelta_from_string(
             self.provider.session_valid_not_on_or_after
         )
         self._session_not_on_or_after = get_time_string(self.session_not_on_or_after_datetime)

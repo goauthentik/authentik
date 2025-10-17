@@ -11658,6 +11658,15 @@
                     "title": "Profile URL",
                     "description": "URL used by authentik to get user information."
                 },
+                "pkce": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "plain",
+                        "S256"
+                    ],
+                    "title": "PKCE"
+                },
                 "consumer_key": {
                     "type": "string",
                     "minLength": 1,

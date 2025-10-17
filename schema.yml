@@ -33807,13 +33807,10 @@ components:
           type: integer
         cache_timeout_policies:
           type: integer
-        cache_timeout_reputation:
-          type: integer
       required:
       - cache_timeout
       - cache_timeout_flows
       - cache_timeout_policies
-      - cache_timeout_reputation
       - capabilities
       - error_reporting
     ConnectionToken:
@@ -40384,6 +40381,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
         callback_url:
@@ -40563,6 +40562,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
@@ -40844,6 +40845,12 @@ components:
       - ldap
       - radius
       - rac
+      type: string
+    PKCEMethodEnum:
+      enum:
+      - none
+      - plain
+      - S256
       type: string
     PaginatedAgentConnectorList:
       type: object
@@ -45435,6 +45442,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
@@ -47640,6 +47649,17 @@ components:
           minLength: 1
           default: ak-stage-prompt
       additionalProperties: {}
+    PromptChoice:
+      type: object
+      description: Serializer for a single Choice field
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
     PromptRequest:
       type: object
       description: Prompt Serializer
@@ -51356,7 +51376,7 @@ components:
         choices:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/PromptChoice'
           nullable: true
       required:
       - choices
@@ -51627,14 +51647,16 @@ components:
         uid:
           type: string
           readOnly: true
-        messages:
+        logs:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
-        previous_messages:
+          readOnly: true
+        previous_logs:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+          readOnly: true
         aggregated_status:
           $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         description:
@@ -51645,8 +51667,8 @@ components:
       - actor_name
       - aggregated_status
       - description
-      - messages
-      - previous_messages
+      - logs
+      - previous_logs
       - rel_obj_app_label
       - rel_obj_model
       - uid
