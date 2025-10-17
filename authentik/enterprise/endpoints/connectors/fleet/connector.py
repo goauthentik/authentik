@@ -57,13 +57,16 @@ class FleetConnector(BaseConnector[DBC]):
                 connector=self.connector,
                 defaults={"data": self.convert_host_data(host)},
             )
-            for raw_user in host["device_mapping"]:
+            for raw_user in host.get("device_mapping", []) or []:
                 user = User.objects.filter(email=raw_user["email"]).first()
                 if not user:
                     continue
                 DeviceUser.objects.update_or_create(
                     device=device,
                     user=user,
+                    create_defaults={
+                        "is_primary": True,
+                    },
                 )
 
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:

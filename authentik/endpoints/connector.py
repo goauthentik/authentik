@@ -1,4 +1,5 @@
-from authentik.blueprints import models
+from django.db import models
+
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
 from authentik.lib.sentry import SentryIgnoredException

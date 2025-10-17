@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -12,6 +13,9 @@ from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel
+
+if TYPE_CHECKING:
+    from authentik.endpoints.connector import BaseConnector
 
 
 class Device(SerializerModel):
@@ -35,7 +39,7 @@ class DeviceUser(SerializerModel):
     device_user_uuid = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_primary = models.BooleanField()
+    is_primary = models.BooleanField(default=False)
 
 
 class DeviceConnection(SerializerModel):
@@ -58,6 +62,10 @@ class Connector(SerializerModel):
 
     @property
     def component(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def controller(self) -> type["BaseConnector[Connector]"]:
         raise NotImplementedError
 
 
