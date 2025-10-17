@@ -52,8 +52,9 @@ Service account tokens have the following properties:
 
 Tokens for service accounts are managed through the authentik Admin interface:
 
-1. Log in to the Admin interface and navigate to **Directory** > **Tokens and App passwords**.
-2. Here you can view, create, copy, delete, and manage tokens.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Tokens and App passwords**.
+   Here you can view, create, copy, delete, and manage tokens.
 
 ### Creating New Tokens
 

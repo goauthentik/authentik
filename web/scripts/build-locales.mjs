@@ -1,6 +1,4 @@
-import { spawnSync } from "node:child_process";
-import { readFileSync, statSync } from "node:fs";
-import path from "node:path";
+/// <reference types="node" />
 
 /**
  * @file Lit Localize build script.
@@ -16,6 +14,11 @@ import path from "node:path";
  * @import { ConfigFile } from "@lit/localize-tools/lib/types/config.js"
  * @import { Stats } from "node:fs";
  */
+
+import { spawnSync } from "node:child_process";
+import { readFileSync, statSync } from "node:fs";
+import path from "node:path";
+
 import { PackageRoot } from "#paths/node";
 
 /**

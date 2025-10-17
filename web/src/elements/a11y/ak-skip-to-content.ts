@@ -3,8 +3,47 @@ import { AKElement } from "#elements/Base";
 import { msg } from "@lit/localize";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ref, RefOrCallback } from "lit/directives/ref.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+/**
+ * Finds the main content element within a given context.
+ *
+ * @param context - The element to start searching from
+ * @returns The main content element, if any.
+ */
+export function findMainContent(context: HTMLElement): HTMLElement | null {
+    const renderRoot = context instanceof LitElement ? context.renderRoot : context;
+
+    const mainContent = renderRoot.querySelector<HTMLElement>("main,[role=main]");
+
+    if (mainContent) {
+        return mainContent;
+    }
+
+    for (const element of renderRoot.children) {
+        if (!(element instanceof HTMLElement)) continue;
+
+        if (element.role === "presentation" || element.role === "status") continue;
+
+        if (!element.checkVisibility?.()) continue;
+
+        if (element.inert) continue;
+
+        if (element instanceof LitElement && element.renderRoot !== element) {
+            const child = findMainContent(element);
+
+            if (child) return child;
+
+            continue;
+        }
+
+        return element;
+    }
+
+    return null;
+}
 
 @customElement("ak-skip-to-content")
 export class AKSkipToContent extends AKElement {
@@ -35,6 +74,34 @@ export class AKSkipToContent extends AKElement {
         `,
     ];
 
+    /**
+     * Assign a target element to all skip to content buttons.
+     *
+     * @see {@linkcode AKSkipToContent.ref} for more information on Lit's ref directive.
+     */
+    protected static assign: RefOrCallback<Element> = (nextTarget) => {
+        if (!(nextTarget instanceof HTMLElement)) return;
+
+        const skipToContentElement = document.getElementsByTagName("ak-skip-to-content");
+
+        for (const skipElement of skipToContentElement) {
+            skipElement.targetElement = nextTarget;
+        }
+    };
+
+    /**
+     * Assign a target element to the skip to content button via Lit's directive system.
+     *
+     * ```ts
+     * function render() {
+     *   return html`<main ${AKSkipToContent.ref}></main>`;
+     * }
+     * ```
+     *
+     * @see {@linkcode ref} for more information on Lit's ref directive.
+     */
+    public static ref = ref(AKSkipToContent.assign);
+
     #targetElement: WeakRef<HTMLElement> | null = null;
 
     @property({ attribute: false })
@@ -42,8 +109,24 @@ export class AKSkipToContent extends AKElement {
         return this.#targetElement?.deref() ?? null;
     }
 
-    public set targetElement(value: HTMLElement | null) {
-        this.#targetElement = value ? new WeakRef(value) : null;
+    public set targetElement(nextTargetElement: HTMLElement | null | undefined) {
+        const previousTarget = this.targetElement;
+
+        if (previousTarget === nextTargetElement) return;
+
+        if (previousTarget) {
+            previousTarget.removeAttribute("tabindex");
+            previousTarget.removeAttribute("data-ak-skip-to-content-target");
+        }
+
+        if (nextTargetElement) {
+            this.#targetElement = new WeakRef(nextTargetElement);
+            nextTargetElement.tabIndex = -1;
+
+            nextTargetElement.setAttribute("data-ak-skip-to-content-target", "true");
+        } else {
+            this.#targetElement = null;
+        }
     }
 
     public activate = () => {
