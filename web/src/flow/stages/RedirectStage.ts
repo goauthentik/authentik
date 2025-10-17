@@ -91,7 +91,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     <p>${msg("You're about to be redirect to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
@@ -102,7 +103,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     >
                         ${msg("Follow redirect")}
                     </a>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

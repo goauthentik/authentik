@@ -3,53 +3,23 @@
 from collections.abc import Callable
 from typing import Any
 
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.generators import SchemaGenerator
-from drf_spectacular.plumbing import (
-    ResolvedComponent,
-    build_array_type,
-    build_basic_type,
-    build_object_type,
-)
+from drf_spectacular.plumbing import ResolvedComponent
 from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
-from drf_spectacular.types import OpenApiTypes
-from rest_framework.settings import api_settings
+from structlog.stdlib import get_logger
 
 from authentik.api.apps import AuthentikAPIConfig
-from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
-
-GENERIC_ERROR = build_object_type(
-    description=_("Generic API Error"),
-    properties={
-        "detail": build_basic_type(OpenApiTypes.STR),
-        "code": build_basic_type(OpenApiTypes.STR),
-    },
-    required=["detail"],
-)
-VALIDATION_ERROR = build_object_type(
-    description=_("Validation Error"),
-    properties={
-        api_settings.NON_FIELD_ERRORS_KEY: build_array_type(build_basic_type(OpenApiTypes.STR)),
-        "code": build_basic_type(OpenApiTypes.STR),
-    },
-    required=[],
-    additionalProperties={},
+from authentik.api.v3.schema.query import QUERY_PARAMS
+from authentik.api.v3.schema.response import (
+    GENERIC_ERROR,
+    GENERIC_ERROR_RESPONSE,
+    PAGINATION,
+    VALIDATION_ERROR,
+    VALIDATION_ERROR_RESPONSE,
 )
 
-
-def create_component(
-    generator: SchemaGenerator, name: str, schema: Any, type_=ResolvedComponent.SCHEMA
-) -> ResolvedComponent:
-    """Register a component and return a reference to it."""
-    component = ResolvedComponent(
-        name=name,
-        type=type_,
-        schema=schema,
-        object=name,
-    )
-    generator.registry.register_on_missing(component)
-    return component
+LOGGER = get_logger()
 
 
 def preprocess_schema_exclude_non_api(endpoints: list[tuple[str, Any, Any, Callable]], **kwargs):
@@ -61,45 +31,30 @@ def preprocess_schema_exclude_non_api(endpoints: list[tuple[str, Any, Any, Calla
     ]
 
 
+def postprocess_schema_register(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Register custom schema components"""
+    LOGGER.debug("Registering custom schemas")
+    generator.registry.register_on_missing(PAGINATION)
+    generator.registry.register_on_missing(GENERIC_ERROR)
+    generator.registry.register_on_missing(GENERIC_ERROR_RESPONSE)
+    generator.registry.register_on_missing(VALIDATION_ERROR)
+    generator.registry.register_on_missing(VALIDATION_ERROR_RESPONSE)
+    for query in QUERY_PARAMS.values():
+        generator.registry.register_on_missing(query)
+    return result
+
+
 def postprocess_schema_responses(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
-    """Workaround to set a default response for endpoints.
-    Workaround suggested at
-    <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>
-    for the missing drf-spectacular feature discussed in
-    <https://github.com/tfranzel/drf-spectacular/issues/101>.
-    """
-
-    create_component(generator, PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA)
-
-    generic_error = create_component(generator, "GenericError", GENERIC_ERROR)
-    validation_error = create_component(generator, "ValidationError", VALIDATION_ERROR)
-
+    """Default error responses"""
+    LOGGER.debug("Adding default error responses")
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"].setdefault(
-                "400",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": validation_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
-            method["responses"].setdefault(
-                "403",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": generic_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
+            method["responses"].setdefault("400", VALIDATION_ERROR_RESPONSE.ref)
+            method["responses"].setdefault("403", GENERIC_ERROR_RESPONSE.ref)
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
@@ -113,67 +68,18 @@ def postprocess_schema_responses(
     return result
 
 
-def postprocess_schema_pagination(
+def postprocess_schema_query_params(
     result: dict[str, Any], generator: SchemaGenerator, **kwargs
 ) -> dict[str, Any]:
     """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
     declare them globally and refer to them"""
-    to_replace = {
-        "ordering": create_component(
-            generator,
-            "QueryPaginationOrdering",
-            {
-                "name": "ordering",
-                "required": False,
-                "in": "query",
-                "description": "Which field to use when ordering the results.",
-                "schema": {"type": "string"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "page": create_component(
-            generator,
-            "QueryPaginationPage",
-            {
-                "name": "page",
-                "required": False,
-                "in": "query",
-                "description": "A page number within the paginated result set.",
-                "schema": {"type": "integer"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "page_size": create_component(
-            generator,
-            "QueryPaginationPageSize",
-            {
-                "name": "page_size",
-                "required": False,
-                "in": "query",
-                "description": "Number of results to return per page.",
-                "schema": {"type": "integer"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-        "search": create_component(
-            generator,
-            "QuerySearch",
-            {
-                "name": "search",
-                "required": False,
-                "in": "query",
-                "description": "A search term.",
-                "schema": {"type": "string"},
-            },
-            ResolvedComponent.PARAMETER,
-        ),
-    }
+    LOGGER.debug("Deduplicating query parameters")
     for path in result["paths"].values():
         for method in path.values():
             for idx, param in enumerate(method.get("parameters", [])):
-                for replace_name, replace_ref in to_replace.items():
-                    if param["name"] == replace_name:
-                        method["parameters"][idx] = replace_ref.ref
+                if param["name"] not in QUERY_PARAMS:
+                    continue
+                method["parameters"][idx] = QUERY_PARAMS[param["name"]].ref
     return result
 
 
@@ -185,9 +91,13 @@ def postprocess_schema_remove_unused(
     # less efficient than walking through the tree but a lot simpler and no
     # possibility that we miss something
     raw = OpenApiJsonRenderer().render(result, renderer_context={}).decode()
+    count = 0
     for key in result["components"][ResolvedComponent.SCHEMA].keys():
-        if raw.count(key) > 1:
+        schema_usages = raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}")
+        if schema_usages >= 1:
             continue
-        del generator.registry._components[(key, ResolvedComponent.SCHEMA)]
+        del generator.registry[(key, ResolvedComponent.SCHEMA)]
+        count += 1
+    LOGGER.debug("Removing unused components", count=count)
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
     return result

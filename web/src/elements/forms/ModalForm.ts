@@ -92,6 +92,14 @@ export class ModalForm extends ModalButton {
         }
     };
 
+    #refreshListener = (e: Event): void => {
+        // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
+        // to the parent components (which would cause table refreshes that destroy the modal)
+        if (!this.closeAfterSuccessfulSubmit) {
+            e.stopPropagation();
+        }
+    };
+
     #scrollListener = () => {
         window.dispatchEvent(
             new CustomEvent("scroll", {
@@ -99,6 +107,16 @@ export class ModalForm extends ModalButton {
             }),
         );
     };
+
+    override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
+
+    override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
 
     protected renderModalInner(): TemplateResult {
         return html`${this.loading
@@ -115,7 +133,7 @@ export class ModalForm extends ModalButton {
             <section class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>
                 <slot name="form"></slot>
             </section>
-            <fieldset name="actions" class="pf-c-modal-box__footer">
+            <fieldset class="pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 ${this.showSubmitButton
                     ? html`<button

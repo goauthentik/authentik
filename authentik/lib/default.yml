@@ -47,16 +47,6 @@ listen:
     - fe80::/10
     - ::1/128
 
-redis:
-  host: localhost
-  port: 6379
-  db: 0
-  username: ""
-  password: ""
-  tls: false
-  tls_reqs: "none"
-  tls_ca_cert: null
-
 http_timeout: 30
 
 cache:

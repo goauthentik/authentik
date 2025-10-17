@@ -2,8 +2,7 @@ import functools
 import logging
 import time
 from collections.abc import Callable, Iterable
-from datetime import timedelta
-from queue import Empty, Queue
+from datetime import UTC, datetime, timedelta
 from typing import Any, ParamSpec, TypeVar, cast
 
 import tenacity
@@ -18,18 +17,19 @@ from django.db import (
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
+from django.db.models.expressions import F
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
-from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
+from dramatiq.common import compute_backoff, current_millis, dq_name, q_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
 from dramatiq.message import Message
 from dramatiq.middleware import (
     Middleware,
 )
 from pglock.core import _cast_lock_id
-from psycopg import Notify, sql
+from psycopg import sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
@@ -42,6 +42,15 @@ P = ParamSpec("P")
 R = TypeVar("R")
 
 
+DATABASE_ERRORS = (
+    AdminShutdown,
+    InterfaceError,
+    DatabaseError,
+    ConnectionError,
+    OperationalError,
+)
+
+
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
@@ -51,7 +60,7 @@ def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
             return func(*args, **kwargs)
-        except OperationalError as exc:
+        except DATABASE_ERRORS as exc:
             raise ConnectionError(str(exc)) from exc  # type: ignore[no-untyped-call]
 
     return wrapper
@@ -110,30 +119,24 @@ class PostgresBroker(Broker):
         if queue_name not in self.queues:
             self.emit_before("declare_queue", queue_name)  # type: ignore[no-untyped-call]
             self.queues.add(queue_name)
-            # Nothing to do, all queues are in the same table
+            # Nothing more to do, all queues are in the same table
             self.emit_after("declare_queue", queue_name)  # type: ignore[no-untyped-call]
 
-            delayed_name = dq_name(queue_name)  # type: ignore[no-untyped-call]
-            self.delay_queues.add(delayed_name)
-            self.emit_after("declare_delay_queue", delayed_name)  # type: ignore[no-untyped-call]
-
     def model_defaults(self, message: Message[Any]) -> dict[str, Any]:
+        eta = None
+        if "eta" in message.options:
+            eta = datetime.fromtimestamp(message.options["eta"] / 1000, tz=UTC)
+            del message.options["eta"]
         return {
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
+            "retries": message.options.get("retries", 0),
+            "eta": eta,
         }
 
     @tenacity.retry(
-        retry=tenacity.retry_if_exception_type(
-            (
-                AdminShutdown,
-                InterfaceError,
-                DatabaseError,
-                ConnectionError,
-                OperationalError,
-            )
-        ),
+        retry=tenacity.retry_if_exception_type(ConnectionError),
         reraise=True,
         wait=tenacity.wait_random_exponential(multiplier=1, max=5),
         stop=tenacity.stop_after_attempt(3),
@@ -141,37 +144,32 @@ class PostgresBroker(Broker):
             cast(logging.Logger, logger), logging.INFO, exc_info=True
         ),
     )
+    @raise_connection_error
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
-        canonical_queue_name = message.queue_name
-        queue_name = canonical_queue_name
+        queue_name = q_name(message.queue_name)  # type: ignore[no-untyped-call]
         if delay:
-            queue_name = dq_name(queue_name)  # type: ignore[no-untyped-call]
             message_eta = current_millis() + delay  # type: ignore[no-untyped-call]
-            message = message.copy(
-                queue_name=queue_name,
-                options={
-                    "eta": message_eta,
-                },
-            )
+            message.options["eta"] = message_eta
 
-        self.declare_queue(canonical_queue_name)
+        self.declare_queue(queue_name)
         self.logger.debug(
             "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
         )
 
         message.options["model_defaults"] = self.model_defaults(message)
+        message.options["model_create_defaults"] = {}
         self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
 
         with transaction.atomic(using=self.db_alias):
             query = {
                 "message_id": message.message_id,
             }
-            defaults = message.options["model_defaults"]
-            del message.options["model_defaults"]
+            defaults = message.options.pop("model_defaults")
             defaults["message"] = message.encode()
             create_defaults = {
                 **query,
                 **defaults,
+                **message.options.pop("model_create_defaults"),
             }
 
             task, created = self.query_set.update_or_create(
@@ -209,10 +207,11 @@ class PostgresBroker(Broker):
             if deadline and time.monotonic() >= deadline:
                 raise QueueJoinTimeout(queue_name)  # type: ignore[no-untyped-call]
 
-            if self.query_set.filter(
-                queue_name=queue_name,
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-            ).exists():
+            if (
+                not self.query_set.filter(queue_name=queue_name)
+                .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+                .exists()
+            ):
                 return
 
             time.sleep(interval / 1000)
@@ -231,12 +230,12 @@ class _PostgresConsumer(Consumer):
     ) -> None:
         self.logger = get_logger(__name__, type(self))
 
-        self.notifies: list[Notify] = []
+        self.pending: set[str] = set()
         self.broker = broker
         self.db_alias = db_alias
         self.queue_name = queue_name
         self.timeout = timeout // 1000
-        self.unlock_queue: Queue[str] = Queue()
+        self.to_unlock: set[str] = set()
         self.in_processing: set[str] = set()
         self.prefetch = prefetch
         self.misses = 0
@@ -282,36 +281,167 @@ class _PostgresConsumer(Consumer):
             cursor.execute(sql.SQL("LISTEN {}").format(sql.Identifier(self.postgres_channel)))
         return self._listen_connection
 
-    @raise_connection_error
-    def ack(self, message: Message[Any]) -> None:
-        task = message.options.pop("task", None)
-        self.query_set.filter(
-            message_id=message.message_id,
-            queue_name=message.queue_name,
-            state=TaskState.CONSUMED,
-        ).update(
-            state=TaskState.DONE,
-            message=message.encode(),
+    def _get_message_lock_id(self, message_id: str) -> int:
+        lock_id = _cast_lock_id(
+            f"{channel_name(self.queue_name, ChannelIdentifier.LOCK)}.{message_id}"
+        )  # type: ignore[no-untyped-call]
+        return cast(int, lock_id)
+
+    def _fetch_pending_messages(self) -> set[str]:
+        self.logger.debug("Fetching for pending messages", queue=self.queue_name)
+        pending = set(
+            self.query_set.exclude(message_id__in=self.in_processing)
+            .filter(queue_name=self.queue_name)
+            .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+            .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
+            .order_by(F("eta").asc(nulls_first=True))
+            .values_list("message_id", flat=True)
         )
+        self.logger.debug(
+            "Finished fetching pending messages in queue",
+            pending=len(pending),
+            queue=self.queue_name,
+        )
+        return {str(message_id) for message_id in pending}
+
+    def _poll_for_notify(self) -> set[str]:
+        self.logger.debug("Polling for message notifications", queue=self.queue_name)
+        with self.listen_connection.cursor() as cursor:
+            notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
+            self.logger.debug(
+                "Finished receiving postgres notifies on channel",
+                notifies=len(notifies),
+                channel=self.postgres_channel,
+            )
+            return {str(notify.payload) for notify in notifies}
+
+    def _consume_one(self, message_id: str) -> Message[Any] | None:
+        if message_id in self.in_processing:
+            self.logger.debug("Message already consumed by self", message_id=message_id)
+            return None
+
+        lock_result = (
+            self.query_set.filter(message_id=message_id)
+            .exclude(state__in=(TaskState.DONE, TaskState.REJECTED))
+            .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
+            .extra(
+                where=["pg_try_advisory_lock(%s)"],
+                params=[self._get_message_lock_id(message_id)],
+            )
+            .update(
+                state=TaskState.CONSUMED,
+                mtime=timezone.now(),
+            )
+        )
+        if lock_result != 1:
+            return None
+
+        task: TaskBase | None = (
+            self.query_set.defer(None).defer("result").filter(message_id=message_id).first()
+        )
+        if task is None:
+            return None
+        message = Message.decode(cast(bytes, task.message))
         message.options["task"] = task
-        self.unlock_queue.put_nowait(message.message_id)
-        self.in_processing.remove(message.message_id)
+        self.in_processing.add(str(message_id))
+        return message
 
     @raise_connection_error
-    def nack(self, message: Message[Any]) -> None:
+    def __next__(self) -> MessageProxy | None:
+        # This method is called every second
+
+        # Run required processes first
+        self._scheduler()
+        self._purge_locks()
+
+        # If we don't have a connection yet, fetch missed notifications from the table directly
+        if self._listen_connection is None and not self.pending:
+            # We might miss a notification between the initial query and the first time we wait for
+            # notifications, it doesn't matter because we re-fetch for missed messages later on.
+            self.pending = self._fetch_pending_messages()
+            # Force creation of listen connection
+            _ = self.listen_connection
+
+        processing = len(self.in_processing)
+        if processing >= self.prefetch:
+            # If we have too many messages already processing, wait and don't consume a message
+            # straight away, other workers will be faster.
+            self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)  # type: ignore[no-untyped-call]
+            self.logger.debug(
+                "Too many messages in processing, Sleeping",
+                processing=processing,
+                backoff_ms=backoff_ms,
+            )
+            time.sleep(backoff_ms / 1000)
+            return None
+        else:
+            self.misses = 0
+
+        if not self.pending:
+            self.pending = self._poll_for_notify()
+
+        if not self.pending:
+            self.pending = self._fetch_pending_messages()
+
+        # If we have some messages pending, loop to find one to process
+        while True:
+            try:
+                message_id = self.pending.pop()
+            except KeyError:
+                break
+            message = self._consume_one(str(message_id))
+            if message is not None:
+                return MessageProxy(message)  # type: ignore[no-untyped-call]
+            else:
+                self.logger.debug("Message already consumed. Skipping.", message_id=message_id)
+                continue
+
+        # No message to process, we can do some cleaning
+        self._auto_purge()
+
+        self.misses = 0
+        return None
+
+    def _unlock_message(self, message_id: str) -> bool:
+        self.logger.debug("Unlocking message", message_id=message_id)
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT pg_advisory_unlock(%s)", (self._get_message_lock_id(message_id),)
+                )
+            return True
+        except DATABASE_ERRORS:
+            self.to_unlock.add(str(message_id))
+            return False
+
+    def _post_process_message(self, message: Message[Any], state: TaskState) -> None:
+        self.logger.debug("Post-processing message", message=message.message_id, state=state)
+        try:
+            self.in_processing.remove(str(message.message_id))
+        except KeyError:
+            pass
+        self._unlock_message(str(message.message_id))
         task = message.options.pop("task", None)
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
         ).exclude(
-            state=TaskState.REJECTED,
+            state=TaskState.QUEUED,
         ).update(
-            state=TaskState.REJECTED,
+            state=state,
             message=message.encode(),
+            mtime=timezone.now(),
+            eta=None,
         )
         message.options["task"] = task
-        self.unlock_queue.put_nowait(message.message_id)
-        self.in_processing.remove(message.message_id)
+
+    @raise_connection_error
+    def ack(self, message: Message[Any]) -> None:
+        self._post_process_message(message, TaskState.DONE)
+
+    @raise_connection_error
+    def nack(self, message: Message[Any]) -> None:
+        self._post_process_message(message, TaskState.REJECTED)
 
     @raise_connection_error
     def requeue(self, messages: Iterable[Message[Any]]) -> None:
@@ -321,142 +451,28 @@ class _PostgresConsumer(Consumer):
             state=TaskState.QUEUED,
         )
         for message in messages:
-            self.unlock_queue.put_nowait(message.message_id)
-            self.in_processing.remove(message.message_id)
+            self.to_unlock.add(str(message.message_id))
+            self.in_processing.remove(str(message.message_id))
         self._purge_locks()
 
-    def _fetch_pending_notifies(self) -> list[Notify]:
-        self.logger.debug("Polling for lost messages", queue=self.queue_name)
-        notifies = (
-            self.query_set.filter(
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-                queue_name=self.queue_name,
-            )
-            .exclude(
-                message_id__in=self.in_processing,
-            )
-            .values_list("message_id", flat=True)
-        )
-        return [
-            Notify(pid=0, channel=self.postgres_channel, payload=str(item)) for item in notifies
-        ]
-
-    def _poll_for_notify(self) -> list[Notify]:
-        with self.listen_connection.cursor() as cursor:
-            notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
-            self.logger.debug(
-                "Received postgres notifies on channel",
-                notifies=len(notifies),
-                channel=self.postgres_channel,
-            )
-            return notifies
-
-    def _get_message_lock_id(self, message_id: str) -> int:
-        lock_id = _cast_lock_id(
-            f"{channel_name(self.queue_name, ChannelIdentifier.LOCK)}.{message_id}"
-        )  # type: ignore[no-untyped-call]
-        return cast(int, lock_id)
-
-    def _consume_one(self, message: Message[Any]) -> bool:
-        if message.message_id in self.in_processing:
-            self.logger.debug("Message already consumed by self", message_id=message.message_id)
-            return False
-
-        result = (
-            self.query_set.filter(
-                message_id=message.message_id,
-                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-            )
-            .extra(
-                where=["pg_try_advisory_lock(%s)"],
-                params=[self._get_message_lock_id(message.message_id)],
-            )
-            .update(
-                state=TaskState.CONSUMED,
-                mtime=timezone.now(),
-            )
-        )
-        return result == 1
-
-    @raise_connection_error
-    def __next__(self) -> MessageProxy | None:
-        # This method is called every second
-
-        # If we don't have a connection yet, fetch missed notifications from the table directly
-        if self._listen_connection is None and not self.notifies:
-            # We might miss a notification between the initial query and the first time we wait for
-            # notifications, it doesn't matter because we re-fetch for missed messages later on.
-            self.notifies = self._fetch_pending_notifies()
-            self.logger.debug(
-                "Found pending messages in queue",
-                notifies=len(self.notifies),
-                queue=self.queue_name,
-            )
-            # Force creation of listen connection
-            _ = self.listen_connection
-
-        self._purge_locks()
-
-        processing = len(self.in_processing)
-        if processing >= self.prefetch:
-            # If we have too many messages already processing, wait and don't consume a message
-            # straight away, other workers will be faster.
-            # After waiting consume a message regardless.
-            self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)  # type: ignore[no-untyped-call]
-            self.logger.debug(
-                "Too many messages in processing, Sleeping",
-                processing=processing,
-                backoff_ms=backoff_ms,
-            )
-            time.sleep(backoff_ms / 1000)
-        else:
-            self.misses = 0
-
-        if not self.notifies:
-            self.notifies += self._poll_for_notify()
-
-        if not self.notifies:
-            self.notifies += self._fetch_pending_notifies()
-
-        # If we have some notifies, loop to find one to do
-        while self.notifies:
-            notify = self.notifies.pop(0)
-            task: TaskBase | None = (
-                self.query_set.defer(None).defer("result").filter(message_id=notify.payload).first()
-            )
-            if task is None:
-                continue
-            message = Message.decode(cast(bytes, task.message))
-            message.options["task"] = task
-            if self._consume_one(message):
-                self.in_processing.add(message.message_id)
-                return MessageProxy(message)  # type: ignore[no-untyped-call]
-            else:
-                self.logger.debug(
-                    "Message already consumed. Skipping.", message_id=message.message_id
-                )
-
-        # No message to process
-        self._auto_purge()
-        self._scheduler()
-
-        self.misses = 0
-        return None
+    def _scheduler(self) -> None:
+        if not self.scheduler:
+            return
+        if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
+            return
+        self.scheduler.run()
+        self.schedule_last_run = timezone.now()
 
     def _purge_locks(self) -> None:
         if timezone.now() - self.lock_purge_last_run < self.lock_purge_interval:
             return
         while True:
             try:
-                message_id = self.unlock_queue.get(block=False)
-            except Empty:
+                message_id = self.to_unlock.pop()
+            except KeyError:
                 break
-            self.logger.debug("Unlocking message", message_id=message_id)
-            with self.connection.cursor() as cursor:
-                cursor.execute(
-                    "SELECT pg_advisory_unlock(%s)", (self._get_message_lock_id(message_id),)
-                )
-            self.unlock_queue.task_done()
+            if not self._unlock_message(str(message_id)):
+                return
         self.lock_purge_last_run = timezone.now()
 
     def _auto_purge(self) -> None:
@@ -471,14 +487,6 @@ class _PostgresConsumer(Consumer):
         self.logger.info("Purged messages in all queues", count=count)
         self.task_purge_last_run = timezone.now()
 
-    def _scheduler(self) -> None:
-        if not self.scheduler:
-            return
-        if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
-            return
-        self.scheduler.run()
-        self.schedule_last_run = timezone.now()
-
     @raise_connection_error
     def close(self) -> None:
         try:
@@ -486,7 +494,7 @@ class _PostgresConsumer(Consumer):
         finally:
             try:
                 self.connection.close()
-            except DatabaseError:
+            except DATABASE_ERRORS:
                 pass
             finally:
                 if self._listen_connection is not None:
@@ -494,5 +502,5 @@ class _PostgresConsumer(Consumer):
                     self._listen_connection = None
                     try:
                         conn.close()
-                    except DatabaseError:
+                    except DATABASE_ERRORS:
                         pass

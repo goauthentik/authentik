@@ -51,6 +51,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
 SHARED_APPS = [
+    "authentik.commands",
     "django_tenants",
     "authentik.tenants",
     "django.contrib.messages",
@@ -176,9 +177,11 @@ SPECTACULAR_SETTINGS = {
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
+        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -186,8 +189,9 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.schema.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
+        "authentik.api.schema.postprocess_schema_register",
         "authentik.api.schema.postprocess_schema_responses",
-        "authentik.api.schema.postprocess_schema_pagination",
+        "authentik.api.schema.postprocess_schema_query_params",
         "authentik.api.schema.postprocess_schema_remove_unused",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
@@ -390,6 +394,7 @@ DRAMATIQ = {
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+        ("django_dramatiq_postgres.middleware.TaskStateBeforeMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
             "dramatiq.middleware.time_limit.TimeLimit",
@@ -413,8 +418,8 @@ DRAMATIQ = {
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
-        ("authentik.tasks.middleware.RelObjMiddleware", {}),
-        ("authentik.tasks.middleware.MessagesMiddleware", {}),
+        ("authentik.tasks.middleware.ModelDataMiddleware", {}),
+        ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
         ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
@@ -425,6 +430,7 @@ DRAMATIQ = {
                 "prefix": "authentik",
             },
         ),
+        ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
     ),
     "test": TEST,
 }
