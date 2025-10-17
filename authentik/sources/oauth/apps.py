@@ -9,6 +9,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 LOGGER = get_logger()
 
 AUTHENTIK_SOURCES_OAUTH_TYPES = [
+    "authentik.sources.oauth.types.adfs",
     "authentik.sources.oauth.types.apple",
     "authentik.sources.oauth.types.azure_ad",
     "authentik.sources.oauth.types.discord",
