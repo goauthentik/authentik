@@ -62,7 +62,7 @@ Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and 
 
 ## Reverse Proxy Setup
 
-Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your Authentik Outpost Proxy Provider address.
+Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
 
 ```mermaid
 architecture-beta
@@ -70,7 +70,7 @@ architecture-beta
     service revprox(server)[Reverse Proxy]
     service outpost(server)[Outpost]
     service sonarr(server)[Sonarr]
-    service auth(server)[Authentik]
+    service auth(server)[authentik]
 
     client:R -- L:revprox
     revprox:R -- L:outpost
