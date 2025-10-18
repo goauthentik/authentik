@@ -261,6 +261,10 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
 //
 @customElement("ak-interface-user")
 export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
+    public static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
+
+    public override tabIndex = -1;
+
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
