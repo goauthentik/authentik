@@ -5,6 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -23,7 +24,11 @@ export class RoleListPage extends TablePage<Role> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
-    public pageTitle = msg("Roles");
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Role"),
+        plural: msg("Roles"),
+    };
+
     public pageDescription = msg(
         "Manage roles which grant permissions to objects within authentik.",
     );
@@ -75,7 +80,7 @@ export class RoleListPage extends TablePage<Role> {
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Role")}</span>
                     <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -91,10 +96,12 @@ export class RoleListPage extends TablePage<Role> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Role")}</span>
-                <ak-role-form slot="form"> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
+                <ak-role-form slot="form"></ak-role-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

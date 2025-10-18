@@ -15,9 +15,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-    getSuccessMessage(): string {
-        return msg("Successfully imported provider.");
-    }
+    protected override readonly actionName = "$import";
+
+    protected override entityLabel = msg("provider");
 
     async send(data: SAMLProvider): Promise<void> {
         const file = this.files().get("metadata");

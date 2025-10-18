@@ -24,9 +24,9 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
     @property({ attribute: false })
     user!: User;
 
-    getSuccessMessage(): string {
-        return msg("Successfully sent email.");
-    }
+    protected override readonly actionName = "send";
+
+    protected override entityLabel = msg("email");
 
     async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;

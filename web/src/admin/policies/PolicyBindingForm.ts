@@ -68,12 +68,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     @state()
     defaultOrder = 0;
 
-    getSuccessMessage(): string {
-        if (this.instance?.pk) {
-            return msg("Successfully updated binding.");
-        }
-        return msg("Successfully created binding.");
-    }
+    protected override entityLabel = msg("policy binding");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 

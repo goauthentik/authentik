@@ -1,6 +1,7 @@
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionName } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
@@ -29,6 +30,8 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             this.requireReason = false;
         }
     }
+
+    protected override readonly actionName?: ActionName = "impersonate";
 
     protected override formatAPISuccessMessage(): APIMessage | null {
         return {

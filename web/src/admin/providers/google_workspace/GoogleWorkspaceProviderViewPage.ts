@@ -13,6 +13,9 @@ import "#elements/tasks/TaskList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -42,6 +45,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Google Workspace Provider"),
+        plural: msg("Google Workspace Providers"),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -206,15 +214,15 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update Google Workspace Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-google-workspace-form
                                 slot="form"
                                 .instancePk=${this.provider.pk}
                             >
                             </ak-provider-google-workspace-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>

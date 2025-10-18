@@ -1,6 +1,7 @@
 import "#elements/EmptyState";
 
 import { EVENT_REFRESH } from "#common/constants";
+import { ActionName } from "#common/i18n/verbs";
 
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
@@ -20,6 +21,10 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
      * @returns A promise that resolves to the loaded instance.
      */
     protected abstract loadInstance(pk: PKT): Promise<T>;
+
+    protected get actionName(): ActionName {
+        return this.instance ? "update" : "create";
+    }
 
     /**
      * An overridable method for loading any data, beyond the instance.

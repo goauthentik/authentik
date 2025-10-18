@@ -11,6 +11,10 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatCreateMessage, formatEditMessage, formatNewMessage } from "#common/i18n/actions";
+import { DefaultEntityLabel, EntityLabel } from "#common/i18n/nouns";
+import { truncationEllipsis } from "#common/i18n/punctuation";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 import { uiConfig } from "#common/ui/config";
 import { GroupResult } from "#common/utils";
 
@@ -28,7 +32,6 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -268,13 +271,62 @@ export abstract class Table<T extends object>
     @state()
     protected lastRefreshedAt: Date | null = null;
 
+    /**
+     * The label for the type of entity being listed.
+     *
+     * Typically used in the empty state.
+     */
+    protected abstract entityLabel: EntityLabel;
+
+    protected get qlAvailable(): boolean {
+        return this.supportsQL && this.hasEnterpriseLicense;
+    }
+
+    protected get searchPlaceholder(): string {
+        if (this.qlAvailable) {
+            return msg("Search by <field>") + truncationEllipsis;
+        } else if (this.entityLabel !== DefaultEntityLabel) {
+            return msg(str`Search ${this.entityLabel.plural.toLowerCase()}`) + truncationEllipsis;
+        }
+
+        return msg("Search") + truncationEllipsis;
+    }
+
+    /**
+     * Label for opening a "new entity" modal or page.
+     */
+    protected get newEntityActionLabel(): string {
+        return formatNewMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for a "create entity" button.
+     */
+    protected get createEntityLabel(): string {
+        return formatCreateMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "edit entity" button.
+     */
+    protected get editEntityLabel(): string {
+        return formatEditMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "Apply" button.
+     */
+    protected get updateEntityLabel(): string {
+        return ActionTenseRecord.apply.present;
+    }
+
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
 
+    //#region Properties
+
     @property({ type: Boolean })
     public supportsQL: boolean = false;
-
-    //#region Properties
 
     @property({ type: String })
     public toolbarLabel: string | null = null;
@@ -356,12 +408,6 @@ export abstract class Table<T extends object>
 
     @property({ type: Boolean })
     public expandable = false;
-
-    @property({ attribute: false })
-    public searchLabel?: string;
-
-    @property({ attribute: false })
-    public searchPlaceholder?: string;
 
     //#endregion
 
@@ -492,7 +538,11 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span
+                                >${msg(
+                                    str`No ${this.entityLabel.plural.toLowerCase()} found.`,
+                                )}</span
+                            >
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -519,7 +569,7 @@ export abstract class Table<T extends object>
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
-            ><span>${msg("Failed to fetch objects.")}</span>
+            ><span>${msg(str`Failed to fetch ${this.entityLabel.plural}.`)}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }
@@ -839,14 +889,14 @@ export abstract class Table<T extends object>
             return nothing;
         }
 
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
+        const searchLabel = msg(str`${this.entityLabel.singular} search`);
 
         return html` <ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            class="pf-c-toolbar__item pf-m-search-filter ${this.qlAvailable ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
-            label=${ifDefined(this.searchLabel)}
-            placeholder=${ifDefined(this.searchPlaceholder)}
+            label=${searchLabel}
+            placeholder=${ifPresent(this.searchPlaceholder)}
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}

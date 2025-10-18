@@ -5,6 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -23,7 +24,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
-    public pageTitle = msg("Initial Permissions");
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Initial Permission"),
+        plural: msg("Initial Permissions"),
+    };
+
     public pageDescription = msg("Set initial permissions for newly created objects.");
     public pageIcon = "fa fa-lock";
 
@@ -75,12 +81,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Initial Permissions")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
                     </ak-initial-permissions-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -92,10 +98,12 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Initial Permissions")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-initial-permissions-form slot="form"> </ak-initial-permissions-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

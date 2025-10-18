@@ -24,9 +24,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
         })[0];
     }
 
-    getSuccessMessage(): string {
-        return msg("Successfully updated device.");
-    }
+    protected override entityLabel = msg("device");
 
     async send(device: Device): Promise<Device> {
         switch (this.instance?.type) {

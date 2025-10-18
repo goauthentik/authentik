@@ -9,6 +9,7 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { AKElement } from "#elements/Base";
 
@@ -16,11 +17,17 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Source"),
+        plural: msg("Sources"),
+    };
+
     @property({ type: String })
     set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)

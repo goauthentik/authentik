@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -35,6 +36,11 @@ export class UserReputationList extends Table<Reputation> {
     checkbox = true;
     clearOnRefresh = true;
     order = "identifier";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("reputation score"),
+        plural: msg("reputation scores"),
+    };
 
     protected override rowLabel(item: Reputation): string | null {
         return item.identifier ?? null;

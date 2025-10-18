@@ -6,6 +6,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EntityLabel } from "#common/i18n/nouns";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -15,13 +16,18 @@ import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("event"),
+        plural: msg("events"),
+    };
 
     @property()
     order = "-created";
@@ -89,7 +95,7 @@ export class ObjectChangelog extends Table<Event> {
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
+                ><span>${msg(msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`))}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

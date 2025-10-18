@@ -15,6 +15,7 @@ import {
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import type { PageUIConfig } from "./types.js";
 
+import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -87,7 +88,10 @@ export class LibraryPage extends AKElement {
     @state()
     filteredApps: Application[] = [];
 
-    public pageTitle = msg("My Applications");
+    protected entityLabel: EntityLabel = {
+        singular: msg("My Application"),
+        plural: msg("My Applications"),
+    };
 
     connectedCallback() {
         super.connectedCallback();

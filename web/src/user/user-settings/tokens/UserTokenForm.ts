@@ -23,11 +23,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated token.")
-            : msg("Successfully created token.");
-    }
+    protected override entityLabel = msg("token");
 
     async send(data: Token): Promise<Token> {
         if (this.instance) {
