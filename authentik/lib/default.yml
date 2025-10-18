@@ -150,18 +150,34 @@ worker:
   scheduler_interval: "seconds=60"
 
 storage:
-  media:
-    backend: file # or s3
-    file:
-      path: ./media
-    s3:
-      # How to talk to s3
-      # region: "us-east-1"
-      # use_ssl: True
-      # endpoint: "https://s3.us-east-1.amazonaws.com"
-      # access_key: ""
-      # secret_key: ""
-      # bucket_name: "authentik-media"
-      # How to render file URLs
-      # custom_domain: null
-      secure_urls: True
+  backend: file # or s3
+  file:
+  s3:
+    # How to talk to s3
+    # region: "us-east-1"
+    # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # access_key: ""
+    # secret_key: ""
+    # security_token: ""
+    # session_profile: ""
+    # bucket_name: "authentik-files"
+    # How to render file URLs
+    # custom_domain: null
+    secure_urls: true
+    presigned_expiry: 3600
+
+  # Usage-specific overrides (optional)
+  # These override the default storage settings for specific usage types
+  # Uncomment and configure as needed:
+
+  # media:
+  #   backend: s3  # Use S3 for media files
+  #   s3:
+  #     bucket_name: "authentik-media"
+  #     # Other S3 settings inherited from storage.s3 unless overridden
+
+  # reports:
+  #   backend: file  # Use local filesystem for reports
+  #   file:
+  #     path: ./reports
+  #     # Other file settings inherited from storage.file unless overridden

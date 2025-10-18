@@ -60,16 +60,11 @@ type ListenConfig struct {
 }
 
 type StorageConfig struct {
-	Media StorageMediaConfig `yaml:"media"`
-}
-
-type StorageMediaConfig struct {
-	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
-	File    StorageFileConfig `yaml:"file"`
+	File StorageFileConfig `yaml:"file" env:", prefix=FILE__"`
 }
 
 type StorageFileConfig struct {
-	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }
 
 type ErrorReportingConfig struct {

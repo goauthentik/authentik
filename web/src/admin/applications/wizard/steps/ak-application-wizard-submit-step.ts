@@ -136,7 +136,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         this.state = "running";
 
         return new CoreApi(DEFAULT_CONFIG)
-            .coreTransactionalApplicationsUpdate({
+            .coreTransactionalApplicationsCreate({
                 transactionApplicationRequest: request,
             })
             .then((_response: TransactionApplicationResponse) => {

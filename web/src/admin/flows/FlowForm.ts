@@ -1,3 +1,4 @@
+import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -31,7 +32,6 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
-        this.clearBackground = false;
         return flow;
     }
 
@@ -40,9 +40,6 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             ? msg("Successfully updated flow.")
             : msg("Successfully created flow.");
     }
-
-    @property({ type: Boolean })
-    clearBackground = false;
 
     async send(data: Flow): Promise<void | Flow> {
         let flow: Flow;
@@ -57,23 +54,6 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             });
         }
 
-        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("background");
-            if (icon || this.clearBackground) {
-                await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
-                    slug: flow.slug,
-                    file: icon,
-                    clear: this.clearBackground,
-                });
-            }
-        } else {
-            await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundUrlCreate({
-                slug: flow.slug,
-                filePathRequest: {
-                    url: data.background || "",
-                },
-            });
-        }
         return flow;
     }
 
@@ -324,69 +304,15 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${this.can(CapabilitiesEnum.CanSaveMedia)
-                        ? html`<ak-form-element-horizontal
-                                  label=${msg("Background")}
-                                  name="background"
-                              >
-                                  <input type="file" value="" class="pf-c-form-control" />
-                                  ${this.instance?.background
-                                      ? html`
-                                            <p class="pf-c-form__helper-text">
-                                                ${msg("Currently set to:")}
-                                                ${this.instance?.background}
-                                            </p>
-                                        `
-                                      : nothing}
-
-                                  <p class="pf-c-form__helper-text">
-                                      ${msg("Background shown during execution.")}
-                                  </p>
-                              </ak-form-element-horizontal>
-                              ${this.instance?.background
-                                  ? html`
-                                        <ak-form-element-horizontal>
-                                            <label class="pf-c-switch">
-                                                <input
-                                                    class="pf-c-switch__input"
-                                                    type="checkbox"
-                                                    @change=${(ev: Event) => {
-                                                        const target =
-                                                            ev.target as HTMLInputElement;
-                                                        this.clearBackground = target.checked;
-                                                    }}
-                                                />
-                                                <span class="pf-c-switch__toggle">
-                                                    <span class="pf-c-switch__toggle-icon">
-                                                        <i
-                                                            class="fas fa-check"
-                                                            aria-hidden="true"
-                                                        ></i>
-                                                    </span>
-                                                </span>
-                                                <span class="pf-c-switch__label">
-                                                    ${msg("Clear background")}
-                                                </span>
-                                            </label>
-                                            <p class="pf-c-form__helper-text">
-                                                ${msg("Delete currently set background image.")}
-                                            </p>
-                                        </ak-form-element-horizontal>
-                                    `
-                                  : nothing}`
-                        : html`<ak-form-element-horizontal
-                              label=${msg("Background")}
-                              name="background"
-                          >
-                              <input
-                                  type="text"
-                                  value="${this.instance?.background ?? ""}"
-                                  class="pf-c-form-control"
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg("Background shown during execution.")}
-                              </p>
-                          </ak-form-element-horizontal>`}
+                    <ak-file-search-input
+                        name="background"
+                        label=${msg("Background")}
+                        .value=${this.instance?.background}
+                        usage="media"
+                        blankable
+                        .specialUsages=${["static", "passthrough"]}
+                        help=${msg("Background shown during execution.")}
+                    ></ak-file-search-input>
                 </div>
             </ak-form-group>`;
     }

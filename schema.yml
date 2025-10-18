@@ -2847,61 +2847,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/{slug}/set_icon/:
-    post:
-      operationId: core_applications_set_icon_create
-      description: Set application icon
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/{slug}/set_icon_url/:
-    post:
-      operationId: core_applications_set_icon_url_create
-      description: Set application icon (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/applications/{slug}/used_by/:
     get:
       operationId: core_applications_used_by_list
@@ -3894,8 +3839,8 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/transactional/applications/:
-    put:
-      operationId: core_transactional_applications_update
+    post:
+      operationId: core_transactional_applications_create
       description: Convert data into a blueprint, validate it and apply it
       tags:
       - core
@@ -6098,6 +6043,113 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /files/:
+    get:
+      operationId: files_list
+      description: List files from storage backend
+      parameters:
+      - in: query
+        name: includeStatic
+        schema:
+          type: boolean
+        description: Include static files in the results
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: usage
+        schema:
+          type: string
+          enum:
+          - media
+          default: media
+        description: Usage type
+      tags:
+      - files
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /files/delete/:
+    delete:
+      operationId: files_delete_destroy
+      description: Delete file from storage backend
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: usage
+        schema:
+          type: string
+          enum:
+          - media
+          default: media
+        description: Usage type
+      tags:
+      - files
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /files/upload/:
+    post:
+      operationId: files_upload_create
+      description: Upload file to storage backend
+      tags:
+      - files
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequestRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /files/usages/:
+    get:
+      operationId: files_usages_list
+      description: Get available usage types
+      tags:
+      - files
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -6712,61 +6764,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/{slug}/set_background/:
-    post:
-      operationId: flows_instances_set_background_create
-      description: Set Flow background
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Visible in the URL.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/{slug}/set_background_url/:
-    post:
-      operationId: flows_instances_set_background_url_create
-      description: Set Flow background (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Visible in the URL.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /flows/instances/{slug}/used_by/:
     get:
       operationId: flows_instances_used_by_list
@@ -6840,6 +6837,7 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/FileUploadRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -19308,61 +19306,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/all/{slug}/set_icon/:
-    post:
-      operationId: sources_all_set_icon_create
-      description: Set source icon
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/all/{slug}/set_icon_url/:
-    post:
-      operationId: sources_all_set_icon_url_create
-      description: Set source icon (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/all/{slug}/used_by/:
     get:
       operationId: sources_all_used_by_list
@@ -31240,6 +31183,7 @@ components:
       - authentik.crypto
       - authentik.enterprise
       - authentik.events
+      - authentik.admin.files
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -31386,10 +31330,17 @@ components:
           format: uri
         meta_icon:
           type: string
+        meta_icon_url:
+          type: string
           nullable: true
           description: |-
-            Get the URL to the App Icon image. If the name is /static or starts with http
-            it is returned as-is
+            Get the URL to the App Icon image using the appropriate backend
+
+            Handles:
+            - File paths from authentik.files storage (e.g., "my-icon.png")
+            - Font Awesome icons (fa://fa-icon-name)
+            - Static paths (/static/...)
+            - External URLs (http://, https://...)
           readOnly: true
         meta_description:
           type: string
@@ -31402,7 +31353,7 @@ components:
       required:
       - backchannel_providers_obj
       - launch_url
-      - meta_icon
+      - meta_icon_url
       - name
       - pk
       - provider_obj
@@ -31470,6 +31421,8 @@ components:
         meta_launch_url:
           type: string
           format: uri
+        meta_icon:
+          type: string
         meta_description:
           type: string
         meta_publisher:
@@ -35286,25 +35239,65 @@ components:
           minLength: 1
       required:
       - object_pk
-    FilePathRequest:
+    File:
       type: object
-      description: Serializer to upload file
+      description: Base serializer class which doesn't implement create/update methods
       properties:
+        name:
+          type: string
+          readOnly: true
         url:
           type: string
-          minLength: 1
+          readOnly: true
+        mime_type:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        usage:
+          allOf:
+          - $ref: '#/components/schemas/FileUsageEnum'
+          readOnly: true
       required:
+      - mime_type
+      - name
+      - size
       - url
+      - usage
     FileUploadRequest:
       type: object
-      description: Serializer to upload file
+      description: Serializer for flow import file upload
       properties:
         file:
           type: string
           format: binary
-        clear:
-          type: boolean
-          default: false
+      required:
+      - file
+    FileUploadRequestRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        file:
+          type: string
+          format: binary
+        path:
+          type: string
+        usage:
+          allOf:
+          - $ref: '#/components/schemas/FileUploadRequestUsageEnum'
+          default: media
+      required:
+      - file
+    FileUploadRequestUsageEnum:
+      enum:
+      - media
+      type: string
+    FileUsageEnum:
+      enum:
+      - media
+      - reports
+      type: string
     Flow:
       type: object
       description: Flow Serializer
@@ -35335,9 +35328,17 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
+          description: Background shown during execution
+        background_url:
+          type: string
           description: |-
-            Get the URL to the background image. If the name is /static or starts with http
-            it is returned as-is
+            Get the URL to the background image using the appropriate backend
+
+            Handles:
+            - File paths from authentik.files storage (e.g., "my-background.png")
+            - Font Awesome icons (fa://fa-icon-name)
+            - Static paths (/static/...)
+            - External URLs (http://, https://...)
           readOnly: true
         stages:
           type: array
@@ -35378,7 +35379,7 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
-      - background
+      - background_url
       - cache_count
       - designation
       - export_url
@@ -35574,6 +35575,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
+        background:
+          type: string
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -35627,10 +35631,7 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          description: |-
-            Get the URL to the background image. If the name is /static or starts with http
-            it is returned as-is
-          readOnly: true
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -35649,7 +35650,6 @@ components:
           description: Configure what should happen when a flow denies access to a
             user.
       required:
-      - background
       - designation
       - export_url
       - name
@@ -35679,6 +35679,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
+        background:
+          type: string
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -37397,6 +37400,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -37447,7 +37452,7 @@ components:
       required:
       - component
       - connectivity
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -37569,6 +37574,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -38059,6 +38066,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         server_uri:
           type: string
@@ -38146,7 +38155,7 @@ components:
       - base_dn
       - component
       - connectivity
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -38268,6 +38277,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         server_uri:
           type: string
           minLength: 1
@@ -39763,6 +39774,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
           readOnly: true
         group_matching_mode:
@@ -39823,7 +39836,7 @@ components:
       - callback_url
       - component
       - consumer_key
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -39946,6 +39959,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -42863,6 +42878,8 @@ components:
         meta_launch_url:
           type: string
           format: uri
+        meta_icon:
+          type: string
         meta_description:
           type: string
         meta_publisher:
@@ -43648,6 +43665,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
+        background:
+          type: string
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -44127,6 +44147,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -44327,6 +44349,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         server_uri:
           type: string
           minLength: 1
@@ -44765,6 +44789,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -45033,6 +45059,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -45629,6 +45657,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -46095,6 +46125,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         bot_username:
           type: string
           minLength: 1
@@ -46568,6 +46600,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -46591,7 +46625,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -46713,6 +46747,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -49027,6 +49063,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -49098,7 +49136,7 @@ components:
           type: boolean
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -49221,6 +49259,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -50543,14 +50583,21 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
           description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
+            Get the URL to the icon using the appropriate backend
+
+            Handles:
+            - File paths from authentik.files storage (e.g., "my-icon.png")
+            - Font Awesome icons (fa://fa-icon-name)
+            - Static paths (/static/...)
+            - External URLs (http://, https://...)
           readOnly: true
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -51174,6 +51221,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
           readOnly: true
         bot_username:
@@ -51189,7 +51238,7 @@ components:
       required:
       - bot_username
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -51311,6 +51360,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         bot_username:
           type: string
           minLength: 1
@@ -51697,6 +51748,17 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    Usage:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object

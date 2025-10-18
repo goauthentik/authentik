@@ -160,7 +160,7 @@ class TransactionalApplicationView(APIView):
             200: TransactionApplicationResponseSerializer(),
         },
     )
-    def put(self, request: Request) -> Response:
+    def post(self, request: Request) -> Response:
         """Convert data into a blueprint, validate it and apply it"""
         data = TransactionApplicationSerializer(data=request.data)
         data.is_valid(raise_exception=True)

@@ -9,6 +9,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.admin.files.backend import resolve_file_url
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
@@ -84,22 +85,19 @@ class Brand(SerializerModel):
     attributes = models.JSONField(default=dict, blank=True)
 
     def branding_logo_url(self) -> str:
-        """Get branding_logo with the correct prefix"""
-        if self.branding_logo.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_logo
-        return self.branding_logo
+        """Get branding_logo URL using appropriate backend"""
+        from authentik.admin.files.backend import Usage
+        return resolve_file_url(self.branding_logo, Usage.MEDIA)
 
     def branding_favicon_url(self) -> str:
-        """Get branding_favicon with the correct prefix"""
-        if self.branding_favicon.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_favicon
-        return self.branding_favicon
+        """Get branding_favicon URL using appropriate backend"""
+        from authentik.admin.files.backend import Usage
+        return resolve_file_url(self.branding_favicon, Usage.MEDIA)
 
     def branding_default_flow_background_url(self) -> str:
-        """Get branding_default_flow_background with the correct prefix"""
-        if self.branding_default_flow_background.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.branding_default_flow_background
-        return self.branding_default_flow_background
+        """Get branding_default_flow_background URL using appropriate backend"""
+        from authentik.admin.files.backend import Usage
+        return resolve_file_url(self.branding_default_flow_background, Usage.MEDIA)
 
     @property
     def serializer(self) -> Serializer:
