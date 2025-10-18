@@ -548,7 +548,7 @@ func TestBuildDSN(t *testing.T) {
 				User: "testuser",
 				Name: "testdb",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer",
+			expected: "host=localhost port=5432 user=testuser dbname=testdb",
 		},
 		{
 			name: "with password",
@@ -559,10 +559,21 @@ func TestBuildDSN(t *testing.T) {
 				Password: "testpass",
 				Name:     "testdb",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb password=testpass sslmode=prefer",
+			expected: "host=localhost port=5432 user=testuser dbname=testdb password=testpass",
 		},
 		{
-			name: "with custom SSL mode",
+			name: "with sslmode=disable",
+			cfg: config.PostgreSQLConfig{
+				Host:    "localhost",
+				Port:    5432,
+				User:    "testuser",
+				Name:    "testdb",
+				SSLMode: "disable",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=disable",
+		},
+		{
+			name: "with sslmode=require",
 			cfg: config.PostgreSQLConfig{
 				Host:    "localhost",
 				Port:    5432,
@@ -571,6 +582,17 @@ func TestBuildDSN(t *testing.T) {
 				SSLMode: "require",
 			},
 			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=require",
+		},
+		{
+			name: "with sslmode=prefer",
+			cfg: config.PostgreSQLConfig{
+				Host:    "localhost",
+				Port:    5432,
+				User:    "testuser",
+				Name:    "testdb",
+				SSLMode: "prefer",
+			},
+			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer",
 		},
 		{
 			name: "with SSL certificates",
@@ -595,7 +617,7 @@ func TestBuildDSN(t *testing.T) {
 				Name:          "testdb",
 				DefaultSchema: "custom_schema",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer search_path=custom_schema",
+			expected: "host=localhost port=5432 user=testuser dbname=testdb search_path=custom_schema",
 		},
 		{
 			name: "with connection options",
@@ -606,7 +628,7 @@ func TestBuildDSN(t *testing.T) {
 				Name:        "testdb",
 				ConnOptions: "connect_timeout=10",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer connect_timeout=10",
+			expected: "host=localhost port=5432 user=testuser dbname=testdb connect_timeout=10",
 		},
 		{
 			name: "full configuration",
@@ -641,8 +663,8 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 	defer CleanupTestDB(t, db, pool)
 
 	store := NewTestStore(db, pool)
-	sqlDB, err := store.db.DB()
-	require.NoError(t, err)
+	sqlDB := pool.GetDB()
+	require.NotNil(t, sqlDB)
 
 	// Verify connection pool is configured
 	stats := sqlDB.Stats()
