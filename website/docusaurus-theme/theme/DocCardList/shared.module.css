@@ -1,0 +1,49 @@
+.errorState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-danger);
+}
+
+.loadingState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryShort {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.glossaryShortMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong {
+    color: var(--ifm-color-emphasis-700);
+}
+
+.glossaryLongMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong p {
+    margin-bottom: 0.75rem;
+}
+
+.glossaryLong p:last-child {
+    margin-bottom: 0;
+}
+
+.cardContainer {
+    contain: layout style;
+}
+
+@media (max-width: 768px) {
+    .glossaryShort {
+        font-size: 1rem;
+    }
+}
