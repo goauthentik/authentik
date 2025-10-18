@@ -571,167 +571,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/admin/endpoint/:
-    get:
-      operationId: authenticators_admin_endpoint_list
-      description: Viewset for Endpoint authenticator devices (for admins)
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: authenticators_admin_endpoint_create
-      description: Viewset for Endpoint authenticator devices (for admins)
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/admin/endpoint/{uuid}/:
-    get:
-      operationId: authenticators_admin_endpoint_retrieve
-      description: Viewset for Endpoint authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: authenticators_admin_endpoint_update
-      description: Viewset for Endpoint authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: authenticators_admin_endpoint_partial_update
-      description: Viewset for Endpoint authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEndpointDeviceRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: authenticators_admin_endpoint_destroy
-      description: Viewset for Endpoint authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/admin/sms/:
     get:
       operationId: authenticators_admin_sms_list
@@ -1685,87 +1524,6 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/endpoint/:
-    get:
-      operationId: authenticators_endpoint_list
-      description: Viewset for Endpoint authenticator devices
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/endpoint/{uuid}/:
-    get:
-      operationId: authenticators_endpoint_retrieve
-      description: Viewset for Endpoint authenticator devices
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /authenticators/endpoint/{uuid}/used_by/:
-    get:
-      operationId: authenticators_endpoint_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
       - authenticators
@@ -4789,6 +4547,784 @@ paths:
           description: ''
         '400':
           description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/:
+    get:
+      operationId: endpoints_agents_connectors_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAgentConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_agents_connectors_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_agents_connectors_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this agent connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_agents_connectors_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this agent connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_agents_connectors_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this agent connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAgentConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_connectors_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this agent connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_agents_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this agent connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/agent_config/:
+    get:
+      operationId: endpoints_agents_connectors_agent_config_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/enroll/:
+    post:
+      operationId: endpoints_agents_connectors_enroll_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: header
+        name: authorization
+        schema:
+          type: string
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/report/:
+    post:
+      operationId: endpoints_agents_connectors_report_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommonDeviceDataRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          description: Report created.
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/connectors/:
+    get:
+      operationId: endpoints_connectors_list
+      description: Connector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_connectors_retrieve
+      description: Connector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_connectors_destroy
+      description: Connector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/connectors/types/:
+    get:
+      operationId: endpoints_connectors_types_list
+      description: Get all creatable types
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeCreate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_groups/:
+    get:
+      operationId: endpoints_device_groups_list
+      description: DeviceGroup Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDeviceGroupList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_device_groups_create
+      description: DeviceGroup Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_groups/{pbm_uuid}/:
+    get:
+      operationId: endpoints_device_groups_retrieve
+      description: DeviceGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_device_groups_update
+      description: DeviceGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_device_groups_partial_update
+      description: DeviceGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceGroupRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_device_groups_destroy
+      description: DeviceGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_groups/{pbm_uuid}/used_by/:
+    get:
+      operationId: endpoints_device_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/devices/:
+    get:
+      operationId: endpoints_devices_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_devices_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/devices/{device_uuid}/:
+    get:
+      operationId: endpoints_devices_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: device_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_devices_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: device_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_devices_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: device_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_devices_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: device_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/devices/{device_uuid}/used_by/:
+    get:
+      operationId: endpoints_devices_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: device_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
@@ -18181,6 +18717,10 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.endpointstage
+          - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_fleet.fleetconnector
+          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -18251,7 +18791,6 @@ paths:
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_email.authenticatoremailstage
           - authentik_stages_authenticator_email.emaildevice
-          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -18390,6 +18929,10 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.endpointstage
+          - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_fleet.fleetconnector
+          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -18460,7 +19003,6 @@ paths:
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_email.authenticatoremailstage
           - authentik_stages_authenticator_email.emaildevice
-          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -25238,206 +25780,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/endpoint_gdtc/:
-    get:
-      operationId: stages_authenticator_endpoint_gdtc_list
-      description: AuthenticatorEndpointGDTCStage Viewset
-      parameters:
-      - in: query
-        name: configure_flow
-        schema:
-          type: string
-          format: uuid
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedAuthenticatorEndpointGDTCStageList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: stages_authenticator_endpoint_gdtc_create
-      description: AuthenticatorEndpointGDTCStage Viewset
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorEndpointGDTCStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/endpoint_gdtc/{stage_uuid}/:
-    get:
-      operationId: stages_authenticator_endpoint_gdtc_retrieve
-      description: AuthenticatorEndpointGDTCStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: stages_authenticator_endpoint_gdtc_update
-      description: AuthenticatorEndpointGDTCStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorEndpointGDTCStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: stages_authenticator_endpoint_gdtc_partial_update
-      description: AuthenticatorEndpointGDTCStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorEndpointGDTCStageRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: stages_authenticator_endpoint_gdtc_destroy
-      description: AuthenticatorEndpointGDTCStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_endpoint_gdtc_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /stages/authenticator/sms/:
     get:
       operationId: stages_authenticator_sms_list
@@ -31199,6 +31541,77 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AgentConfig:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        nss_uid_offset:
+          type: integer
+        nss_gid_offset:
+          type: integer
+        authentication_flow:
+          type: string
+      required:
+      - authentication_flow
+      - nss_gid_offset
+      - nss_uid_offset
+    AgentConnector:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
+      - tokens
+    AgentConnectorRequest:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
+      - tokens
     AlgEnum:
       enum:
       - rsa
@@ -31224,6 +31637,7 @@ components:
       - authentik.api
       - authentik.core
       - authentik.crypto
+      - authentik.endpoints
       - authentik.enterprise
       - authentik.events
       - authentik.flows
@@ -31278,6 +31692,9 @@ components:
       - authentik.brands
       - authentik.blueprints
       - authentik.enterprise.audit
+      - authentik.enterprise.endpoints.connectors.agent
+      - authentik.enterprise.endpoints.connectors.fleet
+      - authentik.enterprise.endpoints.connectors.google_chrome
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -31285,7 +31702,6 @@ components:
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.search
-      - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
       type: string
@@ -31967,81 +32383,6 @@ components:
           type: string
           minLength: 1
       required:
-      - name
-    AuthenticatorEndpointGDTCStage:
-      type: object
-      description: AuthenticatorEndpointGDTCStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
-      required:
-      - component
-      - credentials
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AuthenticatorEndpointGDTCStageRequest:
-      type: object
-      description: AuthenticatorEndpointGDTCStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
-      required:
-      - credentials
       - name
     AuthenticatorSMSChallenge:
       type: object
@@ -33393,6 +33734,56 @@ components:
       - confidential
       - public
       type: string
+    CommonDeviceData:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystem'
+          nullable: true
+        disks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disk'
+          nullable: true
+        network:
+          allOf:
+          - $ref: '#/components/schemas/Network'
+          nullable: true
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/Hardware'
+          nullable: true
+        software:
+          type: array
+          items:
+            $ref: '#/components/schemas/Software'
+          nullable: true
+    CommonDeviceDataRequest:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystemRequest'
+          nullable: true
+        disks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskRequest'
+          nullable: true
+        network:
+          allOf:
+          - $ref: '#/components/schemas/NetworkRequest'
+          nullable: true
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/HardwareRequest'
+          nullable: true
+        software:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareRequest'
+          nullable: true
     CompatibilityModeEnum:
       enum:
       - default
@@ -33469,6 +33860,36 @@ components:
       required:
       - endpoint
       - provider
+    Connector:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - verbose_name
+      - verbose_name_plural
     ConsentChallenge:
       type: object
       description: Challenge info for consent screens
@@ -34130,6 +34551,94 @@ components:
       - sms
       - email
       type: string
+    DeviceConnection:
+      type: object
+      properties:
+        device:
+          type: string
+          format: uuid
+        connector:
+          type: string
+          format: uuid
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+        data:
+          type: object
+          additionalProperties: {}
+      required:
+      - connector
+      - connector_obj
+      - device
+    DeviceConnectionRequest:
+      type: object
+      properties:
+        device:
+          type: string
+          format: uuid
+        connector:
+          type: string
+          format: uuid
+        data:
+          type: object
+          additionalProperties: {}
+      required:
+      - connector
+      - device
+    DeviceGroup:
+      type: object
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+      required:
+      - name
+      - pbm_uuid
+    DeviceGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
+    DeviceUser:
+      type: object
+      properties:
+        is_primary:
+          type: boolean
+        device:
+          type: string
+          format: uuid
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+      required:
+      - device
+      - is_primary
+      - user
+      - user_obj
+    DeviceUserRequest:
+      type: object
+      properties:
+        is_primary:
+          type: boolean
+        device:
+          type: string
+          format: uuid
+        user:
+          type: integer
+      required:
+      - device
+      - is_primary
+      - user
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -34142,6 +34651,20 @@ components:
       - '6'
       - '8'
       type: string
+    Disk:
+      type: object
+      properties:
+        encryption:
+          type: boolean
+      required:
+      - encryption
+    DiskRequest:
+      type: object
+      properties:
+        encryption:
+          type: boolean
+      required:
+      - encryption
     DockerServiceConnection:
       type: object
       description: DockerServiceConnection Serializer
@@ -34731,33 +35254,64 @@ components:
       type: string
     EndpointDevice:
       type: object
-      description: Serializer for Endpoint authenticator devices
       properties:
-        pk:
+        device_uuid:
           type: string
           format: uuid
-          title: Uuid
-        name:
+        group:
           type: string
-          description: The human-readable name of this device.
-          maxLength: 64
+          format: uuid
+          nullable: true
+        users:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUser'
+        connections:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        connections_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceConnection'
+        data:
+          allOf:
+          - $ref: '#/components/schemas/CommonDeviceData'
+          readOnly: true
       required:
-      - name
+      - connections
+      - connections_obj
+      - data
+      - users
+      - users_obj
     EndpointDeviceRequest:
       type: object
-      description: Serializer for Endpoint authenticator devices
       properties:
-        pk:
+        device_uuid:
           type: string
           format: uuid
-          title: Uuid
-        name:
+        group:
           type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
+          format: uuid
+          nullable: true
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+        connections_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceConnectionRequest'
       required:
-      - name
+      - connections_obj
+      - users_obj
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -34792,6 +35346,27 @@ components:
       - name
       - protocol
       - provider
+    EnrollRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        device_serial:
+          type: string
+          minLength: 1
+        device_name:
+          type: string
+          minLength: 1
+      required:
+      - device_name
+      - device_serial
+    EnrollResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        token:
+          type: string
+      required:
+      - token
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -35272,6 +35847,17 @@ components:
           minLength: 1
       required:
       - object_pk
+    FamilyEnum:
+      enum:
+      - linux
+      - unix
+      - bsd
+      - windows
+      - mac_os
+      - android
+      - i_os
+      - other
+      type: string
     FilePathRequest:
       type: object
       description: Serializer to upload file
@@ -36793,6 +37379,35 @@ components:
       - group
       - identifier
       - source
+    Hardware:
+      type: object
+      properties:
+        model:
+          type: string
+        manufacturer:
+          type: string
+        serial:
+          type: string
+      required:
+      - manufacturer
+      - model
+      - serial
+    HardwareRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          minLength: 1
+        manufacturer:
+          type: string
+          minLength: 1
+        serial:
+          type: string
+          minLength: 1
+      required:
+      - manufacturer
+      - model
+      - serial
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -38798,6 +39413,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_endpoints.endpointstage
       - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -38890,13 +39506,15 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_fleet.fleetconnector
+      - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
-      - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       type: string
@@ -39028,6 +39646,18 @@ components:
           type: string
           minLength: 1
           default: ak-provider-saml-native-logout
+    Network:
+      type: object
+      properties:
+        hostname:
+          type: string
+        dns_servers:
+          type: array
+          items:
+            type: string
+      required:
+      - dns_servers
+      - hostname
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -39035,6 +39665,20 @@ components:
       - bind_asn_network
       - bind_asn_network_ip
       type: string
+    NetworkRequest:
+      type: object
+      properties:
+        hostname:
+          type: string
+          minLength: 1
+        dns_servers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+      required:
+      - dns_servers
+      - hostname
     NotConfiguredActionEnum:
       enum:
       - skip
@@ -39993,6 +40637,40 @@ components:
       - token_endpoint
       - token_endpoint_auth_methods_supported
       - userinfo_endpoint
+    OperatingSystem:
+      type: object
+      properties:
+        firewall_enabled:
+          type: boolean
+        family:
+          $ref: '#/components/schemas/FamilyEnum'
+        name:
+          type: string
+        version:
+          type: string
+      required:
+      - family
+      - firewall_enabled
+      - name
+      - version
+    OperatingSystemRequest:
+      type: object
+      properties:
+        firewall_enabled:
+          type: boolean
+        family:
+          $ref: '#/components/schemas/FamilyEnum'
+        name:
+          type: string
+          minLength: 1
+        version:
+          type: string
+          minLength: 1
+      required:
+      - family
+      - firewall_enabled
+      - name
+      - version
     OutgoingSyncDeleteAction:
       enum:
       - do_nothing
@@ -40174,6 +40852,21 @@ components:
       - plain
       - S256
       type: string
+    PaginatedAgentConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedApplicationEntitlementList:
       type: object
       properties:
@@ -40243,21 +40936,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorEmailStage'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - pagination
-      - results
-      - autocomplete
-    PaginatedAuthenticatorEndpointGDTCStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -40414,6 +41092,21 @@ components:
       - pagination
       - results
       - autocomplete
+    PaginatedConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedConsentStageList:
       type: object
       properties:
@@ -40438,6 +41131,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DenyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDeviceGroupList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroup'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -42767,6 +43475,32 @@ components:
       required:
       - backends
       - name
+    PatchedAgentConnectorRequest:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        nss_uid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        nss_gid_offset:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        tokens:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -42906,28 +43640,6 @@ components:
         template:
           type: string
           minLength: 1
-    PatchedAuthenticatorEndpointGDTCStageRequest:
-      type: object
-      description: AuthenticatorEndpointGDTCStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -43283,6 +43995,12 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
+    PatchedDeviceGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
     PatchedDockerServiceConnectionRequest:
       type: object
       description: DockerServiceConnection Serializer
@@ -43442,17 +44160,22 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
     PatchedEndpointDeviceRequest:
       type: object
-      description: Serializer for Endpoint authenticator devices
       properties:
-        pk:
+        device_uuid:
           type: string
           format: uuid
-          title: Uuid
-        name:
+        group:
           type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
+          format: uuid
+          nullable: true
+        users_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+        connections_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceConnectionRequest'
     PatchedEndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -50368,6 +51091,28 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
+    Software:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+      required:
+      - name
+      - version
+    SoftwareRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        version:
+          type: string
+          minLength: 1
+      required:
+      - name
+      - version
     Source:
       type: object
       description: Source Serializer
