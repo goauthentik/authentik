@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
@@ -100,7 +101,6 @@ func TestRefreshableConnPool_Interfaces(t *testing.T) {
 }
 
 func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
-
 	cfg := config.Get()
 	dsn, err := BuildDSN(cfg.PostgreSQL)
 	require.NoError(t, err)
@@ -116,15 +116,23 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 	db, err := pool.NewGORMDB()
 	require.NoError(t, err)
 
-	// Test concurrent queries
+	// Test that the connection is working
 	ctx := context.Background()
+	var result int
+	err = db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
+	require.NoError(t, err, "Initial connection test should succeed")
+
+	// Test concurrent queries
 	numGoroutines := 10
 	numQueries := 5
 
+	var wg sync.WaitGroup
 	errChan := make(chan error, numGoroutines*numQueries)
 
 	for i := 0; i < numGoroutines; i++ {
+		wg.Add(1)
 		go func(goroutineID int) {
+			defer wg.Done()
 			for j := 0; j < numQueries; j++ {
 				var result int
 				err := db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
@@ -135,8 +143,8 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 		}(i)
 	}
 
-	// Wait a bit for goroutines to complete
-	time.Sleep(2 * time.Second)
+	// Wait for all goroutines to complete, then close the channel
+	wg.Wait()
 	close(errChan)
 
 	// Check for any errors
