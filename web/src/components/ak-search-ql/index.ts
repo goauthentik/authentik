@@ -111,10 +111,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                         --ak-dark-background-light
                     );
                 }
-
-                .pf-c-search-input__text::before {
-                    border: 0;
-                }
             }
 
             .pf-c-search-input__menu {
@@ -122,6 +118,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 min-width: 0;
                 overflow-y: auto;
                 max-height: 50vh;
+            }
+        `,
+        // HACK: Fixes Lit Analyzer's outdated parser.
+        (css as typeof css) /*css*/ `
+            @media not (prefers-contrast: more) {
+                .pf-c-search-input__text::before {
+                    border: none;
+                }
             }
         `,
     ];
