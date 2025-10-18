@@ -127,7 +127,7 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 		go func(goroutineID int) {
 			for j := 0; j < numQueries; j++ {
 				var result int
-				err := db.WithContext(ctx).Raw("SELECT ?", goroutineID*numQueries+j).Scan(&result).Error
+				err := db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
 				if err != nil {
 					errChan <- err
 				}
