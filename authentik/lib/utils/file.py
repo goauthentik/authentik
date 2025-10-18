@@ -45,9 +45,9 @@ def set_file(request: Request, obj: Model, field_name: str):
     return HttpResponseBadRequest()
 
 
-def set_file_url(request: Request, obj: Model, field: str):
+def set_file_url(request: Request, obj: Model, field_name: str):
     """Set file field to URL"""
-    field = getattr(obj, field)
+    field = getattr(obj, field_name)
     url = request.data.get("url", None)
     if url is None:
         return HttpResponseBadRequest()

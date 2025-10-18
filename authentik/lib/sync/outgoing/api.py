@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from django.db.models import Model
 from dramatiq.actor import Actor
 from dramatiq.results.errors import ResultFailure
@@ -36,7 +38,11 @@ class SyncObjectResultSerializer(PassiveSerializer):
     messages = LogEventSerializer(many=True, read_only=True)
 
 
-class OutgoingSyncProviderStatusMixin:
+class GetObjectDependency(Protocol):
+    def get_object(self) -> OutgoingSyncProvider: ...
+
+
+class OutgoingSyncProviderStatusMixin(GetObjectDependency):
     """Common API Endpoints for Outgoing sync providers"""
 
     sync_task: Actor
@@ -52,7 +58,7 @@ class OutgoingSyncProviderStatusMixin:
     )
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
-        provider: OutgoingSyncProvider = self.get_object()
+        provider = self.get_object()
 
         status = {}
 
@@ -99,7 +105,7 @@ class OutgoingSyncProviderStatusMixin:
     )
     def sync_object(self, request: Request, pk: int) -> Response:
         """Sync/Re-sync a single user/group object"""
-        provider: OutgoingSyncProvider = self.get_object()
+        provider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
         object_type = params.validated_data["sync_object_model"]
