@@ -198,7 +198,7 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -249,7 +249,7 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -268,7 +268,7 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": False,
                 },
                 "replica_0": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -317,7 +317,7 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": None,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -336,7 +336,7 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 10,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -380,7 +380,7 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -399,7 +399,7 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -439,7 +439,7 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -458,7 +458,7 @@ class TestConfig(TestCase):
                     "CONN_HEALTH_CHECKS": False,
                 },
                 "replica_0": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
@@ -555,7 +555,7 @@ class TestConfig(TestCase):
     #         conf,
     #         {
     #             "default": {
-    #                 "ENGINE": "authentik.root.db",
+    #                 "ENGINE": "psqlextra.backend",
     #                 "HOST": "foo",
     #                 "NAME": "foo",
     #                 "OPTIONS": {
@@ -601,7 +601,7 @@ class TestConfig(TestCase):
     #         conf,
     #         {
     #             "default": {
-    #                 "ENGINE": "authentik.root.db",
+    #                 "ENGINE": "psqlextra.backend",
     #                 "HOST": "foo",
     #                 "NAME": "foo",
     #                 "OPTIONS": {
