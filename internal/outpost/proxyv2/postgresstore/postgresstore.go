@@ -144,20 +144,14 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
 
-	// Test the connection with a ping
-	sqlDB, err := db.DB()
-	if err != nil {
-		_ = pool.Close()
-		return nil, nil, fmt.Errorf("failed to get underlying database connection: %w", err)
-	}
-
+	// Test the connection with a simple query
+	// This will trigger the connection pool's tryWithRefresh logic if there's an auth error
 	ctx := context.Background()
-	err = pool.tryWithRefresh(ctx, func() error {
-		return sqlDB.PingContext(ctx)
-	})
+	var result int
+	err = db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
 	if err != nil {
 		_ = pool.Close()
-		return nil, nil, fmt.Errorf("failed to ping PostgreSQL: %w", err)
+		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
 	}
 
 	return db, pool, nil
