@@ -37,7 +37,7 @@ type RefreshableConnPool struct {
 
 // NewRefreshableConnPool creates a new connection pool that refreshes credentials from config
 func NewRefreshableConnPool(initialDSN string, gormConfig *gorm.Config, maxIdleConns, maxOpenConns int, connMaxLifetime time.Duration) (*RefreshableConnPool, error) {
-	db, err := sql.Open("postgres", initialDSN)
+	db, err := sql.Open("pgx", initialDSN)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (p *RefreshableConnPool) refreshCredentials(ctx context.Context) error {
 	p.log.Info("PostgreSQL credentials changed, reconnecting...")
 
 	// Open new connection with fresh credentials
-	newDB, err := sql.Open("postgres", newDSN)
+	newDB, err := sql.Open("pgx", newDSN)
 	if err != nil {
 		p.log.WithError(err).Error("Failed to open new database connection with refreshed credentials")
 		return err
