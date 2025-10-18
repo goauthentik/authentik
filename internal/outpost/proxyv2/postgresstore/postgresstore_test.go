@@ -24,6 +24,13 @@ import (
 func SetupTestDB(t *testing.T) (*gorm.DB, *RefreshableConnPool) {
 	cfg := config.Get().PostgreSQL
 
+	t.Logf("PostgreSQL config: Host=%s Port=%d User=%s DBName=%s SSLMode=%s",
+		cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.SSLMode)
+	t.Logf("Password length: %d", len(cfg.Password))
+	if cfg.Password == "" {
+		t.Logf("WARNING: Password is empty!")
+	}
+
 	gormConfig := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 		NowFunc: func() time.Time {

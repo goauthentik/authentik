@@ -169,8 +169,17 @@ func (c *Config) parseScheme(rawVal string) string {
 	case "env":
 		e, ok := os.LookupEnv(u.Host)
 		if ok {
+			log.WithFields(log.Fields{
+				"env_var": u.Host,
+				"found":   true,
+			}).Trace("Resolved environment variable")
 			return e
 		}
+		log.WithFields(log.Fields{
+			"env_var":  u.Host,
+			"found":    false,
+			"fallback": u.RawQuery,
+		}).Warn("Environment variable not found, using fallback")
 		return u.RawQuery
 	case "file":
 		d, err := os.ReadFile(u.Path)

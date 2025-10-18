@@ -76,6 +76,9 @@ func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
 
 	if cfg.Password != "" {
 		dsnParts = append(dsnParts, "password="+cfg.Password)
+		log.WithField("password_length", len(cfg.Password)).Trace("Password added to DSN")
+	} else {
+		log.Warn("Password is empty in BuildDSN")
 	}
 
 	// Add SSL mode
