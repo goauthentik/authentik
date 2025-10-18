@@ -3,6 +3,7 @@ from authentik.flows.stage import StageView
 
 PLAN_CONTEXT_ENDPOINT_CONNECTOR = "endpoint_connector"
 
+
 class EndpointStageView(StageView):
 
     def dispatch(self, request, *args, **kwargs):

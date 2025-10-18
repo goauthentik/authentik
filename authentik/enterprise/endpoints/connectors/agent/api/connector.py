@@ -84,6 +84,10 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
                 "data": {},
             },
         )
-        return Response(EnrollResponseSerializer(data={
-            "token": "foo",
-        }).data)
+        return Response(
+            EnrollResponseSerializer(
+                data={
+                    "token": "foo",
+                }
+            ).data
+        )
