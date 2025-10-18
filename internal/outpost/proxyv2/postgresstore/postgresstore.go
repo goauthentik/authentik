@@ -81,8 +81,6 @@ func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
 	// Add SSL mode
 	if cfg.SSLMode != "" {
 		dsnParts = append(dsnParts, "sslmode="+cfg.SSLMode)
-	} else {
-		dsnParts = append(dsnParts, "sslmode=prefer")
 	}
 
 	// Add SSL certificates if provided
@@ -144,6 +142,22 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 	if err != nil {
 		_ = pool.Close()
 		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
+	}
+
+	// Test the connection with a ping
+	sqlDB, err := db.DB()
+	if err != nil {
+		_ = pool.Close()
+		return nil, nil, fmt.Errorf("failed to get underlying database connection: %w", err)
+	}
+
+	ctx := context.Background()
+	err = pool.tryWithRefresh(ctx, func() error {
+		return sqlDB.PingContext(ctx)
+	})
+	if err != nil {
+		_ = pool.Close()
+		return nil, nil, fmt.Errorf("failed to ping PostgreSQL: %w", err)
 	}
 
 	return db, pool, nil
