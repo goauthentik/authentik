@@ -57,13 +57,15 @@ export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
-    @property({ type: String, reflect: true })
+    // HACK: Fixes Lit Analyzer's parsing of TSX files with decorators.
+
+    @((property as typeof property)({ type: String, reflect: true }))
     public url?: string;
 
-    @property()
+    @((property as typeof property)())
     public content?: string;
 
-    @property({ attribute: false })
+    @((property as typeof property)({ attribute: false }))
     public replacers: Replacer[] = [];
 
     #reactRoot: Root | null = null;

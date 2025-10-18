@@ -226,8 +226,28 @@ html > form > input {
 /* #region Form controls */
 
 .pf-c-form-control {
-    --pf-c-form-control--readonly--BackgroundColor: var(--pf-global--BackgroundColor--200);
-    --pf-c-form-control--disabled--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    /* !important is required to ensure priority when in compatibility mode. */
+
+    --pf-c-form-control--readonly--BackgroundColor: var(
+        --pf-global--BackgroundColor--200
+    ) !important;
+    --pf-c-form-control--disabled--BackgroundColor: var(
+        --pf-global--BackgroundColor--200
+    ) !important;
+
+    --pf-c-form-control--BorderTopColor: transparent !important;
+    --pf-c-form-control--BorderRightColor: transparent !important;
+    --pf-c-form-control--BorderLeftColor: transparent !important;
+
+    --pf-c-form-control--Color: FieldText !important;
+    --pf-c-form-control--BackgroundColor: transparent !important;
+
+    @media (prefers-contrast: more) {
+        --pf-c-text-input-group--placeholder--Color: GrayText !important;
+        --pf-c-form-control--placeholder--Color: GrayText !important;
+
+        --pf-c-form-control--BackgroundColor: Field !important;
+    }
 
     /* #region Caps Lock */
 
@@ -240,6 +260,33 @@ html > form > input {
     }
 
     /* #endregion */
+}
+
+input.pf-c-form-control {
+    &[type="text"],
+    &[type="email"],
+    &[type="password"],
+    &[type="search"],
+    textarea {
+        @media not (prefers-contrast: more) {
+            border-inline: 0;
+            border-block-start-color: transparent;
+        }
+
+        @media (prefers-contrast: more) {
+            border: 1px solid ButtonBorder !important;
+
+            &:focus {
+                border: 1px solid Highlight !important;
+            }
+        }
+    }
+}
+
+@media (prefers-contrast: less) {
+    input {
+        outline: none !important;
+    }
 }
 
 /* #region Buttons */
