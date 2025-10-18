@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import ScheduleBase
+from psqlextra.manager import PostgresManager
 
 from authentik.lib.models import SerializerModel
 from authentik.tasks.models import TasksModel
@@ -25,6 +26,8 @@ class Schedule(TasksModel, SerializerModel, ScheduleBase):
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     rel_obj_id = models.TextField(null=True)
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
+
+    objects = PostgresManager()
 
     class Meta(ScheduleBase.Meta):
         default_permissions = (

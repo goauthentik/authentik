@@ -336,7 +336,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
 
     db = {
         "default": {
-            "ENGINE": "authentik.root.db",
+            "ENGINE": "psqlextra.backend",
             "HOST": config.get("postgresql.host"),
             "NAME": config.get("postgresql.name"),
             "USER": config.get("postgresql.user"),
