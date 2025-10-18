@@ -7517,9 +7517,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
 </trans-unit>
-<trans-unit id="s700456b0667029f9">
-  <source>Applications library</source>
-</trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
@@ -8181,6 +8178,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
+</trans-unit>
+<trans-unit id="s139200afa0695967">
+  <source>Plain</source>
+</trans-unit>
+<trans-unit id="s7a316723c6bb33eb">
+  <source>S256</source>
+</trans-unit>
+<trans-unit id="s311c22ee852736e9">
+  <source>PKCE Method</source>
+</trans-unit>
+<trans-unit id="sa9afb0f84a3c380d">
+  <source>Configure Proof Key for Code Exchange for this source.</source>
+</trans-unit>
+<trans-unit id="s2e6c714bb95c18a3">
+  <source>User settings</source>
 </trans-unit>
     </body>
   </file>
