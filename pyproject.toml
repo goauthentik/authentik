@@ -3,7 +3,7 @@ name = "authentik"
 version = "2025.10.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
-requires-python = "==3.13.*"
+requires-python = "==3.14.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
@@ -49,11 +49,11 @@ dependencies = [
   "packaging==25.0",
   "paramiko==3.5.1",
   "psycopg[c,pool]==3.2.9",
-  "pydantic==2.11.7",
+  "pydantic==2.12.0",
   "pydantic-scim==0.0.8",
   "pyjwt==2.10.1",
   "pyrad==2.4",
-  "python-kadmin-rs==0.6.1",
+  "python-kadmin-rs==0.6.3",
   "pyyaml==6.0.2",
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
