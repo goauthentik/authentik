@@ -113,4 +113,4 @@ return False
 If using the default enrollment flow the policy should be bound to the **default-source-enrollment-prompt** stage. Ensure that the policy comes before **default-source-enrollment-if-username**.
 :::
 
-Afterwards, any new logins will automatically have their google email address used as their username. This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).
+Afterwards, any new logins will automatically have their Google email address used as their username. This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).
