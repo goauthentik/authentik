@@ -5,7 +5,7 @@ tags:
     - mailcow
 ---
 
-Allows users to authenticate using their Mailcow credentials, by configuring Mailcow as a federated identity provider via OAuth2.
+Allows users to authenticate using their Mailcow credentials by configuring Mailcow as a federated identity provider via OAuth2.
 
 ## Preparation
 
