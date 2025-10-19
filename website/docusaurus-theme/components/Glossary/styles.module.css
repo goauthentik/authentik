@@ -20,11 +20,11 @@
     margin-bottom: 1.5rem;
     color: var(--ifm-color-primary-darker);
     position: sticky;
-    top: calc(var(--ifm-navbar-height, 60px) + 8px);
-    z-index: 1;
+    top: var(--ifm-navbar-height, 60px);
+    z-index: 10;
     background: var(--ifm-background-color);
-    padding: 0.25rem 0;
-    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    padding: 0.5rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sectionTerms {

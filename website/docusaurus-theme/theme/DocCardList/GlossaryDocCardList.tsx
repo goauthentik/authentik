@@ -52,9 +52,18 @@ function splitParagraphs(text: string): string[] {
 }
 
 /**
+ * Converts backticks to HTML code elements
+ */
+function renderMarkdown(text: string): string {
+    return text.replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+/**
  * Renders a single glossary term as a card with title, short description, and long description.
  */
 function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache: TermCache }) {
+    const [isExpanded, setIsExpanded] = React.useState(false);
+
     // Ensure item has a valid docId before accessing cache
     if (!item.docId) {
         console.error(`DocCardList: glossary item missing docId:`, item);
@@ -70,6 +79,7 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
 
     const { termName, tags, shortDescription, longDescription } = cachedData;
     const longParagraphs = splitParagraphs(longDescription);
+    const hasLongDescription = longParagraphs.length > 0;
 
     return (
         <article
@@ -88,22 +98,36 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                             sharedStyles.glossaryShort,
                             !shortDescription && sharedStyles.glossaryShortMissing,
                         )}
-                    >
-                        {shortDescription || "Short description not provided."}
-                    </div>
+                        dangerouslySetInnerHTML={{
+                            __html: shortDescription
+                                ? renderMarkdown(shortDescription)
+                                : "Short description not provided.",
+                        }}
+                    />
 
-                    <div
-                        className={clsx(
-                            sharedStyles.glossaryLong,
-                            longParagraphs.length === 0 && sharedStyles.glossaryLongMissing,
-                        )}
-                    >
-                        {longParagraphs.length > 0
-                            ? longParagraphs.map((paragraph, index) => (
-                                  <p key={index}>{paragraph}</p>
-                              ))
-                            : "Long description not provided."}
-                    </div>
+                    {hasLongDescription && (
+                        <>
+                            <button
+                                className={sharedStyles.expandButton}
+                                onClick={() => setIsExpanded(!isExpanded)}
+                                aria-expanded={isExpanded}
+                            >
+                                {isExpanded ? "▼ Hide details" : "▶ Show details"}
+                            </button>
+                            {isExpanded && (
+                                <div className={sharedStyles.glossaryLong}>
+                                    {longParagraphs.map((paragraph, index) => (
+                                        <p
+                                            key={index}
+                                            dangerouslySetInnerHTML={{
+                                                __html: renderMarkdown(paragraph),
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
         </article>

@@ -38,6 +38,25 @@
     margin-bottom: 0;
 }
 
+.expandButton {
+    background: none;
+    border: none;
+    color: var(--ifm-color-primary);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.expandButton:hover {
+    color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
+}
+
 .cardContainer {
     contain: layout style;
 }
