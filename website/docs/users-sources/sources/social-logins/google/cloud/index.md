@@ -8,7 +8,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate using their Google credentials, by configuring Google Cloud as a federated identity provider via OAuth2.
+Allows users to authenticate using their Google credentials by configuring Google Cloud as a federated identity provider via OAuth2.
 
 ## Preparation
 
