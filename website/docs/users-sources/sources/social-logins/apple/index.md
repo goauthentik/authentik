@@ -5,7 +5,7 @@ tags:
     - apple
 ---
 
-Allows users to authenticate using their Apple ID credentials, by configuring Apple as a federated identity provider via OAuth2.
+Allows users to authenticate using their Apple ID credentials by configuring Apple as a federated identity provider via OAuth2.
 
 ## Preparation
 
