@@ -15,7 +15,7 @@ Apple mandates the use of a [registered top-level domain](https://en.wikipedia.o
 
 ## Apple configuration
 
-To integrate Apple with authentik, you will need to create two identifiers and a key in the Apple Developer Portal.
+To integrate Apple with authentik, you will need to register two identifiers and a key in the Apple Developer Portal.
 
 ### Registering identifiers
 

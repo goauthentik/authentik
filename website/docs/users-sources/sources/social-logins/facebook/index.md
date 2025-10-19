@@ -6,7 +6,7 @@ tags:
     - meta
 ---
 
-Allows users to authenticate using their Facebook credentials, , by configuring Facebook as a federated identity provider via OAuth2.
+Allows users to authenticate using their Facebook credentials by configuring Facebook as a federated identity provider via OAuth2.
 
 ## Preparation
 
@@ -21,12 +21,12 @@ To integrate Facebook with authentik you will need to create an OAuth applicatio
 1. Log in to the [Meta for Developers Dashboard](https://developers.facebook.com/) with your Facebook account.
 2. After logging in, [register as a developer](https://developers.facebook.com/async/registration). Refer to the [Facebook development documentation](https://developers.facebook.com/docs/development) for more information.
 
-After registering, you need to create an app so that Facebook generates a unique ID for authentik.
+After registering, you need to create an application so that Facebook generates a unique ID for authentik.
 
 3. On the [Meta for Developers Dashboard](https://developers.facebook.com/) click **Create**.
-4. Follow the prompts to create the app.
+4. Follow the prompts to create the application.
 
-After creating the app you need to customize its login settings.
+After creating the application you need to customize its login settings.
 
 5. On the [Meta for Developers Dashboard](https://developers.facebook.com/) click **Use Cases** in the left navigation pane.
 6. Under **Authentication and account creation** click **Customize** and then **Go to settings**.
