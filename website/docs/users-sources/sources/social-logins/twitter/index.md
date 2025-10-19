@@ -6,7 +6,7 @@ tags:
     - twitter
 ---
 
-Allows users to authenticate using their X credentials, by configuring X as a federated identity provider via OAuth2.
+Allows users to authenticate using their X credentials by configuring X as a federated identity provider via OAuth2.
 
 ## Preparation
 
