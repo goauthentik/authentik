@@ -41,15 +41,15 @@ To integrate Google with authentik you will need to create a new project, and OA
 ![](./googledeveloper3.png)
 
 8. Set the following required fields:
-    - **User Type**: If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_.
+    - **User Type**: If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (GSuite) account and want to limit access to only users inside of your organization choose _Internal_.
     - **App Name**: `authentik`
     - **User Support Email**: Must have a value
     - **Authorized Domains**: authentik.company
     - **Developer Contact Info**: Must have a value
 9. Click **Save and Continue**
-10. If you have special scopes configured for google, enter them on this screen. If not click **Save and Continue**.
+10. If you have special scopes configured for Google, enter them on this screen. If not click **Save and Continue**.
 11. If you want to create test users enter them here, if not click **Save and Continue**.
-12. From the **Summary** page click on the **Credentials** menu icon on the left which looks like a key.
+12. From the **Summary** page click on the **Credentials** menu icon on the left (the icon looks like a key.)
 13. Click **Create Credentials** on the top of the screen and select **OAuth Client ID**.
 14. Set the following required fields:
     - **Application Type**: `Web Application`
