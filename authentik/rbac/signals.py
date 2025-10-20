@@ -4,6 +4,8 @@ from django.contrib.auth.models import Group as DjangoGroup
 from django.db.models.signals import m2m_changed, pre_delete, pre_save
 from django.db.transaction import atomic
 from django.dispatch import receiver
+from psqlextra.types import ConflictAction
+from psqlextra.util import postgres_manager
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
@@ -18,7 +20,13 @@ def rbac_role_pre_save(sender: type[Role], instance: Role, **_):
     """Ensure role has a group object created for it"""
     if hasattr(instance, "group"):
         return
-    group, _ = DjangoGroup.objects.get_or_create(name=instance.name)
+    with postgres_manager(DjangoGroup) as manager:
+        group = manager.on_conflict(
+            ["name"],
+            ConflictAction.NOTHING,
+        ).insert_and_get(
+            name=instance.name,
+        )
     instance.group = group
 
 

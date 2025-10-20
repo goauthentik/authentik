@@ -2,6 +2,8 @@
 
 from datetime import UTC, datetime
 
+from psqlextra.types import ConflictAction
+
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import fqdn_rand
@@ -62,12 +64,13 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             return
         builder = CertificateBuilder(name)
         builder.build(subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"])
-        CertificateKeyPair.objects.get_or_create(
+        CertificateKeyPair.objects.on_conflict(
+            ["name"],
+            ConflictAction.NOTHING,
+        ).insert_and_get(
             name=name,
-            defaults={
-                "certificate_data": builder.certificate,
-                "key_data": builder.private_key,
-            },
+            certificate_data=builder.certificate,
+            key_data=builder.private_key,
         )
 
     @property

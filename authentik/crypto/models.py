@@ -11,6 +11,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from psqlextra.manager import PostgresManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -40,6 +41,8 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         blank=True,
         default="",
     )
+
+    objects = PostgresManager()
 
     _cert: Certificate | None = None
     _private_key: PrivateKeyTypes | None = None
