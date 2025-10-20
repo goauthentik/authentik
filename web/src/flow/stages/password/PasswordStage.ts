@@ -10,7 +10,7 @@ import { PasswordManagerPrefill } from "#flow/stages/identification/Identificati
 import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -79,12 +79,17 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 </fieldset>
             </form>
             ${this.challenge.recoveryUrl
-                ? html`<div slot="footer-band" class="pf-c-login__main-footer-band">
-                      <p class="pf-c-login__main-footer-band-item">
-                          <a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>
-                      </p>
-                  </div>`
-                : nothing}
+                ? html`<fieldset
+                      slot="footer-band"
+                      part="additional-actions"
+                      class="pf-c-login__main-footer-band"
+                  >
+                      <legend class="sr-only">${msg("Additional actions")}</legend>
+                      <div class="pf-c-login__main-footer-band-item">
+                          <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
+                      </div>
+                  </fieldset>`
+                : null}
         </ak-flow-card>`;
     }
 }

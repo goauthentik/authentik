@@ -41,37 +41,35 @@
 {% block body %}
 <ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
-<div class="pf-c-login stacked">
-    <div class="ak-login-container">
-        <main class="pf-c-login__main">
-            <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                <img src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
-            </div>
-            <header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    {% block card_title %}
-                    {% endblock %}
-                </h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                {% block card %}
+<div class="pf-c-login">
+    <main class="pf-c-login__main">
+        <div part="branding" class="pf-c-login__main-header pf-c-brand">
+            <img part="branding-logo" src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
+        </div>
+        <header class="pf-c-login__main-header">
+            <h1 class="pf-c-title pf-m-3xl">
+                {% block card_title %}
                 {% endblock %}
-            </div>
-        </main>
-        <footer class="pf-c-login__footer">
-            <ul class="pf-c-list pf-m-inline">
-                {% for link in footer_links %}
-                <li>
-                    <a href="{{ link.href }}">{{ link.name }}</a>
-                </li>
-                {% endfor %}
-                <li>
-                    <span>
-                        {% trans 'Powered by authentik' %}
-                    </span>
-                </li>
-            </ul>
-        </footer>
-    </div>
+            </h1>
+        </header>
+        <div class="pf-c-login__main-body">
+            {% block card %}
+            {% endblock %}
+        </div>
+    </main>
+    <footer class="pf-c-login__footer pf-m-dark">
+        <ul class="pf-c-list pf-m-inline">
+            {% for link in footer_links %}
+            <li>
+                <a href="{{ link.href }}">{{ link.name }}</a>
+            </li>
+            {% endfor %}
+            <li>
+                <span>
+                    {% trans 'Powered by authentik' %}
+                </span>
+            </li>
+        </ul>
+    </footer>
 </div>
 {% endblock %}

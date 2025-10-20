@@ -1,0 +1,20 @@
+:host {
+    --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
+    position: relative;
+}
+
+.pf-c-drawer__body {
+    display: flex;
+    flex-flow: column;
+}
+
+.pf-c-drawer__content {
+    --pf-c-drawer__content--BackgroundColor: transparent;
+}
+
+.inspector-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+}
