@@ -25,15 +25,15 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a Proxy Provider with the following values
+Create a Proxy Provider with the following values:
 
-- Internal host
+- **Internal host**
 
     If Sonarr is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://sonarr:8989`, where sonarr is the name of your container.
 
     If Sonarr is running on a different server than where you are deploying the authentik proxy, set the value to `http://sonarr.company:8989`.
 
-- External host
+- **External host**
 
     Set this to the external URL you will be accessing Sonarr from.
 
@@ -77,4 +77,3 @@ architecture-beta
     outpost:R -- L:sonarr
     outpost:T -- B:auth
 ```
-
