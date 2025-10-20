@@ -3,6 +3,7 @@
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models.signals import post_migrate
 from django_tenants.utils import get_public_schema_name
+from psqlextra.types import ConflictAction
 
 from authentik.blueprints.apps import ManagedAppConfig
 
@@ -14,9 +15,13 @@ def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     from authentik.tenants.models import Tenant
 
     with schema_context(get_public_schema_name()):
-        Tenant.objects.using(using).update_or_create(
-            defaults={"name": "Default", "ready": True},
+        Tenant.objects.using(using).on_conflict(
+            ["schema_name"],
+            ConflictAction.UPDATE,
+        ).insert(
             schema_name=get_public_schema_name(),
+            name="Default",
+            ready=True,
         )
 
 

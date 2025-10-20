@@ -13,6 +13,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
 from django_tenants.utils import get_tenant_base_schema
+from psqlextra.manager import PostgresManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -114,6 +115,8 @@ class Tenant(TenantMixin, SerializerModel):
         validators=[MinValueValidator(1)],
     )
     flags = models.JSONField(default=dict)
+
+    objects = PostgresManager()
 
     def save(self, *args, **kwargs):
         if self.schema_name == get_tenant_base_schema() and not settings.TEST:
