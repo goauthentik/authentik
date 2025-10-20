@@ -16,6 +16,7 @@ PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE = "goauthentik.io/endpoints/connectors/age
 QS_CHALLENGE = "challenge"
 QS_CHALLENGE_RESPONSE = "response"
 
+
 class AuthenticatorEndpointStageView(ChallengeStageView):
     """Endpoint stage"""
 

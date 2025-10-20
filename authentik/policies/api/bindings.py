@@ -8,7 +8,6 @@ from django_filters.filterset import FilterSet
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import PrimaryKeyRelatedField
 from rest_framework.viewsets import ModelViewSet
-from structlog.stdlib import get_logger
 
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -16,8 +15,6 @@ from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-
-LOGGER = get_logger()
 
 
 class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):

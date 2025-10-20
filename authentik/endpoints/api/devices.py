@@ -4,14 +4,12 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
-from authentik.endpoints.api.device_users import DeviceUserSerializer
 from authentik.endpoints.common_data import CommonDeviceDataSerializer
 from authentik.endpoints.models import Device
 
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    users_obj = DeviceUserSerializer(many=True, source="deviceuser_set")
     connections_obj = DeviceConnectionSerializer(many=True, source="deviceconnection_set")
 
     data = SerializerMethodField()
@@ -24,8 +22,7 @@ class EndpointDeviceSerializer(ModelSerializer):
         fields = [
             "device_uuid",
             "group",
-            "users",
-            "users_obj",
+            "policies",
             "connections",
             "connections_obj",
             "data",

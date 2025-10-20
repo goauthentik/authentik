@@ -4937,6 +4937,230 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_bindings/:
+    get:
+      operationId: endpoints_device_bindings_list
+      description: PolicyBinding Viewset
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: order
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: policy
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: policy__isnull
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: target_in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: timeout
+        schema:
+          type: integer
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_device_bindings_create
+      description: PolicyBinding Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_bindings/{policy_binding_uuid}/:
+    get:
+      operationId: endpoints_device_bindings_retrieve
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device user binding.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_device_bindings_update
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device user binding.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_device_bindings_partial_update
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device user binding.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPolicyBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_device_bindings_destroy
+      description: PolicyBinding Viewset
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device user binding.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_bindings/{policy_binding_uuid}/used_by/:
+    get:
+      operationId: endpoints_device_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_binding_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this device user binding.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/device_groups/:
     get:
       operationId: endpoints_device_groups_list
@@ -18717,6 +18941,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
@@ -18929,6 +19154,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_fleet.fleetconnector
@@ -34606,39 +34832,6 @@ components:
           minLength: 1
       required:
       - name
-    DeviceUser:
-      type: object
-      properties:
-        is_primary:
-          type: boolean
-        device:
-          type: string
-          format: uuid
-        user:
-          type: integer
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
-      required:
-      - device
-      - is_primary
-      - user
-      - user_obj
-    DeviceUserRequest:
-      type: object
-      properties:
-        is_primary:
-          type: boolean
-        device:
-          type: string
-          format: uuid
-        user:
-          type: integer
-      required:
-      - device
-      - is_primary
-      - user
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -35262,15 +35455,12 @@ components:
           type: string
           format: uuid
           nullable: true
-        users:
+        policies:
           type: array
           items:
-            type: integer
+            type: string
+            format: uuid
           readOnly: true
-        users_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceUser'
         connections:
           type: array
           items:
@@ -35289,8 +35479,7 @@ components:
       - connections
       - connections_obj
       - data
-      - users
-      - users_obj
+      - policies
     EndpointDeviceRequest:
       type: object
       properties:
@@ -35301,17 +35490,12 @@ components:
           type: string
           format: uuid
           nullable: true
-        users_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceUserRequest'
         connections_obj:
           type: array
           items:
             $ref: '#/components/schemas/DeviceConnectionRequest'
       required:
       - connections_obj
-      - users_obj
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -39413,6 +39597,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
       - authentik_enterprise.license
       - authentik_events.event
@@ -44168,10 +44353,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        users_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceUserRequest'
         connections_obj:
           type: array
           items:

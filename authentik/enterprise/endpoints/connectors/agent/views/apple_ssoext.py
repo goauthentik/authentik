@@ -1,18 +1,15 @@
-from jwt import decode
-from json import dumps, loads
-from typing import Any
 
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.template.response import TemplateResponse
-from django.urls import reverse
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.http import HttpRequest, HttpResponseBadRequest
-from django.views import View
+from jwt import decode
 
 from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.connectors.agent.stage import PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, QS_CHALLENGE_RESPONSE
+from authentik.enterprise.endpoints.connectors.agent.stage import (
+    PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE,
+    QS_CHALLENGE_RESPONSE,
+)
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 

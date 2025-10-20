@@ -9,7 +9,7 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from googleapiclient.discovery import build
 
-from authentik.endpoints.models import Device, DeviceConnection, DeviceUser
+from authentik.endpoints.models import Device, DeviceConnection, DeviceUserBinding
 from authentik.endpoints.stage import PLAN_CONTEXT_ENDPOINT_CONNECTOR
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -80,8 +80,8 @@ class GoogleChromeDeviceTrustConnector(View):
                     "data": response,
                 },
             )
-            DeviceUser.objects.update_or_create(
-                device=device,
+            DeviceUserBinding.objects.update_or_create(
+                target=device,
                 user=flow_plan.context.get(PLAN_CONTEXT_PENDING_USER),
                 create_defaults={"is_primary": True},
             )

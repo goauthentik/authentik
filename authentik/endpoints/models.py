@@ -7,23 +7,21 @@ from django.utils.functional import cached_property
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import User
 from authentik.endpoints.common_data import CommonDeviceDataSerializer
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 if TYPE_CHECKING:
     from authentik.endpoints.connector import BaseConnector
 
 
-class Device(SerializerModel):
+class Device(PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
     identifier = models.TextField(unique=True)
-    users = models.ManyToManyField(User, through="DeviceUser")
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
@@ -35,10 +33,7 @@ class Device(SerializerModel):
         return data
 
 
-class DeviceUser(SerializerModel):
-    device_user_uuid = models.UUIDField(default=uuid4, primary_key=True)
-    device = models.ForeignKey("Device", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class DeviceUserBinding(PolicyBinding):
     is_primary = models.BooleanField(default=False)
 
 

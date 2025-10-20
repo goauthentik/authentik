@@ -5,7 +5,7 @@ from requests import RequestException
 
 from authentik.core.models import User
 from authentik.endpoints.connector import BaseConnector, ConnectorSyncException, EnrollmentMethods
-from authentik.endpoints.models import Device, DeviceConnection, DeviceUser
+from authentik.endpoints.models import Device, DeviceConnection, DeviceUserBinding
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector as DBC
 from authentik.lib.utils.http import get_http_session
 
@@ -61,8 +61,8 @@ class FleetConnector(BaseConnector[DBC]):
                 user = User.objects.filter(email=raw_user["email"]).first()
                 if not user:
                     continue
-                DeviceUser.objects.update_or_create(
-                    device=device,
+                DeviceUserBinding.objects.update_or_create(
+                    target=device,
                     user=user,
                     create_defaults={
                         "is_primary": True,
