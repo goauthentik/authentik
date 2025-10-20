@@ -287,6 +287,44 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
 }
 
 /**
+ * A CSS variable representing the global background image.
+ */
+export const AKBackgroundImageProperty = "--ak-global--background-image";
+
+/**
+ * Applies the given background image URL to the document body.
+ *
+ * This method is very defensive to avoid unnecessary DOM repaints.
+ */
+export function applyBackgroundImageProperty(value?: string | null): void {
+    const fallbackOrigin = window.location.origin;
+
+    if (!value || !URL.canParse(value, fallbackOrigin)) {
+        return;
+    }
+
+    const nextBackgroundURL = new URL(value, fallbackOrigin);
+
+    const currentBackgroundImage = getComputedStyle(document.body, "::before").backgroundImage;
+    let currentBackgroundImageURL: URL | null = null;
+
+    if (currentBackgroundImage && currentBackgroundImage !== "none") {
+        // Extract URL from background-image property
+        const [, urlMatch] = currentBackgroundImage.match(/url\(["']?([^"']*)["']?\)/) || [];
+
+        if (URL.canParse(urlMatch)) {
+            currentBackgroundImageURL = new URL(urlMatch, fallbackOrigin);
+        }
+    }
+
+    if (currentBackgroundImageURL && currentBackgroundImageURL.href === nextBackgroundURL.href) {
+        return;
+    }
+
+    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextBackgroundURL.href}")`);
+}
+
+/**
  * Returns the root interface element of the page.
  *
  * @todo Can this be handled with a Lit Mixin?

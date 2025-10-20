@@ -7,22 +7,6 @@
     --__AK_UI_DARK__: 1;
 }
 
-/* #region Global */
-
-:root {
-    --pf-global--Color--100: var(--ak-dark-foreground) !important;
-    --ak-global--Color--100: var(--ak-dark-foreground) !important;
-    --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
-    --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
-    --pf-global--link--Color: var(--pf-global--link--Color--light);
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-}
-
-body {
-    background-color: var(--ak-dark-background) !important;
-    color-scheme: dark;
-}
-
 /* #region Scrollbars */
 
 :root {
@@ -33,19 +17,32 @@ body {
     --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
 }
 
+body:has(ak-flow-executor) {
+    background-color: var(--pf-global--BackgroundColor--150);
+}
+
+/**
+ * Our reversal of Patternfly's light variables requires us to set the colors
+ * back to their defaults when in dark mode.
+ */
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    --pf-global--Color--200: var(--pf-global--Color--light-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
+}
+
+.pf-c-login {
+    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--dark-100) !important;
+}
 /* #endregion */
 
 /* Global page background colour */
 .pf-c-page {
-    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-drawer__content {
-    --pf-c-drawer__content--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-title {
-    color: var(--ak-dark-foreground);
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
 }
 
 .pf-u-mb-xl {
@@ -57,7 +54,7 @@ body {
 /* Header sections */
 
 .pf-c-page__main-section {
-    --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
+    --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
 }
 
 .sidebar-trigger,
@@ -65,24 +62,10 @@ body {
     background-color: transparent !important;
 }
 
-.pf-c-content {
-    color: var(--ak-dark-foreground);
-}
-
 /* #region Card */
-
-.pf-c-card {
-    --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
-    color: var(--ak-dark-foreground);
-}
 
 .pf-c-card.pf-m-non-selectable-raised {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-lighter);
-}
-
-.pf-c-card__title,
-.pf-c-card__body {
-    color: var(--ak-dark-foreground);
 }
 
 /* #endregion */
@@ -153,8 +136,7 @@ fieldset {
 /* #region Page layout */
 
 /**
- * Our reversal of the page header on the light theme requires us to set the colors
- * back to their PatternFly defaults.
+ * cf. Color reversal.
  */
 .pf-c-page__header {
     --pf-global--Color--100: var(--pf-global--Color--light-100);
@@ -346,15 +328,6 @@ select.pf-c-form-control {
 
 /* #region Flows */
 
-.pf-c-login__main {
-    --pf-c-login__main--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-login__main-body,
-.pf-c-login__main-header,
-.pf-c-login__main-header-desc {
-    color: var(--ak-dark-foreground);
-}
 
 .pf-c-login__main-footer-links-item img,
 .pf-c-login__main-footer-links-item .fas {
@@ -362,8 +335,7 @@ select.pf-c-form-control {
 }
 
 .pf-c-login__main-footer-band {
-    --pf-c-login__main-footer-band--BackgroundColor: var(--ak-dark-background-lighter);
-    color: var(--ak-dark-foreground);
+    --pf-c-login__main-footer-band--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
 }
 
 .form-control-static {

@@ -20,9 +20,10 @@ window.authentik.flow = {
 {% block head %}
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
 <style>
-:root {
-    --ak-flow-background: url("{{ flow_background_url }}");
-}
+  :root {
+      --ak-global--background-color: var(--pf-global--BackgroundColor--150);
+      --ak-global--background-image: url("{{ flow_background_url }}");
+  }
 </style>
 {% endblock %}
 
