@@ -7,43 +7,6 @@
     --__AK_UI_BASE__: 1;
 }
 
-/* #region Global */
-
-:root {
-    --ak-accent: #fd4b2d;
-
-    --ak-dark-foreground: #fafafa;
-    --ak-dark-foreground-darker: #bebebe;
-    --ak-dark-foreground-link: #5a5cb9;
-    --ak-dark-background: #18191a;
-    --ak-dark-background-darker: #000000;
-    --ak-dark-background-light: #1c1e21;
-    --ak-dark-background-light-ish: #212427;
-    --ak-dark-background-lighter: #2b2e33;
-
-    --ak-flow-background-color-contrast: var(--pf-global--Color--100);
-    --ak-flow-footer-color: var(--pf-global--Color--light-100);
-
-    /* PatternFly likes to override global variables for some reason */
-    --ak-global--Color--100: var(--pf-global--Color--100);
-
-    /* Minimum width after which the sidebar becomes automatic */
-    --ak-sidebar--minimum-auto-width: 80rem;
-
-    /**
-     * The height of the navbar and branded sidebar.
-     * @todo This shouldn't be necessary. The sidebar can instead use a grid layout
-     * ensuring they share the same height.
-     */
-    --ak-navbar--height: 7rem;
-
-    --pf-global--disabled-color--100: GrayText;
-    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 100%, CanvasText 75%);
-    --pf-global--disabled-color--300: color-mix(in srgb, GrayText 100%, CanvasText 100%);
-}
-
-/* #endregion */
-
 /* #region Scrollbars */
 
 /**
@@ -61,6 +24,16 @@
 :root {
     --ak-scrollbar-background-color: hsl(0 0% 98%);
     --ak-scrollbar-thumb-background-color: hsl(0 0% 76%);
+}
+
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
 }
 
 /* Applicable to browsers with a WebKit lineage (Chrome, Edge, Safari) */
@@ -154,19 +127,6 @@
     margin-left: var(--pf-c-form__label-required--MarginLeft);
     font-size: var(--pf-c-form__label-required--FontSize);
     color: var(--pf-c-form__label-required--Color);
-}
-
-html {
-    --pf-c-nav__link--PaddingTop: 0.5rem;
-    --pf-c-nav__link--PaddingRight: 0.5rem;
-    --pf-c-nav__link--PaddingBottom: 0.5rem;
-    --pf-c-nav__link--PaddingLeft: 0.5rem;
-}
-
-html > form > input {
-    position: absolute;
-    top: -2000px;
-    left: -2000px;
 }
 
 /* #endregion */
