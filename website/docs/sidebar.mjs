@@ -227,10 +227,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/saml/index",
                         },
-                        items: [
-                            "add-secure-apps/providers/saml/create-saml-provider",
-                            "add-secure-apps/providers/saml/saml_single_logout",
-                        ],
+                        items: ["add-secure-apps/providers/saml/create-saml-provider"],
                     },
                     "add-secure-apps/providers/scim/index",
                     {
