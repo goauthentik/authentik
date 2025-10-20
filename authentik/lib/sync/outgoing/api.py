@@ -1,4 +1,3 @@
-
 from django.db.models import Model
 from dramatiq.actor import Actor
 from dramatiq.results.errors import ResultFailure
