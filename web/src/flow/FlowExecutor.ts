@@ -14,6 +14,7 @@ import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constan
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
+import { applyBackgroundImageProperty } from "#common/theme";
 import { WebsocketClient } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
@@ -298,7 +299,7 @@ export class FlowExecutor
     // DOM post-processing has to happen after the render.
     public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowInfo") && this.flowInfo) {
-            this.#setShadowStyles(this.flowInfo);
+            applyBackgroundImageProperty(this.flowInfo.background);
         }
     }
 
@@ -357,16 +358,6 @@ export class FlowExecutor
                 this.loading = false;
             });
     };
-
-    #setShadowStyles(value: ContextualFlowInfo) {
-        if (!value) return;
-
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
-            });
-    }
 
     //#region Render
 
@@ -573,7 +564,6 @@ export class FlowExecutor
         const { layout } = this;
 
         return html`<ak-locale-context>
-            <div class="pf-c-background-image" part="background-image"></div>
             <div class="pf-c-page__drawer" part="page-drawer">
                 <div
                     class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}"

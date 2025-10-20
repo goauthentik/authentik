@@ -32,7 +32,6 @@
 
 .pf-c-card {
     --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md-bottom);
-    --pf-c-card--BackgroundColor: var(--pf-global--BackgroundColor--150);
 
     transition: box-shadow 150ms ease-in-out;
     border: 0.5px solid var(--pf-global--BorderColor--100);

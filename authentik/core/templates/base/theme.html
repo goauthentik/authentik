@@ -1,6 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'dist/layers/global.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
+
 {% if ui_theme == "dark" %}
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#18191a">
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/layers/global.dark.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}">
 {% elif ui_theme == "light" %}
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
@@ -8,4 +15,7 @@
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/layers/global.dark.css' %}" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}" media="(prefers-color-scheme: dark)">
 {% endif %}
