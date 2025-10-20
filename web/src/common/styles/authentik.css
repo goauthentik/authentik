@@ -357,11 +357,12 @@ ak-tabs[vertical] {
     width: 100%;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
 }
 
 .pf-c-login__footer {
     color: var(--ak-flow-footer-color);
-    flex: 0 0 auto;
+    flex: 250 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
