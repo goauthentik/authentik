@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Zoom
 
-> Zoom is a platform for hosting video meetings.
+> Zoom is a video conferencing and collaboration platform. It allows users to hold online meetings, webinars, chats, and calls over the internet
 >
 > -- https://zoom.com/
 
@@ -33,16 +33,15 @@ To support the integration of Zoom with authentik, you need to create an applica
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-    - Set the **ACS URL** to `https://company.zoom.us/saml/SSO`.
-    - Set the **Issuer** to `authentik`.
-    - Set the **Service Provider Binding** to `Post`.
-    - Set the **Audience** to `company.zoom.us`.
-    - Under **Advanced protocol settings**, select an available **Signing Certificate**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
+        - Set the **ACS URL** to `https://company.zoom.us/saml/SSO`.
+        - Set the **Issuer** to `authentik`.
+        - Set the **Service Provider Binding** to `Post`.
+        - Set the **Audience** to `company.zoom.us`.
+        - Under **Advanced protocol settings**, select an available **Signing Certificate**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -78,10 +77,10 @@ This documentation does not cover the configuration of multiple vanity URLs. For
     - **Provision User**: Select `At sign-in`
 5. Click **Save changes**.
 
-## References
-
-- [Zoom documentation - Quick start guide for single sign-on](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060673)
-
 ## Configuration verification
 
 To verify that authentik is configured correctly with Zoom, navigate to your company's vanity URL and click **Sign in**. You should be redirected to authentik for authentication and then redirected back to Zoom.
+
+## Resources
+
+- [Zoom Support - Quick start guide for single sign-on](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060673)
