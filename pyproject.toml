@@ -17,6 +17,7 @@ dependencies = [
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
   "django-postgres-cache",
+  "django-postgres-extra==2.0.9",
   "django-filter==25.1",
   "django-guardian==3.0.3",
   "django-model-utils==5.0.0",
