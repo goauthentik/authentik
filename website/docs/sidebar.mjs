@@ -220,7 +220,22 @@ const items = [
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
+<<<<<<< HEAD
                     "add-secure-apps/providers/saml/index",
+=======
+                    {
+                        type: "category",
+                        label: "SAML Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/saml/index",
+                        },
+                        items: [
+                            "add-secure-apps/providers/saml/create-saml-provider",
+                            "add-secure-apps/providers/saml/saml_single_logout",
+                        ],
+                    },
+>>>>>>> 83603a528 (website/docs: update SAML provider docs (#15887))
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
