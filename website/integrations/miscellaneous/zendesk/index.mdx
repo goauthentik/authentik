@@ -56,8 +56,8 @@ To support the integration of Zendesk with authentik, you need to create an appl
 
 ## Zendesk configuration
 
-In the side menu, click Security > Single sign-on (SSO) -> Create SSO configuration -> OpenID Connect.
-
+1. Log in to Zendesk as an administrator.
+2. Navigate to **Security** > **Single sign-on (SSO)** > **Create SSO configuration** and click **OpenID Connect**.
     - **Configuration name**: authentik
     - **Client ID**: enter the client ID from authentik.
     - **Client secret**: enter the client secret from authentik.
@@ -68,7 +68,8 @@ In the side menu, click Security > Single sign-on (SSO) -> Create SSO configurat
     - **Show button when users sign in**: enabled
     - **Button text**: authentik
 
-</TabItem>
+3. Click **Submit** to save.
+    </TabItem>
 
   <TabItem value="saml">
 
@@ -96,8 +97,8 @@ To support the integration of Zendesk with authentik, you need to create an appl
 
 ## Zendesk configuration
 
-In the side menu, click Security > Single sign-on (SSO) -> Create SSO configuration -> SAML.
-
+1. Log in to Zendesk as an administrator.
+2. Navigate to **Security** > **Single sign-on (SSO)** > **Create SSO configuration** and click **SAML**.
     - **Configuration name**: authentik
     - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
     - **Certificate fingerprint**: Paste the SHA-256 Fingerprint copied from authentik
@@ -105,12 +106,13 @@ In the side menu, click Security > Single sign-on (SSO) -> Create SSO configurat
     - **Show button when users sign in**: Enabled
     - **Button value**: authentik
 
-</TabItem>
+3. Click **Submit** to save.
+    </TabItem>
 </Tabs>
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Zendesk, visit your Zendesk installation, and click **Login with authentik**.
+To confirm that authentik is properly configured with Zendesk, visit your Zendesk page, and click **Login with authentik**.
 
 ## Resources
 
