@@ -449,18 +449,6 @@ fieldset {
         border-width: 0;
     }
 
-    &.pf-c-card {
-        --ak-legend-margin-inline-start: calc(
-            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
-        );
-        --ak-legend-margin-inline-end: calc(
-            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
-        );
-        --pf-c-card--BoxShadow: none;
-        --pf-c-card--BackgroundColor: transparent;
-    }
-
-    &.pf-c-card,
     &.pf-c-form__group {
         border-radius: var(--pf-global--BorderRadius--sm);
     }
@@ -472,7 +460,6 @@ fieldset {
         &.pf-m-action {
             gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
             margin-block-start: 0;
-            margin-block-end: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
         }
     }
 
@@ -488,6 +475,30 @@ fieldset {
 
         & > ak-spinner-button:not(:last-child) {
             margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+        }
+    }
+}
+
+.pf-c-card > fieldset {
+    margin-inline: var(--pf-global--spacer--md);
+    margin-block-end: var(--pf-global--spacer--md);
+
+    @media not (prefers-contrast: more) {
+        --ak-legend-margin-inline-start: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+        );
+
+        border-width: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+
+        legend {
+            padding-block-start: var(--pf-c-card--first-child--PaddingTop) !important;
+            padding-block-end: var(--pf-c-card__title--not--last-child--PaddingBottom) !important;
+            line-height: var(--pf-global--LineHeight--md);
         }
     }
 }

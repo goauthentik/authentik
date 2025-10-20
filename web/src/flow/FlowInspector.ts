@@ -132,49 +132,57 @@ export class FlowInspector extends AKElement {
     }
 
     protected renderNextStage({ currentPlan, isCompleted }: FlowInspection): TemplateResult {
-        return html`<fieldset class="pf-c-card">
-            <legend class="pf-c-card__title">${msg("Next stage")}</legend>
-            <div class="pf-c-card__body">
-                <dl class="pf-c-description-list">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Stage name")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${currentPlan?.nextPlannedStage?.stageObj?.name || "-"}
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Stage kind")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${currentPlan?.nextPlannedStage?.stageObj?.verboseName || "-"}
-                            </div>
-                        </dd>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Stage object")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            ${isCompleted
-                                ? html`<div class="pf-c-description-list__text">
-                                      ${msg("This flow is completed.")}
-                                  </div>`
-                                : html`<ak-expand>
-                                      <pre class="pf-c-description-list__text">
+        return html`<div class="pf-c-card">
+            <fieldset>
+                <legend class="pf-c-card__title">${msg("Next stage")}</legend>
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${msg("Stage name")}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${currentPlan?.nextPlannedStage?.stageObj?.name || "-"}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${msg("Stage kind")}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${currentPlan?.nextPlannedStage?.stageObj?.verboseName || "-"}
+                                </div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${msg("Stage object")}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                ${isCompleted
+                                    ? html`<div class="pf-c-description-list__text">
+                                          ${msg("This flow is completed.")}
+                                      </div>`
+                                    : html`<ak-expand>
+                                          <pre class="pf-c-description-list__text">
 ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
-                                      >
-                                  </ak-expand>`}
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </fieldset>`;
+                                          >
+                                      </ak-expand>`}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </fieldset>
+        </div>`;
     }
 
     protected renderPlanHistory({
@@ -182,81 +190,89 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
         isCompleted,
         currentPlan,
     }: FlowInspection): TemplateResult {
-        return html`<fieldset class="pf-c-card">
-            <legend class="pf-c-card__title">${msg("Plan history")}</legend>
-            <div class="pf-c-card__body">
-                <ol class="pf-c-progress-stepper pf-m-vertical">
-                    ${plans.map((plan) => {
-                        return html`<li class="pf-c-progress-stepper__step pf-m-success">
-                            <div class="pf-c-progress-stepper__step-connector">
-                                <span class="pf-c-progress-stepper__step-icon">
-                                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            <div class="pf-c-progress-stepper__step-main">
-                                <div class="pf-c-progress-stepper__step-title">
-                                    ${plan.currentStage.stageObj?.name}
+        return html`<div class="pf-c-card">
+            <fieldset>
+                <legend class="pf-c-card__title">${msg("Plan history")}</legend>
+                <div class="pf-c-card__body">
+                    <ol class="pf-c-progress-stepper pf-m-vertical">
+                        ${plans.map((plan) => {
+                            return html`<li class="pf-c-progress-stepper__step pf-m-success">
+                                <div class="pf-c-progress-stepper__step-connector">
+                                    <span class="pf-c-progress-stepper__step-icon">
+                                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                    </span>
                                 </div>
-                                <div class="pf-c-progress-stepper__step-description">
-                                    ${plan.currentStage.stageObj?.verboseName}
+                                <div class="pf-c-progress-stepper__step-main">
+                                    <div class="pf-c-progress-stepper__step-title">
+                                        ${plan.currentStage.stageObj?.name}
+                                    </div>
+                                    <div class="pf-c-progress-stepper__step-description">
+                                        ${plan.currentStage.stageObj?.verboseName}
+                                    </div>
                                 </div>
-                            </div>
-                        </li> `;
-                    })}
-                    ${currentPlan?.currentStage && !isCompleted
-                        ? html`<li class="pf-c-progress-stepper__step pf-m-current pf-m-info">
-                              <div class="pf-c-progress-stepper__step-connector">
-                                  <span class="pf-c-progress-stepper__step-icon">
-                                      <i
-                                          class="pficon pf-icon-resources-full"
-                                          aria-hidden="true"
-                                      ></i>
-                                  </span>
-                              </div>
-                              <div class="pf-c-progress-stepper__step-main">
-                                  <div class="pf-c-progress-stepper__step-title">
-                                      ${currentPlan?.currentStage?.stageObj?.name}
+                            </li> `;
+                        })}
+                        ${currentPlan?.currentStage && !isCompleted
+                            ? html`<li class="pf-c-progress-stepper__step pf-m-current pf-m-info">
+                                  <div class="pf-c-progress-stepper__step-connector">
+                                      <span class="pf-c-progress-stepper__step-icon">
+                                          <i
+                                              class="pficon pf-icon-resources-full"
+                                              aria-hidden="true"
+                                          ></i>
+                                      </span>
                                   </div>
-                                  <div class="pf-c-progress-stepper__step-description">
-                                      ${currentPlan?.currentStage?.stageObj?.verboseName}
+                                  <div class="pf-c-progress-stepper__step-main">
+                                      <div class="pf-c-progress-stepper__step-title">
+                                          ${currentPlan?.currentStage?.stageObj?.name}
+                                      </div>
+                                      <div class="pf-c-progress-stepper__step-description">
+                                          ${currentPlan?.currentStage?.stageObj?.verboseName}
+                                      </div>
                                   </div>
-                              </div>
-                          </li>`
-                        : nothing}
-                    ${currentPlan?.nextPlannedStage && !isCompleted
-                        ? html`<li class="pf-c-progress-stepper__step pf-m-pending">
-                              <div class="pf-c-progress-stepper__step-connector">
-                                  <span class="pf-c-progress-stepper__step-icon"></span>
-                              </div>
-                              <div class="pf-c-progress-stepper__step-main">
-                                  <div class="pf-c-progress-stepper__step-title">
-                                      ${currentPlan.nextPlannedStage.stageObj?.name}
+                              </li>`
+                            : nothing}
+                        ${currentPlan?.nextPlannedStage && !isCompleted
+                            ? html`<li class="pf-c-progress-stepper__step pf-m-pending">
+                                  <div class="pf-c-progress-stepper__step-connector">
+                                      <span class="pf-c-progress-stepper__step-icon"></span>
                                   </div>
-                                  <div class="pf-c-progress-stepper__step-description">
-                                      ${currentPlan?.nextPlannedStage?.stageObj?.verboseName}
+                                  <div class="pf-c-progress-stepper__step-main">
+                                      <div class="pf-c-progress-stepper__step-title">
+                                          ${currentPlan.nextPlannedStage.stageObj?.name}
+                                      </div>
+                                      <div class="pf-c-progress-stepper__step-description">
+                                          ${currentPlan?.nextPlannedStage?.stageObj?.verboseName}
+                                      </div>
                                   </div>
-                              </div>
-                          </li>`
-                        : nothing}
-                </ol>
-            </div>
-        </fieldset>`;
+                              </li>`
+                            : nothing}
+                    </ol>
+                </div>
+            </fieldset>
+        </div>`;
     }
 
     protected renderCurrentPlan({ currentPlan }: FlowInspection): TemplateResult {
-        return html`<fieldset class="pf-c-card">
-            <legend class="pf-c-card__title">${msg("Current plan context")}</legend>
-            <pre class="pf-c-card__body"><code>${stringify(currentPlan?.planContext)}</code></pre>
-        </fieldset>`;
+        return html`<div class="pf-c-card">
+            <fieldset>
+                <legend class="pf-c-card__title">${msg("Current plan context")}</legend>
+                <pre class="pf-c-card__body"><code>${stringify(
+                    currentPlan?.planContext,
+                )}</code></pre>
+            </fieldset>
+        </div>`;
     }
 
     protected renderSession({ currentPlan }: FlowInspection): TemplateResult {
-        return html`<fieldset class="pf-c-card">
-            <legend class="pf-c-card__title">${msg("Session ID")}</legend>
-            <div class="pf-c-card__body">
-                <code class="break"> ${currentPlan?.sessionId} </code>
-            </div>
-        </fieldset>`;
+        return html`<div class="pf-c-card">
+            <fieldset>
+                <legend class="pf-c-card__title">${msg("Session ID")}</legend>
+                <div class="pf-c-card__body">
+                    <code class="break"> ${currentPlan?.sessionId} </code>
+                </div>
+            </fieldset>
+        </div>`;
     }
 
     protected render(): TemplateResult {
