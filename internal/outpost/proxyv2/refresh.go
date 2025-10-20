@@ -49,7 +49,7 @@ func (ps *ProxyServer) Refresh() error {
 			existing.Stop()
 		}
 		if err != nil {
-			ps.log.WithError(err).Fatal("failed to setup application")
+			ps.log.WithError(err).Warning("failed to setup application")
 			continue
 		}
 		apps[externalHost.Host] = a
