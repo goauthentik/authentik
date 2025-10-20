@@ -1,6 +1,8 @@
 import "#elements/EmptyState";
 import "#elements/Expand";
 
+import Styles from "./FlowInspector.css";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -10,7 +12,7 @@ import { AKElement } from "#elements/Base";
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -44,36 +46,7 @@ export class FlowInspector extends AKElement {
         PFNotificationDrawer,
         PFDescriptionList,
         PFProgressStepper,
-        css`
-            .pf-c-drawer__body {
-                height: 100dvh;
-            }
-            :host {
-                background-color: var(--pf-c-notification-drawer--BackgroundColor) !important;
-            }
-
-            .pf-c-notification-drawer__body {
-                /* compatibility-mode-fix */
-                & {
-                    padding-inline: var(--pf-global--spacer--md);
-                    padding-block: var(--pf-global--spacer--xs);
-                }
-
-                .pf-l-stack__item:last-child {
-                    padding-block-end: var(--pf-global--spacer--md);
-                }
-            }
-
-            code.break {
-                word-break: break-all;
-            }
-
-            pre {
-                word-break: break-all;
-                overflow-x: hidden;
-                white-space: break-spaces;
-            }
-        `,
+        Styles,
     ];
 
     constructor() {
