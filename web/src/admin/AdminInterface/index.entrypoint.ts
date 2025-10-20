@@ -99,17 +99,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                 display: none;
             }
 
-            .pf-c-page {
-                background-color: var(--pf-c-page--BackgroundColor) !important;
-            }
-
-            :host([theme="dark"]) {
-                /* Global page background colour */
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                }
-            }
-
             ak-page-navbar {
                 grid-area: header;
             }
