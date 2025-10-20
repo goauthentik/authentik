@@ -13,12 +13,16 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.generators import generate_id
 
 PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE = "goauthentik.io/endpoints/connectors/agent/challenge"
-
+QS_CHALLENGE = "challenge"
+QS_CHALLENGE_RESPONSE = "response"
 
 class AuthenticatorEndpointStageView(ChallengeStageView):
     """Endpoint stage"""
 
     response_class = FrameChallengeResponse
+
+    def validate_response(self, response: str):
+        pass
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         challenge = generate_id()
