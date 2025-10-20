@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `company.zoom.us` is the FQDN of your Zoom instance.
+- `company.zoom.us` is the FQDN of your Zoom instance. For US Government tenants, instead use `agency.zoomgov.com`.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
