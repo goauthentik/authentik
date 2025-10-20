@@ -43,7 +43,7 @@ runs:
         registry-url: 'https://registry.npmjs.org'
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
+      uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v5
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache
