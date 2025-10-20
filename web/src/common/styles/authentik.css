@@ -294,49 +294,222 @@ ak-tabs[vertical] {
 
 /* #endregion */
 
-/* #region Login adjustments */
+/* #region Login */
 
-/* Ensure card is displayed on small screens */
-.pf-c-login__main {
-    display: block;
-    position: relative;
-    width: 100%;
+/* compatibility-mode-fix */
+.pf-c-login.pf-c-login {
+    --ak-login--header-min-height: var(--pf-global--spacer--lg);
+    --ak-login--header-max-height: clamp(0, 45%, 15dvh);
+    --ak-login--max-width: 35rem;
+    --ak-login--main-column-width: minmax(min-content, var(--ak-login--max-width));
+    --pf-c-login__main-footer--PaddingBottom: 0;
+
+    --pf-c-login__main-body--PaddingBottom: clamp(
+        var(--pf-global--spacer--xs),
+        7dvw,
+        var(--pf-global--spacer--3xl)
+    );
+
     flex: 1 1 auto;
-    place-content: center;
-}
 
-@media (max-width: 1199px) {
-    .pf-c-login__container {
-        display: flex;
-        flex-direction: column;
+    padding: 0;
+
+    display: grid;
+    justify-content: space-between;
+
+    grid-template-rows:
+        [header] minmax(0, clamp(1rem, 15%, 15dvh))
+        [main] minmax(auto, min-content)
+        [footer] auto;
+
+    grid-template-columns:
+        1fr
+        [main] var(--ak-login--main-column-width)
+        1fr;
+
+    grid-template-areas:
+        "header header header"
+        "  .     main    .   "
+        "footer footer footer";
+
+    &::before {
+        display: block;
+        content: "";
+        background-color: var(--ak-login--background-color-overlay, transparent);
+        z-index: -1;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    &::before,
+    [part="login-overlay"] {
+        grid-row: header / footer;
+        grid-column: header;
+    }
+
+    &::after {
+        display: block;
+        content: "";
+        grid-area: main;
+        z-index: -1;
+        height: 75dvh;
+        pointer-events: none;
     }
 }
 
-.ak-login-container {
-    max-width: 35rem;
-    width: 100%;
+/* #region Login Main */
+
+.pf-c-login__main {
+    --pf-c-login__container--PaddingLeft: 0 !important;
+    --pf-c-login__container--PaddingRight: 0 !important;
+
+    aspect-ratio: 1.2/ 1;
+    justify-content: space-between;
+    grid-area: main;
+    margin: 0;
+
+    --ak-login--padding-max: 8dvw;
+    --ak-login--padding: clamp(
+        var(--pf-global--spacer--md),
+        var(--pf-global--spacer--2xl),
+        var(--ak-login--padding-max)
+    );
+
+    position: relative;
+    max-width: var(--ak-login--max-width);
+
     display: flex;
-    flex-direction: column;
-    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
+    flex-flow: column;
+
+    .slotted-content {
+        position: relative;
+        flex: 1 1 auto;
+    }
+}
+
+.pf-c-login__main-header {
+    padding-inline: var(--ak-login--padding);
+    padding-block: clamp(var(--pf-global--spacer--xs), 6dvw, var(--pf-global--spacer--lg));
+
+    .pf-c-title {
+        font-size: clamp(1rem, var(--pf-c-title--m-3xl--FontSize), 7dvw);
+    }
+}
+
+.pf-c-login__main-header.pf-c-brand {
+    padding-inline: calc(var(--ak-login--padding) / 4);
+    padding-block-start: clamp(var(--pf-global--spacer--xs), 7dvw, var(--pf-global--spacer--3xl));
+    padding-block-end: calc(var(--ak-login--padding) / 2);
+
+    display: flex;
+    justify-content: center;
+
+    [part="branding-logo"] {
+        display: block;
+        width: clamp(75%, calc(var(--ak-login--max-width) / 2), 90%);
+        min-height: 4rem;
+    }
+}
+
+.pf-c-login__main-body {
+    padding-inline: var(--ak-login--padding);
+}
+
+.pf-c-login__main-footer {
+    display: block;
+}
+
+.pf-c-login__main-footer-band {
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        --pf-c-login__main-footer-band--BackgroundColor: transparent !important;
+    }
+}
+
+@media (min-width: 70rem) and (min-height: 17.5rem) {
+    .pf-c-login[data-layout="content_left"],
+    .pf-c-login[data-layout="content_right"] {
+        display: flex;
+        flex-flow: row wrap;
+
+        place-content: space-between;
+        gap: var(--pf-global--spacer--lg);
+
+        .pf-c-login__main,
+        .pf-c-login__footer {
+            align-self: center;
+        }
+    }
+
+    .pf-c-login[data-layout="content_right"] {
+        flex-direction: row-reverse;
+    }
+
+    .pf-c-login[data-layout="sidebar_left"],
+    .pf-c-login[data-layout="sidebar_right"] {
+        --ak-login--max-width: 36rem;
+        --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
+        .pf-c-login__main {
+            aspect-ratio: auto;
+
+            height: 100%;
+            justify-content: normal;
+        }
+
+        .pf-c-login__footer {
+            color: inherit;
+            flex: 1 1 auto;
+            justify-content: end;
+            width: 100%;
+        }
+    }
+
+    .pf-c-login[data-layout="sidebar_left"] {
+        grid-template-columns: [main footer] var(--ak-login--main-column-width) repeat(2, 1fr);
+
+        grid-template-areas:
+            "header . ."
+            "main   . ."
+            "footer . .";
+    }
+
+    .pf-c-login[data-layout="sidebar_right"] {
+        grid-template-columns: repeat(2, 1fr) var(--ak-login--main-column-width) [main footer];
+
+        grid-template-areas:
+            ". . header"
+            ". . main  "
+            ". . footer";
+    }
+
+    .pf-c-login__main-footer-band {
+        --pf-c-login__main-footer-band--BackgroundColor: transparent !important;
+    }
+}
+
+/* #endregion */
+
+.pf-c-data-list {
+    padding-inline-start: 0;
 }
 
 .pf-c-login__footer {
-    color: var(--ak-flow-footer-color);
-    flex: 250 0 auto;
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    min-height: var(--pf-global--spacer--2xl);
+    grid-area: footer;
+    flex: 0 0 auto;
     display: flex;
-    justify-content: end;
     flex-direction: column;
-}
+    align-self: end;
+    padding-inline: var(--pf-global--spacer--sm);
+    padding-block: var(--pf-global--spacer--md) !important;
 
-@media (max-width: 768px) {
-    :root {
-        --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
+    ul.pf-c-list.pf-m-inline {
+        justify-content: center;
     }
-}
 
-.pf-c-login__footer ul.pf-c-list.pf-m-inline {
-    justify-content: center;
-    padding: 2rem 0;
+    @media (max-width: 35rem) {
+        color: inherit;
+    }
 }
 
 /* #endregion */
@@ -352,12 +525,6 @@ ak-tabs[vertical] {
 
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
-}
-
-/* ensure background on non-flow pages match */
-.pf-c-background-image::before {
-    background-image: var(--ak-flow-background);
-    background-position: center;
 }
 
 .pf-m-success {
@@ -408,6 +575,11 @@ fieldset {
 
     &:has(legend.sr-only) {
         border-width: 0;
+
+        &:not(.pf-c-modal-box__footer) {
+            --ak-legend-padding-inline-base: 0;
+            --ak-legend-margin-inline-base: 0;
+        }
     }
 
     &.pf-c-form__group {
@@ -421,6 +593,12 @@ fieldset {
         &.pf-m-action {
             gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
             margin-block-start: 0;
+        }
+    }
+
+    &.pf-c-login__main-footer-band {
+        & > *:last-child {
+            padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
         }
     }
 
@@ -529,42 +707,6 @@ fieldset {
         color: var(--pf-global--link--Color--hover);
         text-decoration: underline;
     }
-}
-
-/* Flow-card adjustments for static pages */
-.pf-c-brand {
-    padding-top: calc(
-        var(--pf-c-login__main-footer-links--PaddingTop) +
-            var(--pf-c-login__main-footer-links--PaddingBottom) +
-            var(--pf-c-login__main-body--PaddingBottom)
-    );
-    max-height: 9rem;
-}
-
-.ak-brand {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.ak-brand img {
-    padding: 0 2rem;
-    max-height: inherit;
-}
-
-@media (min-height: 60rem) {
-    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
-        margin-top: 13rem;
-    }
-}
-
-.pf-c-login[data-layout="sidebar_left"],
-.pf-c-login[data-layout="sidebar_right"] {
-    --ak-flow-footer-color: var(--ak-flow-background-color-contrast);
-}
-
-.pf-c-data-list {
-    padding-inline-start: 0;
 }
 
 /* #region Code blocks */

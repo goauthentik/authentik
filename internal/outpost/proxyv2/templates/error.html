@@ -25,34 +25,32 @@
         </style>
     </head>
     <body>
-        <div class="pf-c-login stacked">
-            <div class="ak-login-container">
-                <main class="pf-c-login__main">
-                    <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                        <img src="/outpost.goauthentik.io/static/dist/assets/icons/icon_left_brand.svg" alt="authentik Logo" />
-                    </div>
-                    <header class="pf-c-login__main-header">
-                        <h1 class="pf-c-title pf-m-3xl">
-                            {{ .Title }}
-                        </h1>
-                    </header>
-                    <div class="pf-c-login__main-body">
-                        {{ .Message }}
-                    </div>
-                    <div class="pf-c-login__main-body">
-                        <a href="/" class="pf-c-button pf-m-primary pf-m-block">Go to home</a>
-                    </div>
-                </main>
-                <footer class="pf-c-login__footer">
-                    <ul class="pf-c-list pf-m-inline">
-                        <li>
-                            <span>
-                                Powered by authentik
-                            </span>
-                        </li>
-                    </ul>
-                </footer>
-            </div>
+        <div class="pf-c-login">
+            <main class="pf-c-login__main">
+                <div part="branding" class="pf-c-login__main-header pf-c-brand">
+                    <img part="branding-logo" src="/outpost.goauthentik.io/static/dist/assets/icons/icon_left_brand.svg" alt="authentik Logo" />
+                </div>
+                <header class="pf-c-login__main-header">
+                    <h1 class="pf-c-title pf-m-3xl">
+                        {{ .Title }}
+                    </h1>
+                </header>
+                <div class="pf-c-login__main-body">
+                    {{ .Message }}
+                </div>
+                <div class="pf-c-login__main-body">
+                    <a href="/" class="pf-c-button pf-m-primary pf-m-block">Go to home</a>
+                </div>
+            </main>
+            <footer class="pf-c-login__footer pf-m-dark">
+                <ul class="pf-c-list pf-m-inline">
+                    <li>
+                        <span>
+                            Powered by authentik
+                        </span>
+                    </li>
+                </ul>
+            </footer>
         </div>
     </body>
 </html>

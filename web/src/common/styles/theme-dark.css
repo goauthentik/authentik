@@ -351,10 +351,11 @@ select.pf-c-form-control {
 
 /* #region Flows */
 
-
-.pf-c-login__main-footer-links-item img,
-.pf-c-login__main-footer-links-item .fas {
-    filter: invert(1);
+@media (min-width: 35rem) and (min-height: 50rem) {
+    .pf-c-login__main-footer-links-item img,
+    .pf-c-login__main-footer-links-item .fas {
+        filter: invert(1);
+    }
 }
 
 .pf-c-login__main-footer-band {
