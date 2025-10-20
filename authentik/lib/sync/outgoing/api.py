@@ -38,11 +38,7 @@ class SyncObjectResultSerializer(PassiveSerializer):
     messages = LogEventSerializer(many=True, read_only=True)
 
 
-class GetObjectDependency(Protocol):
-    def get_object(self) -> OutgoingSyncProvider: ...
-
-
-class OutgoingSyncProviderStatusMixin(GetObjectDependency):
+class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
     sync_task: Actor
@@ -58,7 +54,7 @@ class OutgoingSyncProviderStatusMixin(GetObjectDependency):
     )
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
-        provider = self.get_object()
+        provider: OutgoingSyncProvider = self.get_object()
 
         status = {}
 
