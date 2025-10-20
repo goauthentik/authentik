@@ -69,10 +69,16 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
                 <div class="pf-c-form__group">
                     <div class="qr-container">
-                        <qr-code data="${this.challenge.configUrl}"></qr-code>
+                        <qr-code
+                            role="img"
+                            aria-label=${msg("QR-Code to setup a time-based one-time password")}
+                            format="svg"
+                            data="${this.challenge.configUrl}"
+                        ></qr-code>
                         <button
                             type="button"
                             class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                            aria-label=${msg("Copy time-based one-time password configuration")}
                             @click=${(e: Event) => {
                                 e.preventDefault();
                                 if (!this.challenge?.configUrl) return;
@@ -86,15 +92,20 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 navigator.clipboard
                                     .writeText(this.challenge?.configUrl)
                                     .then(() => {
-                                        showMessage({
-                                            level: MessageLevel.success,
-                                            message: msg("Successfully copied TOTP Config."),
-                                        });
+                                        showMessage(
+                                            {
+                                                level: MessageLevel.success,
+                                                message: msg("Successfully copied TOTP Config."),
+                                            },
+                                            true,
+                                        );
                                     });
                             }}
                         >
-                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
-                            ${msg("Copy")}
+                            <span class="pf-c-button__progress"
+                                ><i class="fas fa-copy" aria-hidden="true"></i
+                            ></span>
+                            ${msg("Copy TOTP Config")}
                         </button>
                     </div>
                 </div>
@@ -104,15 +115,22 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     )}
                 </p>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "totp-code-input" }, msg("Code"))}
+                    ${AKLabel(
+                        {
+                            "required": true,
+                            "htmlFor": "totp-code-input",
+                            "aria-label": msg("Time-based one-time password"),
+                        },
+                        msg("TOTP Code"),
+                    )}
                     <input
                         id="totp-code-input"
                         type="text"
                         name="code"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        placeholder="${msg("Please enter your TOTP Code")}"
-                        autofocus=""
+                        placeholder="${msg("Type your TOTP code...")}"
+                        aria-placeholder=${msg("Type your time-based one-time password code.")}
                         autocomplete="one-time-code"
                         class="pf-c-form-control pf-m-monospace"
                         spellcheck="false"
@@ -121,11 +139,12 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
 
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

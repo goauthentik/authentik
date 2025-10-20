@@ -1,3 +1,6 @@
+from typing import Protocol
+
+from django.db.models import Model
 from dramatiq.actor import Actor
 from dramatiq.results.errors import ResultFailure
 from drf_spectacular.utils import extend_schema
@@ -11,7 +14,7 @@ from authentik.core.models import Group, User
 from authentik.events.logs import LogEventSerializer
 from authentik.lib.sync.api import SyncStatusSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.lib.utils.reflection import class_to_path
+from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.rbac.filters import ObjectFilter
 from authentik.tasks.models import Task, TaskStatus
 
@@ -35,7 +38,11 @@ class SyncObjectResultSerializer(PassiveSerializer):
     messages = LogEventSerializer(many=True, read_only=True)
 
 
-class OutgoingSyncProviderStatusMixin:
+class GetObjectDependency(Protocol):
+    def get_object(self) -> OutgoingSyncProvider: ...
+
+
+class OutgoingSyncProviderStatusMixin(GetObjectDependency):
     """Common API Endpoints for Outgoing sync providers"""
 
     sync_task: Actor
@@ -51,7 +58,7 @@ class OutgoingSyncProviderStatusMixin:
     )
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
-        provider: OutgoingSyncProvider = self.get_object()
+        provider = self.get_object()
 
         status = {}
 
@@ -68,9 +75,7 @@ class OutgoingSyncProviderStatusMixin:
             return Response(SyncStatusSerializer(status).data)
 
         last_task: Task = (
-            sync_schedule.tasks.exclude(
-                aggregated_status__in=(TaskStatus.CONSUMED, TaskStatus.QUEUED)
-            )
+            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
             .order_by("-mtime")
             .first()
         )
@@ -100,19 +105,23 @@ class OutgoingSyncProviderStatusMixin:
     )
     def sync_object(self, request: Request, pk: int) -> Response:
         """Sync/Re-sync a single user/group object"""
-        provider: OutgoingSyncProvider = self.get_object()
+        provider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
+        object_type = params.validated_data["sync_object_model"]
+        _object_type: type[Model] = path_to_class(object_type)
+        pk = params.validated_data["sync_object_id"]
         msg = self.sync_objects_task.send_with_options(
             kwargs={
-                "object_type": params.validated_data["sync_object_model"],
+                "object_type": object_type,
                 "page": 1,
                 "provider_pk": provider.pk,
                 "override_dry_run": params.validated_data["override_dry_run"],
-                "pk": params.validated_data["sync_object_id"],
+                "pk": pk,
             },
             retries=0,
             rel_obj=provider,
+            uid=f"{provider.name}:{_object_type._meta.model_name}:{pk}:manual",
         )
         try:
             msg.get_result(block=True)

@@ -74,11 +74,12 @@ export class AuthenticatorStaticStage extends BaseStage<
                 </div>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

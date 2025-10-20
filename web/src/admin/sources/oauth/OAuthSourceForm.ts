@@ -15,6 +15,7 @@ import { config, DEFAULT_CONFIG } from "#common/api/config";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -27,6 +28,7 @@ import {
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PKCEMethodEnum,
     ProviderTypeEnum,
     SourcesApi,
     SourceType,
@@ -34,7 +36,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -47,6 +49,22 @@ const authorizationCodeAuthMethodOptions = [
     {
         label: msg("Include the client ID and secret as request parameters"),
         value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
+
+const pkceMethodOptions = [
+    {
+        label: msg("None"),
+        value: PKCEMethodEnum.None,
+        default: true,
+    },
+    {
+        label: msg("Plain"),
+        value: PKCEMethodEnum.Plain,
+    },
+    {
+        label: msg("S256"),
+        value: PKCEMethodEnum.S256,
     },
 ];
 
@@ -122,9 +140,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         }
     }
 
-    renderUrlOptions(): TemplateResult {
+    renderUrlOptions(): SlottedTemplateResult {
         if (!this.providerType?.urlsCustomizable) {
-            return html``;
+            return nothing;
         }
         return html` <ak-form-group open label="${msg("URL settings")}">
             <div class="pf-c-form">
@@ -188,7 +206,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               )}
                           </p>
                       </ak-form-element-horizontal> `
-                    : html``}
+                    : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
                     ? html`<ak-form-element-horizontal
@@ -210,7 +228,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               )}
                           </p>
                       </ak-form-element-horizontal>`
-                    : html``}
+                    : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
                     ? html`<ak-form-element-horizontal
@@ -240,7 +258,16 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
-                    : html``}
+                    : nothing}
+                <ak-radio-input
+                    label=${msg("PKCE Method")}
+                    name="pkce"
+                    required
+                    .options=${pkceMethodOptions}
+                    .value=${this.instance?.pkce}
+                    help=${msg("Configure Proof Key for Code Exchange for this source.")}
+                >
+                </ak-radio-input>
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect
                     ? html`<ak-radio-input
                           label=${msg("Authorization code authentication method")}
@@ -253,7 +280,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           )}
                       >
                       </ak-radio-input>`
-                    : html``}
+                    : nothing}
             </div>
         </ak-form-group>`;
     }
@@ -380,7 +407,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                                         ${msg("Currently set to:")} ${this.instance?.icon}
                                     </p>
                                 `
-                              : html``}
+                              : nothing}
                       </ak-form-element-horizontal>
                       ${this.instance?.icon
                           ? html`
@@ -408,7 +435,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                                     </p>
                                 </ak-form-element-horizontal>
                             `
-                          : html``}`
+                          : nothing}`
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"

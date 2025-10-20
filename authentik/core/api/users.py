@@ -97,8 +97,8 @@ class ParamUserSerializer(PassiveSerializer):
     user = PrimaryKeyRelatedField(queryset=User.objects.all().exclude_anonymous(), required=False)
 
 
-class UserGroupSerializer(ModelSerializer):
-    """Simplified Group Serializer for user's groups"""
+class PartialGroupSerializer(ModelSerializer):
+    """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
@@ -143,11 +143,11 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_groups", "true")).lower() == "true"
 
-    @extend_schema_field(UserGroupSerializer(many=True))
-    def get_groups_obj(self, instance: User) -> list[UserGroupSerializer] | None:
+    @extend_schema_field(PartialGroupSerializer(many=True))
+    def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return UserGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.ak_groups, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -334,6 +334,21 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserServiceAccountSerializer(PassiveSerializer):
+    """Payload to create a service account"""
+
+    name = CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
+    )
+    create_group = BooleanField(default=False)
+    expiring = BooleanField(default=True)
+    expires = DateTimeField(
+        required=False,
+        help_text="If not provided, valid for 360 days",
+    )
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -494,18 +509,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required(None, ["authentik_core.add_user", "authentik_core.add_token"])
     @extend_schema(
-        request=inline_serializer(
-            "UserServiceAccountSerializer",
-            {
-                "name": CharField(required=True),
-                "create_group": BooleanField(default=False),
-                "expiring": BooleanField(default=True),
-                "expires": DateTimeField(
-                    required=False,
-                    help_text="If not provided, valid for 360 days",
-                ),
-            },
-        ),
+        request=UserServiceAccountSerializer,
         responses={
             200: inline_serializer(
                 "UserServiceAccountResponse",
@@ -527,11 +531,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     def service_account(self, request: Request) -> Response:
         """Create a new user account that is marked as a service account"""
-        username = request.data.get("name")
-        create_group = request.data.get("create_group", False)
-        expiring = request.data.get("expiring", True)
-        expires = request.data.get("expires", now() + timedelta(days=360))
+        data = UserServiceAccountSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        expires = data.validated_data.get("expires", now() + timedelta(days=360))
 
+        username = data.validated_data["name"]
+        expiring = data.validated_data["expiring"]
         with atomic():
             try:
                 user: User = User.objects.create(
@@ -549,10 +554,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     "user_uid": user.uid,
                     "user_pk": user.pk,
                 }
-                if create_group and self.request.user.has_perm("authentik_core.add_group"):
-                    group = Group.objects.create(
-                        name=username,
-                    )
+                if data.validated_data["create_group"] and self.request.user.has_perm(
+                    "authentik_core.add_group"
+                ):
+                    group = Group.objects.create(name=username)
                     group.users.add(user)
                     response["group_pk"] = str(group.pk)
                 token = Token.objects.create(
@@ -565,7 +570,29 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 response["token"] = token.key
                 return Response(response)
             except IntegrityError as exc:
-                return Response(data={"non_field_errors": [str(exc)]}, status=400)
+                error_msg = str(exc).lower()
+
+                if "unique" in error_msg:
+                    return Response(
+                        data={
+                            "non_field_errors": [
+                                _("A user/group with these details already exists")
+                            ]
+                        },
+                        status=400,
+                    )
+                else:
+                    LOGGER.warning("Service account creation failed", exc=exc)
+                    return Response(
+                        data={"non_field_errors": [_("Unable to create user")]},
+                        status=400,
+                    )
+            except (ValueError, TypeError) as exc:
+                LOGGER.error("Unexpected error during service account creation", exc=exc)
+                return Response(
+                    data={"non_field_errors": [_("Unknown error occurred")]},
+                    status=500,
+                )
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(
@@ -681,8 +708,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         ),
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
-            "401": OpenApiResponse(description="Access denied"),
+            204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
     @action(detail=True, methods=["POST"], permission_classes=[])
@@ -701,7 +727,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without permissions",
                 user=request.user,
             )
-            return Response(status=401)
+            return Response(status=403)
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
@@ -710,19 +736,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without providing a reason",
                 user=request.user,
             )
-            return Response(status=401)
+            raise ValidationError({"reason": _("This field is required.")})
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
-        return Response(status=201)
+        return Response(status=204)
 
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=None,
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
+            "204": OpenApiResponse(description="Successfully ended impersonation"),
         },
     )
     @action(detail=False, methods=["GET"])

@@ -10,7 +10,7 @@ support_level: authentik
 >
 > -- https://vaultproject.io
 
-:::note
+:::info
 This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `vault.company` is the FQDN of the Vault installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,7 +37,7 @@ To support the integration of Hashicorp Vault with authentik, you need to create
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -75,7 +75,7 @@ vault write auth/oidc/role/reader \
 
 If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
-:::note
+:::info
 This assumes that the steps above have already been completed and tested.
 :::
 

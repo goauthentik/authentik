@@ -38,7 +38,7 @@ You can construct advanced queries to find specific event logs. In the Admin int
 
 - **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
 
-- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
 
 - **Values**: `True`, `False`, `None`, and more
 

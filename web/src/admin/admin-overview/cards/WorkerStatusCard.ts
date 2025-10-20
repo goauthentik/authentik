@@ -5,19 +5,16 @@ import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminS
 import { TasksApi, Worker } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
+    public override label = msg("Workers");
 
     getPrimaryValue(): Promise<Worker[]> {
         return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
-    }
-
-    renderHeader(): TemplateResult {
-        return html`${msg("Workers")}`;
     }
 
     getStatus(value: Worker[]): Promise<AdminStatus> {

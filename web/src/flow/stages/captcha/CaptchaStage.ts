@@ -74,9 +74,15 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 }
             }
 
-            #ak-captcha {
-                width: 100%;
-                min-height: 65px;
+            .ak-interactive-challenge {
+                /**
+                 * We use & here to hint to the ShadyDOM polyfill that this rule is meant
+                 * for the iframe itself, not the contents of the iframe.
+                 */
+                & {
+                    width: 100%;
+                    min-height: 65px;
+                }
 
                 &[data-ready="loading"] {
                     background-color: var(--captcha-background-from);
@@ -309,9 +315,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (this.challenge?.interactive) {
             return html`
                 <iframe
+                    aria-label=${msg("CAPTCHA challenge")}
                     ${ref(this.#iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready="${this.#iframeLoaded ? "ready" : "loading"}"
+                    class="ak-interactive-challenge"
                     id="ak-captcha"
                 ></iframe>
             `;
@@ -376,7 +384,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    public firstUpdated(changedProperties: PropertyValues<this>) {
+    public override firstUpdated(changedProperties: PropertyValues<this>) {
+        super.firstUpdated(changedProperties);
+
         if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
             return;
         }
@@ -385,6 +395,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }

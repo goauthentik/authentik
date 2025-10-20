@@ -29,8 +29,8 @@ from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
 
-class GroupMemberSerializer(ModelSerializer):
-    """Stripped down user serializer to show relevant users for groups"""
+class PartialUserSerializer(ModelSerializer):
+    """Partial User Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
     uid = CharField(read_only=True)
@@ -94,11 +94,11 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_children", "false")).lower() == "true"
 
-    @extend_schema_field(GroupMemberSerializer(many=True))
-    def get_users_obj(self, instance: Group) -> list[GroupMemberSerializer] | None:
+    @extend_schema_field(PartialUserSerializer(many=True))
+    def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
-        return GroupMemberSerializer(instance.users, many=True).data
+        return PartialUserSerializer(instance.users, many=True).data
 
     @extend_schema_field(GroupChildSerializer(many=True))
     def get_children_obj(self, instance: Group) -> list[GroupChildSerializer] | None:
@@ -228,6 +228,19 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     filterset_class = GroupFilter
     ordering = ["name"]
 
+    def get_ql_fields(self):
+        from djangoql.schema import BoolField, StrField
+
+        from authentik.enterprise.search.fields import (
+            JSONSearchField,
+        )
+
+        return [
+            StrField(Group, "name"),
+            BoolField(Group, "is_superuser", nullable=True),
+            JSONSearchField(Group, "attributes", suggest_nested=False),
+        ]
+
     def get_queryset(self):
         base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
 
@@ -295,7 +308,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=UserAccountSerializer,
         responses={
-            204: OpenApiResponse(description="User added"),
+            204: OpenApiResponse(description="User removed"),
             404: OpenApiResponse(description="User not found"),
         },
     )
@@ -307,7 +320,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         permission_classes=[],
     )
     def remove_user(self, request: Request, pk: str) -> Response:
-        """Add user to group"""
+        """Remove user from group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")

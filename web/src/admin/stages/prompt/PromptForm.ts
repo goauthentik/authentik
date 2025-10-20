@@ -7,6 +7,7 @@ import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network"
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { StageHost } from "#flow/stages/base";
 
@@ -19,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
@@ -166,7 +167,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         </div> `;
     }
 
-    renderPreview(): TemplateResult {
+    renderPreview(): SlottedTemplateResult {
         return html`
             <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
@@ -188,7 +189,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
                 ${this.previewResult
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -198,7 +199,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
             </div>
         `;
     }

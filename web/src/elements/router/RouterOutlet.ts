@@ -1,7 +1,9 @@
 import "#elements/router/Router404";
+import "#elements/a11y/ak-skip-to-content";
 
 import { ROUTE_SEPARATOR } from "#common/constants";
 
+import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
@@ -15,7 +17,7 @@ import {
     startBrowserTracingPageLoadSpan,
 } from "@sentry/browser";
 
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // Poliyfill for hashchange.newURL,
@@ -55,6 +57,12 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
+    protected createRenderRoot() {
+        return this;
+    }
+
+    //#region Properties
+
     @property({ attribute: false })
     current?: RouteMatch;
 
@@ -64,19 +72,12 @@ export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     routes: Route[] = [];
 
+    //#endregion
+
+    //#region Lifecycle
+
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
-
-    static styles: CSSResult[] = [
-        css`
-            :host {
-                background-color: transparent !important;
-            }
-            *:first-child {
-                flex-direction: column;
-            }
-        `,
-    ];
 
     constructor() {
         super();
@@ -95,6 +96,33 @@ export class RouterOutlet extends AKElement {
     firstUpdated(): void {
         this.navigate();
     }
+
+    //#endregion
+
+    //#region a11y
+
+    #skipToContentElement = document.querySelector<AKSkipToContent>("ak-skip-to-content");
+
+    #synchronizeContentTarget = () => {
+        if (!this.#skipToContentElement) return;
+
+        const element = findMainContent(this);
+
+        if (element) {
+            this.#skipToContentElement.targetElement = element;
+        }
+    };
+
+    #mutationObserver = new MutationObserver(this.#synchronizeContentTarget);
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.#mutationObserver.observe(this.renderRoot, {
+            childList: true,
+        });
+    }
+
+    //#endregion
 
     navigate(ev?: HashChangeEvent): void {
         let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];

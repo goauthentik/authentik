@@ -4,12 +4,14 @@ import string
 from collections.abc import Iterable
 from random import SystemRandom
 from urllib.parse import urljoin
+from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
+from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
@@ -23,6 +25,26 @@ from authentik.providers.oauth2.models import (
 
 SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
+
+
+class ProxySession(ExpiringModel):
+    """Session storage for proxyv2 outposts using PostgreSQL"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    session_key = models.TextField(unique=True, db_index=True)
+    user_id = models.UUIDField(null=True, blank=True, db_index=True)
+
+    session_data = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        verbose_name = _("Proxy Session")
+        verbose_name_plural = _("Proxy Sessions")
+        indexes = [
+            models.Index(fields=["user_id"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Session {self.session_key[:8]}..."
 
 
 def get_cookie_secret():

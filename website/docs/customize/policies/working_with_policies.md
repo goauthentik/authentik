@@ -4,19 +4,21 @@ title: Working with policies
 
 For an overview of policies, refer to our documentation on [Policies](./index.md).
 
-authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs.
+authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs. We also document several useful [expression policies](./expression.mdx#sample-expression-policies).
 
-We also document how to use a policy to [whitelist email domains](./expression/whitelist_email.md) and to [ensure unique email addresses](./expression/unique_email.md).
+:::info
+You can add expressions to our standard policies to further customize them.
+:::
 
-To learn more see also [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when the application is created](../../add-secure-apps/applications/manage_apps.mdx#instructions) (for example, to configure application-specific access).
+To learn more, see the [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when the application is created](../../add-secure-apps/applications/manage_apps.mdx#create-an-application-and-provider-pair) documentation (for example, to configure application-specific access).
 
 ## Create a policy
 
-To create a new policy, follow these steps:
+To create a new policy, _either a pre-configured one or an expression policy_, follow these steps:
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Customization -> Policies**.
-3. Click **Create**, and select the type of policy.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Policies**.
+3. Click **Create**, and select the type of policy. Here you select whether you want to create a custom expression policy, or a standard, out-of-the box one.
 4. Define the policy and click **Finish**.
 
 ## Bind a policy to a flow or stage
@@ -31,8 +33,8 @@ Bindings are instantiated objects themselves, and conceptually can be considered
 
 These bindings control which users can access a flow.
 
-1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows**.
 3. In the list of flows, click on the name of the flow to which you want to bind a policy.
 4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
 5. Here, you can decide if you want to create a new policy and bind it to the flow (**Create and bind Policy**), or if you want to select an existing policy and bind it to the flow (**Bind existing policy/group/user**).
@@ -41,9 +43,9 @@ These bindings control which users can access a flow.
 
 These bindings control which stages are applied to a flow.
 
-1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. In the list of flows, click on the name of the flow to which you want to bind a policy.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows**.
+3. In the list of flows, click on the name of the flow which has the stage to which you want to bind a policy.
 4. Click on the **Stage Bindings** tab at the top of the page.
 5. Click the arrow (**>**) beside the name of the stage to which you want to bind a policy.
    The details for that stage displays.

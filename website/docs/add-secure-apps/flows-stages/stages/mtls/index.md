@@ -8,7 +8,9 @@ toc_max_heading_level: 5
 
 The Mutual TLS stage enables authentik to use client certificates to enroll and authenticate users. These certificates can be local to the device or available via PIV Smart Cards, Yubikeys, etc.
 
-Management of client certificates is out of the scope of this document.
+import Eap from "../../../../expressions/\_eap.md";
+
+<Eap />
 
 ## Reverse-proxy configuration
 
@@ -96,7 +98,7 @@ When using authentik without a reverse proxy, select the certificate authorities
 
 ## Stage configuration
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 
 2. Navigate to **System** > **Certificates**, and either generate or add the certificate you’ll use as a certificate authority.
 

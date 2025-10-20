@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.pgadmin.org/
 
-:::note
+:::info
 This is based on authentik 2024.12.2 and pgAdmin4 8.14
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `pgadmin.company` is the FQDN of the pgAdmin installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -36,7 +36,7 @@ To support the integration of pgAdmin with authentik, you need to create an appl
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://pgadmin.company/oauth2/authorize`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -75,7 +75,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
 
 3. Save the file and restart pgAdmin for the changes to take effect.
 
-    :::note
+    :::info
     You must restart pgAdmin every time you make changes to `config_local.py`.
     :::
 

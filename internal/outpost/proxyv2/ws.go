@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxyv2/application"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.Event) error {
@@ -18,7 +18,7 @@ func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.Event) error 
 	}
 	for _, p := range ps.apps {
 		ps.log.WithField("provider", p.Host).Debug("Logging out")
-		err := p.Logout(ctx, func(c application.Claims) bool {
+		err := p.Logout(ctx, func(c types.Claims) bool {
 			return c.Sid == mmsg.SessionID
 		})
 		if err != nil {

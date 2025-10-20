@@ -52,12 +52,12 @@ For detailed instructions, refer to Google documentation.
 ### Set credentials for the service account
 
 1. On the **Service accounts** page, click the account that you just created.
-2. Click the **Keys** tab at top of the page, the click **Add Key -> Create new key**.
+2. Click the **Keys** tab at top of the page, the click **Add Key > Create new key**.
 3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
    Later, when you create the stage in authentik, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
-5. Log in to the Admin Console, and then navigate to **Chrome browser -> Connectors**.
+5. Log in to the Admin Console, and then navigate to **Chrome browser > Connectors**.
 6. Click on **New Provider Configuration**.
 7. Under Universal Device Trust, click "Set up".
 8. Enter a name.
@@ -66,10 +66,8 @@ For detailed instructions, refer to Google documentation.
 
 ### Create the stage
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-
-2. In the Admin interface, navigate to **Flows -> Stages**.
-
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows > Stages**.
 3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 

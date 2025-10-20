@@ -6,14 +6,15 @@ import { readInterfaceRouteParam } from "#elements/router/utils";
 import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 import {
+    type BrowserOptions,
     browserTracingIntegration,
     ErrorEvent,
     EventHint,
     init,
     setTag,
     setUser,
+    spotlightBrowserIntegration,
 } from "@sentry/browser";
-import * as Spotlight from "@spotlightjs/spotlight";
 
 /**
  * A generic error that can be thrown without triggering Sentry's reporting.
@@ -29,7 +30,7 @@ export function configureSentry(canDoPpi = false) {
     if (!cfg.errorReporting?.enabled && !debug) {
         return cfg;
     }
-    init({
+    const opts = {
         dsn: cfg.errorReporting.sentryDsn,
         ignoreErrors: [
             /network/gi,
@@ -50,7 +51,8 @@ export function configureSentry(canDoPpi = false) {
                 instrumentPageLoad: false,
                 traceFetch: false,
             }),
-        ],
+            debug ? spotlightBrowserIntegration() : null,
+        ].filter((int) => int),
         tracePropagationTargets: [window.location.origin],
         tracesSampleRate: debug ? 1.0 : cfg.errorReporting.tracesSampleRate,
         environment: cfg.errorReporting.environment,
@@ -72,21 +74,14 @@ export function configureSentry(canDoPpi = false) {
             }
             return event;
         },
-    });
+    };
+    if (debug) {
+        console.debug("authentik/config: Enabled Sentry Spotlight");
+    }
+    init(opts as BrowserOptions);
     setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
     if (window.location.pathname.includes("if/")) {
         setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
-    }
-    if (debug) {
-        Spotlight.init({
-            injectImmediately: true,
-            integrations: [
-                Spotlight.sentry({
-                    injectIntoSDK: true,
-                }),
-            ],
-        });
-        console.debug("authentik/config: Enabled Sentry Spotlight");
     }
     if (cfg.errorReporting.sendPii && canDoPpi) {
         me().then((user) => {

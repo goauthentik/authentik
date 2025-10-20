@@ -18,10 +18,11 @@ import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
+    SAMLBindingsEnum,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
-    SpBindingEnum,
+    SAMLProviderLogoutMethodEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -29,15 +30,15 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const serviceProviderBindingOptions: RadioOption<SpBindingEnum>[] = [
+const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Redirect"),
-        value: SpBindingEnum.Redirect,
+        value: SAMLBindingsEnum.Redirect,
         default: true,
     },
     {
         label: msg("Post"),
-        value: SpBindingEnum.Post,
+        value: SAMLBindingsEnum.Post,
     },
 ];
 
@@ -56,21 +57,92 @@ function renderHasSigningKp(provider: Partial<SAMLProvider>) {
             ?checked=${provider.signResponse ?? false}
             help=${msg("When enabled, the SAML response will be signed.")}
         >
+        </ak-switch-input>
+        <ak-switch-input
+            name="signLogoutRequest"
+            label=${msg("Sign logout requests")}
+            ?checked=${provider?.signLogoutRequest ?? false}
+            help=${msg("When enabled, SAML logout requests will be signed.")}
+        >
         </ak-switch-input>`;
 }
 
-export function renderForm(
-    provider: Partial<SAMLProvider> = {},
-    errors: ValidationError,
-    setHasSigningKp: (ev: InputEvent) => void,
-    hasSigningKp: boolean,
+function renderHasSlsUrl(
+    provider: Partial<SAMLProvider>,
+    hasPostBinding: boolean = false,
+    setSlsBinding: (ev: Event) => void,
+    logoutMethod: string,
+    setLogoutMethod?: (ev: Event) => void,
 ) {
+    const logoutMethodOptions: RadioOption<string>[] = [
+        {
+            label: msg("Front-channel (Iframe)"),
+            value: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+            default: true,
+        },
+        {
+            label: msg("Front-channel (Native)"),
+            value: SAMLProviderLogoutMethodEnum.FrontchannelNative,
+        },
+        {
+            label: msg("Back-channel (POST)"),
+            value: SAMLProviderLogoutMethodEnum.Backchannel,
+            disabled: !hasPostBinding,
+        },
+    ];
+
+    return html`<ak-radio-input
+            label=${msg("SLS Binding")}
+            name="slsBinding"
+            .options=${serviceProviderBindingOptions}
+            .value=${provider?.slsBinding}
+            help=${msg(
+                "Determines how authentik sends the logout response back to the Service Provider.",
+            )}
+            @change=${setSlsBinding}
+        >
+        </ak-radio-input>
+        <ak-radio-input
+            label=${msg("Logout Method")}
+            name="logoutMethod"
+            .options=${logoutMethodOptions}
+            .value=${logoutMethod}
+            help=${msg("Method to use for logout when SLS URL is configured.")}
+            @change=${setLogoutMethod}
+        >
+        </ak-radio-input>`;
+}
+export interface SAMLProviderFormProps {
+    provider?: Partial<SAMLProvider>;
+    errors?: ValidationError;
+    setHasSigningKp: (ev: InputEvent) => void;
+    hasSigningKp: boolean;
+    setHasSlsUrl: (ev: Event) => void;
+    hasSlsUrl: boolean;
+    setSlsBinding: (ev: Event) => void;
+    hasPostBinding: boolean;
+    logoutMethod: string;
+    setLogoutMethod?: (ev: Event) => void;
+}
+
+export function renderForm({
+    provider = {},
+    errors = {},
+    setHasSigningKp,
+    hasSigningKp,
+    setHasSlsUrl,
+    hasSlsUrl,
+    setSlsBinding,
+    hasPostBinding,
+    logoutMethod,
+    setLogoutMethod,
+}: SAMLProviderFormProps) {
     return html` <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
             label=${msg("Name")}
             required
-            .errorMessages=${errors?.name}
+            .errorMessages=${errors.name}
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
@@ -80,7 +152,7 @@ export function renderForm(
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
-                .errorMessages=${errors?.authorizationFlow}
+                .errorMessages=${errors.authorizationFlow}
                 required
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
@@ -95,14 +167,14 @@ export function renderForm(
                     label=${msg("ACS URL")}
                     value="${ifDefined(provider.acsUrl)}"
                     required
-                    .errorMessages=${errors?.acsUrl}
+                    .errorMessages=${errors.acsUrl}
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("Issuer")}
                     name="issuer"
                     value="${provider.issuer || "authentik"}"
                     required
-                    .errorMessages=${errors?.issuer}
+                    .errorMessages=${errors.issuer}
                     help=${msg("Also known as EntityID.")}
                 ></ak-text-input>
                 <ak-radio-input
@@ -117,10 +189,29 @@ export function renderForm(
                 >
                 </ak-radio-input>
                 <ak-text-input
+                    name="slsUrl"
+                    label=${msg("SLS URL")}
+                    value="${ifDefined(provider.slsUrl)}"
+                    .errorMessages=${errors.slsUrl}
+                    help=${msg(
+                        "Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.",
+                    )}
+                    @input=${setHasSlsUrl}
+                ></ak-text-input>
+                ${hasSlsUrl
+                    ? renderHasSlsUrl(
+                          provider,
+                          hasPostBinding,
+                          setSlsBinding,
+                          logoutMethod,
+                          setLogoutMethod,
+                      )
+                    : nothing}
+                <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
                     value="${ifDefined(provider.audience)}"
-                    .errorMessages=${errors?.audience}
+                    .errorMessages=${errors.audience}
                 ></ak-text-input>
             </div>
         </ak-form-group>
@@ -288,7 +379,7 @@ export function renderForm(
                     label=${msg("Assertion valid not before")}
                     value="${provider.assertionValidNotBefore || "minutes=-5"}"
                     required
-                    .errorMessages=${errors?.assertionValidNotBefore}
+                    .errorMessages=${errors.assertionValidNotBefore}
                     help=${msg("Configure the maximum allowed time drift for an assertion.")}
                 ></ak-text-input>
 
@@ -297,7 +388,7 @@ export function renderForm(
                     label=${msg("Assertion valid not on or after")}
                     value="${provider.assertionValidNotOnOrAfter || "minutes=5"}"
                     required
-                    .errorMessages=${errors?.assertionValidNotBefore}
+                    .errorMessages=${errors.assertionValidNotBefore}
                     help=${msg("Assertion not valid on or after current time + this value.")}
                 ></ak-text-input>
 
@@ -306,7 +397,7 @@ export function renderForm(
                     label=${msg("Session valid not on or after")}
                     value="${provider.sessionValidNotOnOrAfter || "minutes=86400"}"
                     required
-                    .errorMessages=${errors?.sessionValidNotOnOrAfter}
+                    .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg("Session not valid on or after current time + this value.")}
                 ></ak-text-input>
 
@@ -314,7 +405,7 @@ export function renderForm(
                     name="defaultRelayState"
                     label=${msg("Default relay state")}
                     value="${provider.defaultRelayState || ""}"
-                    .errorMessages=${errors?.sessionValidNotOnOrAfter}
+                    .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
                     )}

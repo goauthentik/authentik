@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
 :::
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -70,7 +70,7 @@ You can assign multiple policies to a user by returning a list, and returning `N
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://minio.company/oauth_callback`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the **Scope** you just created to the list of selected scopes.
@@ -84,7 +84,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 
 ### From the web interface
 
-From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
+From the sidebar of the main page, go to **Identity > OpenID**, click **Create**, and then define the configuration as follows:
 
 - Name: MinIO
 - Config URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`

@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `sentry.company` is the FQDN of the Sentry installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -38,7 +38,7 @@ Under _Advanced protocol settings_, set the following:
 
 **This guide assumes you've installed Sentry using [getsentry/self-hosted](https://github.com/getsentry/self-hosted)**
 
-Navigate to Settings -> Auth, and click on Configure next to SAML2
+Navigate to **Settings > Auth**, and click on Configure next to SAML2
 
 ![](./auth.png)
 

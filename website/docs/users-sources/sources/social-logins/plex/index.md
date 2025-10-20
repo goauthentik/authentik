@@ -9,7 +9,7 @@ Allows users to authenticate using their Plex credentials
 
 None
 
-## authentik -> Sources
+## authentik > Sources
 
 Add _Plex_ as a _source_
 
@@ -21,7 +21,7 @@ Add _Plex_ as a _source_
 
 Save, and you now have Plex as a source.
 
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 

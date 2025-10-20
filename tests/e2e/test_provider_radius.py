@@ -41,7 +41,7 @@ class TestProviderRadius(SeleniumTestCase):
             shared_secret=self.shared_secret,
         )
         # we need to create an application to actually access radius
-        Application.objects.create(name="radius", slug=generate_id(), provider=radius)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.RADIUS,
