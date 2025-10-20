@@ -1,4 +1,3 @@
-from typing import Protocol
 
 from django.db.models import Model
 from dramatiq.actor import Actor
