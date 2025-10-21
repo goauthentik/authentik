@@ -93,7 +93,13 @@ To support the integration of Zendesk with authentik, you need to create an appl
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
-4. Go to **System** > **Certificates** > and copy the **SHA-256 Fingerprint** of the certificate you selected when you configured the provider. We will need to give it to Zendesk in the next steps.
+
+### Copy the signing certificate SHA256 fingerprint
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Go to **System** > **Certificates** > and click the certificate pair you selected in the previous step.
+3. Copy the **Certificate Fingerprint (SHA256)** of the certificate.
+4. Save this value for when you configure Zendesk.
 
 ## Zendesk configuration
 
@@ -103,8 +109,8 @@ To support the integration of Zendesk with authentik, you need to create an appl
     - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
     - **Certificate fingerprint**: Paste the SHA-256 Fingerprint copied from authentik.
     - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
-    - **Show button when users sign in**: Enabled
-    - **Button value**: authentik
+    - **Show button when users sign in**: enabled
+    - **Button value**: `authentik`
 
 3. Click **Submit** to save.
 
@@ -113,7 +119,7 @@ To support the integration of Zendesk with authentik, you need to create an appl
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Zendesk, visit your Zendesk page, and click **Login with authentik**.
+To confirm that authentik is properly configured with Zendesk, log out, then attempt to log back in by visit your Zendesk page and clicking **Login with authentik**.
 
 ## Resources
 
