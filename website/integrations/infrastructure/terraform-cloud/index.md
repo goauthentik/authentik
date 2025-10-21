@@ -43,7 +43,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 ### Copy the metadata URL
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the application created in the previous step.
+2. Navigate to **Applications** > **Providers** and click the provider that you created in the previous step.
 3. Under **Related objects**, click **Copy download URL** and take note of the URL as it will be used in the next step.
 
 ## Terraform Cloud configuration
