@@ -94,10 +94,10 @@ To support the integration of Zendesk with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-### Copy the signing certificate SHA256 fingerprint
+### Copy the Certificate Fingerprint (SHA256)
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Go to **System** > **Certificates** and click the certificate pair you selected in the previous step.
+2. Go to **System** > **Certificates** and click the **>** symbol next to the certificate pair you selected in the previous step.
 3. Take note of the **Certificate Fingerprint (SHA256)** as it will be required in the next step.
 
 ## Zendesk configuration
@@ -106,7 +106,7 @@ To support the integration of Zendesk with authentik, you need to create an appl
 2. Navigate to **Security** > **Single sign-on (SSO)** > **Create SSO configuration** and click **SAML**.
     - **Configuration name**: authentik
     - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
-    - **Certificate fingerprint**: Paste the SHA-256 Fingerprint copied from authentik.
+    - **Certificate fingerprint**: Paste the **Certificate Fingerprint (SHA256)** copied from authentik.
     - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
     - **Show button when users sign in**: enabled
     - **Button value**: `authentik`
