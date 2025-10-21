@@ -459,23 +459,45 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="digestAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Digest algorithm")}
-                    .options=${digestAlgorithmOptions}
-                    .value=${provider.digestAlgorithm}
                     required
+                    name="digestAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${digestAlgorithmOptions.map(
+                            (opt) => html`
+                                <option
+                                    value=${opt.value}
+                                    ?selected=${provider?.digestAlgorithm === opt.value ||
+                                    (!provider?.digestAlgorithm && opt.default)}
+                                >
+                                    ${opt.label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="signatureAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Signature algorithm")}
-                    .options=${signatureAlgorithmOptions}
-                    .value=${provider.signatureAlgorithm}
                     required
+                    name="signatureAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${signatureAlgorithmOptions.map(
+                            (opt) => html`
+                                <option
+                                    value=${opt.value}
+                                    ?selected=${provider?.signatureAlgorithm === opt.value ||
+                                    (!provider?.signatureAlgorithm && opt.default)}
+                                >
+                                    ${opt.label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
 }
