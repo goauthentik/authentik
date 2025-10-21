@@ -10308,415 +10308,551 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
   <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Retrair &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
   <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Expandir &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
   <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Selecionar &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
   <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Itens de &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
+  <target>Painel da API</target>
 </trans-unit>
 <trans-unit id="sf3b5b13c6b55eb4c">
   <source>Close API drawer</source>
+  <target>Fechad painel da API</target>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
   <source>View details for <x id="0" equiv-text="${label}"/></source>
+  <target>Ver detalhes de <x id="0" equiv-text="${label}"/></target>
 </trans-unit>
 <trans-unit id="s5bb4026da28b7914">
   <source>Mark as read</source>
+  <target>Marcar como lido</target>
 </trans-unit>
 <trans-unit id="sc0064c91ad2aa90b">
   <source>Notification drawer</source>
+  <target>Painel de notificações</target>
 </trans-unit>
 <trans-unit id="s3ef09dfdd0568b6e">
   <source>Search by username, email, etc...</source>
+  <target>BuscF por nome de usuário, email, etc...</target>
 </trans-unit>
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
+  <target>Busca de usuário</target>
 </trans-unit>
 <trans-unit id="s7c6c86d9a97ed706">
   <source>Show deactivated users</source>
+  <target>Mostrar usuários ativos</target>
 </trans-unit>
 <trans-unit id="s462975174949cfc0">
   <source>New User</source>
+  <target>Novo Usuário</target>
 </trans-unit>
 <trans-unit id="s7d620371caea15e1">
   <source>Create Service Account</source>
+  <target>Criar Conta de Serviço</target>
 </trans-unit>
 <trans-unit id="sc47c8364ef524c1d">
   <source>New Service Account</source>
+  <target>Nova Conta de Serviço</target>
 </trans-unit>
 <trans-unit id="s441f155311f1748a">
   <source>User paths</source>
+  <target>Caminhos de usuário</target>
 </trans-unit>
 <trans-unit id="sd5d9adfcbd8abdfe">
   <source>Bot username</source>
+  <target>Usuário do bot</target>
 </trans-unit>
 <trans-unit id="saf5316edc3679fef">
   <source>Bot token</source>
+  <target>Token do bot</target>
 </trans-unit>
 <trans-unit id="s64b935d223a99731">
   <source>Request access to send messages from your bot</source>
+  <target>Solicitar acesso para enviar mensagens do seu bot</target>
 </trans-unit>
 <trans-unit id="s500a041b1fab7aac">
   <source>Telegram Attribute mapping</source>
+  <target>Mapeamento de atributos do Telegram</target>
 </trans-unit>
 <trans-unit id="s463491b90193d86b">
   <source>Telegram bot</source>
+  <target>Bot do Telegram</target>
 </trans-unit>
 <trans-unit id="s4014853299a8bb20">
   <source>Update Telegram Source</source>
+  <target>Atualizar Origem do Telegram</target>
 </trans-unit>
 <trans-unit id="sf376ae7e9ef41c1a">
   <source>Authenticating with Telegram...</source>
+  <target>Autenticando com Telegram...</target>
 </trans-unit>
 <trans-unit id="s76ea993fdc8503d8">
   <source>Click the button below to start.</source>
+  <target>Clique no botão abaixo para iniciar.</target>
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Status do Sistema</target>
 </trans-unit>
 <trans-unit id="s66f26fdcbe2101eb">
   <source>Chart</source>
+  <target>Gráfico</target>
 </trans-unit>
 <trans-unit id="s7b58d033cc5112ab">
   <source>Event volume chart</source>
+  <target>Gráfico de volume de eventos</target>
 </trans-unit>
 <trans-unit id="s0914f91b3f985f0f">
   <source>Synchronization status chart</source>
+  <target>Gráfico de status de sincronização</target>
 </trans-unit>
 <trans-unit id="s3f01dbc864d2a8b9">
   <source>Outpost status chart</source>
+  <target>Gráfico de status de Outpost</target>
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Ações do formulário</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
+  <target>Ação de envio</target>
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
+  <target>Açao de cancelamento</target>
 </trans-unit>
 <trans-unit id="s1ec022562e3d515b">
   <source>Search for users by username or display name...</source>
+  <target>Pesquisar usuários por nome de usuário ou nome de exibição...</target>
 </trans-unit>
 <trans-unit id="s65f6a2f5e2b848e1">
   <source>Search Users</source>
+  <target>Pesquisar Usuários</target>
 </trans-unit>
 <trans-unit id="sd416adae573583d5">
   <source>Select Users</source>
+  <target>Selecionar Usuários</target>
 </trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
+  <target>Selecionar usuários</target>
 </trans-unit>
 <trans-unit id="sb85774dc5d18ff0f">
   <source>Confirm</source>
+  <target>Confirmar</target>
 </trans-unit>
 <trans-unit id="s9436f1bf4400f6a6">
   <source>Type a group name...</source>
+  <target>Digite um nome de grupo</target>
 </trans-unit>
 <trans-unit id="s2d9356347ff7c77f">
   <source>Group Name</source>
+  <target>Nome de Grupo</target>
 </trans-unit>
 <trans-unit id="sf45dac7c571f18bd">
   <source>Superuser Privileges</source>
+  <target>Privilégios de Superusuário</target>
 </trans-unit>
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
+  <target>Indica se os usuários adicionados a este grupo terão privilégios de superusuário.</target>
 </trans-unit>
 <trans-unit id="sb05313d80a8b531f">
   <source>Select an optional parent group...</source>
+  <target>Selecionar um grupo pai opcional...</target>
 </trans-unit>
 <trans-unit id="sf0d94539428a0900">
   <source>Search for a group by name…</source>
+  <target>Pesquisar grupo por nome...</target>
 </trans-unit>
 <trans-unit id="s77ec9e27e9ae81b8">
   <source>Group Search</source>
+  <target>Busca de Grupo</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
   <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Ver detslhes do grupo &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s62dfa9c45cb3025a">
   <source>New Group</source>
+  <target>Novo Grupo</target>
 </trans-unit>
 <trans-unit id="s3d0a5ad9bdb617e2">
   <source>Open user selection dialog</source>
+  <target>Abrir janela de seleção de usuário</target>
 </trans-unit>
 <trans-unit id="s362bf0ff6d7db6c9">
   <source>Group User Search</source>
+  <target>Busca de Usuário do Grupo</target>
 </trans-unit>
 <trans-unit id="se040a9c3444c727c">
   <source>Group Users</source>
+  <target>Usuários do Grupo</target>
 </trans-unit>
 <trans-unit id="sac6c67e92bd30229">
   <source>Assign Additional Users</source>
+  <target>Atribuir Usuários Adicionais</target>
 </trans-unit>
 <trans-unit id="sf6aec5a09661fe61">
   <source>Add new user</source>
+  <target>Adicionar novo usuário</target>
 </trans-unit>
 <trans-unit id="s0051b0d8e6decea6">
   <source>New user...</source>
+  <target>Novo usuário...</target>
 </trans-unit>
 <trans-unit id="s384699f614f39071">
   <source>New service account...</source>
+  <target>Nova conta de serviço...</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <target>Executar &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; normalmente</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
+  <target>Executar &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; como o usuário atual</target>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
+  <target>Usuário atual</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <target>Executar &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; com inspecionador</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
+  <target>Usar inspecionador</target>
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+  <target>Um código foi enviado para seu email: <x id="0" equiv-text="${email}"/></target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Um código foi enviado para seu endereço de email.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Um código de uso único foi enviado a você via mensagem SMS.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
+  <target>Abra seu aplicativo de autenticação para obter um código de uso único.</target>
 </trans-unit>
 <trans-unit id="s775f81ca91aa2d0c">
   <source>Policy actions</source>
+  <target>Ações da política</target>
 </trans-unit>
 <trans-unit id="sa4be93eb7f4e51e3">
   <source>Site links</source>
+  <target>Links do site</target>
 </trans-unit>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
+  <target>Informações do usuário</target>
 </trans-unit>
 <trans-unit id="s4607a8246d0d6265">
   <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
+  <target>Avatar de <x id="0" equiv-text="${this.user}"/></target>
 </trans-unit>
 <trans-unit id="sb0dbcf3bb1127907">
   <source>User avatar</source>
+  <target>Avatar do usuário</target>
 </trans-unit>
 <trans-unit id="s8d6236ad153d42c0">
   <source>CAPTCHA challenge</source>
+  <target>Desafio de CAPTCHA</target>
 </trans-unit>
 <trans-unit id="sc091f75b942ec081">
   <source>QR-Code to setup a time-based one-time password</source>
+  <target>QR-Code para configurar uma senha de uso único baseada em tempo</target>
 </trans-unit>
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
+  <target>Copiar configuração de senha de uso único baseada em tempo</target>
 </trans-unit>
 <trans-unit id="s43e859bf711e3599">
   <source>Copy TOTP Config</source>
+  <target>Copiar configuração TOTP</target>
 </trans-unit>
 <trans-unit id="sa5562e0115ffbccd">
   <source>Time-based one-time password</source>
+  <target>Senha de uso único baseada em tempo</target>
 </trans-unit>
 <trans-unit id="s40f44c0d88807fd5">
   <source>TOTP Code</source>
+  <target>Código TOTP</target>
 </trans-unit>
 <trans-unit id="s95474cc8c73dd9c0">
   <source>Type your TOTP code...</source>
+  <target>Digite seu código TOTP...</target>
 </trans-unit>
 <trans-unit id="s168d0c138b63286d">
   <source>Type your time-based one-time password code.</source>
+  <target>Digite seu código de senha de uso único baseada em tempo.</target>
 </trans-unit>
 <trans-unit id="s14e8ac4d377a1a99">
   <source>Type an authentication code...</source>
+  <target>Digite um código de autenticação...</target>
 </trans-unit>
 <trans-unit id="s8bb0a1b672b52954">
   <source>In case you lose access to your primary authenticators.</source>
+  <target>Caso você perca acesso ao seu método de autenticação principal.</target>
 </trans-unit>
 <trans-unit id="s76d21e163887ddd1">
   <source>Unknown device</source>
+  <target>Dispositivo desconhecido</target>
 </trans-unit>
 <trans-unit id="sf0ceaf3116e31fd4">
   <source>An unknown device class was provided.</source>
+  <target>Uma classe de dispositivo não reconhecida foi fornecida.</target>
 </trans-unit>
 <trans-unit id="s610fced3957d0471">
   <source>Select an authentication method</source>
+  <target>Selecione um método de autenticação</target>
 </trans-unit>
 <trans-unit id="s1213df84313e1937">
   <source>No authentication methods available.</source>
+  <target>Nenhum método de autenticação disponível.</target>
 </trans-unit>
 <trans-unit id="s958cedec1cb3fc52">
   <source>Select a configuration stage</source>
+  <target>Selecione um estágio de configuração</target>
 </trans-unit>
 <trans-unit id="sb69e43f2f6bd1b54">
   <source>Close flow inspector</source>
+  <target>Fechar inspecionador de fluxo</target>
 </trans-unit>
 <trans-unit id="s857cf5aa8955cf5c">
   <source>Flow inspector loading</source>
+  <target>Inspecionador de fluxo carregando</target>
 </trans-unit>
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
+  <target>Formulário de autenticação</target>
 </trans-unit>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
+  <target>Footer do site</target>
 </trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
+  <target>Consumido</target>
 </trans-unit>
 <trans-unit id="s556a7cc7c0c9f032">
   <source>Pre-processing</source>
+  <target>Pré processamento</target>
 </trans-unit>
 <trans-unit id="sb37a630168e1e0e5">
   <source>Post-processing</source>
+  <target>Pós processamento</target>
 </trans-unit>
 <trans-unit id="s94f08f46277af7d6">
   <source>Running tasks</source>
+  <target>Tarefas em andamento</target>
 </trans-unit>
 <trans-unit id="s8b551364b894d1ee">
   <source>Queued tasks</source>
+  <target>Tarefas enfileiradas</target>
 </trans-unit>
 <trans-unit id="s2139d19009989a19">
   <source>Successful tasks</source>
+  <target>Tarefas bem-sucedidas</target>
 </trans-unit>
 <trans-unit id="s0787cd9eab5aa6e3">
   <source>Error tasks</source>
+  <target>Tarefas com erro</target>
 </trans-unit>
 <trans-unit id="s531571491deb239a">
   <source>Approximately</source>
+  <target>Aproximadamente</target>
 </trans-unit>
 <trans-unit id="sc62e587718608e85">
   <source>No expiry</source>
+  <target>Sem expiração</target>
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
+  <target>Tentativas</target>
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
+  <target>Tempo de execução planejado</target>
 </trans-unit>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
+  <target>Abrir inspecionador de fluxo</target>
 </trans-unit>
 <trans-unit id="s1ff2128af96d843f">
   <source>Available applications</source>
+  <target>Aplicações disponíveis</target>
 </trans-unit>
 <trans-unit id="sda842e40ed1d9a2f">
   <source>Application search</source>
+  <target>Busca por aplicação</target>
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
+  <target>Busque uma aplicação por nome...</target>
 </trans-unit>
 <trans-unit id="sa3056b3252b4b52c">
   <source>Back-channel</source>
+  <target>Back-channel</target>
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
+  <target>Notificações de logout servidor-a-servidor</target>
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
+  <target>Front-channel</target>
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>Notificações de logout de iframe de navegador</target>
 </trans-unit>
 <trans-unit id="s145480489b87a109">
   <source>Logout URI</source>
+  <target>URI de logout</target>
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>URI para enviar notificações de logoout quando usuários realizam logout. Obrigatório para a funcionalidade OpenID Connect Logout.</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
+  <target>Método de Logout</target>
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>O método de logout determina como o URI de logout é chamado — back-channel (servidor-a-servidor) ou front-channel (iframe do navegador).</target>
 </trans-unit>
 <trans-unit id="sa4bd902fbc432ab8">
   <source>Sign logout requests</source>
+  <target>Assinar solicitações de logout</target>
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
+  <target>Quando habilitado, solicitações de logout SAML serão assinadas.</target>
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
+  <target>Front-channel (iframe)</target>
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target>Front-channel (Nativo)</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>Back-channel (POST)</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
+  <target>Vínculo SLS</target>
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+  <target>Determina como Authentik envia a resposta de logout de volta ao Service Provider.</target>
 </trans-unit>
 <trans-unit id="sd1fba3c745c016a8">
   <source>Method to use for logout when SLS URL is configured.</source>
+  <target>Método de logout a ser usado quando o URL SLS é configurado.</target>
 </trans-unit>
 <trans-unit id="sc71892084574cf32">
   <source>SLS URL</source>
+  <target>URL SLS</target>
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>Service Logout URL opcional usado para enviar respostas de logout. Se não for definido, nenhuma resposta de logout será enviada.</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
   <source/>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
+  <target>Provedor SAML</target>
 </trans-unit>
 <trans-unit id="sca83a1f9227f74b9">
   <source>SAML logout complete</source>
+  <target>Logout SAML finalizado</target>
 </trans-unit>
 <trans-unit id="s7b90eab7969ae056">
   <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+  <target>Redirecionando ao provedor SAML: <x id="0" equiv-text="${providerName}"/></target>
 </trans-unit>
 <trans-unit id="s3e6174b645d96835">
   <source>Posting logout request to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+  <target>Enviando requisição de logout ao provedor SAML: <x id="0" equiv-text="${providerName}"/></target>
 </trans-unit>
 <trans-unit id="s0b1ffff8bedd6b8a">
   <source>Unknown Provider</source>
+  <target>Provedor Desconhecido</target>
 </trans-unit>
 <trans-unit id="s777e86d562523c85">
   <source>Logging out of providers...</source>
+  <target>Saindo dos provedores...</target>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+  <target>Logout Único</target>
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
   <source>The user's display name.</source>
+  <target>O nome de exibição do usuário.</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
   <source>Actions for &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
+  <target>Ações para &amp;quot;<x id="0" equiv-text="${application.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
+  <target>Editar aplicação...</target>
 </trans-unit>
 <trans-unit id="ellipsis">
   <source>...</source>
+  <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
+  <target>Arquivos .yaml, que podem ser encontrados na documentação &quot;Example Flows&quot;</target>
 </trans-unit>
 <trans-unit id="s139200afa0695967">
   <source>Plain</source>
+  <target>Plain</target>
 </trans-unit>
 <trans-unit id="s7a316723c6bb33eb">
   <source>S256</source>
+  <target>S256</target>
 </trans-unit>
 <trans-unit id="s311c22ee852736e9">
   <source>PKCE Method</source>
+  <target>Método PKCE</target>
 </trans-unit>
 <trans-unit id="sa9afb0f84a3c380d">
   <source>Configure Proof Key for Code Exchange for this source.</source>
+  <target>Configurar Proof Key for Code Exchange para esta origem.</target>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+  <target>Configurações de usuário</target>
 </trans-unit>
     </body>
   </file>
