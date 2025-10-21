@@ -185,7 +185,7 @@ export function renderForm({
                     value="${provider.issuer || "authentik"}"
                     required
                     .errorMessages=${errors.issuer}
-                    help=${msg("Also known as EntityID.")}
+                    help=${msg("Also known as Entity ID.")}
                 ></ak-text-input>
                 <ak-text-input
                     name="audience"
