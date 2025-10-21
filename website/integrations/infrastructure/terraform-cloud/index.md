@@ -59,13 +59,18 @@ To support the integration of Terraform with authentik, you need to create an ap
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the application created in the previous step.
 3. Click **Edit**.
-4. Under **Protocol settings**, set the value of the **ACS URL** to the **Assertion Consumer URL** value from the previous step.Then, set the value of the **Audience** to the **Entity ID (Audience)** value from the previous step.
+4. Under **Protocol settings**, set the value of the **ACS URL** to the **Assertion Consumer URL** value from the previous step. Then, set the value of the **Audience** to the **Entity ID (Audience)** value from the previous step.
 5. Click **Update**.
+
+## Enabling Terraform Cloud SSO
+
+1. Back where we left off in the Terraform Cloud SSO settings, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. 2. Then, to enable SSO, click **Enable**.
+2. Read the warning message that appears and click **Enable SAML**.
 
 ## Configuration verification
 
-Back where we left off in the Terraform Cloud SSO settings, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. Then, to enable SSO, click **Enable**. Read the warning message that appears and click **Enable SAML**.
+To verify that authentik is correctly integrated with Terraform Cloud, first log out of Terrafom Cloud. Open the [Terraform Cloud login page](https://app.terraform.io/) and click **Sign in with Terraform SSO**. Enter the name of your organization, click **Next** and you'll be redirected to authentik. Once authenticated, you will be signed into Terraform Cloud.
 
 ## Resources
 
-- [Terraform Cloud documentation for SAML single sign-on](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/single-sign-on/saml)
+- [Terraform Cloud Docs - Use single sign-on with SAML](https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/single-sign-on/saml)
