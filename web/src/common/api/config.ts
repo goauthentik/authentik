@@ -3,6 +3,7 @@ import {
     EventMiddleware,
     LocaleMiddleware,
     LoggingMiddleware,
+    RedirectOnForbiddenMiddleware,
 } from "#common/api/middleware";
 import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { globalAK } from "#common/global";
@@ -71,6 +72,7 @@ export const DEFAULT_CONFIG = new Configuration({
         new LoggingMiddleware(globalAK().brand),
         new SentryMiddleware(),
         new LocaleMiddleware(),
+        new RedirectOnForbiddenMiddleware(),
     ],
 });
 
