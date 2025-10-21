@@ -87,7 +87,7 @@ jobs:
           git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
           git push --follow-tags
       - name: Create Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2
+        uses: goauthentik/action-gh-release@b754223f5f981b859af97bf5a142f31c11684571
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ inputs.version }}"
