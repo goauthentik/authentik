@@ -2,7 +2,6 @@
 
 from base64 import b64encode
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 
 from authentik.core.tests.utils import create_test_cert, create_test_flow
@@ -38,10 +37,6 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         with self.assertRaisesMessage(
             ValueError,
             (
@@ -61,10 +56,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
@@ -98,10 +89,6 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
@@ -117,10 +104,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         with self.assertRaises(InvalidEncryption):
@@ -145,10 +128,6 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
@@ -170,10 +149,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
@@ -197,10 +172,6 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
@@ -222,10 +193,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
 
@@ -250,10 +217,6 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         parser = ResponseProcessor(self.source, request)
 
         with self.assertRaisesMessage(InvalidSignature, ""):
@@ -277,10 +240,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         with self.assertRaisesMessage(InvalidSignature, ""):
@@ -309,10 +268,6 @@ class TestResponseProcessor(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
