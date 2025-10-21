@@ -64,7 +64,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 
 ## Enabling Terraform Cloud SSO
 
-1. Back where we left off in the Terraform Cloud SSO settings, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. 2. Then, to enable SSO, click **Enable**.
+1. In Terraform Cloud, under **Settings** > **SSO**, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. Then, to enable SSO, click **Enable**.
 2. Read the warning message that appears and click **Enable SAML**.
 
 ## Configuration verification
