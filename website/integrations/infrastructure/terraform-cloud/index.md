@@ -57,7 +57,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 ## Configure the remaining information in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the application created in the previous step.
+2. Navigate to **Applications** > **Providers** and provider that you created in the previous step.
 3. Click **Edit**.
 4. Under **Protocol settings**, set the value of the **ACS URL** to the **Assertion Consumer URL** value from the previous step. Then, set the value of the **Audience** to the **Entity ID (Audience)** value from the previous step.
 5. Click **Update**.
