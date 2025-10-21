@@ -32,13 +32,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
-        label: msg("Redirect"),
-        value: SAMLBindingsEnum.Redirect,
+        label: msg("Post"),
+        value: SAMLBindingsEnum.Post,
         default: true,
     },
     {
-        label: msg("Post"),
-        value: SAMLBindingsEnum.Post,
+        label: msg("Redirect"),
+        value: SAMLBindingsEnum.Redirect,
     },
 ];
 
@@ -169,14 +169,6 @@ export function renderForm({
                     required
                     .errorMessages=${errors.acsUrl}
                 ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as EntityID.")}
-                ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Service Provider Binding")}
                     name="spBinding"
@@ -186,8 +178,21 @@ export function renderForm({
                     help=${msg(
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
-                >
-                </ak-radio-input>
+                ></ak-radio-input>
+                <ak-text-input
+                    label=${msg("Issuer")}
+                    name="issuer"
+                    value="${provider.issuer || "authentik"}"
+                    required
+                    .errorMessages=${errors.issuer}
+                    help=${msg("Also known as EntityID.")}
+                ></ak-text-input>
+                <ak-text-input
+                    name="audience"
+                    label=${msg("Audience")}
+                    value="${ifDefined(provider.audience)}"
+                    .errorMessages=${errors.audience}
+                ></ak-text-input>
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
@@ -207,12 +212,6 @@ export function renderForm({
                           setLogoutMethod,
                       )
                     : nothing}
-                <ak-text-input
-                    name="audience"
-                    label=${msg("Audience")}
-                    value="${ifDefined(provider.audience)}"
-                    .errorMessages=${errors.audience}
-                ></ak-text-input>
             </div>
         </ak-form-group>
 
