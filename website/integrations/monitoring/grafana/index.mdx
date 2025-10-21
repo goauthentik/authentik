@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `grafana.company` is the FQDN of the Grafana installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -128,7 +128,7 @@ environment:
     # Optionally enable auto-login (bypasses Grafana login screen)
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
     # Optionally map user groups to Grafana roles
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
     # Required if Grafana is running behind a reverse proxy
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
@@ -178,7 +178,7 @@ grafana.ini:
         role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
-:::note
+:::info
 For security reasons you shouldn't inline the client_secret in the values, but use a secret instead. For more information, see https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md#how-to-securely-reference-secrets-in-grafanaini
 :::
 

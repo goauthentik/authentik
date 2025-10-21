@@ -1,17 +1,16 @@
 """authentik database utilities"""
 
-from collections.abc import Iterator
 import gc
 
 from django.db import reset_queries
-from django.db.models import Model, QuerySet
+from django.db.models import QuerySet
 
 
-def chunked_queryset[M: Model](queryset: QuerySet[M], chunk_size: int = 1_000) -> Iterator[M]:
+def chunked_queryset(queryset: QuerySet, chunk_size: int = 1_000):
     if not queryset.exists():
-        return
+        return []
 
-    def get_chunks(qs: QuerySet[M]) -> Iterator[QuerySet[M]]:
+    def get_chunks(qs: QuerySet):
         qs = qs.order_by("pk")
         pks = qs.values_list("pk", flat=True)
         start_pk = pks[0]

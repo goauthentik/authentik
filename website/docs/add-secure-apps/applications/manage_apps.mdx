@@ -4,7 +4,7 @@ title: Manage applications
 
 Managing the applications that your team uses involves several tasks, from initially adding the application and provider, to controlling access and visibility of the application, to providing access URLs.
 
-### Instructions
+### Create an application and provider pair
 
 To add an application to authentik and have it display on users' **My applications** page, follow these steps:
 
@@ -95,4 +95,17 @@ To give users direct links to applications, you can now use a URL like `https://
 
 Backchannel providers can augment the functionality of applications by using additional protocols. The main provider of an application provides the SSO protocol that is used for logging into the application. Then, additional backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.md) and [LDAP](../providers/ldap/index.md) to provide directory syncing.
 
-Access restrictions that are configured on an application apply to all of its backchannel providers.
+Note that any access restrictions that are configured on an application apply to all of its backchannel providers.
+
+To create a backchannel provider and then add it to an existing application, follow these instructions:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **Create**.
+
+- **Choose a Provider type**: The protocol for a backchannel provider must be [SCIM](../providers/scim/index.md), [LDAP](../providers/ldap/index.md), [Google Workspace (GWS)](../providers/gws/index.md), [Microsoft Entra ID](../providers/entra/index.md), or [Shared Signals Framework (SSF)](../providers/ssf/index.md).
+- **Configure the Provider**: Enter any required configurations.
+
+3. Click **Finish** to save the provider.
+4. Edit the application by going to **Applications** > **Applications**, and clicking the edit icon beside the application that you want to edit.
+5. In the **Backchannel Providers** field, click the Add icon (**+**), select the backchannel provider that you just created, and click **Add**.
+6. Click **Update**.

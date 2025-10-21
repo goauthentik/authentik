@@ -7,13 +7,8 @@ from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_K
 from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.utils.timezone import now, timedelta
 from authentik.lib.migrations import progress_bar
 from authentik.root.middleware import ClientIPMiddleware
-
-
-SESSION_CACHE_ALIAS = "default"
 
 
 class PickleSerializer:
@@ -80,27 +75,6 @@ def _migrate_session(
             session=session,
             user=old_auth_session.user,
             uuid=old_auth_session.uuid,
-        )
-
-
-def migrate_redis_sessions(apps, schema_editor):
-    from django.core.cache import caches
-
-    db_alias = schema_editor.connection.alias
-    cache = caches[SESSION_CACHE_ALIAS]
-
-    # Not a redis cache, skipping
-    if not hasattr(cache, "keys"):
-        return
-
-    print("\nMigrating Redis sessions to database, this might take a couple of minutes...")
-    for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
-        _migrate_session(
-            apps=apps,
-            db_alias=db_alias,
-            session_key=key.removeprefix(KEY_PREFIX),
-            session_data=session_data,
-            expires=now() + timedelta(seconds=cache.ttl(key)),
         )
 
 
@@ -230,10 +204,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Authenticated Session",
                 "verbose_name_plural": "Authenticated Sessions",
             },
-        ),
-        migrations.RunPython(
-            code=migrate_redis_sessions,
-            reverse_code=migrations.RunPython.noop,
         ),
         migrations.RunPython(
             code=migrate_database_sessions,

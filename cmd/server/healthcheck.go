@@ -133,6 +133,6 @@ func checkWorker() int {
 		}
 	}
 
-	log.Debug("successfully checked health")
+	log.Info("successfully checked health")
 	return 0
 }

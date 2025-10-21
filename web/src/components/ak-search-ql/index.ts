@@ -5,6 +5,7 @@ import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
+import { ifPresent } from "#elements/utils/attributes";
 
 import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 
@@ -45,6 +46,8 @@ function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): numb
 
 @customElement("ak-search-ql")
 export class QLSearch extends FormAssociatedElement<string> implements FormAssociated {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     declare anchorRef: Ref<HTMLTextAreaElement>;
     declare anchor: HTMLTextAreaElement | null;
 
@@ -53,10 +56,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         PFFormControl,
         PFSearchInput,
         css`
-            ::-webkit-search-cancel-button {
-                display: none;
-            }
-
             .ql.pf-c-form-control {
                 --input-height: 2.25em;
 
@@ -64,10 +63,31 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 min-height: var(--input-height);
                 max-height: calc(var(--input-height) * 6);
                 resize: vertical;
+                outline: none;
+            }
+
+            .pf-c-search-input[aria-expanded="true"] {
+                .ql.pf-c-form-control {
+                    --pf-c-form-control--BorderBottomColor: var(
+                        --pf-c-form-control--focus--BorderBottomColor
+                    );
+                }
+                .pf-c-search-input__text::after {
+                    --pf-c-search-input__text--after--BorderBottomWidth: var(
+                        --pf-c-search-input__text--focus-within--after--BorderBottomWidth
+                    );
+                    --pf-c-search-input__text--after--BorderBottomColor: var(
+                        --pf-c-search-input__text--focus-within--after--BorderBottomColor
+                    );
+                }
             }
 
             .selected {
                 background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
+            }
+
+            .pf-c-search-input__menu-list {
+                user-select: none;
             }
 
             :host([theme="dark"]) {
@@ -108,6 +128,12 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     //#region Properties
 
+    @property({ type: String })
+    public placeholder = msg("Search...");
+
+    @property({ type: String })
+    public label: string | null = msg("Search");
+
     @property({ type: Boolean })
     public open = false;
 
@@ -123,8 +149,16 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     public set value(value: unknown) {
         const parsed = typeof value === "string" ? value : "";
+        const trimmed = parsed.trim();
 
-        this.setFormValue(parsed.trim(), parsed);
+        this.setFormValue(trimmed, parsed);
+
+        if (trimmed) {
+            this.internals.states.add("present");
+        } else {
+            this.internals.states.delete("present");
+        }
+
         this.#value = parsed;
 
         if (this.anchor) {
@@ -133,6 +167,21 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     }
 
     //#endregion
+
+    //#region Public API
+
+    public submit() {
+        if (!this.form) return;
+
+        const submitEvent = new SubmitEvent("submit", {
+            submitter: this,
+            bubbles: true,
+            composed: true,
+            cancelable: true,
+        });
+
+        this.form.dispatchEvent(submitEvent);
+    }
 
     //#region State
 
@@ -158,10 +207,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.internals.ariaAutoComplete = "list";
-        this.internals.role = "combobox";
-        this.internals.ariaHasPopup = "listbox";
-
         this.#scrollContainer =
             rootInterface<LitElement>().renderRoot.querySelector("#main-content");
 
@@ -170,6 +215,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         });
 
         this.tabIndex = 0;
+
+        this.addEventListener("focus", this.#delegateFocusListener);
     }
 
     public override disconnectedCallback() {
@@ -191,14 +238,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     }
 
     public override updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("open")) {
-            this.internals.ariaExpanded = this.open ? "true" : "false";
-        }
-
         if (changedProperties.has("selectionIndex")) {
             const id = `suggestion-${this.selectionIndex}`;
-
-            this.setAttribute("aria-activedescendant", this.selectionIndex === -1 ? "" : id);
 
             this.renderRoot.querySelector(`#${id}`)?.scrollIntoView({
                 behavior: "auto",
@@ -326,14 +367,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         const suggestionsLength = this.#ql?.suggestions.length;
 
         if (event.key === "Enter" && !this.open && this.form) {
-            const submitEvent = new SubmitEvent("submit", {
-                submitter: this,
-                bubbles: true,
-                composed: true,
-                cancelable: true,
-            });
-
-            this.form.dispatchEvent(submitEvent);
+            this.submit();
 
             return;
         }
@@ -419,6 +453,10 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
         this.#refreshCompletions();
     };
 
+    #delegateFocusListener = () => {
+        this.anchorRef?.value?.focus();
+    };
+
     //#endregion
 
     //#region Render
@@ -469,7 +507,17 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     }
 
     public override render(): TemplateResult {
-        return html`<div class="pf-c-search-input">
+        return html`<div
+            class="pf-c-search-input"
+            aria-expanded=${this.open ? "true" : "false"}
+            aria-autocomplete="list"
+            role="combobox"
+            aria-label=${ifPresent(this.label)}
+            aria-has-popup="listbox"
+            aria-activedescendant=${this.selectionIndex === -1
+                ? ""
+                : `suggestion-${this.selectionIndex}`}
+        >
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">
                     <textarea
@@ -479,7 +527,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                         autocomplete="off"
                         aria-controls="ql-suggestions"
                         ?required=${this.required}
-                        placeholder=${msg("Search...")}
+                        placeholder=${ifPresent(this.placeholder)}
+                        aria-label=${msg("Query input")}
                         spellcheck="false"
                         @input=${this.#refreshCompletions}
                         @focus=${this.#focusListener}

@@ -111,27 +111,29 @@ export class ProviderListPage extends TablePage<Provider> {
             html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),
             html`${item.verboseName}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.pk,
-                    }}
-                    type=${item.component}
-                >
-                </ak-proxy-form>
-                <button
-                    aria-label=${msg(str`Edit "${item.name}" provider`)}
-                    slot="trigger"
-                    class="pf-c-button pf-m-plain"
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i aria-hidden="true" class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.pk,
+                        }}
+                        type=${item.component}
+                    >
+                    </ak-proxy-form>
+                    <button
+                        aria-label=${msg(str`Edit "${item.name}" provider`)}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i aria-hidden="true" class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 

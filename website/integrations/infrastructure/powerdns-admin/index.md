@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `pdns-admin.company` is the FQDN of the PowerDNS-Admin installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -61,7 +61,7 @@ SAML_CERT=/saml.crt
 
 You must mount the certificate selected in authentik as a file in the Docker container. The path in the container must match the path in the env variable `SAML_CERT`.
 
-### docker-compose
+### Docker Compose
 
 ```yaml
 services:

@@ -184,6 +184,13 @@ class FlowExecutorView(APIView):
                 try:
                     self.plan = self._initiate_plan()
                 except FlowNonApplicableException as exc:
+                    # If we're this flow is for authentication and the user is already authenticated
+                    # continue to the next URL
+                    if (
+                        self.flow.designation == FlowDesignation.AUTHENTICATION
+                        and self.request.user.is_authenticated
+                    ):
+                        return self._flow_done()
                     self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:

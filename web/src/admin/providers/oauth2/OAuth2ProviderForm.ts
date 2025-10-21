@@ -62,6 +62,9 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
+    @state()
+    showLogoutMethod = false;
+
     static styles = [
         ...super.styles,
         css`
@@ -76,6 +79,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             id: pk,
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        this.showLogoutMethod = !!provider.logoutUri;
         return provider;
     }
 
@@ -95,7 +99,16 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
+        return renderForm({
+            provider: this.instance,
+            showClientSecret: this.showClientSecret,
+            showClientSecretCallback,
+            showLogoutMethod: this.showLogoutMethod,
+            showLogoutMethodCallback,
+        });
     }
 }
 

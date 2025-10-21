@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `netbird.company` is the FQDN of the NetBird installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -49,7 +49,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 It is important to set a signing key to secure the provider because this is a `Public` client.
 :::
 
-:::note
+:::info
 If an access group is created for the Netbird application, the Netbird service account must be included in the group. Otherwise you will see a 401 error after login.
 :::
 

@@ -116,14 +116,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td colspan="5">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 }
 

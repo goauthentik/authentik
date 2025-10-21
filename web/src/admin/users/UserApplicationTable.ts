@@ -52,7 +52,8 @@ export class UserApplicationTable extends Table<Application> {
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
@@ -69,7 +70,8 @@ export class UserApplicationTable extends Table<Application> {
                               <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 }

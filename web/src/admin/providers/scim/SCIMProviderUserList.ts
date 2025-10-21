@@ -91,11 +91,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         ];
     }
     renderExpanded(item: SCIMProviderUser): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

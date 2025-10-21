@@ -148,7 +148,10 @@ class IdentificationChallengeResponse(ChallengeResponse):
             captcha_token = attrs.get("captcha_token", None)
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
-            verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            try:
+                verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            except ValidationError:
+                raise ValidationError(_("Failed to authenticate.")) from None
 
         # Password check
         if not current_stage.password_stage:
@@ -250,19 +253,19 @@ class IdentificationStageView(ChallengeStageView):
         if current_stage.enrollment_flow:
             challenge.initial_data["enroll_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                qs=get_qs,
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
             challenge.initial_data["recovery_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                qs=get_qs,
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
         if current_stage.passwordless_flow:
             challenge.initial_data["passwordless_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                qs=get_qs,
+                query=get_qs,
                 kwargs={"flow_slug": current_stage.passwordless_flow.slug},
             )
 

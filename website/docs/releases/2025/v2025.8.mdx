@@ -5,7 +5,7 @@ slug: "/releases/2025.8"
 
 ## Highlights
 
-- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/backchannel-logout.mdx).
+- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
 
 - **Event map**: :ak-enterprise View geolocation of user events on a map.
 
@@ -396,6 +396,26 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
 - website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
 - website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
+
+## Fixed in 2025.8.4
+
+- \*/bindings: order by pk (cherry-pick #17027) (#17053)
+- cmd/server/healthcheck: info log success instead of debug (cherry-pick #17093 to version-2025.8) (#17097)
+- core: add index on Group.is_superuser (cherry-pick #17011) (#17017)
+- lib: match exception_to_dict locals behaviour (cherry-pick #17006) (#17016)
+- lib/config: fix listen settings (cherry-pick #17005) (#17023)
+- outposts/ldap: add pwdChangeTime attribute (cherry-pick #17010 to version-2025.8) (#17101)
+- packages/django-dramatiq-postgres: broker: fix new messages not being picked up when too many messages are waiting (cherry-pick #17106 to version-2025.8) (#17108)
+- providers/ldap: add include_children parameter to cached search mode (cherry-pick #16918) (#17000)
+- providers/oauth2: fix authentication error with identical app passwords (cherry-pick #17100 to version-2025.8) (#17103)
+- providers/scim: fix string formatting for SCIM user filter (cherry-pick #16465) (#16852)
+- rbac: fix typo (cherry-pick #16476) (#17018)
+- rbac: optimize rbac assigned by users query (cherry-pick #17015 to version-2025.8) (#17092)
+- stages/identification: fix mismatched error messages (cherry-pick #17090 to version-2025.8) (#17104)
+- tasks: fix logger name (cherry-pick #17009 to version-2025.8) (#17060)
+- tasks: reduce default number of retries and max backoff (cherry-pick #17107 to version-2025.8) (#17109)
+- web: Fix layout class for row in LibraryPage (cherry-pick #16752 to version-2025.8) (#17091)
+- web/admin: fix federation sources automatically selected (cherry-pick #17069 to version-2025.8) (#17070)
 
 ## API Changes
 

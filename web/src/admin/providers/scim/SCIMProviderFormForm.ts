@@ -96,27 +96,28 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     }
 }
 
-export function renderForm(
-    update: () => void,
-    provider?: Partial<SCIMProvider>,
-    errors: ValidationError = {},
-) {
+export interface SCIMProviderFormProps {
+    update: () => void;
+    provider?: Partial<SCIMProvider>;
+    errors?: ValidationError;
+}
+
+export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
     return html`
         <ak-text-input
             name="name"
-            value=${ifDefined(provider?.name)}
+            value=${ifDefined(provider.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name}
+            .errorMessages=${errors.name}
             required
-            help=${msg("Method's display Name.")}
         ></ak-text-input>
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
-                    value="${provider?.url ?? ""}"
-                    .errorMessages=${errors?.url}
+                    value="${provider.url ?? ""}"
+                    .errorMessages=${errors.url}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
                     input-hint="code"
@@ -125,7 +126,7 @@ export function renderForm(
                 <ak-switch-input
                     name="verifyCertificates"
                     label=${msg("Verify SCIM server's certificates")}
-                    ?checked=${provider?.verifyCertificates ?? true}
+                    ?checked=${provider.verifyCertificates ?? true}
                 >
                 </ak-switch-input>
 
@@ -168,7 +169,7 @@ export function renderForm(
                 <ak-radio-input
                     name="compatibilityMode"
                     label=${msg("Compatibility Mode")}
-                    .value=${provider?.compatibilityMode}
+                    .value=${provider.compatibilityMode}
                     required
                     .options=${[
                         {
@@ -189,6 +190,11 @@ export function renderForm(
                             value: CompatibilityModeEnum.Slack,
                             description: html`${msg("Altered behavior for usage with Slack.")}`,
                         },
+                        {
+                            label: msg("Salesforce"),
+                            value: CompatibilityModeEnum.Sfdc,
+                            description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
@@ -199,7 +205,7 @@ export function renderForm(
                         <input
                             class="pf-c-switch__input"
                             type="checkbox"
-                            ?checked=${provider?.dryRun ?? false}
+                            ?checked=${provider.dryRun ?? false}
                         />
                         <span class="pf-c-switch__toggle">
                             <span class="pf-c-switch__toggle-icon">
@@ -221,7 +227,7 @@ export function renderForm(
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
-                    ?checked=${provider?.excludeUsersServiceAccount ?? true}
+                    ?checked=${provider.excludeUsersServiceAccount ?? true}
                 >
                 </ak-switch-input>
 
@@ -245,7 +251,7 @@ export function renderForm(
                             return group ? group.pk : undefined;
                         }}
                         .selected=${(group: Group): boolean => {
-                            return group.pk === provider?.filterGroup;
+                            return group.pk === provider.filterGroup;
                         }}
                         blankable
                     >
@@ -266,7 +272,7 @@ export function renderForm(
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
-                            provider?.propertyMappings,
+                            provider.propertyMappings,
                             "goauthentik.io/providers/scim/user",
                         )}
                         available-label=${msg("Available User Property Mappings")}
@@ -283,7 +289,7 @@ export function renderForm(
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
-                            provider?.propertyMappingsGroup,
+                            provider.propertyMappingsGroup,
                             "goauthentik.io/providers/scim/group",
                         )}
                         available-label=${msg("Available Group Property Mappings")}

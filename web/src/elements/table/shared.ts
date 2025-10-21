@@ -1,4 +1,4 @@
-import { formatElapsedTime } from "#common/temporal";
+import "#elements/timestamp/ak-timestamp";
 
 import { Pagination } from "@goauthentik/api";
 
@@ -32,14 +32,5 @@ export interface PaginatedResponse<T> {
  * @param timestamp - The timestamp to render.
  */
 export function Timestamp(timestamp?: Date | null): TemplateResult {
-    if (!timestamp || timestamp.getTime() === 0) {
-        return html`<span role="time" aria-label="None">-</span>`;
-    }
-
-    const elapsed = formatElapsedTime(timestamp);
-
-    return html` <time datetime=${timestamp.toISOString()} aria-label=${elapsed}>
-        <div>${elapsed}</div>
-        <small>${timestamp.toLocaleString()}</small>
-    </time>`;
+    return html`<ak-timestamp .timestamp=${timestamp} elapsed datetime></ak-timestamp>`;
 }

@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { rootInterface } from "#common/theme";
 
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 
 import type { UserInterface } from "#user/index.entrypoint";
@@ -62,15 +63,20 @@ export class UserSettingsPage extends AKElement {
             :host([theme="dark"]) .pf-c-page__main-section {
                 --pf-c-page__main-section--BackgroundColor: transparent;
             }
+
             .pf-c-page__main {
                 min-height: 100vh;
-                overflow-y: auto;
             }
+            .pf-c-page__main,
+            .pf-c-page__main {
+                overflow: unset;
+            }
+
             @media screen and (min-width: 1200px) {
                 :host {
                     width: 90rem;
-                    margin-left: auto;
-                    margin-right: auto;
+                    width: 90rem;
+                    align-self: center;
                 }
             }
         `,
@@ -95,8 +101,13 @@ export class UserSettingsPage extends AKElement {
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
         return html`<div class="pf-c-page">
-            <main class="pf-c-page__main" tabindex="-1">
-                <ak-tabs vertical>
+            <div class="pf-c-page__main">
+                <ak-tabs
+                    vertical
+                    role="main"
+                    aria-label=${msg("User settings")}
+                    ${AKSkipToContent.ref}
+                >
                     <div
                         id="page-details"
                         role="tabpanel"
@@ -202,7 +213,7 @@ export class UserSettingsPage extends AKElement {
                         </div>
                     </div>
                 </ak-tabs>
-            </main>
+            </div>
         </div>`;
     }
 }

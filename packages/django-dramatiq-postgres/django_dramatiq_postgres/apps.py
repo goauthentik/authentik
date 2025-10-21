@@ -12,9 +12,12 @@ class DjangoDramatiqPostgres(AppConfig):
     verbose_name = "Django Dramatiq postgres"
 
     def ready(self) -> None:
-        old_broker = dramatiq.get_broker()
+        try:
+            old_broker = dramatiq.get_broker()
+        except ModuleNotFoundError:
+            old_broker = None
 
-        if len(old_broker.actors) != 0:
+        if old_broker is not None and len(old_broker.actors) != 0:
             raise ImproperlyConfigured(
                 "Actors were previously registered. "
                 "Make sure your actors are not imported too early."

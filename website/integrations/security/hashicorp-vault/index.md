@@ -10,7 +10,7 @@ support_level: authentik
 >
 > -- https://vaultproject.io
 
-:::note
+:::info
 This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `vault.company` is the FQDN of the Vault installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -75,7 +75,7 @@ vault write auth/oidc/role/reader \
 
 If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
-:::note
+:::info
 This assumes that the steps above have already been completed and tested.
 :::
 

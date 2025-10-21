@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Hugo Bicho, 2025
+# Roux Sang, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 00:12+0000\n"
+"POT-Creation-Date: 2025-10-20 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Hugo Bicho, 2025\n"
+"Last-Translator: Roux Sang, 2025\n"
 "Language-Team: Portuguese (https://app.transifex.com/authentik/teams/119923/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,11 +35,27 @@ msgstr ""
 msgid "New version {version} available!"
 msgstr "Nova versão {version} disponível!"
 
-#: authentik/api/schema.py
+#: authentik/api/v3/schema/query.py
+msgid "Which field to use when ordering the results."
+msgstr ""
+
+#: authentik/api/v3/schema/query.py
+msgid "A page number within the paginated result set."
+msgstr ""
+
+#: authentik/api/v3/schema/query.py
+msgid "Number of results to return per page."
+msgstr ""
+
+#: authentik/api/v3/schema/query.py
+msgid "A search term."
+msgstr ""
+
+#: authentik/api/v3/schema/response.py
 msgid "Generic API Error"
 msgstr "Erro genérico da API"
 
-#: authentik/api/schema.py
+#: authentik/api/v3/schema/response.py
 msgid "Validation Error"
 msgstr "Erro de validação"
 
@@ -122,7 +139,7 @@ msgstr "Certificado Web usado pelo servidor web authentik Core."
 
 #: authentik/brands/models.py
 msgid "Certificates used for client authentication."
-msgstr ""
+msgstr "Certificados utilizados para autenticação do cliente."
 
 #: authentik/brands/models.py
 msgid "Brand"
@@ -168,6 +185,22 @@ msgstr "Não são permitidas barras à esquerda ou à direita."
 msgid "No empty segments in user path allowed."
 msgstr "Não são permitidos segmentos vazios no caminho do utilizador."
 
+#: authentik/core/api/users.py
+msgid "A user/group with these details already exists"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Unable to create user"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Unknown error occurred"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "Este campo é necessário."
+
 #: authentik/core/models.py
 msgid "name"
 msgstr "nome"
@@ -205,7 +238,7 @@ msgid "User's display name."
 msgstr "Nome de exibição do utilizador."
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/rbac/models.py
+#: authentik/providers/saml/models.py authentik/rbac/models.py
 msgid "User"
 msgstr "Utilizador"
 
@@ -222,11 +255,11 @@ msgstr "Redefinir palavra-passe"
 msgid "Can impersonate other users"
 msgstr "Pode assumir a identidade de outros utilizadores"
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can assign permissions to users"
 msgstr "Pode atribuir permissões a utilizadores"
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can unassign permissions from users"
 msgstr "Pode remover permissões a utilizadores"
 
@@ -371,7 +404,7 @@ msgstr ""
 "A forma como a fonte determina se um grupo existente deve ser utilizado ou "
 "se deve ser criado um novo grupo."
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
 msgstr "Token"
 
@@ -504,7 +537,7 @@ msgstr "Pares de chaves de certificados"
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
-msgstr ""
+msgstr "Descobrir, importar e atualizar certificados do sistema de arquivos."
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -568,7 +601,7 @@ msgstr ""
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid "Remove user password history that are too old."
-msgstr ""
+msgstr "Remover histórico de senhas antigas do usuário."
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -699,6 +732,14 @@ msgstr ""
 msgid ""
 "Dispatch syncs for a related object (memberships) for Microsoft Entra "
 "providers."
+msgstr ""
+
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr ""
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
 msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
@@ -842,6 +883,14 @@ msgstr "E-mail"
 
 #: authentik/events/models.py
 msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+"Enviar a notificação apenas uma vez, por exemplo, ao enviar um webhook para "
+"um canal de chat."
+
+#: authentik/events/models.py
+msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
@@ -855,14 +904,6 @@ msgid ""
 msgstr ""
 "Configurar cabeçalhos adicionais a serem enviados. O mapeamento deve "
 "retornar um dicionário de pares chave-valor"
-
-#: authentik/events/models.py
-msgid ""
-"Only send notification once, for example when sending a webhook into a chat "
-"channel."
-msgstr ""
-"Enviar a notificação apenas uma vez, por exemplo, ao enviar um webhook para "
-"um canal de chat."
 
 #: authentik/events/models.py
 msgid "Severity"
@@ -947,14 +988,6 @@ msgstr "Mapeamento de webhook"
 #: authentik/events/models.py
 msgid "Webhook Mappings"
 msgstr "Mapeamentos de webhook"
-
-#: authentik/events/models.py
-msgid "System Task"
-msgstr "Tarefa do sistema"
-
-#: authentik/events/models.py
-msgid "System Tasks"
-msgstr "Tarefas do sistema"
 
 #: authentik/events/tasks.py
 msgid "Dispatch new event notifications."
@@ -1682,6 +1715,14 @@ msgid "Regular Expression URL matching"
 msgstr "Correspondência de URL com expressões regulares"
 
 #: authentik/providers/oauth2/models.py
+msgid "Back-channel"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Front-channel"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
 msgstr "código (Fluxo do Código de Autorização)"
 
@@ -1770,7 +1811,17 @@ msgid "Redirect URIs"
 msgstr "URIs de redirecionamento"
 
 #: authentik/providers/oauth2/models.py
-msgid "Back-Channel Logout URI"
+msgid "Logout URI"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout Method"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Backchannel logs out with server to server calls. Frontchannel uses iframes "
+"in your browser"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1800,6 +1851,13 @@ msgid ""
 msgstr ""
 "Tokens não válidos em ou após a hora atual + este valor (Formato: "
 "hours=1;minutes=2;seconds=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"When refreshing a token, if the refresh token is valid for less than this "
+"duration, it will be renewed. When set to seconds=0, token will always be "
+"renewed. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -1944,6 +2002,14 @@ msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr ""
 "O host interno não pode estar vazio quando a autenticação por encaminhamento"
 " está desativada."
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Session"
+msgstr ""
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Sessions"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
@@ -2158,6 +2224,33 @@ msgstr ""
 " de serviços."
 
 #: authentik/providers/saml/models.py
+msgid "SLS URL"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "Single Logout Service URL where the logout response should be sent."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SLS Binding"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the logout response back to the Service "
+"Provider."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Method to use for logout. Front-channel iframe loads all logout URLs "
+"simultaneously in hidden iframes. Front-channel native uses your active "
+"browser tab to send post requests and redirect to providers. Back-channel "
+"sends logout requests directly from the server without user interaction "
+"(requires POST SLS binding)."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
 msgstr "Mapeamento da propriedade NameID"
 
@@ -2325,6 +2418,34 @@ msgstr "Provedor SAML a partir de metadados"
 msgid "SAML Providers from Metadata"
 msgstr "Provedores SAML a partir de metadados"
 
+#: authentik/providers/saml/models.py
+msgid "Link to the user's authenticated session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML SessionIndex for this session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID value for this session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID format"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Sessions"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "OAuth"
+msgstr ""
+
 #: authentik/providers/scim/models.py
 msgid "Default"
 msgstr "Predefinição"
@@ -2338,12 +2459,24 @@ msgid "Slack"
 msgstr "Slack"
 
 #: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "URL base para os pedidos SCIM, normalmente termina em /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Token de autenticação"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Compatibility Mode"
@@ -2402,6 +2535,14 @@ msgstr "Função"
 #: authentik/rbac/models.py
 msgid "Roles"
 msgstr "Funções"
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
@@ -2747,6 +2888,18 @@ msgid "Include the client ID and secret as request parameters"
 msgstr "Incluir o ID do cliente e o segredo como parâmetros do pedido"
 
 #: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "URL de Pedido de Token"
 
@@ -2786,6 +2939,10 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Âmbitos adicionais"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid ""
@@ -3015,6 +3172,12 @@ msgstr "Ligações à fonte Plex de Grupo"
 msgid "Check the validity of a Plex source."
 msgstr ""
 
+#: authentik/sources/saml/api/source.py
+msgid ""
+"With a Verification Certificate selected, at least one of 'Verify Assertion "
+"Signature' or 'Verify Response Signature' must be selected."
+msgstr ""
+
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
 msgstr "Associação de Reencaminhamento"
@@ -3027,7 +3190,7 @@ msgstr "Associação POST"
 msgid "POST Binding with auto-confirmation"
 msgstr "Associação POST com autoconfirmação"
 
-#: authentik/sources/saml/models.py
+#: authentik/sources/saml/models.py authentik/sources/telegram/models.py
 msgid "Flow used before authentication."
 msgstr "Fluxo utilizado antes da autenticação"
 
@@ -3146,6 +3309,58 @@ msgstr "Mapeamento de propriedades do provedor de SCIM"
 msgid "SCIM Source Property Mappings"
 msgstr "Mapeamentos de propriedades do provedor de SCIM"
 
+#: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
+msgid "Telegram bot username"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram bot token"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Request access to send messages from your bot."
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Sources"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connection"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connections"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connection"
+msgstr ""
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connections"
+msgstr ""
+
+#: authentik/sources/telegram/stage.py
+msgid "Authentication date is too old"
+msgstr ""
+
+#: authentik/sources/telegram/stage.py
+msgid "Invalid hash"
+msgstr ""
+
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
 msgstr "Etapa de configuração do autenticador Duo"
@@ -3161,10 +3376,6 @@ msgstr "Dispositivo Duo"
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
 msgstr "Dispositivos Duo"
-
-#: authentik/stages/authenticator_email/models.py
-msgid "Email OTP"
-msgstr "OTP E-mail"
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
@@ -3213,6 +3424,10 @@ msgstr "O código não corresponde"
 #: authentik/stages/authenticator_email/stage.py
 msgid "Invalid email"
 msgstr "E-mail inválido."
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
@@ -3547,11 +3762,11 @@ msgstr "Etapas fictícias"
 
 #: authentik/stages/email/flow.py
 msgid "Continue to confirm this email address."
-msgstr ""
+msgstr "Prossiga para confirmar esse endereço de email."
 
 #: authentik/stages/email/flow.py
 msgid "Link was already used, please request a new link."
-msgstr ""
+msgstr "Link já usado, por favor peça um novo link."
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
@@ -3560,6 +3775,14 @@ msgstr "Redefinição de Palavra-Passe"
 #: authentik/stages/email/models.py
 msgid "Account Confirmation"
 msgstr "Confirmação de Conta"
+
+#: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr "OTP E-mail"
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr "Notificação de Evento"
 
 #: authentik/stages/email/models.py
 msgid ""
@@ -3811,6 +4034,10 @@ msgstr "Etapa de identificação"
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
 msgstr "Etapas de identificação"
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
+msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
@@ -4147,6 +4374,14 @@ msgid "Retry failed task"
 msgstr ""
 
 #: authentik/tasks/models.py
+msgid "Task log"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Task logs"
+msgstr ""
+
+#: authentik/tasks/models.py
 msgid "Worker status"
 msgstr ""
 
@@ -4263,6 +4498,22 @@ msgstr "Domínio"
 msgid "Domains"
 msgstr "Domínios"
 
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channel"
+msgstr ""
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channels"
+msgstr ""
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Message"
+msgstr ""
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Messages"
+msgstr ""
+
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Queue name"
 msgstr ""
@@ -4281,6 +4532,14 @@ msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task last modified time"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Number of retries"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Planned execution time"
 msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
