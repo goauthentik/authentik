@@ -31,7 +31,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Policies");
+    protected override entityLabel = {
+        singular: msg("Policy"),
+        plural: msg("Policies"),
+    };
     public pageDescription = msg(
         "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
     );
@@ -66,7 +69,7 @@ export class PolicyListPage extends TablePage<Policy> {
                       </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
@@ -127,8 +130,8 @@ export class PolicyListPage extends TablePage<Policy> {
     renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
-                successMessage=${msg("Successfully cleared policy cache")}
-                errorMessage=${msg("Failed to delete policy cache")}
+                success-message=${msg("Successfully cleared policy cache")}
+                error-message=${msg("Failed to delete policy cache")}
                 action=${msg("Clear cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();

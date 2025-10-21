@@ -17,6 +17,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -32,7 +33,14 @@ import { customElement, property } from "lit/decorators.js";
 export class ProviderListPage extends TablePage<Provider> {
     protected override searchEnabled = true;
 
-    override pageTitle = msg("Providers");
+    protected override entityLabel = {
+        singular: msg("Provider"),
+        plural: msg("Providers"),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for a provider by name or application...");
+    }
 
     public pageDescription = msg(
         "Provide support for protocols like SAML and OAuth to assigned applications.",
@@ -45,9 +53,6 @@ export class ProviderListPage extends TablePage<Provider> {
 
     @property()
     public order = "name";
-
-    public searchLabel = msg("Provider Search");
-    public searchPlaceholder = msg("Search for providers…");
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
@@ -113,7 +118,7 @@ export class ProviderListPage extends TablePage<Provider> {
             html`${item.verboseName}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

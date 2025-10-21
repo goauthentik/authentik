@@ -107,7 +107,10 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    public pageTitle = msg("My Applications");
+    protected entityLabel = {
+        singular: msg("My Application"),
+        plural: msg("My Applications"),
+    };
 
     loading() {
         return html`<ak-empty-state default-label></ak-empty-state>`;

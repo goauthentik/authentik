@@ -25,11 +25,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated invitation.")
-            : msg("Successfully created invitation.");
-    }
+    protected override entityLabel = msg("invitation");
 
     async send(data: Invitation): Promise<Invitation> {
         if (this.instance) {

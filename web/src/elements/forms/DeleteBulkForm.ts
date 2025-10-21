@@ -2,6 +2,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
+import { EntityLabel } from "#common/i18n/nouns";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
@@ -23,6 +24,11 @@ type BulkDeleteMetadata = { key: string; value: string }[];
 @customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T extends object> extends Table<T> {
     paginated = false;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("object"),
+        plural: msg("objects"),
+    };
 
     @property({ attribute: false })
     objects: T[] = [];

@@ -33,7 +33,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Certificate-Key Pairs");
+    protected override entityLabel = {
+        singular: msg("Certificate-Key Pair"),
+        plural: msg("Certificate-Key Pairs"),
+    };
     public pageDescription = msg(
         "Import certificates of external providers or create certificates to sign requests with.",
     );
@@ -114,7 +117,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                     </ak-crypto-certificate-form>

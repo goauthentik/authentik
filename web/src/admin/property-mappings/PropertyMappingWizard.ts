@@ -20,6 +20,7 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatNewMessage } from "#common/i18n/actions";
 
 import { AKElement } from "#elements/Base";
 import type { Wizard } from "#elements/wizard/Wizard";
@@ -80,7 +81,9 @@ export class PropertyMappingWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${formatNewMessage(msg("Property Mapping"))}
+                </button>
             </ak-wizard>
         `;
     }

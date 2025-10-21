@@ -120,11 +120,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.providers = providerProvider(this.type);
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated outpost.")
-            : msg("Successfully created outpost.");
-    }
+    protected override entityLabel = msg("outpost");
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {

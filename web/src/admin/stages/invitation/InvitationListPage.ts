@@ -34,7 +34,10 @@ export class InvitationListPage extends TablePage<Invitation> {
     expandable = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Invitations");
+    protected override entityLabel = {
+        singular: msg("Invitation"),
+        plural: msg("Invitations"),
+    };
     public pageDescription = msg(
         "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
     );
@@ -122,7 +125,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Invitation")}</span>
                     <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -148,10 +151,12 @@ export class InvitationListPage extends TablePage<Invitation> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Invitation")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

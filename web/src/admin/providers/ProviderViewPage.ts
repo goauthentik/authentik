@@ -12,6 +12,7 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { AKElement } from "#elements/Base";
 
@@ -19,6 +20,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -27,6 +29,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Provider"),
+        plural: msg("Providers"),
+    };
+
     @property({ type: Number })
     set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)

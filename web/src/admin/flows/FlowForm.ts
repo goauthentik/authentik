@@ -35,11 +35,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated flow.")
-            : msg("Successfully created flow.");
-    }
+    protected override entityLabel = msg("flow");
 
     @property({ type: Boolean })
     clearBackground = false;

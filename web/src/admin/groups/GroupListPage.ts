@@ -6,6 +6,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -22,9 +23,15 @@ export class GroupListPage extends TablePage<Group> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
-    public searchPlaceholder = msg("Search for a group by name…");
-    public searchLabel = msg("Group Search");
-    public pageTitle = msg("Groups");
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Group"),
+        plural: msg("Groups"),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for a group by name...");
+    }
+
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",
     );
@@ -83,11 +90,11 @@ export class GroupListPage extends TablePage<Group> {
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Group")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -99,10 +106,12 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create Group")}</span>
-                <span slot="header">${msg("New Group")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Group")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

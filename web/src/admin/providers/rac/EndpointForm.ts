@@ -30,11 +30,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated endpoint.")
-            : msg("Successfully created endpoint.");
-    }
+    protected override entityLabel = msg("endpoint");
 
     async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = EndpointAuthModeEnum.Prompt;

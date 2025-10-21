@@ -38,9 +38,9 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     request?: PolicyTestRequest;
 
-    getSuccessMessage(): string {
-        return msg("Successfully sent test-request.");
-    }
+    protected override readonly actionName = "send";
+
+    protected override entityLabel = msg("test-request");
 
     async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
         this.request = data;

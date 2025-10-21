@@ -37,11 +37,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated initial permissions.")
-            : msg("Successfully created initial permissions.");
-    }
+    protected override entityLabel = msg("initial permissions");
 
     async send(data: InitialPermissions): Promise<InitialPermissions> {
         if (this.instance?.pk) {

@@ -27,7 +27,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Notification Transports");
+    protected override entityLabel = {
+        singular: msg("Notification Transport"),
+        plural: msg("Notification Transports"),
+    };
     public pageDescription = msg(
         "Define how notifications are sent to users, like Email or Webhook.",
     );
@@ -80,7 +83,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             html`${item.modeVerbose}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
@@ -135,10 +138,12 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Notification Transport")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-event-transport-form slot="form"> </ak-event-transport-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

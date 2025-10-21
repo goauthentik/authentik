@@ -8,6 +8,7 @@ import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -30,6 +31,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     clearOnRefresh = true;
 
     order = "order";
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Stage Binding"),
+        plural: msg("Stage Bindings"),
+    };
 
     @property()
     target?: string;
@@ -86,7 +92,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.stageObj?.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
@@ -97,11 +103,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
-                        ${msg("Edit Stage")}
+                        ${this.editEntityLabel}
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Stage binding")}</span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>
@@ -140,8 +146,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-stage-wizard>
                     <ak-forms-modal>
-                        <span slot="submit">${msg("Create")}</span>
-                        <span slot="header">${msg("Create Stage binding")}</span>
+                        <span slot="submit">${this.createEntityLabel}</span>
+                        <span slot="header">${this.newEntityActionLabel}</span>
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -161,8 +167,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Stage binding")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
