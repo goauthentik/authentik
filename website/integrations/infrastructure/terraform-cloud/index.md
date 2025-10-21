@@ -69,7 +69,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with Terraform Cloud, first log out of Terrafom Cloud. Open the [Terraform Cloud login page](https://app.terraform.io/) and click **Sign in with Terraform SSO**. Enter the name of your organization, click **Next** and you'll be redirected to authentik. Once authenticated, you will be signed into Terraform Cloud.
+To verify that authentik is correctly integrated with Terraform Cloud, first log out of Terrafom Cloud. Open the [Terraform Cloud login page](https://app.terraform.io/) and click **Sign in with Terraform SSO**. Enter the name of your organization, click **Next**, and you'll be redirected to authentik. Once authenticated, you will be signed into Terraform Cloud.
 
 ## Resources
 
