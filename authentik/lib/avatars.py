@@ -3,7 +3,7 @@
 from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5, sha256
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urlencode
 
 from django.core.cache import cache
@@ -27,7 +27,7 @@ CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
 GRAVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
-SVG_NS_MAP = {None: SVG_XML_NS}
+SVG_NS_MAP: dict[str, str] = cast(dict[str, str], {None: SVG_XML_NS})
 # Match fonts used in web UI
 SVG_FONTS = [
     "'RedHatText'",
@@ -39,7 +39,7 @@ SVG_FONTS = [
 ]
 
 
-def avatar_mode_none(user: "User", mode: str) -> str | None:
+def avatar_mode_none(user: "User", mode: str) -> str:
     """No avatar"""
     return DEFAULT_AVATAR
 
@@ -62,7 +62,7 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     full_key = CACHE_KEY_GRAVATAR + mail_hash
     if cache.has_key(full_key):
         cache.touch(full_key)
-        return cache.get(full_key)
+        return cast(str | None, cache.get(full_key))
 
     try:
         # Since we specify a default of 404, do a HEAD request
@@ -129,16 +129,16 @@ def generate_avatar_from_name(
     bg_hex, text_hex = generate_colors(name)
 
     half_size = size // 2
-    shape = "circle" if rounded else "rect"
+    shape_type = "circle" if rounded else "rect"
     font_weight = "600" if bold else "400"
 
-    root_element: Element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
+    root_element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
     root_element.attrib["width"] = f"{size}px"
     root_element.attrib["height"] = f"{size}px"
     root_element.attrib["viewBox"] = f"0 0 {size} {size}"
     root_element.attrib["version"] = "1.1"
 
-    shape = SubElement(root_element, f"{{{SVG_XML_NS}}}{shape}", nsmap=SVG_NS_MAP)
+    shape = SubElement(root_element, f"{{{SVG_XML_NS}}}{shape_type}", nsmap=SVG_NS_MAP)
     shape.attrib["fill"] = f"#{bg_hex}"
     shape.attrib["cx"] = f"{half_size}"
     shape.attrib["cy"] = f"{half_size}"
@@ -150,7 +150,7 @@ def generate_avatar_from_name(
     text.attrib["x"] = "50%"
     text.attrib["y"] = "50%"
     text.attrib["style"] = (
-        f"color: #{text_hex}; " "line-height: 1; " f"font-family: {','.join(SVG_FONTS)}; "
+        f"color: #{text_hex}; line-height: 1; font-family: {','.join(SVG_FONTS)}; "
     )
     text.attrib["fill"] = f"#{text_hex}"
     text.attrib["alignment-baseline"] = "middle"
@@ -197,7 +197,7 @@ def get_avatar(user: "User", request: HttpRequest | None = None) -> str:
     }
     tenant = None
     if request:
-        tenant = request.tenant
+        tenant = request.tenant  # type: ignore[attr-defined]
     else:
         tenant = get_current_tenant()
     modes: str = tenant.avatars

@@ -1,6 +1,6 @@
 """XML Utilities"""
 
-from lxml.etree import XMLParser, fromstring, _Element  # nosec
+from lxml.etree import XMLParser, _Element, fromstring  # nosec
 
 
 def get_lxml_parser() -> XMLParser:
