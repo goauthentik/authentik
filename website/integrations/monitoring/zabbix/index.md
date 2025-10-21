@@ -38,7 +38,7 @@ To support the integration of Zabbix with authentik, you need to create an appli
     - Set the **ACS URL** to `https://zabbix.company/zabbix/index_sso.php?acs`.
     - Set the **Issuer** to `zabbix`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
