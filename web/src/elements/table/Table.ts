@@ -736,7 +736,7 @@ export abstract class Table<T extends object>
 
         let expansionContent: SlottedTemplateResult = nothing;
 
-        if (this.expandable) {
+        if (this.expandable && expanded) {
             if (!this.renderExpanded) {
                 throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
             }
