@@ -154,6 +154,23 @@ fieldset {
 
 /* #endregion */
 
+/* #region Page layout */
+
+/**
+ * Our reversal of the page header on the light theme requires us to set the colors
+ * back to their PatternFly defaults.
+ */
+.pf-c-page__header {
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    --pf-global--Color--200: var(--pf-global--Color--light-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+}
+
+/* #endregion */
+
 /* class for pagination text */
 .pf-c-options-menu__toggle {
     color: var(--ak-dark-foreground);
@@ -309,20 +326,11 @@ select.pf-c-form-control {
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }
-
 .pf-c-dropdown__menu {
-    --pf-c-dropdown__menu--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-dropdown__menu-item {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-dropdown__menu-item:hover,
-.pf-c-dropdown__menu-item:focus {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background-light-ish);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
+    --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
+    --pf-c-dropdown__menu-item--hover--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
+    --pf-c-dropdown__menu-item--hover--Color: var(--pf-global--Color--light-100);
 }
 
 .pf-c-toggle-group__button {

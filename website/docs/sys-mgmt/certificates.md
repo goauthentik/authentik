@@ -28,6 +28,10 @@ To download a certificate for SAML configuration:
 2. Navigate to **Applications** > **Providers** and click on the name of the provider.
 3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
 
+## Certificate recommendations
+
+It is generally not recommended to use short-lived certificates for SAML/OIDC signing operations as the main priority is that the signature is valid. Frequently changing certificates can be problematic as it requires updating configuration in authentik and potentially in connected applications.
+
 ## External certificates
 
 To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), you can use the discovery feature.

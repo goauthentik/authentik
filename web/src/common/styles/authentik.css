@@ -201,6 +201,28 @@ html > form > input {
 
 /* #endregion */
 
+/* #region Page */
+
+.pf-c-page {
+    --pf-c-page__header--BackgroundColor: transparent;
+}
+
+/**
+ * We reverse the page header colors because PatternFly assumes a dark header
+ * on light themes. The opposite must be done for dark themes.
+ */
+.pf-c-page__header {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: transparent;
+}
+
+/* #endregion */
+
 /* #region Form controls */
 
 .pf-c-form-control {
@@ -224,6 +246,19 @@ html > form > input {
 
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+}
+
+/* #endregion */
+
+/* #region Dropdown */
+
+.pf-c-dropdown__menu-item[role="contentinfo"] {
+    &,
+    &:hover,
+    &:focus {
+        --pf-c-dropdown__menu-item--hover--Color: initial;
+        --pf-c-dropdown__menu-item--hover--BackgroundColor: initial;
+    }
 }
 
 /* #endregion */
@@ -299,14 +334,6 @@ ak-tabs[vertical] {
 
 /* #endregion */
 
-/* #region Page layout */
-
-.pf-c-page__header {
-    z-index: 0;
-    background-color: var(--ak-dark-background-light);
-    box-shadow: var(--pf-global--BoxShadow--lg-bottom);
-}
-
 /* #region Login adjustments */
 
 /* Ensure card is displayed on small screens */
@@ -330,11 +357,12 @@ ak-tabs[vertical] {
     width: 100%;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
 }
 
 .pf-c-login__footer {
     color: var(--ak-flow-footer-color);
-    flex: 0 0 auto;
+    flex: 250 0 auto;
     display: flex;
     justify-content: end;
     flex-direction: column;
@@ -422,18 +450,6 @@ fieldset {
         border-width: 0;
     }
 
-    &.pf-c-card {
-        --ak-legend-margin-inline-start: calc(
-            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
-        );
-        --ak-legend-margin-inline-end: calc(
-            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
-        );
-        --pf-c-card--BoxShadow: none;
-        --pf-c-card--BackgroundColor: transparent;
-    }
-
-    &.pf-c-card,
     &.pf-c-form__group {
         border-radius: var(--pf-global--BorderRadius--sm);
     }
@@ -445,7 +461,6 @@ fieldset {
         &.pf-m-action {
             gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
             margin-block-start: 0;
-            margin-block-end: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
         }
     }
 
@@ -461,6 +476,30 @@ fieldset {
 
         & > ak-spinner-button:not(:last-child) {
             margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+        }
+    }
+}
+
+.pf-c-card > fieldset {
+    margin-inline: var(--pf-global--spacer--md);
+    margin-block-end: var(--pf-global--spacer--md);
+
+    @media not (prefers-contrast: more) {
+        --ak-legend-margin-inline-start: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+        );
+
+        border-width: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+
+        legend {
+            padding-block-start: var(--pf-c-card--first-child--PaddingTop) !important;
+            padding-block-end: var(--pf-c-card__title--not--last-child--PaddingBottom) !important;
+            line-height: var(--pf-global--LineHeight--md);
         }
     }
 }
@@ -499,16 +538,6 @@ fieldset {
 
 /* #endregion */
 
-.pf-c-form__helper-text {
-    text-wrap: pretty;
-}
-
-::placeholder {
-    font-style: italic;
-}
-
-/* #endregion */
-
 /* #region Fonts */
 
 .pf-m-monospace {
@@ -529,6 +558,17 @@ fieldset {
 .pf-m-pressable {
     cursor: pointer;
     user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
 }
 
 /* Flow-card adjustments for static pages */
