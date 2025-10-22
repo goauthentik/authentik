@@ -1,12 +1,8 @@
 """SCIMProviderUser API Views"""
 
-from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
-
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionViewSet
 from authentik.providers.scim.models import SCIMProviderUser
 
 
@@ -16,7 +12,6 @@ class SCIMProviderUserSerializer(ModelSerializer):
     user_obj = PartialUserSerializer(source="user", read_only=True)
 
     class Meta:
-
         model = SCIMProviderUser
         fields = [
             "id",
@@ -29,15 +24,7 @@ class SCIMProviderUserSerializer(ModelSerializer):
         extra_kwargs = {"attributes": {"read_only": True}}
 
 
-class SCIMProviderUserViewSet(
-    mixins.CreateModelMixin,
-    OutgoingSyncConnectionCreateMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    UsedByMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class SCIMProviderUserViewSet(OutgoingSyncConnectionViewSet):
     """SCIMProviderUser Viewset"""
 
     queryset = SCIMProviderUser.objects.all().select_related("user")

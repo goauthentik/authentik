@@ -1,12 +1,8 @@
 """SCIMProviderGroup API Views"""
 
-from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
-
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
-from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionViewSet
 from authentik.providers.scim.models import SCIMProviderGroup
 
 
@@ -16,7 +12,6 @@ class SCIMProviderGroupSerializer(ModelSerializer):
     group_obj = PartialGroupSerializer(source="group", read_only=True)
 
     class Meta:
-
         model = SCIMProviderGroup
         fields = [
             "id",
@@ -29,15 +24,7 @@ class SCIMProviderGroupSerializer(ModelSerializer):
         extra_kwargs = {"attributes": {"read_only": True}}
 
 
-class SCIMProviderGroupViewSet(
-    mixins.CreateModelMixin,
-    OutgoingSyncConnectionCreateMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    UsedByMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class SCIMProviderGroupViewSet(OutgoingSyncConnectionViewSet):
     """SCIMProviderGroup Viewset"""
 
     queryset = SCIMProviderGroup.objects.all().select_related("group")

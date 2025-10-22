@@ -82,7 +82,7 @@ class SentryTransport(HttpTransport):
 
     def __init__(self, options: dict[str, Any]) -> None:
         super().__init__(options)
-        assert self.parsed_dsn is not None
+        assert self.parsed_dsn is not None  # nosec
         self._auth = self.parsed_dsn.to_auth(authentik_user_agent())
 
 

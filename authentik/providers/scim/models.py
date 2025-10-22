@@ -12,7 +12,7 @@ from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.core.models import Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
@@ -81,7 +81,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     SALESFORCE = "sfdc", _("Salesforce")
 
 
-class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)

@@ -12,7 +12,6 @@ from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
-    BackchannelProvider,
     Group,
     PropertyMapping,
     User,
@@ -75,7 +74,7 @@ class MicrosoftEntraProviderGroup(SerializerModel):
         return f"Microsoft Entra Provider Group {self.group_id} to {self.provider_id}"
 
 
-class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
+class MicrosoftEntraProvider(OutgoingSyncProvider):
     """Sync users from authentik into Microsoft Entra."""
 
     client_id = models.TextField()

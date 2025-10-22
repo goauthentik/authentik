@@ -3,12 +3,11 @@
 from types import CodeType
 from typing import Any
 
-from django.db.models import Model
 from django.http import HttpRequest
 from prometheus_client import Histogram
 
 from authentik.core.expression.exceptions import SkipObjectException
-from authentik.core.models import User
+from authentik.core.models import PropertyMapping, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.types import PolicyRequest
@@ -23,13 +22,13 @@ PROPERTY_MAPPING_TIME = Histogram(
 class PropertyMappingEvaluator(BaseEvaluator):
     """Custom Evaluator that adds some different context variables."""
 
-    dry_run: bool
-    model: Model
+    dry_run: bool | None
+    model: PropertyMapping
     _compiled: CodeType | None = None
 
     def __init__(
         self,
-        model: Model,
+        model: PropertyMapping,
         user: User | None = None,
         request: HttpRequest | None = None,
         dry_run: bool | None = False,

@@ -1,3 +1,5 @@
+from typing import Any
+
 from authentik.lib.sentry import SentryIgnoredException
 
 
@@ -24,16 +26,16 @@ class BadRequestSyncException(BaseSyncException):
 class DryRunRejected(BaseSyncException):
     """When dry_run is enabled and a provider dropped a mutating request"""
 
-    def __init__(self, url: str, method: str, body: dict):
+    def __init__(self, url: str, method: str, body: dict[Any, Any]) -> None:
         super().__init__()
         self.url = url
         self.method = method
         self.body = body
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Dry-run rejected request: {self.method} {self.url}"
 
 

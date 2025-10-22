@@ -1,13 +1,9 @@
 """GoogleWorkspaceProviderGroup API Views"""
 
-from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
-
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProviderGroup
-from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionViewSet
 
 
 class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
@@ -16,7 +12,6 @@ class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
     group_obj = PartialGroupSerializer(source="group", read_only=True)
 
     class Meta:
-
         model = GoogleWorkspaceProviderGroup
         fields = [
             "id",
@@ -29,15 +24,7 @@ class GoogleWorkspaceProviderGroupSerializer(ModelSerializer):
         extra_kwargs = {"attributes": {"read_only": True}}
 
 
-class GoogleWorkspaceProviderGroupViewSet(
-    mixins.CreateModelMixin,
-    OutgoingSyncConnectionCreateMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    UsedByMixin,
-    mixins.ListModelMixin,
-    GenericViewSet,
-):
+class GoogleWorkspaceProviderGroupViewSet(OutgoingSyncConnectionViewSet):
     """GoogleWorkspaceProviderGroup Viewset"""
 
     queryset = GoogleWorkspaceProviderGroup.objects.all().select_related("group")

@@ -1,4 +1,5 @@
 from collections.abc import Generator
+from typing import Any
 
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -20,7 +21,7 @@ class PropertyMappingManager:
 
     _evaluators: list[PropertyMappingEvaluator]
 
-    globals: dict
+    globals: dict[str, Any]
 
     __has_compiled: bool
 
@@ -40,7 +41,7 @@ class PropertyMappingManager:
         self.globals = {}
         self.__has_compiled = False
 
-    def compile(self):
+    def compile(self) -> None:
         self._evaluators = []
         for mapping in self.query_set:
             if not isinstance(mapping, self.mapping_subclass):
@@ -58,8 +59,8 @@ class PropertyMappingManager:
         user: User | None,
         request: HttpRequest | None,
         return_mapping: bool = False,
-        **kwargs,
-    ) -> Generator[tuple[dict, PropertyMapping]]:
+        **kwargs: Any,
+    ) -> Generator[tuple[Any, PropertyMapping]]:
         """Iterate over all mappings that were pre-compiled and
         execute all of them with the given context"""
         if not self.__has_compiled:
