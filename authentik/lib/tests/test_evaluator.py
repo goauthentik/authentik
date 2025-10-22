@@ -46,7 +46,7 @@ class TestEvaluator(TestCase):
         evaluator.evaluate("ak_create_event('foo', bar='baz')")
         event = Event.objects.filter(action="custom_foo").first()
         self.assertIsNotNone(event)
-        assert event is not None
+        assert event is not None  # nosec
         self.assertEqual(event.context, {"bar": "baz", "foo": "bar"})
 
     @apply_blueprint("system/providers-oauth2.yaml")

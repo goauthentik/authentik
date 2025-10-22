@@ -1,8 +1,7 @@
 """Basic outgoing sync Client"""
 
-from collections.abc import MutableMapping
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, MutableMapping, cast
 
 from deepmerge import always_merger
 from django.db import DatabaseError
@@ -19,7 +18,7 @@ from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSy
 if TYPE_CHECKING:
     from django.db.models import Model
 
-    from authentik.core.models import Group, User
+    from authentik.core.models import User, Group
     from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
@@ -37,7 +36,7 @@ SAFE_METHODS = [
 
 
 class BaseOutgoingSyncClient[
-    TModel: "Model",
+    TModel: "User | Group",
     TConnection: "Model",
     TSchema: MutableMapping[Any, Any],
     TProvider: "OutgoingSyncProvider",
@@ -97,15 +96,14 @@ class BaseOutgoingSyncClient[
         """Convert object to destination schema"""
         raw_final_object: dict[Any, Any] = {}
         try:
-            user = None
-            if obj._meta.model_name == "user":
-                user = cast("User", obj)
-            for value in self.mapper.iter_eval(
-                user=user,
-                request=None,
-                provider=self.provider,
-                connection=connection,
-            ):
+            eval_kwargs = {
+                "request": None,
+                "provider": self.provider,
+                "connection": connection,
+                obj._meta.model_name: obj,
+            }
+            eval_kwargs.setdefault("user", None)
+            for value in self.mapper.iter_eval(**eval_kwargs):  # type: ignore[arg-type, misc]
                 always_merger.merge(raw_final_object, value)
         except ControlFlowException as exc:
             raise exc from exc
