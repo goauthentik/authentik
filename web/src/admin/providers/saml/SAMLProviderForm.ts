@@ -1,4 +1,5 @@
 import { renderForm } from "./SAMLProviderFormForm.js";
+import { signatureAlgorithmOptions } from "./SAMLProviderOptions.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -6,6 +7,7 @@ import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certific
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import {
+    CryptoApi,
     ProvidersApi,
     SAMLBindingsEnum,
     SAMLProvider,
@@ -28,6 +30,9 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
+    @state()
+    protected signingKeyType: string | null = null;
+
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
@@ -41,6 +46,29 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     }
 
     async send(data: SAMLProvider): Promise<SAMLProvider> {
+        if (data.signatureAlgorithm && this.signingKeyType) {
+            const shaValue = data.signatureAlgorithm; // e.g., "sha256"
+            const keyType = this.signingKeyType.toLowerCase(); // e.g., "rsa", "ec", "dsa"
+
+            // Map key type to the format used in enum
+            const keyTypeMap: Record<string, string> = {
+                rsa: "rsa",
+                ec: "ecdsa",
+                dsa: "dsa",
+            };
+
+            const mappedKeyType = keyTypeMap[keyType] || keyType;
+            const algorithmKey = `${mappedKeyType}-${shaValue}`;
+
+            // Find the matching enum value
+            const matchingAlgorithm = signatureAlgorithmOptions.find(
+                (opt) => opt.label.toLowerCase() === algorithmKey,
+            );
+
+            if (matchingAlgorithm) {
+                data.signatureAlgorithm = matchingAlgorithm.value;
+            }
+        }
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
             data.slsBinding === SAMLBindingsEnum.Redirect &&
@@ -61,10 +89,27 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
+        const setHasSigningKp = async (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+
+            // Fetch full certificate details to get the privateKeyType
+            if (target.selectedKeypair?.pk) {
+                try {
+                    const fullCert = await new CryptoApi(
+                        DEFAULT_CONFIG,
+                    ).cryptoCertificatekeypairsRetrieve({
+                        kpUuid: target.selectedKeypair.pk,
+                    });
+                    this.signingKeyType = fullCert.privateKeyType;
+                } catch (error) {
+                    console.error("Failed to fetch certificate details", error);
+                    this.signingKeyType = null;
+                }
+            } else {
+                this.signingKeyType = null;
+            }
         };
 
         const setHasSlsUrl = (ev: Event) => {

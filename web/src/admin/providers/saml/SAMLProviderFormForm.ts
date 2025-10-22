@@ -8,7 +8,7 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
-import { digestAlgorithmOptions, signatureAlgorithmOptions } from "./SAMLProviderOptions.js";
+import { digestAlgorithmOptions, signatureAlgorithmShas } from "./SAMLProviderOptions.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -485,11 +485,11 @@ export function renderForm({
                     name="signatureAlgorithm"
                 >
                     <select class="pf-c-form-control">
-                        ${signatureAlgorithmOptions.map(
+                        ${signatureAlgorithmShas.map(
                             (opt) => html`
                                 <option
                                     value=${opt.value}
-                                    ?selected=${provider?.signatureAlgorithm === opt.value ||
+                                    ?selected=${provider?.signatureAlgorithm?.includes(opt.value) ||
                                     (!provider?.signatureAlgorithm && opt.default)}
                                 >
                                     ${opt.label}

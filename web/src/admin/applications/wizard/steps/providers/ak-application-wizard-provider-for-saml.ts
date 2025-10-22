@@ -3,10 +3,18 @@ import "#elements/forms/FormGroup";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
+import { signatureAlgorithmOptions } from "#admin/providers/saml/SAMLProviderOptions";
 
-import { SAMLBindingsEnum, SAMLProvider, SAMLProviderLogoutMethodEnum } from "@goauthentik/api";
+import {
+    CryptoApi,
+    SAMLBindingsEnum,
+    SAMLProvider,
+    SAMLProviderLogoutMethodEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -28,8 +36,37 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     @state()
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
+    @state()
+    protected signingKeyType: string | null = null;
+
     get formValues() {
         const values = super.formValues;
+
+        // Transform signatureAlgorithm from "sha256" to full enum value
+        if (values.signatureAlgorithm && this.signingKeyType) {
+            const shaValue = values.signatureAlgorithm; // e.g., "sha256"
+            const keyType = this.signingKeyType.toLowerCase(); // e.g., "rsa", "ec", "dsa"
+
+            // Map key type to the format used in enum
+            const keyTypeMap: Record<string, string> = {
+                rsa: "rsa",
+                ec: "ecdsa",
+                dsa: "dsa",
+            };
+
+            const mappedKeyType = keyTypeMap[keyType] || keyType;
+            const algorithmKey = `${mappedKeyType}-${shaValue}`;
+
+            // Find the matching enum value
+            const matchingAlgorithm = signatureAlgorithmOptions.find(
+                (opt) => opt.label.toLowerCase() === algorithmKey,
+            );
+
+            if (matchingAlgorithm) {
+                values.signatureAlgorithm = matchingAlgorithm.value;
+            }
+        }
+
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
             values.slsBinding === SAMLBindingsEnum.Redirect &&
@@ -44,10 +81,27 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
+        const setHasSigningKp = async (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+
+            // Fetch full certificate details to get the privateKeyType
+            if (target.selectedKeypair?.pk) {
+                try {
+                    const fullCert = await new CryptoApi(
+                        DEFAULT_CONFIG,
+                    ).cryptoCertificatekeypairsRetrieve({
+                        kpUuid: target.selectedKeypair.pk,
+                    });
+                    this.signingKeyType = fullCert.privateKeyType;
+                } catch (error) {
+                    console.error("Failed to fetch certificate details", error);
+                    this.signingKeyType = null;
+                }
+            } else {
+                this.signingKeyType = null;
+            }
         };
 
         const setHasSlsUrl = (ev: Event) => {
