@@ -15,27 +15,27 @@ class TestHTTP(TestCase):
         self.user = create_test_admin_user()
         self.factory = RequestFactory()
 
-    def test_bad_request_message(self):
+    def test_bad_request_message(self) -> None:
         """test bad_request_message"""
         request = self.factory.get("/")
         self.assertEqual(bad_request_message(request, "foo").status_code, 400)
 
-    def test_normal(self):
+    def test_normal(self) -> None:
         """Test normal request"""
         request = self.factory.get("/")
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
 
-    def test_forward_for(self):
+    def test_forward_for(self) -> None:
         """Test x-forwarded-for request"""
         request = self.factory.get("/", HTTP_X_FORWARDED_FOR="127.0.0.2")
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.2")
 
-    def test_forward_for_invalid(self):
+    def test_forward_for_invalid(self) -> None:
         """Test invalid forward for"""
         request = self.factory.get("/", HTTP_X_FORWARDED_FOR="foobar")
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), ClientIPMiddleware.default_ip)
 
-    def test_fake_outpost(self):
+    def test_fake_outpost(self) -> None:
         """Test faked IP which is overridden by an outpost"""
         token = Token.objects.create(
             identifier="test", user=self.user, intent=TokenIntents.INTENT_API
@@ -43,7 +43,7 @@ class TestHTTP(TestCase):
         # Invalid, non-existent token
         request = self.factory.get(
             "/",
-            **{
+            **{  # type: ignore[arg-type]
                 ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
                 ClientIPMiddleware.outpost_token_header: "abc",
             },
@@ -52,7 +52,7 @@ class TestHTTP(TestCase):
         # Invalid, user doesn't have permissions
         request = self.factory.get(
             "/",
-            **{
+            **{  # type: ignore[arg-type]
                 ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
                 ClientIPMiddleware.outpost_token_header: token.key,
             },
@@ -63,7 +63,7 @@ class TestHTTP(TestCase):
         self.user.save()
         request = self.factory.get(
             "/",
-            **{
+            **{  # type: ignore[arg-type]
                 ClientIPMiddleware.outpost_remote_ip_header: "foobar",
                 ClientIPMiddleware.outpost_token_header: token.key,
             },
@@ -74,7 +74,7 @@ class TestHTTP(TestCase):
         self.user.save()
         request = self.factory.get(
             "/",
-            **{
+            **{  # type: ignore[arg-type]
                 ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
                 ClientIPMiddleware.outpost_token_header: token.key,
             },

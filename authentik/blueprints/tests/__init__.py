@@ -2,23 +2,27 @@
 
 from collections.abc import Callable
 from functools import wraps
+from typing import ParamSpec, TypeVar
 
 from django.apps import apps
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.blueprints.models import BlueprintInstance
 
+P = ParamSpec("P")
+R = TypeVar("R")
 
-def apply_blueprint(*files: str):
+
+def apply_blueprint(*files: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Apply blueprint before test"""
 
     from authentik.blueprints.v1.importer import Importer
 
-    def wrapper_outer(func: Callable):
+    def wrapper_outer(func: Callable[P, R]) -> Callable[P, R]:
         """Apply blueprint before test"""
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             for file in files:
                 content = BlueprintInstance(path=file).retrieve()
                 Importer.from_string(content).apply()

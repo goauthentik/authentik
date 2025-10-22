@@ -2,23 +2,31 @@
 
 from inspect import currentframe
 from pathlib import Path
+from typing import Any
 
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.http import HttpRequest
+from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpRequest, HttpResponse
 from django.test.client import RequestFactory
 from guardian.utils import get_anonymous_user
 
+from authentik.core.models import User
 
-def dummy_get_response(request: HttpRequest):  # pragma: no cover
+
+def dummy_get_response(request: HttpRequest) -> HttpResponse:  # pragma: no cover
     """Dummy get_response for SessionMiddleware"""
-    return None
+    return HttpResponse()
 
 
-def load_fixture(path: str, **kwargs) -> str:
+def load_fixture(path: str, **kwargs: Any) -> str:
     """Load fixture, optionally formatting it with kwargs"""
     current = currentframe()
+    if current is None:
+        return ""
     parent = current.f_back
+    if parent is None:
+        return ""
     calling_file_path = parent.f_globals["__file__"]
     with open(Path(calling_file_path).resolve().parent / Path(path), encoding="utf-8") as _fixture:
         fixture = _fixture.read()
@@ -28,17 +36,17 @@ def load_fixture(path: str, **kwargs) -> str:
             return fixture
 
 
-def get_request(*args, user=None, **kwargs):
+def get_request(*args: Any, user: User | None = None, **kwargs: Any) -> WSGIRequest:
     """Get a request with usable session"""
     request = RequestFactory().get(*args, **kwargs)
-    if user:
+    if user is not None:
         request.user = user
     else:
         request.user = get_anonymous_user()
-    middleware = SessionMiddleware(dummy_get_response)
-    middleware.process_request(request)
+    session_middleware = SessionMiddleware(dummy_get_response)
+    session_middleware.process_request(request)
     request.session.save()
-    middleware = MessageMiddleware(dummy_get_response)
-    middleware.process_request(request)
+    message_middleware = MessageMiddleware(dummy_get_response)
+    message_middleware.process_request(request)
     request.session.save()
     return request

@@ -7,14 +7,16 @@ from typing import TypeVar
 from django.db import models, reset_queries
 from django.db.models import QuerySet
 
-ModelT = TypeVar("ModelT", bound=models.Model, covariant=True)
+ModelT_co = TypeVar("ModelT_co", bound=models.Model, covariant=True)
 
 
-def chunked_queryset(queryset: QuerySet[ModelT], chunk_size: int = 1_000) -> Generator[ModelT]:
+def chunked_queryset(
+    queryset: QuerySet[ModelT_co], chunk_size: int = 1_000
+) -> Generator[ModelT_co]:
     if not queryset.exists():
         yield from ()
 
-    def get_chunks(qs: QuerySet[ModelT]) -> Generator[QuerySet[ModelT]]:
+    def get_chunks(qs: QuerySet[ModelT_co]) -> Generator[QuerySet[ModelT_co]]:
         qs = qs.order_by("pk")
         pks = qs.values_list("pk", flat=True)
         start_pk = pks[0]
