@@ -30,6 +30,7 @@ import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -584,29 +585,45 @@ export abstract class Table<T extends object>
 
             if (!groupKey) {
                 return html`<tbody>
-                    ${groupItems.map((item, itemIndex) =>
-                        this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
+                    ${repeat(
+                        groupItems,
+                        (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
+                        (item, itemIndex) =>
+                            this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
                     )}
                 </tbody>`;
             }
         }
 
-        return groups.map(([group, items], groupIndex) => {
-            const groupHeaderID = `table-group-${groupIndex}`;
+        return repeat(
+            groups,
+            ([group]) => group,
+            ([group, items], groupIndex) => {
+                const groupHeaderID = `table-group-${groupIndex}`;
 
-            return html`<thead>
-                    <tr>
-                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
-                            ${group}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${items.map((item, itemIndex) =>
-                        this.#renderRowGroupItem(item, itemIndex, items, groupIndex, groups),
-                    )}
-                </tbody>`;
-        });
+                return html`<thead>
+                        <tr>
+                            <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                                ${group}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${repeat(
+                            items,
+                            (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
+                            (item, itemIndex) =>
+                                this.#renderRowGroupItem(
+                                    item,
+                                    itemIndex,
+                                    items,
+                                    groupIndex,
+                                    groups,
+                                ),
+                        )}
+                    </tbody>`;
+            },
+        ) as SlottedTemplateResult[];
     }
 
     //#region Expansion
@@ -697,6 +714,7 @@ export abstract class Table<T extends object>
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
 
         const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
+        const rowKey = `row-${groupIndex}-${rowIndex}`;
 
         const selectItem = this.#selectItemListener.bind(this, item);
 
@@ -765,20 +783,24 @@ export abstract class Table<T extends object>
             >
                 ${this.checkbox ? renderCheckbox() : nothing}
                 ${this.expandable ? renderExpansion() : nothing}
-                ${this.row(item).map((cell, columnIndex) => {
-                    const columnID = this.#columnIDs.get(this.columns[columnIndex]);
+                ${repeat(
+                    this.row(item),
+                    (_cell, columnIndex) => columnIndex,
+                    (cell, columnIndex) => {
+                        const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
-                    const headers = groupHeaderID
-                        ? `${groupHeaderID} ${columnID}`.trim()
-                        : columnID;
+                        const headers = groupHeaderID
+                            ? `${groupHeaderID} ${columnID}`.trim()
+                            : columnID;
 
-                    return html`<td
-                        class=${ifPresent(!columnID, "presentational")}
-                        headers=${ifPresent(headers)}
-                    >
-                        ${cell}
-                    </td>`;
-                })}
+                        return html`<td
+                            class=${ifPresent(!columnID, "presentational")}
+                            headers=${ifPresent(headers)}
+                        >
+                            ${cell}
+                        </td>`;
+                    },
+                )}
             </tr>
             ${expansionContent}
         `;
@@ -1009,19 +1031,23 @@ export abstract class Table<T extends object>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                             ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                            ${this.columns.map((column, idx) => {
-                                const [label, orderBy, ariaLabel] = column;
-                                const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
+                            ${repeat(
+                                this.columns,
+                                ([label], idx) => label ?? idx,
+                                (column, idx) => {
+                                    const [label, orderBy, ariaLabel] = column;
+                                    const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
 
-                                return renderTableColumn({
-                                    label,
-                                    id: columnID,
-                                    ariaLabel,
-                                    orderBy,
-                                    table: this,
-                                    columnIndex: idx,
-                                });
-                            })}
+                                    return renderTableColumn({
+                                        label,
+                                        id: columnID,
+                                        ariaLabel,
+                                        orderBy,
+                                        table: this,
+                                        columnIndex: idx,
+                                    });
+                                },
+                            )}
                         </tr>
                     </thead>
                     ${this.renderRows()}
