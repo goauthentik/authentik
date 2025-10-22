@@ -459,7 +459,17 @@ export abstract class Table<T extends object>
                 this.expandedElements = nextExpanded;
 
                 if (this.clearOnRefresh) {
-                    this.#selectedElements.clear();
+                    if (this.#selectedElements.size) {
+                        this.#selectedElements.clear();
+
+                        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+
+                        if (selectAllCheckbox) {
+                            selectAllCheckbox.checked = false;
+                            selectAllCheckbox.indeterminate = false;
+                        }
+                    }
+
                     this.requestUpdate();
                 }
             })
