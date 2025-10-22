@@ -13,10 +13,9 @@ from django.core.exceptions import FieldError
 from django.http import HttpRequest
 from django.utils.text import slugify
 from django.utils.timezone import now
-from guardian.shortcuts import get_anonymous_user
+from guardian.utils import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -55,7 +54,7 @@ class BaseEvaluator:
     # Filename used for exec
     _filename: str
 
-    def __init__(self, filename: str | None = None):
+    def __init__(self, filename: str | None = None) -> None:
         self._filename = filename if filename else "BaseEvaluator"
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
@@ -133,12 +132,12 @@ class BaseEvaluator:
         return re.sub(regex, repl, value)
 
     @staticmethod
-    def expr_is_group_member(user: User, **group_filters) -> bool:
+    def expr_is_group_member(user: User, **group_filters: Any) -> bool:
         """Check if `user` is member of group with name `group_name`"""
         return user.all_groups().filter(**group_filters).exists()
 
     @staticmethod
-    def expr_user_by(**filters) -> User | None:
+    def expr_user_by(**filters: Any) -> User | None:
         """Get user by filters"""
         try:
             users = User.objects.filter(**filters)
@@ -160,7 +159,7 @@ class BaseEvaluator:
             return False
         return len(list(user_devices)) > 0
 
-    def expr_event_create(self, action: str, **kwargs):
+    def expr_event_create(self, action: str, **kwargs: Any) -> None:
         """Create event with supplied data and try to extract as much relevant data
         from the context"""
         context = self._context.copy()
@@ -181,7 +180,7 @@ class BaseEvaluator:
                 return
         event.save()
 
-    def expr_func_call_policy(self, name: str, **kwargs) -> PolicyResult:
+    def expr_func_call_policy(self, name: str, **kwargs: Any) -> PolicyResult:
         """Call policy by name, with current request"""
         policy = Policy.objects.filter(name=name).select_subclasses().first()
         if not policy:
@@ -214,10 +213,10 @@ class BaseEvaluator:
             provider=provider,
             user=user,
             expires=now() + timedelta_from_string(validity),
-            scope=scopes,
             auth_time=now(),
             session=session,
         )
+        access_token.scope = scopes
         access_token.id_token = IDToken.new(provider, access_token, request)
         access_token.save()
         return access_token.token
@@ -229,7 +228,7 @@ class BaseEvaluator:
         body: str | None = None,
         stage: "EmailStage | None" = None,
         template: str | None = None,
-        context: dict | None = None,
+        context: dict[str, Any] | None = None,
     ) -> bool:
         """Send an email using authentik's email system
 
@@ -316,7 +315,6 @@ class BaseEvaluator:
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
         with start_span(op="authentik.lib.evaluator.evaluate") as span:
-            span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)
             try:
@@ -343,7 +341,7 @@ class BaseEvaluator:
                 raise exc
             return result
 
-    def handle_error(self, exc: Exception, expression_source: str):  # pragma: no cover
+    def handle_error(self, exc: Exception, expression_source: str) -> None:  # pragma: no cover
         """Exception Handler"""
         LOGGER.warning("Expression error", exc=exc)
 
