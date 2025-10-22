@@ -4,17 +4,17 @@ import gc
 from collections.abc import Generator
 from typing import TypeVar
 
-from django.db import models, reset_queries
-from django.db.models import QuerySet
+from django.db import reset_queries
+from django.db.models import Model, QuerySet
 
-ModelT_co = TypeVar("ModelT_co", bound=models.Model, covariant=True)
+ModelT_co = TypeVar("ModelT_co", bound=Model, covariant=True)
 
 
 def chunked_queryset(
     queryset: QuerySet[ModelT_co], chunk_size: int = 1_000
 ) -> Generator[ModelT_co]:
     if not queryset.exists():
-        yield from ()
+        return
 
     def get_chunks(qs: QuerySet[ModelT_co]) -> Generator[QuerySet[ModelT_co]]:
         qs = qs.order_by("pk")
