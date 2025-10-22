@@ -1,12 +1,17 @@
 """http helpers"""
 
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
+from requests.models import Response
 from requests.sessions import PreparedRequest, Session
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
+
+if TYPE_CHECKING:
+    from requests.sessions import _Timeout
 
 LOGGER = get_logger()
 
@@ -19,50 +24,40 @@ def authentik_user_agent() -> str:
 class TimeoutSession(Session):
     """Always set a default HTTP request timeout"""
 
-    def __init__(self, default_timeout=None):
+    def __init__(self, default_timeout: int | None = None) -> None:
         super().__init__()
         self.timeout = default_timeout
 
     def send(
         self,
-        request,
+        request: PreparedRequest,
         *,
-        stream=...,
-        verify=...,
-        proxies=...,
-        cert=...,
-        timeout=...,
-        allow_redirects=...,
-        **kwargs,
-    ):
+        timeout: "_Timeout | None" = None,
+        **kwargs: Any,
+    ) -> Response:
         if not timeout and self.timeout:
             timeout = self.timeout
-        return super().send(
-            request,
-            stream=stream,
-            verify=verify,
-            proxies=proxies,
-            cert=cert,
-            timeout=timeout,
-            allow_redirects=allow_redirects,
-            **kwargs,
-        )
+        return super().send(request, timeout=timeout, **kwargs)
 
 
 class DebugSession(TimeoutSession):
     """requests session which logs http requests and responses"""
 
-    def send(self, req: PreparedRequest, *args, **kwargs):
+    def send(
+        self,
+        request: PreparedRequest,
+        **kwargs: Any,
+    ) -> Response:
         request_id = str(uuid4())
         LOGGER.debug(
             "HTTP request sent",
             uid=request_id,
-            url=req.url,
-            method=req.method,
-            headers=req.headers,
-            body=req.body,
+            url=request.url,
+            method=request.method,
+            headers=request.headers,
+            body=request.body,
         )
-        resp = super().send(req, *args, **kwargs)
+        resp = super().send(request, **kwargs)
         LOGGER.debug(
             "HTTP response received",
             uid=request_id,

@@ -1,16 +1,20 @@
 """authentik database utilities"""
 
 import gc
+from collections.abc import Generator
+from typing import TypeVar
 
-from django.db import reset_queries
+from django.db import models, reset_queries
 from django.db.models import QuerySet
 
+ModelT = TypeVar("ModelT", bound=models.Model, covariant=True)
 
-def chunked_queryset(queryset: QuerySet, chunk_size: int = 1_000):
+
+def chunked_queryset(queryset: QuerySet[ModelT], chunk_size: int = 1_000) -> Generator[ModelT]:
     if not queryset.exists():
-        return []
+        yield from ()
 
-    def get_chunks(qs: QuerySet):
+    def get_chunks(qs: QuerySet[ModelT]) -> Generator[QuerySet[ModelT]]:
         qs = qs.order_by("pk")
         pks = qs.values_list("pk", flat=True)
         start_pk = pks[0]
