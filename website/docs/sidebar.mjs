@@ -220,7 +220,15 @@ const items = [
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
-                    "add-secure-apps/providers/saml/index",
+                    {
+                        type: "category",
+                        label: "SAML Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/saml/index",
+                        },
+                        items: ["add-secure-apps/providers/saml/create-saml-provider"],
+                    },
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
