@@ -1,7 +1,8 @@
 """Basic outgoing sync Client"""
 
+from collections.abc import MutableMapping
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any, MutableMapping, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from deepmerge import always_merger
 from django.db import DatabaseError
@@ -18,7 +19,7 @@ from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSy
 if TYPE_CHECKING:
     from django.db.models import Model
 
-    from authentik.core.models import User, Group
+    from authentik.core.models import Group, User
     from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
