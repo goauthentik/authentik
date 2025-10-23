@@ -1,9 +1,11 @@
 """invitation tests"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
@@ -152,6 +154,35 @@ class TestInvitationStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertFalse(Invitation.objects.filter(pk=invite.pk))
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_with_expired_invitation(self):
+        """Test with expired invitation, should fail"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        data = {"foo": "bar"}
+        invite = Invitation.objects.create(
+            created_by=get_anonymous_user(),
+            fixed_data=data,
+            expires=now() - timedelta(days=1),  # Expired yesterday
+        )
+
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
+            base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            response = self.client.get(base_url + f"?query={args}")
+
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
+        )
 
 
 class TestInvitationsAPI(APITestCase):
