@@ -1,7 +1,6 @@
 """Sync LDAP Users and groups into authentik"""
 
 from collections.abc import Generator
-from uuid import UUID
 
 from django.conf import settings
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection

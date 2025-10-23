@@ -19,7 +19,6 @@ from authentik.core.models import (
     Group,
     GroupSourceConnection,
     PropertyMapping,
-    Source,
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
@@ -28,7 +27,6 @@ from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tasks.schedules.models import ScheduledModel
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"

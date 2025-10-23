@@ -22,7 +22,6 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
-    Source,
     UserSourceConnection,
     UserTypes,
 )
@@ -31,7 +30,6 @@ from authentik.flows.challenge import RedirectChallenge
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tasks.schedules.models import ScheduledModel
 
 LOGGER = get_logger()
 
