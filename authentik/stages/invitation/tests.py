@@ -184,9 +184,7 @@ class TestInvitationsAPI(APITestCase):
             "single_use": True,
             "fixed_data": {"email": "test@example.com"},
         }
-        serializer = InvitationSerializer(
-            data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True}
-        )
+        serializer = InvitationSerializer(data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True})
         self.assertTrue(serializer.is_valid())
         invitation = serializer.save()
         self.assertEqual(invitation.created_by, get_anonymous_user())
