@@ -25,6 +25,7 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
@@ -56,7 +57,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(ScheduledModel, Source):
+class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(

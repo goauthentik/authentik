@@ -28,6 +28,7 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
@@ -46,7 +47,7 @@ class KAdminType(models.TextChoices):
     OTHER = "other"
 
 
-class KerberosSource(ScheduledModel, Source):
+class KerberosSource(IncomingSyncSource):
     """Federate Kerberos realm with authentik"""
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
