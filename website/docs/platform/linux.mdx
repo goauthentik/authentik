@@ -1,30 +1,48 @@
 ---
 title: Platform on Linux
-sidebar_label: Linux
+sidebar_label: Linux Client
 ---
 
 ## What does it do
 
 Allows you to SSH to Linux hosts using authentik credentials.
 
-## Platform components on Linux
+## Install Platform
 
-### authentik-cli
+Follow these steps to install authentik Platform on your Linux client:
 
-Provides commands for interacting with authentik-agent.
+1. Open a terminal window and install the required GPG key:
 
-### authentik-agent
+    ```sh
+    curl -fsSL https://authentik-pkg.netlify.app/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
+    ```
 
-User service.
+2. Add the repository:
 
-### authentik-sysd
+    ```sh
+    echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://authentik-pkg.netlify.app/ stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
+    ```
 
-System service.
+3. Update your repositories and install the authentik Platform Package:
 
-### libpam-authentik
+    ```sh
+    sudo apt update
+    sudo apt install your-package-name
+    ```
 
-PAM Module. Requires authentik-sysd running.
+## Usage
 
-### libnss-authentik
+To SSH to a [Linux host](./linux-host.mdx) via authentik Platform:
 
-NSS Module. Requires authentik-sysd running.
+1. Open a terminal window.
+2. Enter the following command:
+
+    ```
+    ak ssh <hostname>
+    ```
+
+3. A browser will open and direct you to the authentik login page. Once authenticated, the SSH session will connect.
+
+:::info
+authentik-agent doesn't currently run on boot - must be manually started after boot.
+:::

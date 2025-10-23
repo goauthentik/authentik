@@ -1,0 +1,56 @@
+---
+title: Platform on Linux
+sidebar_label: Linux Host
+---
+
+## What does it do
+
+Allows you to SSH to the Linux host using authentik credentials from another device via authentik Platform {WIP}.
+
+## Platform components on Linux
+
+### authentik-cli
+
+Provides commands for interacting with authentik-agent.
+
+### authentik-agent
+
+User service.
+
+### authentik-sysd
+
+System service.
+
+### libpam-authentik
+
+PAM Module. Requires authentik-sysd running.
+
+### libnss-authentik
+
+NSS Module. Requires authentik-sysd running.
+
+## authentik configuration
+
+To support the deployment of authentik Platform, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `????????`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Host configuration
+
+Now you'll need to install and configure authentik Platform on your Linux host.
+
+### Install Platform
+
+### Configure Platform

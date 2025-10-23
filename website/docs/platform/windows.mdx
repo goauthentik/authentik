@@ -1,8 +1,33 @@
 ---
 title: Platform on Windows
-sidebar_label: Windows
+sidebar_label: Windows Client
 ---
 
 ## What does it do
 
 Allows you to SSH to Linux hosts using authentik credentials.
+
+## Install Platform
+
+Follow these steps to install authentik Platform on your Windows client:
+
+1. Open the [authentik Platform Packages](https://authentik-pkg.netlify.app/) page.
+2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
+3. Once the download is complete, install the MSI file.
+
+## Usage
+
+To SSH to a [Linux host](./linux-host.mdx) via authentik Platform:
+
+1. Open a powershell or terminal window.
+2. Enter the following command:
+
+    ```
+    ak ssh <hostname>
+    ```
+
+3. A browser will open and direct you to the authentik login page. Once authenticated, the SSH session will connect.
+
+:::info
+authentik-agent doesn't currently run on boot - must be manually started after boot.
+:::
