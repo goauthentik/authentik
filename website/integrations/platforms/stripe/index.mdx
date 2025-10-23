@@ -63,7 +63,7 @@ To support the integration of Stripe with authentik, you need to create a group,
         - Set the **Audience** to `https://dashboard.stripe.com/saml/metadata`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
+            - Set an available **Signing certificate**.
             - Add the previously created `Stripe Role` property mapping to **Selected User Property Mappings**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
 
