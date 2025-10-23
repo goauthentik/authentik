@@ -25,19 +25,23 @@ System service.
 
 PAM Module. Requires authentik-sysd running.
 
+If the users that need to authenticate already exist on the Linux host, use this. {temp}
+
 ### libnss-authentik
 
 NSS Module. Requires authentik-sysd running.
 
+If you want your authentik users to be imported to the Linux host, use this. {temp}
+
 ## authentik configuration
 
-To support the deployment of authentik Platform, you need to create an application/provider pair in authentik.
+To support the deployment of authentik Platform, you need to create two OAuth2/OIDC providers in authentik.
 
-### Create an application and provider in authentik
+### Create a provider for PAM in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+2. Navigate to **Applications** > **Providers** and click **Create** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name (e.g. `authentik-pam`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
@@ -47,13 +51,21 @@ To support the deployment of authentik Platform, you need to create an applicati
 
 3. Click **Submit** to save the new application and provider.
 
+### Create a provider for CLI in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+
+### Create a token
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+
 ## Host configuration
 
 Now you'll need to install and configure authentik Platform on your Linux host.
 
 ### Install Platform
 
-1. Open a Terminal window and install the required GPG key:
+1. Open a Terminal session and install the required GPG key:
 
     ```sh
     curl -fsSL https://authentik-pkg.netlify.app/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
@@ -76,3 +88,13 @@ Now you'll need to install and configure authentik Platform on your Linux host.
    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ### Configure Platform
+
+1. Open a Terminal session and run the following command:
+
+```
+ak-sysd domains join <domain_name> -d <app_name_in_authentik> -a <authentik_URL>
+```
+
+Where `<domain_name>` is
+`<app_name_in_authentik>` is the name of the
+`<authentik_URL>` is the FQDN of your authentik instance.
