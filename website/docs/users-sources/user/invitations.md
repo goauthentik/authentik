@@ -49,5 +49,5 @@ Click **Save** to save the new invitation and close the box and return to the **
 On the **Invitations** page, click the chevron beside your new invitation, to expand the details. The **Link to use the invitation** displays with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.
 
 :::info Invitation links validity
-Be aware that when an authentik administrator creates an invitation link, that link remains valid even if the administrator is removed from the authentik system with all rights revoked. That is because the invite is not bound to any user, including the administrator who created it. So theoretically the ex-administrator could use that link to gain access again.
+Be aware that when an authentik administrator creates an invitation link, that link remains valid even if the administrator is deactivated or has permissionss revoked. However, if the adrministrator who created the link is deleted and removed from the authentik system, the link is also deleted.
 :::
