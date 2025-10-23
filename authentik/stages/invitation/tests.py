@@ -171,3 +171,24 @@ class TestInvitationsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Invitation.objects.first().created_by, self.user)
+
+    def test_invite_create_blueprint_context(self):
+        """Test Invitations creation via blueprint context"""
+        from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+        from authentik.stages.invitation.api import InvitationSerializer
+
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        data = {
+            "name": "test-blueprint-invitation",
+            "flow": flow.pk.hex,
+            "single_use": True,
+            "fixed_data": {"email": "test@example.com"},
+        }
+        serializer = InvitationSerializer(
+            data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True}
+        )
+        self.assertTrue(serializer.is_valid())
+        invitation = serializer.save()
+        self.assertEqual(invitation.created_by, get_anonymous_user())
+        self.assertEqual(invitation.name, "test-blueprint-invitation")
+        self.assertEqual(invitation.fixed_data, {"email": "test@example.com"})
