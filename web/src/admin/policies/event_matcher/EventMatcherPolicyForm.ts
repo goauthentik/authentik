@@ -87,7 +87,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                                     DEFAULT_CONFIG,
                                 ).eventsEventsActionsList();
                                 return items.filter((item) =>
-                                    query ? item.name.toLowerCase().includes(query.toLowerCase()) : true,
+                                    query
+                                        ? item.name.toLowerCase().includes(query.toLowerCase())
+                                        : true,
                                 );
                             }}
                             .renderElement=${(item: TypeCreate): string => {
