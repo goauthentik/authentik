@@ -57,9 +57,9 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
     - `invitation-enrollment-flow-external` for external users (customers, partners)
     - `invitation-enrollment-flow-internal` for internal users (employees)
 
-- **Fixed data**: (Optional) Enter JSON to pre-fill user information. This data is merged with the user's input during enrollment. Examples:
+- **Custom attributes**: (Optional) Enter JSON or YAML to pre-fill user information. This data is merged with the user's input during enrollment. Examples:
 
-    Pre-fill email only:
+    Pre-fill email only (JSON):
 
     ```json
     {
@@ -67,16 +67,14 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
     }
     ```
 
-    Pre-fill multiple fields:
+    Pre-fill multiple fields (YAML):
 
-    ```json
-    {
-        "name": "Jane Smith",
-        "email": "jane.smith@company.com"
-    }
+    ```yaml
+    name: Jane Smith
+    email: jane.smith@company.com
     ```
 
-    Pre-fill with custom attributes:
+    Pre-fill with custom attributes (JSON):
 
     ```json
     {
@@ -91,7 +89,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
     ```
 
     :::info
-    The field keys in your JSON (e.g., `email`, `name`) must match the field keys configured in your flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md).
+    The field keys (e.g., `email`, `name`) must match the field keys configured in your flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md).
     :::
 
 ![Create an invitation modal box](./create_invite.png)
@@ -125,23 +123,19 @@ To automatically add users to a group when they enroll via invitation, you need 
 5. All invitations using that flow will automatically add users to the group
 
 :::info
-Groups cannot be set directly in invitation fixed data because they require database relationships. They must be configured at the flow/stage level.
+Groups cannot be set directly in invitation custom attributes because they require database relationships. They must be configured at the flow/stage level.
 :::
 
 ### User Paths
 
-User paths organize users in a directory structure (e.g., `users/external`, `users/internal/engineering`). To configure user paths:
+[User paths](user_ref.mdx#path) organize users in a directory structure (e.g., `users/external`, `users/internal/engineering`). To configure user paths:
 
 1. Navigate to **Flows & Stages → Stages**
 2. Edit the **User Write Stage** used by your enrollment flow
 3. Set **User path template** to your desired path
 4. All users enrolling through that flow will be created in that path
 
-User paths are useful for:
-
-- Organizing users by department or type
-- Applying policies based on user location
-- Managing permissions hierarchically
+User paths are useful for organizing users by department or type
 
 ### Expression Policies with Invitations
 
@@ -182,7 +176,7 @@ return prompt_data.get('email', '').endswith('@example.com')
 
 **Possible causes**:
 
-- Field keys in `fixed_data` don't match your prompt field keys
+- Field keys in custom attributes don't match your prompt field keys
 - Prompt fields are marked as `placeholder_expression: true`
 - Invitation stage is not evaluated before prompt stages in the flow
 
