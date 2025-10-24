@@ -87,13 +87,13 @@ Now you'll need to install and configure authentik Platform on the Linux host th
 1. Open a Terminal session and install the required GPG key:
 
     ```sh
-    curl -fsSL https://authentik-pkg.netlify.app/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
+    curl -fsSL https://pkg.goauthentik.io/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
     ```
 
 2. Add the repository:
 
     ```sh
-    echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://authentik-pkg.netlify.app/ stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
+    echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goauthentik.io stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
     ```
 
 3. Update your repositories and install the authentik Platform Package:
