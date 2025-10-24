@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Zot
 
-> Zot is an OCI-native container registry for distributing container images and OCI artifacts. Zot was accepted to CNCF on December 13, 2022 at the Sandbox maturity level.
+> Zot is an OCI-native container registry for distributing container images and OCI artifacts.
 >
 > -- https://zotregistry.dev
 
@@ -32,12 +32,14 @@ To support the integration of Zot with authentik, you need to create an applicat
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (`zot-registry` in this example or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol Settings**:
         - **Redirect URI**:
             - Strict: `https://zot.company/zot/auth/callback/oidc`.
         - **Signing Key**: select any available signing key.
-
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://zot.company/zot/auth/callback/oidc`.
+    - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -47,7 +49,7 @@ To support the integration of Zot with authentik, you need to create an applicat
 To support the integration of authentik with Zot, you need to configure OIDC authentication.
 
 1. configure `/etc/zot/oidc-credentials.json` 
-```json
+```json title="/etc/zot/oidc-credentials.json"
 {
     "clientid": "clientid",
     "clientsecret": "clientsecret"
@@ -55,7 +57,7 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
 ```
 
 2. configure `/etc/zot/config.json`
-```json
+```json title="/etc/zot/config.json"
 {
     "http": {
         "externalUrl": "https://zot.company",
@@ -67,7 +69,7 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
                          "credentialsFile": "/etc/zot/oidc-credentials.json",
                          "issuer": "https://authentik.company/application/o/zot-registry/",
                          "keypath": "",
-                         "scopes": ["openid", "profile", "email", "groups"]
+                         "scopes": ["openid", "profile", "email"]
                      }
                  }
              }
@@ -75,6 +77,8 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
     }
 }
 ```
+
+3. and restart zot now to apply these changes
 
 
 ## Configuration verification
