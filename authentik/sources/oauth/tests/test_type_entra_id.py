@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.entra_id import EntraIDOAuthCallback, EntraIDType
+from authentik.sources.oauth.types.entra_id import EntraIDType
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
 EID_USER = {
@@ -42,10 +42,7 @@ class TestTypeAzureAD(TestCase):
     def test_enroll_context(self):
         """Test azure_ad Enrollment context"""
         ak_context = EntraIDType().get_base_user_properties(source=self.source, info=EID_USER)
+        self.assertEqual(ak_context["id"], EID_USER["id"])
         self.assertEqual(ak_context["username"], EID_USER["userPrincipalName"])
         self.assertEqual(ak_context["email"], EID_USER["mail"])
         self.assertEqual(ak_context["name"], EID_USER["displayName"])
-
-    def test_user_id(self):
-        """Test Entra ID user ID"""
-        self.assertEqual(EntraIDOAuthCallback().get_user_id(EID_USER), EID_USER["id"])
