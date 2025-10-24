@@ -20,10 +20,25 @@
 
 /* #endregion */
 
+/* #region Scrollbars */
+
+:root {
+    /**
+     * Scrollbar colors derived from default user agent styles.
+     */
+    --ak-scrollbar-background-color: hsl(0 0% 18%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
+}
+/* #endregion */
+
 /* #region Document */
 
 body {
     color-scheme: dark;
+}
+
+body:has(ak-flow-executor) {
+    background-color: var(--pf-global--BackgroundColor--150);
 }
 
 /* #endregion */
