@@ -29,19 +29,18 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
     }
 
     protected sendLogoutResponse(): void {
-        if (!this.challenge.slsUrl || !this.challenge.logoutResponse) {
+        const { slsUrl, logoutResponse, slsBinding } = this.challenge;
+
+        if (!slsUrl || !logoutResponse) {
             return;
         }
-
-        const slsUrl = this.challenge.slsUrl;
-        const logoutResponse = this.challenge.logoutResponse;
 
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.name = "saml-logout-response";
         document.body.appendChild(iframe);
 
-        if (this.challenge.slsBinding === "redirect") {
+        if (slsBinding === "redirect") {
             const params = new URLSearchParams();
             params.set("SAMLResponse", logoutResponse);
             iframe.src = `${slsUrl}?${params.toString()}`;

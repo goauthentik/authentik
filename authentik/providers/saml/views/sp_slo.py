@@ -70,21 +70,25 @@ class SPInitiatedSLOView(PolicyAccessView):
                 **self.plan_context,
             },
         )
-        processor = LogoutResponseProcessor(
-            self.provider, self.plan_context.get(PLAN_CONTEXT_SAML_LOGOUT_REQUEST)
-        )
-        response_xml = processor.build_response(status="Success", destination=self.provider.sls_url)
 
-        # Encode the logout response based on binding type
-        if self.provider.sls_binding == SAMLBindings.REDIRECT:
-            # For redirect binding, deflate and base64 encode
-            encoded_response = deflate_and_base64_encode(response_xml)
-        else:
-            # For POST binding, just base64 encode
-            encoded_response = nice64(response_xml)
+        if self.provider.sls_url:
+            processor = LogoutResponseProcessor(
+                self.provider, self.plan_context.get(PLAN_CONTEXT_SAML_LOGOUT_REQUEST)
+            )
+            response_xml = processor.build_response(
+                status="Success", destination=self.provider.sls_url
+            )
 
-        plan.context["provider"] = self.provider
-        plan.context["logout_response"] = encoded_response
+            # Encode the logout response based on binding type
+            if self.provider.sls_binding == SAMLBindings.REDIRECT:
+                logout_response = deflate_and_base64_encode(response_xml)
+            else:
+                logout_response = nice64(response_xml)
+
+            plan.context["sls_url"] = self.provider.sls_url
+            plan.context["sls_binding"] = self.provider.sls_binding
+            plan.context["logout_response"] = logout_response
+
         plan.append_stage(in_memory_stage(SessionEndStage))
 
         # Remove samlsession from database
