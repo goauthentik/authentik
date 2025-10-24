@@ -19,6 +19,7 @@ import { WizardUpdateEvent } from "#components/ak-wizard/events";
 import { ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -51,13 +52,26 @@ export class AkApplicationWizardMain extends AKElement {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             const wizardReadyProviders = Object.keys(providerTypeRenderers);
+            const filteredProviders = providerTypes
+                .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
+                .map((providerType) => ({
+                    ...providerType,
+                    renderer: providerTypeRenderers[providerType.modelName].render,
+                }));
+
+            // Manually add SAML metadata provider since it's not a separate model type
+            // but a different creation method for SAMLProvider
+            filteredProviders.push({
+                name: msg("SAML Provider from Metadata"),
+                description: msg("Create a SAML provider by importing metadata from an XML file."),
+                component: "ak-provider-saml-import-form",
+                modelName: "samlmetadataprovider",
+                iconUrl: "/static/authentik/sources/saml.png",
+                renderer: providerTypeRenderers.samlmetadataprovider.render,
+            });
+
             this.wizardProviderProvider.setValue(
-                providerTypes
-                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
-                    .map((providerType) => ({
-                        ...providerType,
-                        renderer: providerTypeRenderers[providerType.modelName].render,
-                    }))
+                filteredProviders
                     .sort(
                         (a, b) =>
                             providerTypeRenderers[a.modelName].order -
