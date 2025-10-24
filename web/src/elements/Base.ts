@@ -2,6 +2,7 @@ import { globalAK } from "#common/global";
 import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
 import {
     $AKBase,
+    $PFBase,
     applyUITheme,
     createUIThemeEffect,
     CSSColorSchemeValue,
@@ -27,11 +28,12 @@ export class AKElement extends LitElement implements AKElementProps {
     public static styles?: Array<CSSResult | CSSModule>;
 
     protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
-        if (!styles) return [$AKBase];
+        if (!styles) return [$PFBase, $AKBase];
 
-        if (!Array.isArray(styles)) return [createCSSResult(styles), $AKBase];
+        if (!Array.isArray(styles)) return [createCSSResult(styles), $PFBase, $AKBase];
 
         return [
+            $PFBase,
             // ---
             ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
             $AKBase,

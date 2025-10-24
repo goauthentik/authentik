@@ -1,27 +1,4 @@
 /**
- * @file authentik dark UI theme.
- */
-
-/* Defined to better identify the dark theme when debugging constructed stylesheets. */
-.__AK_UI_DARK__ {
-    --__AK_UI_DARK__: 1;
-}
-
-/* #region Scrollbars */
-
-:root {
-    /**
-     * Scrollbar colors derived from default user agent styles.
-     */
-    --ak-scrollbar-background-color: hsl(0 0% 18%);
-    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
-}
-
-body:has(ak-flow-executor) {
-    background-color: var(--pf-global--BackgroundColor--150);
-}
-
-/**
  * Our reversal of Patternfly's light variables requires us to set the colors
  * back to their defaults when in dark mode.
  */
@@ -327,7 +304,6 @@ select.pf-c-form-control {
 /* #endregion */
 
 /* #region Flows */
-
 
 .pf-c-login__main-footer-links-item img,
 .pf-c-login__main-footer-links-item .fas {
