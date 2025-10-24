@@ -33,6 +33,14 @@ Follow these steps to install authentik Platform on your Linux client:
 4. Confirm that authentik Platform is installed by entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
+## Configure Platform
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak config setup --authentik-url <authentik_instance_FQDN>
+```
+
 ## Usage
 
 To SSH to a [Linux host](./linux-host.mdx) via authentik Platform:
