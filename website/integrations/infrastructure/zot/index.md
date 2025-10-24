@@ -46,18 +46,18 @@ To support the integration of Zot with authentik, you need to create an applicat
 
 ## Zot configuration
 
-To support the integration of authentik with Zot, you need to configure OIDC authentication.
+To support the integration of Zot with authentik, you must configure it to use authentik as it's authentication provider.
 
-1. Configure the `/etc/zot/oidc-credentials.json` file as follows:
+1. Create the OIDC credentials file with the **Client ID** and **Client Secret** values from the authentik provider created earlier:
 
 ```json title="/etc/zot/oidc-credentials.json"
 {
-    "clientid": "clientid",
-    "clientsecret": "clientsecret"
+    "clientid": "<client_id_from_authentik>",
+    "clientsecret": "<client_secret_from_authentik>"
 }
 ```
 
-2. Configure the `/etc/zot/config.json` file as follows:
+2. Edit the Zot configuration file to enable OpenID Connect authentication:
 
 ```json title="/etc/zot/config.json"
 {
@@ -80,8 +80,16 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
 }
 ```
 
-3. Restart Zot to apply these changes
+3. Restart Zot to apply the configuration changes:
+
+```bash
+systemctl restart zot
+```
 
 ## Configuration verification
 
 To confirm that authentik is properly configured with Zot, first log out of Zot. Then click the **SIGN IN WITH OIDC** button on the login page and you should be redirected to authentik. Once authenticated, you should be signed into Zot.
+
+## Resources
+
+- [Zot Documentation - Social login using OpenID/OAuth2](https://zotregistry.dev/v2.1.10/articles/authn-authz/#social-login-using-openidoauth2)
