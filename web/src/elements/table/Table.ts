@@ -545,6 +545,15 @@ export abstract class Table<T extends object>
             return;
         }
 
+        const { target, currentTarget } = event ?? {};
+
+        if (
+            !(target instanceof HTMLElement) ||
+            (target.parentElement !== currentTarget && target !== currentTarget)
+        ) {
+            return;
+        }
+
         if (this.expandable) {
             const itemKey = this.#itemKeys.get(item);
 
@@ -775,7 +784,6 @@ export abstract class Table<T extends object>
 
         return html`
             <tr
-                @click=${this.rowClickListener.bind(this, item)}
                 aria-selected=${selected.toString()}
                 class="${classMap({
                     "pf-m-hoverable": this.checkbox || this.clickable,
@@ -794,6 +802,7 @@ export abstract class Table<T extends object>
                             : columnID;
 
                         return html`<td
+                            @click=${this.rowClickListener.bind(this, item)}
                             class=${ifPresent(!columnID, "presentational")}
                             headers=${ifPresent(headers)}
                         >
