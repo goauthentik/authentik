@@ -53,6 +53,16 @@ class InvitationSerializer(ModelSerializer):
     fixed_data = JSONDictField(required=False)
     flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["created_by"] = PrimaryKeyRelatedField(
+                queryset=User.objects.all(),
+                required=False,
+                allow_null=True,
+                default=get_anonymous_user(),
+            )
+
     class Meta:
         model = Invitation
         fields = [
@@ -66,18 +76,6 @@ class InvitationSerializer(ModelSerializer):
             "flow_obj",
         ]
 
-    def save(self, **kwargs):
-        """Set created_by to anonymous user when in blueprint context"""
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            if "created_by" not in kwargs:
-                kwargs["created_by"] = PrimaryKeyRelatedField(
-                    queryset=User.objects.all(),
-                    required=False,
-                    allow_null=True,
-                    default=get_anonymous_user(),
-                )
-        return super().save(**kwargs)
-
 
 class InvitationViewSet(UsedByMixin, ModelViewSet):
     """Invitation Viewset"""
@@ -89,4 +87,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "created_by__username", "expires", "flow__slug"]
 
     def perform_create(self, serializer: InvitationSerializer):
-        serializer.save(created_by=self.request.user)
+        if SERIALIZER_CONTEXT_BLUEPRINT not in serializer:
+            serializer.save(created_by=self.request.user)
+        else:
+            serializer.save()
