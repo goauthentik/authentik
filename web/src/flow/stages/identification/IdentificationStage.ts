@@ -24,6 +24,7 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -286,24 +287,33 @@ export class IdentificationStage extends BaseStage<
     }
 
     renderFooter() {
-        if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
+        const { enrollUrl, recoveryUrl } = this.challenge || {};
+
+        const enrollmentItem = enrollUrl
+            ? html`<div class="pf-c-login__main-footer-band-item">
+                  ${msg("Need an account?")}
+                  <a id="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+              </div>`
+            : null;
+
+        const recoveryItem = recoveryUrl
+            ? html`<div class="pf-c-login__main-footer-band-item">
+                  <a id="recovery" href="${recoveryUrl}">${msg("Forgot username or password?")}</a>
+              </div>`
+            : null;
+
+        if (!enrollmentItem && !recoveryItem) {
             return nothing;
         }
-        return html`<div slot="footer-band" class="pf-c-login__main-footer-band">
-            ${this.challenge.enrollUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
-                  </p>`
-                : nothing}
-            ${this.challenge.recoveryUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${msg("Forgot username or password?")}</a
-                      >
-                  </p>`
-                : nothing}
-        </div>`;
+
+        return html`<fieldset
+            slot="footer-band"
+            part="additional-actions"
+            class="pf-c-login__main-footer-band"
+        >
+            <legend class="sr-only">${msg("Additional actions")}</legend>
+            ${enrollmentItem} ${recoveryItem}
+        </fieldset>`;
     }
 
     renderInput(): TemplateResult {
@@ -404,7 +414,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<ak-flow-card .challenge=${this.challenge}>
+        return html`<ak-flow-card .challenge=${this.challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre
                     ? html`<p>
@@ -425,13 +435,15 @@ export class IdentificationStage extends BaseStage<
                       `
                     : nothing}
             </form>
-            ${(this.challenge.sources || []).length > 0
+            ${this.challenge.sources?.length
                 ? html`<ul slot="footer" class="pf-c-login__main-footer-links">
-                      ${(this.challenge.sources || []).map((source) => {
-                          return this.renderSource(source);
-                      })}
+                      ${repeat(
+                          this.challenge.sources,
+                          (source) => source.name,
+                          (source) => this.renderSource(source),
+                      )}
                   </ul> `
-                : nothing}
+                : null}
             ${this.renderFooter()}
         </ak-flow-card>`;
     }
