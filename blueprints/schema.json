@@ -5871,6 +5871,19 @@
                     "minLength": 1,
                     "title": "Default group email domain"
                 },
+                "sync_page_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647,
+                    "title": "Sync page size",
+                    "description": "Controls the number of objects synced in a single task"
+                },
+                "sync_page_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Sync page timeout",
+                    "description": "Timeout for synchronization of a single page"
+                },
                 "dry_run": {
                     "type": "boolean",
                     "title": "Dry run",
@@ -6023,6 +6036,19 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "sync_page_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647,
+                    "title": "Sync page size",
+                    "description": "Controls the number of objects synced in a single task"
+                },
+                "sync_page_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Sync page timeout",
+                    "description": "Timeout for synchronization of a single page"
                 },
                 "dry_run": {
                     "type": "boolean",
@@ -9675,6 +9701,19 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "sync_page_size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647,
+                    "title": "Sync page size",
+                    "description": "Controls the number of objects synced in a single task"
+                },
+                "sync_page_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Sync page timeout",
+                    "description": "Timeout for synchronization of a single page"
                 },
                 "dry_run": {
                     "type": "boolean",
