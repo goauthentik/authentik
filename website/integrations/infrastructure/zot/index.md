@@ -48,7 +48,8 @@ To support the integration of Zot with authentik, you need to create an applicat
 
 To support the integration of authentik with Zot, you need to configure OIDC authentication.
 
-1. configure `/etc/zot/oidc-credentials.json` 
+1. Configure the `/etc/zot/oidc-credentials.json` file as follows:
+
 ```json title="/etc/zot/oidc-credentials.json"
 {
     "clientid": "clientid",
@@ -56,7 +57,8 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
 }
 ```
 
-2. configure `/etc/zot/config.json`
+2. Configure the `/etc/zot/config.json` file as follows:
+
 ```json title="/etc/zot/config.json"
 {
     "http": {
@@ -64,23 +66,22 @@ To support the integration of authentik with Zot, you need to configure OIDC aut
         "port": "8080",
         "auth": {
             "openid": {
-                 "providers": {
-                     "oidc": {
-                         "credentialsFile": "/etc/zot/oidc-credentials.json",
-                         "issuer": "https://authentik.company/application/o/zot-registry/",
-                         "keypath": "",
-                         "scopes": ["openid", "profile", "email"]
-                     }
-                 }
-             }
+                "providers": {
+                    "oidc": {
+                        "credentialsFile": "/etc/zot/oidc-credentials.json",
+                        "issuer": "https://authentik.company/application/o/<application_slug>/",
+                        "keypath": "",
+                        "scopes": ["openid", "profile", "email"]
+                    }
+                }
+            }
         }
     }
 }
 ```
 
-3. and restart zot now to apply these changes
-
+3. Restart Zot to apply these changes
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Zot, log out of Zot, locate the "SIGN IN WITH OIDC" button on the login page, click on it, and ensure you can successfully log in using Single Sign-On.
+To confirm that authentik is properly configured with Zot, first log out of Zot. Then click the **SIGN IN WITH OIDC** button on the login page and you should be redirected to authentik. Once authenticated, you should be signed into Zot.
