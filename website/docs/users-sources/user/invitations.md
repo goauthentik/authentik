@@ -14,18 +14,18 @@ You can also create a policy to see if the invitation was ever used.
 
 The fastest way to configure invitations in authentik is to use our pre-defined blueprints that have the necessary flows, stages and prompts already included.
 
-### Step 1. Download a blueprint
+### Download a blueprint
 
 We have two pre-defined blueprints; the `Example - Invitation-based Enrollment` blueprint and the `Example - Enrollment (2 Stage)` blueprint.
 
-#### Option 1. Download the `Example - Invitation-based Enrollment` blueprint (Recommended)
+#### Option 1: Download the `Example - Invitation-based Enrollment` blueprint (Recommended)
 
 This blueprint provides several examples of how to configure different invitation features and serves as a helpful starting point:
 
-    - Separate flows for external and internal users
-    - An example of [automatic group assignment](#automatic-group-assignment) (creates an example group called `engineering-team`)
-    - [User path organization](#user-paths)
-    - Five example invitations demonstrating different use cases
+- Separate flows for external and internal users
+- An example of [automatic group assignment](#automatic-group-assignment) (creates an example group called `engineering-team`)
+- [User path organization](#user-paths)
+- Five example invitations demonstrating different use cases
 
 Download the `Example - Invitation-based Enrollment` blueprint by running this command:
 
@@ -35,7 +35,7 @@ wget https://goauthentik.io/blueprints/example/flows-invitation-enrollment.yaml
 
 Alternatively, use this [link](/blueprints/example/flows-invitation-enrollment.yaml) to view and save the file.
 
-#### Option 2. Download the `Example - Enrollment (2 Stage)` blueprint
+#### Option 2: Download the `Example - Enrollment (2 Stage)` blueprint
 
 For a simpler invitation flow that doesn't include separate flows for internal/external user types, [automatic group assignment](#automatic-group-assignment), and [set user paths](<(#user-paths)>), download the `Example - Enrollment (2 Stage)` blueprint by running this command:
 
@@ -45,7 +45,7 @@ wget https://goauthentik.io/blueprints/example/flows-enrollment-2-stage.yaml
 
 Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml) to view and save the file.
 
-### Step 2. Import the enrollment flow file
+### Import the blueprint file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows** and click **Import**.
@@ -57,10 +57,7 @@ Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml
 2. Navigate to **Directory** > **Invitations** and click **Create**. Configure the following settings:
     - **Name**: provide a name for your invitation object.
     - **Expires**: select a date for when you want the invitation to expire.
-    - **Flow**: In the drop-down menu, select the enrollment flow to use:
-        - `default-enrollment-flow` for basic enrollment
-        - `invitation-enrollment-flow-external` for external users (customers, partners)
-        - `invitation-enrollment-flow-internal` for internal users (employees)
+    - **Flow**: In the drop-down menu, select the enrollment flow to use.
     - **Custom attributes**: (Optional) Enter JSON or YAML to pre-fill user information. This data is merged with the user's input during enrollment. Examples:
 
         Pre-fill email only (JSON):
@@ -110,7 +107,7 @@ On the **Invitations** page, click the chevron beside your new invitation, to ex
 The invitation link format is:
 
     ```
-    https://your-authentik-domain/if/flow/flow-slug/?itoken=<invitation-uuid>
+    https://authentik.company/if/flow/<flow-slug>/?itoken=<invitation-uuid>
     ```
 
 ## Advanced Features
@@ -159,15 +156,15 @@ return prompt_data.get('email', '').endswith('@example.com')
 
 ## Troubleshooting
 
-### "Permission denied" Error for External Users
+### "Permission denied" error for external users
 
 **Problem**: External user sees "Interface can only be accessed by internal users" after enrollment.
 
 **Solution**: Configure a Default Application in your brand settings (System → Brands) so external users have somewhere to go after login.
 
-### Invitation Not Working
+### Invitation not working
 
-**Possible causes**:
+Possible causes:
 
     - Invitation has expired (check the expiration date)
     - Single-use invitation has already been used
@@ -176,7 +173,7 @@ return prompt_data.get('email', '').endswith('@example.com')
 
 ### Pre-filled Data Not Appearing
 
-**Possible causes**:
+Possible causes:
 
     - Field keys in custom attributes don't match your prompt field keys
     - Prompt fields are marked as `placeholder_expression: true`
