@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 
 import { DistDirectoryName } from "#paths";
 
+import { resolvePackage } from "@goauthentik/core/paths/node";
+
 const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
 //#region Base paths
@@ -46,6 +48,8 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  * Matches the type defined in the ESBuild context.
  */
 
+const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
+
 /**
  * Entry points available for building.
  *
@@ -81,6 +85,14 @@ export const EntryPoint = /** @type {const} */ ({
     Polyfill: {
         in: resolve(PackageRoot, "src", "polyfill", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "poly"),
+    },
+    ThemeBase: {
+        in: resolve(PackageRoot, "src", "common", "styles", "base.global.css"),
+        out: resolve(DistDirectory, "styles", "base"),
+    },
+    ThemeDark: {
+        in: resolve(PackageRoot, "src", "common", "styles", "dark.global.css"),
+        out: resolve(DistDirectory, "styles", "dark"),
     },
 });
 

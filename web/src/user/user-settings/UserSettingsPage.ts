@@ -31,7 +31,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -39,7 +38,6 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFDisplay,
         PFGallery,
