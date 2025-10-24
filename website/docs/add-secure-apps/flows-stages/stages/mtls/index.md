@@ -10,7 +10,7 @@ The Mutual TLS stage enables authentik to use client certificates to enroll and 
 
 :::warning Use of trusted Certificate Authority
 
-- For mTLS, note that you should NOT use a globally known CA.
+For mTLS, note that you should NOT use a globally known CA.
 
 Using private PKI certificates that are trusted by the end-device is best practise. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
 :::
