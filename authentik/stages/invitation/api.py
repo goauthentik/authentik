@@ -3,12 +3,14 @@
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from guardian.shortcuts import get_anonymous_user
+from rest_framework.serializers import PrimaryKeyRelatedField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer
+from authentik.core.models import User
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
@@ -68,7 +70,12 @@ class InvitationSerializer(ModelSerializer):
         """Set created_by to anonymous user when in blueprint context"""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             if "created_by" not in kwargs:
-                kwargs["created_by"] = get_anonymous_user()
+                kwargs["created_by"] = PrimaryKeyRelatedField(
+                    queryset=User.objects.all(),
+                    required=False,
+                    allow_null=True,
+                    default=get_anonymous_user(),
+                )
         return super().save(**kwargs)
 
 
