@@ -58,7 +58,7 @@ class LogoutResponseProcessor:
         status_code.attrib["Value"] = f"urn:oasis:names:tc:SAML:2.0:status:{status}"
 
         # Add signature if configured
-        if self.provider.signing_kp:
+        if self.provider.signing_kp and self.provider.sign_logout_response:
             self._add_signature(response)
 
         return response
@@ -80,7 +80,7 @@ class LogoutResponseProcessor:
         """Build and sign the response, return as string"""
         response = self.get_response(status, destination)
 
-        if self.provider.signing_kp:
+        if self.provider.signing_kp and self.provider.sign_logout_response:
             self._sign_response(response)
 
         return etree.tostring(response, encoding="unicode", pretty_print=False)
