@@ -39,6 +39,11 @@ export const providerTypeRenderers: Record<
             html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
         order: 80,
     },
+    samlproviderimportmodel: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-saml-metadata-configuration></ak-application-wizard-authentication-by-saml-metadata-configuration>`,
+        order: 100,
+    },
     radiusprovider: {
         render: () =>
             html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
