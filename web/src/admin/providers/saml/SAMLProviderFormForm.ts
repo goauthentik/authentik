@@ -32,13 +32,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
+        label: msg("Redirect"),
+        value: SAMLBindingsEnum.Redirect,
+    },
+    {
         label: msg("Post"),
         value: SAMLBindingsEnum.Post,
         default: true,
-    },
-    {
-        label: msg("Redirect"),
-        value: SAMLBindingsEnum.Redirect,
     },
 ];
 
