@@ -33,6 +33,7 @@ from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
+    from authentik.providers.saml.models import SAMLProvider
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 HIST_FLOWS_STAGE_TIME = Histogram(
@@ -292,7 +293,11 @@ class SessionEndStage(ChallengeStageView):
                     "to": reverse("authentik_core:root-redirect"),
                 },
             )
+
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
+        provider: SAMLProvider | None = self.executor.plan.context.get("provider")
+        logout_response: str | None = self.executor.plan.context.get("logout_response")
+
         data = {
             "component": "ak-stage-session-end",
             "brand_name": self.request.brand.branding_title,
@@ -300,6 +305,10 @@ class SessionEndStage(ChallengeStageView):
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
+        if logout_response:
+            data["logout_response"] = logout_response
+            data["sls_url"] = provider.sls_url
+            data["sls_binding"] = provider.sls_binding
         if self.request.brand.flow_invalidation:
             data["invalidation_flow_url"] = reverse(
                 "authentik_core:if-flow",

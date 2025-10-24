@@ -8,7 +8,7 @@ import { BaseStage } from "#flow/stages/base";
 import { SessionEndChallenge } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -22,6 +22,47 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-stage-session-end")
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
     static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+
+    firstUpdated(changedProperties: PropertyValues) {
+        super.firstUpdated(changedProperties);
+        this.sendLogoutResponse();
+    }
+
+    protected sendLogoutResponse(): void {
+        if (!this.challenge.slsUrl || !this.challenge.logoutResponse) {
+            return;
+        }
+
+        const slsUrl = this.challenge.slsUrl;
+        const logoutResponse = this.challenge.logoutResponse;
+
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.name = "saml-logout-response";
+        document.body.appendChild(iframe);
+
+        if (this.challenge.slsBinding === "redirect") {
+            const params = new URLSearchParams();
+            params.set("SAMLResponse", logoutResponse);
+            iframe.src = `${slsUrl}?${params.toString()}`;
+        } else {
+            // For POST binding, create form that targets the iframe
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = slsUrl;
+            form.target = iframe.name;
+
+            const samlInput = document.createElement("input");
+            samlInput.type = "hidden";
+            samlInput.name = "SAMLResponse";
+            samlInput.value = logoutResponse;
+            form.appendChild(samlInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            form.remove();
+        }
+    }
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

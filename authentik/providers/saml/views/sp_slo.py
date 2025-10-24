@@ -16,8 +16,10 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider, SAMLSession
+from authentik.providers.saml.models import SAMLBindings, SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
+from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_LOGOUT_REQUEST,
     PLAN_CONTEXT_SAML_RELAY_STATE,
@@ -68,6 +70,21 @@ class SPInitiatedSLOView(PolicyAccessView):
                 **self.plan_context,
             },
         )
+        processor = LogoutResponseProcessor(
+            self.provider, self.plan_context.get(PLAN_CONTEXT_SAML_LOGOUT_REQUEST)
+        )
+        response_xml = processor.build_response(status="Success", destination=self.provider.sls_url)
+
+        # Encode the logout response based on binding type
+        if self.provider.sls_binding == SAMLBindings.REDIRECT:
+            # For redirect binding, deflate and base64 encode
+            encoded_response = deflate_and_base64_encode(response_xml)
+        else:
+            # For POST binding, just base64 encode
+            encoded_response = nice64(response_xml)
+
+        plan.context["provider"] = self.provider
+        plan.context["logout_response"] = encoded_response
         plan.append_stage(in_memory_stage(SessionEndStage))
 
         # Remove samlsession from database

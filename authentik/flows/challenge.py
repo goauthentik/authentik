@@ -126,6 +126,10 @@ class SessionEndChallenge(WithUserInfoChallenge):
     invalidation_flow_url = CharField(required=False)
     brand_name = CharField(required=True)
 
+    sls_url = CharField(required=False)
+    sls_binding = CharField(required=False)
+    logout_response = CharField(required=False)
+
 
 class PermissionDict(TypedDict):
     """Consent Permission"""

@@ -50272,6 +50272,12 @@ components:
           type: string
         brand_name:
           type: string
+        sls_url:
+          type: string
+        sls_binding:
+          type: string
+        logout_response:
+          type: string
       required:
       - brand_name
       - pending_user
