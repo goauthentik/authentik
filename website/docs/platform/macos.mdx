@@ -1,6 +1,6 @@
 ---
 title: Platform on macOS
-sidebar_label: macOS Client
+sidebar_label: macOS Workstation
 ---
 
 ## What does it do
@@ -22,6 +22,14 @@ Follow these steps to install authentik Platform on your macOS client:
 9. Continue through the installation wizard steps.
 10. Confirm that authentik Platform is installed by opening a Terminal window and entering the following command: `ak`
     You should see a response that starts with: `authentik CLI v<version_number>`
+
+## Configure Platform
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak config setup --authentik-url <authentik_instance_FQDN>
+```
 
 ## Usage
 

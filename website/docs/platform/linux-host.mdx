@@ -1,5 +1,5 @@
 ---
-title: Platform on Linux
+title: Platform on Linux Host
 sidebar_label: Linux Host
 ---
 
@@ -25,13 +25,13 @@ System service.
 
 PAM Module, which provides token-based and interactive authentication via authentik. Requires authentik-sysd running.
 
-Authentication is only possible if linux is aware of the authentik user, which can be achieved with [libnss-authentik](#libnss-authentik)
+Authentication is only possible if Linux is aware of the authentik user, which can be achieved with [libnss-authentik](#libnss-authentik) or by manually creating user accounts that match the authentik users that need to authenticate.
 
 ### libnss-authentik
 
 NSS Module. Requires authentik-sysd running.
 
-If you want your authentik users to be imported to the Linux host, use this. {temp}
+Synchronizes authentik users with the Linux host.
 
 ## authentik configuration
 
@@ -71,7 +71,7 @@ To support the deployment of authentik Platform, you need to create two applicat
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Token and App passwords** and click **Create** and set the following configuration:
     - **Identifier**: provide a unique name for the token
-    - **User**: `akadmin` or another administrator account {temp}
+    - **User**: `akadmin` or another administrator account {temp - confirm required permissions}
     - **Intent**: `API Token`
     - **Expiring**: disabled
 
