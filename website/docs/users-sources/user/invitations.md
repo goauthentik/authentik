@@ -135,8 +135,6 @@ Groups cannot be set directly in invitation custom attributes because they requi
 3. Set **User path template** to your desired path
 4. All users enrolling through that flow will be created in that path
 
-User paths are useful for organizing users by department or type
-
 ### Expression Policies with Invitations
 
 You can use expression policies to make decisions based on invitation data:
