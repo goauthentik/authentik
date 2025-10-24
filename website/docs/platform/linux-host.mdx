@@ -23,9 +23,9 @@ System service.
 
 ### libpam-authentik
 
-PAM Module. Requires authentik-sysd running.
+PAM Module, which provides token-based and interactive authentication via authentik. Requires authentik-sysd running.
 
-If the users that need to authenticate already exist on the Linux host, use this. {temp}
+Authentication is only possible if linux is aware of the authentik user, which can be achieved with [libnss-authentik](#libnss-authentik)
 
 ### libnss-authentik
 
@@ -100,7 +100,7 @@ Now you'll need to install and configure authentik Platform on the Linux host th
 
     ```sh
     sudo apt update
-    sudo apt install authentik-cli authentik-agent authentik-sysd libpam-authentik libnss-authentik
+    sudo apt install authentik-cli authentik-sysd libpam-authentik libnss-authentik
     ```
 
 4. Confirm that authentik Platform is installed by entering the following command: `ak`
