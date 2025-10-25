@@ -286,13 +286,19 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+
         if not self.request.user.is_authenticated:
             return RedirectChallenge(
                 data={
                     "to": reverse("authentik_core:root-redirect"),
                 },
             )
+
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
+        logout_response: str | None = self.executor.plan.context.get("logout_response")
+        sls_url: str | None = self.executor.plan.context.get("sls_url")
+        sls_binding: str | None = self.executor.plan.context.get("sls_binding")
+
         data = {
             "component": "ak-stage-session-end",
             "brand_name": self.request.brand.branding_title,
@@ -300,6 +306,10 @@ class SessionEndStage(ChallengeStageView):
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
+        if logout_response:
+            data["logout_response"] = logout_response
+            data["sls_url"] = sls_url
+            data["sls_binding"] = sls_binding
         if self.request.brand.flow_invalidation:
             data["invalidation_flow_url"] = reverse(
                 "authentik_core:if-flow",

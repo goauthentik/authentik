@@ -16480,6 +16480,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sign_logout_response
+        schema:
+          type: boolean
+      - in: query
         name: sign_response
         schema:
           type: boolean
@@ -45518,6 +45522,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -48701,6 +48707,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -48900,6 +48908,8 @@ components:
         sign_response:
           type: boolean
         sign_logout_request:
+          type: boolean
+        sign_logout_response:
           type: boolean
         sp_binding:
           allOf:
@@ -50271,6 +50281,12 @@ components:
         invalidation_flow_url:
           type: string
         brand_name:
+          type: string
+        sls_url:
+          type: string
+        sls_binding:
+          type: string
+        logout_response:
           type: string
       required:
       - brand_name
