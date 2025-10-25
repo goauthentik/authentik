@@ -32,8 +32,9 @@ entries:
     - # Model in app.model notation, possibilities are listed in the schema (required)
       model: authentik_flows.flow
       # The state this object should be in (optional, can be "present", "created" or "absent")
-      # - present (default): Creates the object if it doesn't exist, or updates all attrs fields
-      #   to match the blueprint if it does exist. This will overwrite any manual changes.
+      # - present (default): Creates the object if it doesn't exist, or updates the fields
+      #   specified in attrs if it does exist. This will overwrite any manual changes to those
+      #   fields, but fields not in attrs are left unchanged.
       # - created: Creates the object if it doesn't exist, but never updates it afterward.
       #   Manual changes are preserved.
       # - absent: Deletes the object if it exists. This uses Django's .delete() which may
