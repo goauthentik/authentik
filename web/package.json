@@ -121,7 +121,7 @@
         "@storybook/addon-links": "^9.1.13",
         "@storybook/web-components": "^9.1.13",
         "@storybook/web-components-vite": "^9.1.13",
-        "@types/codemirror": "^5.60.16",
+        "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.4",
         "@types/mocha": "^10.0.10",
