@@ -11,8 +11,11 @@ from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
@@ -102,6 +105,11 @@ def ldap_sync(source_pk: str):
             timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
         )
 
+    if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+        for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
+            for provider in outgoing_sync_provider_cls.objects.all():
+                provider.sync_dispatch()
+
 
 def ldap_sync_paginator(
     task: Task, source: LDAPSource, sync: type[BaseLDAPSynchronizer]
@@ -147,7 +155,11 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
             self.error(error_message)
             return
         cache.touch(page_cache_key)
-        count = sync_inst.sync(page)
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+            count = sync_inst.sync(page)
+        else:
+            with sync_outgoing_inhibit_dispatch():
+                count = sync_inst.sync(page)
         self.info(f"Synced {count} objects.")
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:
