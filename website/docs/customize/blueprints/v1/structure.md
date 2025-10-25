@@ -32,9 +32,12 @@ entries:
     - # Model in app.model notation, possibilities are listed in the schema (required)
       model: authentik_flows.flow
       # The state this object should be in (optional, can be "present", "created" or "absent")
-      # Present will keep the object in sync with its definition here, created will only ensure
-      # the object is created (and create it with the values given here), and "absent" will
-      # delete the object
+      # - present (default): Creates the object if it doesn't exist, or updates all attrs fields
+      #   to match the blueprint if it does exist. This will overwrite any manual changes.
+      # - created: Creates the object if it doesn't exist, but never updates it afterward.
+      #   Manual changes are preserved.
+      # - absent: Deletes the object if it exists. This uses Django's .delete() which may
+      #   cascade to related objects (e.g., deleting a Flow will delete its FlowStageBindings).
       state: present
       # An optional list of boolean-like conditions. If all conditions match (or
       # no conditions are provided) the entry will be evaluated and acted upon
@@ -49,12 +52,16 @@ entries:
           - 2
           - !Condition [AND, ...] # See custom tags section
       # Key:value filters to uniquely identify this object (required)
+      # On creation: identifiers are merged with attrs to create the object
+      # On lookup: identifiers are used to find existing objects
+      # On update: only attrs are applied (if state is present)
       identifiers:
           slug: initial-setup
       # Optional ID for use with !KeyOf
       id: flow
       # Attributes to set on the object. Only explicitly required settings should be stated
-      # as these values will override existing attributes
+      # as these values will override existing attributes.
+      # Note: When creating objects, both identifiers and attrs are merged together.
       attrs:
           denied_action: message_continue
           designation: stage_configuration
