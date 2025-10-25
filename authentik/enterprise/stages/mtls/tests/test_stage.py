@@ -75,13 +75,19 @@ class MTLSStageTests(FlowTestCase):
 
     def test_parse_traefik(self):
         """Test traefik's format"""
+        traefik_cert = load_fixture("fixtures/traefik_cert_client.pem")
+
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(traefik_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+        self.assertEqual(
+            f"-----BEGIN+CERTIFICATE-----%0A{quote_plus(traefik_cert)}-----END+CERTIFICATE-----%0A",
+            quote_plus(self.client_cert)
+        )
         self.assertEqual(plan().context[PLAN_CONTEXT_PENDING_USER], self.cert_user)
 
     def test_parse_outpost_object(self):
@@ -138,7 +144,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(cert.certificate_data)},
+                headers={"SSL-Client-Cert": quote_plus(cert.certificate_data)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
@@ -149,7 +155,7 @@ class MTLSStageTests(FlowTestCase):
         User.objects.filter(username="client").delete()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
@@ -163,7 +169,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -176,7 +182,7 @@ class MTLSStageTests(FlowTestCase):
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -187,7 +193,7 @@ class MTLSStageTests(FlowTestCase):
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
@@ -209,7 +215,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
