@@ -1,16 +1,13 @@
 """Google Provider API Views"""
 
-from rest_framework.viewsets import ModelViewSet
-
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.enterprise.providers.google_workspace.tasks import (
     google_workspace_sync,
     google_workspace_sync_objects,
 )
-from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncProviderViewSet
 
 
 class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
@@ -44,18 +41,16 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
         extra_kwargs = {}
 
 
-class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderViewSet):
     """GoogleWorkspaceProvider Viewset"""
 
     queryset = GoogleWorkspaceProvider.objects.all()
     serializer_class = GoogleWorkspaceProviderSerializer
-    filterset_fields = [
-        "name",
-        "exclude_users_service_account",
+    filterset_fields = OutgoingSyncProviderViewSet.filterset_fields + [
         "delegated_subject",
-        "filter_group",
     ]
-    search_fields = ["name"]
-    ordering = ["name"]
+    search_fields = OutgoingSyncProviderViewSet.search_fields + [
+        "delegated_subject",
+    ]
     sync_task = google_workspace_sync
     sync_objects_task = google_workspace_sync_objects

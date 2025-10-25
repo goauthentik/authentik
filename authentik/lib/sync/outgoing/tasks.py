@@ -1,9 +1,11 @@
+from typing import Any, cast
+
 from django.core.paginator import Paginator
-from django.db.models import Model, QuerySet
-from django.db.models.query import Q
+from django.db.models import Model, Q
 from dramatiq.actor import Actor
 from dramatiq.composition import group
 from dramatiq.errors import Retry
+from dramatiq.message import Message
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import SkipObjectException
@@ -38,11 +40,11 @@ class SyncTasks:
         self,
         current_task: Task,
         provider: OutgoingSyncProvider,
-        sync_objects: Actor[[str, int, int, bool], None],
-        paginator: Paginator,
+        sync_objects: Actor[[str, int, int, bool, dict[str, Any] | None], None],
+        paginator: "Paginator[User | Group]",
         object_type: type[User | Group],
-        **options,
-    ):
+        **options: Any,
+    ) -> list[Message[None]]:
         tasks = []
         time_limit = timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
         for page in paginator.page_range:
@@ -60,14 +62,14 @@ class SyncTasks:
     def sync(
         self,
         provider_pk: int,
-        sync_objects: Actor[[str, int, int, bool], None],
-    ):
+        sync_objects: Actor[[str, int, int, bool, dict[str, Any] | None], None],
+    ) -> None:
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
         )
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
@@ -82,7 +84,7 @@ class SyncTasks:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
-                users_tasks = group(
+                users_tasks = group(  # type: ignore[no-untyped-call]
                     self.sync_paginator(
                         current_task=task,
                         provider=provider,
@@ -91,7 +93,7 @@ class SyncTasks:
                         object_type=User,
                     )
                 )
-                group_tasks = group(
+                group_tasks = group(  # type: ignore[no-untyped-call]
                     self.sync_paginator(
                         current_task=task,
                         provider=provider,
@@ -100,12 +102,12 @@ class SyncTasks:
                         object_type=Group,
                     )
                 )
-                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
-                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
+                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))  # type: ignore[no-untyped-call]
+                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))  # type: ignore[no-untyped-call]
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 task.warning("Sync encountered a transient exception. Retrying", exc=exc)
-                raise Retry() from exc
+                raise Retry() from exc  # type: ignore[no-untyped-call]
             except StopSync as exc:
                 task.error(exc)
                 return
@@ -115,11 +117,11 @@ class SyncTasks:
         object_type: str,
         page: int,
         provider_pk: int,
-        override_dry_run=False,
-        **filter,
-    ):
+        override_dry_run: bool = False,
+        filter: dict[str, Any] | None = None,
+    ) -> None:
         task = CurrentTask.get_task()
-        _object_type: type[Model] = path_to_class(object_type)
+        _object_type: type[User | Group] = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
@@ -140,6 +142,8 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return
+        if filter is None:
+            filter = {}
         paginator = Paginator(
             provider.get_object_qs(_object_type).filter(**filter),
             provider.sync_page_size,
@@ -150,7 +154,6 @@ class SyncTasks:
         self.logger.debug("starting sync for page", page=page)
         task.info(f"Syncing page {page} or {_object_type._meta.verbose_name_plural}")
         for obj in paginator.page(page).object_list:
-            obj: Model
             try:
                 client.write(obj)
             except SkipObjectException:
@@ -189,11 +192,11 @@ class SyncTasks:
 
     def sync_signal_direct_dispatch(
         self,
-        task_sync_signal_direct: Actor[[str, str | int, int, str], None],
+        task_sync_signal_direct: Actor[[str, Any, int, str], None],
         model: str,
-        pk: str | int,
+        pk: Any,
         raw_op: str,
-    ):
+    ) -> None:
         model_class: type[Model] = path_to_class(model)
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
@@ -207,19 +210,19 @@ class SyncTasks:
     def sync_signal_direct(
         self,
         model: str,
-        pk: str | int,
+        pk: Any,
         provider_pk: int,
         raw_op: str,
-    ):
+    ) -> None:
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
-        model_class: type[Model] = path_to_class(model)
+        model_class: type[User | Group] = path_to_class(model)
         instance = model_class.objects.filter(pk=pk).first()
         if not instance:
             return
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
@@ -244,7 +247,7 @@ class SyncTasks:
             if operation == Direction.remove:
                 client.delete(instance)
         except TransientSyncException as exc:
-            raise Retry() from exc
+            raise Retry() from exc  # type: ignore[no-untyped-call]
         except SkipObjectException:
             return
         except DryRunRejected as exc:
@@ -254,12 +257,12 @@ class SyncTasks:
 
     def sync_signal_m2m_dispatch(
         self,
-        task_sync_signal_m2m: Actor[[str, int, str, list[int]], None],
-        instance_pk: str,
+        task_sync_signal_m2m: Actor[[Any, int, str, list[Any]], None],
+        instance_pk: Any,
         action: str,
-        pk_set: list[int],
+        pk_set: list[Any],
         reverse: bool,
-    ):
+    ) -> None:
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
@@ -281,11 +284,11 @@ class SyncTasks:
 
     def sync_signal_m2m(
         self,
-        group_pk: str,
+        group_pk: Any,
         provider_pk: int,
         action: str,
-        pk_set: list[int],
-    ):
+        pk_set: list[Any],
+    ) -> None:
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -293,7 +296,7 @@ class SyncTasks:
         group = Group.objects.filter(pk=group_pk).first()
         if not group:
             return
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
@@ -302,7 +305,7 @@ class SyncTasks:
             return
 
         # Check if the object is allowed within the provider's restrictions
-        queryset: QuerySet = provider.get_object_qs(Group)
+        queryset = provider.get_object_qs(Group)
         # The queryset we get from the provider must include the instance we've got given
         # otherwise ignore this provider
         if not queryset.filter(pk=group_pk).exists():
@@ -315,9 +318,9 @@ class SyncTasks:
                 operation = Direction.add
             if action == "post_remove":
                 operation = Direction.remove
-            client.update_group(group, operation, pk_set)
+            client.update_group(group, cast(Direction, operation), pk_set)
         except TransientSyncException as exc:
-            raise Retry() from exc
+            raise Retry() from exc  # type: ignore[no-untyped-call]
         except SkipObjectException:
             return
         except DryRunRejected as exc:
