@@ -31,12 +31,14 @@ context:
 entries:
     - # Model in app.model notation, possibilities are listed in the schema (required)
       model: authentik_flows.flow
-      # The state this object should be in (optional, can be "present", "created" or "absent")
+      # The state this object should be in (optional, can be "present", "created", "must_created", or "absent")
       # - present (default): Creates the object if it doesn't exist, or updates the fields
       #   specified in attrs if it does exist. This will overwrite any manual changes to those
       #   fields, but fields not in attrs are left unchanged.
       # - created: Creates the object if it doesn't exist, but never updates it afterward.
       #   Manual changes are preserved.
+      # - must_created: Creates the object only if it doesn't exist. If the object already exists,
+      #   the blueprint will fail with a validation error.
       # - absent: Deletes the object if it exists. This uses Django's .delete() which may
       #   cascade to related objects (e.g., deleting a Flow will delete its FlowStageBindings).
       state: present
@@ -54,8 +56,15 @@ entries:
           - !Condition [AND, ...] # See custom tags section
       # Key:value filters to uniquely identify this object (required)
       # On creation: identifiers are merged with attrs to create the object
-      # On lookup: identifiers are used to find existing objects
+      # On lookup: identifiers are used to find existing objects (using OR logic - see below)
       # On update: only attrs are applied (if state is present)
+      #
+      # Multiple identifiers create an OR query: an object matches if ANY identifier matches.
+      # Example: identifiers with both slug and pk will match if either the slug OR pk matches.
+      #
+      # Dictionary values use Django's __contains query for JSON field matching:
+      # identifiers:
+      #     attributes: {foo: bar}  # Matches if attributes JSON contains {"foo": "bar"}
       identifiers:
           slug: initial-setup
       # Optional ID for use with !KeyOf
