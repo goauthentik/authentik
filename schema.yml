@@ -33917,9 +33917,15 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
           required:
+          - core_default_app_access
           - policies_buffered_access_view
           readOnly: true
       required:
@@ -45967,9 +45973,15 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
           required:
+          - core_default_app_access
           - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
@@ -50341,9 +50353,15 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
           required:
+          - core_default_app_access
           - policies_buffered_access_view
       required:
       - flags
@@ -50403,9 +50421,15 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
           required:
+          - core_default_app_access
           - policies_buffered_access_view
       required:
       - flags
