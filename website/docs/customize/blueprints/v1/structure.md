@@ -62,6 +62,8 @@ entries:
       # Attributes to set on the object. Only explicitly required settings should be stated
       # as these values will override existing attributes.
       # Note: When creating objects, both identifiers and attrs are merged together.
+      # On updates (state: present), only fields specified in attrs are modified - other
+      # fields (like auto-generated client_id/client_secret) are left unchanged.
       attrs:
           denied_action: message_continue
           designation: stage_configuration
