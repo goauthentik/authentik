@@ -47,3 +47,7 @@ Click **Save** to save the new invitation and close the box and return to the **
 **Step 3. Email the invitation**
 
 On the **Invitations** page, click the chevron beside your new invitation, to expand the details. The **Link to use the invitation** displays with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.
+
+:::info Invitation links validity
+Be aware that when an authentik administrator or any other user creates an invitation link, that link remains valid even if the administrator is deactivated or has permissionss revoked. However, if the user who created the link is deleted and removed from the authentik system, the link is also deleted.
+:::

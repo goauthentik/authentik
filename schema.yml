@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.10.0-rc1
+  version: 2025.12.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -36837,6 +36837,14 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -37008,6 +37016,15 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -39369,6 +39386,14 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -39535,6 +39560,15 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -44647,6 +44681,15 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -45312,6 +45355,15 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -46597,6 +46649,15 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -50264,6 +50325,14 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -50373,6 +50442,15 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in

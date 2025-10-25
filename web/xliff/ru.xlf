@@ -6723,7 +6723,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
   <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
-  <target>Предполагаемое количество пользователей через год на основе <x id="0" equiv-text="${this.forecast?.internalUsers}"/> текущих внутренних пользователей и <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> прогнозируемых внутренних пользователей.</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
   <source>Forecast external users</source>
@@ -6731,7 +6730,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf52479d6daa0a4a8">
   <source>Estimated user count one year from now based on <x id="0" equiv-text="${externalUsers}"/> current external users and <x id="1" equiv-text="${forecastedExternalUsers}"/> forecasted external users.</source>
-  <target>Предполагаемое количество пользователей через год на основе <x id="0" equiv-text="${this.forecast?.externalUsers}"/> текущих внешних пользователей и <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> прогнозируемых внешних пользователей.</target>
 </trans-unit>
 <trans-unit id="s6196153c4b0c1ea0">
   <source>Install</source>
@@ -7088,7 +7086,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
   <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
-  <target>Роль <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
@@ -9620,9 +9617,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
 </trans-unit>
-<trans-unit id="s700456b0667029f9">
-  <source>Applications library</source>
-</trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
@@ -10284,6 +10278,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
+</trans-unit>
+<trans-unit id="s139200afa0695967">
+  <source>Plain</source>
+</trans-unit>
+<trans-unit id="s7a316723c6bb33eb">
+  <source>S256</source>
+</trans-unit>
+<trans-unit id="s311c22ee852736e9">
+  <source>PKCE Method</source>
+</trans-unit>
+<trans-unit id="sa9afb0f84a3c380d">
+  <source>Configure Proof Key for Code Exchange for this source.</source>
+</trans-unit>
+<trans-unit id="s2e6c714bb95c18a3">
+  <source>User settings</source>
 </trans-unit>
     </body>
   </file>
