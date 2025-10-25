@@ -9867,6 +9867,24 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
 </trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
