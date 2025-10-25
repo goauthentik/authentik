@@ -35,8 +35,10 @@ jobs:
           echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
-          if [ "${{ inputs.release_reason }}" = "feature" ] || [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+          if [ "${{ inputs.release_reason }}" = "feature" ]; then
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
           else
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
           fi
