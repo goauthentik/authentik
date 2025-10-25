@@ -110,11 +110,20 @@
         inset-block-start: -1.5rem;
         inset-block-end: var(--app-icon-offset, 0);
         padding: 0;
+
+        @media (max-width: 767px) {
+            inset-block-start: -0.75rem;
+        }
     }
 }
 
 [part="app-group-header"] {
-    grid-column: 1 / -1;
+    @media not (prefers-contrast: more) {
+        --ak-legend-padding-inline-base: 1rem;
+        padding-block-start: 0 !important;
+        padding-inline: 0 !important;
+        margin-inline: 0 !important;
+    }
 }
 
 [part="app-list"] {
@@ -144,15 +153,9 @@
         grid-template-rows: auto;
     }
 
-    @media (min-width: 768px) {
-        border-inline-start: 0.5px solid var(--app-group-border-color);
-        padding-inline-start: calc(1rem - 0.5px);
-    }
-
-    @media (prefers-contrast: more) {
-        &:not([data-group-index="0"]) {
-            --app-group-border-color: var(--pf-global--BorderColor--200);
-        }
+    @media not (prefers-contrast: more) {
+        padding: 0 !important;
+        border: none !important;
     }
 }
 
