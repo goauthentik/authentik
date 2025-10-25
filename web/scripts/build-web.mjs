@@ -13,6 +13,7 @@ import * as path from "node:path";
  * @import { BuildOptions } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
@@ -53,10 +54,14 @@ const BASE_ESBUILD_OPTIONS = {
     legalComments: "external",
     splitting: true,
     treeShaking: true,
-    external: ["*.woff", "*.woff2"],
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".woff": "file",
+        ".woff2": "file",
+        ".jpg": "file",
+        ".png": "file",
+        ".svg": "file",
     },
     plugins: [
         copy({
@@ -64,19 +69,6 @@ const BASE_ESBUILD_OPTIONS = {
                 {
                     from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
                     to: path.dirname(EntryPoint.StandaloneLoading.out),
-                },
-
-                {
-                    from: path.join(patternflyPath, "patternfly.min.css"),
-                    to: ".",
-                },
-                {
-                    from: path.join(patternflyPath, "assets", "**"),
-                    to: "./assets",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "common", "styles", "**"),
-                    to: ".",
                 },
                 {
                     from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
@@ -88,6 +80,7 @@ const BASE_ESBUILD_OPTIONS = {
                 },
             ],
         }),
+        styleLoaderPlugin(),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
@@ -256,8 +249,7 @@ await cleanDistDirectory()
             .then(() => {
                 process.exit(0);
             })
-            .catch((error) => {
-                logger.error(error);
+            .catch(() => {
                 process.exit(1);
             }),
     );

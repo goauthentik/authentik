@@ -1,11 +1,20 @@
+{% load static %}
+{% load authentik_core %}
+
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/base-%v.css' %}" />
+
 {% if ui_theme == "dark" %}
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#18191a">
-{% elif ui_theme == "light" %}
+
+  <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/dark-%v.css' %}" />
+  {% elif ui_theme == "light" %}
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
 {% else %}
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+
+  <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/dark-%v.css' %}" />
 {% endif %}
