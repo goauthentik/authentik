@@ -1,7 +1,7 @@
 <!--
 👋 Hi there! Welcome.
 
-Please check the Contributing guidelines: https://goauthentik.io/developer-docs/#how-can-i-contribute
+Please check the Contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
 -->
 
 ## Details
@@ -31,4 +31,4 @@ If changes to the frontend have been made
 If applicable
 
 -   [ ] The documentation has been updated
--   [ ] The documentation has been formatted (`make website`)
+-   [ ] The documentation has been formatted (`make docs`)

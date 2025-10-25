@@ -1,14 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
@@ -39,31 +42,34 @@ export class UserDeviceTable extends Table<Device> {
             });
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Confirmed")
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Confirmed")],
+        [msg("Created at")],
+        [msg("Last updated at")],
+        [msg("Last used at")],
+    ];
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return api.authenticatorsAdminDuoDestroy(id);
+                return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsAdminEmailDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return api.authenticatorsAdminSmsDestroy(id);
+                return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                return api.authenticatorsAdminTotpDestroy(id);
+                return api.authenticatorsAdminTotpDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_static.StaticDevice":
-                return api.authenticatorsAdminStaticDestroy(id);
+                return api.authenticatorsAdminStaticDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return api.authenticatorsAdminWebauthnDestroy(id);
+                return api.authenticatorsAdminWebauthnDestroy({ id: parseInt(device.pk, 10) });
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
@@ -93,11 +99,18 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}`,
+            html`<div>
+                    ${deviceTypeName(item)}
+                    ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
+                </div>
+                ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUpdated),
+            Timestamp(item.lastUsed),
         ];
     }
 }

@@ -1,8 +1,8 @@
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
-
-import { html } from "lit";
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { WebAuthnDeviceType } from "@goauthentik/api";
+
+import { html } from "lit";
 
 export function deviceTypeRestrictionPair(item: WebAuthnDeviceType): DualSelectPair {
     const label = item.description ? item.description : item.aaguid;

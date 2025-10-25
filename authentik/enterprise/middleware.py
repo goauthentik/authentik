@@ -6,8 +6,10 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import resolve
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.core.api.users import UserViewSet
 from authentik.enterprise.api import LicenseViewSet
 from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import LicenseUsageStatus
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.reflection import class_to_path
 
@@ -43,7 +45,7 @@ class EnterpriseMiddleware:
         cached_status = LicenseKey.cached_summary()
         if not cached_status:
             return True
-        if cached_status.read_only:
+        if cached_status.status == LicenseUsageStatus.READ_ONLY:
             return False
         return True
 
@@ -53,10 +55,13 @@ class EnterpriseMiddleware:
         if request.method.lower() in ["get", "head", "options", "trace"]:
             return True
         # Always allow requests to manage licenses
-        if class_to_path(request.resolver_match.func) == class_to_path(LicenseViewSet):
+        if request.resolver_match._func_path == class_to_path(LicenseViewSet):
             return True
         # Flow executor is mounted as an API path but explicitly allowed
-        if class_to_path(request.resolver_match.func) == class_to_path(FlowExecutorView):
+        if request.resolver_match._func_path == class_to_path(FlowExecutorView):
+            return True
+        # Always allow making changes to users, even in case the license has ben exceeded
+        if request.resolver_match._func_path == class_to_path(UserViewSet):
             return True
         # Only apply these restrictions to the API
         if "authentik_api" not in request.resolver_match.app_names:

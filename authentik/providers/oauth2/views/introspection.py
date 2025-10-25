@@ -9,7 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
-from authentik.providers.oauth2.models import AccessToken, IDToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
@@ -46,10 +47,10 @@ class TokenIntrospectionParams:
         if not provider:
             raise TokenIntrospectionError
 
-        access_token = AccessToken.objects.filter(token=raw_token).first()
+        access_token = AccessToken.objects.filter(token=raw_token, provider=provider).first()
         if access_token:
             return TokenIntrospectionParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(token=raw_token).first()
+        refresh_token = RefreshToken.objects.filter(token=raw_token, provider=provider).first()
         if refresh_token:
             return TokenIntrospectionParams(refresh_token, provider)
         LOGGER.debug("Token does not exist", token=raw_token)

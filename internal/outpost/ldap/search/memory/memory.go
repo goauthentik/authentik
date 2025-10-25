@@ -11,6 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
 	"goauthentik.io/internal/outpost/ldap/group"
@@ -19,7 +20,6 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search/direct"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
-	"goauthentik.io/internal/outpost/ldap/utils/paginator"
 )
 
 type MemorySearcher struct {
@@ -31,16 +31,37 @@ type MemorySearcher struct {
 	groups []api.Group
 }
 
-func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
+func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *MemorySearcher {
 	ms := &MemorySearcher{
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
 		ds:  direct.NewDirectSearcher(si),
 	}
+	if existing != nil {
+		if ems, ok := existing.(*MemorySearcher); ok {
+			ems.si = si
+			ems.fetch()
+			ems.log.Debug("re-initialised memory searcher")
+			return ems
+		}
+	}
+	ms.fetch()
 	ms.log.Debug("initialised memory searcher")
-	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true))
-	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true))
 	return ms
+}
+
+func (ms *MemorySearcher) fetch() {
+	// Error is not handled here, we get an empty/truncated list and the error is logged
+	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
+		PageSize: 100,
+		Logger:   ms.log,
+	})
+	ms.users = users
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
+		PageSize: 100,
+		Logger:   ms.log,
+	})
+	ms.groups = groups
 }
 
 func (ms *MemorySearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {
@@ -89,7 +110,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	entries := make([]*ldap.Entry, 0)
 
-	scope := req.SearchRequest.Scope
+	scope := req.Scope
 	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, req.FilterObjectClass)
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
@@ -144,7 +165,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
 						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.PartialUser{u}, []api.Role{}, []api.GroupChild{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
 							if p := g.Parent.Get(); p != nil {

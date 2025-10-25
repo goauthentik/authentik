@@ -144,7 +144,7 @@ class Migration(migrations.Migration):
                 default=None,
                 help_text=(
                     "When set, shows a password field, instead of showing the password field as"
-                    " seaprate step."
+                    " separate step."
                 ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,

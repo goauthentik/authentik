@@ -1,9 +1,11 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { EVENT_REFRESH } from "#common/constants";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { AKElement } from "#elements/Base";
+import { setURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
@@ -59,7 +61,7 @@ export class TreeViewNode extends AKElement {
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
-        if (pathSegments[level] == this.item?.id) {
+        if (pathSegments[level] === this.item?.id) {
             this.open = true;
         }
         if (this.activePath === this.fullPath && this.host !== undefined) {
@@ -67,35 +69,51 @@ export class TreeViewNode extends AKElement {
         }
     }
 
+    #selectionListener = () => {
+        if (this.host) {
+            this.host.activeNode = this;
+        }
+        setURLParams({ path: this.fullPath });
+        this.dispatchEvent(
+            new CustomEvent(EVENT_REFRESH, {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    path: this.fullPath,
+                },
+            }),
+        );
+    };
+
     render(): TemplateResult {
         const shouldRenderChildren = (this.item?.childItems || []).length > 0 && this.open;
+        const itemLabel = this.item?.label || msg("Unnamed");
+        const current = this.host?.activeNode === this;
+
         return html`
             <li
                 class="pf-c-tree-view__list-item ${this.open ? "pf-m-expanded" : ""}"
                 role="treeitem"
+                aria-expanded=${ifPresent(this.openable, this.open ? "true" : "false")}
+                aria-label=${itemLabel}
+                aria-selected=${current ? "true" : "false"}
                 tabindex="0"
             >
                 <div class="pf-c-tree-view__content">
-                    <button
-                        class="pf-c-tree-view__node ${this.host?.activeNode === this
-                            ? "pf-m-current"
-                            : ""}"
-                        @click=${() => {
-                            if (this.host) {
-                                this.host.activeNode = this;
-                            }
-                            setURLParams({ path: this.fullPath });
-                            this.dispatchEvent(
-                                new CustomEvent(EVENT_REFRESH, {
-                                    bubbles: true,
-                                    composed: true,
-                                }),
-                            );
-                        }}
+                    <div
+                        class="pf-c-tree-view__node ${current ? "pf-m-current" : ""}"
+                        @click=${this.#selectionListener}
                     >
                         <div class="pf-c-tree-view__node-container">
                             ${this.openable
                                 ? html` <button
+                                      type="button"
+                                      aria-label=${ifPresent(
+                                          this.openable,
+                                          this.open
+                                              ? msg(str`Collapse "${itemLabel}"`)
+                                              : msg(str`Expand "${itemLabel}"`),
+                                      )}
                                       class="pf-c-tree-view__node-toggle"
                                       @click=${(e: Event) => {
                                           if (this.openable) {
@@ -108,18 +126,30 @@ export class TreeViewNode extends AKElement {
                                           <i class="fas fa-angle-right" aria-hidden="true"></i>
                                       </span>
                                   </button>`
-                                : html``}
+                                : nothing}
                             <span class="pf-c-tree-view__node-icon">
                                 <i
                                     class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"
                                     aria-hidden="true"
                                 ></i>
                             </span>
-                            <span class="pf-c-tree-view__node-text">${this.item?.label}</span>
+                            <button
+                                type="button"
+                                aria-label=${msg(str`Select "${itemLabel}"`)}
+                                @click=${this.#selectionListener}
+                                class="pf-c-tree-view__node-text"
+                            >
+                                ${itemLabel}
+                            </button>
                         </div>
-                    </button>
+                    </div>
                 </div>
-                <ul class="pf-c-tree-view__list" role="group" ?hidden=${!shouldRenderChildren}>
+                <ul
+                    class="pf-c-tree-view__list"
+                    ?hidden=${!shouldRenderChildren}
+                    role="group"
+                    aria-label=${msg(str`Items of "${itemLabel}"`)}
+                >
                     ${this.item?.childItems.map((item) => {
                         return html`<ak-treeview-node
                             .item=${item}
@@ -136,9 +166,10 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFTreeView];
-    }
+    static styles: CSSResult[] = [PFBase, PFTreeView];
+
+    @property({ type: String })
+    public label: string | null = null;
 
     @property({ type: Array })
     items: string[] = [];
@@ -154,7 +185,7 @@ export class TreeView extends AKElement {
     createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();
         const idx = parentItem.childItems.findIndex((e: TreeViewItem) => {
-            return e.id == id;
+            return e.id === id;
         });
         if (idx < 0) {
             const item: TreeViewItem = {
@@ -170,9 +201,8 @@ export class TreeView extends AKElement {
                 child.parent = item;
             }
             return item;
-        } else {
-            return this.createNode(path, parentItem.childItems[idx], level + 1);
         }
+        return this.createNode(path, parentItem.childItems[idx], level + 1);
     }
 
     parse(data: string[]): TreeViewItem {
@@ -193,11 +223,11 @@ export class TreeView extends AKElement {
     render(): TemplateResult {
         const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
-            <ul class="pf-c-tree-view__list" role="tree">
+            <ul class="pf-c-tree-view__list" role="tree" aria-label=${ifPresent(this.label)}>
                 <ak-treeview-node
                     .item=${rootItem}
                     activePath=${this.activePath}
-                    ?open=${true}
+                    open
                     separator=${this.separator}
                     .host=${this}
                 ></ak-treeview-node>

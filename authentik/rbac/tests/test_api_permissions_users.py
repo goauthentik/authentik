@@ -33,7 +33,7 @@ class TestRBACPermissionUsers(APITestCase):
         )
         assign_perm("authentik_stages_invitation.view_invitation", self.user, inv)
         res = self.client.get(reverse("authentik_api:permissions-users-list"))
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 200)
 
     def test_list_role(self):
         """Test list of all permissions"""

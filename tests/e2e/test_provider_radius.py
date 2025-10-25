@@ -3,9 +3,7 @@
 from dataclasses import asdict
 from time import sleep
 
-from docker.client import DockerClient, from_env
-from docker.models.containers import Container
-from pyrad.client import Client
+from pyrad.client import Client, Timeout
 from pyrad.dictionary import Dictionary
 from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
@@ -21,30 +19,19 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderRadius(SeleniumTestCase):
     """Radius Outpost e2e tests"""
 
-    radius_container: Container
-
     def setUp(self):
         super().setUp()
         self.shared_secret = generate_key()
 
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.radius_container)
-        self.radius_container.kill()
-
-    def start_radius(self, outpost: Outpost) -> Container:
+    def start_radius(self, outpost: Outpost):
         """Start radius container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-radius"),
-            detach=True,
-            ports={"1812/udp": "1812/udp"},
+            ports={"1812/udp": 1812},
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        return container
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
@@ -54,7 +41,7 @@ class TestProviderRadius(SeleniumTestCase):
             shared_secret=self.shared_secret,
         )
         # we need to create an application to actually access radius
-        Application.objects.create(name="radius", slug=generate_id(), provider=radius)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.RADIUS,
@@ -62,21 +49,12 @@ class TestProviderRadius(SeleniumTestCase):
         )
         outpost.providers.add(radius)
 
-        self.radius_container = self.start_radius(outpost)
+        self.start_radius(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
         return outpost
 
-    @retry()
+    @retry(exceptions=[Timeout])
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
@@ -87,7 +65,7 @@ class TestProviderRadius(SeleniumTestCase):
         srv = Client(
             server="localhost",
             secret=self.shared_secret.encode(),
-            dict=Dictionary("tests/radius-dictionary"),
+            dict=Dictionary("authentik/providers/radius/dictionaries/dictionary"),
         )
 
         req = srv.CreateAuthPacket(
@@ -98,7 +76,7 @@ class TestProviderRadius(SeleniumTestCase):
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessAccept)
 
-    @retry()
+    @retry(exceptions=[Timeout])
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
@@ -109,7 +87,7 @@ class TestProviderRadius(SeleniumTestCase):
         srv = Client(
             server="localhost",
             secret=self.shared_secret.encode(),
-            dict=Dictionary("tests/radius-dictionary"),
+            dict=Dictionary("authentik/providers/radius/dictionaries/dictionary"),
         )
 
         req = srv.CreateAuthPacket(

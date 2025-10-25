@@ -1,9 +1,9 @@
-import * as _enLocale from "@goauthentik/locales/en";
+import { AkLocale, LocaleRow } from "./types.js";
+
+import * as _enLocale from "#locales/en";
 
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
-
-import { AkLocale, LocaleRow } from "./types";
 
 export const DEFAULT_FALLBACK = "en";
 
@@ -12,7 +12,7 @@ const enLocale: LocaleModule = _enLocale;
 export { enLocale };
 
 // NOTE: This table cannot be made any shorter, despite all the repetition of syntax. Bundlers look
-// for the `await import` string as a *string target* for doing alias substitution, so putting
+// for the `import` #a *string target* for doing alias substitution, so putting
 // the import in some sort of abstracting function doesn't work. The same is true for the `msg()`
 // function, which `localize` uses to find strings for extraction and translation. Likewise,
 // because this is a file-level table, the `msg()` must be thunked so that they're re-run when
@@ -37,22 +37,24 @@ export { enLocale };
 
 // prettier-ignore
 const debug: LocaleRow = [
-    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  async () => await import("@goauthentik/locales/pseudo-LOCALE"),
+    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  () => import("#locales/pseudo-LOCALE"),
 ];
 
 // prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
-    ["en",      /^en([_-]|$)/i,      () => msg("English"),               async () => await import("@goauthentik/locales/en")],
-    ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               async () => await import("@goauthentik/locales/es")],
-    ["de",      /^de([_-]|$)/i,      () => msg("German"),                async () => await import("@goauthentik/locales/de")],
-    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                async () => await import("@goauthentik/locales/fr")],
-    ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                async () => await import("@goauthentik/locales/ko")],
-    ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 async () => await import("@goauthentik/locales/nl")],
-    ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                async () => await import("@goauthentik/locales/pl")],
-    ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               async () => await import("@goauthentik/locales/tr")],
-    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), async () => await import("@goauthentik/locales/zh-Hant")],
-    ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    async () => await import("@goauthentik/locales/zh_TW")],
-    ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  async () => await import("@goauthentik/locales/zh-Hans")],
+    ["de",      /^de([_-]|$)/i,      () => msg("German"),                () => import("#locales/de")],
+    ["en",      /^en([_-]|$)/i,      () => msg("English"),               () => import("#locales/en")],
+    ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               () => import("#locales/es")],
+    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                () => import("#locales/fr")],
+    ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               () => import("#locales/it")],
+    ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                () => import("#locales/ko")],
+    ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 () => import("#locales/nl")],
+    ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                () => import("#locales/pl")],
+    ["ru",      /^ru([_-]|$)/i,      () => msg("Russian"),               () => import("#locales/ru")],
+    ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               () => import("#locales/tr")],
+    ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    () => import("#locales/zh_TW")],
+    ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  () => import("#locales/zh-Hans")],
+    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh-Hant")],
     debug
 ];
 

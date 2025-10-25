@@ -1,12 +1,22 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import {
+    MicrosoftEntraProviderUser,
+    ProvidersApi,
+    ProvidersMicrosoftEntraSyncObjectCreateRequest,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { MicrosoftEntraProviderUser, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-users-list")
 export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProviderUser> {
@@ -15,12 +25,30 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
+
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Sync")}</span>
+                <span slot="header">${msg("Sync User")}</span>
+                <ak-sync-object-form
+                    .provider=${this.providerId}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
+                    .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
+                        return new ProvidersApi(
+                            DEFAULT_CONFIG,
+                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                    }}
+                    slot="form"
+                >
+                </ak-sync-object-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
+    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -46,11 +74,17 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: MicrosoftEntraProviderUser): string {
+        return item.userObj.name || item.userObj.username;
     }
 
-    row(item: MicrosoftEntraProviderUser): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
+
+    row(item: MicrosoftEntraProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -61,11 +95,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

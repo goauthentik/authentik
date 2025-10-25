@@ -1,17 +1,20 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/events/LogViewer";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-status-label";
+import "#elements/events/LogViewer";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { Form } from "#elements/forms/Form";
+
+import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
@@ -22,12 +25,10 @@ export class FlowImportForm extends Form<Flow> {
         return msg("Successfully imported flow.");
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async send(): Promise<FlowImportResult> {
-        const file = this.getFormFiles()["flow"];
+        const file = this.files().get("flow");
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
@@ -68,12 +69,19 @@ export class FlowImportForm extends Form<Flow> {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
-                    )}
+                    ${msg(".yaml files, which can be found in the Example Flows documentation")}
+                </p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("See more here:")}&nbsp;
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                        >${msg("Documentation")}</a
+                    >
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

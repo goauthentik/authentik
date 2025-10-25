@@ -1,14 +1,18 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
+
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { DOM_PURIFY_STRICT } from "#common/purify";
+
+import { AKElement } from "#elements/Base";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import mermaid, { MermaidConfig } from "mermaid";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -22,16 +26,14 @@ export class Diagram extends AKElement {
 
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: flex;
-                    justify-content: center;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            :host {
+                display: flex;
+                justify-content: center;
+            }
+        `,
+    ];
 
     config: MermaidConfig;
 
@@ -41,12 +43,14 @@ export class Diagram extends AKElement {
             // The type definition for this says number
             // but the example use strings
             // and numbers don't work
-            logLevel: "fatal" as unknown as number,
+            logLevel: "fatal",
             startOnLoad: false,
             flowchart: {
                 curve: "linear",
             },
             htmlLabels: false,
+            securityLevel: "strict",
+            dompurifyConfig: DOM_PURIFY_STRICT,
         };
         mermaid.initialize(this.config);
     }
@@ -80,7 +84,7 @@ export class Diagram extends AKElement {
             }
         });
         if (!this.diagram) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html`${until(
             mermaid.render("graph", this.diagram).then((r) => {

@@ -1,10 +1,9 @@
 """authentik OAuth2 Token views"""
 
-from base64 import b64decode, urlsafe_b64encode
+from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
-from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -17,7 +16,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWK, PyJWT, PyJWTError, decode
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA
@@ -58,9 +57,16 @@ from authentik.providers.oauth2.models import (
     ClientTypes,
     DeviceToken,
     OAuth2Provider,
+    RedirectURIMatchingMode,
     RefreshToken,
+    ScopeMapping,
 )
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    cors_allow,
+    extract_client_auth,
+    pkce_s256_challenge,
+)
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -77,7 +83,7 @@ class TokenParams:
     redirect_uri: str
     grant_type: str
     state: str
-    scope: list[str]
+    scope: set[str]
 
     provider: OAuth2Provider
 
@@ -112,13 +118,28 @@ class TokenParams:
             redirect_uri=request.POST.get("redirect_uri", ""),
             grant_type=request.POST.get("grant_type", ""),
             state=request.POST.get("state", ""),
-            scope=request.POST.get("scope", "").split(),
+            scope=set(request.POST.get("scope", "").split()),
             # PKCE parameter.
             code_verifier=request.POST.get("code_verifier"),
         )
 
+    def __check_scopes(self):
+        allowed_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
+            )
+        )
+        scopes_to_check = self.scope
+        if not scopes_to_check.issubset(allowed_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=allowed_scope_names,
+                scope_given=self.scope,
+            )
+            self.scope = self.scope.intersection(allowed_scope_names)
+
     def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
-        with Hub.current.start_span(
+        with start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
             user = self.user if self.user else get_anonymous_user()
@@ -149,24 +170,24 @@ class TokenParams:
                     client_id=self.provider.client_id,
                 )
                 raise TokenError("invalid_client")
-
+        self.__check_scopes()
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.code",
             ):
                 self.__post_init_code(raw_code, request)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.refresh",
             ):
                 self.__post_init_refresh(raw_token, request)
         elif self.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.client_credentials",
             ):
                 self.__post_init_client_credentials(request)
         elif self.grant_type == GRANT_TYPE_DEVICE_CODE:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.device_code",
             ):
                 self.__post_init_device_code(request)
@@ -179,42 +200,7 @@ class TokenParams:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
 
-        allowed_redirect_urls = self.provider.redirect_uris.split()
-        # At this point, no provider should have a blank redirect_uri, in case they do
-        # this will check an empty array and raise an error
-        try:
-            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (regex comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                )
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message="Invalid redirect URI used by provider",
-                    provider=self.provider,
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                ).from_http(request)
-                raise TokenError("invalid_client")
-        except RegexError as exc:
-            LOGGER.info("Failed to parse regular expression, checking directly", exc=exc)
-            if not any(x == self.redirect_uri for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (strict comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                )
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message="Invalid redirect_uri configured",
-                    provider=self.provider,
-                ).from_http(request)
-                raise TokenError("invalid_client") from None
-
-        # Check against forbidden schemes
-        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-            raise TokenError("invalid_request")
+        self.__check_redirect_uri(request)
 
         self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
         if not self.authorization_code:
@@ -238,11 +224,7 @@ class TokenParams:
             if not self.code_verifier:
                 raise TokenError("invalid_grant")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
-                new_code_challenge = (
-                    urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
-                    .decode("utf-8")
-                    .replace("=", "")
-                )
+                new_code_challenge = pkce_s256_challenge(self.code_verifier)
             else:
                 new_code_challenge = self.code_verifier
 
@@ -253,6 +235,48 @@ class TokenParams:
         # Prevent downgrade
         if not self.authorization_code.code_challenge and self.code_verifier:
             raise TokenError("invalid_grant")
+
+    def __check_redirect_uri(self, request: HttpRequest):
+        allowed_redirect_urls = self.provider.redirect_uris
+        # At this point, no provider should have a blank redirect_uri, in case they do
+        # this will check an empty array and raise an error
+
+        match_found = False
+        for allowed in allowed_redirect_urls:
+            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
+                if self.redirect_uri == allowed.url:
+                    match_found = True
+                    break
+            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
+                try:
+                    if fullmatch(allowed.url, self.redirect_uri):
+                        match_found = True
+                        break
+                except RegexError as exc:
+                    LOGGER.warning(
+                        "Failed to parse regular expression",
+                        exc=exc,
+                        url=allowed.url,
+                        provider=self.provider,
+                    )
+                    Event.new(
+                        EventAction.CONFIGURATION_ERROR,
+                        message="Invalid redirect_uri configured",
+                        provider=self.provider,
+                    ).from_http(request)
+        if not match_found:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="Invalid redirect URI used by provider",
+                provider=self.provider,
+                redirect_uri=self.redirect_uri,
+                expected=allowed_redirect_urls,
+            ).from_http(request)
+            raise TokenError("invalid_client")
+
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise TokenError("invalid_request")
 
     def __post_init_refresh(self, raw_token: str, request: HttpRequest):
         if not raw_token:
@@ -316,7 +340,7 @@ class TokenParams:
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
-            key=password, intent=TokenIntents.INTENT_APP_PASSWORD
+            key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
@@ -338,23 +362,9 @@ class TokenParams:
             },
         ).from_http(request, user=user)
 
-    def __post_init_client_credentials_jwt(self, request: HttpRequest):
-        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
-        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
-            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
-            raise TokenError("invalid_grant")
-
-        client_secret = request.POST.get("client_secret", None)
-        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
-        if not assertion:
-            LOGGER.warning("Missing client assertion")
-            raise TokenError("invalid_grant")
-
-        token = None
-
-        source: OAuthSource | None = None
-        parsed_key: PyJWK | None = None
-
+    def __validate_jwt_from_source(
+        self, assertion: str
+    ) -> tuple[dict, OAuthSource] | tuple[None, None]:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
         # Get the Key ID from the header, and use that to optimise our source query to only find
@@ -369,19 +379,23 @@ class TokenParams:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
-        for source in self.provider.jwks_sources.filter(
+        fallback_alg = decode_unvalidated["header"]["alg"]
+        token = source = None
+        for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
             LOGGER.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
+                if key.get("kid") and key.get("kid") != expected_kid:
+                    continue
                 LOGGER.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
-                    parsed_key = PyJWK.from_dict(key)
+                    parsed_key = PyJWK.from_dict(key).key
                     token = decode(
                         assertion,
-                        parsed_key.key,
-                        algorithms=[key.get("alg")],
+                        parsed_key,
+                        algorithms=[key.get("alg")] if "alg" in key else [fallback_alg],
                         options={
                             "verify_aud": False,
                         },
@@ -390,12 +404,60 @@ class TokenParams:
                 # and not a public key
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                     LOGGER.warning("failed to verify JWT", exc=exc, source=source.slug)
+        if token:
+            LOGGER.info("successfully verified JWT with source", source=source.slug)
+        return token, source
+
+    def __validate_jwt_from_provider(
+        self, assertion: str
+    ) -> tuple[dict, OAuth2Provider] | tuple[None, None]:
+        token = provider = _key = None
+        federated_token = AccessToken.objects.filter(
+            token=assertion, provider__in=self.provider.jwt_federation_providers.all()
+        ).first()
+        if federated_token:
+            _key, _alg = federated_token.provider.jwt_key
+            try:
+                token = decode(
+                    assertion,
+                    _key.public_key(),
+                    algorithms=[_alg],
+                    options={
+                        "verify_aud": False,
+                    },
+                )
+                provider = federated_token.provider
+                self.user = federated_token.user
+            except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+                LOGGER.warning(
+                    "failed to verify JWT", exc=exc, provider=federated_token.provider.name
+                )
+
+        if token:
+            LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+        return token, provider
+
+    def __post_init_client_credentials_jwt(self, request: HttpRequest):
+        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
+        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
+            raise TokenError("invalid_grant")
+
+        client_secret = request.POST.get("client_secret", None)
+        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
+        if not assertion:
+            LOGGER.warning("Missing client assertion")
+            raise TokenError("invalid_grant")
+
+        source = provider = None
+
+        token, source = self.__validate_jwt_from_source(assertion)
+        if not token:
+            token, provider = self.__validate_jwt_from_provider(assertion)
 
         if not token:
             LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
-
-        LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
             exp = datetime.fromtimestamp(token["exp"])
@@ -410,15 +472,16 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        self.__create_user_from_jwt(token, app, source)
+        if not provider:
+            self.__create_user_from_jwt(token, app, source)
 
         method_args = {
             "jwt": token,
         }
         if source:
             method_args["source"] = source
-        if parsed_key:
-            method_args["jwk_id"] = parsed_key.key_id
+        if provider:
+            method_args["provider"] = provider
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -433,20 +496,20 @@ class TokenParams:
         app = Application.objects.filter(provider=self.provider).first()
         if not app or not app.provider:
             raise TokenError("invalid_grant")
-        self.user, _ = User.objects.update_or_create(
-            # trim username to ensure the entire username is max 150 chars
-            # (22 chars being the length of the "template")
-            username=f"ak-{self.provider.name[:150-22]}-client_credentials",
-            defaults={
-                "attributes": {
-                    USER_ATTRIBUTE_GENERATED: True,
+        with audit_ignore():
+            self.user, _ = User.objects.update_or_create(
+                # trim username to ensure the entire username is max 150 chars
+                # (22 chars being the length of the "template")
+                username=f"ak-{self.provider.name[:150-22]}-client_credentials",
+                defaults={
+                    "last_login": timezone.now(),
+                    "name": f"Autogenerated user from application {app.name} (client credentials)",
+                    "path": f"{USER_PATH_SYSTEM_PREFIX}/apps/{app.slug}",
+                    "type": UserTypes.SERVICE_ACCOUNT,
                 },
-                "last_login": timezone.now(),
-                "name": f"Autogenerated user from application {app.name} (client credentials)",
-                "path": f"{USER_PATH_SYSTEM_PREFIX}/apps/{app.slug}",
-                "type": UserTypes.SERVICE_ACCOUNT,
-            },
-        )
+            )
+            self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
+            self.user.save()
         self.__check_policy_access(app, request)
 
         Event.new(
@@ -470,9 +533,6 @@ class TokenParams:
             self.user, created = User.objects.update_or_create(
                 username=f"{self.provider.name}-{token.get('sub')}",
                 defaults={
-                    "attributes": {
-                        USER_ATTRIBUTE_GENERATED: True,
-                    },
                     "last_login": timezone.now(),
                     "name": (
                         f"Autogenerated user from application {app.name} (client credentials JWT)"
@@ -481,6 +541,8 @@ class TokenParams:
                     "type": UserTypes.SERVICE_ACCOUNT,
                 },
             )
+            self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
+            self.user.save()
             exp = token.get("exp")
             if created and exp:
                 self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
@@ -498,7 +560,7 @@ class TokenView(View):
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.provider:
-            allowed_origins = self.provider.redirect_uris.split("\n")
+            allowed_origins = [x.url for x in self.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
         return response
 
@@ -508,7 +570,7 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
@@ -519,7 +581,7 @@ class TokenView(View):
                 CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
@@ -536,9 +598,9 @@ class TokenView(View):
                     return TokenResponse(self.create_device_code_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
-            return TokenResponse(error.create_dict(), status=400)
+            return TokenResponse(error.create_dict(request), status=400)
         except UserAuthError as error:
-            return TokenResponse(error.create_dict(), status=403)
+            return TokenResponse(error.create_dict(request), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
@@ -551,7 +613,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
-            session_id=self.params.authorization_code.session_id,
+            session=self.params.authorization_code.session,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -565,6 +627,7 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -579,7 +642,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=self.params.authorization_code.auth_time,
-                session_id=self.params.authorization_code.session_id,
+                session=self.params.authorization_code.session,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -612,7 +675,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
             auth_time=self.params.refresh_token.auth_time,
-            session_id=self.params.refresh_token.session_id,
+            session=self.params.refresh_token.session,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -621,38 +684,46 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.refresh_token.user,
-            scope=self.params.refresh_token.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.refresh_token.auth_time,
-            session_id=self.params.refresh_token.session_id,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.refresh_token.id_token.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Mark old token as revoked
-        self.params.refresh_token.revoked = True
-        self.params.refresh_token.save()
-
-        return {
+        res = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        if (
+            refresh_token_threshold.total_seconds() == 0
+            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+        ):
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.refresh_token.user,
+                scope=self.params.refresh_token.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.refresh_token.auth_time,
+                session=self.params.refresh_token.session,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+
+            # Mark old token as revoked
+            self.params.refresh_token.revoked = True
+            self.params.refresh_token.save()
+            res["refresh_token"] = refresh_token.token
+
+        return res
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
@@ -674,6 +745,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -686,13 +758,14 @@ class TokenView(View):
             raise DeviceCodeError("authorization_pending")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        auth_event = get_login_event(self.request)
+        auth_event = get_login_event(self.params.device_code.session)
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
             expires=access_token_expiry,
             scope=self.params.device_code.scope,
             auth_time=auth_event.created if auth_event else now,
+            session=self.params.device_code.session,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -704,13 +777,14 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
-        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+        if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope:
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=self.params.device_code.user,

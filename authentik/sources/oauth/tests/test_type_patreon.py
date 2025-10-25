@@ -1,9 +1,9 @@
 """Patreon Type tests"""
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.patreon import PatreonOAuthCallback
+from authentik.sources.oauth.types.patreon import PatreonType
 
 PATREON_USER = {
     "data": {
@@ -58,11 +58,10 @@ class TestTypePatreon(TestCase):
             slug="test",
             provider_type="Patreon",
         )
-        self.factory = RequestFactory()
 
     def test_enroll_context(self):
         """Test Patreon Enrollment context"""
-        ak_context = PatreonOAuthCallback().get_user_enroll_context(PATREON_USER)
+        ak_context = PatreonType().get_base_user_properties(source=self.source, info=PATREON_USER)
         self.assertEqual(ak_context["username"], PATREON_USER["data"]["attributes"]["vanity"])
         self.assertEqual(ak_context["email"], PATREON_USER["data"]["attributes"]["email"])
         self.assertEqual(ak_context["name"], PATREON_USER["data"]["attributes"]["full_name"])

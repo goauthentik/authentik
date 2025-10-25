@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddlewareSpecForwardAuth:
     """traefik middleware forwardAuth spec"""
 
@@ -28,14 +28,14 @@ class TraefikMiddlewareSpecForwardAuth:
     trustForwardHeader: bool = field(default=True)
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddlewareSpec:
     """Traefik middleware spec"""
 
     forwardAuth: TraefikMiddlewareSpecForwardAuth
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddlewareMetadata:
     """Traefik Middleware metadata"""
 
@@ -44,7 +44,7 @@ class TraefikMiddlewareMetadata:
     labels: dict = field(default_factory=dict)
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddleware:
     """Traefik Middleware"""
 
@@ -127,6 +127,7 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
                     authResponseHeaders=[
                         "X-authentik-username",
                         "X-authentik-groups",
+                        "X-authentik-entitlements",
                         "X-authentik-email",
                         "X-authentik-name",
                         "X-authentik-uid",

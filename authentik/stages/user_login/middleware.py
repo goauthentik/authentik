@@ -6,14 +6,13 @@ from django.contrib.auth.views import redirect_to_login
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession
+from authentik.core.models import Session
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
-SESSION_KEY_LAST_IP = "authentik/stages/user_login/last_ip"
 SESSION_KEY_BINDING_NET = "authentik/stages/user_login/binding/net"
 SESSION_KEY_BINDING_GEO = "authentik/stages/user_login/binding/geo"
 LOGGER = get_logger()
@@ -91,7 +90,7 @@ class BoundSessionMiddleware(SessionMiddleware):
 
     def recheck_session(self, request: HttpRequest):
         """Check if a session is still valid with a changed IP"""
-        last_ip = request.session.get(SESSION_KEY_LAST_IP)
+        last_ip = request.session.get(Session.Keys.LAST_IP)
         new_ip = ClientIPMiddleware.get_client_ip(request)
         # Check changed IP
         if new_ip == last_ip:
@@ -103,20 +102,18 @@ class BoundSessionMiddleware(SessionMiddleware):
             SESSION_KEY_BINDING_GEO, GeoIPBinding.NO_BINDING
         )
         if configured_binding_net != NetworkBinding.NO_BINDING:
-            self.recheck_session_net(configured_binding_net, last_ip, new_ip)
+            BoundSessionMiddleware.recheck_session_net(configured_binding_net, last_ip, new_ip)
         if configured_binding_geo != GeoIPBinding.NO_BINDING:
-            self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
+            BoundSessionMiddleware.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
         # If we got to this point without any error being raised, we need to
         # update the last saved IP to the current one
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
             # Only set the last IP in the session if there's a binding specified
             # (== basically requires the user to be logged in)
-            request.session[SESSION_KEY_LAST_IP] = new_ip
-        AuthenticatedSession.objects.filter(session_key=request.session.session_key).update(
-            last_ip=new_ip, last_user_agent=request.META.get("HTTP_USER_AGENT", "")
-        )
+            request.session[Session.Keys.LAST_IP] = new_ip
 
-    def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
+    @staticmethod
+    def recheck_session_net(binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""
         last_asn = ASN_CONTEXT_PROCESSOR.asn(last_ip)
         new_asn = ASN_CONTEXT_PROCESSOR.asn(new_ip)
@@ -163,7 +160,8 @@ class BoundSessionMiddleware(SessionMiddleware):
                     new_ip,
                 )
 
-    def recheck_session_geo(self, binding: GeoIPBinding, last_ip: str, new_ip: str):
+    @staticmethod
+    def recheck_session_geo(binding: GeoIPBinding, last_ip: str, new_ip: str):
         """Check GeoIP binding"""
         last_geo = GEOIP_CONTEXT_PROCESSOR.city(last_ip)
         new_geo = GEOIP_CONTEXT_PROCESSOR.city(new_ip)
@@ -184,8 +182,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.continent != new_geo.continent:
                 raise SessionBindingBroken(
                     "geoip.continent",
-                    last_geo.continent,
-                    new_geo.continent,
+                    last_geo.continent.to_dict(),
+                    new_geo.continent.to_dict(),
                     last_ip,
                     new_ip,
                 )
@@ -197,8 +195,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.country != new_geo.country:
                 raise SessionBindingBroken(
                     "geoip.country",
-                    last_geo.country,
-                    new_geo.country,
+                    last_geo.country.to_dict(),
+                    new_geo.country.to_dict(),
                     last_ip,
                     new_ip,
                 )
@@ -207,8 +205,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.city != new_geo.city:
                 raise SessionBindingBroken(
                     "geoip.city",
-                    last_geo.city,
-                    new_geo.city,
+                    last_geo.city.to_dict(),
+                    new_geo.city.to_dict(),
                     last_ip,
                     new_ip,
                 )

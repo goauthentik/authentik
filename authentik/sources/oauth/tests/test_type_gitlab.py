@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.gitlab import GitLabOAuthCallback
+from authentik.sources.oauth.types.gitlab import GitLabType
 
 GITLAB_USER = {
     "preferred_username": "dev_gitlab",
@@ -24,7 +24,7 @@ class TestTypeGitLab(TestCase):
 
     def test_enroll_context(self):
         """Test GitLab Enrollment context"""
-        ak_context = GitLabOAuthCallback().get_user_enroll_context(GITLAB_USER)
+        ak_context = GitLabType().get_base_user_properties(source=self.source, info=GITLAB_USER)
         self.assertEqual(ak_context["username"], GITLAB_USER["preferred_username"])
         self.assertEqual(ak_context["email"], GITLAB_USER["email"])
         self.assertEqual(ak_context["name"], GITLAB_USER["name"])

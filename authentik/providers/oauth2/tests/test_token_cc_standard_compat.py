@@ -20,7 +20,12 @@ from authentik.providers.oauth2.constants import (
     TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -34,7 +39,7 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
@@ -63,7 +68,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_wrong_token(self):
@@ -80,7 +89,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_no_provider(self):
@@ -99,7 +112,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_permission_denied(self):
@@ -122,7 +139,11 @@ class TestTokenClientCredentialsStandardCompat(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_successful(self):

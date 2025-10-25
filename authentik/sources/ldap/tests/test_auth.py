@@ -9,10 +9,11 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.auth import LDAPBackend
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
+from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
 
@@ -32,8 +33,8 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_direct_user_ad(self):
         """Test direct auth"""
-        self.source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
@@ -43,7 +44,7 @@ class LDAPSyncTests(TestCase):
         raw_conn.bind = bind_mock
         connection = MagicMock(return_value=raw_conn)
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
@@ -63,15 +64,15 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_synced_user_ad(self):
         """Test Cached auth"""
-        self.source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
@@ -89,8 +90,8 @@ class LDAPSyncTests(TestCase):
     def test_auth_synced_user_openldap(self):
         """Test Cached auth"""
         self.source.object_uniqueness_field = "uid"
-        self.source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(name__startswith="authentik default LDAP Mapping")
                 | Q(name__startswith="authentik default OpenLDAP Mapping")
             )
@@ -98,7 +99,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")

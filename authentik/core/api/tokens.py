@@ -3,18 +3,15 @@
 from typing import Any
 
 from django.utils.timezone import now
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
@@ -138,8 +135,8 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         "managed",
     ]
     ordering = ["identifier", "expires"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
+    rbac_allow_create_without_perm = True
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

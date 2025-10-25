@@ -5,12 +5,13 @@ from uuid import UUID
 
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
+from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
-from webauthn.helpers.exceptions import InvalidRegistrationResponse
+from webauthn.helpers.exceptions import WebAuthnException
 from webauthn.helpers.structs import (
     AttestationConveyancePreference,
     AuthenticatorAttachment,
@@ -41,7 +42,8 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
-SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
+PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
+PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
 
 
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
@@ -62,7 +64,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
-        challenge = self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE]
+        challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
@@ -71,7 +73,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
             )
-        except InvalidRegistrationResponse as exc:
+        except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}") from None
 
@@ -114,9 +116,10 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     response_class = AuthenticatorWebAuthnChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        # clear session variables prior to starting a new registration
-        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
         stage: AuthenticatorWebAuthnStage = self.executor.current_stage
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_WEBAUTHN_ATTEMPT, 0)
+        # clear flow variables prior to starting a new registration
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         user = self.get_pending_user()
 
         # library accepts none so we store null in the database, but if there is a value
@@ -139,8 +142,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             attestation=AttestationConveyancePreference.DIRECT,
         )
 
-        self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = registration_options.challenge
-        self.request.session.save()
+        self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
                 "registration": loads(options_to_json(registration_options)),
@@ -152,6 +154,24 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         response.request = self.request
         response.user = self.get_pending_user()
         return response
+
+    def challenge_invalid(self, response):
+        stage: AuthenticatorWebAuthnStage = self.executor.current_stage
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_WEBAUTHN_ATTEMPT, 0)
+        self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_ATTEMPT] += 1
+        if (
+            stage.max_attempts > 0
+            and self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_ATTEMPT] >= stage.max_attempts
+        ):
+            return self.executor.stage_invalid(
+                __(
+                    "Exceeded maximum attempts. "
+                    "Contact your {brand} administrator for help.".format(
+                        brand=self.request.brand.branding_title
+                    )
+                )
+            )
+        return super().challenge_invalid(response)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
@@ -179,6 +199,3 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
-
-    def cleanup(self):
-        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)

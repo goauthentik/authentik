@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.mailcow import MailcowOAuth2Callback
+from authentik.sources.oauth.types.mailcow import MailcowType
 
 # https://community.mailcow.email/d/13-mailcow-oauth-json-format/2
 MAILCOW_USER = {
@@ -34,6 +34,6 @@ class TestTypeMailcow(TestCase):
 
     def test_enroll_context(self):
         """Test mailcow Enrollment context"""
-        ak_context = MailcowOAuth2Callback().get_user_enroll_context(MAILCOW_USER)
+        ak_context = MailcowType().get_base_user_properties(source=self.source, info=MAILCOW_USER)
         self.assertEqual(ak_context["email"], MAILCOW_USER["email"])
         self.assertEqual(ak_context["name"], MAILCOW_USER["full_name"])

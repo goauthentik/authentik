@@ -1,0 +1,28 @@
+// TypeScript Project Configuration
+{
+    "extends": "./packages/tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "."
+    },
+    "watchOptions": {
+        "excludeDirectories": [
+            "**/.git", // Git
+            "**/.yarn", // Yarn
+            "**/.vscode", // VS Code
+            "**/.vscode-test-web", // VS Code Web Test
+            "**/dist", // Distributed build files
+            "**/out", // Output build files
+            "**/.drafts", // Drafts
+            "**/.github", // GitHub
+            "**/node_modules" // Node modules
+        ]
+    },
+
+    // The root project has no sources of its own. By setting `files` to an empty
+    // list, TS won't automatically include all sources below root (the default).
+    "files": [],
+    "references": [
+        // Note that references are in the order we want them to be built.
+        // TODO: Left blank until TypeScript workspaces are complete.
+    ]
+}

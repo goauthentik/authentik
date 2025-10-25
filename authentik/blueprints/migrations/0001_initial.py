@@ -29,9 +29,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, db_alias, path: Path):
         if version != 1:
             return
         blueprint_file.seek(0)
-    instance: BlueprintInstance = (
-        BlueprintInstance.objects.using(db_alias).filter(path=path).first()
-    )
+    instance = BlueprintInstance.objects.using(db_alias).filter(path=path).first()
     rel_path = path.relative_to(Path(CONFIG.get("blueprints_dir")))
     meta = None
     if metadata:

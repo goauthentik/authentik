@@ -2,6 +2,33 @@
 
 from ldap3 import MOCK_SYNC, OFFLINE_SLAPD_2_4, Connection, Server
 
+# The mock modifies these in place, so we have to define them per string
+user_in_slapd_dn = "cn=user_in_slapd_cn,ou=users,dc=goauthentik,dc=io"
+user_in_slapd_cn = "user_in_slapd_cn"
+user_in_slapd_uid = "user_in_slapd_uid"
+user_in_slapd_object_class = "person"
+user_in_slapd = {
+    "dn": user_in_slapd_dn,
+    "attributes": {
+        "cn": user_in_slapd_cn,
+        "uid": user_in_slapd_uid,
+        "objectClass": user_in_slapd_object_class,
+    },
+}
+group_in_slapd_dn = "cn=user_in_slapd_cn,ou=groups,dc=goauthentik,dc=io"
+group_in_slapd_cn = "group_in_slapd_cn"
+group_in_slapd_uid = "group_in_slapd_uid"
+group_in_slapd_object_class = "groupOfNames"
+group_in_slapd = {
+    "dn": group_in_slapd_dn,
+    "attributes": {
+        "cn": group_in_slapd_cn,
+        "uid": group_in_slapd_uid,
+        "objectClass": group_in_slapd_object_class,
+        "member": [user_in_slapd["dn"]],
+    },
+}
+
 
 def mock_slapd_connection(password: str) -> Connection:
     """Create mock SLAPD connection"""
@@ -95,6 +122,15 @@ def mock_slapd_connection(password: str) -> Connection:
             "cn": "user-posix",
             "objectClass": "posixAccount",
         },
+    )
+    # Known user and group
+    connection.strategy.add_entry(
+        user_in_slapd["dn"],
+        user_in_slapd["attributes"],
+    )
+    connection.strategy.add_entry(
+        group_in_slapd["dn"],
+        group_in_slapd["attributes"],
     )
     connection.bind()
     return connection

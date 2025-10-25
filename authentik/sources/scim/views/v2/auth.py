@@ -8,6 +8,7 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
 from authentik.sources.scim.models import SCIMSource
 
@@ -26,6 +27,7 @@ class SCIMTokenAuth(BaseAuthentication):
         _username, _, password = b64decode(key.encode()).decode().partition(":")
         token = self.check_token(password, source_slug)
         if token:
+            CTX_AUTH_VIA.set("scim_basic")
             return (token.user, token)
         return None
 
@@ -52,4 +54,5 @@ class SCIMTokenAuth(BaseAuthentication):
         token = self.check_token(key, source_slug)
         if not token:
             return None
+        CTX_AUTH_VIA.set("scim_token")
         return (token.user, token)

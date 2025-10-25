@@ -1,15 +1,16 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
@@ -38,80 +39,78 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 policyUuid: this.instance.pk || "",
                 passwordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
-                passwordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
+            passwordPolicyRequest: data,
+        });
     }
 
     renderStaticRules(): TemplateResult {
-        return html` <ak-form-group>
-            <span slot="header"> ${msg("Static rules")} </span>
-            <div slot="body" class="pf-c-form">
+        return html` <ak-form-group label="${msg("Static rules")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Minimum length")}
-                    ?required=${true}
+                    required
                     name="lengthMin"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.lengthMin, 10)}"
+                        value="${this.instance?.lengthMin ?? 10}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Uppercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountUppercase"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountUppercase, 2)}"
+                        value="${this.instance?.amountUppercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Lowercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountLowercase"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountLowercase, 2)}"
+                        value="${this.instance?.amountLowercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Digits")}
-                    ?required=${true}
+                    required
                     name="amountDigits"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountDigits, 2)}"
+                        value="${this.instance?.amountDigits ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Symbols Characters")}
-                    ?required=${true}
+                    required
                     name="amountSymbols"
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountSymbols, 2)}"
+                        value="${this.instance?.amountSymbols ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Error message")}
-                    ?required=${true}
+                    required
                     name="errorMessage"
                 >
                     <input
@@ -123,7 +122,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Symbol charset")}
-                    ?required=${true}
+                    required
                     name="symbolCharset"
                 >
                     <input
@@ -144,17 +143,16 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderHIBP(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("HaveIBeenPwned settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Allowed count")}
-                        ?required=${true}
+                        required
                         name="hibpAllowedCount"
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.hibpAllowedCount, 0)}"
+                            value="${this.instance?.hibpAllowedCount ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -169,17 +167,16 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderZxcvbn(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("zxcvbn settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("zxcvbn settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Score threshold")}
-                        ?required=${true}
+                        required
                         name="zxcvbnScoreThreshold"
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.zxcvbnScoreThreshold, 0)}"
+                            value="${this.instance?.zxcvbnScoreThreshold ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -223,7 +220,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -236,7 +233,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -253,7 +250,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
-                ?required=${true}
+                required
                 name="passwordField"
             >
                 <input
@@ -272,7 +269,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkStaticRules, true)}
+                        ?checked=${this.instance?.checkStaticRules ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showStatic = el.checked;
@@ -291,7 +288,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkHaveIBeenPwned, true)}
+                        ?checked=${this.instance?.checkHaveIBeenPwned ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showHIBP = el.checked;
@@ -316,7 +313,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkZxcvbn, true)}
+                        ?checked=${this.instance?.checkZxcvbn ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showZxcvbn = el.checked;
@@ -334,9 +331,9 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
                 </p>
             </ak-form-element-horizontal>
-            ${this.showStatic ? this.renderStaticRules() : html``}
-            ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
+            ${this.showStatic ? this.renderStaticRules() : nothing}
+            ${this.showHIBP ? this.renderHIBP() : nothing}
+            ${this.showZxcvbn ? this.renderZxcvbn() : nothing}`;
     }
 }
 

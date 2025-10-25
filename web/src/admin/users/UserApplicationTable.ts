@@ -1,24 +1,26 @@
-import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { applicationListStyle } from "#admin/applications/ApplicationListPage";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
     user?: User;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(applicationListStyle);
-    }
+    static styles: CSSResult[] = [...super.styles, applicationListStyle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
@@ -27,23 +29,21 @@ export class UserApplicationTable extends Table<Application> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(""),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Group"), "group"),
-            new TableColumn(msg("Provider")),
-            new TableColumn(msg("Provider Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [""],
+        [msg("Name"), "name"],
+        [msg("Group"), "group"],
+        [msg("Provider")],
+        [msg("Provider Type")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
-    row(item: Application): TemplateResult[] {
+    row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
+            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIcon)}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
-                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
+                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             html`${item.group || msg("-")}`,
             item.provider
@@ -52,24 +52,26 @@ export class UserApplicationTable extends Table<Application> {
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Application")} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
                           <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square"></i>
+                              <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
-                    : html``}`,
+                    : nothing}
+            </div>`,
         ];
     }
 }

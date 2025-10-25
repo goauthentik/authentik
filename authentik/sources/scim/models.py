@@ -1,13 +1,14 @@
 """SCIM Source"""
 
+from typing import Any
 from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from rest_framework.serializers import BaseSerializer
+from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Group, Source, Token, User
+from authentik.core.models import Group, PropertyMapping, Source, Token, User
 from authentik.lib.models import SerializerModel
 
 
@@ -19,8 +20,6 @@ class SCIMSource(Source):
 
     @property
     def service_account_identifier(self) -> str:
-        if not self.pk:
-            self.pk = uuid4()
         return f"ak-source-scim-{self.pk}"
 
     @property
@@ -38,6 +37,41 @@ class SCIMSource(Source):
 
         return SCIMSourceSerializer
 
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return SCIMSourcePropertyMapping
+
+    def get_base_user_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
+        properties = {}
+
+        def get_email(data: list[dict]) -> str:
+            """Wrapper to get primary email or first email"""
+            for email in data:
+                if email.get("primary", False):
+                    return email.get("value")
+            if len(data) < 1:
+                return ""
+            return data[0].get("value")
+
+        if "userName" in data:
+            properties["username"] = data.get("userName")
+        if "name" in data:
+            properties["name"] = data.get("name", {}).get("formatted", data.get("displayName"))
+        if "emails" in data:
+            properties["email"] = get_email(data.get("emails"))
+        if "active" in data:
+            properties["is_active"] = data.get("active")
+
+        return properties
+
+    def get_base_group_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
+        properties = {}
+
+        if "displayName" in data:
+            properties["name"] = data.get("displayName")
+
+        return properties
+
     def __str__(self) -> str:
         return f"SCIM Source {self.name}"
 
@@ -47,13 +81,35 @@ class SCIMSource(Source):
         verbose_name_plural = _("SCIM Sources")
 
 
+class SCIMSourcePropertyMapping(PropertyMapping):
+    """Map SCIM properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-scim-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.scim.api.property_mappings import (
+            SCIMSourcePropertyMappingSerializer,
+        )
+
+        return SCIMSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("SCIM Source Property Mapping")
+        verbose_name_plural = _("SCIM Source Property Mappings")
+
+
 class SCIMSourceUser(SerializerModel):
     """Mapping of a user and source to a SCIM user ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.TextField(primary_key=True, default=uuid4)
+    external_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+    last_update = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -62,7 +118,10 @@ class SCIMSourceUser(SerializerModel):
         return SCIMSourceUserSerializer
 
     class Meta:
-        unique_together = (("id", "user", "source"),)
+        unique_together = (("external_id", "source"),)
+        indexes = [
+            models.Index(fields=["external_id"]),
+        ]
 
     def __str__(self) -> str:
         return f"SCIM User {self.user_id} to {self.source_id}"
@@ -71,10 +130,12 @@ class SCIMSourceUser(SerializerModel):
 class SCIMSourceGroup(SerializerModel):
     """Mapping of a group and source to a SCIM user ID"""
 
-    id = models.TextField(primary_key=True)
+    id = models.TextField(primary_key=True, default=uuid4)
+    external_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+    last_update = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -83,7 +144,10 @@ class SCIMSourceGroup(SerializerModel):
         return SCIMSourceGroupSerializer
 
     class Meta:
-        unique_together = (("id", "group", "source"),)
+        unique_together = (("external_id", "source"),)
+        indexes = [
+            models.Index(fields=["external_id"]),
+        ]
 
     def __str__(self) -> str:
         return f"SCIM Group {self.group_id} to {self.source_id}"

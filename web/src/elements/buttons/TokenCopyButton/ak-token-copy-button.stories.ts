@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "./ak-token-copy-button.js";
+
+import AKTokenCopyButton from "./ak-token-copy-button.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "./ak-token-copy-button";
-import AKTokenCopyButton from "./ak-token-copy-button";
+import { html, TemplateResult } from "lit";
 
 // For this test, we want each key to be unique so that the tester can
 // be assured that the returned result is in fact going into the
@@ -22,7 +23,7 @@ function makeid(length: number) {
 // a styled wrapper for the return messages, and a styled wrapper for each message.
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -51,7 +52,6 @@ const displayMessage = (result: any) => {
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     target!.appendChild(doc.firstChild!);
 };
 

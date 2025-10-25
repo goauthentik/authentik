@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.twitch import TwitchOAuth2Callback
+from authentik.sources.oauth.types.twitch import TwitchType
 
 # https://dev.twitch.tv/docs/authentication/getting-tokens-oidc/#getting-claims-information-from-an-access-token
 TWITCH_USER = {
@@ -32,7 +32,7 @@ class TestTypeTwitch(TestCase):
 
     def test_enroll_context(self):
         """Test twitch Enrollment context"""
-        ak_context = TwitchOAuth2Callback().get_user_enroll_context(TWITCH_USER)
+        ak_context = TwitchType().get_base_user_properties(source=self.source, info=TWITCH_USER)
         self.assertEqual(ak_context["username"], TWITCH_USER["preferred_username"])
         self.assertEqual(ak_context["email"], TWITCH_USER["email"])
         self.assertEqual(ak_context["name"], TWITCH_USER["preferred_username"])

@@ -1,9 +1,12 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { WizardAction } from "#elements/wizard/Wizard";
+import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -11,8 +14,6 @@ import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ResponseError } from "@goauthentik/api";
 
 export enum ActionState {
     pending = "pending",
@@ -29,9 +30,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
-    }
+    static styles: CSSResult[] = [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
 
     @property({ attribute: false })
     states: ActionStateBundle[] = [];
@@ -41,6 +40,7 @@ export class ActionWizardPage extends WizardPage {
 
     activeCallback = async (): Promise<void> => {
         this.states = [];
+
         this.host.actions.map((act, idx) => {
             this.states.push({
                 action: act,
@@ -48,26 +48,34 @@ export class ActionWizardPage extends WizardPage {
                 idx: idx,
             });
         });
+
         this.host.canBack = false;
         this.host.canCancel = false;
+
         await this.run();
+
         // Ensure wizard is closable, even when run() failed
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public label = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
+
         await new Promise((r) => setTimeout(r, 500));
+
         for await (const bundle of this.states) {
             this.currentStep = bundle;
             this.currentStep.state = ActionState.running;
             this.requestUpdate();
             try {
                 await bundle.action.run();
+
                 await new Promise((r) => setTimeout(r, 500));
+
                 this.currentStep.state = ActionState.done;
+
                 this.requestUpdate();
             } catch (exc) {
                 if (exc instanceof ResponseError) {
@@ -75,12 +83,16 @@ export class ActionWizardPage extends WizardPage {
                 } else {
                     this.currentStep.action.subText = (exc as Error).toString();
                 }
+
                 this.currentStep.state = ActionState.failed;
                 this.requestUpdate();
+
                 return;
             }
         }
+
         this.host.isValid = true;
+
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,
@@ -93,7 +105,7 @@ export class ActionWizardPage extends WizardPage {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">
-                    <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
+                    <i class="fas fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
                     <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
                     <div class="pf-c-empty-state__body">
                         <ol class="pf-c-progress-stepper pf-m-vertical">
@@ -132,7 +144,7 @@ export class ActionWizardPage extends WizardPage {
                                               >
                                                   ${state.action.subText}
                                               </div>`
-                                            : html``}
+                                            : nothing}
                                     </div>
                                 </li>`;
                             })}

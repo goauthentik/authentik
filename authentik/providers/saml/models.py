@@ -1,5 +1,7 @@
 """authentik SAML Provider Models"""
 
+from uuid import uuid4
+
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -8,9 +10,17 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import CreatableType
-from authentik.core.models import PropertyMapping, Provider
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    PropertyMapping,
+    Provider,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
@@ -37,10 +47,20 @@ class SAMLBindings(models.TextChoices):
     POST = "post"
 
 
+class SAMLLogoutMethods(models.TextChoices):
+    """SAML Logout methods supported by authentik"""
+
+    FRONTCHANNEL_IFRAME = "frontchannel_iframe"
+    FRONTCHANNEL_NATIVE = "frontchannel_native"
+    BACKCHANNEL = "backchannel"
+
+
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    acs_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -58,7 +78,31 @@ class SAMLProvider(Provider):
             "This determines how authentik sends the response back to the Service Provider."
         ),
     )
-
+    sls_url = models.TextField(
+        blank=True,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("SLS URL"),
+        help_text=_("Single Logout Service URL where the logout response should be sent."),
+    )
+    sls_binding = models.TextField(
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        verbose_name=_("SLS Binding"),
+        help_text=_(
+            "This determines how authentik sends the logout response back to the Service Provider."
+        ),
+    )
+    logout_method = models.TextField(
+        choices=SAMLLogoutMethods.choices,
+        default=SAMLLogoutMethods.FRONTCHANNEL_IFRAME,
+        help_text=_(
+            "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously "
+            "in hidden iframes. Front-channel native uses your active browser tab to send post "
+            "requests and redirect to providers. "
+            "Back-channel sends logout requests directly from the server without "
+            "user interaction (requires POST SLS binding)."
+        ),
+    )
     name_id_mapping = models.ForeignKey(
         "SAMLPropertyMapping",
         default=None,
@@ -69,6 +113,20 @@ class SAMLProvider(Provider):
         help_text=_(
             "Configure how the NameID value will be created. When left empty, "
             "the NameIDPolicy of the incoming request will be considered"
+        ),
+    )
+    authn_context_class_ref_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("AuthnContextClassRef Property Mapping"),
+        related_name="+",
+        help_text=_(
+            "Configure how the AuthnContextClassRef value will be created. When left empty, "
+            "the AuthnContextClassRef will be set based on which authentication methods the user "
+            "used to authenticate."
         ),
     )
 
@@ -144,16 +202,36 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
+    default_name_id_policy = models.TextField(
+        choices=SAMLNameIDPolicy.choices, default=SAMLNameIDPolicy.UNSPECIFIED
+    )
+
+    sign_assertion = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=False)
+    sign_logout_request = models.BooleanField(default=False)
 
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},
@@ -191,7 +269,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-form"
+        return "ak-property-mapping-provider-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -204,8 +282,8 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-        verbose_name = _("SAML Property Mapping")
-        verbose_name_plural = _("SAML Property Mappings")
+        verbose_name = _("SAML Provider Property Mapping")
+        verbose_name_plural = _("SAML Provider Property Mappings")
 
 
 class SAMLProviderImportModel(CreatableType, Provider):
@@ -223,3 +301,39 @@ class SAMLProviderImportModel(CreatableType, Provider):
         abstract = True
         verbose_name = _("SAML Provider from Metadata")
         verbose_name_plural = _("SAML Providers from Metadata")
+
+
+class SAMLSession(SerializerModel, ExpiringModel):
+    """Track active SAML sessions for Single Logout support"""
+
+    saml_session_id = models.UUIDField(default=uuid4, primary_key=True)
+    provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    session = models.ForeignKey(
+        AuthenticatedSession,
+        on_delete=models.CASCADE,
+        help_text=_("Link to the user's authenticated session"),
+    )
+    session_index = models.TextField(help_text=_("SAML SessionIndex for this session"))
+    name_id = models.TextField(help_text=_("SAML NameID value for this session"))
+    name_id_format = models.TextField(default="", blank=True, help_text=_("SAML NameID format"))
+    created = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.saml.api.sessions import SAMLSessionSerializer
+
+        return SAMLSessionSerializer
+
+    def __str__(self):
+        return f"SAML Session for provider {self.provider_id} and user {self.user_id}"
+
+    class Meta:
+        verbose_name = _("SAML Session")
+        verbose_name_plural = _("SAML Sessions")
+        unique_together = [("session_index", "provider")]
+        indexes = [
+            models.Index(fields=["session_index"]),
+            models.Index(fields=["provider", "user"]),
+            models.Index(fields=["session"]),
+        ]

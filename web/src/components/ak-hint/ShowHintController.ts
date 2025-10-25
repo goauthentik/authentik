@@ -1,7 +1,7 @@
-import { LOCALSTORAGE_AUTHENTIK_KEY } from "@goauthentik/common/constants";
+import { LOCALSTORAGE_AUTHENTIK_KEY } from "#common/constants";
 
 import { msg } from "@lit/localize";
-import { LitElement, ReactiveController, ReactiveControllerHost, html } from "lit";
+import { html, LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
 type ReactiveLitElement = LitElement & ReactiveControllerHost;
 
@@ -63,7 +63,7 @@ export class ShowHintController implements ReactiveController {
     render() {
         return html`<ak-hint-footer
             ><div style="text-align: right">
-                <input type="checkbox" @input=${this.hide} />${msg(
+                <input type="checkbox" @input=${this.hide} />&nbsp;${msg(
                     "Don't show this message again.",
                 )}
             </div></ak-hint-footer

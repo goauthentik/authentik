@@ -44,6 +44,7 @@ class TestRBACRoleAPI(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -73,7 +74,7 @@ class TestRBACRoleAPI(APITestCase):
                 "permissions": ["authentik_stages_invitation.view_invitation"],
             },
         )
-        self.assertEqual(res.status_code, 204)
+        self.assertEqual(res.status_code, 200)
         self.assertTrue(self.user.has_perm("authentik_stages_invitation.view_invitation"))
 
     def test_assign_object(self):
@@ -96,7 +97,7 @@ class TestRBACRoleAPI(APITestCase):
                 "object_pk": str(inv.pk),
             },
         )
-        self.assertEqual(res.status_code, 204)
+        self.assertEqual(res.status_code, 200)
         self.assertTrue(
             self.user.has_perm(
                 "authentik_stages_invitation.view_invitation",

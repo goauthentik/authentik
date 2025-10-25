@@ -7,7 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.views import bad_request_message
-from authentik.providers.oauth2.models import GrantTypes
+from authentik.providers.oauth2.models import GrantTypes, RedirectURI
 
 
 class OAuth2Error(SentryIgnoredException):
@@ -15,12 +15,14 @@ class OAuth2Error(SentryIgnoredException):
 
     error: str
     description: str
+    cause: str | None = None
 
-    def create_dict(self):
+    def create_dict(self, request: HttpRequest):
         """Return error as dict for JSON Rendering"""
         return {
             "error": self.error,
             "error_description": self.description,
+            "request_id": request.request_id,
         }
 
     def __repr__(self) -> str:
@@ -31,8 +33,14 @@ class OAuth2Error(SentryIgnoredException):
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
+            cause=self.cause,
+            error=self.error,
             **kwargs,
         )
+
+    def with_cause(self, cause: str):
+        self.cause = cause
+        return self
 
 
 class RedirectUriError(OAuth2Error):
@@ -46,9 +54,9 @@ class RedirectUriError(OAuth2Error):
     )
 
     provided_uri: str
-    allowed_uris: list[str]
+    allowed_uris: list[RedirectURI]
 
-    def __init__(self, provided_uri: str, allowed_uris: list[str]) -> None:
+    def __init__(self, provided_uri: str, allowed_uris: list[RedirectURI]) -> None:
         super().__init__()
         self.provided_uri = provided_uri
         self.allowed_uris = allowed_uris
@@ -243,13 +251,14 @@ class TokenRevocationError(OAuth2Error):
         self.description = self.errors[error]
 
 
-class DeviceCodeError(OAuth2Error):
+class DeviceCodeError(TokenError):
     """
     Device-code flow errors
     See https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+    Can also use codes form TokenError
     """
 
-    errors = {
+    errors = TokenError.errors | {
         "authorization_pending": (
             "The authorization request is still pending as the end user hasn't "
             "yet completed the user-interaction steps"
@@ -261,10 +270,15 @@ class DeviceCodeError(OAuth2Error):
             "authorization request but SHOULD wait for user interaction before "
             "restarting to avoid unnecessary polling."
         ),
+        "slow_down": (
+            'A variant of "authorization_pending", the authorization request is'
+            "still pending and polling should continue, but the interval MUST"
+            "be increased by 5 seconds for this and all subsequent requests."
+        ),
     }
 
     def __init__(self, error: str):
-        super().__init__()
+        super().__init__(error)
         self.error = error
         self.description = self.errors[error]
 

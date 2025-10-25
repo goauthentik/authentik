@@ -1,36 +1,47 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IExpand {
+    expanded?: boolean;
+    textOpen?: string;
+    textClosed?: string;
+}
+
 @customElement("ak-expand")
-export class Expand extends AKElement {
+export class Expand extends AKElement implements IExpand {
     @property({ type: Boolean })
-    expanded = false;
+    public expanded = false;
 
-    @property()
-    textOpen = msg("Show less");
+    @property({ type: String, attribute: "text-open" })
+    public textOpen = msg("Show less");
 
-    @property()
-    textClosed = msg("Show more");
+    @property({ type: String, attribute: "text-closed" })
+    public textClosed = msg("Show more");
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFExpandableSection,
-            css`
-                .pf-c-expandable-section.pf-m-display-lg {
-                    background-color: var(--pf-global--BackgroundColor--100);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFExpandableSection,
+        css`
+            .pf-c-expandable-section {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .pf-c-expandable-section__toggle {
+                user-select: none;
+            }
+        `,
+    ];
 
-    render(): TemplateResult {
+    render() {
         return html`<div
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"
@@ -39,7 +50,8 @@ export class Expand extends AKElement {
             <button
                 type="button"
                 class="pf-c-expandable-section__toggle"
-                aria-expanded="${this.expanded}"
+                aria-expanded=${this.expanded ? "true" : "false"}
+                aria-controls="expandable-content"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
@@ -51,11 +63,20 @@ export class Expand extends AKElement {
                     >${this.expanded ? this.textOpen : this.textClosed}</span
                 >
             </button>
-            <div class="pf-c-expandable-section__content" ?hidden=${!this.expanded}>
+            <div
+                id="expandable-content"
+                class="pf-c-expandable-section__content"
+                ?hidden=${!this.expanded}
+            >
                 <slot></slot>
             </div>
         </div>`;
     }
+}
+
+export function akExpand(properties: IExpand, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }
 
 declare global {

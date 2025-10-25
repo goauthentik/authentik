@@ -1,27 +1,27 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ConnectionToken, RacApi, RACProvider } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { ConnectionToken, RACProvider, RacApi } from "@goauthentik/api";
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -32,9 +32,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     @property({ type: Number })
     userId?: number;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
@@ -72,20 +70,29 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    columns(): TableColumn[] {
+    protected override rowLabel(item: ConnectionToken): string | null {
+        if (this.provider) {
+            return item.endpointObj.name ?? null;
+        }
+        return item.providerObj.name ?? null;
+    }
+
+    @state()
+    protected get columns(): TableColumn[] {
         if (this.provider) {
             return [
-                new TableColumn(msg("Endpoint"), "endpoint__name"),
-                new TableColumn(msg("User"), "session__user"),
+                [msg("Endpoint"), "endpoint__name"],
+                [msg("User"), "session__user"],
             ];
         }
+
         return [
-            new TableColumn(msg("Provider"), "provider__name"),
-            new TableColumn(msg("Endpoint"), "endpoint__name"),
+            [msg("Provider"), "provider__name"],
+            [msg("Endpoint"), "endpoint__name"],
         ];
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    row(item: ConnectionToken): SlottedTemplateResult[] {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }

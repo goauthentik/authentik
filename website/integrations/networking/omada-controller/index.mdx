@@ -1,0 +1,187 @@
+---
+title: Integrate with Omada Controller
+sidebar_label: Omada Controller
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Omada Controller
+
+> Omada Controller is a software platform used to centrally manage and monitor Omada networking devices like access points, switches, and routers. It provides a single interface for configuring, managing, and monitoring these devices, offering centralized control over your entire Omada network.
+>
+> -- https://www.omadanetworks.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Omada Controller with authentik, you need to create property mappings, a group, and an application/provider pair in authentik.
+
+### Create property mappings in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
+3. Configure the first mapping for the user's _given name_ (first name):
+    - **Name**: `givenname`
+    - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
+    - **Friendly Name**: Leave blank
+    - **Expression**:
+
+    ```python
+    return request.user.name.split(" ", 1)[0]
+    ```
+
+4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _surname_:
+    - **Name**: `surname`
+    - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
+    - **Friendly Name**: Leave blank
+    - **Expression**:
+
+    ```python
+    return request.user.name.split(" ", 1)[-1]
+    ```
+
+5. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _group memberships_:
+    - **Name**: `omada_usergroup_name`
+    - **SAML Attribute Name**: `usergroup_name`
+    - **Friendly Name**: Leave blank
+    - **Expression**:
+
+    ```python
+    omada_groups = [g.name for g in user.ak_groups.all() if g.name.startswith("Omada-")]
+
+    yield omada_groups[0] if omada_groups else None
+    ```
+
+6. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's _username_:
+    - **Name**: `username`
+    - **SAML Attribute Name**: `username`
+    - **Friendly Name**: Leave blank
+    - **Expression**:
+
+    ```python
+    return request.user.username
+    ```
+
+7. Click **Finish**.
+
+### Create a group in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (e.g. `Omada-admins`) and click **Create**. The group name must start with `Omada-` for the `omada_usergroup_name` property mapping to function correctly.
+4. Click the name of the newly created group, then switch to the **Users** tab.
+5. Click **Add existing user**, select the user who needs Omada Controller administrator access, and click **Add**.
+
+:::warning
+Omada can't handle a user being in multiple groups/roles. Therefore, ensure that you only add a user to a single `Omada-` group.
+:::
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, and then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**:
+            - For Cloud Controllers: `https://aps1-omada-account.tplinkcloud.com/sso/saml/login/`
+            - For Software/Hardware Controllers: `https://<controller_ip_address>:8043/sso/saml/login`
+        - **Issuer**:
+            - For Cloud Controllers: `https://omada.tplinkcloud.com/`
+            - For Software and Hardware Controllers: `https://<controller_ip_address>:8043`
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Set an available **Signing certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: UPN`
+            - Under **Property mappings**:
+                - Select only the following **User Property Mappings**:
+                    - `authentik default SAML Mapping: Email`
+                    - `authentik default SAML Mapping: Name`
+                    - `authentik default SAML Mapping: UPN`
+                    - `givenname`
+                    - `surname`
+                    - `omada_usergroup_name`
+                    - `username`
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Copy the metadata URL
+
+1. Log into authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the newly created Omada Controller provider.
+3. Under **Metadata**, click the **Copy Download URL**. This metadata URL will be required in the next section.
+
+## Omada Controller configuration
+
+1. Log in to the Omada Controller.
+2. Navigate to **Global View** > **Settings** > **SAML SSO**, and then click **Add New SAML Connection**.
+3. Set **Identity Provider Name** to `authentik`.
+4. Select `Metadata URL` as the **Configuration Method**, and then paste the metadata URL that you copied from authentik.
+5. Click **Load Info**, and then click **Send**.
+6. In the **Actions** column, click on the **Details** button next to the newly created authentik SAML connection.
+7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, and then click **OK**. These values will be required in the next section.
+8. At the top right of the page, click **Go To SAML Role**, and then **Add New SAML Role**.
+9. Set the desired **SAML Role Name**, **Role**, **User Type**, and **Privileges** for the new SAML role. The **SAML Role Name** must exactly match the name of the previously created authentik group. It is case sensitive.
+10. Click **Create**.
+
+## Encoding default relay state
+
+The default relay state is generated by Base64-encoding a combination of the **Resource ID** and **Omada ID**, separated by an underscore (`_`).
+
+You can generate the relay state value using one of the following methods:
+
+<Tabs
+  defaultValue="linuxmac"
+  values={[
+    {label: 'Linux and MacOS', value: 'linuxmac'},
+    {label: 'Windows', value: 'windows'},
+  ]}>
+  <TabItem value="linuxmac">
+
+Run the following command:
+
+```bash
+echo -n '<Resource_ID>_<Omada_ID>' | base64 --wrap=0
+```
+
+  </TabItem>
+  <TabItem value="windows">
+
+Run the following command:
+
+```powershell
+[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('<Resource_ID>_<Omada_ID>'))
+```
+
+    </TabItem>
+
+</Tabs>
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon next to the newly created Omada Controller provider.
+3. Set **Issuer** to the **Entity ID** value from Omada Controller.
+4. Under **Advanced protocol settings**, set **Default relay state** to the encoded value from the previous section.
+5. Click **Update** to save your changes.
+
+## Configuration verification
+
+To verify that authentik is correctly integrated with Omada Controller, first log out of Omada Controller. Log in to authentik and click on the Omada Controller application in the application dashboard, and you should then be redirected to the Omada Controller dashboard.
+
+## Resources
+
+- [Omada Networks Documentation - How to Configure SAML SSO on Omada Controller](https://www.omadanetworks.com/de/support/faq/4406/#_Toc193896083)

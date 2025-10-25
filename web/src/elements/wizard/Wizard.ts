@@ -1,12 +1,16 @@
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/wizard/ActionWizardPage";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import "#elements/wizard/ActionWizardPage";
+
+import { EVENT_REFRESH } from "#common/constants";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
@@ -20,254 +24,369 @@ export const ApplyActionsSlot = "apply-actions";
 
 @customElement("ak-wizard")
 export class Wizard extends ModalButton {
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFWizard,
+        css`
+            .pf-c-modal-box {
+                height: 75%;
+            }
+        `,
+    ];
+
+    //#region Properties
+
+    /**
+     * Whether the wizard can be cancelled.
+     */
     @property({ type: Boolean })
     canCancel = true;
 
+    /**
+     * Whether the wizard can go back to the previous step.
+     */
     @property({ type: Boolean })
     canBack = true;
 
+    /**
+     * Header title of the wizard.
+     */
     @property()
-    header?: string;
+    public header?: string;
 
+    /**
+     * Description of the wizard.
+     */
     @property()
-    description?: string;
+    public description?: string;
 
+    /**
+     * Whether the wizard is valid and can proceed to the next step.
+     */
     @property({ type: Boolean })
     isValid = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFWizard,
-            css`
-                .pf-c-modal-box {
-                    height: 75%;
-                }
-            `,
-        );
-    }
+    /**
+     * Actions to display at the end of the wizard.
+     */
+    @property({ attribute: false })
+    public actions: WizardAction[] = [];
 
+    @property({ attribute: false })
+    public finalHandler?: () => Promise<void>;
+
+    @property({ attribute: false })
+    public state: { [key: string]: unknown } = {};
+
+    //#endregion
+
+    //#region State
+
+    /**
+     * Memoized step tag names.
+     */
     @state()
-    _steps: string[] = [];
+    protected _steps: string[] = [];
 
+    /**
+     * Step tag names present in the wizard.
+     */
     get steps(): string[] {
         return this._steps;
     }
 
-    set steps(steps: string[]) {
-        const addApplyActionsSlot = this.steps.includes(ApplyActionsSlot);
-        this._steps = steps;
+    set steps(nextSteps: string[]) {
+        const addApplyActionsSlot = this._steps.includes(ApplyActionsSlot);
+
+        this._steps = nextSteps;
+
         if (addApplyActionsSlot) {
             this.steps.push(ApplyActionsSlot);
         }
-        this.steps.forEach((step) => {
-            const exists = this.querySelector(`[slot=${step}]`) !== null;
-            if (!exists) {
-                const el = document.createElement(step);
-                el.slot = step;
-                el.dataset["wizardmanaged"] = "true";
-                this.appendChild(el);
-            }
-        });
+
         this.requestUpdate();
     }
 
-    _initialSteps: string[] = [];
-
-    @property({ attribute: false })
-    actions: WizardAction[] = [];
+    /**
+     * Initial steps to reset to.
+     */
+    #initialSteps: string[] = [];
 
     @state()
-    _currentStep?: WizardPage;
+    protected activeStep: WizardPage | null = null;
 
-    set currentStep(value: WizardPage | undefined) {
-        this._currentStep = value;
-        if (this._currentStep) {
-            this._currentStep.activeCallback();
-            this._currentStep.requestUpdate();
-        }
-    }
+    set activeStepElement(nextActiveStepElement: WizardPage | null) {
+        this.activeStep = nextActiveStepElement;
 
-    get currentStep(): WizardPage | undefined {
-        return this._currentStep;
-    }
+        if (!this.activeStep) return;
 
-    @property({ attribute: false })
-    finalHandler: () => Promise<void> = () => {
-        return Promise.resolve();
-    };
-
-    @property({ attribute: false })
-    state: { [key: string]: unknown } = {};
-
-    firstUpdated(): void {
-        this._initialSteps = this._steps;
+        this.activeStep.activeCallback();
+        this.activeStep.requestUpdate();
     }
 
     /**
-     * Add action to the beginning of the list
+     * The active step element being displayed.
      */
-    addActionBefore(displayName: string, run: () => Promise<boolean>): void {
-        this.actions.unshift({
-            displayName,
-            run,
-        });
+    get activeStepElement(): WizardPage | null {
+        return this.activeStep;
     }
 
-    /**
-     * Add action at the end of the list
-     */
-    addActionAfter(displayName: string, run: () => Promise<boolean>): void {
-        this.actions.push({
-            displayName,
-            run,
-        });
+    getStepElementByIndex(stepIndex: number): WizardPage | null {
+        const stepName = this._steps[stepIndex];
+
+        return this.querySelector<WizardPage>(`[slot=${stepName}]`);
     }
 
-    renderModalInner(): TemplateResult {
-        const firstPage = this.querySelector<WizardPage>(`[slot=${this.steps[0]}]`);
-        if (!this.currentStep && firstPage) {
-            this.currentStep = firstPage;
+    getStepElementByName(stepName: string): WizardPage | null {
+        return this.querySelector<WizardPage>(`[slot=${stepName}]`);
+    }
+
+    #gatherSteps() {
+        const firstPage = this.getStepElementByIndex(0);
+
+        if (!this.activeStepElement && firstPage) {
+            this.activeStepElement = firstPage;
         }
-        const currentIndex = this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0;
-        let lastPage = currentIndex === this.steps.length - 1;
+
+        const activeStepIndex = this.activeStepElement
+            ? this.steps.indexOf(this.activeStepElement.slot)
+            : 0;
+
+        let lastPage = activeStepIndex === this.steps.length - 1;
+
         if (lastPage && !this.steps.includes("ak-wizard-page-action") && this.actions.length > 0) {
             this.steps = this.steps.concat("ak-wizard-page-action");
-            lastPage = currentIndex === this.steps.length - 1;
+            lastPage = activeStepIndex === this.steps.length - 1;
         }
-        return html`<div class="pf-c-wizard">
-            <div class="pf-c-wizard__header">
+
+        return {
+            firstPage,
+            activeStepIndex,
+            lastPage,
+        };
+    }
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public firstUpdated(): void {
+        this.#initialSteps = this._steps;
+    }
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
+
+    //#endregion
+
+    //#region Event Listeners
+
+    /**
+     * Reset the wizard to its initial state.
+     */
+    #reset = (event?: Event) => {
+        event?.preventDefault();
+        event?.stopPropagation();
+
+        this.open = false;
+
+        for (const element of this.querySelectorAll("[data-wizardmanaged=true]")) {
+            element.remove();
+        }
+
+        for (const step of this.steps) {
+            const stepElement = this.getStepElementByName(step);
+
+            stepElement?.reset?.();
+        }
+
+        this.steps = this.#initialSteps;
+        this.actions = [];
+        this.state = {};
+        this.canBack = true;
+        this.canCancel = true;
+        this.activeStepElement = null;
+    };
+
+    #refreshListener = (event: Event) => {
+        const { lastPage } = this.#gatherSteps();
+
+        if (!lastPage) {
+            event.stopImmediatePropagation();
+        }
+    };
+
+    //#endregion
+
+    //#region Rendering
+
+    public renderModalInner(): TemplateResult {
+        const { activeStepIndex, lastPage } = this.#gatherSteps();
+
+        const navigatePrevious = () => {
+            const prevPage = this.getStepElementByIndex(activeStepIndex - 1);
+
+            if (prevPage) {
+                this.activeStepElement = prevPage;
+            }
+        };
+
+        const navigateNext = async (): Promise<void> => {
+            if (!this.activeStepElement) return;
+
+            if (this.activeStepElement.nextCallback) {
+                const completedStep = await this.activeStepElement.nextCallback();
+
+                if (!completedStep) return;
+
+                if (lastPage) {
+                    await this.finalHandler?.();
+                    this.#reset();
+
+                    return;
+                }
+            }
+
+            const nextPage = this.getStepElementByIndex(activeStepIndex + 1);
+
+            if (nextPage) {
+                this.activeStepElement = nextPage;
+            }
+        };
+        return html`<div class="pf-c-wizard" role="presentation">
+            <header class="pf-c-wizard__header">
                 ${this.canCancel
                     ? html`<button
+                          data-test-id="wizard-close"
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
-                          aria-label="${msg("Close")}"
-                          @click=${() => {
-                              this.reset();
-                          }}
+                          aria-label="${msg("Close wizard")}"
+                          @click=${this.#reset}
                       >
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
-                    : html``}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.header}</h1>
-                <p class="pf-c-wizard__description">${this.description}</p>
-            </div>
-            <div class="pf-c-wizard__outer-wrap">
+                    : nothing}
+                <h1
+                    id="modal-title"
+                    role="heading"
+                    aria-level="1"
+                    class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                    data-test-id="wizard-heading"
+                >
+                    ${this.header}
+                </h1>
+                <p
+                    role="heading"
+                    aria-level="2"
+                    id="modal-description"
+                    class="pf-c-wizard__description"
+                >
+                    ${this.description}
+                </p>
+            </header>
+
+            <div role="presentation" class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
-                    <nav class="pf-c-wizard__nav">
-                        <ol class="pf-c-wizard__nav-list">
+                    <nav aria-label="${msg("Wizard steps")}" class="pf-c-wizard__nav">
+                        <ol role="presentation" class="pf-c-wizard__nav-list">
                             ${this.steps.map((step, idx) => {
-                                const currentIdx = this.currentStep
-                                    ? this.steps.indexOf(this.currentStep.slot)
-                                    : 0;
+                                const stepEl = this.getStepElementByName(step);
+
+                                if (!stepEl) return html`<p>Unexpected missing step: ${step}</p>`;
+
                                 return html`
-                                    <li class="pf-c-wizard__nav-item">
+                                    <li role="presentation" class="pf-c-wizard__nav-item">
                                         <button
-                                            class="pf-c-wizard__nav-link ${idx === currentIdx
-                                                ? "pf-m-current"
-                                                : ""}"
-                                            ?disabled=${currentIdx < idx}
+                                            class=${classMap({
+                                                "pf-c-wizard__nav-link": true,
+                                                "pf-m-current": idx === activeStepIndex,
+                                            })}
+                                            type="button"
+                                            ?disabled=${activeStepIndex < idx}
                                             @click=${() => {
-                                                const stepEl = this.querySelector<WizardPage>(
-                                                    `[slot=${step}]`,
-                                                );
-                                                if (stepEl) {
-                                                    this.currentStep = stepEl;
-                                                }
+                                                this.activeStepElement = stepEl;
                                             }}
                                         >
-                                            ${this.querySelector<WizardPage>(
-                                                `[slot=${step}]`,
-                                            )?.sidebarLabel()}
+                                            ${stepEl.label ?? msg("UNNAMED")}
                                         </button>
                                     </li>
                                 `;
                             })}
                         </ol>
                     </nav>
-                    <main class="pf-c-wizard__main">
-                        <div class="pf-c-wizard__main-body">
-                            <slot name=${this.currentStep?.slot || this.steps[0]}></slot>
+                    <main aria-label="${msg("Wizard content")}" class="pf-c-wizard__main">
+                        <div role="presentation" class="pf-c-wizard__main-body">
+                            <slot name=${this.activeStepElement?.slot || this.steps[0]}></slot>
                         </div>
                     </main>
                 </div>
-                <footer class="pf-c-wizard__footer">
+                <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
                     <button
+                        data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        type="submit"
                         ?disabled=${!this.isValid}
-                        @click=${async () => {
-                            const cb = await this.currentStep?.nextCallback();
-                            if (!cb) {
-                                return;
-                            }
-                            if (lastPage) {
-                                await this.finalHandler();
-                                this.reset();
-                            } else {
-                                const nextPage = this.querySelector<WizardPage>(
-                                    `[slot=${this.steps[currentIndex + 1]}]`,
-                                );
-                                if (nextPage) {
-                                    this.currentStep = nextPage;
-                                }
-                            }
-                        }}
+                        type="button"
+                        @click=${navigateNext}
                     >
                         ${lastPage ? msg("Finish") : msg("Next")}
                     </button>
-                    ${(this.currentStep ? this.steps.indexOf(this.currentStep.slot) : 0) > 0 &&
-                    this.canBack
+                    ${(this.activeStepElement
+                        ? this.steps.indexOf(this.activeStepElement.slot)
+                        : 0) > 0 && this.canBack
                         ? html`
                               <button
+                                  data-test-id="wizard-navigation-previous"
                                   class="pf-c-button pf-m-secondary"
                                   type="button"
-                                  @click=${() => {
-                                      const prevPage = this.querySelector<WizardPage>(
-                                          `[slot=${this.steps[currentIndex - 1]}]`,
-                                      );
-                                      if (prevPage) {
-                                          this.currentStep = prevPage;
-                                      }
-                                  }}
+                                  @click=${navigatePrevious}
                               >
                                   ${msg("Back")}
                               </button>
                           `
-                        : html``}
+                        : nothing}
                     ${this.canCancel
-                        ? html`<div class="pf-c-wizard__footer-cancel">
+                        ? html`<div class="pf-c-wizard__footer-abort">
                               <button
+                                  data-test-id="wizard-navigation-cancel"
                                   class="pf-c-button pf-m-link"
                                   type="button"
-                                  @click=${() => {
-                                      this.reset();
-                                  }}
+                                  @click=${this.#reset}
                               >
                                   ${msg("Cancel")}
                               </button>
                           </div>`
-                        : html``}
-                </footer>
+                        : nothing}
+                </nav>
             </div>
         </div>`;
     }
 
-    reset(): void {
-        this.open = false;
-        this.querySelectorAll("[data-wizardmanaged=true]").forEach((el) => {
-            el.remove();
-        });
-        this.steps = this._initialSteps;
-        this.actions = [];
-        this.state = {};
-        this.currentStep = undefined;
-        this.canBack = true;
-        this.canCancel = true;
-    }
+    //#endregion
 }
 
 declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard": Wizard;
+    }
+
+    interface WizardNavigationTestIDMap {
+        next: HTMLButtonElement;
+        previous: HTMLButtonElement;
+        cancel: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
     }
 }

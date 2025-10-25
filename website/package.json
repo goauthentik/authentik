@@ -1,66 +1,66 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "private": true,
     "license": "MIT",
+    "private": true,
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "deploy": "docusaurus deploy",
+        "build": "npm run build -w docs",
+        "build:api": "npm run build -w api",
+        "build:integrations": "npm run build -w integrations",
+        "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
-        "serve": "docusaurus serve",
-        "swizzle": "docusaurus swizzle",
-        "test": "node --test",
-        "watch": "docusaurus gen-api-docs all && docusaurus start"
+        "start": "npm start -w docs",
+        "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.4.0",
-        "@docusaurus/plugin-client-redirects": "^3.4.0",
-        "@docusaurus/plugin-content-docs": "^3.4.0",
-        "@docusaurus/preset-classic": "^3.4.0",
-        "@docusaurus/theme-common": "^3.4.0",
-        "@docusaurus/theme-mermaid": "^3.4.0",
-        "@mdx-js/react": "^3.0.1",
-        "clsx": "^2.1.1",
-        "disqus-react": "^1.1.5",
-        "docusaurus-plugin-openapi-docs": "^3.0.0-beta.10",
-        "docusaurus-theme-openapi-docs": "^3.0.1",
-        "postcss": "^8.4.39",
-        "prism-react-renderer": "^2.3.1",
-        "react": "^18.3.1",
-        "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^18.3.1",
-        "react-feather": "^2.0.10",
-        "react-toggle": "^4.1.3",
-        "react-tooltip": "^5.27.1",
-        "remark-github": "^12.0.0"
+        "@eslint/js": "^9.38.0",
+        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^3.1.0",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@types/node": "^24.9.1",
+        "@typescript-eslint/eslint-plugin": "^8.46.2",
+        "@typescript-eslint/parser": "^8.46.2",
+        "escape-string-regexp": "^5.0.0",
+        "eslint": "^9.38.0",
+        "netlify-plugin-cache": "^1.0.3",
+        "netlify-redirect-parser": "^14.4.0",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19",
+        "typescript-eslint": "^8.46.2"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@docusaurus/module-type-aliases": "^3.3.2",
-        "@docusaurus/tsconfig": "^3.4.0",
-        "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.3",
-        "cross-env": "^7.0.3",
-        "lockfile-lint": "^4.14.0",
-        "prettier": "3.3.3",
-        "typescript": "~5.5.3"
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "1.5.8",
+        "@rspack/binding-linux-arm64-gnu": "1.5.8",
+        "@rspack/binding-linux-x64-gnu": "1.5.8",
+        "@swc/core-darwin-arm64": "1.13.20",
+        "@swc/core-linux-arm64-gnu": "1.13.20",
+        "@swc/core-linux-x64-gnu": "1.13.20",
+        "@swc/html-darwin-arm64": "1.13.20",
+        "@swc/html-linux-arm64-gnu": "1.13.20",
+        "@swc/html-linux-x64-gnu": "1.13.20",
+        "lightningcss-darwin-arm64": "1.30.2",
+        "lightningcss-linux-arm64-gnu": "1.30.2",
+        "lightningcss-linux-x64-gnu": "1.30.2"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=24"
+    },
+    "workspaces": [
+        "docusaurus-theme",
+        "api",
+        "integrations",
+        "docs"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "format-imports": {
+            "eslint": "^9.31.0"
+        }
     }
 }

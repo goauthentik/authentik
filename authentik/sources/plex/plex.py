@@ -6,10 +6,14 @@ from django.http.response import Http404
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.http import get_http_session
-from authentik.sources.plex.models import PlexSource, PlexSourceConnection
+from authentik.sources.plex.models import (
+    GroupPlexSourceConnection,
+    PlexSource,
+    UserPlexSourceConnection,
+)
 
 LOGGER = get_logger()
 
@@ -34,7 +38,7 @@ class PlexAuth:
         """Get common headers"""
         return {
             "X-Plex-Product": "authentik",
-            "X-Plex-Version": __version__,
+            "X-Plex-Version": authentik_version(),
             "X-Plex-Device-Vendor": "goauthentik.io",
         }
 
@@ -73,11 +77,7 @@ class PlexAuth:
         )
         response.raise_for_status()
         raw_user_info = response.json()
-        return {
-            "username": raw_user_info.get("username"),
-            "email": raw_user_info.get("email"),
-            "name": raw_user_info.get("title"),
-        }, raw_user_info.get("id")
+        return raw_user_info, raw_user_info.get("id")
 
     def check_server_overlap(self) -> bool:
         """Check if the plex-token has any server overlap with our configured servers"""
@@ -113,9 +113,12 @@ class PlexAuth:
 class PlexSourceFlowManager(SourceFlowManager):
     """Flow manager for plex sources"""
 
-    connection_type = PlexSourceConnection
+    user_connection_type = UserPlexSourceConnection
+    group_connection_type = GroupPlexSourceConnection
 
-    def update_connection(self, connection: PlexSourceConnection, **kwargs) -> PlexSourceConnection:
+    def update_user_connection(
+        self, connection: UserPlexSourceConnection, **kwargs
+    ) -> UserPlexSourceConnection:
         """Set the access_token on the connection"""
         connection.plex_token = kwargs.get("plex_token")
         return connection

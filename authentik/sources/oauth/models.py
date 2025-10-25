@@ -5,15 +5,32 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.api.object_types import CreatableType, NonCreatableType
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
+
+
+class AuthorizationCodeAuthMethod(models.TextChoices):
+    BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
+    POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
+
+
+class PKCEMethod(models.TextChoices):
+    NONE = "none", _("No PKCE")
+    PLAIN = "plain", _("Plain")
+    S256 = "S256", _("S256")
 
 
 class OAuthSource(NonCreatableType, Source):
@@ -56,6 +73,17 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    pkce = models.TextField(
+        choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
+    )
+    authorization_code_auth_method = models.TextField(
+        choices=AuthorizationCodeAuthMethod.choices,
+        default=AuthorizationCodeAuthMethod.BASIC_AUTH,
+        help_text=_(
+            "How to perform authentication during an authorization_code token request flow"
+        ),
+    )
+
     @property
     def source_type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
@@ -72,6 +100,16 @@ class OAuthSource(NonCreatableType, Source):
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
+
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return OAuthSourcePropertyMapping
+
+    def get_base_user_properties(self, **kwargs):
+        return self.source_type().get_base_user_properties(source=self, **kwargs)
+
+    def get_base_group_properties(self, **kwargs):
+        return self.source_type().get_base_group_properties(source=self, **kwargs)
 
     @property
     def icon_url(self) -> str | None:
@@ -204,12 +242,23 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
 
 
 class AzureADOAuthSource(CreatableType, OAuthSource):
-    """Social Login using Azure AD."""
+    """(Deprecated) Social Login using Azure AD."""
 
     class Meta:
         abstract = True
         verbose_name = _("Azure AD OAuth Source")
         verbose_name_plural = _("Azure AD OAuth Sources")
+
+
+# TODO: When removing this, add a migration for OAuthSource that sets
+# provider_type to `entraid` if it is currently `azuread`
+class EntraIDOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Entra ID."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Entra ID OAuth Source")
+        verbose_name_plural = _("Entra ID OAuth Sources")
 
 
 class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
@@ -248,11 +297,35 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class OAuthSourcePropertyMapping(PropertyMapping):
+    """Map OAuth properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-oauth-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api.property_mappings import (
+            OAuthSourcePropertyMappingSerializer,
+        )
+
+        return OAuthSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("OAuth Source Property Mapping")
+        verbose_name_plural = _("OAuth Source Property Mappings")
+
+
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
-    identifier = models.CharField(max_length=255)
     access_token = models.TextField(blank=True, null=True, default=None)
+    expires = models.DateTimeField(default=now)
+
+    @property
+    def is_valid(self):
+        return self.expires > now()
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -269,3 +342,19 @@ class UserOAuthSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User OAuth Source Connection")
         verbose_name_plural = _("User OAuth Source Connections")
+
+
+class GroupOAuthSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api.source_connection import (
+            GroupOAuthSourceConnectionSerializer,
+        )
+
+        return GroupOAuthSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group OAuth Source Connection")
+        verbose_name_plural = _("Group OAuth Source Connections")

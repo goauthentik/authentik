@@ -13,6 +13,7 @@ from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
 from authentik.events.logs import LogEvent, capture_logs
+from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
@@ -61,9 +62,14 @@ class KubernetesController(BaseController):
     client: KubernetesClient
     connection: KubernetesServiceConnection
 
-    def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection) -> None:
+    def __init__(
+        self,
+        outpost: Outpost,
+        connection: KubernetesServiceConnection,
+        client: KubernetesClient | None = None,
+    ) -> None:
         super().__init__(outpost, connection)
-        self.client = KubernetesClient(connection)
+        self.client = client if client else KubernetesClient(connection)
         self.reconcilers = {
             SecretReconciler.reconciler_name(): SecretReconciler,
             DeploymentReconciler.reconciler_name(): DeploymentReconciler,
@@ -96,7 +102,13 @@ class KubernetesController(BaseController):
             all_logs = []
             for reconcile_key in self.reconcile_order:
                 if reconcile_key in self.outpost.config.kubernetes_disabled_components:
-                    all_logs += [f"{reconcile_key.title()}: Disabled"]
+                    all_logs.append(
+                        LogEvent(
+                            log_level="info",
+                            event=f"{reconcile_key.title()}: Disabled",
+                            logger=class_to_path(self.__class__),
+                        )
+                    )
                     continue
                 with capture_logs() as logs:
                     reconciler_cls = self.reconcilers.get(reconcile_key)
@@ -129,7 +141,13 @@ class KubernetesController(BaseController):
             all_logs = []
             for reconcile_key in self.reconcile_order:
                 if reconcile_key in self.outpost.config.kubernetes_disabled_components:
-                    all_logs += [f"{reconcile_key.title()}: Disabled"]
+                    all_logs.append(
+                        LogEvent(
+                            log_level="info",
+                            event=f"{reconcile_key.title()}: Disabled",
+                            logger=class_to_path(self.__class__),
+                        )
+                    )
                     continue
                 with capture_logs() as logs:
                     reconciler_cls = self.reconcilers.get(reconcile_key)

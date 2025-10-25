@@ -1,17 +1,20 @@
-import "@goauthentik/admin/users/UserPermissionForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/users/UserPermissionForm";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-assigned-global-permissions-table")
 export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
@@ -34,19 +37,18 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        ["", null, msg("Assigned to user")],
+    ];
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Assign")} </span>
-                <span slot="header"> ${msg("Assign permission to user")} </span>
+                <span slot="submit">${msg("Assign")}</span>
+                <span slot="header">${msg("Assign permission to user")}</span>
                 <ak-user-permission-form userId=${ifDefined(this.userId)} slot="form">
                 </ak-user-permission-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -81,11 +83,11 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

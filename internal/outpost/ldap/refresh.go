@@ -7,49 +7,42 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
 	memorybind "goauthentik.io/internal/outpost/ldap/bind/memory"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
+	"goauthentik.io/internal/outpost/ldap/search"
 	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
 	memorysearch "goauthentik.io/internal/outpost/ldap/search/memory"
 )
 
 func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 	for _, p := range ls.providers {
-		if p.outpostPk == pk {
+		if p.providerPk == pk {
 			return p
 		}
 	}
 	return nil
 }
 
-func (ls *LDAPServer) getInvalidationFlow() string {
-	req, _, err := ls.ac.Client.CoreApi.CoreBrandsCurrentRetrieve(context.Background()).Execute()
-	if err != nil {
-		ls.log.WithError(err).Warning("failed to fetch brand config")
-		return ""
-	}
-	flow := req.GetFlowInvalidation()
-	return flow
-}
-
 func (ls *LDAPServer) Refresh() error {
-	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()).Execute()
+	apiProviders, err := ak.Paginator(ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()), ak.PaginatorOptions{
+		PageSize: 100,
+		Logger:   ls.log,
+	})
 	if err != nil {
 		return err
 	}
-	if len(outposts.Results) < 1 {
+	if len(apiProviders) < 1 {
 		return errors.New("no ldap provider defined")
 	}
-	providers := make([]*ProviderInstance, len(outposts.Results))
-	invalidationFlow := ls.getInvalidationFlow()
-	for idx, provider := range outposts.Results {
+	providers := make([]*ProviderInstance, len(apiProviders))
+	for idx, provider := range apiProviders {
 		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUUsers, *provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUGroups, *provider.BaseDn))
 		virtualGroupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUVirtualGroups, *provider.BaseDn))
@@ -72,8 +65,7 @@ func (ls *LDAPServer) Refresh() error {
 			UserDN:                 userDN,
 			appSlug:                provider.ApplicationSlug,
 			authenticationFlowSlug: provider.BindFlowSlug,
-			invalidationFlowSlug:   invalidationFlow,
-			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
+			invalidationFlowSlug:   provider.UnbindFlowSlug.Get(),
 			boundUsersMutex:        usersMutex,
 			boundUsers:             users,
 			s:                      ls,
@@ -83,7 +75,7 @@ func (ls *LDAPServer) Refresh() error {
 			gidStartNumber:         provider.GetGidStartNumber(),
 			mfaSupport:             provider.GetMfaSupport(),
 			outpostName:            ls.ac.Outpost.Name,
-			outpostPk:              provider.Pk,
+			providerPk:             provider.Pk,
 		}
 		if kp := provider.Certificate.Get(); kp != nil {
 			err := ls.cs.AddKeypair(*kp)
@@ -94,7 +86,11 @@ func (ls *LDAPServer) Refresh() error {
 			providers[idx].certUUID = *kp
 		}
 		if *provider.SearchMode.Ptr() == api.LDAPAPIACCESSMODE_CACHED {
-			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
+			var oldSearcher search.Searcher
+			if existing != nil {
+				oldSearcher = existing.searcher
+			}
+			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx], oldSearcher)
 		} else if *provider.SearchMode.Ptr() == api.LDAPAPIACCESSMODE_DIRECT {
 			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
 		}

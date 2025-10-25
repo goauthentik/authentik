@@ -1,9 +1,13 @@
-import "@goauthentik/elements/EmptyState";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { customElement, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -12,50 +16,41 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AutoSubmitChallengeResponseRequest, AutosubmitChallenge } from "@goauthentik/api";
-
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
     AutosubmitChallenge,
     AutoSubmitChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
-    }
+    @query("form")
+    private form?: HTMLFormElement;
 
-    updated(): void {
-        this.shadowRoot?.querySelectorAll("form").forEach((form) => {
-            form.submit();
-        });
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (this.challenge.url !== undefined) {
+            this.form?.submit();
+        }
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
-        }
-        let title = this.challenge.flowInfo?.title;
+        let title = msg("Loading");
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form" action="${this.challenge.url}" method="POST">
-                    ${Object.entries(this.challenge.attrs).map(([key, value]) => {
-                        return html`<input
-                            type="hidden"
-                            name="${key as string}"
-                            value="${value as string}"
-                        />`;
-                    })}
-                    <ak-empty-state ?loading="${true}"> </ak-empty-state>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" action="${this.challenge.url}" method="post">
+                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+                    return html`<input
+                        type="hidden"
+                        name="${key as string}"
+                        value="${value as string}"
+                    />`;
+                })}
+                <ak-empty-state loading default-label></ak-empty-state>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

@@ -1,13 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
-import "@goauthentik/elements/forms/ConfirmationForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "#elements/forms/ConfirmationForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
+import { actionToColor } from "#elements/charts/EventChart";
+import { PaginatedResponse } from "#elements/table/Table";
+
+import {
+    EventActions,
+    ProvidersApi,
+    SourcesApi,
+    SyncStatus,
+    TaskAggregatedStatusEnum,
+} from "@goauthentik/api";
+
 import { ChartData, ChartOptions } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
-
-import { ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
 
 export interface SummarizedSyncStatus {
     healthy: number;
@@ -19,6 +29,8 @@ export interface SummarizedSyncStatus {
 
 @customElement("ak-admin-status-chart-sync")
 export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
+    public override ariaLabel = msg("Synchronization status chart");
+
     getChartType(): string {
         return "doughnut";
     }
@@ -51,16 +63,22 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 let objectKey = "healthy";
                 try {
                     const status = await fetchSyncStatus(element);
-                    status.tasks.forEach((task) => {
-                        if (task.status !== SystemTaskStatusEnum.Successful) {
-                            objectKey = "failed";
-                        }
-                        const now = new Date().getTime();
-                        const maxDelta = 3600000; // 1 hour
-                        if (!status || now - task.finishTimestamp.getTime() > maxDelta) {
-                            objectKey = "unsynced";
-                        }
-                    });
+
+                    const now = new Date().getTime();
+                    const maxDelta = 3600000; // 1 hour
+
+                    if (
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Rejected ||
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Warning
+                    ) {
+                        objectKey = "failed";
+                    } else if (
+                        !status.lastSuccessfulSync ||
+                        now - status.lastSuccessfulSync.getTime() > maxDelta
+                    ) {
+                        objectKey = "unsynced";
+                    }
                 } catch {
                     objectKey = "unsynced";
                 }
@@ -126,6 +144,17 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 },
                 msg("LDAP Source"),
             ),
+            await this.fetchStatus(
+                () => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosList();
+                },
+                (element) => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
+                        slug: element.slug,
+                    });
+                },
+                msg("Kerberos Source"),
+            ),
         ];
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
         return statuses;
@@ -136,7 +165,11 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {
                 return {
-                    backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],
+                    backgroundColor: [
+                        actionToColor(EventActions.Login),
+                        actionToColor(EventActions.SuspiciousRequest),
+                        actionToColor(EventActions.AuthorizeApplication),
+                    ],
                     spanGaps: true,
                     data: [d.healthy, d.failed, d.unsynced],
                     label: d.label,

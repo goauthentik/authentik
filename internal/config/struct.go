@@ -5,7 +5,7 @@ type Config struct {
 	Storage        StorageConfig        `yaml:"storage"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
-	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
+	PostgreSQL     PostgreSQLConfig     `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
 
 	// Config for core and embedded outpost
@@ -14,6 +14,7 @@ type Config struct {
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -24,25 +25,37 @@ type Config struct {
 	AuthentikInsecure    bool   `env:"AUTHENTIK_INSECURE"`
 }
 
-type RedisConfig struct {
-	Host      string  `yaml:"host" env:"HOST, overwrite"`
-	Port      int     `yaml:"port" env:"PORT, overwrite"`
-	DB        int     `yaml:"db" env:"DB, overwrite"`
-	Username  string  `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string  `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool    `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string  `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+type PostgreSQLConfig struct {
+	Host     string `yaml:"host" env:"HOST, overwrite"`
+	Port     int    `yaml:"port" env:"PORT, overwrite"`
+	User     string `yaml:"user" env:"USER, overwrite"`
+	Password string `yaml:"password" env:"PASSWORD, overwrite"`
+	Name     string `yaml:"name" env:"NAME, overwrite"`
+
+	// SSL/TLS settings
+	SSLMode     string `yaml:"sslmode" env:"SSLMODE, overwrite"`
+	SSLRootCert string `yaml:"sslrootcert" env:"SSLROOTCERT, overwrite"`
+	SSLCert     string `yaml:"sslcert" env:"SSLCERT, overwrite"`
+	SSLKey      string `yaml:"sslkey" env:"SSLKEY, overwrite"`
+
+	// Connection management
+	ConnMaxAge               int  `yaml:"conn_max_age" env:"CONN_MAX_AGE, overwrite"`
+	ConnHealthChecks         bool `yaml:"conn_health_checks" env:"CONN_HEALTH_CHECKS, overwrite"`
+	DisableServerSideCursors bool `yaml:"disable_server_side_cursors" env:"DISABLE_SERVER_SIDE_CURSORS, overwrite"`
+
+	// Advanced settings
+	DefaultSchema string `yaml:"default_schema" env:"DEFAULT_SCHEMA, overwrite"`
+	ConnOptions   string `yaml:"conn_options" env:"CONN_OPTIONS, overwrite"`
 }
 
 type ListenConfig struct {
-	HTTP              string   `yaml:"listen_http" env:"HTTP, overwrite"`
-	HTTPS             string   `yaml:"listen_https" env:"HTTPS, overwrite"`
-	LDAP              string   `yaml:"listen_ldap" env:"LDAP, overwrite"`
-	LDAPS             string   `yaml:"listen_ldaps" env:"LDAPS, overwrite"`
-	Radius            string   `yaml:"listen_radius" env:"RADIUS, overwrite"`
-	Metrics           string   `yaml:"listen_metrics" env:"METRICS, overwrite"`
-	Debug             string   `yaml:"listen_debug" env:"DEBUG, overwrite"`
+	HTTP              string   `yaml:"http" env:"HTTP, overwrite"`
+	HTTPS             string   `yaml:"https" env:"HTTPS, overwrite"`
+	LDAP              string   `yaml:"ldap" env:"LDAP, overwrite"`
+	LDAPS             string   `yaml:"ldaps" env:"LDAPS, overwrite"`
+	Radius            string   `yaml:"radius" env:"RADIUS, overwrite"`
+	Metrics           string   `yaml:"metrics" env:"METRICS, overwrite"`
+	Debug             string   `yaml:"debug" env:"DEBUG, overwrite"`
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"TRUSTED_PROXY_CIDRS, overwrite"`
 }
 
@@ -71,4 +84,8 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type WebConfig struct {
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }

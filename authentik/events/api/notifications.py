@@ -1,17 +1,15 @@
 """Notification API Views"""
 
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.events.api.events import EventSerializer
@@ -57,8 +55,7 @@ class NotificationViewSet(
         "seen",
         "user",
     ]
-    permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
     @extend_schema(
         request=OpenApiTypes.NONE,
@@ -66,11 +63,8 @@ class NotificationViewSet(
             204: OpenApiResponse(description="Marked tasks as read successfully."),
         },
     )
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=["post"], permission_classes=[IsAuthenticated])
     def mark_all_seen(self, request: Request) -> Response:
         """Mark all the user's notifications as seen"""
-        notifications = Notification.objects.filter(user=request.user)
-        for notification in notifications:
-            notification.seen = True
-        Notification.objects.bulk_update(notifications, ["seen"])
+        Notification.objects.filter(user=request.user, seen=False).update(seen=True)
         return Response({}, status=204)

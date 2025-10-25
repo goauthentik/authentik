@@ -1,0 +1,107 @@
+---
+title: Docker Compose installation
+---
+
+This installation method is for test setups and small-scale production setups.
+
+## Requirements
+
+- A host with at least 2 CPU cores and 2 GB of RAM
+- Docker
+- Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
+
+## Video
+
+<iframe
+    width="560"
+    height="315"
+    src="https://www.youtube.com/embed/O1qUbrk4Yc8?si=HiSBjmJYhE_oJhB1&amp;start=22"
+    title="YouTube video player"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowFullScreen
+></iframe>
+
+## Preparation
+
+To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
+Run the following command:
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+{/* prettier-ignore */}
+<Tabs groupId="OS">
+    <TabItem value="Linux" label="Linux" default>
+        ```shell
+        wget https://docs.goauthentik.io/docker-compose.yml
+        ```
+    </TabItem>
+    <TabItem value="macOS" label="macOS">
+        ```shell
+        curl -O https://docs.goauthentik.io/docker-compose.yml
+        ```
+    </TabItem>
+</Tabs>
+
+If this is a fresh authentik installation, you need to generate a password and a secret key. Use a secure password generator of your choice such as pwgen, or you can use `openssl` as below.
+
+Run the following commands to generate a password and secret key and write them to your `.env` file:
+
+{/* prettier-ignore */}
+```shell
+echo "PG_PASS=$(openssl rand -base64 36 | tr -d '\n')" >> .env
+echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
+```
+
+:::info
+Because of a PostgreSQL limitation, only passwords up to 99 chars are supported. See: https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
+:::
+
+To enable error reporting, run the following command:
+
+```shell
+echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+```
+
+## Email configuration (optional but recommended)
+
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+
+For more information, refer to our [Email configuration](../email.mdx) documentation.
+
+## Startup
+
+:::warning
+All internal operations use UTC. Times displayed in the UI are automatically localized for the user. Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers; it will cause problems with OAuth and SAML authentication, as seen this [GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
+Afterward, run these commands to finish:
+
+```shell
+docker compose pull
+docker compose up -d
+```
+
+The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../../../releases/).
+
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
+
+:::info
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<your server's IP or hostname>:9000/if/flow/initial-setup/`) including the trailing forward slash.
+:::
+
+There you are prompted to set a password for the `akadmin` user (the default user).
+
+For an explanation about what each service in the docker compose file does, see [Architecture](../../core/architecture.md).
+
+## Configure custom ports
+
+By default, authentik listens internally on port 9000 for HTTP and 9443 for HTTPS. To use different exposed ports such as 80 and 443, you can set the following variables in `.env`:
+
+```shell
+COMPOSE_PORT_HTTP=80
+COMPOSE_PORT_HTTPS=443
+```
+
+See [Configuration](../configuration/configuration.mdx) to change the internal ports. Be sure to run `docker compose up -d` to rebuild with the new port numbers.

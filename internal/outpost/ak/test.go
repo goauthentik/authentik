@@ -24,7 +24,6 @@ func MockConfig() api.Config {
 		100,
 		100,
 		100,
-		100,
 	)
 }
 
@@ -55,11 +54,10 @@ func MockAK(outpost api.Outpost, globalConfig api.Config) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:        uuid.New(),
-		Outpost:             outpost,
-		wsBackoffMultiplier: 1,
-		refreshHandlers:     make([]func(), 0),
+		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:    uuid.New(),
+		Outpost:         outpost,
+		refreshHandlers: make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	return ac

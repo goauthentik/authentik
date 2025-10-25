@@ -1,13 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/utils";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
+import "#components/ak-hidden-text-input";
+import "#elements/forms/HorizontalFormElement";
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { Form } from "#elements/forms/Form";
+import { ModalForm } from "#elements/forms/ModalForm";
 
 import {
     CoreApi,
@@ -16,13 +17,32 @@ import {
     UserServiceAccountResponse,
 } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
+
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
+    #initialExpirationValue = dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360));
+
+    //#region Refs
+
+    #expiringInputRef = createRef<HTMLInputElement>();
+    #expirationDateInputRef = createRef<HTMLInputElement>();
+
+    //#endregion
+
+    //#region Properties
+
     @property({ attribute: false })
-    result?: UserServiceAccountResponse;
+    result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
     group?: Group;
+
+    //#endregion
 
     getSuccessMessage(): string {
         if (this.group) {
@@ -48,41 +68,43 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    resetForm(): void {
-        super.resetForm();
-        this.result = undefined;
+    reset(): void {
+        super.reset();
+        this.result = null;
+        (this.parentElement as ModalForm).showSubmitButton = true;
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                ?required=${true}
+        return html`<ak-text-input
                 name="name"
+                label=${msg("Username")}
+                placeholder=${msg("Type a username for the user...")}
+                autocomplete="off"
+                value=""
+                input-hint="code"
+                required
+                maxlength=${150}
+                help=${msg(
+                    "The user's primary identifier used for authentication. 150 characters or fewer.",
+                )}
+            ></ak-text-input>
+
+            <ak-switch-input
+                name="createGroup"
+                label=${msg("Create group")}
+                help=${msg("Create and assign a group with the same name as the user.")}
             >
-                <input type="text" value="" class="pf-c-form-control" required />
-                <p class="pf-c-form__helper-text">
-                    ${msg("User's primary identifier. 150 characters or fewer.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="createGroup">
-                <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Create group")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Enabling this toggle will create a group named after the user, with the user as member.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            </ak-switch-input>
+
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <input
+                        ${ref(this.#expiringInputRef)}
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        checked
+                        @change=${this.expiringChangeListener}
+                    />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
@@ -92,15 +114,17 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
+                        "Whether the token will expire. Upon expiration, the token will be rotated.",
                     )}
                 </p>
             </ak-form-element-horizontal>
+
             <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
                 <input
+                    ${ref(this.#expirationDateInputRef)}
                     type="datetime-local"
                     data-type="datetime-local"
-                    value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
+                    value="${this.#initialExpirationValue}"
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>`;
@@ -113,29 +137,36 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 )}
             </p>
             <form class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${msg("Username")}>
-                    <input
-                        type="text"
-                        readonly
-                        value=${ifDefined(this.result?.username)}
-                        class="pf-c-form-control"
-                    />
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Password")}>
-                    <input
-                        type="text"
-                        readonly
-                        value=${ifDefined(this.result?.token)}
-                        class="pf-c-form-control"
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-text-input
+                    name="name"
+                    label=${msg("Username")}
+                    autocomplete="off"
+                    value=${ifDefined(this.result?.username)}
+                    input-hint="code"
+                    readonly
+                ></ak-text-input>
+
+                <ak-hidden-text-input
+                    label=${msg("Password")}
+                    value="${this.result?.token ?? ""}"
+                    input-hint="code"
+                    readonly
+                    .help=${msg(
+                        "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                    )}
+                >
+                </ak-hidden-text-input>
             </form>`;
     }
+
+    expiringChangeListener = () => {
+        const expiringElement = this.#expiringInputRef.value;
+        const expirationDateElement = this.#expirationDateInputRef.value;
+
+        if (!expiringElement || !expirationDateElement) return;
+
+        expirationDateElement.disabled = !expiringElement.checked;
+    };
 
     renderFormWrapper(): TemplateResult {
         if (this.result) {

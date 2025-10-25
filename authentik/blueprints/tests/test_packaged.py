@@ -27,13 +27,14 @@ def blueprint_tester(file_name: Path) -> Callable:
         base = Path("blueprints/")
         rel_path = Path(file_name).relative_to(base)
         importer = Importer.from_string(BlueprintInstance(path=str(rel_path)).retrieve())
-        self.assertTrue(importer.validate()[0])
+        validation, logs = importer.validate()
+        self.assertTrue(validation, logs)
         self.assertTrue(importer.apply())
 
     return tester
 
 
 for blueprint_file in Path("blueprints/").glob("**/*.yaml"):
-    if "local" in str(blueprint_file):
+    if "local" in str(blueprint_file) or "testing" in str(blueprint_file):
         continue
     setattr(TestPackaged, f"test_blueprint_{blueprint_file}", blueprint_tester(blueprint_file))

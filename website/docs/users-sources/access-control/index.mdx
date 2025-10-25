@@ -1,0 +1,15 @@
+---
+title: About access control
+---
+
+import DocCardList from "@theme/DocCardList";
+
+To comply with important regulations such as PCI-DSS, HIPAA, SOC 2, and GDPR, it's necessary to have the ability to control which users have access to specific areas of the system, what [permissions](./permissions.md) they have globally and on certain objects, and a way to monitor [events](../../sys-mgmt/events/index.md) related to user activity.
+
+In authentik, we provide role-based access control (RBAC), an industry standard for managing access control. By carefully designing roles with appropriate permissions, and then assigning those roles to groups, RBAC provides a fine-tuned approach to controlling user access.
+
+RBAC is a way of ensuring the well-known [principal of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) whereby "every module (such as a process, a user, or a program, depending on the subject) must be able to access only the information and resources that are necessary for its legitimate purpose."
+
+To learn more about access control with authentik, refer to these topics:
+
+<DocCardList />

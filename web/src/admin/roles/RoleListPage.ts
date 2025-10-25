@@ -1,53 +1,46 @@
-import "@goauthentik/admin/roles/RoleForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/roles/RoleForm";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RbacApi, Role } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Roles");
-    }
-    pageDescription(): string {
-        return msg("Manage roles which grant permissions to objects within authentik.");
-    }
-    pageIcon(): string {
-        return "fa fa-lock";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Roles");
+    public pageDescription = msg(
+        "Manage roles which grant permissions to objects within authentik.",
+    );
+    public pageIcon = "fa fa-lock";
 
     @property()
     order = "name";
-
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFBanner];
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -71,47 +64,48 @@ export class RoleListPage extends TablePage<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
-            >
-            </ak-page-header>
-            <div class="pf-c-banner pf-m-info">
-                ${msg("RBAC is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <div class="pf-c-card">${this.renderTable()}</div>
-            </section>`;
+    render(): HTMLTemplateResult {
+        return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            <div class="pf-c-card">${this.renderTable()}</div>
+        </section>`;
     }
 
-    row(item: Role): TemplateResult[] {
+    row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
-            html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Role")} </span>
-                <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Role")}</span>
+                    <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Role")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Role")}</span>
                 <ak-role-form slot="form"> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }
 

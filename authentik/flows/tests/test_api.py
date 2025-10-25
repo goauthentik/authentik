@@ -1,9 +1,11 @@
 """API flow tests"""
 
+from json import loads
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.lib.generators import generate_id
@@ -76,6 +78,22 @@ class TestFlowsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(response.content, {"diagram": DIAGRAM_EXPECTED})
+
+    def test_api_background(self):
+        """Test custom background"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        flow = create_test_flow()
+        response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
+        body = loads(response.content.decode())
+        self.assertEqual(body["background"], "/static/dist/assets/images/flow_background.jpg")
+
+        flow.background = "https://goauthentik.io/img/icon.png"
+        flow.save()
+        response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
+        body = loads(response.content.decode())
+        self.assertEqual(body["background"], "https://goauthentik.io/img/icon.png")
 
     def test_api_diagram_no_stages(self):
         """Test flow diagram with no stages."""

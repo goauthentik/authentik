@@ -25,6 +25,8 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+playwright-report
+test-results
 *.lcov
 
 # nyc test coverage
@@ -109,4 +111,8 @@ temp/
 # End of https://www.gitignore.io/api/node
 api/**
 storybook-static/
+
+# Wireit's cache
+.wireit
+
 custom-elements.json

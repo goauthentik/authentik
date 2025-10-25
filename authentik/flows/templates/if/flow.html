@@ -5,9 +5,9 @@
 
 {% block head_before %}
 {{ block.super }}
-<link rel="prefetch" href="{{ flow.background_url }}" />
+<link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
-<script>ShadyDOM = { force: !navigator.webdriver };</script>
+<script>ShadyDOM = { force: true };</script>
 {% endif %}
 {% include "base/header_js.html" %}
 <script>
@@ -18,15 +18,16 @@ window.authentik.flow = {
 {% endblock %}
 
 {% block head %}
-{% versioned_script "dist/flow/FlowInterface-%v.js" %}
+<script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
 <style>
 :root {
-    --ak-flow-background: url("{{ flow.background_url }}");
+    --ak-flow-background: url("{{ flow_background_url }}");
 }
 </style>
 {% endblock %}
 
 {% block body %}
+<ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
 <ak-flow-executor flowSlug="{{ flow.slug }}">
     <ak-loading></ak-loading>

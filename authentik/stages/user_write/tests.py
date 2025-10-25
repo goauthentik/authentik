@@ -4,7 +4,13 @@ from unittest.mock import patch
 
 from django.urls import reverse
 
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
+from authentik.core.models import (
+    USER_ATTRIBUTE_SOURCES,
+    Group,
+    Source,
+    User,
+    UserSourceConnection,
+)
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -99,6 +105,7 @@ class TestUserWriteStage(FlowTestCase):
             "username": "test-user-new",
             "password": new_password,
             "attributes.some.custom-attribute": "test",
+            "attributes.some_custom_attribute": "test",
             "attributes": {
                 "foo": "bar",
             },
@@ -119,7 +126,7 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
-        self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
+        self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""

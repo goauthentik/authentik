@@ -1,12 +1,13 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-dual-select-selected-pane.js";
+import "./sb-host-provider.js";
+
+import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-dual-select-selected-pane";
-import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane";
-import "./sb-host-provider";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkDualSelectSelectedPane> = {
     title: "Elements / Dual Select / Selected Items Pane",
@@ -34,7 +35,7 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -84,7 +85,7 @@ const goodForYou = [
     "Cauliflower",
 ];
 
-const goodForYouPairs = goodForYou.map((key) => [slug(key), key]);
+const goodForYouPairs = goodForYou.map((key) => [kebabCase(key), key]);
 
 export const Default: Story = {
     render: () =>

@@ -5,10 +5,12 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
-from sentry_sdk.hub import Hub
+from django.utils.html import _json_script_escapes
+from django.utils.safestring import mark_safe
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
+from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
@@ -32,13 +34,14 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
     brand = getattr(request, "brand", DEFAULT_BRAND)
     tenant = getattr(request, "tenant", Tenant())
-    trace = ""
-    span = Hub.current.scope.span
-    if span:
-        trace = span.to_traceparent()
+    # similarly to `json_script` we escape everything HTML-related, however django
+    # only directly exposes this as a function that also wraps it in a <script> tag
+    # which we dont want for CSS
+    brand_css = mark_safe(str(brand.branding_custom_css).translate(_json_script_escapes))  # nosec
     return {
         "brand": brand,
+        "brand_css": brand_css,
         "footer_links": tenant.footer_links,
-        "sentry_trace": trace,
-        "version": get_full_version(),
+        "html_meta": {**get_http_meta()},
+        "version": authentik_full_version(),
     }

@@ -1,0 +1,8 @@
+version: 1
+entries:
+  - model: authentik_rbac.role
+    identifiers:
+      name: "%(id)s"
+    attrs:
+      permissions:
+        - authentik_blueprints.view_blueprintinstance

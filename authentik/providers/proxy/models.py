@@ -4,19 +4,47 @@ import string
 from collections.abc import Iterable
 from random import SystemRandom
 from urllib.parse import urljoin
+from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
+from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 
 SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
+
+
+class ProxySession(ExpiringModel):
+    """Session storage for proxyv2 outposts using PostgreSQL"""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    session_key = models.TextField(unique=True, db_index=True)
+    user_id = models.UUIDField(null=True, blank=True, db_index=True)
+
+    session_data = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        verbose_name = _("Proxy Session")
+        verbose_name_plural = _("Proxy Sessions")
+        indexes = [
+            models.Index(fields=["user_id"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Session {self.session_key[:8]}..."
 
 
 def get_cookie_secret():
@@ -24,14 +52,14 @@ def get_cookie_secret():
     return "".join(SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
-def _get_callback_url(uri: str) -> str:
-    return "\n".join(
-        [
-            urljoin(uri, "outpost.goauthentik.io/callback")
-            + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-            uri + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-        ]
-    )
+def _get_callback_url(uri: str) -> list[RedirectURI]:
+    return [
+        RedirectURI(
+            RedirectURIMatchingMode.STRICT,
+            urljoin(uri, "outpost.goauthentik.io/callback") + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ),
+        RedirectURI(RedirectURIMatchingMode.STRICT, uri + f"?{OUTPOST_CALLBACK_SIGNATURE}=true"),
+    ]
 
 
 class ProxyMode(models.TextChoices):
@@ -141,6 +169,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
                 "goauthentik.io/providers/oauth2/scope-openid",
                 "goauthentik.io/providers/oauth2/scope-profile",
                 "goauthentik.io/providers/oauth2/scope-email",
+                "goauthentik.io/providers/oauth2/scope-entitlements",
                 "goauthentik.io/providers/proxy/scope-proxy",
             ]
         )

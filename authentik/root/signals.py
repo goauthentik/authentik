@@ -1,7 +1,6 @@
 from datetime import timedelta
 
-from django.core.signals import Signal
-from django.dispatch import receiver
+from django.dispatch import Signal, receiver
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 

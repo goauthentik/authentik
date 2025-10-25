@@ -3,7 +3,7 @@
 from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -27,16 +27,6 @@ class PatreonOAuthCallback(OAuthCallback):
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("data", {}).get("id")
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("data", {}).get("attributes", {}).get("vanity"),
-            "email": info.get("data", {}).get("attributes", {}).get("email"),
-            "name": info.get("data", {}).get("attributes", {}).get("full_name"),
-        }
-
 
 @registry.register()
 class PatreonType(SourceType):
@@ -50,3 +40,12 @@ class PatreonType(SourceType):
     authorization_url = "https://www.patreon.com/oauth2/authorize"
     access_token_url = "https://www.patreon.com/api/oauth2/token"  # nosec
     profile_url = "https://www.patreon.com/api/oauth2/api/current_user"
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("data", {}).get("attributes", {}).get("vanity"),
+            "email": info.get("data", {}).get("attributes", {}).get("email"),
+            "name": info.get("data", {}).get("attributes", {}).get("full_name"),
+        }

@@ -1,16 +1,21 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { me } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
+import "./ak-library-impl.js";
+
+import type { PageUIConfig } from "./types.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { rootInterface } from "#common/theme";
+import { me } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+
+import type { UserInterface } from "#user/index.entrypoint";
+
+import { Application, CoreApi } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { Application, CoreApi } from "@goauthentik/api";
-
-import "./ak-library-impl.js";
-import type { PageUIConfig } from "./types.js";
 
 /**
  * List of Applications available
@@ -29,25 +34,30 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
-    @state()
-    ready = false;
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
 
     @state()
-    isAdmin = false;
+    protected ready = false;
+
+    @state()
+    protected admin = false;
 
     /**
      * The list of applications. This is the *complete* list; the constructor fetches as many pages
      * as the server announces when page one is accessed, and then concatenates them all together.
      */
     @state()
-    apps: Application[] = [];
+    protected apps: Application[] = [];
 
     @state()
     uiConfig: PageUIConfig;
 
     constructor() {
         super();
-        const uiConfig = rootInterface()?.uiConfig;
+        const { uiConfig } = rootInterface<UserInterface>();
+
         if (!uiConfig) {
             throw new Error("Could not retrieve uiConfig. Reason: unknown. Check logs.");
         }
@@ -59,8 +69,8 @@ export class LibraryPage extends AKElement {
         };
 
         Promise.all([this.fetchApplications(), me()]).then(([applications, meStatus]) => {
-            this.isAdmin = meStatus.user.isSuperuser;
             this.apps = applications;
+            this.admin = meStatus.user.isSuperuser;
             this.ready = true;
         });
     }
@@ -70,6 +80,7 @@ export class LibraryPage extends AKElement {
             ordering: "name",
             page,
             pageSize: 100,
+            onlyWithLaunchUrl: true,
         });
 
         const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
@@ -96,17 +107,15 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    pageTitle(): string {
-        return msg("My Applications");
-    }
+    public pageTitle = msg("My Applications");
 
     loading() {
-        return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-empty-state default-label></ak-empty-state>`;
     }
 
     running() {
         return html`<ak-library-impl
-            ?isadmin=${this.isAdmin}
+            ?admin=${this.admin}
             .apps=${this.apps}
             .uiConfig=${this.uiConfig}
         ></ak-library-impl>`;

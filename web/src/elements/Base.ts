@@ -1,171 +1,197 @@
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { adaptCSS } from "@goauthentik/common/utils";
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
+import { globalAK } from "#common/global";
+import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
+import {
+    $AKBase,
+    applyUITheme,
+    createUIThemeEffect,
+    CSSColorSchemeValue,
+    formatColorScheme,
+    ResolvedUITheme,
+    resolveUITheme,
+} from "#common/theme";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { localized } from "@lit/localize";
-import { LitElement, ReactiveElement } from "lit";
+import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
+import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
-
-import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
-
-type AkInterface = HTMLElement & {
-    getTheme: () => Promise<UiThemeEnum>;
-    brand?: CurrentBrand;
-    uiConfig?: UIConfig;
-    config?: Config;
-};
-
-export const rootInterface = <T extends AkInterface>(): T | undefined =>
-    (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
-
-let css: Promise<string[]> | undefined;
-function fetchCustomCSS(): Promise<string[]> {
-    if (!css) {
-        css = Promise.all(
-            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map(
-                (link) => {
-                    return fetch(link.href)
-                        .then((res) => {
-                            return res.text();
-                        })
-                        .finally(() => {
-                            return "";
-                        });
-                },
-            ),
-        );
-    }
-    return css;
+export interface AKElementProps {
+    activeTheme: ResolvedUITheme;
 }
 
-const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
-
 @localized()
-export class AKElement extends LitElement {
-    _mediaMatcher?: MediaQueryList;
-    _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
-    _activeTheme?: UiThemeEnum;
+export class AKElement extends LitElement implements AKElementProps {
+    //#region Static Properties
 
-    get activeTheme(): UiThemeEnum | undefined {
-        return this._activeTheme;
+    public static styles?: Array<CSSResult | CSSModule>;
+
+    protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
+        if (!styles) return [$AKBase];
+
+        if (!Array.isArray(styles)) return [createCSSResult(styles), $AKBase];
+
+        return [
+            // ---
+            ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
+            $AKBase,
+        ];
     }
+
+    //#endregion
+
+    //#region Lifecycle
 
     constructor() {
         super();
+
+        const { brand } = globalAK();
+
+        this.preferredColorScheme = formatColorScheme(brand.uiTheme);
+        this.activeTheme = resolveUITheme(brand?.uiTheme);
+
+        this.#customCSSStyleSheet = brand?.brandingCustomCss
+            ? createStyleSheetUnsafe(brand.brandingCustomCss)
+            : null;
+
+        if (process.env.NODE_ENV === "development") {
+            const updatedCallback = this.updated;
+
+            this.updated = function (args: PropertyValues) {
+                updatedCallback?.call(this, args);
+
+                const unregisteredElements = this.renderRoot.querySelectorAll(":not(:defined)");
+
+                if (!unregisteredElements.length) return;
+
+                for (const element of unregisteredElements) {
+                    console.debug("Unregistered custom element found in the DOM", element);
+                }
+                throw new TypeError(
+                    `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
+                );
+            };
+        }
     }
 
-    setInitialStyles(root: DocumentOrShadowRoot) {
-        const styleRoot: DocumentOrShadowRoot = (
-            "ShadyDOM" in window ? document : root
-        ) as DocumentOrShadowRoot;
-        styleRoot.adoptedStyleSheets = adaptCSS([
-            ...styleRoot.adoptedStyleSheets,
-            ensureCSSStyleSheet(AKGlobal),
-        ]);
-        this._initTheme(styleRoot);
-        this._initCustomCSS(styleRoot);
+    public override disconnectedCallback(): void {
+        this.#themeAbortController?.abort();
+        super.disconnectedCallback();
     }
 
-    protected createRenderRoot() {
-        this.fixElementStyles();
-        const root = super.createRenderRoot();
-        this.setInitialStyles(root as unknown as DocumentOrShadowRoot);
-        return root;
+    /**
+     * Returns the node into which the element should render.
+     *
+     * @see {LitElement.createRenderRoot} for more information.
+     */
+    protected override createRenderRoot(): HTMLElement | DocumentFragment {
+        const renderRoot = super.createRenderRoot();
+        this.styleRoot ??= renderRoot;
+
+        return renderRoot;
     }
 
-    async getTheme(): Promise<UiThemeEnum> {
-        // return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
-        return rootInterface()?.getTheme() || UiThemeEnum.Light;
+    //#endregion
+
+    //#region Properties
+
+    /**
+     * The resolved theme of the current element.
+     *
+     * @remarks
+     *
+     * Unlike the browser's current color scheme, this is a value that can be
+     * resolved to a specific theme, i.e. dark or light.
+     */
+    @property({
+        attribute: "theme",
+        type: String,
+        reflect: true,
+    })
+    public activeTheme: ResolvedUITheme;
+
+    //#endregion
+
+    //#region Private Properties
+
+    /**
+     * The preferred color scheme used to look up the UI theme.
+     */
+    protected readonly preferredColorScheme: CSSColorSchemeValue;
+
+    /**
+     * A custom CSS style sheet to apply to the element.
+     */
+    readonly #customCSSStyleSheet: CSSStyleSheet | null;
+
+    /**
+     * A controller to abort theme updates, such as when the element is disconnected.
+     */
+    #themeAbortController: AbortController | null = null;
+    /**
+     * The style root to which the theme is applied.
+     */
+    #styleRoot?: StyleRoot;
+
+    protected set styleRoot(nextStyleRoot: StyleRoot | undefined) {
+        this.#themeAbortController?.abort();
+
+        this.#styleRoot = nextStyleRoot;
+
+        if (!nextStyleRoot) return;
+
+        this.#themeAbortController = new AbortController();
+
+        if (this.preferredColorScheme === "dark") {
+            applyUITheme(nextStyleRoot, UiThemeEnum.Dark, this.#customCSSStyleSheet);
+
+            this.activeTheme = UiThemeEnum.Dark;
+        } else if (this.preferredColorScheme === "light") {
+            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet);
+            this.activeTheme = UiThemeEnum.Light;
+        } else if (this.preferredColorScheme === "auto") {
+            createUIThemeEffect(
+                (nextUITheme) => {
+                    applyUITheme(nextStyleRoot, nextUITheme, this.#customCSSStyleSheet);
+
+                    this.activeTheme = nextUITheme;
+                },
+                {
+                    signal: this.#themeAbortController.signal,
+                },
+            );
+        }
     }
 
-    fixElementStyles() {
-        // Ensure all style sheets being passed are really style sheets.
-        (this.constructor as typeof ReactiveElement).elementStyles = (
-            this.constructor as typeof ReactiveElement
-        ).elementStyles.map(ensureCSSStyleSheet);
+    protected get styleRoot(): StyleRoot | undefined {
+        return this.#styleRoot;
     }
 
-    async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
-        // Early activate theme based on media query to prevent light flash
-        // when dark is preferred
-        // const pref = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
-        // this._activateTheme(root, pref);
-        this._activateTheme(root, UiThemeEnum.Light);
-        this._applyTheme(root, await this.getTheme());
-    }
-
-    private async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const sheets = await fetchCustomCSS();
-        sheets.map((css) => {
-            if (css === "") {
-                return;
+    protected hasSlotted(name: string | null) {
+        const isNotNestedSlot = (start: Element) => {
+            let node = start.parentNode;
+            while (node && node !== this) {
+                if (node instanceof Element && node.hasAttribute("slot")) {
+                    return false;
+                }
+                node = node.parentNode;
             }
-            new CSSStyleSheet().replace(css).then((sheet) => {
-                root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
-            });
-        });
+            return true;
+        };
+
+        // All child slots accessible from the component's LightDOM that match the request
+        const allChildSlotRequests =
+            typeof name === "string"
+                ? [...this.querySelectorAll(`[slot="${name}"]`)]
+                : [...this.children].filter((child) => {
+                      const slotAttr = child.getAttribute("slot");
+                      return !slotAttr || slotAttr === "";
+                  });
+
+        // All child slots accessible from the LightDom that match the request *and* are not nested
+        // within another slotted element.
+        return allChildSlotRequests.filter((node) => isNotNestedSlot(node)).length > 0;
     }
 
-    _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
-        if (!theme) {
-            theme = UiThemeEnum.Automatic;
-        }
-        if (theme === UiThemeEnum.Automatic) {
-            // Create a media matcher to automatically switch the theme depending on
-            // prefers-color-scheme
-            if (!this._mediaMatcher) {
-                this._mediaMatcher = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT);
-                this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
-                    const theme =
-                        ev?.matches || this._mediaMatcher?.matches
-                            ? UiThemeEnum.Light
-                            : UiThemeEnum.Dark;
-                    this._activateTheme(root, theme);
-                };
-                this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
-            }
-            return;
-        } else if (this._mediaMatcher && this._mediaMatcherHandler) {
-            // Theme isn't automatic and we have a matcher configured, remove the matcher
-            // to prevent changes
-            this._mediaMatcher.removeEventListener("change", this._mediaMatcherHandler);
-            this._mediaMatcher = undefined;
-        }
-        this._activateTheme(root, theme);
-    }
-
-    static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
-        if (theme === UiThemeEnum.Dark) {
-            return ThemeDark;
-        }
-        return undefined;
-    }
-
-    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum) {
-        if (theme === this._activeTheme) {
-            return;
-        }
-        // Make sure we only get to this callback once we've picked a concise theme choice
-        this.dispatchEvent(
-            new CustomEvent(EVENT_THEME_CHANGE, {
-                bubbles: true,
-                composed: true,
-                detail: theme,
-            }),
-        );
-        this.setAttribute("theme", theme);
-        const stylesheet = AKElement.themeToStylesheet(theme);
-        const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
-        if (stylesheet) {
-            root.adoptedStyleSheets = [...root.adoptedStyleSheets, ensureCSSStyleSheet(stylesheet)];
-        }
-        if (oldStylesheet) {
-            root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
-        }
-        this._activeTheme = theme;
-        this.requestUpdate();
-    }
+    //#endregion
 }

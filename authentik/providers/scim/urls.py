@@ -13,5 +13,5 @@ api_urlpatterns = [
     ("providers/scim", SCIMProviderViewSet),
     ("providers/scim_users", SCIMProviderUserViewSet),
     ("providers/scim_groups", SCIMProviderGroupViewSet),
-    ("propertymappings/scim", SCIMMappingViewSet),
+    ("propertymappings/provider/scim", SCIMMappingViewSet),
 ]

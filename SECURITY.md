@@ -2,7 +2,7 @@ authentik takes security very seriously. We follow the rules of [responsible di
 
 ## Independent audits and pentests
 
-In May/June of 2023 [Cure53](https://cure53.de) conducted an audit and pentest. The [results](https://cure53.de/pentest-report_authentik.pdf) are published on the [Cure53 website](https://cure53.de/#publications-2023). For more details about authentik's response to the findings of the audit refer to [2023-06 Cure53 Code audit](https://goauthentik.io/docs/security/2023-06-cure53).
+We are committed to engaging in regular pentesting and security audits of authentik. Defining and adhering to a cadence of external testing ensures a stronger probability that our code base, our features, and our architecture is as secure and non-exploitable as possible. For more details about specific audits and pentests, refer to "Audits and Certificates" in our [Security documentation](https://docs.goauthentik.io/docs/security).
 
 ## What authentik classifies as a CVE
 
@@ -18,14 +18,35 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version  | Supported |
-| -------- | --------- |
-| 2024.4.x | ✅        |
-| 2024.6.x | ✅        |
+| Version   | Supported |
+| --------- | --------- |
+| 2025.6.x  | ✅        |
+| 2025.8.x  | ✅        |
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send an email to [security@goauthentik.io](mailto:security@goauthentik.io). Be sure to include relevant information like which version you've found the issue in, instructions on how to reproduce the issue, and anything else that might make it easier for us to find the issue.
+If you discover a potential vulnerability, please report it responsibly through one of the following channels:
+
+- **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
+- **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
+
+When submitting a report, please include as much detail as possible, such as:
+
+- **Affected version(s)**: The version of authentik where the issue was identified.
+- **Steps to reproduce**: A clear description or proof of concept to help us verify the issue.
+- **Impact assessment**: How the vulnerability could be exploited and its potential effect.
+- **Additional information**: Logs, configuration details (if relevant), or any suggested mitigations.
+
+We kindly ask that you do not disclose the vulnerability publicly until we have confirmed and addressed the issue.
+
+Our team will:
+
+- Acknowledge receipt of your report as quickly as possible.
+- Keep you updated on the investigation and resolution progress.
+
+## Researcher Recognition
+
+We value contributions from the security community. For each valid report, we will publish a dedicated entry on our Security Advisory page that optionally includes the reporter’s name (or preferred alias). Please note that while we do not currently offer monetary bounties, we are committed to giving researchers appropriate credit for their efforts in keeping authentik secure.
 
 ## Severity levels
 

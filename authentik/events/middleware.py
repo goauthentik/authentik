@@ -19,8 +19,8 @@ from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
-from authentik.lib.sentry import before_send
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = tuple(
@@ -35,6 +35,7 @@ IGNORED_MODELS = tuple(
 
 _CTX_OVERWRITE_USER = ContextVar[User | None]("authentik_events_log_overwrite_user", default=None)
 _CTX_IGNORE = ContextVar[bool]("authentik_events_log_ignore", default=False)
+_CTX_REQUEST = ContextVar[HttpRequest | None]("authentik_events_log_request", default=None)
 
 
 def should_log_model(model: Model) -> bool:
@@ -149,11 +150,13 @@ class AuditMiddleware:
         m2m_changed.disconnect(dispatch_uid=request.request_id)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        _CTX_REQUEST.set(request)
         self.connect(request)
 
         response = self.get_response(request)
 
         self.disconnect(request)
+        _CTX_REQUEST.set(None)
         return response
 
     def process_exception(self, request: HttpRequest, exception: Exception):
@@ -168,13 +171,15 @@ class AuditMiddleware:
                 EventAction.SUSPICIOUS_REQUEST,
                 request,
                 message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
-        elif before_send({}, {"exc_info": (None, exception, None)}) is not None:
+        elif not should_ignore_exception(exception):
             thread = EventNewThread(
                 EventAction.SYSTEM_EXCEPTION,
                 request,
-                message=exception_to_string(exception),
+                message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
 
@@ -192,6 +197,9 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
+            return
         user = self.get_user(request)
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
@@ -204,6 +212,9 @@ class AuditMiddleware:
         if not should_log_model(instance):  # pragma: no cover
             return
         if _CTX_IGNORE.get():
+            return
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -229,6 +240,9 @@ class AuditMiddleware:
         if not should_log_m2m(instance):
             return
         if _CTX_IGNORE.get():
+            return
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 

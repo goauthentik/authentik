@@ -7,12 +7,18 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
+from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.providers.scim.clients.auth import SCIMTokenAuth
+
+LOGGER = get_logger()
 
 
 class SCIMProviderUser(SerializerModel):
@@ -22,6 +28,7 @@ class SCIMProviderUser(SerializerModel):
     scim_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -43,6 +50,7 @@ class SCIMProviderGroup(SerializerModel):
     scim_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -57,6 +65,22 @@ class SCIMProviderGroup(SerializerModel):
         return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
 
 
+class SCIMAuthenticationMode(models.TextChoices):
+    """SCIM authentication modes"""
+
+    TOKEN = "token", _("Token")
+    OAUTH = "oauth", _("OAuth")
+
+
+class SCIMCompatibilityMode(models.TextChoices):
+    """SCIM compatibility mode"""
+
+    DEFAULT = "default", _("Default")
+    AWS = "aws", _("AWS")
+    SLACK = "slack", _("Slack")
+    SALESFORCE = "sfdc", _("Salesforce")
+
+
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
@@ -67,7 +91,27 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
-    token = models.TextField(help_text=_("Authentication token"))
+
+    auth_mode = models.TextField(
+        choices=SCIMAuthenticationMode.choices, default=SCIMAuthenticationMode.TOKEN
+    )
+
+    token = models.TextField(help_text=_("Authentication token"), blank=True)
+    auth_oauth = models.ForeignKey(
+        "authentik_sources_oauth.OAuthSource",
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_("OAuth Source used for authentication"),
+    )
+    auth_oauth_params = models.JSONField(
+        blank=True, default=dict, help_text=_("Additional OAuth parameters, such as grant_type")
+    )
+    auth_oauth_user = models.ForeignKey(
+        "authentik_core.User", on_delete=models.CASCADE, default=None, null=True
+    )
+
+    verify_certificates = models.BooleanField(default=True)
 
     property_mappings_group = models.ManyToManyField(
         PropertyMapping,
@@ -76,9 +120,33 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
+    compatibility_mode = models.CharField(
+        max_length=30,
+        choices=SCIMCompatibilityMode.choices,
+        default=SCIMCompatibilityMode.DEFAULT,
+        verbose_name=_("SCIM Compatibility Mode"),
+        help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
+    )
+
+    def scim_auth(self) -> AuthBase:
+        if self.auth_mode == SCIMAuthenticationMode.OAUTH:
+            try:
+                from authentik.enterprise.providers.scim.auth_oauth2 import SCIMOAuthAuth
+
+                return SCIMOAuthAuth(self)
+            except ImportError:
+                LOGGER.warning("Failed to import SCIM OAuth Client")
+        return SCIMTokenAuth(self)
+
     @property
     def icon_url(self) -> str | None:
         return static("authentik/sources/scim.png")
+
+    @property
+    def sync_actor(self) -> Actor:
+        from authentik.providers.scim.tasks import scim_sync
+
+        return scim_sync
 
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]
@@ -133,7 +201,7 @@ class SCIMMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-scim-form"
+        return "ak-property-mapping-provider-scim-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -142,8 +210,8 @@ class SCIMMapping(PropertyMapping):
         return SCIMMappingSerializer
 
     def __str__(self):
-        return f"SCIM Mapping {self.name}"
+        return f"SCIM Provider Mapping {self.name}"
 
     class Meta:
-        verbose_name = _("SCIM Mapping")
-        verbose_name_plural = _("SCIM Mappings")
+        verbose_name = _("SCIM Provider Mapping")
+        verbose_name_plural = _("SCIM Provider Mappings")

@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-outpost
+name: CI - Outpost
 
 on:
   push:
@@ -12,12 +12,17 @@ on:
       - main
       - version-*
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   lint-golint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: "go.mod"
       - name: Prepare and generate API
@@ -29,33 +34,40 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@4afd733a84b1f43292c63897423277bb7f4313a9 # v8
         with:
-          version: v1.54.2
+          version: latest
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: "go.mod"
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Generate API
         run: make gen-client-go
+      - name: prepare database
+        run: |
+          uv run make migrate
       - name: Go unittests
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
   ci-outpost-mark:
+    if: always()
     needs:
       - lint-golint
       - test-unittest
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   build-container:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
@@ -69,26 +81,29 @@ jobs:
           - rac
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-        uses: docker/login-action@v3
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -96,17 +111,25 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: Build Docker Image
-        uses: docker/build-push-action@v6
+        id: push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache,mode=max
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   build-binary:
     timeout-minutes: 120
     needs:
@@ -123,13 +146,13 @@ jobs:
         goos: [linux]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"

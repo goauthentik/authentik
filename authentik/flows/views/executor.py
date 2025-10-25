@@ -18,9 +18,8 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, start_span
 from sentry_sdk.api import set_tag
-from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
@@ -55,9 +54,8 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import AccessDeniedChallengeView, StageView
-from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
+from authentik.flows.stage import AccessDeniedStage, StageView
+from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -104,7 +102,7 @@ class FlowExecutorView(APIView):
 
     permission_classes = [AllowAny]
 
-    flow: Flow
+    flow: Flow = None
 
     plan: FlowPlan | None = None
     current_binding: FlowStageBinding | None = None
@@ -115,7 +113,8 @@ class FlowExecutorView(APIView):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if not self.flow:
+            self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
         set_tag("authentik.flow", self.flow.slug)
 
@@ -146,7 +145,8 @@ class FlowExecutorView(APIView):
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
             LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
         finally:
-            token.delete()
+            if token.revoke_on_execution:
+                token.delete()
         if not isinstance(plan, FlowPlan):
             return None
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
@@ -154,9 +154,7 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with Hub.current.start_span(
-            op="authentik.flow.executor.dispatch", description=self.flow.slug
-        ) as span:
+        with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
@@ -174,7 +172,8 @@ class FlowExecutorView(APIView):
                     # Existing plan is deleted from session and instance
                     self.plan = None
                     self.cancel()
-                self._logger.debug("f(exec): Continuing existing plan")
+                else:
+                    self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
             request.session[SESSION_KEY_GET] = get_params
@@ -185,6 +184,13 @@ class FlowExecutorView(APIView):
                 try:
                     self.plan = self._initiate_plan()
                 except FlowNonApplicableException as exc:
+                    # If we're this flow is for authentication and the user is already authenticated
+                    # continue to the next URL
+                    if (
+                        self.flow.designation == FlowDesignation.AUTHENTICATION
+                        and self.request.user.is_authenticated
+                    ):
+                        return self._flow_done()
                     self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
@@ -199,7 +205,7 @@ class FlowExecutorView(APIView):
                 # if the cached plan is from an older version, it might have different attributes
                 # in which case we just delete the plan and invalidate everything
                 next_binding = self.plan.next(self.request)
-            except Exception as exc:
+            except Exception as exc:  # noqa
                 self._logger.warning(
                     "f(exec): found incompatible flow plan, invalidating run", exc=exc
                 )
@@ -234,12 +240,13 @@ class FlowExecutorView(APIView):
         """Handle exception in stage execution"""
         if settings.DEBUG or settings.TEST:
             raise exc
-        capture_exception(exc)
         self._logger.warning(exc)
-        Event.new(
-            action=EventAction.SYSTEM_EXCEPTION,
-            message=exception_to_string(exc),
-        ).from_http(self.request)
+        if not should_ignore_exception(exc):
+            capture_exception(exc)
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message="System exception during flow execution.",
+            ).with_exception(exc).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))
@@ -274,9 +281,9 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                Hub.current.start_span(
+                start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),
@@ -288,7 +295,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     @extend_schema(
@@ -325,9 +332,9 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                Hub.current.start_span(
+                start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),
@@ -339,7 +346,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     def _initiate_plan(self) -> FlowPlan:
@@ -351,7 +358,7 @@ class FlowExecutorView(APIView):
             # there are no issues with the class we might've gotten
             # from the cache. If there are errors, just delete all cached flows
             _ = plan.has_stages
-        except Exception:
+        except Exception:  # noqa
             keys = cache.keys(f"{CACHE_PREFIX}*")
             cache.delete_many(keys)
             return self._initiate_plan()
@@ -444,7 +451,7 @@ class FlowExecutorView(APIView):
             )
             return self.restart_flow(keep_context)
         self.cancel()
-        challenge_view = AccessDeniedChallengeView(self, error_message)
+        challenge_view = AccessDeniedStage(self, error_message)
         challenge_view.request = self.request
         return to_stage_response(self.request, challenge_view.get(self.request))
 
@@ -600,9 +607,4 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             raise Http404 from None
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=stage.configure_flow.slug,
-        )
+        return plan.to_redirect(request, stage.configure_flow)

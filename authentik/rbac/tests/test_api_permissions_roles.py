@@ -32,7 +32,7 @@ class TestRBACPermissionRoles(APITestCase):
         )
         self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
         res = self.client.get(reverse("authentik_api:permissions-roles-list"))
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 200)
 
     def test_list_role(self):
         """Test list of all permissions"""

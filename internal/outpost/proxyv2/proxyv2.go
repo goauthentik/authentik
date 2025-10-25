@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 
 	sentryhttp "github.com/getsentry/sentry-go/http"
@@ -34,7 +35,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController) *ProxyServer {
+func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -65,17 +66,25 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
-	ac.AddWSHandler(s.handleWSMessage)
+	ac.AddEventHandler(s.handleWSMessage)
 	return s
 }
 
 func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
+	// Always handle requests for outpost paths that should answer regardless of hostname
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") ||
+		strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/static") {
+		ps.mux.ServeHTTP(rw, r)
+		return true
+	}
+	// lookup app by hostname
 	a, _ := ps.lookupApp(r)
 	if a == nil {
 		return false
 	}
+	// check if the app should handle this URL, or is setup in proxy mode
 	if a.ShouldHandleURL(r) || a.Mode() == api.PROXYMODE_PROXY {
-		a.ServeHTTP(rw, r)
+		ps.mux.ServeHTTP(rw, r)
 		return true
 	}
 	return false
@@ -120,8 +129,13 @@ func (ps *ProxyServer) ServeHTTP() {
 		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: listener}
-	defer proxyListener.Close()
+	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
 
 	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
 	ps.serve(proxyListener)
@@ -139,8 +153,13 @@ func (ps *ProxyServer) ServeHTTPS() {
 		ps.log.WithError(err).Warning("Failed to listen (TLS)")
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
-	defer proxyListener.Close()
+	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
 	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")

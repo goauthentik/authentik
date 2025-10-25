@@ -1,9 +1,8 @@
-import type { LayoutType } from "@goauthentik/common/ui/config";
+import type { LayoutType } from "#common/ui/config";
 
 import type { Application } from "@goauthentik/api";
 
-export type AppGroupEntry = [string, Application[]];
-export type AppGroupList = AppGroupEntry[];
+export type AppGroupEntry = [label: string, applications: Application[]];
 
 export type PageUIConfig = {
     layout: LayoutType;

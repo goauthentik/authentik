@@ -1,33 +1,49 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
+import { EVENT_REFRESH } from "#common/constants";
 
-import { TemplateResult, html } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-dropdown")
 export class DropdownButton extends AKElement {
-    menu: HTMLElement | null;
+    menu: HTMLElement | null = null;
 
     constructor() {
         super();
-        this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
-        this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                if (!this.menu) return;
-                this.menu.hidden = !this.menu.hidden;
-            });
-        });
-        window.addEventListener(EVENT_REFRESH, this.clickHandler);
+        window.addEventListener(EVENT_REFRESH, this.show);
     }
 
-    clickHandler = (): void => {
+    public show = (): void => {
         if (!this.menu) return;
+
         this.menu.hidden = true;
     };
 
+    connectedCallback() {
+        super.connectedCallback();
+
+        const menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
+
+        if (!menu) {
+            console.warn("authentik/dropdown: No menu found");
+        }
+
+        this.menu = menu;
+
+        this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                if (!this.menu) return;
+
+                this.menu.hidden = !this.menu.hidden;
+                btn.ariaExpanded = (!this.menu.hidden).toString();
+            });
+        });
+    }
+
     disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.clickHandler);
+        window.removeEventListener(EVENT_REFRESH, this.show);
     }
 
     render(): TemplateResult {

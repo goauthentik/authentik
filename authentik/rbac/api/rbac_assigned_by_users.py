@@ -1,5 +1,6 @@
 """common RBAC serializers"""
 
+from django.contrib.auth.models import Permission
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -9,17 +10,17 @@ from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, ReadOnlyField
+from rest_framework.fields import BooleanField, CharField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
-from authentik.core.models import User, UserTypes
+from authentik.core.models import Group, User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
-from authentik.rbac.api.rbac import PermissionAssignSerializer
+from authentik.rbac.api.rbac import PermissionAssignResultSerializer, PermissionAssignSerializer
 from authentik.rbac.decorators import permission_required
 
 
@@ -30,22 +31,22 @@ class UserObjectPermissionSerializer(ModelSerializer):
     model = ReadOnlyField(source="content_type.model")
     codename = ReadOnlyField(source="permission.codename")
     name = ReadOnlyField(source="permission.name")
-    object_pk = ReadOnlyField()
+    object_pk = CharField()
 
     class Meta:
         model = UserObjectPermission
         fields = ["id", "codename", "model", "app_label", "object_pk", "name"]
 
 
-class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):
+class UserAssignedObjectPermissionSerializer(PartialUserSerializer):
     """Users assigned object permission serializer"""
 
     permissions = UserObjectPermissionSerializer(many=True, source="userobjectpermission_set")
     is_superuser = BooleanField()
 
     class Meta:
-        model = GroupMemberSerializer.Meta.model
-        fields = GroupMemberSerializer.Meta.fields + ["permissions", "is_superuser"]
+        model = PartialUserSerializer.Meta.model
+        fields = PartialUserSerializer.Meta.fields + ["permissions", "is_superuser"]
 
 
 class UserAssignedPermissionFilter(FilterSet):
@@ -54,26 +55,56 @@ class UserAssignedPermissionFilter(FilterSet):
     model = ChoiceFilter(choices=model_choices(), method="filter_model", required=True)
     object_pk = CharFilter(method="filter_object_pk")
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        data = self.form.cleaned_data
+        model: str = data["model"]
+        object_pk: str | None = data.get("object_pk", None)
+        app, _, model = model.partition(".")
+
+        superuser_pks = (
+            Group.objects.filter(is_superuser=True).values_list("users", flat=True).distinct()
+        )
+
+        permissions = Permission.objects.filter(
+            content_type__app_label=app,
+            content_type__model=model,
+        )
+
+        user_pks_with_model_permission = (
+            permissions.order_by().values_list("user", flat=True).distinct()
+        )
+        user_pks_with_object_permission = []
+        if object_pk:
+            user_pks_with_object_permission = (
+                UserObjectPermission.objects.filter(
+                    permission__in=permissions,
+                    object_pk=object_pk,
+                )
+                .order_by()
+                .values_list("user", flat=True)
+                .distinct()
+            )
+
+        return queryset.filter(
+            Q(pk__in=superuser_pks)
+            | Q(pk__in=user_pks_with_model_permission)
+            | Q(pk__in=user_pks_with_object_permission)
+        )
+
     def filter_model(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object type"""
-        app, _, model = value.partition(".")
-        return queryset.filter(
-            Q(
-                user_permissions__content_type__app_label=app,
-                user_permissions__content_type__model=model,
-            )
-            | Q(
-                userobjectpermission__permission__content_type__app_label=app,
-                userobjectpermission__permission__content_type__model=model,
-            )
-            | Q(ak_groups__is_superuser=True)
-        ).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object primary key"""
-        return queryset.filter(
-            Q(userobjectpermission__object_pk=value) | Q(ak_groups__is_superuser=True),
-        ).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
 
 class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
@@ -83,15 +114,16 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     ordering = ["username"]
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
-    queryset = User.objects.all()
+    queryset = User.objects.all().prefetch_related("userobjectpermission_set")
     filterset_class = UserAssignedPermissionFilter
 
     @permission_required("authentik_core.assign_user_permissions")
     @extend_schema(
         request=PermissionAssignSerializer(),
         responses={
-            204: OpenApiResponse(description="Successfully assigned"),
+            200: PermissionAssignResultSerializer(many=True),
         },
+        operation_id="rbac_permissions_assigned_by_users_assign",
     )
     @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:
@@ -101,10 +133,12 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             raise ValidationError("Permissions cannot be assigned to an internal service account.")
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        ids = []
         with atomic():
             for perm in data.validated_data["permissions"]:
-                assign_perm(perm, user, data.validated_data["model_instance"])
-        return Response(status=204)
+                assigned_perm = assign_perm(perm, user, data.validated_data["model_instance"])
+                ids.append(PermissionAssignResultSerializer(instance={"id": assigned_perm.pk}).data)
+        return Response(ids, status=200)
 
     @permission_required("authentik_core.unassign_user_permissions")
     @extend_schema(

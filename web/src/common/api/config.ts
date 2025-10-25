@@ -1,10 +1,12 @@
 import {
     CSRFMiddleware,
     EventMiddleware,
+    LocaleMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+} from "#common/api/middleware";
+import { EVENT_LOCALE_REQUEST } from "#common/constants";
+import { globalAK } from "#common/global";
+import { SentryMiddleware } from "#common/sentry/middleware";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
@@ -61,21 +63,14 @@ export function brand(): Promise<CurrentBrand> {
     return globalBrandPromise;
 }
 
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
+    basePath: `${globalAK().api.base}api/v3`,
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),
+        new SentryMiddleware(),
+        new LocaleMiddleware(),
     ],
 });
 
@@ -86,4 +81,6 @@ export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
 
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
+console.debug(
+    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
+);

@@ -1,25 +1,29 @@
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderViewPage";
-import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
-import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
-import "@goauthentik/admin/providers/rac/RACProviderViewPage";
-import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
-import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
-import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderViewPage";
+import "#admin/providers/ldap/LDAPProviderViewPage";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
+import "#admin/providers/oauth2/OAuth2ProviderViewPage";
+import "#admin/providers/proxy/ProxyProviderViewPage";
+import "#admin/providers/rac/RACProviderViewPage";
+import "#admin/providers/radius/RadiusProviderViewPage";
+import "#admin/providers/saml/SAMLProviderViewPage";
+import "#admin/providers/scim/SCIMProviderViewPage";
+import "#admin/providers/ssf/SSFProviderViewPage";
+import "#elements/EmptyState";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+
+import { setPageDetails } from "#components/ak-page-navbar";
+
+import { Provider, ProvidersApi } from "@goauthentik/api";
+
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
-import { Provider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
@@ -35,13 +39,11 @@ export class ProviderViewPage extends AKElement {
     @property({ attribute: false })
     provider?: Provider;
 
-    static get styles(): CSSResult[] {
-        return [PFPage];
-    }
+    static styles: CSSResult[] = [PFPage];
 
-    renderProvider(): TemplateResult {
+    render(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
         switch (this.provider?.component) {
             case "ak-provider-saml-form":
@@ -80,19 +82,22 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-microsoft-entra-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-microsoft-entra-view>`;
+            case "ak-provider-ssf-form":
+                return html`<ak-provider-ssf-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-ssf-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-integration"
-                header=${ifDefined(this.provider?.name)}
-                description=${ifDefined(this.provider?.verboseName)}
-            >
-            </ak-page-header>
-            ${this.renderProvider()}`;
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-integration",
+            header: this.provider?.name,
+            description: this.provider?.verboseName,
+        });
     }
 }
 

@@ -1,23 +1,24 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/buttons/SpinnerButton/index";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
-
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
     obj?: Record<string, unknown>;
@@ -36,6 +37,7 @@ export class DeleteForm extends ModalButton {
             .then(() => {
                 this.onSuccess();
                 this.open = false;
+
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
@@ -43,9 +45,10 @@ export class DeleteForm extends ModalButton {
                     }),
                 );
             })
-            .catch((e) => {
-                this.onError(e);
-                throw e;
+            .catch(async (error: unknown) => {
+                await this.onError(error);
+
+                throw error;
             });
     }
 
@@ -56,10 +59,14 @@ export class DeleteForm extends ModalButton {
         });
     }
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
-            level: MessageLevel.error,
+    onError(error: unknown): Promise<void> {
+        return parseAPIResponseError(error).then((parsedError) => {
+            showMessage({
+                message: msg(
+                    str`Failed to delete ${this.objectLabel}: ${pluckErrorDetail(parsedError)}`,
+                ),
+                level: MessageLevel.error,
+            });
         });
     }
 
@@ -86,7 +93,7 @@ export class DeleteForm extends ModalButton {
                 ? until(
                       this.usedBy().then((usedBy) => {
                           if (usedBy.length < 1) {
-                              return html``;
+                              return nothing;
                           }
                           return html`
                               <section class="pf-c-modal-box__body pf-m-light">
@@ -125,7 +132,7 @@ export class DeleteForm extends ModalButton {
                           `;
                       }),
                   )
-                : html``}
+                : nothing}
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {

@@ -1,30 +1,29 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PaginatedResponse, TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, Endpoint, RacApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
-    clickHandler = (item: Endpoint) => {
+    protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {
         if (!item.launchUrl) {
-            return;
+            return super.rowClickListener(item, event);
         }
-        if (this.app?.openInNewTab) {
-            window.open(item.launchUrl);
-        } else {
-            window.location.assign(item.launchUrl);
-        }
-    };
+
+        const target = this.app?.openInNewTab ? `ak-rac-endpoint-${item.name}` : "_self";
+
+        window.open(item.launchUrl, target);
+    }
 
     @property({ attribute: false })
     app?: Application;
@@ -35,17 +34,18 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
             provider: this.app?.provider || 0,
         });
         if (this.open && endpoints.pagination.count === 1) {
-            this.clickHandler(endpoints.results[0]);
+            this.rowClickListener(endpoints.results[0]);
             this.open = false;
         }
         return endpoints;
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+    ];
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [html`${item.name}`];
     }
 

@@ -17,7 +17,7 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.config import set_path_in_dict
+from authentik.lib.utils.dict import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -42,7 +42,7 @@ class UserWriteStageView(StageView):
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.
@@ -104,7 +104,9 @@ class UserWriteStageView(StageView):
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
-            if hasattr(user, setter_name):
+            if key == "password":
+                user.set_password(value, request=self.request)
+            elif hasattr(user, setter_name):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)

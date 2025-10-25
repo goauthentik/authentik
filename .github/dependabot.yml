@@ -1,7 +1,15 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - /
+      # Required to update composite actions
+      # https://github.com/dependabot/dependabot-core/issues/6704
+      - /.github/actions/cherry-pick
+      - /.github/actions/setup
+      - /.github/actions/docker-push-variables
+      - /.github/actions/comment-pr-instructions
+      - /.github/actions/test-results
     schedule:
       interval: daily
       time: "04:00"
@@ -23,8 +31,13 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/tests/wdio"
-      - "/web/sfe"
+      - "/web/packages/sfe"
+      - "/web/packages/core"
+      - "/packages/esbuild-plugin-live-reload"
+      - "/packages/prettier-config"
+      - "/packages/tsconfig"
+      - "/packages/docusaurus-config"
+      - "/packages/eslint-config"
     schedule:
       interval: daily
       time: "04:00"
@@ -44,9 +57,11 @@ updates:
           - "babel-*"
       eslint:
         patterns:
+          - "@eslint/*"
           - "@typescript-eslint/*"
-          - "eslint"
           - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
       storybook:
         patterns:
           - "@storybook/*"
@@ -54,13 +69,28 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+          - "esbuild*"
       rollup:
         patterns:
           - "@rollup/*"
           - "rollup-*"
+          - "rollup*"
+      swc:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
       wdio:
         patterns:
           - "@wdio/*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
@@ -75,7 +105,33 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
-  - package-ecosystem: pip
+      build:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
+          - "lightningcss*"
+          - "@rspack/binding*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      eslint:
+        patterns:
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
+  - package-ecosystem: npm
+    directory: "/lifecycle/aws"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "lifecycle/aws:"
+    labels:
+      - dependencies
+  - package-ecosystem: uv
     directory: "/"
     schedule:
       interval: daily
@@ -87,6 +143,19 @@ updates:
       - dependencies
   - package-ecosystem: docker
     directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+  - package-ecosystem: docker-compose
+    directories:
+      # - /scripts # Maybe
+      - /scripts/api
+      - /tests/e2e
     schedule:
       interval: daily
       time: "04:00"

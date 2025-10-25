@@ -7,7 +7,9 @@ import (
 	"sort"
 	"strings"
 
+	"beryju.io/radius-eap/protocol"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ak"
 )
 
 func parseCIDRs(raw string) []*net.IPNet {
@@ -30,32 +32,38 @@ func parseCIDRs(raw string) []*net.IPNet {
 }
 
 func (rs *RadiusServer) Refresh() error {
-	outposts, _, err := rs.ac.Client.OutpostsApi.OutpostsRadiusList(context.Background()).Execute()
+	apiProviders, err := ak.Paginator(rs.ac.Client.OutpostsApi.OutpostsRadiusList(context.Background()), ak.PaginatorOptions{
+		PageSize: 100,
+		Logger:   rs.log,
+	})
 	if err != nil {
 		return err
 	}
-	if len(outposts.Results) < 1 {
+	if len(apiProviders) < 1 {
 		return errors.New("no radius provider defined")
 	}
-	providers := make([]*ProviderInstance, len(outposts.Results))
-	for idx, provider := range outposts.Results {
+	providers := make(map[int32]*ProviderInstance)
+	for _, provider := range apiProviders {
+		existing, ok := rs.providers[provider.Pk]
+		state := map[string]*protocol.State{}
+		if ok {
+			state = existing.eapState
+		}
 		logger := log.WithField("logger", "authentik.outpost.radius").WithField("provider", provider.Name)
-		providers[idx] = &ProviderInstance{
+		providers[provider.Pk] = &ProviderInstance{
 			SharedSecret:   []byte(provider.GetSharedSecret()),
 			ClientNetworks: parseCIDRs(provider.GetClientNetworks()),
 			MFASupport:     provider.GetMfaSupport(),
 			appSlug:        provider.ApplicationSlug,
 			flowSlug:       provider.AuthFlowSlug,
+			certId:         provider.GetCertificate(),
+			providerId:     provider.Pk,
 			s:              rs,
 			log:            logger,
+			eapState:       state,
 		}
 	}
 	rs.providers = providers
 	rs.log.Info("Update providers")
 	return nil
-}
-
-func (rs *RadiusServer) StartRadiusServer() error {
-	rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
-	return rs.s.ListenAndServe()
 }

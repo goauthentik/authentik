@@ -1,21 +1,37 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { DefaultBrand } from "#common/ui/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKLabel } from "#components/ak-label";
+
+import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
+
+import {
+    Application,
+    Brand,
+    CoreApi,
+    CoreApplicationsListRequest,
+    FlowsInstancesListDesignationEnum,
+} from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { Brand, CoreApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -32,119 +48,163 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     async send(data: Brand): Promise<Brand> {
+        data.attributes ??= {};
         if (this.instance?.brandUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
                 brandUuid: this.instance.brandUuid,
                 brandRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
-                brandRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+            brandRequest: data,
+        });
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("Domain")}
-                ?required=${true}
+    public override renderForm(): TemplateResult {
+        return html` <ak-text-input
+                required
                 name="domain"
-            >
-                <input
-                    type="text"
-                    value="${first(this.instance?.domain, window.location.host)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="_default">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${first(this.instance?._default, false)}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Default")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Use this brand for each domain that doesn't have a dedicated brand.")}
-                </p>
-            </ak-form-element-horizontal>
+                input-hint="code"
+                placeholder="subdomain.example.com"
+                value="${this.instance?.domain ?? window.location.host}"
+                label=${msg("Domain")}
+                help=${msg(
+                    "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.",
+                )}
+            ></ak-text-input>
 
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Branding settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Title")}
-                        ?required=${true}
+            <ak-switch-input
+                name="_default"
+                label=${msg("Sign assertions")}
+                ?checked=${this.instance?._default ?? false}
+                help=${msg("Use this brand for each domain that doesn't have a dedicated brand.")}
+            >
+            </ak-switch-input>
+
+            <ak-form-group label="${msg("Branding settings")} ">
+                <div class="pf-c-form">
+                    <ak-text-input
+                        required
                         name="brandingTitle"
-                    >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.brandingTitle,
-                                DefaultBrand.brandingTitle,
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Branding shown in page title and several other places.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Logo")}
-                        ?required=${true}
+                        placeholder="authentik"
+                        value="${this.instance?.brandingTitle ?? DefaultBrand.brandingTitle}"
+                        label=${msg("Title")}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg("Branding shown in page title and several other places.")}
+                    ></ak-text-input>
+
+                    <ak-text-input
+                        required
                         name="brandingLogo"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Icon shown in sidebar/header and flow executor.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Favicon")}
-                        ?required=${true}
+                        input-hint="code"
+                        placeholder="/static/dist/your-logo.svg"
+                        value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
+                        label=${msg("Logo")}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg("Logo shown in sidebar/header and flow executor.")}
+                    ></ak-text-input>
+
+                    <ak-text-input
+                        required
                         name="brandingFavicon"
-                    >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.brandingFavicon,
-                                DefaultBrand.brandingFavicon,
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
+                        input-hint="code"
+                        placeholder="/your-favicon.png"
+                        value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
+                        label=${msg("Favicon")}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg("Icon shown in the browser tab.")}
+                    ></ak-text-input>
+
+                    <ak-text-input
+                        required
+                        name="brandingDefaultFlowBackground"
+                        input-hint="code"
+                        placeholder="/your-favicon.png"
+                        value="${this.instance?.brandingDefaultFlowBackground ??
+                        "/static/dist/assets/images/flow_background.jpg"}"
+                        label=${msg("Default flow background")}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg(
+                            "Default background used during flow execution. Can be overridden per flow.",
+                        )}
+                    ></ak-text-input>
+
+                    <ak-form-element-horizontal name="brandingCustomCss">
+                        <div slot="label" class="pf-c-form__group-label">
+                            ${AKLabel({ htmlFor: "branding-custom-css" }, msg("Custom CSS"))}
+                        </div>
+
+                        <ak-codemirror
+                            id="branding-custom-css"
+                            mode=${CodeMirrorMode.CSS}
+                            value="${this.instance?.brandingCustomCss ??
+                            DefaultBrand.brandingCustomCss}"
+                        >
+                        </ak-codemirror>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Icon shown in the browser tab.")}
+                            ${msg("Custom CSS to apply to pages when this brand is active.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Default flows")} </span>
-                <div slot="body" class="pf-c-form">
+
+            <ak-form-group label="${msg("External user settings")} ">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Default application")}
+                        name="defaultApplication"
+                    >
+                        <ak-search-select
+                            placeholder=${msg("Select an application...")}
+                            blankable
+                            .fetchObjects=${async (query?: string): Promise<Application[]> => {
+                                const args: CoreApplicationsListRequest = {
+                                    ordering: "name",
+                                    superuserFullList: true,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const users = await new CoreApi(
+                                    DEFAULT_CONFIG,
+                                ).coreApplicationsList(args);
+                                return users.results;
+                            }}
+                            .renderElement=${(item: Application): string => {
+                                return item.name;
+                            }}
+                            .renderDescription=${(item: Application): TemplateResult => {
+                                return html`${item.slug}`;
+                            }}
+                            .value=${(item: Application | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: Application): boolean => {
+                                return item.pk === this.instance?.defaultApplication;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When configured, external users will automatically be redirected to this application when not attempting to access a different application",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group label="${msg("Default flows")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="flowAuthentication"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an authentication flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.flowAuthentication}
                         ></ak-flow-search>
@@ -159,6 +219,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowInvalidation"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an invalidation flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.flowInvalidation}
                         ></ak-flow-search>
@@ -171,20 +232,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
                         <ak-flow-search
+                            placeholder=${msg("Select a recovery flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
                         ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Recovery flow. If left empty, the first applicable flow sorted by the slug is used.",
-                            )}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Unenrollment flow")}
                         name="flowUnenrollment"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select an unenrollment flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.Unenrollment}
                             .currentFlow=${this.instance?.flowUnenrollment}
                         ></ak-flow-search>
@@ -199,6 +257,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowUserSettings"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select a user settings flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowUserSettings}
                         ></ak-flow-search>
@@ -211,6 +270,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="flowDeviceCode"
                     >
                         <ak-flow-search
+                            placeholder=${msg("Select a device code flow...")}
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowDeviceCode}
                         ></ak-flow-search>
@@ -222,9 +282,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Other global settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Other global settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Web Certificate")}
                         name="webCertificate"
@@ -233,10 +292,27 @@ export class BrandForm extends ModelForm<Brand, string> {
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+                    <ak-form-element-horizontal
+                        label=${msg("Client Certificates")}
+                        name="clientCertificates"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${certificateProvider}
+                            .selector=${certificateSelector(this.instance?.clientCertificates)}
+                            available-label=${msg("Available Certificates")}
+                            selected-label=${msg("Selected Certificates")}
+                        ></ak-dual-select-dynamic-selected>
+                    </ak-form-element-horizontal>
+
+                    <ak-form-element-horizontal name="attributes">
+                        <div slot="label" class="pf-c-form__group-label">
+                            ${AKLabel({ htmlFor: "attributes" }, msg("Attributes"))}
+                        </div>
                         <ak-codemirror
+                            id="attributes"
+                            name="attributes"
                             mode=${CodeMirrorMode.YAML}
-                            value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                            value="${YAML.stringify(this.instance?.attributes ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
