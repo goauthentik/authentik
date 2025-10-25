@@ -24,6 +24,13 @@ export const digestAlgorithmOptions = toOptions([
     ["SHA512", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512],
 ]);
 
+export const signatureAlgorithmShas = toOptions([
+    ["SHA1", "sha1"],
+    ["SHA256", "sha256", true],
+    ["SHA384", "sha384"],
+    ["SHA512", "sha512"],
+]);
+
 export const signatureAlgorithmOptions = toOptions([
     ["RSA-SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1],
     ["RSA-SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256, true],
