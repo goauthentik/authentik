@@ -1,5 +1,3 @@
-
-
 from authentik.endpoints.models import DeviceUserBinding
 from authentik.policies.api.bindings import PolicyBindingSerializer, PolicyBindingViewSet
 

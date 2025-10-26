@@ -14,7 +14,13 @@ class FleetConnectorSerializer(ConnectorSerializer):
 
     class Meta(ConnectorSerializer.Meta):
         model = FleetConnector
-        fields = ConnectorSerializer.Meta.fields
+        fields = ConnectorSerializer.Meta.fields + [
+            "url",
+            "token",
+        ]
+        extra_kwargs = {
+            "token": {"write_only": True},
+        }
 
 
 class FleetConnectorViewSet(UsedByMixin, ModelViewSet):

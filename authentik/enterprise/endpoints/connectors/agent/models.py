@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
+from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
 
@@ -18,6 +19,8 @@ class AgentConnector(Connector):
     authentication_flow = models.ForeignKey(
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
+
+    challenge_key = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE, null=True)
 
     @property
     def serializer(self) -> type[Serializer]:

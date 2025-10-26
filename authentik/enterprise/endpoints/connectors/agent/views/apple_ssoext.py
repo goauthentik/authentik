@@ -1,4 +1,3 @@
-
 from django.http import HttpRequest, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views import View

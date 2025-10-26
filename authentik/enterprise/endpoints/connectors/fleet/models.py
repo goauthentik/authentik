@@ -24,3 +24,7 @@ class FleetConnector(Connector):
         from authentik.enterprise.endpoints.connectors.fleet.connector import FleetConnector
 
         return FleetConnector
+
+    @property
+    def component(self) -> str:
+        return "ak-endpoints-connector-fleet"

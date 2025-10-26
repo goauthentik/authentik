@@ -6108,6 +6108,10 @@
                     "minLength": 1,
                     "title": "Name"
                 },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
                 "nss_uid_offset": {
                     "type": "integer",
                     "minimum": 0,
@@ -6124,6 +6128,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Authentication flow"
+                },
+                "challenge_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Challenge key"
                 },
                 "tokens": {
                     "type": "array",
@@ -6174,6 +6183,22 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Url"
+                },
+                "token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Token"
                 }
             },
             "required": []
@@ -6216,6 +6241,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
                 }
             },
             "required": []

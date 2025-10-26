@@ -48,7 +48,7 @@ class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
-
+    enabled = models.BooleanField()
     objects = InheritanceManager()
 
     @property

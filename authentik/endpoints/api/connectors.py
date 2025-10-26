@@ -23,6 +23,7 @@ class ConnectorSerializer(ModelSerializer, MetaNameSerializer):
         fields = [
             "connector_uuid",
             "name",
+            "enabled",
             "component",
             "verbose_name",
             "verbose_name_plural",

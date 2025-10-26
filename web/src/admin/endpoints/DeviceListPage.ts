@@ -1,4 +1,5 @@
 import "#elements/cards/AggregateCard";
+import "#admin/endpoints/fleet/FleetConnectorForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

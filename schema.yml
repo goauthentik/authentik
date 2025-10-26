@@ -5551,6 +5551,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/:
+    get:
+      operationId: endpoints_fleet_connectors_list
+      description: FleetConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFleetConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_fleet_connectors_create
+      description: FleetConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_fleet_connectors_retrieve
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this fleet connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_fleet_connectors_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this fleet connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_fleet_connectors_partial_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this fleet connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFleetConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_fleet_connectors_destroy
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this fleet connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_fleet_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this fleet connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -31789,6 +31979,8 @@ components:
           format: uuid
         name:
           type: string
+        enabled:
+          type: boolean
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -31801,12 +31993,17 @@ components:
           type: string
           format: uuid
           nullable: true
+        challenge_key:
+          type: string
+          format: uuid
+          nullable: true
         tokens:
           type: array
           items:
             type: string
             format: uuid
       required:
+      - enabled
       - name
       - tokens
     AgentConnectorRequest:
@@ -31818,6 +32015,8 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -31830,12 +32029,17 @@ components:
           type: string
           format: uuid
           nullable: true
+        challenge_key:
+          type: string
+          format: uuid
+          nullable: true
         tokens:
           type: array
           items:
             type: string
             format: uuid
       required:
+      - enabled
       - name
       - tokens
     AlgEnum:
@@ -33908,6 +34112,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallenge'
       - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
+      - $ref: '#/components/schemas/EndpointAgentChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
@@ -33940,6 +34145,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallenge'
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
@@ -34094,6 +34300,8 @@ components:
           format: uuid
         name:
           type: string
+        enabled:
+          type: boolean
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -34112,6 +34320,7 @@ components:
           readOnly: true
       required:
       - component
+      - enabled
       - meta_model_name
       - name
       - verbose_name
@@ -35440,6 +35649,40 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointAgentChallenge:
+      type: object
+      description: |-
+        Challenge that gets sent to the client based on which stage
+        is currently active
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-endpoint-agent
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        challenge:
+          type: string
+      required:
+      - challenge
+    EndpointAgentChallengeResponseRequest:
+      type: object
+      description: Base class for all challenge responses
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-endpoint-agent
+        response:
+          type: string
+          minLength: 1
+      required:
+      - response
     EndpointAuthModeEnum:
       enum:
       - static
@@ -36061,6 +36304,71 @@ components:
         clear:
           type: boolean
           default: false
+    FleetConnector:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          maxLength: 200
+      required:
+      - component
+      - enabled
+      - meta_model_name
+      - name
+      - url
+      - verbose_name
+      - verbose_name_plural
+    FleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - enabled
+      - name
+      - token
+      - url
     Flow:
       type: object
       description: Flow Serializer
@@ -36160,6 +36468,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/EndpointAgentChallengeResponseRequest'
       - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -36188,6 +36497,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallengeResponseRequest'
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -41590,6 +41900,21 @@ components:
       required:
       - pagination
       - results
+    PaginatedFleetConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FleetConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedFlowList:
       type: object
       properties:
@@ -43703,6 +44028,8 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -43712,6 +44039,10 @@ components:
           maximum: 2147483647
           minimum: 0
         authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+        challenge_key:
           type: string
           format: uuid
           nullable: true
@@ -44507,6 +44838,27 @@ components:
       properties:
         object_pk:
           type: string
+          minLength: 1
+    PatchedFleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
           minLength: 1
     PatchedFlowRequest:
       type: object
