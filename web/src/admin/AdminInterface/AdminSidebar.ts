@@ -60,7 +60,7 @@ export const AdminSidebarEntries: readonly SidebarEntry[] = [
         ["/outpost/outposts", msg("Outposts")]]
     ],
     [null, msg("Endpoints"), null, [
-        ["/endpoints/devices", msg("Devices")],
+        ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
         ["/endpoints/groups", msg("Device groups")],
         ["/endpoints/connectors", msg("Connectors")],
     ]],

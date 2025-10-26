@@ -1,3 +1,5 @@
+import "#admin/endpoints/connectors/ConnectorWizard";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -26,6 +28,10 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     row(item: Connector): SlottedTemplateResult[] {
         return [html`${item.name}`, html`${item.verboseName}`];
+    }
+
+    renderObjectCreate() {
+        return html`<ak-endpoint-connector-wizard></ak-endpoint-connector-wizard> `;
     }
 }
 

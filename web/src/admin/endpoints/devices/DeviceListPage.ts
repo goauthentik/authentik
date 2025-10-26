@@ -1,5 +1,4 @@
 import "#elements/cards/AggregateCard";
-import "#admin/endpoints/fleet/FleetConnectorForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -61,7 +60,9 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
-            html`${item.data.network?.hostname}`,
+            html`<a href="#/endpoints/devices/${item.deviceUuid}">
+                <div>${item.data.network?.hostname}</div>
+            </a>`,
             html`${item.data.os?.family} ${item.data.os?.version}`,
         ];
     }

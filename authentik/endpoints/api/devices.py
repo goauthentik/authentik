@@ -31,5 +31,5 @@ class EndpointDeviceSerializer(ModelSerializer):
 
 class DeviceViewSet(UsedByMixin, ModelViewSet):
 
-    queryset = Device.objects.all()
+    queryset = Device.objects.all().prefetch_related("policies", "connections")
     serializer_class = EndpointDeviceSerializer

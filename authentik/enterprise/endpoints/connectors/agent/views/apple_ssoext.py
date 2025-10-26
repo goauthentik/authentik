@@ -18,12 +18,12 @@ class SSOExtensionView(View):
 
     def get(self, request: HttpRequest) -> HttpResponseBadRequest:
         plan = self.get_flow_plan()
-        challenge = plan.context.get(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE)
+        _challenge = plan.context.get(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE)
         response = request.GET.get(QS_CHALLENGE_RESPONSE)
         raw = decode(
             response, options={"verify_signature": False}, issuer="goauthentik.io/platform/endpoint"
         )
-        device = Device.objects.filter(identifier=raw["sub"])
+        _device = Device.objects.filter(identifier=raw["sub"])
         raw["atc"]
 
         return HttpResponseBadRequest()

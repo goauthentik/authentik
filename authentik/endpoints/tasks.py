@@ -9,7 +9,7 @@ from authentik.endpoints.models import Connector
 
 @actor(description=_("Sync endpoints."))
 def endpoints_sync():
-    for connector in Connector.objects.filter(enabled=True).order_by("name"):
+    for connector in Connector.objects.filter(enabled=True).order_by("name").select_subclasses():
         controller = connector.controller
         ctrl = controller(connector)
         if EnrollmentMethods.AUTOMATIC_API not in ctrl.supported_enrollment_methods():

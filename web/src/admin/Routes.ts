@@ -38,11 +38,15 @@ export const ROUTES: Route[] = [
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
     new Route(new RegExp("^/endpoints/devices$"), async () => {
-        await import("#admin/endpoints/DeviceListPage");
+        await import("#admin/endpoints/devices/DeviceListPage");
         return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
     }),
+    new Route(new RegExp(`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/devices/DeviceViewPage");
+        return html`<ak-endpoints-device-view .deviceId=${args.uuid}></ak-endpoints-device-view>`;
+    }),
     new Route(new RegExp("^/endpoints/connectors$"), async () => {
-        await import("#admin/endpoints/ConnectorsListPage");
+        await import("#admin/endpoints/connectors/ConnectorsListPage");
         return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
     }),
     new Route(new RegExp("^/endpoints/groups$"), async () => {

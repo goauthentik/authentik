@@ -42,8 +42,8 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Provider name...")}
-                label=${msg("Provider Name")}
+                placeholder=${msg("Connector name...")}
+                label=${msg("Connector name")}
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
