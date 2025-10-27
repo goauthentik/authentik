@@ -4,12 +4,10 @@ from dataclasses import asdict
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from kubernetes.client.configuration import Configuration
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.kube_config import load_kube_config_from_dict
-from rest_framework import mixins, serializers
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
+from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -26,6 +24,7 @@ from authentik.outposts.models import (
     KubernetesServiceConnection,
     OutpostServiceConnection,
 )
+from authentik.outposts.tasks import outpost_validate_kubeconfig
 from authentik.rbac.filters import ObjectFilter
 
 
@@ -62,10 +61,10 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
 
 class ServiceConnectionViewSet(
     TypesMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
+    RetrieveModelMixin,
+    DestroyModelMixin,
     UsedByMixin,
-    mixins.ListModelMixin,
+    ListModelMixin,
     GenericViewSet,
 ):
     """ServiceConnection Viewset"""
@@ -112,16 +111,12 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         """Validate kubeconfig by attempting to load it"""
         if kubeconfig == {}:
             if not self.initial_data["local"]:
-                raise serializers.ValidationError(
+                raise ValidationError(
                     _("You can only use an empty kubeconfig when connecting to a local cluster.")
                 )
             # Empty kubeconfig is valid
             return kubeconfig
-        config = Configuration()
-        try:
-            load_kube_config_from_dict(kubeconfig, client_configuration=config)
-        except ConfigException:
-            raise serializers.ValidationError(_("Invalid kubeconfig")) from None
+        outpost_validate_kubeconfig.send_with_options((kubeconfig,))
         return kubeconfig
 
     class Meta:

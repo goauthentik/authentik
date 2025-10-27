@@ -1,7 +1,7 @@
 """authentik sentry integration"""
 
 from asyncio.exceptions import CancelledError
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
@@ -10,7 +10,6 @@ from django.http.response import Http404
 from docker.errors import DockerException
 from dramatiq.errors import Retry
 from h11 import LocalProtocolError
-from ldap3.core.exceptions import LDAPException
 from psycopg.errors import Error
 from rest_framework.exceptions import APIException
 from sentry_sdk import HttpTransport, get_current_scope
@@ -30,6 +29,11 @@ from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
+from authentik.tasks import TASK_WORKER
+
+if TYPE_CHECKING or TASK_WORKER:
+    from docker.errors import DockerException
+    from ldap3.core.exceptions import LDAPException
 
 LOGGER = get_logger()
 _root_path = CONFIG.get("web.path", "/")
@@ -63,10 +67,6 @@ ignored_classes = (
     Retry,
     # custom baseclass
     SentryIgnoredException,
-    # ldap errors
-    LDAPException,
-    # Docker errors
-    DockerException,
     # End-user errors
     Http404,
     # AsyncIO
@@ -132,6 +132,14 @@ def traces_sampler(sampling_context: dict) -> float:
 
 def should_ignore_exception(exc: Exception) -> bool:
     """Check if an exception should be dropped"""
+    if TASK_WORKER and isinstance(
+        exc,
+        # ldap errors
+        LDAPException |
+        # Docker errors
+        DockerException,
+    ):
+        return True
     return isinstance(exc, ignored_classes)
 
 

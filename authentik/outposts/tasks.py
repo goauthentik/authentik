@@ -4,42 +4,55 @@ from hashlib import sha256
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.middleware import CurrentTask
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
-from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
-from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
+from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.lib.config import CONFIG
 from authentik.outposts.consumer import build_outpost_group
-from authentik.outposts.controllers.base import BaseController, ControllerException
-from authentik.outposts.controllers.docker import DockerClient
-from authentik.outposts.controllers.kubernetes import KubernetesClient
-from authentik.outposts.models import (
-    DockerServiceConnection,
-    KubernetesServiceConnection,
-    Outpost,
-    OutpostServiceConnection,
-    OutpostType,
-    ServiceConnectionInvalid,
-)
-from authentik.providers.ldap.controllers.docker import LDAPDockerController
-from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
-from authentik.providers.proxy.controllers.docker import ProxyDockerController
-from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
-from authentik.providers.rac.controllers.docker import RACDockerController
-from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
-from authentik.providers.radius.controllers.docker import RadiusDockerController
-from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks import TASK_WORKER
+
+if TYPE_CHECKING or TASK_WORKER:
+    from docker.constants import DEFAULT_UNIX_SOCKET
+    from kubernetes.client.configuration import Configuration
+    from kubernetes.config.config_exception import ConfigException
+    from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
+    from kubernetes.config.kube_config import (
+        KUBE_CONFIG_DEFAULT_LOCATION,
+        load_kube_config_from_dict,
+    )
+
+    from authentik.outposts.controllers.base import BaseController, ControllerException
+    from authentik.outposts.controllers.docker import DockerClient
+    from authentik.outposts.controllers.kubernetes import KubernetesClient
+    from authentik.outposts.models import (
+        DockerServiceConnection,
+        KubernetesServiceConnection,
+        Outpost,
+        OutpostServiceConnection,
+        OutpostType,
+        ServiceConnectionInvalid,
+    )
+    from authentik.providers.ldap.controllers.docker import LDAPDockerController
+    from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
+    from authentik.providers.proxy.controllers.docker import ProxyDockerController
+    from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
+    from authentik.providers.rac.controllers.docker import RACDockerController
+    from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
+    from authentik.providers.radius.controllers.docker import RadiusDockerController
+    from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
+    from authentik.tasks.middleware import CurrentTask
+
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
@@ -50,7 +63,7 @@ def hash_session_key(session_key: str) -> str:
     return sha256(session_key.encode("ascii")).hexdigest()
 
 
-def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
+def controller_for_outpost(outpost: "Outpost") -> type["BaseController"] | None:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
         return None
@@ -217,3 +230,13 @@ def outpost_session_end(session_id: str):
                 "session_id": hashed_session_id,
             },
         )
+
+
+@actor(description=_("Validate kubeconfig"), throws=ValidationError)
+def outpost_validate_kubeconfig(kubeconfig: dict[str, Any]):
+    config = Configuration()
+    try:
+        load_kube_config_from_dict(kubeconfig, client_configuration=config)
+    except ConfigException:
+        raise ValidationError(_("Invalid kubeconfig")) from None
+    return kubeconfig
