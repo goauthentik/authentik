@@ -320,6 +320,15 @@ ak-tabs[vertical] {
 .pf-c-table {
     --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
     --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+
+    /* Fixes the issue of an inner active element applying the active state to the row */
+    tr.pf-m-hoverable {
+        &:has(:not(td):active) {
+            --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(
+                --pf-c-table--tr--m-hoverable--hover--BackgroundColor
+            );
+        }
+    }
 }
 
 .pf-c-table__sort.pf-m-selected {
@@ -569,6 +578,10 @@ fieldset {
         color: var(--pf-global--link--Color--hover);
         text-decoration: underline;
     }
+}
+
+a.pf-m-block {
+    display: block;
 }
 
 /* Flow-card adjustments for static pages */
