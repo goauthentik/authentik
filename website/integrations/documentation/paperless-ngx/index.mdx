@@ -59,7 +59,7 @@ If you have Paperless-ngx setup in Docker, add the following environment variabl
 
 ```yaml
 environment:
-    PAPERLESS_ENABLE_ALLAUTH=true
+    PAPERLESS_ENABLE_ALLAUTH: true
     PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
     PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
@@ -79,9 +79,20 @@ environment:
             "OAUTH_PKCE_ENABLED": "True"
           }
         }
-    PAPERLESS_AUTO_LOGIN=true
-    PAPERLESS_AUTO_CREATE=true
+    PAPERLESS_AUTO_LOGIN: true
+    PAPERLESS_AUTO_CREATE: true
     PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
+```
+
+OR if you would rather have the settings in the `docker-compose.env` file:
+
+```env
+PAPERLESS_ENABLE_ALLAUTH=true
+PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect": {"APPS": [{"provider_id": "authentik", "name": "authentik", "client_id": "<client_id>", "secret": "<client_secret>", "settings": {"server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration", "claims": {"username": "email"}}}], "OAUTH_PKCE_ENABLED": "True"}}
+PAPERLESS_AUTO_LOGIN=true
+PAPERLESS_AUTO_CREATE=true
+PAPERLESS_LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
 ```
 
 Now restart your container:
@@ -112,5 +123,7 @@ Now restart your Paperless services using `sudo systemctl restart paperless-*`
 ## Finished
 
 Now you can access Paperless-ngx by logging in with authentik.
+
+If you also want to be able to automatically sign users up based on authentik, you will also have to set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS).
 
 To add authentik authentication to an existing user, log in to Paperless with local authentication, click the profile icon in the top-right, click My Profile, then Connect new social account.
