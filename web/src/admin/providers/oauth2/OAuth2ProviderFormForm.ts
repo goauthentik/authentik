@@ -265,15 +265,6 @@ export function renderForm({
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
-                    <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
-                    <ak-crypto-certificate-search
-                        label=${msg("Encryption Key")}
-                        placeholder=${msg("Select an encryption key...")}
-                        certificate=${ifPresent(provider.encryptionKey)}
-                    ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
-                </ak-form-element-horizontal>
             </div>
         </ak-form-group>
 
@@ -382,6 +373,23 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
+                    <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
+                    <ak-crypto-certificate-search
+                        label=${msg("Encryption Key")}
+                        placeholder=${msg("Select an encryption key...")}
+                        certificate=${ifPresent(provider.encryptionKey)}
+                    ></ak-crypto-certificate-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.",
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("authentik only supports RSA-OAEP-256 for encryption.")}
+                    </p>
+                </ak-form-element-horizontal>
+
                 <ak-radio-input
                     name="subMode"
                     label=${msg("Subject mode")}
