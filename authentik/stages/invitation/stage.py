@@ -38,7 +38,7 @@ class InvitationStageView(StageView):
         if not token:
             return None
         try:
-            invite: Invitation = Invitation.objects.filter(pk=token).first()
+            invite: Invitation | None = Invitation.filter_not_expired(pk=token).first()
         except ValidationError:
             self.logger.debug("invalid invitation", token=token)
             return None
@@ -47,9 +47,6 @@ class InvitationStageView(StageView):
             return None
         if invite.flow and invite.flow.pk.hex != self.executor.plan.flow_pk:
             self.logger.debug("invite for incorrect flow", expected=invite.flow.slug)
-            return None
-        if invite.is_expired:
-            self.logger.debug("invitation expired", token=token)
             return None
         return invite
 
