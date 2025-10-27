@@ -16,9 +16,9 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import (
-    QS_INVITATION_TOKEN_KEY,
     PLAN_CONTEXT_INVITATION_TOKEN,
     PLAN_CONTEXT_PROMPT,
+    QS_INVITATION_TOKEN_KEY,
 )
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
