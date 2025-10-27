@@ -67,6 +67,14 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public singleton = false;
 
     /**
+     * Set to `true` to include certificate details (fingerprints, expiry, private key type, etc.)
+     * in the API response. Defaults to `false` for performance.
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "include-details" })
+    public includeDetails = false;
+
+    /**
      * @todo Document this.
      */
     public selectedKeypair?: CertificateKeyPair;
@@ -98,7 +106,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: false,
+            includeDetails: this.includeDetails,
         };
         if (query !== undefined) {
             args.search = query;

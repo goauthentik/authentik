@@ -33272,9 +33272,9 @@ components:
           description: Show if this keypair has a private key configured or not
           readOnly: true
         private_key_type:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/PrivateKeyTypeEnum'
           nullable: true
-          description: Get the private key's type, if set
           readOnly: true
         certificate_download_url:
           type: string
@@ -46903,6 +46903,12 @@ components:
       - log_messages
       - messages
       - passing
+    PrivateKeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      type: string
     Prompt:
       type: object
       description: Prompt Serializer

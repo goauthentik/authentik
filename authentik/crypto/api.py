@@ -11,7 +11,12 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from django_filters.filters import BooleanFilter
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+)
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -33,7 +38,7 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, PrivateKeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
@@ -90,6 +95,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
+    @extend_schema_field(ChoiceField(choices=PrivateKeyType.choices, allow_null=True))
     def get_private_key_type(self, instance: CertificateKeyPair) -> str | None:
         """Get the private key's type, if set"""
         if not self._should_include_details:
