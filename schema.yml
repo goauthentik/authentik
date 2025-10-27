@@ -4088,6 +4088,11 @@ paths:
           type: boolean
           default: true
       - in: query
+        name: include_roles
+        schema:
+          type: boolean
+          default: true
+      - in: query
         name: is_active
         schema:
           type: boolean
@@ -4122,6 +4127,23 @@ paths:
         name: path_startswith
         schema:
           type: string
+      - in: query
+        name: roles_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: roles_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: type
@@ -18421,6 +18443,14 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: users
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       tags:
       - rbac
       security:
@@ -18568,6 +18598,68 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/add_user/:
+    post:
+      operationId: rbac_roles_add_user_create
+      description: Add user to role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountSerializerForRoleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User added
+        '404':
+          description: User not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/remove_user/:
+    post:
+      operationId: rbac_roles_remove_user_create
+      description: Remove user from role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountSerializerForRoleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User removed
+        '404':
+          description: User not found
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -45716,6 +45808,11 @@ components:
           items:
             type: string
             format: uuid
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -51217,6 +51314,17 @@ components:
             $ref: '#/components/schemas/PartialGroup'
           readOnly: true
           nullable: true
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+          nullable: true
         email:
           type: string
           format: email
@@ -51257,10 +51365,19 @@ components:
       - name
       - password_change_date
       - pk
+      - roles_obj
       - uid
       - username
       - uuid
     UserAccountRequest:
+      type: object
+      description: Account adding/removing operations
+      properties:
+        pk:
+          type: integer
+      required:
+      - pk
+    UserAccountSerializerForRoleRequest:
       type: object
       description: Account adding/removing operations
       properties:
@@ -51823,6 +51940,11 @@ components:
           items:
             type: string
             format: uuid
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -51921,6 +52043,11 @@ components:
           items:
             $ref: '#/components/schemas/UserSelfGroups'
           readOnly: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelfRoles'
+          readOnly: true
         email:
           type: string
           format: email
@@ -51953,11 +52080,24 @@ components:
       - is_superuser
       - name
       - pk
+      - roles
       - settings
       - system_permissions
       - uid
       - username
     UserSelfGroups:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+    UserSelfRoles:
       type: object
       properties:
         name:

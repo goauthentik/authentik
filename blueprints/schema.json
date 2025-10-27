@@ -4966,6 +4966,14 @@
                     },
                     "title": "Groups"
                 },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Roles"
+                },
                 "email": {
                     "type": "string",
                     "format": "email",

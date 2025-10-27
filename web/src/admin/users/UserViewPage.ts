@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/roles/RelatedRoleList";
 import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/users/UserActiveForm";
@@ -458,6 +459,20 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <div class="pf-c-card__body">
                             <ak-group-related-list .targetUser=${this.user}>
                             </ak-group-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-roles"
+                    id="page-roles"
+                    aria-label="${msg("Roles")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${this.user}> </ak-role-related-list>
                         </div>
                     </div>
                 </div>

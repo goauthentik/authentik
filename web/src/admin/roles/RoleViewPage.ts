@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
@@ -126,6 +127,20 @@ export class RoleViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-related-list .targetRole=${this._role}> </ak-user-related-list>
+                        </div>
+                    </div>
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"

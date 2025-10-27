@@ -238,10 +238,14 @@ class Group(SerializerModel, AttributesMixin):
             return Role.objects.filter(name=managed_role_name(self)).first()
 
     def assign_perms_to_managed_role(
-        self, perm: str | list[str] | Permission | list[Permission], obj: models.Model | None = None
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
     ):
+        if not perms:
+            return
         role = self.get_managed_role(create=True)
-        role.assign_perms(perm, obj)
+        role.assign_perms(perms, obj)
 
 
 class GroupParentageNode(models.Model):
@@ -382,6 +386,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         perms: str | list[str] | Permission | list[Permission],
         obj: models.Model | None = None,
     ):
+        if not perms:
+            return
         role = self.get_managed_role(create=True)
         role.assign_perms(perms, obj)
 

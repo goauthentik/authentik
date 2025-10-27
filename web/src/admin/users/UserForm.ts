@@ -12,7 +12,7 @@ import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
+import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -46,7 +46,10 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
-    group?: Group;
+    targetGroup?: Group;
+
+    @property({ attribute: false })
+    targetRole?: Role;
 
     @property()
     defaultPath: string = "users";
@@ -77,8 +80,11 @@ export class UserForm extends ModelForm<User, number> {
         if (this.instance) {
             return msg("Successfully updated user.");
         }
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        if (this.targetGroup) {
+            return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
+        }
+        if (this.targetRole) {
+            return msg(str`Successfully created user and added to role ${this.targetRole.name}`);
         }
         return msg("Successfully created user.");
     }
@@ -95,14 +101,23 @@ export class UserForm extends ModelForm<User, number> {
             });
         } else {
             data.groups = [];
+            data.roles = [];
             user = await new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
                 userRequest: data,
             });
         }
-        if (this.group) {
+        if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
+                    pk: user.pk,
+                },
+            });
+        }
+        if (this.targetRole) {
+            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
                     pk: user.pk,
                 },
             });
