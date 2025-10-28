@@ -17,6 +17,7 @@ import { GroupResult } from "#common/utils";
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -25,7 +26,7 @@ import { Pagination } from "@goauthentik/api";
 import { kebabCase } from "change-case";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -80,152 +81,7 @@ export abstract class Table<T extends object>
         PFToolbar,
         PFDropdown,
         PFPagination,
-        css`
-            [part="table-container"] {
-                @media (max-width: 1199px) {
-                    overflow-x: auto;
-                }
-            }
-
-            .pf-c-table {
-                .presentational {
-                    --pf-c-table--cell--MinWidth: 0;
-                }
-            }
-
-            /**
-             * TODO: Row actions need a better approach to alignment,
-             * but this will at least get the buttons in a grid-like layout.
-             */
-            td:has(ak-action-button),
-            td:has(ak-forms-modal),
-            td:has(ak-rbac-object-permission-modal) {
-                & > .pf-c-button,
-                & > button[slot="trigger"]:has(i),
-                & > *::part(spinner-button),
-                & > *::part(button) {
-                    --pf-global--spacer--form-element: 0;
-
-                    padding-inline: 0.5em !important;
-                }
-
-                button[slot="trigger"]:has(i) {
-                    padding-inline-start: 0 !important;
-                    padding-inline-end: 0.25em !important;
-                }
-
-                *::part(spinner-button) {
-                    padding-inline-start: 0.5em !important;
-                }
-
-                button.pf-m-tertiary {
-                    margin-inline-start: 0.25em;
-                }
-
-                & > * {
-                    display: inline-flex;
-                    place-items: center;
-                    justify-content: center;
-                }
-            }
-
-            .pf-m-search-filter {
-                flex: 1 1 auto;
-                margin-inline: 0;
-            }
-            .pf-c-table thead .pf-c-table__check {
-                min-width: 3rem;
-            }
-            .pf-c-table tbody .pf-c-table__check input {
-                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-            }
-
-            .pf-c-toolbar {
-                display: flex;
-                flex-flow: row wrap;
-                padding-inline: var(--pf-global--spacer--md);
-                gap: var(--pf-global--spacer--sm);
-            }
-
-            .pf-c-toolbar__content {
-                flex: 1 1 auto;
-                flex-flow: row wrap;
-                margin: 0;
-                justify-content: space-between;
-                gap: var(--pf-global--spacer--sm);
-                padding-inline: 0;
-                .pf-c-switch {
-                    --pf-c-switch--ColumnGap: var(--pf-c-toolbar__item--m-search-filter--spacer);
-                }
-            }
-
-            .pf-c-toolbar__group {
-                flex-flow: row wrap;
-                gap: var(--pf-global--spacer--sm);
-
-                .pf-c-card__title .pf-icon {
-                    margin-inline-end: var(--pf-global--spacer--sm);
-                }
-            }
-
-            [part="toolbar-primary"] {
-                flex: 2 1 auto;
-            }
-
-            .pf-c-table {
-                --pf-c-table--m-striped__tr--BackgroundColor: var(
-                    --pf-global--BackgroundColor--dark-300
-                );
-            }
-
-            /**
-             * Prevents text selection from interfering with click events
-             * when rapidly interacting with cells.
-             */
-            thead,
-            .pf-c-table tr.pf-m-hoverable {
-                user-select: none;
-            }
-
-            time {
-                text-transform: capitalize;
-            }
-
-            .pf-c-pagination {
-                ak-timestamp {
-                    font-size: 0.75rem;
-                    font-style: italic;
-                    color: var(--pf-global--Color--200);
-
-                    &::part(label) {
-                        display: inline-block;
-                    }
-
-                    &::part(elapsed) {
-                        display: inline-block;
-                    }
-                }
-            }
-
-            /**
-             * TODO: Remove after <dialog> modals are implemented.
-             */
-            .pf-c-dropdown__menu:has(ak-forms-modal) {
-                z-index: var(--pf-global--ZIndex--lg);
-            }
-        `,
-        // HACK: Fixes Lit Analyzer's outdated parser.
-        (css as typeof css) /*css*/ `
-            :host {
-                container-type: inline-size;
-            }
-
-            .pf-c-table {
-                @container (width > 1200px) {
-                    --pf-c-table--cell--MinWidth: 9em;
-                }
-            }
-        `,
+        Styles,
     ];
 
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;

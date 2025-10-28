@@ -319,6 +319,7 @@ select.pf-c-form-control {
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }
+
 .pf-c-dropdown__menu {
     --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
     --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
