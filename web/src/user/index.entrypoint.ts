@@ -43,7 +43,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 if (process.env.NODE_ENV === "development") {
@@ -122,7 +121,6 @@ const customStyles = css`
 // @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(AKElement) {
     static styles = [
-        PFBase,
         PFDisplay,
         PFBrand,
         PFPage,

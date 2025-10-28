@@ -1,30 +1,28 @@
-import AKBase from "#common/styles/authentik.css";
-import AKBaseDark from "#common/styles/theme-dark.css";
 /**
  * @file Theme utilities.
  */
+
+import AKBase from "#common/styles/authentik.css" with { type: "bundled-text" };
+import PFBase from "#common/styles/patternfly/v4/base.css" with { type: "bundled-text" };
+import AKBaseDark from "#common/styles/theme-dark.css" with { type: "bundled-text" };
 import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 //#region Stylesheet Exports
 
 /**
- * A global style sheet for the Patternfly base styles.
+ * Patternfly base styles, providing common variables and resets.
  *
  * @remarks
  *
- * While a component *may* import its own instance of the PFBase style sheet,
- * this instance ensures referential identity.
+ * This style sheet **must** be included before any other styles that depend on Patternfly variables.
  */
 export const $PFBase = createStyleSheetUnsafe(PFBase);
 
 /**
- * A global style sheet for the authentik base styles.
- *
- * @see {@linkcode $PFBase} for details.
+ * authentik base styles, providing overrides to Patternfly's initial definitions,
+ * and additional customizations.
  */
 export const $AKBase = createStyleSheetUnsafe(AKBase);
 
@@ -265,12 +263,11 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
 
         setAdoptedStyleSheets(document, (currentStyleSheets) => {
             if (currentUITheme === "dark") {
-                return [...currentStyleSheets, $PFBase, $AKBase, $AKBaseDark];
+                return [...currentStyleSheets, $AKBase, $AKBaseDark];
             }
 
             return [
                 ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
-                $PFBase,
                 $AKBase,
             ];
         });
@@ -284,6 +281,44 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
     }
 
     applyStyleSheets(preferredColorScheme);
+}
+
+/**
+ * A CSS variable representing the global background image.
+ */
+export const AKBackgroundImageProperty = "--ak-global--background-image";
+
+/**
+ * Applies the given background image URL to the document body.
+ *
+ * This method is very defensive to avoid unnecessary DOM repaints.
+ */
+export function applyBackgroundImageProperty(value?: string | null): void {
+    const fallbackOrigin = window.location.origin;
+
+    if (!value || !URL.canParse(value, fallbackOrigin)) {
+        return;
+    }
+
+    const nextBackgroundURL = new URL(value, fallbackOrigin);
+
+    const currentBackgroundImage = getComputedStyle(document.body, "::before").backgroundImage;
+    let currentBackgroundImageURL: URL | null = null;
+
+    if (currentBackgroundImage && currentBackgroundImage !== "none") {
+        // Extract URL from background-image property
+        const [, urlMatch] = currentBackgroundImage.match(/url\(["']?([^"']*)["']?\)/) || [];
+
+        if (URL.canParse(urlMatch)) {
+            currentBackgroundImageURL = new URL(urlMatch, fallbackOrigin);
+        }
+    }
+
+    if (currentBackgroundImageURL && currentBackgroundImageURL.href === nextBackgroundURL.href) {
+        return;
+    }
+
+    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextBackgroundURL.href}")`);
 }
 
 /**
