@@ -12,6 +12,8 @@
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
 {% else %}
+  <script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}()</script>
+
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
