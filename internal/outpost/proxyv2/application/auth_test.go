@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/sessions"
+	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -94,12 +95,9 @@ func TestClaimsMapSerialization(t *testing.T) {
 		"raw_token": "not-a-real-token",
 	}
 
-	// Convert map to Claims using JSON marshaling (like getClaimsFromSession does)
-	jsonData, err := json.Marshal(claimsMap)
-	require.NoError(t, err)
-
+	// Convert map to Claims using mapstructure marshaling (like getClaimsFromSession does)
 	var claims types.Claims
-	err = json.Unmarshal(jsonData, &claims)
+	err := mapstructure.Decode(claimsMap, &claims)
 	require.NoError(t, err)
 
 	// Verify fields
