@@ -94,6 +94,7 @@ class PostgresBroker(Broker):
 
     @property
     def consumer_class(self) -> "type[_PostgresConsumer]":
+        time.sleep(2)
         return _PostgresConsumer
 
     @cached_property
