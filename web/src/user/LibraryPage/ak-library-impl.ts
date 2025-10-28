@@ -230,6 +230,7 @@ export class LibraryPage extends AKElement {
 
     #changeListener = () => {
         if (this.targetRef.value && this.visibleApplications.length === 1) {
+            this.targetRef.value.focus();
             this.targetRef.value.click();
             return;
         }
@@ -239,7 +240,9 @@ export class LibraryPage extends AKElement {
         event.preventDefault();
 
         if (this.targetRef.value) {
+            this.targetRef.value.focus();
             this.targetRef.value.click();
+
             return;
         }
     };
