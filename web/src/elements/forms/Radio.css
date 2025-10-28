@@ -2,11 +2,6 @@
     padding-top: calc(var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3);
 }
 
-.pf-c-radio {
-    cursor: pointer;
-    user-select: none;
-}
-
 .pf-m-disabled {
     cursor: not-allowed;
 

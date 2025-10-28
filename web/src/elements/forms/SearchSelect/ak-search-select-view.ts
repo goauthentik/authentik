@@ -76,7 +76,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         PFSelect,
         css`
             .pf-c-select {
-                --pf-c-select__toggle-wrapper--MaxWidth: unset;
+                --pf-c-select__toggle-wrapper--MaxWidth: initial;
             }
         `,
     ];

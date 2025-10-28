@@ -31,7 +31,10 @@ details {
         user-select: none;
 
         font-weight: bold;
-        text-decoration: underline;
+
+        @media (prefers-contrast: more) {
+            text-decoration: underline;
+        }
 
         &::marker {
             color: var(--marker-color, var(--pf-global--Color--200));

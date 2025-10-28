@@ -149,7 +149,8 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     return html` <ak-text-input
             name="name"
-            placeholder=${msg("Provider name...")}
+            placeholder=${msg("Type a provider name...")}
+            autocomplete="off"
             label=${msg("Provider Name")}
             value=${ifDefined(provider.name)}
             .errorMessages=${errors.name}
@@ -231,6 +232,7 @@ export function renderForm({
                     name="logoutUri"
                     value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
+                    inputmode="url"
                     placeholder="https://..."
                     .help=${msg(
                         "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
