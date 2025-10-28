@@ -22,13 +22,36 @@ from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
+<<<<<<< HEAD
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
+=======
+from authentik.root.signals import post_startup, pre_startup, startup
+from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
+>>>>>>> 56d399a25 (tasks: delay startup signals (#17769))
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
+<<<<<<< HEAD
 DB_ERRORS = (OperationalError, Error, RedisError)
+=======
+DB_ERRORS = (OperationalError, Error)
+
+
+class StartupSignalsMiddleware(Middleware):
+    def after_process_boot(self, broker: Broker):
+        _startup_sender = type("WorkerStartup", (object,), {})
+        pre_startup.send(sender=_startup_sender)
+        startup.send(sender=_startup_sender)
+        post_startup.send(sender=_startup_sender)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
+>>>>>>> 56d399a25 (tasks: delay startup signals (#17769))
 
 
 class TenantMiddleware(Middleware):

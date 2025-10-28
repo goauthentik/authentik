@@ -418,7 +418,12 @@ DRAMATIQ = {
             },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
+<<<<<<< HEAD
         ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+=======
+        ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
+>>>>>>> 56d399a25 (tasks: delay startup signals (#17769))
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.MessagesMiddleware", {}),
