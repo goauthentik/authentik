@@ -91,6 +91,7 @@ func TestClaimsMapSerialization(t *testing.T) {
 			"host_header":      "example.com",
 			"is_superuser":     true,
 		},
+		"raw_token": "not-a-real-token",
 	}
 
 	// Convert map to Claims using JSON marshaling (like getClaimsFromSession does)
@@ -111,6 +112,7 @@ func TestClaimsMapSerialization(t *testing.T) {
 	assert.Equal(t, []string{"admin", "user"}, claims.Groups)
 	assert.Equal(t, []string{"read", "write"}, claims.Entitlements)
 	assert.Equal(t, "session-id-456", claims.Sid)
+	assert.Equal(t, "not-a-real-token", claims.RawToken)
 
 	// Verify proxy claims
 	require.NotNil(t, claims.Proxy)

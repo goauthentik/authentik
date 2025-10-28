@@ -19,5 +19,5 @@ type Claims struct {
 	Sid               string       `json:"sid" mapstructure:"sid"`
 	Proxy             *ProxyClaims `json:"ak_proxy" mapstructure:"ak_proxy"`
 
-	RawToken string `mapstructure:"-"`
+	RawToken string `json:"raw_token" mapstructure:"raw_token"`
 }
