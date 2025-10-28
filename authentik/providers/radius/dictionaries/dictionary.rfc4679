@@ -1,0 +1,61 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 4679.
+#	http://www.ietf.org/rfc/rfc4679.txt
+#
+#	$Id$
+#
+
+VENDOR		ADSL-Forum			3561
+
+BEGIN-VENDOR	ADSL-Forum
+
+ATTRIBUTE	Agent-Circuit-Id			1	octets
+ATTRIBUTE	Agent-Remote-Id				2	octets
+ATTRIBUTE	Actual-Data-Rate-Upstream		129	integer
+ATTRIBUTE	Actual-Data-Rate-Downstream		130	integer
+ATTRIBUTE	Minimum-Data-Rate-Upstream		131	integer
+ATTRIBUTE	Minimum-Data-Rate-Downstream		132	integer
+ATTRIBUTE	Attainable-Data-Rate-Upstream		133	integer
+ATTRIBUTE	Attainable-Data-Rate-Downstream		134	integer
+ATTRIBUTE	Maximum-Data-Rate-Upstream		135	integer
+ATTRIBUTE	Maximum-Data-Rate-Downstream		136	integer
+ATTRIBUTE	Minimum-Data-Rate-Upstream-Low-Power	137	integer
+ATTRIBUTE	Minimum-Data-Rate-Downstream-Low-Power	138	integer
+ATTRIBUTE	Maximum-Interleaving-Delay-Upstream	139	integer
+ATTRIBUTE	Actual-Interleaving-Delay-Upstream	140	integer
+ATTRIBUTE	Maximum-Interleaving-Delay-Downstream	141	integer
+ATTRIBUTE	Actual-Interleaving-Delay-Downstream	142	integer
+
+#
+#  This next attribute has a weird encoding.
+#
+#  Octet[0] - 0x01	AAL5
+#  Octet[0] - 0x02	Ethernet
+
+#  Octet[1] - 0x00	Not Available
+#  Octet[1] - 0x01	Untagged Ethernet
+#  Octet[1] - 0x02	Single-Tagged Ethernet
+
+#  Octet[2] - 0x00	Not available
+#  Octet[2] - 0x01	PPPoA LLC
+#  Octet[2] - 0x02	PPPoA Null
+#  Octet[2] - 0x03	IPoA LLC
+#  Octet[2] - 0x04	IPoA NULL
+#  Octet[2] - 0x05	Ethernet over AAL5 LLC with FCS
+#  Octet[2] - 0x06	Ethernet over AAL5 LLC without FCS
+#  Octet[2] - 0x07	Ethernet over AAL5 Null with FCS
+#  Octet[2] - 0x08	Ethernet over AAL5 Null without FCS
+#
+ATTRIBUTE	Access-Loop-Encapsulation		144	octets # 3
+
+#
+#  If this attribute exists, it means that IFW has been performed
+#  for the subscribers session.
+#
+ATTRIBUTE	IWF-Session				254	octets # 0
+
+END-VENDOR ADSL-Forum

@@ -1,0 +1,59 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 2866.
+#	http://www.ietf.org/rfc/rfc2866.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Acct-Status-Type			40	integer
+ATTRIBUTE	Acct-Delay-Time				41	integer
+ATTRIBUTE	Acct-Input-Octets			42	integer
+ATTRIBUTE	Acct-Output-Octets			43	integer
+ATTRIBUTE	Acct-Session-Id				44	string
+ATTRIBUTE	Acct-Authentic				45	integer
+ATTRIBUTE	Acct-Session-Time			46	integer
+ATTRIBUTE	Acct-Input-Packets			47	integer
+ATTRIBUTE	Acct-Output-Packets			48	integer
+ATTRIBUTE	Acct-Terminate-Cause			49	integer
+ATTRIBUTE	Acct-Multi-Session-Id			50	string
+ATTRIBUTE	Acct-Link-Count				51	integer
+
+#	Accounting Status Types
+
+VALUE	Acct-Status-Type		Start			1
+VALUE	Acct-Status-Type		Stop			2
+VALUE	Acct-Status-Type		Interim-Update		3
+VALUE	Acct-Status-Type		Accounting-On		7
+VALUE	Acct-Status-Type		Accounting-Off		8
+VALUE	Acct-Status-Type		Failed			15
+
+#	Authentication Types
+
+VALUE	Acct-Authentic			RADIUS			1
+VALUE	Acct-Authentic			Local			2
+VALUE	Acct-Authentic			Remote			3
+VALUE	Acct-Authentic			Diameter		4
+
+#	Acct Terminate Causes
+
+VALUE	Acct-Terminate-Cause		User-Request		1
+VALUE	Acct-Terminate-Cause		Lost-Carrier		2
+VALUE	Acct-Terminate-Cause		Lost-Service		3
+VALUE	Acct-Terminate-Cause		Idle-Timeout		4
+VALUE	Acct-Terminate-Cause		Session-Timeout		5
+VALUE	Acct-Terminate-Cause		Admin-Reset		6
+VALUE	Acct-Terminate-Cause		Admin-Reboot		7
+VALUE	Acct-Terminate-Cause		Port-Error		8
+VALUE	Acct-Terminate-Cause		NAS-Error		9
+VALUE	Acct-Terminate-Cause		NAS-Request		10
+VALUE	Acct-Terminate-Cause		NAS-Reboot		11
+VALUE	Acct-Terminate-Cause		Port-Unneeded		12
+VALUE	Acct-Terminate-Cause		Port-Preempted		13
+VALUE	Acct-Terminate-Cause		Port-Suspended		14
+VALUE	Acct-Terminate-Cause		Service-Unavailable	15
+VALUE	Acct-Terminate-Cause		Callback		16
+VALUE	Acct-Terminate-Cause		User-Error		17
+VALUE	Acct-Terminate-Cause		Host-Request		18
