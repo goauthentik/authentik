@@ -1,5 +1,5 @@
 import base64
-import pickle
+import pickle  # nosec
 from datetime import UTC, datetime
 from typing import Any
 
@@ -91,7 +91,7 @@ class DatabaseCache(BaseDatabaseCache):
         expiry = self._base_set_expiry(timeout)
         try:
             count = CacheEntry.objects.filter(cache_key=key).update(expires=expiry)
-            return count != 0
+            return bool(count != 0)
         except DatabaseError:
             return False
 
@@ -137,5 +137,5 @@ class DatabaseCache(BaseDatabaseCache):
             expires=expiry,
         )
 
-    def clear(self):
+    def clear(self) -> None:
         CacheEntry.objects.truncate()
