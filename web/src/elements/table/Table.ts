@@ -19,6 +19,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
+import { isEventTargetingListener } from "#elements/utils/pointer";
 
 import { Pagination } from "@goauthentik/api";
 
@@ -542,6 +543,10 @@ export abstract class Table<T extends object>
      */
     protected rowClickListener(item: T, event?: InputEvent | PointerEvent): void {
         if (event?.defaultPrevented) {
+            return;
+        }
+
+        if (isEventTargetingListener(event)) {
             return;
         }
 
