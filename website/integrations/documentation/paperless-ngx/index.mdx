@@ -43,7 +43,7 @@ To support the integration of Paperless-ngx with authentik, you need to create a
 
 3. Click **Submit** to save the new application and provider.
 
-## Paperless Configuration
+## Paperless-ngx Configuration
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -84,9 +84,9 @@ environment:
     PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
 ```
 
-OR if you would rather have the settings in the `docker-compose.env` file:
+Alternatively, add the variables directly to your environment file:
 
-```env
+```sh
 PAPERLESS_ENABLE_ALLAUTH=true
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
 PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect": {"APPS": [{"provider_id": "authentik", "name": "authentik", "client_id": "<client_id>", "secret": "<client_secret>", "settings": {"server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration", "claims": {"username": "email"}}}], "OAUTH_PKCE_ENABLED": "True"}}
@@ -95,13 +95,17 @@ PAPERLESS_AUTO_CREATE=true
 PAPERLESS_LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
 ```
 
+To add authentik authentication to an existing Paperless-ngx user, log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
+
+If you want to be able to automatically sign up authentik users, set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS).
+
 Now restart your container:
 `docker compose down && docker compose up -d`
 
   </TabItem>
   <TabItem value="standalone">
 
-You need to update your `paperless.conf` configuration file. Paperless will search for this configuration file in the following locations and use the first one it finds:
+You need to update your `paperless.conf` configuration file. Paperless-ngx will search for this configuration file in the following locations and use the first one it finds:
 
 - The environment variable `PAPERLESS_CONFIGURATION_PATH`
 - `/path/to/paperless/paperless.conf`
@@ -116,14 +120,15 @@ PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
 PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
 ```
 
-Now restart your Paperless services using `sudo systemctl restart paperless-*`
+To add authentik authentication to an existing Paperless-ngx user, log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
+
+If you want to be able to automatically sign up authentik users, set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS).
+
+Now restart your Paperless-ngx services using `sudo systemctl restart paperless-*`
 
   </TabItem>
 </Tabs>
-## Finished
 
-Now you can access Paperless-ngx by logging in with authentik.
+## Configuration verification
 
-If you also want to be able to automatically sign users up based on authentik, you will also have to set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS).
-
-To add authentik authentication to an existing user, log in to Paperless with local authentication, click the profile icon in the top-right, click My Profile, then Connect new social account.
+To confirm that authentik is properly configured with Paperless-ngx, log out and click the **authentik** button. You will be redirected to authentik and once authenticated, you will be signed in to Paperless-ngx.
