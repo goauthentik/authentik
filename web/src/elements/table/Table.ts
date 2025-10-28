@@ -20,6 +20,7 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
+import { isEventTargetingListener } from "#elements/utils/pointer";
 
 import { Pagination } from "@goauthentik/api";
 
@@ -406,12 +407,7 @@ export abstract class Table<T extends object>
             return;
         }
 
-        const { target, currentTarget } = event ?? {};
-
-        if (
-            !(target instanceof HTMLElement) ||
-            (target.parentElement !== currentTarget && target !== currentTarget)
-        ) {
+        if (isEventTargetingListener(event)) {
             return;
         }
 
