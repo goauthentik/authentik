@@ -26,7 +26,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.2-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -76,9 +76,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.9.1 AS uv
+FROM ghcr.io/astral-sh/uv:0.9.5 AS uv
 # Stage 5: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.13.7-slim-trixie-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.13.9-slim-trixie-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

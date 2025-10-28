@@ -4254,10 +4254,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Successfully imported flow.</source>
         <target>Successfully imported flow.</target>
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</target>
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</target>
@@ -7805,9 +7801,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
 </trans-unit>
-<trans-unit id="s700456b0667029f9">
-  <source>Applications library</source>
-</trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
@@ -8003,9 +7996,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
-</trans-unit>
-<trans-unit id="s9447a684b989a474">
-  <source>The user's display name. 150 characters or fewer.</source>
 </trans-unit>
 <trans-unit id="s755bfddac3729eaa">
   <source>Managed by authentik and cannot be assigned manually.</source>
@@ -8370,9 +8360,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
 </trans-unit>
-<trans-unit id="se45c122d3b2aa43d">
-  <source>Open Remote Access Control launcher for "<x id="0" equiv-text="${this.application.name}"/>"</source>
-</trans-unit>
 <trans-unit id="s1ff2128af96d843f">
   <source>Available applications</source>
 </trans-unit>
@@ -8459,6 +8446,37 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+</trans-unit>
+<trans-unit id="sc82cf82ad6cb26cc">
+  <source>The user's display name.</source>
+</trans-unit>
+<trans-unit id="s33b2f30214a2e99d">
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sfa660d9e563c346f">
+  <source>Edit application...</source>
+</trans-unit>
+<trans-unit id="ellipsis">
+  <source>...</source>
+  <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
+</trans-unit>
+<trans-unit id="s139200afa0695967">
+  <source>Plain</source>
+</trans-unit>
+<trans-unit id="s7a316723c6bb33eb">
+  <source>S256</source>
+</trans-unit>
+<trans-unit id="s311c22ee852736e9">
+  <source>PKCE Method</source>
+</trans-unit>
+<trans-unit id="sa9afb0f84a3c380d">
+  <source>Configure Proof Key for Code Exchange for this source.</source>
+</trans-unit>
+<trans-unit id="s2e6c714bb95c18a3">
+  <source>User settings</source>
 </trans-unit>
     </body>
   </file>

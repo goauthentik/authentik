@@ -70,7 +70,7 @@ To support the integration of TrueCommand with authentik, you need to create an 
     - Set the **ACS URL** to `https://truecommand.company/saml/acs`.
     - Set the **Issuer** to `truecommand-saml`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the three or five **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to be based on the user's email. Finally, select an available signing certificate.
+    - Under **Advanced protocol settings**, add the three or five **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to be based on the user's email. Finally, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

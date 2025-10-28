@@ -3,7 +3,7 @@ import "#elements/a11y/ak-skip-to-content";
 
 import { ROUTE_SEPARATOR } from "#common/constants";
 
-import type { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
+import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
@@ -106,18 +106,10 @@ export class RouterOutlet extends AKElement {
     #synchronizeContentTarget = () => {
         if (!this.#skipToContentElement) return;
 
-        for (const element of this.renderRoot.children) {
-            if (!(element instanceof HTMLElement)) continue;
+        const element = findMainContent(this);
 
-            if (element.role === "presentation" || element.role === "status") continue;
-
-            if (!element.checkVisibility?.()) continue;
-
-            if (element.inert) continue;
-
+        if (element) {
             this.#skipToContentElement.targetElement = element;
-            element.tabIndex = -1;
-            return;
         }
     };
 

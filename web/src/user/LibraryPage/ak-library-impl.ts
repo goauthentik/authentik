@@ -5,27 +5,34 @@ import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
 import "./ak-library-application-search.js";
 
+import Styles from "./ak-library-impl.css";
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,
     LibraryPageSearchSelected,
     LibraryPageSearchUpdated,
 } from "./events.js";
-import styles from "./LibraryPageImpl.styles.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import type { PageUIConfig } from "./types.js";
 
 import { groupBy } from "#common/utils";
 
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
+import { ifPresent } from "#elements/utils/attributes";
 
 import type { Application } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 /**
  * List of Applications available
@@ -38,18 +45,25 @@ import { ifDefined } from "lit/directives/if-defined.js";
  *   - Filter that list using the search bar
  *
  */
-
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static styles = styles;
+    static styles = [
+        // ---
+        PFBase,
+        PFDisplay,
+        PFEmptyState,
+        PFPage,
+        PFContent,
+        Styles,
+    ];
 
     /**
      * Controls showing the "Switch to Admin" button.
      *
      * @attr
      */
-    @property({ attribute: "isadmin", type: Boolean })
-    isAdmin = false;
+    @property({ type: Boolean })
+    public admin = false;
 
     /**
      * The *complete* list of applications for this user. Not paginated.
@@ -57,7 +71,7 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: false, type: Array })
-    apps!: Application[];
+    public apps: Application[] = [];
 
     /**
      * The aggregate uiConfig, derived from user, brand, and instance data.
@@ -65,10 +79,10 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: false })
-    uiConfig!: PageUIConfig;
+    public uiConfig!: PageUIConfig;
 
     @state()
-    selectedApp?: Application;
+    protected selectedApp: Application | null = null;
 
     @state()
     filteredApps: Application[] = [];
@@ -127,35 +141,43 @@ export class LibraryPage extends AKElement {
     searchReset(event: LibraryPageSearchReset) {
         event.stopPropagation();
         this.filteredApps = this.apps;
-        this.selectedApp = undefined;
+        this.selectedApp = null;
     }
 
     @bound
     searchEmpty(event: LibraryPageSearchEmpty) {
         event.stopPropagation();
         this.filteredApps = [];
-        this.selectedApp = undefined;
+        this.selectedApp = null;
     }
 
     renderApps() {
-        const selected = this.selectedApp?.slug;
-        const layout = this.uiConfig.layout as string;
-        const background = this.uiConfig.background;
+        const { selectedApp } = this;
+        const { layout, background } = this.uiConfig;
+
         const groupedApps = groupBy(
             this.filteredApps.filter(appHasLaunchUrl),
             (app) => app.group || "",
-        );
+        ).sort(([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
+            if (selectedApp) {
+                if (groupAppsA.includes(selectedApp)) return -1;
+                if (groupAppsB.includes(selectedApp)) return 1;
+            }
+
+            return groupLabelA.localeCompare(groupLabelB);
+        });
 
         return html`<ak-library-application-list
-            layout="${layout}"
-            background="${ifDefined(background)}"
-            selected="${ifDefined(selected)}"
+            layout=${layout}
+            background=${ifPresent(background)}
+            .selected=${ifPresent(selectedApp)}
             .apps=${groupedApps}
         ></ak-library-application-list>`;
     }
 
     renderSearch() {
         return html`<ak-library-application-search
+            class="search-container"
             .apps=${this.apps}
         ></ak-library-application-search>`;
     }
@@ -171,7 +193,7 @@ export class LibraryPage extends AKElement {
     renderState() {
         if (!this.apps.some(appHasLaunchUrl)) {
             return html`<ak-library-application-empty-list
-                ?isadmin=${this.isAdmin}
+                ?admin=${this.admin}
             ></ak-library-application-empty-list>`;
         }
         return this.filteredApps.some(appHasLaunchUrl) // prettier-ignore
@@ -180,17 +202,19 @@ export class LibraryPage extends AKElement {
     }
 
     render() {
-        return html`<main
-            aria-label=${msg("Applications library")}
-            class="pf-c-page__main"
-            tabindex="-1"
-            id="main-content"
-        >
-            <div class="pf-c-content header">
-                <h1>${msg("My applications")}</h1>
+        return html`<div class="pf-c-page__main">
+            <div class="pf-c-page__header pf-c-content">
+                <h1 class="pf-c-page__title">${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
             </div>
-            <section class="pf-c-page__main-section">${this.renderState()}</section>
-        </main>`;
+            <main
+                ${AKSkipToContent.ref}
+                tabindex="-1"
+                id="main-content"
+                class="pf-c-page__main-section"
+            >
+                ${this.renderState()}
+            </main>
+        </div>`;
     }
 }

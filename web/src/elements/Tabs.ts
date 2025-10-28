@@ -3,17 +3,26 @@ import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants
 import { AKElement } from "#elements/Base";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
 import { ifPresent } from "#elements/utils/attributes";
+import { isFocusable } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
+    static shadowRootOptions = {
+        ...LitElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
+    #focusTargetRef = createRef<HTMLSlotElement>();
+
     @property()
     pageIdentifier = "page";
 
@@ -62,6 +71,8 @@ export class Tabs extends AKElement {
             childList: true,
             subtree: true,
         });
+
+        this.addEventListener("focus", this.#delegateFocusListener);
     }
 
     disconnectedCallback(): void {
@@ -80,6 +91,21 @@ export class Tabs extends AKElement {
         page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
         page.dispatchEvent(new CustomEvent("activate"));
     }
+
+    #delegateFocusListener = (event: FocusEvent) => {
+        const slot = this.#focusTargetRef?.value;
+
+        if (!slot) return;
+
+        const assignedElements = slot.assignedElements({ flatten: true });
+
+        const focusableElement = assignedElements.find(isFocusable);
+
+        // We don't want to refocus if the user is tabbing between elements inside the tabpanel.
+        if (focusableElement && event.relatedTarget !== focusableElement) {
+            focusableElement.focus();
+        }
+    };
 
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
@@ -119,12 +145,17 @@ export class Tabs extends AKElement {
             this.onClick(wantedPage);
         }
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list" role="tablist">
+                <ul
+                    class="pf-c-tabs__list"
+                    role="tablist"
+                    aria-orientation=${this.vertical ? "vertical" : "horizontal"}
+                    aria-label=${ifPresent(this.ariaLabel)}
+                >
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>
             <slot name="header"></slot>
-            <slot name="${ifDefined(this.currentPage)}"></slot>`;
+            <slot ${ref(this.#focusTargetRef)} name="${ifDefined(this.currentPage)}"></slot>`;
     }
 }
 

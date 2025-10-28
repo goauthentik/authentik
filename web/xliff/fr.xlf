@@ -5317,11 +5317,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Flux importé avec succès</target>
         
       </trans-unit>
-      <trans-unit id="s344c4a2a48997e18">
-        <source>.yaml files, which can be found on goauthentik.io and can be exported by authentik.</source>
-        <target>Fichiers .yaml, qui peuvent être trouvés sur goauthentik.io et exportés par authentik.</target>
-        
-      </trans-unit>
       <trans-unit id="sc816360d6f5a1eeb">
         <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
         <target>Les flux décrivent une succession d'étapes pour authentifier, inscrire ou récupérer un utilisateur. Les étapes sont choisies en fonction des politiques qui leur sont appliquées.</target>
@@ -9970,10 +9965,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Open the wizard to create a new provider.</source>
   <target>Ouvrez l'assistant pour créer un nouveau fournisseur.</target>
 </trans-unit>
-<trans-unit id="s700456b0667029f9">
-  <source>Applications library</source>
-  <target>Bibliothèque d'applications</target>
-</trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
   <target>Nom d'hôte/IP auquel se connecter. Spécifiez le port en option.</target>
@@ -10235,10 +10226,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
   <target>Entrer un nom d'affichage facultatif...</target>
-</trans-unit>
-<trans-unit id="s9447a684b989a474">
-  <source>The user's display name. 150 characters or fewer.</source>
-  <target>Le nom d'affichage de l'utilisateur. 150 caractères ou moins.</target>
 </trans-unit>
 <trans-unit id="s755bfddac3729eaa">
   <source>Managed by authentik and cannot be assigned manually.</source>
@@ -10724,10 +10711,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Open flow inspector</source>
   <target>Ouvrir l'inspecteur de flux</target>
 </trans-unit>
-<trans-unit id="se45c122d3b2aa43d">
-  <source>Open Remote Access Control launcher for "<x id="0" equiv-text="${this.application.name}"/>"</source>
-  <target>Ouvrir le lanceur de contrôle d'accès à distance pour &amp;quot;<x id="0" equiv-text="${this.application.name}"/>&amp;quot;</target>
-</trans-unit>
 <trans-unit id="s1ff2128af96d843f">
   <source>Available applications</source>
   <target>Applications disponibles</target>
@@ -10742,81 +10725,147 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa3056b3252b4b52c">
   <source>Back-channel</source>
+  <target>Back-channel</target>
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
+  <target>Notifications de déconnexion serveur à serveur</target>
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
+  <target>Front-channel</target>
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>Notifications de déconnexion avec iframe du navigateur</target>
 </trans-unit>
 <trans-unit id="s145480489b87a109">
   <source>Logout URI</source>
+  <target>URI de déconnexion</target>
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>URI à laquelle envoyer les notifications de déconnexion lorsque les utilisateurs se déconnectent. Requis pour la fonctionnalité de déconnexion OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
+  <target>Méthode de déconnexion</target>
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>La méthode de déconnexion détermine comment l'URI de déconnexion est appelée — back-channel (de serveur à serveur) ou front-channel (iframe du navigateur).</target>
 </trans-unit>
 <trans-unit id="sa4bd902fbc432ab8">
   <source>Sign logout requests</source>
+  <target>Signer les requêtes de déconnexion</target>
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
+  <target>Si activé, les requêtes de déconnexion SAML seront signées.</target>
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
+  <target>Front-channel (Iframe)</target>
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target>Front-channel (natif)</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>Back-channel (POST)</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
+  <target>Liaison SLS</target>
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+  <target>Détermine comment authentik envoie la réponse de déconnexion au fournisseur de services.</target>
 </trans-unit>
 <trans-unit id="sd1fba3c745c016a8">
   <source>Method to use for logout when SLS URL is configured.</source>
+  <target>Méthode à utiliser pour la déconnexion lorsque l'URL SLS est configurée.</target>
 </trans-unit>
 <trans-unit id="sc71892084574cf32">
   <source>SLS URL</source>
+  <target>URL SLS</target>
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>URL facultative de Single Logout Service à laquelle envoyer les réponses de déconnexion. Si elle n'est pas définie, aucune réponse de déconnexion ne sera envoyée.</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
   <source></source>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
+  <target>Fournisseur SAML</target>
 </trans-unit>
 <trans-unit id="sca83a1f9227f74b9">
   <source>SAML logout complete</source>
+  <target>Déconnexion SAML terminée</target>
 </trans-unit>
 <trans-unit id="s7b90eab7969ae056">
   <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+  <target>Redirection version le fournisseur SAML : <x id="0" equiv-text="${providerName}"/></target>
 </trans-unit>
 <trans-unit id="s3e6174b645d96835">
   <source>Posting logout request to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+  <target>Envoi de la demande de déconnexion au fournisseur SAML : <x id="0" equiv-text="${providerName}"/></target>
 </trans-unit>
 <trans-unit id="s0b1ffff8bedd6b8a">
   <source>Unknown Provider</source>
+  <target>Fournisseur inconnu</target>
 </trans-unit>
 <trans-unit id="s777e86d562523c85">
   <source>Logging out of providers...</source>
+  <target>Déconnexion auprès des fournisseurs...</target>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+  <target>Déconnexion unifiée</target>
+</trans-unit>
+<trans-unit id="sc82cf82ad6cb26cc">
+  <source>The user's display name.</source>
+  <target>Le nom d'affichage de l'utilisateur.</target>
+</trans-unit>
+<trans-unit id="s33b2f30214a2e99d">
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+  <target>Actions pour &amp;quot;<x id="0" equiv-text="${application.name}"/>&amp;quot;</target>
+</trans-unit>
+<trans-unit id="sfa660d9e563c346f">
+  <source>Edit application...</source>
+  <target>Éditer l'application...</target>
+</trans-unit>
+<trans-unit id="ellipsis">
+  <source>...</source>
+  <target>...</target>
+  <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s8b0e21adf383c8ba">
+  <source>.yaml files, which can be found in the Example Flows documentation</source>
+  <target>Fichiers .yaml, qui peuvent être trouvés dans la documentation "Example Flows"</target>
+</trans-unit>
+<trans-unit id="s139200afa0695967">
+  <source>Plain</source>
+  <target>En clair</target>
+</trans-unit>
+<trans-unit id="s7a316723c6bb33eb">
+  <source>S256</source>
+  <target>S256</target>
+</trans-unit>
+<trans-unit id="s311c22ee852736e9">
+  <source>PKCE Method</source>
+  <target>Méthode PKCE</target>
+</trans-unit>
+<trans-unit id="sa9afb0f84a3c380d">
+  <source>Configure Proof Key for Code Exchange for this source.</source>
+  <target>Configurer Proof Key for Code Exchange pour cette source.</target>
+</trans-unit>
+<trans-unit id="s2e6c714bb95c18a3">
+  <source>User settings</source>
+  <target>Paramètres utilisateur</target>
 </trans-unit>
     </body>
   </file>

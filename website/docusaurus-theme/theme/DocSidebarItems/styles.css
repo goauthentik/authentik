@@ -90,4 +90,8 @@
     .theme-doc-sidebar-item-category:has(> .menu__list-item-collapsible:hover) .menu__list {
         --ak-menu-item-border-color: var(--ak-menu-item-color-hover);
     }
+
+    .menu__link.menu__link--active {
+        background-color: transparent;
+    }
 }

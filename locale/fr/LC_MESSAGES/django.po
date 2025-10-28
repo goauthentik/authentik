@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 00:10+0000\n"
+"POT-Creation-Date: 2025-10-20 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -252,7 +252,7 @@ msgid "User's display name."
 msgstr "Nom d'affichage de l'utilisateur"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/rbac/models.py
+#: authentik/providers/saml/models.py authentik/rbac/models.py
 msgid "User"
 msgstr "Utilisateur"
 
@@ -1777,6 +1777,14 @@ msgid "Regular Expression URL matching"
 msgstr "Correspondance d'URL par expression régulière"
 
 #: authentik/providers/oauth2/models.py
+msgid "Back-channel"
+msgstr "Back-channel"
+
+#: authentik/providers/oauth2/models.py
+msgid "Front-channel"
+msgstr "Front-channel"
+
+#: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
 msgstr "code (Authorization Code Flow)"
 
@@ -1865,8 +1873,20 @@ msgid "Redirect URIs"
 msgstr "URIs de redirection"
 
 #: authentik/providers/oauth2/models.py
-msgid "Back-Channel Logout URI"
-msgstr "URI de déconnexion Back-Channel"
+msgid "Logout URI"
+msgstr "URI de déconnexion"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout Method"
+msgstr "Méthode de déconnexion"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Backchannel logs out with server to server calls. Frontchannel uses iframes "
+"in your browser"
+msgstr ""
+"Backchannel déconnecte avec des appels de serveur à serveur. Frontchannel "
+"utilises des iframes dans votre navigateur"
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
@@ -2049,6 +2069,14 @@ msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr ""
 "L'hôte interne ne peut pas être vide lorsque le transfert d'authentification"
 " est désactivée."
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Session"
+msgstr "Session de proxy"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Sessions"
+msgstr "Sessions de proxy"
 
 #: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
@@ -2263,6 +2291,42 @@ msgstr ""
 "de services."
 
 #: authentik/providers/saml/models.py
+msgid "SLS URL"
+msgstr "URL SLS"
+
+#: authentik/providers/saml/models.py
+msgid "Single Logout Service URL where the logout response should be sent."
+msgstr ""
+"URL du Single Logout Service où la réponse de déconnexion doit être envoyée."
+
+#: authentik/providers/saml/models.py
+msgid "SLS Binding"
+msgstr "Liaison SLS"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the logout response back to the Service "
+"Provider."
+msgstr ""
+"Ceci détermine comment authentik renvoie la réponse de déconnexion au "
+"fournisseur de services."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Method to use for logout. Front-channel iframe loads all logout URLs "
+"simultaneously in hidden iframes. Front-channel native uses your active "
+"browser tab to send post requests and redirect to providers. Back-channel "
+"sends logout requests directly from the server without user interaction "
+"(requires POST SLS binding)."
+msgstr ""
+"Méthode à utiliser pour la déconnexion. Front-channel iframe charge toutes "
+"les URL de déconnexion simultanément dans des iframes cachées. Front-channel"
+" natif utilise votre onglet de navigateur actif pour envoyer des requêtes "
+"POST et rediriger vers les fournisseurs. Back-channel envoie les requêtes de"
+" déconnexion directement depuis le serveur sans interaction de l'utilisateur"
+" (nécessite une liaison POST SLS)."
+
+#: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
 msgstr "Mappage de la propriété NameID"
 
@@ -2428,6 +2492,30 @@ msgstr "Fournisseur SAML depuis métadonnées"
 #: authentik/providers/saml/models.py
 msgid "SAML Providers from Metadata"
 msgstr "Fournisseurs SAML depuis métadonnées"
+
+#: authentik/providers/saml/models.py
+msgid "Link to the user's authenticated session"
+msgstr "Lien vers la session authentifiée de l'utilisateur"
+
+#: authentik/providers/saml/models.py
+msgid "SAML SessionIndex for this session"
+msgstr "SAML SessionIndex pour cette session"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID value for this session"
+msgstr "SAML NameID pour cette session"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID format"
+msgstr "Format SAML NameID"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Session"
+msgstr "Session SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Sessions"
+msgstr "Sessions SAML"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth"
@@ -2882,6 +2970,18 @@ msgid "Include the client ID and secret as request parameters"
 msgstr "Inclure le client ID et secret comme paramètres de la requête"
 
 #: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "Pas de PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "En clair"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "URL du jeton de requête"
 
@@ -2921,6 +3021,10 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Portées additionnelles"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
 
 #: authentik/sources/oauth/models.py
 msgid ""
@@ -4364,6 +4468,14 @@ msgstr "Tenant auquel cette tâche appartient"
 #: authentik/tasks/models.py
 msgid "Retry failed task"
 msgstr "Relancer la tâche échouée"
+
+#: authentik/tasks/models.py
+msgid "Task log"
+msgstr "Journal de tâche"
+
+#: authentik/tasks/models.py
+msgid "Task logs"
+msgstr "Journaux de tâches"
 
 #: authentik/tasks/models.py
 msgid "Worker status"

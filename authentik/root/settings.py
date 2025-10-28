@@ -57,6 +57,8 @@ SHARED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.contrib.postgres",
+    "psqlextra",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
@@ -182,6 +184,7 @@ SPECTACULAR_SETTINGS = {
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
+        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -298,13 +301,24 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# Custom overrides for database backends
+# The tree looks like this:
+# psqlextra backend
+#   -> authentik custom backend
+#     -> django_tenants backend
+#       -> django_prometheus backend
+#         -> django built-in backend
 ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
+POSTGRES_EXTRA_DB_BACKEND_BASE = "authentik.root.db"
 DATABASES = django_db_config()
 
 DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
     "django_tenants.routers.TenantSyncRouter",
 )
+
+# We don't use HStore
+POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
 
 CHANNEL_LAYERS = {
     "default": {
