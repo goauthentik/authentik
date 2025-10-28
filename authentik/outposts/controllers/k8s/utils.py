@@ -1,17 +1,17 @@
 """k8s utils"""
-
 from pathlib import Path
-
-from kubernetes.client.models.v1_container_port import V1ContainerPort
-from kubernetes.client.models.v1_service_port import V1ServicePort
-from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
+from typing import TYPE_CHECKING
 
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate
+from authentik.tasks import TASK_WORKER
 
+if TYPE_CHECKING or TASK_WORKER:
+    from kubernetes.client.models.v1_container_port import V1ContainerPort
+    from kubernetes.client.models.v1_service_port import V1ServicePort
 
 def get_namespace() -> str:
     """Get the namespace if we're running in a pod, otherwise default to default"""
-    path = Path(SERVICE_TOKEN_FILENAME.replace("token", "namespace"))
+    path = Path("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
     if path.exists():
         with open(path, encoding="utf8") as _namespace_file:
             return _namespace_file.read()
@@ -19,7 +19,7 @@ def get_namespace() -> str:
 
 
 def compare_port(
-    current: V1ServicePort | V1ContainerPort, reference: V1ServicePort | V1ContainerPort
+    current: "V1ServicePort | V1ContainerPort", reference: "V1ServicePort | V1ContainerPort"
 ) -> bool:
     """Compare a single port"""
     if current.name != reference.name:
@@ -38,8 +38,8 @@ def compare_port(
 
 
 def compare_ports(
-    current: list[V1ServicePort | V1ContainerPort] | None,
-    reference: list[V1ServicePort | V1ContainerPort] | None,
+    current: list["V1ServicePort | V1ContainerPort"] | None,
+    reference: list["V1ServicePort | V1ContainerPort"] | None,
 ):
     """Compare ports of a list"""
     if not current or not reference:

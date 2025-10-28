@@ -23,6 +23,7 @@ from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
+from authentik.tasks import _enable_task_worker
 from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
@@ -254,3 +255,9 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         from authentik.tasks.forks import worker_metrics
 
         return [worker_metrics]
+
+
+class FlagMiddleware(Middleware):
+
+    def before_worker_boot(self, broker, worker):
+        _enable_task_worker()
