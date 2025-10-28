@@ -2,9 +2,9 @@
  * @file authentik global dark layer.
  */
 
-/* #region Global */
+html[data-theme="dark"] {
+    /* #region Global */
 
-:root {
     /* TODO: We've seemed to have drifted from PF's dark-100 usage. Revisit this after PF 5. */
     --pf-global--BackgroundColor--100: #1c1e21 !important;
     --pf-global--BackgroundColor--dark-100: #18191a !important;
@@ -16,29 +16,26 @@
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
     --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
     --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
-}
+    /* #endregion */
 
-/* #endregion */
+    /* #region Scrollbars */
 
-/* #region Scrollbars */
-
-:root {
     /**
      * Scrollbar colors derived from default user agent styles.
      */
     --ak-scrollbar-background-color: hsl(0 0% 18%);
     --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
+    /* #endregion */
+
+    /* #region Document */
+
+    body {
+        color-scheme: dark;
+    }
+
+    body:has(ak-flow-executor) {
+        background-color: var(--pf-global--BackgroundColor--150);
+    }
+
+    /* #endregion */
 }
-/* #endregion */
-
-/* #region Document */
-
-body {
-    color-scheme: dark;
-}
-
-body:has(ak-flow-executor) {
-    background-color: var(--pf-global--BackgroundColor--150);
-}
-
-/* #endregion */

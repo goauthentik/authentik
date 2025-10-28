@@ -12,6 +12,27 @@
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
 {% else %}
+  <script>
+    "use strict";
+
+    (function () {
+      if (document.documentElement.dataset.theme === "auto") {
+        return;
+      }
+
+      const theme =
+        new URLSearchParams(window.location.search).get("theme") ||
+        window.localStorage?.getItem("theme");
+
+      // Set the theme attribute on root element.
+      document.documentElement.dataset.theme =
+        theme || window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+      // Set theme choice attribute.
+      document.documentElement.dataset.themeChoice = theme || "system";
+  })();
+  </script>
+
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
