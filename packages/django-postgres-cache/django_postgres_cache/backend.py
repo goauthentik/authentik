@@ -7,9 +7,7 @@ from typing import Any
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache
-from django.core.cache.backends.db import DatabaseCache as BaseDatabaseCache
 from django.db import DatabaseError
-from django.db.utils import ProgrammingError
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from psqlextra.types import ConflictAction
@@ -224,3 +222,23 @@ class DatabaseCache(BaseCache):
 
     def clear(self) -> None:
         CacheEntry.objects.truncate()
+
+    def ttl(self, key: Any, version: int | None = None) -> int | None:
+        key = self.make_and_validate_key(key, version=version)
+        entry = CacheEntry.objects.filter(cache_key=key).first()
+        if entry is None:
+            return None
+        return (entry.expires - now()).total_seconds()
+
+    def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
+        keys_pattern = self.make_key(keys_pattern.replace("*", ".*"), version=version)
+
+        return [
+            self.reverse_key_func(key)
+            for key in CacheEntry.objects.filter(
+                cache_key__regex=keys_pattern,
+            ).values_list(
+                "cache_key",
+                flat=True,
+            )
+        ]
