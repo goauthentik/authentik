@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelManagers(
             name="cacheentry",
             managers=[
-                ("objects", psqlextra.manager.manager.PostgresManager()),
+                ("objects", psqlextra.manager.manager.PostgresManager()),  # type: ignore[no-untyped-call]
             ],
         ),
     ]

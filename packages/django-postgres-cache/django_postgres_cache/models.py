@@ -7,7 +7,7 @@ class CacheEntry(models.Model):
     value = models.TextField()
     expires = models.DateTimeField(db_index=True)
 
-    objects = PostgresManager()
+    objects = PostgresManager()  # type: ignore[no-untyped-call]
 
     class Meta:
         default_permissions = []
