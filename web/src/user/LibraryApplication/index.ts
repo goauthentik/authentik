@@ -80,7 +80,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     };
 
     return html`<div
-        part="app-card"
+        part="card-wrapper"
         data-application-name=${ifPresent(dataID)}
         aria-describedby=${descriptionID}
         style=${styleMap({ background: background || null })}
@@ -88,7 +88,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
             <ak-app-icon
-                part="card-header-icon"
+                exportparts="icon:card-header-icon"
                 size=${PFSize.Large}
                 name=${application.name}
                 icon=${ifPresent(application.metaIcon)}

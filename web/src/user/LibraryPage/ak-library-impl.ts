@@ -385,7 +385,6 @@ export class LibraryPage extends AKElement {
             </div>
             <main
                 ${AKSkipToContent.ref}
-                tabindex="-1"
                 id="main-content"
                 class="pf-c-page__main-section"
                 aria-label=${msg("Application list")}
