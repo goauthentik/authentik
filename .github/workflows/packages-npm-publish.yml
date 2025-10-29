@@ -14,7 +14,6 @@ on:
 
 jobs:
   publish:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
