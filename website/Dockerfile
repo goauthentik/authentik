@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim@sha256:0f2d677a7152ee7ac390837bd4fc36aca12f595411df5d4209f972660e34a7b6 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -21,6 +21,6 @@ COPY ./SECURITY.md /work/
 
 RUN npm run build
 
-FROM docker.io/library/nginx:1.29.0
+FROM docker.io/library/nginx:1.29.0@sha256:3ab4ed065a1437cbbd45e65617b1285bdf6523c6bf56a121e00df41720e09a89
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html
