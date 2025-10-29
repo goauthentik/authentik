@@ -28,6 +28,23 @@ import (
 
 const ConfigLogLevel = "log_level"
 
+// loggingRoundTripper wraps an http.RoundTripper and logs all requests
+type loggingRoundTripper struct {
+	inner  http.RoundTripper
+	logger *log.Entry
+}
+
+func (l *loggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	l.logger.WithField("method", req.Method).WithField("url", req.URL.String()).Debug("HTTP request")
+	resp, err := l.inner.RoundTrip(req)
+	if err != nil {
+		l.logger.WithError(err).WithField("url", req.URL.String()).Debug("HTTP request failed")
+		return resp, err
+	}
+	l.logger.WithField("status", resp.StatusCode).WithField("url", req.URL.String()).Debug("HTTP response")
+	return resp, err
+}
+
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
 	Client       *api.APIClient
@@ -58,14 +75,21 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig := api.NewConfiguration()
 	apiConfig.Host = akURL.Host
 	apiConfig.Scheme = akURL.Scheme
-	apiConfig.HTTPClient = &http.Client{
-		Transport: web.NewUserAgentTransport(
+
+	// Create logging transport wrapper
+	loggingTransport := &loggingRoundTripper{
+		inner: web.NewUserAgentTransport(
 			constants.UserAgentOutpost(),
 			web.NewTracingTransport(
 				rsp.Context(),
 				GetTLSTransport(),
 			),
 		),
+		logger: log.WithField("logger", "authentik.outpost.http-client"),
+	}
+
+	apiConfig.HTTPClient = &http.Client{
+		Transport: loggingTransport,
 	}
 	apiConfig.Servers = api.ServerConfigurations{
 		{
@@ -93,7 +117,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		}),
 	)
 	if len(outposts.Results) < 1 {
-		log.Panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
@@ -122,6 +146,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		eventHandlers:   []EventHandler{},
 		refreshHandlers: make([]func(), 0),
 	}
+	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	err = ac.initEvent(akURL, outpost.Pk)
 	if err != nil {
@@ -133,6 +158,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 func (a *APIController) Log() *log.Entry {
 	return a.logger
+}
+
+func (a *APIController) IsEmbedded() bool {
+	if m := a.Outpost.Managed.Get(); m != nil {
+		return *m == "goauthentik.io/outposts/embedded"
+	}
+	return false
 }
 
 // Start Starts all handlers, non-blocking
