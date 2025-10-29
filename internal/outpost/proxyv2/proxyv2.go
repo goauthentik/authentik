@@ -28,12 +28,11 @@ type ProxyServer struct {
 	defaultCert tls.Certificate
 	stop        chan struct{} // channel for waiting shutdown
 
-	cryptoStore    *ak.CryptoStore
-	apps           map[string]*application.Application
-	log            *log.Entry
-	mux            *mux.Router
-	akAPI          *ak.APIController
-	sessionBackend string // "postgres" or "filesystem"
+	cryptoStore *ak.CryptoStore
+	apps        map[string]*application.Application
+	log         *log.Entry
+	mux         *mux.Router
+	akAPI       *ak.APIController
 }
 
 func NewProxyServer(ac *ak.APIController) ak.Outpost {
@@ -56,26 +55,18 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
-	var sessionBackend string
 	if ac.IsEmbedded() {
-		sessionBackend = "postgres"
 		l.Info("using PostgreSQL session backend")
-	}
-	if !ac.IsEmbedded() {
-		sessionBackend = "filesystem"
+	} else {
 		l.Info("using filesystem session backend")
 	}
-	if sessionBackend == "" {
-		l.Panic("failed to determine session backend type")
-	}
 	s := &ProxyServer{
-		cryptoStore:    ak.NewCryptoStore(ac.Client.CryptoApi),
-		apps:           make(map[string]*application.Application),
-		log:            l,
-		mux:            rootMux,
-		akAPI:          ac,
-		defaultCert:    defaultCert,
-		sessionBackend: sessionBackend,
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
+		apps:        make(map[string]*application.Application),
+		log:         l,
+		mux:         rootMux,
+		akAPI:       ac,
+		defaultCert: defaultCert,
 	}
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))

@@ -82,5 +82,12 @@ func (ps *ProxyServer) Apps() []*application.Application {
 }
 
 func (ps *ProxyServer) SessionBackend() string {
-	return ps.sessionBackend
+	if ps.akAPI.IsEmbedded() {
+		return "postgres"
+	}
+	if !ps.akAPI.IsEmbedded() {
+		return "filesystem"
+	}
+	ps.log.Panic("failed to determine session backend type")
+	return ""
 }
