@@ -6,15 +6,15 @@ toc_max_heading_level: 4
 
 Invitations are another way to create a user, by inviting someone to join your authentik instance, as a new user. With invitations, you can either email an enrollment invitation URL to one or more specific recipients with pre-defined credentials, or you can email a URL to users, who can then log in and define their own credentials.
 
-You can configure invitations using [pre-built blueprints](#configure-invitiations-in-authentik) (recommended for quick setup) or by [manually creating flows and stages](#manual-setup-without-blueprints) (for custom configurations).
+You can configure invitations using [pre-built blueprints](#configure-invitations-in-authentik) (recommended for quick setup) or by [manually creating flows and stages](#manual-setup-without-blueprints) (for custom configurations).
 
 :::info
 You can also create a policy to see if the invitation was ever used.
 :::
 
-## Configure invitiations in authentik
+## Configure invitations in authentik
 
-The fastest way to configure invitations in authentik is to use our pre-defined blueprints that have the necessary flows, stages and prompts already included.
+The fastest way to configure invitations in authentik is to use our pre-defined blueprints that have the necessary flows, stages, and prompts already included.
 
 ### Download a blueprint
 
@@ -39,7 +39,7 @@ Alternatively, use this [link](/blueprints/example/flows-invitation-enrollment.y
 
 #### Option 2: Download the `Example - Enrollment (2 Stage)` blueprint
 
-For a simpler invitation flow that doesn't include separate flows for internal/external user types, [automatic group assignment](#automatic-group-assignment), and [set user paths](<(#user-paths)>), download the `Example - Enrollment (2 Stage)` blueprint by running this command:
+For a simpler invitation flow that doesn't include separate flows for internal/external user types, [automatic group assignment](#automatic-group-assignment), and [set user paths](#user-paths), download the `Example - Enrollment (2 Stage)` blueprint by running this command:
 
 ```shell
 wget https://goauthentik.io/blueprints/example/flows-enrollment-2-stage.yaml
@@ -95,7 +95,7 @@ Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml
         The field keys (e.g., `email`, `name`) must match the field keys configured in your flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md).
         :::
 
-    ![Create an invitation modal box](./create_invite.png)
+    ![Create an invitation modal](./create_invite.png)
     - **Single use**: Specify whether the invitation should expire after a single use.
         - Enable for invitations sent to specific individuals
         - Disable for invitations shared with multiple people (e.g., department onboarding links)
