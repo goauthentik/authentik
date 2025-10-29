@@ -3,26 +3,6 @@
 from datetime import datetime
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric.dsa import (
-    DSAPrivateKey,
-    DSAPublicKey,
-)
-from cryptography.hazmat.primitives.asymmetric.ec import (
-    EllipticCurvePrivateKey,
-    EllipticCurvePublicKey,
-)
-from cryptography.hazmat.primitives.asymmetric.ed448 import (
-    Ed448PrivateKey,
-    Ed448PublicKey,
-)
-from cryptography.hazmat.primitives.asymmetric.ed25519 import (
-    Ed25519PrivateKey,
-    Ed25519PublicKey,
-)
-from cryptography.hazmat.primitives.asymmetric.rsa import (
-    RSAPrivateKey,
-    RSAPublicKey,
-)
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
@@ -64,25 +44,6 @@ from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
 
 LOGGER = get_logger()
-
-
-def get_key_type_from_key(key) -> str | None:
-    """Determine key type using isinstance checks.
-
-    Works with both private and public keys from cryptography library.
-    Returns the KeyType enum value, or None for unknown types.
-    """
-    if isinstance(key, RSAPrivateKey | RSAPublicKey):
-        return KeyType.RSA
-    if isinstance(key, EllipticCurvePrivateKey | EllipticCurvePublicKey):
-        return KeyType.EC
-    if isinstance(key, DSAPrivateKey | DSAPublicKey):
-        return KeyType.DSA
-    if isinstance(key, Ed25519PrivateKey | Ed25519PublicKey):
-        return KeyType.ED25519
-    if isinstance(key, Ed448PrivateKey | Ed448PublicKey):
-        return KeyType.ED448
-    return None
 
 
 class CertificateKeyPairSerializer(ModelSerializer):
@@ -139,8 +100,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Get the key algorithm type from the certificate's public key"""
         if not self._should_include_details:
             return None
-        public_key = instance.certificate.public_key()
-        return get_key_type_from_key(public_key)
+        return instance.key_type
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -261,11 +221,7 @@ class CertificateKeyPairFilter(FilterSet):
         # value is a list of KeyType enum values from MultipleChoiceFilter
         filtered_pks = []
         for cert in queryset:
-
-            public_key = cert.certificate.public_key()
-            key_type = get_key_type_from_key(public_key)
-
-            if key_type and key_type in value:
+            if cert.key_type in value:
                 filtered_pks.append(cert.pk)
 
         return queryset.filter(pk__in=filtered_pks)
