@@ -13,7 +13,6 @@ env:
 
 jobs:
   build:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
