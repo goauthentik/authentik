@@ -31,13 +31,27 @@ Authentication is only possible if Linux is aware of the authentik user, which c
 
 NSS Module. Requires authentik-sysd running.
 
-Synchronizes authentik users with the Linux host.
+Makes the Linux host aware of authentik users.
 
 ## authentik configuration
 
-To support the deployment of authentik Platform, you need to create two application/provider pair and a token in authentik.
+To support the deployment of authentik Platform, you need to import the OAuth device code flow and create two application/provider pairs, a service account and a token in authentik.
+
+### Create OAuth device code flow
+
+If you have already deployed the authentik OAuth device code flow, skip to the next section.
+
+1. Download the device code flow blueprint [file](https://raw.githubusercontent.com/goauthentik/platform/refs/heads/main/hack/authentik/blueprints/oauth2-device-code.yaml).
+2. Log in to authentik as an administrator and open the authentik Admin interface.
+3. Navigate to **Flows and Stages** > **Flows**.
+4. Click **Import**
+5. Select the downloaded blueprint and click **Import**.
+
+Alternatively, manually create the flow by following the instructions in the [Device code flow documentation](https://docs.goauthentik.io/add-secure-apps/providers/oauth2/device_code/#create-and-apply-a-device-code-flow)
 
 ### Create an application and provider in authentik for CLI
+
+If you have already deployed the authentik OAuth CLI application/provider pair, skip to the next section.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -47,7 +61,7 @@ To support the deployment of authentik Platform, you need to create two applicat
         - Set the **Client type** to `Public`.
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -62,21 +76,31 @@ To support the deployment of authentik Platform, you need to create two applicat
         - Set the **Client ID** to `authentik-pam`.
         - Select any available signing key.
         - Under **Machine-to-Machine authentication settings** select the previously created `authentik-cli` provider as a **Federated OIDC Provider**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](../docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
+
+### Create a service account
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users**.
+3. Click **Create Service account** and configure the following fields:
+    - **Username**: provide a username for the service account
+    - **Create group**: disabled
+    - **Expiring**: disabled
+4. Click **Create**.
 
 ### Create a token
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Token and App passwords** and click **Create** and set the following configuration:
     - **Identifier**: provide a unique name for the token
-    - **User**: `akadmin` or another administrator account (confirm required permissions)
+    - **User**: the service account created in the previous section
     - **Intent**: `API Token`
     - **Expiring**: disabled
 
 3. Click **Create**.
-4. In the **Actions** column next to the newly created token, click the **Copy token** icon. Securely store the token as it will be required when configuring Platform on your Linux host.
+4. In the **Actions** column next to the newly created token, click the **Copy token** icon. Securely store the token as it will be required in the next section.
 
 ## Host configuration
 
@@ -96,7 +120,7 @@ Now you'll need to install and configure authentik Platform on the Linux host th
     echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goauthentik.io stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
     ```
 
-3. Update your repositories and install the authentik Platform Package:
+3. Update your repositories and install the authentik Platform Packages:
 
     ```sh
     sudo apt update
@@ -114,10 +138,9 @@ Now you'll need to install and configure authentik Platform on the Linux host th
     ak-sysd domains join <domain_name> -d <app_name_in_authentik> -a <authentik_FQDN>
     ```
 
-Where `<domain_name>` is a name for the authentik instance (e.g. `authentik-Prod`)
-`<app_name_in_authentik>` is the name of the application created in authentik (e.g. `authentik-pam`)
-`<authentik_FQDN>` is the FQDN of your authentik instance.
+- `<domain_name>` is a name for the authentik instance (e.g. `authentik-Prod`).
+- `<app_name_in_authentik>` is the name of the application created in authentik (e.g. `authentik-pam`).
+- `<authentik_FQDN>` is the FQDN of your authentik instance.
 
-2.
-
-{temp} mention `ak-sysd check` outputs the status of the components
+2. You will be prompted for a token, enter the token that you previously created.
+3. To confirm that platform is configured correctly, run the `ak-sysd check` command. This outputs the status of all Platform components.

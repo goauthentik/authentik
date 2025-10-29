@@ -13,15 +13,12 @@ Follow these steps to install authentik Platform on your macOS client:
 
 1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page.
 2. Under **Desktop packages** click on **macOS** to download the macOS package.
-3. Once the download is complete, attempt to install the package. Default Apple security settings should block the install. To continue the install you'll need to allow the installation via **System Settings**.
-4. Open **System Settings** from the Apple menu.
-5. Click **Privacy & Security** in the sidebar.
-6. Scroll down to the **Security** section. You should see a message about the blocked authentik Platform package.
-7. Click the **Open** or **Open Anyway** button next to the message.
-8. If prompted, enter your login password and click OK. You should now be able to install the package.
-9. Continue through the installation wizard steps.
-10. Confirm that authentik Platform is installed by opening a Terminal window and entering the following command: `ak`
-    You should see a response that starts with: `authentik CLI v<version_number>`
+3. Once the download is complete, attempt to install the package. Default Apple security settings should block the install.
+   This can be avoided by Option + Right Clicking the package and clicking **Open**. Alternatively use the following command to remove the package from quarantine `xattr -r -d com.apple.quarantine ~/Downloads/authentik\ agent\ installer.pkg`.
+4. If prompted, enter your login password and click OK. You should now be able to install the package.
+5. Continue through the installation wizard steps.
+6. Confirm that authentik Platform is installed by opening a Terminal window and entering the following command: `ak`
+   You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Configure Platform
 
@@ -30,6 +27,8 @@ Follow these steps to install authentik Platform on your macOS client:
 ```sh
 ak config setup --authentik-url <authentik_FQDN>
 ```
+
+2. A browser will open and direct you to the authentik login page. Once authenticated, Platform will be configured.
 
 ## Usage
 
@@ -41,8 +40,9 @@ To SSH to a [Linux host](./linux-host.mdx) via authentik Platform:
     ak ssh <hostname>
     ```
 
-2. A browser will open and direct you to the authentik login page. Once authenticated, the SSH session will connect.
+2. You will be prompted to authenticate with your macOS password or biometrics.
+3. Once authenticated, the SSH session will connect.
 
-:::info
+:::info Start on boot
 authentik-agent doesn't currently run on boot - must be manually started after boot.
 :::
