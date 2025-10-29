@@ -14,7 +14,7 @@ import type { HTMLAttributes } from "react";
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 
-const AnchorPositionSupported = CSS.supports("position-anchor", "--test");
+export const AnchorPositionSupported = CSS.supports("position-anchor", "--test");
 
 export interface CardMenuProps extends HTMLAttributes<HTMLDivElement> {
     cardID: string;

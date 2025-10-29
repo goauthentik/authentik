@@ -44,11 +44,13 @@
     border: 0.5px solid var(--pf-global--BorderColor--100);
     height: 100%;
 
-    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile */
-
     &:hover {
         --pf-c-card--m-hoverable--hover--BoxShadow: var(--pf-global--BoxShadow--xl-bottom);
     }
+}
+
+[data-anchor-strategy="anchor-position"] [part="card"] {
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile. */
 }
 
 /* #region Header */
@@ -190,7 +192,6 @@ ak-app-icon {
     aspect-ratio: var(--app-card-aspect-ratio);
     position: relative;
 
-    content-visibility: auto;
     contain-intrinsic-size: var(--app-card-min-width);
 
     &[aria-selected="true"] {
@@ -222,19 +223,21 @@ ak-app-icon {
     width: max-content;
     min-width: 10ch;
     max-width: 20ch;
+    /* This drop shadow both adds contrast and forces Firefox to order the layers correctly. */
+    filter: drop-shadow(0px 3px 1px var(--pf-global--BackgroundColor--dark-transparent-200));
 
     li {
         list-style-type: none;
     }
 }
 
-[part="card-header-actions-menu"][popover] {
+[data-anchor-strategy="anchor-position"] [part="card-header-actions-menu"] {
     position: fixed;
     inset-inline-start: auto;
     inset-block-start: anchor(end);
     inset-inline-end: anchor(end);
 
-    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile */
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile. */
 
     &:popover-open {
         display: block;
@@ -246,19 +249,20 @@ ak-app-icon {
 }
 
 /* Fallback if popover + anchor positioning is not supported */
-
-[part="card-header-actions-menu"]:not([popover]) {
+[data-anchor-strategy="fallback"] [part="card-header-actions-menu"] {
     display: none;
     position: absolute;
     inset-inline: auto calc(100% - 1.5em);
 
     @media (min-width: 390px) {
         inset-block-start: 0;
-        inset-inline-end: auto;
+        inset-inline-start: 100%;
     }
 }
 
-[part="card-header-actions"]:focus-within [part="card-header-actions-menu"]:not([popover]) {
+[data-anchor-strategy="fallback"]
+    [part="card-header-actions"]:focus-within
+    [part="card-header-actions-menu"] {
     display: block;
 }
 

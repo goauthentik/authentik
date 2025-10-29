@@ -7,6 +7,7 @@ import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { UserInterface } from "#user/index.entrypoint";
+import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
 
 import { ApplicationRoute } from "#admin/Routes";
@@ -54,6 +55,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     return html`<div
         role="presentation"
         part="app-list"
+        data-anchor-strategy=${AnchorPositionSupported ? "anchor-position" : "fallback"}
         style="--app-list-column-count: ${columnCount}"
         ${spread(props)}
     >
