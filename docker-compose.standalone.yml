@@ -8,6 +8,7 @@ services:
             AUTHENTIK_INSECURE: "true"
             AUTHENTIK_TOKEN: 0cAydq2aAzI6kffeG9yoQ744x4e5YQG47d8dX5yPqfMK295ENWnDvDwZJogs
             AUTHENTIK_LOG_LEVEL: trace
+            AUTHENTIK_HOST_BROWSER: http://192.168.2.111:9000
         networks:
             - outpost-test
 
@@ -18,24 +19,27 @@ services:
         labels:
             - "traefik.enable=false"
 
-    nginx-standalone:
-        image: nginx:latest
-        ports:
-            - "8080:80"
-        volumes:
-            - ./nginx-standalone.conf:/etc/nginx/conf.d/default.conf:ro
-        networks:
-            - outpost-test
-        depends_on:
-            - whoami
-            - authentik_proxy
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
+    # Uncomment ONE of the nginx services below to test standalone or embedded outpost
+    # Both use port 80, so only run one at a time
+
+    # nginx-standalone:
+    #     image: nginx:latest
+    #     ports:
+    #         - "80:80"
+    #     volumes:
+    #         - ./nginx-standalone.conf:/etc/nginx/conf.d/default.conf:ro
+    #     networks:
+    #         - outpost-test
+    #     depends_on:
+    #         - whoami
+    #         - authentik_proxy
+    #     extra_hosts:
+    #         - "host.docker.internal:host-gateway"
 
     nginx-embedded:
         image: nginx:latest
         ports:
-            - "8081:80"
+            - "80:80"
         volumes:
             - ./nginx-embedded.conf:/etc/nginx/conf.d/default.conf:ro
         networks:
