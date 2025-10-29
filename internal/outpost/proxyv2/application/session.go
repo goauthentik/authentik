@@ -31,7 +31,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	}
 	if a.isEmbedded {
 		// New PostgreSQL store
-		ps, err := postgresstore.NewPostgresStore()
+		ps, err := postgresstore.NewPostgresStore(a.log)
 		if err != nil {
 			return nil, err
 		}

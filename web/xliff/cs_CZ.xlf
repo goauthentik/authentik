@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="cs-CZ" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -586,9 +586,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; nebyla nalezena.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>URL "
+        <x id="0" equiv-text="${this.url}"/>" nebyla nalezena.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1078,12 +1078,12 @@
       </trans-unit>
       <trans-unit id="s17d1e337f6c11c1e">
         <source>Include claims in id_token</source>
-        <target>Zahrnout &quot;claims&quot; do id_token</target>
+        <target>Zahrnout "claims" do id_token</target>
         
       </trans-unit>
       <trans-unit id="sbf41e0db12834133">
         <source>Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.</source>
-        <target>Zahrnout &quot;claims&quot; uživatele ze &quot;scopes&quot; do id_tokenu pro aplikace, které nepřistupují k userinfo endpointu.</target>
+        <target>Zahrnout "claims" uživatele ze "scopes" do id_tokenu pro aplikace, které nepřistupují k userinfo endpointu.</target>
         
       </trans-unit>
       <trans-unit id="s850a58c683682809">
@@ -1662,8 +1662,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>Zadejte buď kompletní URL, relativní cestu nebo použijte 'fa://fa-test' pro použití ikony Font Awesome &quot;fa-test&quot;.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>Zadejte buď kompletní URL, relativní cestu nebo použijte 'fa://fa-test' pro použití ikony Font Awesome "fa-test".</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -1703,7 +1703,7 @@
       </trans-unit>
       <trans-unit id="s4c6534a118f52fdd">
         <source>Select backchannel providers which augment the functionality of the main provider.</source>
-        <target>Vyberte &quot;backchannel&quot; poskytovatele, kteří rozšiřují funkčnost hlavního poskytovatele.</target>
+        <target>Vyberte "backchannel" poskytovatele, kteří rozšiřují funkčnost hlavního poskytovatele.</target>
         
       </trans-unit>
       <trans-unit id="s0639662111324466">
@@ -2588,7 +2588,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
       </trans-unit>
       <trans-unit id="sc92ea8fbf9ba06a7">
         <source>Backchannel Providers</source>
-        <target>&quot;Backchannel&quot; Poskytovatelé</target>
+        <target>"Backchannel" Poskytovatelé</target>
         
       </trans-unit>
       <trans-unit id="sd71081c23d1cd38b">
@@ -3650,8 +3650,8 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
-        <target>Jste si jisti, že chcete aktualizovat <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <target>Jste si jisti, že chcete aktualizovat <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -3948,7 +3948,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
       </trans-unit>
       <trans-unit id="sb57dbcda1929c642">
         <source>Edit the notes attribute of this user to add notes here.</source>
-        <target>Pro přidání poznámek upravte atribut &quot;poznámky&quot; u tohoto uživatele.</target>
+        <target>Pro přidání poznámek upravte atribut "poznámky" u tohoto uživatele.</target>
         
       </trans-unit>
       <trans-unit id="s5c18cae48b93138c">
@@ -4058,7 +4058,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
       </trans-unit>
       <trans-unit id="s802826db4e2c852e">
         <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
-        <target>Upozornění: K žádnému toku není přiřazen krok typu &quot;Pozvánka&quot;. Pozvánky nebudou fungovat, jak mají.</target>
+        <target>Upozornění: K žádnému toku není přiřazen krok typu "Pozvánka". Pozvánky nebudou fungovat, jak mají.</target>
         
       </trans-unit>
       <trans-unit id="s2f995efbb1e46b18">
@@ -4680,8 +4680,8 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>„Roamingový&quot; autentikátor, jako YubiKey</target>
+        <source>A "roaming" authenticator, like a YubiKey</source>
+        <target>„Roamingový" autentikátor, jako YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5039,8 +5039,8 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-        <target>Pokud je nastaveno na dobu trvání nad 0, uživatel bude mít možnost zvolit &quot;zůstat přihlášen&quot;, což prodlouží jeho relaci o čas uvedený zde.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <target>Pokud je nastaveno na dobu trvání nad 0, uživatel bude mít možnost zvolit "zůstat přihlášen", což prodlouží jeho relaci o čas uvedený zde.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -7197,8 +7197,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Uživatel byl úspěšně vytvořen a přidán do skupiny <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
-  <target>Tento uživatel bude přidán do skupiny &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</target>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <target>Tento uživatel bude přidán do skupiny "<x id="0" equiv-text="${this.targetGroup.name}"/>".</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -8446,8 +8446,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Synchronizovat skupinu</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, typu <x id="2" equiv-text="${p.type}"/>)</target>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", typu <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8488,10 +8488,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
   <target>Šifrovací klíč</target>
-</trans-unit>
-<trans-unit id="s8a598f7aef81c3bc">
-  <source>Key used to encrypt the tokens.</source>
-  <target>Klíč používaný k šifrování tokenů.</target>
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
@@ -8694,8 +8690,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Platné přesměrovací URI po úspěšném autorizačním toku. Zde také specifikujte všechny původní adresy pro implicitní toky.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>Chcete-li povolit jakékoli přesměrovací URI, nastavte režim na Regex a hodnotu na &quot;.*&quot;. Buďte si vědomi možných bezpečnostních důsledků, které to může mít.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Chcete-li povolit jakékoli přesměrovací URI, nastavte režim na Regex a hodnotu na ".*". Buďte si vědomi možných bezpečnostních důsledků, které to může mít.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9432,8 +9428,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Jak provést ověření během toku požadavku na token authorization_code</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Povolit &quot;Zapamatovat na tomto zařízení&quot;</target>
+  <source>Enable "Remember me on this device"</source>
+  <target>Povolit "Zapamatovat na tomto zařízení"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -9836,7 +9832,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>např. Spolupráce, Komunikace, Interní, atd.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
   <target>Chyba při načítání aplikace &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
@@ -9957,10 +9953,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -10001,10 +9997,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
   <target>Hledání <x id="0" equiv-text="${this.availableLabel}"/>...</target>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-  <target>Název poskytovatele...</target>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
   <target>Název poskytovatele</target>
@@ -10036,33 +10028,33 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Poskytovatel není přiřazen žádné aplikaci.</target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
   <target>Dokumentace aplikací</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
   <target>Upravit zařízení</target>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
 </trans-unit>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
@@ -10080,10 +10072,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Podpora OCI</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${username}"/></source>
@@ -10189,7 +10181,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s2e7448caf3df574a">
   <source>Verify Assertion Signature</source>
@@ -10239,16 +10231,16 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Unnamed</source>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
@@ -10371,7 +10363,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Group Search</source>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s62dfa9c45cb3025a">
   <source>New Group</source>
@@ -10398,16 +10390,16 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>New service account...</source>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -10596,7 +10588,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source/>
+  <source></source>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
@@ -10623,7 +10615,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>The user's display name.</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -10649,6 +10641,33 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+</trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="sbdab4eb1812adc78">
+  <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+</trans-unit>
+<trans-unit id="s998fea0fa7bb4188">
+  <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
 </trans-unit>
     </body>
   </file>

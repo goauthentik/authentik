@@ -78,11 +78,9 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<div>
-                    <a href="#/flow/flows/${item.slug}">
-                        <code>${item.slug}</code>
-                    </a>
-                </div>
+            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+                    <code>${item.slug}</code>
+                </a>
                 <small>${item.title}</small>`,
             html`${item.name}`,
             html`${Array.from(item.stages || []).length}`,
