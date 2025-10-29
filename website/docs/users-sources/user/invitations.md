@@ -106,9 +106,59 @@ On the **Invitations** page, click the chevron beside your new invitation, to ex
 
 The invitation link format is:
 
-    ```
-    https://authentik.company/if/flow/<flow-slug>/?itoken=<invitation-uuid>
-    ```
+```
+https://authentik.company/if/flow/<flow-slug>/?itoken=<invitation-uuid>
+```
+
+## Manual Setup (Without Blueprints)
+
+If you prefer to create your invitation flow manually instead of using a blueprint, follow these steps:
+
+### Step 1: Create an Invitation Stage
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+3. Select **Invitation Stage** from the stage type list.
+4. Configure the stage:
+    - **Name**: Provide a descriptive name (e.g., `enrollment-invitation-stage`)
+    - **Continue flow without invitation**:
+        - Set to `false` if you want to require a valid invitation token (recommended for invitation-only flows)
+        - Set to `true` if you want to allow both invited and non-invited users to use the same enrollment flow
+
+5. Click **Create**.
+
+:::info
+The **Continue flow without invitation** setting determines whether users can proceed through the flow without a valid invitation token. When set to `false`, only users with valid invitation links can complete enrollment.
+:::
+
+### Step 2: Create or Modify an Enrollment Flow
+
+1. Navigate to **Flows and Stages** > **Flows**.
+2. Either create a new flow or edit an existing enrollment flow:
+    - **Name**: Provide a descriptive name
+    - **Title**: The title shown to users during enrollment
+    - **Slug**: A unique identifier (e.g., `invitation-enrollment`)
+    - **Designation**: Must be set to **Enrollment**
+    - **Authentication**: Set to **Require unauthenticated** (users shouldn't be logged in to enroll)
+
+### Step 3: Bind the Invitation Stage to the Flow
+
+1. In your enrollment flow, go to the **Stage Bindings** tab.
+2. Click **Bind Stage** and select your invitation stage.
+3. Configure the binding:
+    - **Order**: Set to a low number (e.g., `5` or `10`) so it evaluates early in the flow
+    - **Evaluate on plan**: Enable this option so the invitation is validated when the flow starts
+    - **Re-evaluate policies**: Enable this to ensure policies are checked
+
+4. Add other necessary stages to your flow (in order):
+    - **Prompt Stage** for collecting credentials (username, password)
+    - **Prompt Stage** for collecting user details (name, email)
+    - **User Write Stage** to create the user account
+    - **User Login Stage** to log the user in after enrollment
+
+### Step 4: Create Invitations
+
+Now you can create invitations that reference your custom flow. Follow the steps in [Create the invitation object](#step-3-create-the-invitation-object) above.
 
 ## Advanced Features
 
