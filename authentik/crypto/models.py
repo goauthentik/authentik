@@ -20,12 +20,14 @@ from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 LOGGER = get_logger()
 
 
-class PrivateKeyType(models.TextChoices):
-    """Private key algorithm types"""
+class KeyType(models.TextChoices):
+    """Cryptographic key algorithm types"""
 
     RSA = "rsa", _("RSA")
     EC = "ec", _("Elliptic Curve")
     DSA = "dsa", _("DSA")
+    ED25519 = "ed25519", _("Ed25519")
+    ED448 = "ed448", _("Ed448")
 
 
 def fingerprint_sha256(cert: Certificate) -> str:

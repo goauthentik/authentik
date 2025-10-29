@@ -7,7 +7,7 @@ import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certific
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
 import {
-    PrivateKeyTypeEnum,
+    KeyTypeEnum,
     SAMLBindingsEnum,
     SAMLProvider,
     SAMLProviderLogoutMethodEnum,
@@ -34,7 +34,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
     @state()
-    protected signingKeyType: PrivateKeyTypeEnum | null = null;
+    protected signingKeyType: KeyTypeEnum | null = null;
 
     get formValues() {
         const values = super.formValues;
@@ -57,7 +57,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.privateKeyType ?? PrivateKeyTypeEnum.Rsa;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {

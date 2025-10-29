@@ -20,7 +20,7 @@ import { RadioOption } from "#elements/forms/Radio";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PrivateKeyTypeEnum,
+    KeyTypeEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
@@ -122,7 +122,7 @@ export interface SAMLProviderFormProps {
     errors?: ValidationError;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
-    signingKeyType: PrivateKeyTypeEnum | null;
+    signingKeyType: KeyTypeEnum | null;
     setHasSlsUrl: (ev: Event) => void;
     hasSlsUrl: boolean;
     setSlsBinding: (ev: Event) => void;
@@ -145,7 +145,7 @@ export function renderForm({
     setLogoutMethod,
 }: SAMLProviderFormProps) {
     // Get available hash algorithms for the selected key type
-    const keyType = signingKeyType ?? PrivateKeyTypeEnum.Rsa;
+    const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
 
     return html` <ak-text-input
             name="name"
@@ -267,6 +267,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         include-details
+                        .allowedKeyTypes=${[KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa]}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -283,6 +284,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.verificationKp}
                         nokey
+                        .allowedKeyTypes=${[KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa]}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -296,6 +298,7 @@ export function renderForm({
                 >
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
+                        .allowedKeyTypes=${[KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa]}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}

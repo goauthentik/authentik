@@ -6,7 +6,7 @@ import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certific
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import {
-    PrivateKeyTypeEnum,
+    KeyTypeEnum,
     ProvidersApi,
     SAMLBindingsEnum,
     SAMLProvider,
@@ -30,7 +30,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
     @state()
-    protected signingKeyType: PrivateKeyTypeEnum | null = null;
+    protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
@@ -69,7 +69,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.privateKeyType ?? PrivateKeyTypeEnum.Rsa;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {

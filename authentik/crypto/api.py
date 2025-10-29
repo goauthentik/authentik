@@ -3,13 +3,33 @@
 from datetime import datetime
 
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric.dsa import (
+    DSAPrivateKey,
+    DSAPublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.ed448 import (
+    Ed448PrivateKey,
+    Ed448PublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.ed25519 import (
+    Ed25519PrivateKey,
+    Ed25519PublicKey,
+)
+from cryptography.hazmat.primitives.asymmetric.rsa import (
+    RSAPrivateKey,
+    RSAPublicKey,
+)
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
-from django_filters.filters import BooleanFilter
+from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -38,12 +58,31 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
-from authentik.crypto.models import CertificateKeyPair, PrivateKeyType
+from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
 
 LOGGER = get_logger()
+
+
+def get_key_type_from_key(key) -> str | None:
+    """Determine key type using isinstance checks.
+
+    Works with both private and public keys from cryptography library.
+    Returns the KeyType enum value, or None for unknown types.
+    """
+    if isinstance(key, RSAPrivateKey | RSAPublicKey):
+        return KeyType.RSA
+    if isinstance(key, EllipticCurvePrivateKey | EllipticCurvePublicKey):
+        return KeyType.EC
+    if isinstance(key, DSAPrivateKey | DSAPublicKey):
+        return KeyType.DSA
+    if isinstance(key, Ed25519PrivateKey | Ed25519PublicKey):
+        return KeyType.ED25519
+    if isinstance(key, Ed448PrivateKey | Ed448PublicKey):
+        return KeyType.ED448
+    return None
 
 
 class CertificateKeyPairSerializer(ModelSerializer):
@@ -55,7 +94,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_expiry = SerializerMethodField()
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
-    private_key_type = SerializerMethodField()
+    key_type = SerializerMethodField()
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -95,15 +134,13 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
-    @extend_schema_field(ChoiceField(choices=PrivateKeyType.choices, allow_null=True))
-    def get_private_key_type(self, instance: CertificateKeyPair) -> str | None:
-        """Get the private key's type, if set"""
+    @extend_schema_field(ChoiceField(choices=KeyType.choices, allow_null=True))
+    def get_key_type(self, instance: CertificateKeyPair) -> str | None:
+        """Get the key algorithm type from the certificate's public key"""
         if not self._should_include_details:
             return None
-        key = instance.private_key
-        if key:
-            return key.__class__.__name__.replace("_", "").lower().replace("privatekey", "")
-        return None
+        public_key = instance.certificate.public_key()
+        return get_key_type_from_key(public_key)
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -167,7 +204,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "cert_expiry",
             "cert_subject",
             "private_key_available",
-            "private_key_type",
+            "key_type",
             "certificate_download_url",
             "private_key_download_url",
             "managed",
@@ -204,11 +241,34 @@ class CertificateKeyPairFilter(FilterSet):
         label="Only return certificate-key pairs with keys", method="filter_has_key"
     )
 
+    key_type = MultipleChoiceFilter(
+        choices=KeyType.choices,
+        label="Filter by key algorithm type",
+        method="filter_key_type",
+    )
+
     def filter_has_key(self, queryset, name, value):  # pragma: no cover
         """Only return certificate-key pairs with keys"""
         if not value:
             return queryset
         return queryset.exclude(key_data__exact="")
+
+    def filter_key_type(self, queryset, name, value):  # pragma: no cover
+        """Filter certificates by key type using the public key from the certificate"""
+        if not value:
+            return queryset
+
+        # value is a list of KeyType enum values from MultipleChoiceFilter
+        filtered_pks = []
+        for cert in queryset:
+
+            public_key = cert.certificate.public_key()
+            key_type = get_key_type_from_key(public_key)
+
+            if key_type and key_type in value:
+                filtered_pks.append(cert.pk)
+
+        return queryset.filter(pk__in=filtered_pks)
 
     class Meta:
         model = CertificateKeyPair
@@ -233,6 +293,17 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                 bool,
                 required=False,
                 description="Only return certificate-key pairs with keys",
+            ),
+            OpenApiParameter(
+                "key_type",
+                OpenApiTypes.STR,
+                required=False,
+                many=True,
+                enum=[choice[0] for choice in KeyType.choices],
+                description=(
+                    "Filter by key algorithm type (RSA, EC, DSA, etc). "
+                    "Can be specified multiple times (e.g. '?key_type=rsa&key_type=ec')"
+                ),
             ),
             OpenApiParameter("include_details", bool, default=True),
         ]
