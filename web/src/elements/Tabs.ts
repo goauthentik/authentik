@@ -103,7 +103,9 @@ export class Tabs extends AKElement {
 
         // We don't want to refocus if the user is tabbing between elements inside the tabpanel.
         if (focusableElement && event.relatedTarget !== focusableElement) {
-            focusableElement.focus();
+            focusableElement.focus({
+                preventScroll: true,
+            });
         }
     };
 
