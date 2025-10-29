@@ -6,6 +6,8 @@ toc_max_heading_level: 4
 
 Invitations are another way to create a user, by inviting someone to join your authentik instance, as a new user. With invitations, you can either email an enrollment invitation URL to one or more specific recipients with pre-defined credentials, or you can email a URL to users, who can then log in and define their own credentials.
 
+You can configure invitations using [pre-built blueprints](#configure-invitiations-in-authentik) (recommended for quick setup) or by [manually creating flows and stages](#manual-setup-without-blueprints) (for custom configurations).
+
 :::info
 You can also create a policy to see if the invitation was ever used.
 :::
