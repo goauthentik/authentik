@@ -67,7 +67,6 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   build-container:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
