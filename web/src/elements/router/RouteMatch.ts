@@ -67,8 +67,7 @@ export function getURLParams(): RouteParameterRecord {
 /**
  * Serialize route parameters to a JSON string, removing empty values.
  *
- * @param params - The route parameters to serialize.
- * @returns The serialized JSON string of route parameters.
+ * @param params The route parameters to serialize.
  */
 export function prepareURLParams(params: RouteParameterRecord): RouteParameterRecord {
     const preparedParams: RouteParameterRecord = {};
