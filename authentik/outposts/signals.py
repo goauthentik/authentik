@@ -97,12 +97,13 @@ def outpost_related_post_save(sender, instance: OutpostServiceConnection | Outpo
     for outpost in instance.outpost_set.all():
         # Rebuild permissions in case provider's required objects changed
         if isinstance(instance, OutpostModel):
-            LOGGER.debug(
-                "Rebuilding outpost service account permissions due to provider change",
-                outpost=outpost,
-                provider=instance,
+            LOGGER.info(
+                "Provider changed, rebuilding permissions and sending update",
+                outpost=outpost.name,
+                provider=instance.name if hasattr(instance, "name") else str(instance),
             )
             outpost.build_user_permissions(outpost.user)
+        LOGGER.debug("Sending update to outpost", outpost=outpost.name, trigger="provider_change")
         outpost_send_update.send_with_options(
             args=(outpost.pk,),
             rel_obj=outpost,
