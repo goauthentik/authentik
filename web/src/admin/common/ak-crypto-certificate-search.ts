@@ -122,15 +122,11 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         if (query !== undefined) {
             args.search = query;
         }
-        // Pass key types as array for MultipleChoiceFilter
-        // The API will handle this as multiple query parameters (e.g. ?key_type=rsa&key_type=ec)
-        // TypeScript workaround: the generated API types don't include keyType yet
-        const requestArgs: Record<string, unknown> = { ...args };
         if (this.allowedKeyTypes?.length) {
-            requestArgs.keyType = this.allowedKeyTypes.map(String);
+            args.keyType = this.allowedKeyTypes;
         }
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            requestArgs as CryptoCertificatekeypairsListRequest,
+            args,
         );
         return certificates.results;
     };
