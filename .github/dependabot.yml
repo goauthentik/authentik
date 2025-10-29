@@ -142,7 +142,9 @@ updates:
     labels:
       - dependencies
   - package-ecosystem: docker
-    directory: "/"
+    directories:
+      - /
+      - /website
     schedule:
       interval: daily
       time: "04:00"
