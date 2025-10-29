@@ -12,7 +12,7 @@ import { spread } from "@open-wc/lit-helpers";
 import type { HTMLAttributes } from "react";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 
 const AnchorPositionSupported = CSS.supports("position-anchor", "--test");
 
@@ -75,8 +75,8 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                                   ? html`<div part="card-header-action-publisher">
                                         <small>${metaPublisher}</small>
                                     </div>`
-                                  : nothing}
-                              ${metaPublisher
+                                  : null}
+                              ${truncatedDescription
                                   ? html`<p
                                         class="pf-c-content"
                                         part="card-header-action-description"
@@ -84,11 +84,11 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                                     >
                                         ${truncatedDescription}
                                     </p>`
-                                  : nothing}
+                                  : null}
                           </div>
                       </li>
                       <hr class="pf-c-divider" />`
-                : nothing}
+                : null}
             ${editURL
                 ? html`<li role="presentation">
                       <a
@@ -101,7 +101,7 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                           &nbsp;${msg(str`Edit application...`)}</a
                       >
                   </li>`
-                : nothing}
+                : null}
         </menu>
     </div>`;
 };

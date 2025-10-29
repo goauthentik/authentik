@@ -44,6 +44,8 @@
     border: 0.5px solid var(--pf-global--BorderColor--100);
     height: 100%;
 
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile */
+
     &:hover {
         --pf-c-card--m-hoverable--hover--BoxShadow: var(--pf-global--BoxShadow--xl-bottom);
     }
@@ -188,6 +190,9 @@ ak-app-icon {
     aspect-ratio: var(--app-card-aspect-ratio);
     position: relative;
 
+    content-visibility: auto;
+    contain-intrinsic-size: var(--app-card-min-width);
+
     &[aria-selected="true"] {
         outline: auto var(--ak-accent);
     }
@@ -228,6 +233,8 @@ ak-app-icon {
     inset-inline-start: auto;
     inset-block-start: anchor(end);
     inset-inline-end: anchor(end);
+
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile */
 
     &:popover-open {
         display: block;
