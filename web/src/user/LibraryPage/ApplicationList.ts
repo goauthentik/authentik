@@ -1,11 +1,15 @@
 import type { AppGroupEntry } from "./types.js";
 
+import { rootInterface } from "#common/theme";
 import { LayoutType } from "#common/ui/config";
 
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { UserInterface } from "#user/index.entrypoint";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
+
+import { ApplicationRoute } from "#admin/Routes";
 
 import { Application } from "@goauthentik/api";
 
@@ -44,6 +48,8 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     ...props
 }) => {
     const columnCount = LayoutColumnCount[layout] ?? 1;
+    const { me, uiConfig } = rootInterface<UserInterface>();
+    const canEdit = !!(uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser);
 
     return html`<div
         role="presentation"
@@ -78,11 +84,16 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                         (application, appIndex) => {
                             const selected = selectedApp === application;
 
+                            const editURL = canEdit
+                                ? ApplicationRoute.EditURL(application.slug)
+                                : null;
+
                             return AKLibraryApp({
                                 application,
                                 appIndex,
                                 groupIndex,
                                 background,
+                                editURL,
                                 "targetRef": selected ? targetRef : null,
                                 "aria-selected": selected,
                             });

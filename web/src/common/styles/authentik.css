@@ -679,7 +679,8 @@ fieldset {
 }
 
 .pf-c-form__helper-text {
-    text-wrap: pretty;
+    text-wrap: balance;
+    text-wrap: pretty; /* Supporting browsers. */
 }
 
 ::placeholder {

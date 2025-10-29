@@ -26,6 +26,7 @@ const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
 
 export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
+    editURL?: string | URL | null;
     background?: string | null;
     appIndex: number;
     groupIndex: number;
@@ -34,6 +35,7 @@ export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
 
 export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
+    editURL,
     background,
     appIndex,
     groupIndex,
@@ -115,6 +117,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 application,
                 cardID,
                 descriptionID,
+                editURL,
             })}
         </div>
     </div>`;

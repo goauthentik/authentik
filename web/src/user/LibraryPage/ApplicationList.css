@@ -173,30 +173,69 @@
     }
 }
 
+/* #region Card Header Actions Description */
+
 [part="card-header-action-description"] {
-    text-wrap: pretty;
-    max-width: 30ch;
+    text-wrap: balance;
+    text-wrap: pretty; /* Supporting browsers. */
 }
+
+/* #region Card Header Actions */
 
 [part="card-header-actions"] {
     position: absolute;
-    top: 0;
-    right: 0;
+    inset-block-start: 0;
+    inset-inline-end: 0;
 }
 
+/* #region Card Header Actions Menu */
+
 [part="card-header-actions-menu"] {
+    inset: auto;
+    border: none;
+
+    width: max-content;
+    min-width: 10ch;
+    max-width: 20ch;
+
+    li {
+        list-style-type: none;
+    }
+}
+
+[part="card-header-actions-menu"][popover] {
     position: fixed;
-    inset: unset;
+    inset-inline-start: auto;
     inset-block-start: anchor(end);
     inset-inline-end: anchor(end);
-    width: fit-content;
-    min-width: unset;
-    border: none;
+
+    &:popover-open {
+        display: block;
+    }
 
     @media (min-width: 390px) {
         inset-inline-start: anchor(center);
     }
 }
+
+/* Fallback if popover + anchor positioning is not supported */
+
+[part="card-header-actions-menu"]:not([popover]) {
+    display: none;
+    position: absolute;
+    inset-inline: auto calc(100% - 1.5em);
+
+    @media (min-width: 390px) {
+        inset-block-start: 0;
+        inset-inline-end: auto;
+    }
+}
+
+[part="card-header-actions"]:focus-within [part="card-header-actions-menu"]:not([popover]) {
+    display: block;
+}
+
+/* #region Card Header Actions Button */
 
 [part="card-header-actions-button"] {
     border: 0.5px solid transparent;
@@ -208,16 +247,9 @@
         --pf-c-dropdown__toggle--BackgroundColor: var(--pf-c-card--m-flat--BorderColor);
         border-color: var(--pf-c-card--m-flat--BorderColor);
     }
-
-    &[aria-expanded="true"] {
-        border-color: var(--pf-c-card--m-flat--BorderColor);
-
-        &:before {
-            --pf-c-dropdown__toggle--before--BorderBottomColor: var(--pf-global--active-color--100);
-            border-bottom-width: var(--pf-c-dropdown__toggle--focus--before--BorderBottomWidth);
-        }
-    }
 }
+
+/* #region Card Header Actions icon */
 
 [part="card-header-actions-icon"] {
     font-weight: bold;
