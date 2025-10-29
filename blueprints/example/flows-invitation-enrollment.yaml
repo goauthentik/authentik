@@ -1,3 +1,27 @@
+# Example - Invitation-based Enrollment Blueprint
+#
+# This blueprint demonstrates invitation-based user enrollment with support for
+# internal and external user types, automatic group assignment, and user path organization.
+#
+# What this blueprint creates:
+# - 3 enrollment flows:
+#   * External users flow (invitation-enrollment-flow-external)
+#   * Internal users flow (invitation-enrollment-flow-internal)
+#   * Internal users flow with automatic group assignment (invitation-enrollment-flow-internal-engineering)
+# - 3 invitation stages (one for each flow)
+# - Prompt fields for collecting user credentials and details (username, password, name, email)
+# - 2 prompt stages (credentials and user details)
+# - 3 user write stages configured for different user types and paths:
+#   * External users: user_type=external, path=users/external
+#   * Internal users: user_type=internal, path=users/internal
+#   * Engineering team: user_type=internal, path=users/internal/engineering, auto-assigned to engineering-team group
+# - 1 user login stage
+# - 1 example group (engineering-team)
+# - 5 example invitations demonstrating different use cases
+#
+# For detailed documentation, see:
+# https://docs.goauthentik.io/users-sources/user/invitations/
+#
 version: 1
 metadata:
   labels:
