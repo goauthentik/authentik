@@ -87,7 +87,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "created_by__username", "expires", "flow__slug"]
 
     def perform_create(self, serializer: InvitationSerializer):
-        if SERIALIZER_CONTEXT_BLUEPRINT not in serializer:
+        if SERIALIZER_CONTEXT_BLUEPRINT not in serializer.context:
             serializer.save(created_by=self.request.user)
         else:
             serializer.save()
