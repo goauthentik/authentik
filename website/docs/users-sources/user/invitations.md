@@ -104,7 +104,7 @@ Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml
 
 ### Step 4. Share the invitation
 
-On the **Invitations** page, click the chevron beside your new invitation, to expand the details. The **Link to use the invitation** displays with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.
+On the **Invitations** page, click the chevron beside your new invitation to expand the details. The **Link to use the invitation** displays with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.
 
 The invitation link format is:
 
@@ -186,7 +186,7 @@ Groups cannot be set directly in invitation custom attributes because they requi
 2. Navigate to **Flows and Stages** > **Stages**.
 3. Create or edit a **User Write Stage** used by your enrollment flow.
 4. Set **User path template** to your desired path.
-5. All users enrolling through that flow will be created in under that path.
+5. All users enrolling through that flow will be created under that path.
 
 ### Expression Policies with Invitations
 
@@ -218,19 +218,19 @@ return prompt_data.get('email', '').endswith('@example.com')
 
 Possible causes:
 
-    - Invitation has expired (check the expiration date)
-    - Single-use invitation has already been used
-    - Flow slug doesn't match the invitation's configured flow
-    - Invitation stage is not bound to the flow
+- Invitation has expired (check the expiration date)
+- Single-use invitation has already been used
+- Flow slug doesn't match the invitation's configured flow
+- Invitation stage is not bound to the flow
 
 ### Pre-filled Data Not Appearing
 
 Possible causes:
 
-    - Field keys in custom attributes don't match your prompt field keys
-    - Prompt fields are marked as `placeholder_expression: true`
-    - Invitation stage is not evaluated before prompt stages in the flow
+- Field keys in custom attributes don't match your prompt field keys
+- Prompt fields are marked as `placeholder_expression: true`
+- Invitation stage is not evaluated before prompt stages in the flow
 
 :::info Invitation links validity
-Be aware that when an authentik administrator or any other user creates an invitation link, that link remains valid even if the administrator is deactivated or has permissionss revoked. However, if the user who created the link is deleted and removed from the authentik system, the link is also deleted.
+Be aware that when an authentik administrator or any other user creates an invitation link, that link remains valid even if the administrator is deactivated or has permissions revoked. However, if the user who created the link is deleted and removed from the authentik system, the link is also deleted.
 :::
