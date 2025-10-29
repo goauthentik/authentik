@@ -28,23 +28,6 @@ import (
 
 const ConfigLogLevel = "log_level"
 
-// loggingRoundTripper wraps an http.RoundTripper and logs all requests
-type loggingRoundTripper struct {
-	inner  http.RoundTripper
-	logger *log.Entry
-}
-
-func (l *loggingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	l.logger.WithField("method", req.Method).WithField("url", req.URL.String()).Debug("HTTP request")
-	resp, err := l.inner.RoundTrip(req)
-	if err != nil {
-		l.logger.WithError(err).WithField("url", req.URL.String()).Debug("HTTP request failed")
-		return resp, err
-	}
-	l.logger.WithField("status", resp.StatusCode).WithField("url", req.URL.String()).Debug("HTTP response")
-	return resp, err
-}
-
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
 	Client       *api.APIClient
@@ -75,21 +58,14 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig := api.NewConfiguration()
 	apiConfig.Host = akURL.Host
 	apiConfig.Scheme = akURL.Scheme
-
-	// Create logging transport wrapper
-	loggingTransport := &loggingRoundTripper{
-		inner: web.NewUserAgentTransport(
+	apiConfig.HTTPClient = &http.Client{
+		Transport: web.NewUserAgentTransport(
 			constants.UserAgentOutpost(),
 			web.NewTracingTransport(
 				rsp.Context(),
 				GetTLSTransport(),
 			),
 		),
-		logger: log.WithField("logger", "authentik.outpost.http-client"),
-	}
-
-	apiConfig.HTTPClient = &http.Client{
-		Transport: loggingTransport,
 	}
 	apiConfig.Servers = api.ServerConfigurations{
 		{
