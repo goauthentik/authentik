@@ -9997,10 +9997,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
   <target>Hledání <x id="0" equiv-text="${this.availableLabel}"/>...</target>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-  <target>Název poskytovatele...</target>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
   <target>Název poskytovatele</target>
@@ -10669,6 +10665,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
 </trans-unit>
     </body>
   </file>
