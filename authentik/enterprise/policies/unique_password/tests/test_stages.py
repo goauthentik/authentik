@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from authentik.core.models import Group, Source, User
-from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.core.tests.utils import create_test_flow, create_test_group, create_test_user
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
@@ -23,8 +23,8 @@ class TestUserWriteStage(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.flow = create_test_flow()
-        self.group = Group.objects.create(name="test-group")
-        self.other_group = Group.objects.create(name="other-group")
+        self.group = create_test_group()
+        self.other_group = create_test_group()
         self.stage: UserWriteStage = UserWriteStage.objects.create(
             name="write", create_users_as_inactive=True, create_users_group=self.group
         )

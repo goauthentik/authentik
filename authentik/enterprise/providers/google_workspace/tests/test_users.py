@@ -7,6 +7,7 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProvider,
@@ -74,8 +75,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -99,8 +99,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -133,8 +132,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -169,8 +167,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -207,8 +204,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -251,8 +247,7 @@ class GoogleWorkspaceUserTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -293,8 +288,7 @@ class GoogleWorkspaceUserTests(TestCase):
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         self.app.backchannel_providers.remove(self.provider)
-        different_user = User.objects.create(
-            username=uid,
+        different_user = create_test_user(
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)
@@ -335,8 +329,7 @@ class GoogleWorkspaceUserTests(TestCase):
             body={"primaryEmail": f"{uid}@goauthentik.io"},
         )
         self.app.backchannel_providers.remove(self.provider)
-        different_user = User.objects.create(
-            username=uid,
+        different_user = create_test_user(
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)

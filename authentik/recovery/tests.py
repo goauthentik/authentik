@@ -10,13 +10,14 @@ from django.utils.timezone import now
 from django_tenants.utils import get_public_schema_name
 
 from authentik.core.models import Token, TokenIntents, User
+from authentik.core.tests.utils import create_test_user
 
 
 class TestRecovery(TestCase):
     """recovery tests"""
 
     def setUp(self):
-        self.user: User = User.objects.create_user(username="recovery-test-user")
+        self.user: User = create_test_user()
 
     def test_create_key(self):
         """Test creation of a new key"""

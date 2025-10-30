@@ -17,7 +17,7 @@ from authentik.core.tasks import (
     clean_expired_models,
     clean_temporary_users,
 )
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -26,7 +26,7 @@ class TestTasks(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.create(username="testuser")
+        self.user = create_test_user()
         self.admin = create_test_admin_user()
         self.client.force_login(self.user)
 
@@ -42,13 +42,11 @@ class TestTasks(APITestCase):
 
     def test_clean_temporary_users(self):
         """Test clean_temporary_users task"""
-        username = generate_id
-        User.objects.create(
-            username=username,
+        user = create_test_user(
             attributes={
                 USER_ATTRIBUTE_GENERATED: True,
                 USER_ATTRIBUTE_EXPIRES: mktime(now().timetuple()),
             },
         )
         clean_temporary_users.send()
-        self.assertFalse(User.objects.filter(username=username))
+        self.assertFalse(User.objects.filter(pk=user.pk).exists())

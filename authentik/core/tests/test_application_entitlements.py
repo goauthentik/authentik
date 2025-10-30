@@ -5,7 +5,12 @@ from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, ApplicationEntitlement, Group
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_flow,
+    create_test_group,
+    create_test_user,
+)
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -38,7 +43,7 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_group(self):
         """Test direct group"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         self.user.ak_groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=group, order=0)
@@ -48,8 +53,8 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_group_indirect(self):
         """Test indirect group"""
-        parent = Group.objects.create(name=generate_id())
-        group = Group.objects.create(name=generate_id(), parent=parent)
+        parent = create_test_group()
+        group = create_test_group(parent=parent)
         self.user.ak_groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=parent, order=0)
@@ -67,7 +72,7 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_negate_group(self):
         """Test with negate flag"""
-        other_group = Group.objects.create(name=generate_id())
+        other_group = create_test_group()
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=other_group, order=0, negate=True)
         ents = self.user.app_entitlements(self.app)
@@ -138,7 +143,7 @@ class TestApplicationEntitlements(APITestCase):
     def test_api_bindings_group(self):
         """Test that API doesn't allow policies to be bound to this"""
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         admin = create_test_admin_user()
         self.client.force_login(admin)
         response = self.client.post(

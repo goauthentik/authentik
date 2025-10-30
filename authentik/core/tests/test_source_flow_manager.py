@@ -8,7 +8,7 @@ from guardian.utils import get_anonymous_user
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.stage import PostSourceStage
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -66,7 +66,7 @@ class TestSourceFlowManager(TestCase):
 
     def test_authenticated_link(self):
         """Test authenticated user linking"""
-        user = User.objects.create(username="foo", email="foo@bar.baz")
+        user = create_test_user()
         request = get_request("/", user=user)
         flow_manager = OAuthSourceFlowManager(
             self.source, request, self.identifier, {"info": {}}, {}
@@ -83,7 +83,7 @@ class TestSourceFlowManager(TestCase):
 
     def test_authenticated_auth(self):
         """Test authenticated user linking"""
-        user = User.objects.create(username="foo", email="foo@bar.baz")
+        user = create_test_user()
         UserOAuthSourceConnection.objects.create(
             user=user, source=self.source, identifier=self.identifier
         )
@@ -109,7 +109,7 @@ class TestSourceFlowManager(TestCase):
 
     def test_unauthenticated_enroll_email(self):
         """Test un-authenticated user enrolling (link on email)"""
-        User.objects.create(username="foo", email="foo@bar.baz")
+        user = create_test_user()
         self.source.user_matching_mode = SourceUserMatchingModes.EMAIL_LINK
 
         # Without email, deny
@@ -126,7 +126,7 @@ class TestSourceFlowManager(TestCase):
             self.identifier,
             {
                 "info": {
-                    "email": "foo@bar.baz",
+                    "email": user.email,
                 },
             },
             {},
@@ -137,7 +137,7 @@ class TestSourceFlowManager(TestCase):
 
     def test_unauthenticated_enroll_username(self):
         """Test un-authenticated user enrolling (link on username)"""
-        User.objects.create(username="foo", email="foo@bar.baz")
+        user = create_test_user()
         self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
 
         # Without username, deny
@@ -153,7 +153,7 @@ class TestSourceFlowManager(TestCase):
             get_request("/", user=AnonymousUser()),
             self.identifier,
             {
-                "info": {"username": "foo"},
+                "info": {"username": user.username},
             },
             {},
         )
@@ -163,7 +163,7 @@ class TestSourceFlowManager(TestCase):
 
     def test_unauthenticated_enroll_username_deny(self):
         """Test un-authenticated user enrolling (deny on username)"""
-        User.objects.create(username="foo", email="foo@bar.baz")
+        user = create_test_user()
         self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_DENY
 
         # With non-existent username, enroll
@@ -187,7 +187,7 @@ class TestSourceFlowManager(TestCase):
             get_request("/", user=AnonymousUser()),
             self.identifier,
             {
-                "info": {"username": "foo"},
+                "info": {"username": user.username},
             },
             {},
         )

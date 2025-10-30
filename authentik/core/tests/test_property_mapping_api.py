@@ -8,8 +8,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.models import Group, PropertyMapping
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.core.tests.utils import create_test_admin_user, create_test_group
 
 
 class TestPropertyMappingAPI(APITestCase):
@@ -41,7 +40,7 @@ class TestPropertyMappingAPI(APITestCase):
         mapping = PropertyMapping.objects.create(
             name="dummy", expression="""return {'foo': 'bar', 'baz': group.name}"""
         )
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         response = self.client.post(
             reverse("authentik_api:propertymapping-test", kwargs={"pk": mapping.pk}),
             data={

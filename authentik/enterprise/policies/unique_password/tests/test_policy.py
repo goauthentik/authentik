@@ -5,6 +5,7 @@ from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
@@ -20,7 +21,7 @@ class TestUniquePasswordPolicy(TestCase):
         self.policy = UniquePasswordPolicy.objects.create(
             name="test_unique_password", num_historical_passwords=1
         )
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
 
     def test_invalid(self):
         """Test without password present in request"""

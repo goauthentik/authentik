@@ -7,7 +7,7 @@ from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Conn
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import Application, User
+from authentik.core.models import DEFAULT_ADMIN_USERNAME, Application, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -176,9 +176,9 @@ class TestProviderLDAP(SeleniumTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
-        # Remove akadmin to ensure list is correct
+        # Remove default admin to ensure list is correct
         # Remove user before starting container so it's not cached
-        User.objects.filter(username="akadmin").delete()
+        User.objects.filter(username=DEFAULT_ADMIN_USERNAME).delete()
 
         outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
@@ -436,9 +436,9 @@ class TestProviderLDAP(SeleniumTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""
-        # Remove akadmin to ensure list is correct
+        # Remove default admin to ensure list is correct
         # Remove user before starting container so it's not cached
-        User.objects.filter(username="akadmin").delete()
+        User.objects.filter(username=DEFAULT_ADMIN_USERNAME).delete()
 
         outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)

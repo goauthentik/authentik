@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import create_test_group, create_test_user
 from authentik.events.models import (
     Event,
     EventAction,
@@ -27,8 +27,8 @@ class TestEventsNotifications(APITestCase):
     """Test Event Notifications"""
 
     def setUp(self) -> None:
-        self.group = Group.objects.create(name="test-group")
-        self.user = User.objects.create(name="test-user", username="test")
+        self.group = create_test_group()
+        self.user = create_test_user()
         self.group.users.add(self.user)
         self.group.save()
 
@@ -113,7 +113,7 @@ class TestEventsNotifications(APITestCase):
 
     def test_transport_once(self):
         """Test transport's send_once"""
-        user2 = User.objects.create(name="test2-user", username="test2")
+        user2 = create_test_user()
         self.group.users.add(user2)
         self.group.save()
 

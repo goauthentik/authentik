@@ -8,7 +8,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.stages.authenticator.tests import TestCase, ThrottlingTestMixin
 from authentik.stages.authenticator_totp.models import TOTPDevice
 
@@ -18,7 +18,7 @@ class AuthenticatorTOTPStage(APITestCase):
 
     def test_api_delete(self):
         """Test api delete"""
-        user = User.objects.create(username="foo")
+        user = create_test_user()
         self.client.force_login(user)
         dev = TOTPDevice.objects.create(user=user)
         response = self.client.delete(

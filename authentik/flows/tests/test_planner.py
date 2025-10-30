@@ -13,7 +13,7 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
@@ -176,7 +176,7 @@ class TestFlowPlanner(TestCase):
             target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
 
-        user = User.objects.create(username="test-user")
+        user = create_test_user()
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )

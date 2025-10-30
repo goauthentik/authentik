@@ -8,6 +8,7 @@ from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -29,7 +30,7 @@ class TestPolicyProcess(TestCase):
     def setUp(self):
         clear_policy_cache()
         self.factory = RequestFactory()
-        self.user = User.objects.create_user(username=generate_id())
+        self.user = create_test_user()
 
     def test_group_passing(self):
         """Test binding to group"""

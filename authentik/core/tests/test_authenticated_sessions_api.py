@@ -6,7 +6,7 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import AuthenticatedSession, Session, User
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 
 
 class TestAuthenticatedSessionsAPI(APITestCase):
@@ -15,7 +15,7 @@ class TestAuthenticatedSessionsAPI(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = create_test_admin_user()
-        self.other_user = User.objects.create(username="normal-user")
+        self.other_user = create_test_user()
 
     def test_list(self):
         """Test session list endpoint"""

@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator.tests import TestCase, ThrottlingTestMixin
 from authentik.stages.authenticator_static.models import StaticDevice
@@ -16,7 +16,7 @@ class AuthenticatorStaticStageTests(APITestCase):
 
     def test_api_delete(self):
         """Test api delete"""
-        user = User.objects.create(username="foo")
+        user = create_test_user()
         self.client.force_login(user)
         dev = StaticDevice.objects.create(user=user)
         response = self.client.delete(
@@ -29,7 +29,7 @@ class DeviceTest(TestCase):
     """A few generic tests to get us started."""
 
     def setUp(self):
-        self.user = create_test_admin_user("alice")
+        self.user = create_test_admin_user()
 
     def test_str(self):
         """Test __str__ of model"""

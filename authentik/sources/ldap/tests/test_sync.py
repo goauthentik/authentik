@@ -9,6 +9,7 @@ from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
@@ -119,8 +120,8 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
         # Create the user beforehand so we can set attributes and check they aren't removed
-        user = User.objects.create(
-            username="user0_sn",
+        user = create_test_user(
+            name="user0_sn",
             attributes={
                 "ldap_uniq": (
                     "S-117-6648368-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-"
@@ -135,7 +136,8 @@ class LDAPSyncTests(TestCase):
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
-            user = User.objects.filter(username="user0_sn").first()
+            # Refresh the user object to get updated fields from sync
+            user.refresh_from_db()
             self.assertEqual(user.attributes["foo"], "bar")
             self.assertFalse(user.is_active)
             self.assertEqual(user.path, "goauthentik.io/sources/ldap/users/foo")
@@ -367,7 +369,7 @@ class LDAPSyncTests(TestCase):
 
     def test_user_deletion(self):
         """Test user deletion"""
-        user = User.objects.create_user(username="not-in-the-source")
+        user = create_test_user()
         UserLDAPSourceConnection.objects.create(
             user=user, source=self.source, identifier="not-in-the-source"
         )
@@ -385,7 +387,7 @@ class LDAPSyncTests(TestCase):
         """Test that user is not deleted if it's still in the source"""
         username = user_in_slapd_cn
         identifier = user_in_slapd_uid
-        user = User.objects.create_user(username=username)
+        user = create_test_user(name=username)
         UserLDAPSourceConnection.objects.create(
             user=user, source=self.source, identifier=identifier
         )
@@ -401,7 +403,7 @@ class LDAPSyncTests(TestCase):
 
     def test_user_deletion_no_sync(self):
         """Test that user is not deleted if sync_users is False"""
-        user = User.objects.create_user(username="not-in-the-source")
+        user = create_test_user()
         UserLDAPSourceConnection.objects.create(
             user=user, source=self.source, identifier="not-in-the-source"
         )
@@ -418,7 +420,7 @@ class LDAPSyncTests(TestCase):
 
     def test_user_deletion_no_delete(self):
         """Test that user is not deleted if delete_not_found_objects is False"""
-        user = User.objects.create_user(username="not-in-the-source")
+        user = create_test_user()
         UserLDAPSourceConnection.objects.create(
             user=user, source=self.source, identifier="not-in-the-source"
         )
@@ -501,7 +503,7 @@ class LDAPSyncTests(TestCase):
         """Test batch deletion"""
         BATCH_SIZE = DELETE_CHUNK_SIZE + 1
         for i in range(BATCH_SIZE):
-            user = User.objects.create_user(username=f"not-in-the-source-{i}")
+            user = create_test_user()
             group = Group.objects.create(name=f"not-in-the-source-{i}")
             group.users.add(user)
             UserLDAPSourceConnection.objects.create(

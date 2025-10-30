@@ -5,7 +5,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
-from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_group, create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -26,7 +26,7 @@ class TestGroupsAPI(APITestCase):
     def test_retrieve_with_users(self):
         """Test retrieve with users"""
         admin = create_test_admin_user()
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         self.client.force_login(admin)
         response = self.client.get(
             reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
@@ -36,7 +36,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_add_user(self):
         """Test add_user"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         assign_perm("authentik_core.add_user_to_group", self.login_user, group)
         assign_perm("authentik_core.view_user", self.login_user)
         self.client.force_login(self.login_user)
@@ -52,7 +52,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_add_user_404(self):
         """Test add_user"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         assign_perm("authentik_core.add_user_to_group", self.login_user, group)
         assign_perm("authentik_core.view_user", self.login_user)
         self.client.force_login(self.login_user)
@@ -66,7 +66,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_remove_user(self):
         """Test remove_user"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         assign_perm("authentik_core.remove_user_from_group", self.login_user, group)
         assign_perm("authentik_core.view_user", self.login_user)
         group.users.add(self.user)
@@ -83,7 +83,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_remove_user_404(self):
         """Test remove_user"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         assign_perm("authentik_core.remove_user_from_group", self.login_user, group)
         assign_perm("authentik_core.view_user", self.login_user)
         group.users.add(self.user)
@@ -98,7 +98,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_parent_self(self):
         """Test parent"""
-        group = Group.objects.create(name=generate_id())
+        group = create_test_group()
         assign_perm("view_group", self.login_user, group)
         assign_perm("change_group", self.login_user, group)
         self.client.force_login(self.login_user)
@@ -136,7 +136,7 @@ class TestGroupsAPI(APITestCase):
 
     def test_superuser_update_no_perm(self):
         """Test updating a superuser group without permission"""
-        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = create_test_group(is_superuser=True)
         assign_perm("view_group", self.login_user, group)
         assign_perm("change_group", self.login_user, group)
         self.client.force_login(self.login_user)
@@ -153,7 +153,7 @@ class TestGroupsAPI(APITestCase):
     def test_superuser_update_no_change(self):
         """Test updating a superuser group without permission
         and without changing the superuser status"""
-        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = create_test_group(is_superuser=True)
         assign_perm("view_group", self.login_user, group)
         assign_perm("change_group", self.login_user, group)
         self.client.force_login(self.login_user)

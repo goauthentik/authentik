@@ -42,6 +42,13 @@ def create_test_admin_user(name: str | None = None, **kwargs) -> User:
     return user
 
 
+def create_test_group(**kwargs) -> Group:
+    """Generate a test group"""
+    uid = generate_id(20)
+    kwargs.setdefault("name", uid)
+    return Group.objects.create(**kwargs)
+
+
 def create_test_brand(**kwargs) -> Brand:
     """Generate a test brand, removing all other brands to make sure this one
     matches."""

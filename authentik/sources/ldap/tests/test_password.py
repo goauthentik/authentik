@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.password import LDAPPasswordChanger
@@ -40,8 +41,7 @@ class LDAPPasswordTests(TestCase):
     def test_password_complexity_user(self):
         """test password with user"""
         pwc = LDAPPasswordChanger(self.source)
-        user = User.objects.create(
-            username="test",
+        user = create_test_user(
             attributes={"distinguishedName": "cn=user,ou=users,dc=goauthentik,dc=io"},
         )
         self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category

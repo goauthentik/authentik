@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from authentik.core.auth import TokenBackend
 from authentik.core.models import Token, TokenIntents, User
+from authentik.core.tests.utils import create_test_user
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.tests.utils import get_request
@@ -13,7 +14,7 @@ class TestTokenAuth(TestCase):
     """Test token auth"""
 
     def setUp(self) -> None:
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
         self.token = Token.objects.create(
             expiring=False, user=self.user, intent=TokenIntents.INTENT_APP_PASSWORD
         )
@@ -24,13 +25,13 @@ class TestTokenAuth(TestCase):
     def test_token_auth(self):
         """Test auth with token"""
         self.assertEqual(
-            TokenBackend().authenticate(self.request, "test-user", self.token.key), self.user
+            TokenBackend().authenticate(self.request, self.user.username, self.token.key), self.user
         )
 
     def test_token_auth_none(self):
         """Test auth with token (non-existent user)"""
         self.assertIsNone(
-            TokenBackend().authenticate(self.request, "test-user-foo", self.token.key), self.user
+            TokenBackend().authenticate(self.request, "nonexistent-user", self.token.key), self.user
         )
 
     def test_token_auth_invalid(self):

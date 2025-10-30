@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import User
+from authentik.core.models import DEFAULT_ADMIN_USERNAME, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
@@ -166,7 +166,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_user_url())
 
         self.assert_user(
-            User.objects.exclude(username="akadmin")
+            User.objects.exclude(username=DEFAULT_ADMIN_USERNAME)
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
@@ -248,7 +248,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_user_url())
 
         self.assert_user(
-            User.objects.exclude(username="akadmin")
+            User.objects.exclude(username=DEFAULT_ADMIN_USERNAME)
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
@@ -317,7 +317,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_user_url())
 
         self.assert_user(
-            User.objects.exclude(username="akadmin")
+            User.objects.exclude(username=DEFAULT_ADMIN_USERNAME)
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
@@ -386,7 +386,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_user_url())
 
         self.assert_user(
-            User.objects.exclude(username="akadmin")
+            User.objects.exclude(username=DEFAULT_ADMIN_USERNAME)
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
@@ -421,7 +421,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # sleep(999999)
         self.assert_user(
-            User.objects.exclude(username="akadmin")
+            User.objects.exclude(username=DEFAULT_ADMIN_USERNAME)
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)

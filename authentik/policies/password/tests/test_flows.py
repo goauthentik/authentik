@@ -47,7 +47,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
         """Test policy attached to a prompt stage"""
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"password": "akadmin"},
+            {"password": "testpass"},
         )
         self.assertStageResponse(
             response,

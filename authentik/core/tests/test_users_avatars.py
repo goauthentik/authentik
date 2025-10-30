@@ -7,7 +7,7 @@ from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -16,7 +16,7 @@ class TestUsersAvatars(APITestCase):
 
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
 
     def set_avatar_mode(self, mode: str):
         """Set the avatar mode on the current tenant."""

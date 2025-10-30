@@ -8,6 +8,7 @@ from django.urls import reverse
 from authentik import authentik_version
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_group, create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -16,8 +17,8 @@ class TestAdminAPI(TestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.create(username=generate_id())
-        self.group = Group.objects.create(name=generate_id(), is_superuser=True)
+        self.user = create_test_user()
+        self.group = create_test_group(is_superuser=True)
         self.group.users.add(self.user)
         self.group.save()
         self.client.force_login(self.user)

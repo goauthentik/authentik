@@ -3,6 +3,7 @@
 from django.test.testcases import TestCase
 
 from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_group, create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -11,10 +12,10 @@ class TestGroups(TestCase):
 
     def test_group_membership_simple(self):
         """Test simple membership"""
-        user = User.objects.create(username=generate_id())
-        user2 = User.objects.create(username=generate_id())
-        group = Group.objects.create(name=generate_id())
-        other_group = Group.objects.create(name=generate_id())
+        user = create_test_user()
+        user2 = create_test_user()
+        group = create_test_group()
+        other_group = create_test_group()
         group.users.add(user)
         other_group.users.add(user)
         self.assertTrue(group.is_member(user))
@@ -22,10 +23,10 @@ class TestGroups(TestCase):
 
     def test_group_membership_parent(self):
         """Test parent membership"""
-        user = User.objects.create(username=generate_id())
-        user2 = User.objects.create(username=generate_id())
-        parent = Group.objects.create(name=generate_id())
-        child = Group.objects.create(name=generate_id(), parent=parent)
+        user = create_test_user()
+        user2 = create_test_user()
+        parent = create_test_group()
+        child = create_test_group(parent=parent)
         child.users.add(user)
         self.assertTrue(child.is_member(user))
         self.assertTrue(parent.is_member(user))
@@ -34,11 +35,11 @@ class TestGroups(TestCase):
 
     def test_group_membership_parent_extra(self):
         """Test parent membership"""
-        user = User.objects.create(username=generate_id())
-        user2 = User.objects.create(username=generate_id())
-        parent = Group.objects.create(name=generate_id())
-        second = Group.objects.create(name=generate_id(), parent=parent)
-        third = Group.objects.create(name=generate_id(), parent=second)
+        user = create_test_user()
+        user2 = create_test_user()
+        parent = create_test_group()
+        second = create_test_group(parent=parent)
+        third = create_test_group(parent=second)
         second.users.add(user)
         self.assertTrue(parent.is_member(user))
         self.assertFalse(parent.is_member(user2))
@@ -49,9 +50,9 @@ class TestGroups(TestCase):
 
     def test_group_membership_recursive(self):
         """Test group membership (recursive)"""
-        user = User.objects.create(username=generate_id())
-        group = Group.objects.create(name=generate_id())
-        group2 = Group.objects.create(name=generate_id(), parent=group)
+        user = create_test_user()
+        group = create_test_group()
+        group2 = create_test_group(parent=group)
         group.users.add(user)
         group.parent = group2
         group.save()

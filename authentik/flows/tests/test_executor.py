@@ -547,7 +547,7 @@ class TestFlowExecutor(FlowTestCase):
 
         ident = "test-identifier"
 
-        user = User.objects.create(username="test-user")
+        user = create_test_user()
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )

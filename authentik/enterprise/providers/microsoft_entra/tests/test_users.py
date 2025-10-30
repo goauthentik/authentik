@@ -14,6 +14,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
@@ -84,8 +85,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=MSUser(id=generate_id())),
             ) as user_create,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -117,8 +117,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 ),
             ),
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -152,8 +151,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=MSUser(id=generate_id())),
             ) as user_create,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -191,8 +189,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=MSUser(id=generate_id())),
             ) as user_patch,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -234,8 +231,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(),
             ) as user_delete,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -282,8 +278,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(),
             ) as user_delete,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -336,8 +331,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(),
             ) as user_delete,
         ):
-            user = User.objects.create(
-                username=uid,
+            user = create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -360,8 +354,7 @@ class MicrosoftEntraUserTests(APITestCase):
         """Test user discovery"""
         uid = generate_id()
         self.app.backchannel_providers.remove(self.provider)
-        different_user = User.objects.create(
-            username=uid,
+        different_user = create_test_user(
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)
@@ -410,8 +403,7 @@ class MicrosoftEntraUserTests(APITestCase):
         """Test user discovery (multiple times)"""
         uid = generate_id()
         self.app.backchannel_providers.remove(self.provider)
-        different_user = User.objects.create(
-            username=uid,
+        different_user = create_test_user(
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)
@@ -478,8 +470,7 @@ class MicrosoftEntraUserTests(APITestCase):
         uid = generate_id()
         self.app.backchannel_providers.remove(self.provider)
         admin = create_test_admin_user()
-        different_user = User.objects.create(
-            username=uid,
+        different_user = create_test_user(
             email=f"{uid}@goauthentik.io",
         )
         self.app.backchannel_providers.add(self.provider)

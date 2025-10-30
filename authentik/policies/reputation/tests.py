@@ -3,6 +3,7 @@
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
@@ -20,11 +21,12 @@ class TestReputationPolicy(TestCase):
         self.request_factory = RequestFactory()
         self.request = self.request_factory.get("/")
         self.ip = "127.0.0.1"
-        self.username = "username"
         self.password = generate_id()
         # We need a user for the one-to-one in userreputation
-        self.user = User.objects.create(username=self.username)
+        self.user = create_test_user()
         self.user.set_password(self.password)
+        self.user.save()
+        self.username = self.user.username
         self.backends = [BACKEND_INBUILT]
 
     def test_ip_reputation(self):

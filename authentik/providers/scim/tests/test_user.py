@@ -8,6 +8,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -59,8 +60,7 @@ class SCIMUserTests(TestCase):
             },
         )
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -110,8 +110,7 @@ class SCIMUserTests(TestCase):
             },
         )
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -176,8 +175,7 @@ class SCIMUserTests(TestCase):
             },
         )
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -229,8 +227,7 @@ class SCIMUserTests(TestCase):
             },
         )
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -285,8 +282,7 @@ class SCIMUserTests(TestCase):
         )
         mock.delete(f"https://localhost/Users/{scim_id}", status_code=204)
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -349,8 +345,7 @@ class SCIMUserTests(TestCase):
                 "id": group_scim_id,
             },
         )
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )
@@ -402,8 +397,7 @@ class SCIMUserTests(TestCase):
                 },
             )
             uid = generate_id()
-            User.objects.create(
-                username=uid,
+            create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )
@@ -421,8 +415,7 @@ class SCIMUserTests(TestCase):
                 "https://localhost/ServiceProviderConfig",
                 json={},
             )
-            User.objects.create(
-                username=uid,
+            create_test_user(
                 name=f"{uid} {uid}",
                 email=f"{uid}@goauthentik.io",
             )

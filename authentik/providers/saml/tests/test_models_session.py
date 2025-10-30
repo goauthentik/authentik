@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from authentik.core.models import AuthenticatedSession, Session, User
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.api.sessions import SAMLSessionSerializer
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
@@ -21,10 +21,7 @@ class TestSAMLSessionModel(TestCase):
 
     def setUp(self):
         """Set up test fixtures"""
-        self.user = User.objects.create_user(
-            username="testuser",
-            email="test@example.com",
-        )
+        self.user = create_test_user()
         self.flow = create_test_flow()
 
         # Create a provider

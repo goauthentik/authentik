@@ -12,7 +12,12 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_flow,
+    create_test_group,
+    create_test_user,
+)
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
@@ -32,8 +37,8 @@ class TestUserWriteStage(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.flow = create_test_flow()
-        self.group = Group.objects.create(name="test-group")
-        self.other_group = Group.objects.create(name="other-group")
+        self.group = create_test_group()
+        self.other_group = create_test_group()
         self.stage: UserWriteStage = UserWriteStage.objects.create(
             name="write", create_users_as_inactive=True, create_users_group=self.group
         )
@@ -98,9 +103,7 @@ class TestUserWriteStage(FlowTestCase):
         """Test update of existing user"""
         new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
-            username="unittest", email="test@goauthentik.io"
-        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = create_test_user()
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
@@ -132,14 +135,12 @@ class TestUserWriteStage(FlowTestCase):
         """Test update of existing user with a source"""
         new_password = generate_key()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
-            username="unittest",
-            email="test@goauthentik.io",
+        plan.context[PLAN_CONTEXT_PENDING_USER] = create_test_user(
             attributes={
                 USER_ATTRIBUTE_SOURCES: [
                     self.source.name,
                 ]
-            },
+            }
         )
         plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
         plan.context[PLAN_CONTEXT_PROMPT] = {

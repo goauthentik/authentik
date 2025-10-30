@@ -11,6 +11,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import License
@@ -115,8 +116,7 @@ class SCIMOAuthTests(APITestCase):
             },
         )
         uid = generate_id()
-        user = User.objects.create(
-            username=uid,
+        user = create_test_user(
             name=f"{uid} {uid}",
             email=f"{uid}@goauthentik.io",
         )

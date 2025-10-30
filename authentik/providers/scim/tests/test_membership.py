@@ -5,6 +5,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -58,7 +59,7 @@ class SCIMMembershipTests(TestCase):
             name=uid,
         )
 
-        user = User.objects.create(username=generate_id())
+        user = create_test_user()
 
         with Mocker() as mocker:
             mocker.get(
@@ -146,7 +147,7 @@ class SCIMMembershipTests(TestCase):
             name=uid,
         )
 
-        user = User.objects.create(username=generate_id())
+        user = create_test_user()
 
         with Mocker() as mocker:
             mocker.get(
@@ -261,7 +262,7 @@ class SCIMMembershipTests(TestCase):
             name=uid,
         )
 
-        user = User.objects.create(username=generate_id())
+        user = create_test_user()
 
         # Test initial sync of group creation
         with Mocker() as mocker:

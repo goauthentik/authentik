@@ -4,7 +4,7 @@ from django.urls import reverse
 from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Group, User, UserTypes
+from authentik.core.models import DEFAULT_ADMIN_USERNAME, Group, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.rbac.api.rbac_assigned_by_users import UserAssignedObjectPermissionSerializer
@@ -26,7 +26,7 @@ class TestRBACUserAPI(APITestCase):
 
     def test_filter_assigned(self):
         """Test UserAssignedPermissionViewSet's filters"""
-        User.objects.filter(username="akadmin").delete()
+        User.objects.filter(username=DEFAULT_ADMIN_USERNAME).delete()
         inv = Invitation.objects.create(
             name=generate_id(),
             created_by=self.superuser,

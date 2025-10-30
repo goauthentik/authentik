@@ -3,6 +3,7 @@
 from django.contrib.auth.hashers import is_password_usable
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.auth import KerberosBackend
 from authentik.sources.kerberos.models import KerberosSource, UserKerberosSourceConnection
@@ -21,7 +22,7 @@ class TestKerberosAuth(KerberosTestCase):
             sync_users_password=False,
             password_login_update_internal_password=True,
         )
-        self.user = User.objects.create(username=generate_id())
+        self.user = create_test_user()
         self.user.set_unusable_password()
         self.user.save()
         UserKerberosSourceConnection.objects.create(
