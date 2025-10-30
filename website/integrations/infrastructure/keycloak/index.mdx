@@ -59,7 +59,7 @@ To support the integration of Keycloak with authentik, you need to create an app
 ## Keycloak configuration
 
 1. Log in to Keycloak as an administrator.
-2. Navigate to **Configure** > **Identity Providers** and click **OpenID Connect v1.0**.
+2. Navigate to **Configure** > **Identity Providers**, click **OpenID Connect v1.0** and set the following fields:
     - **Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
     - **Client ID**: enter the client ID from authentik.
     - **Client secret**: enter the client secret from authentik.
