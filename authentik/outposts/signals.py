@@ -77,10 +77,9 @@ def outpost_m2m_changed(sender, instance: Outpost | Provider, action: str, **_):
 
 
 @receiver(post_save, sender=Outpost)
-def outpost_post_save(sender, instance: Outpost, created: bool, **_):
-    if created:
-        LOGGER.info("New outpost saved, ensuring initial token and user are created")
-        _ = instance.token
+def outpost_post_save(sender, instance: Outpost, **_):
+    LOGGER.info("Outpost saved, ensuring token and user are created and permissions are set")
+    _ = instance.token
     outpost_controller.send_with_options(
         args=(instance.pk,),
         rel_obj=instance.service_connection,
