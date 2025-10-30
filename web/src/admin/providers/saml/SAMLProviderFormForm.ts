@@ -191,6 +191,10 @@ export function renderForm({
                 <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
+                    placeholder="https://..."
+                    input-hint="code"
+                    input-mode="url"
+
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
