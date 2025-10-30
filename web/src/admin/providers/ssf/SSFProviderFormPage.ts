@@ -57,7 +57,9 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
 
         return html`<ak-text-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Provider Name")}
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>
