@@ -61,7 +61,6 @@ jobs:
         working-directory: website/
         run: npm run build -w integrations
   build-container:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload container images to ghcr.io
@@ -121,4 +120,3 @@ jobs:
       - uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-          allowed-skips: ${{ github.repository == 'goauthentik/authentik-internal' && 'build-container' || '[]' }}
