@@ -99,12 +99,16 @@ To support the integration of Keycloak with authentik, you need to create an app
 1. Log in to Keycloak as an administrator.
 2. Navigate to **Configure** > **Identity Providers** and click **SAML v2.0**.
 3. Set the **Service provider entity ID** to `https://authentik.company/application/saml/<slug>/metadata/`
-4. Click **Submit**.
-5. Verify that the following options are properly configured in Keycloak after submitting:
-    - **Service provider entity ID** is set to `https://keycloak.company/realms/<keycloak-realm-name>`.
-    - **Identity provider entity ID** is set to `authentik`.
-    - **Single Sign-On Service URL** is set to `https://authentik.connorpeshek.me/application/saml/keycloak-saml/sso/binding/post/`.
-    - **Single logout service URL** is set to `https://authentik.connorpeshek.me/application/saml/keycloak-saml/slo/binding/post/`.
 
-  </TabItem>
+4. Click **Submit**.
+      </TabItem>
 </Tabs>
+
+## Configuration verification
+
+To ensure that authentik is correctly integrated with Keycloak, log out and then log back in by clicking **SAML** or **OIDC**. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Keycloak dashboard.
+
+## Resources
+
+- [Keycloak Docs — Managing OpenID Connect and SAML Clients](https://www.keycloak.org/docs/latest/server_admin/index.html#assembly-managing-clients_server_administration_guide)
+- [Keycloak Docs — Configuring Realms](https://www.keycloak.org/docs/latest/server_admin/index.html#_configuring-realms)
