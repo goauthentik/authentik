@@ -4,7 +4,7 @@ from django.test import RequestFactory
 
 from authentik.core.models import Group, SourceGroupMatchingModes
 from authentik.core.sources.flow_manager import PLAN_CONTEXT_SOURCE_GROUPS, GroupUpdateStage
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_group
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -98,7 +98,7 @@ class TestSourceFlowManager(FlowTestCase):
     def test_existant_group_name_link(self):
         self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
         self.source.save()
-        group = Group.objects.create(name="group 1")
+        group = create_test_group()
 
         request = self.factory.get("/")
         stage = GroupUpdateStage(
@@ -112,8 +112,8 @@ class TestSourceFlowManager(FlowTestCase):
                         PLAN_CONTEXT_SOURCE: self.source,
                         PLAN_CONTEXT_PENDING_USER: self.user,
                         PLAN_CONTEXT_SOURCE_GROUPS: {
-                            "group 1": {
-                                "name": "group 1",
+                            group.name: {
+                                "name": group.name,
                             },
                         },
                     },
@@ -122,8 +122,8 @@ class TestSourceFlowManager(FlowTestCase):
             request=request,
         )
         self.assertTrue(stage.handle_groups())
-        self.assertTrue(Group.objects.filter(name="group 1").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertTrue(Group.objects.filter(name=group.name).exists())
+        self.assertTrue(self.user.ak_groups.filter(name=group.name).exists())
         self.assertTrue(
             GroupOAuthSourceConnection.objects.filter(group=group, source=self.source).exists()
         )
@@ -165,7 +165,7 @@ class TestSourceFlowManager(FlowTestCase):
     def test_existant_group_name_deny(self):
         self.source.group_matching_mode = SourceGroupMatchingModes.NAME_DENY
         self.source.save()
-        group = Group.objects.create(name="group 1")
+        group = create_test_group()
 
         request = self.factory.get("/")
         stage = GroupUpdateStage(
@@ -179,8 +179,8 @@ class TestSourceFlowManager(FlowTestCase):
                         PLAN_CONTEXT_SOURCE: self.source,
                         PLAN_CONTEXT_PENDING_USER: self.user,
                         PLAN_CONTEXT_SOURCE_GROUPS: {
-                            "group 1": {
-                                "name": "group 1",
+                            group.name: {
+                                "name": group.name,
                             },
                         },
                     },
@@ -189,7 +189,7 @@ class TestSourceFlowManager(FlowTestCase):
             request=request,
         )
         self.assertFalse(stage.handle_groups())
-        self.assertFalse(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertFalse(self.user.ak_groups.filter(name=group.name).exists())
         self.assertFalse(
             GroupOAuthSourceConnection.objects.filter(group=group, source=self.source).exists()
         )
@@ -198,9 +198,9 @@ class TestSourceFlowManager(FlowTestCase):
         self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
         self.source.save()
 
-        other_group = Group.objects.create(name="other group")
-        old_group = Group.objects.create(name="old group")
-        new_group = Group.objects.create(name="new group")
+        other_group = create_test_group()
+        old_group = create_test_group()
+        new_group = create_test_group()
         self.user.ak_groups.set([other_group, old_group])
         GroupOAuthSourceConnection.objects.create(
             group=old_group, source=self.source, identifier=old_group.name
@@ -221,8 +221,8 @@ class TestSourceFlowManager(FlowTestCase):
                         PLAN_CONTEXT_SOURCE: self.source,
                         PLAN_CONTEXT_PENDING_USER: self.user,
                         PLAN_CONTEXT_SOURCE_GROUPS: {
-                            "new group": {
-                                "name": "new group",
+                            new_group.name: {
+                                "name": new_group.name,
                             },
                         },
                     },
@@ -231,7 +231,7 @@ class TestSourceFlowManager(FlowTestCase):
             request=request,
         )
         self.assertTrue(stage.handle_groups())
-        self.assertFalse(self.user.ak_groups.filter(name="old group").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="other group").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="new group").exists())
+        self.assertFalse(self.user.ak_groups.filter(name=old_group.name).exists())
+        self.assertTrue(self.user.ak_groups.filter(name=other_group.name).exists())
+        self.assertTrue(self.user.ak_groups.filter(name=new_group.name).exists())
         self.assertEqual(self.user.ak_groups.count(), 2)
