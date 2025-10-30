@@ -39,6 +39,9 @@ To support the integration of Zoom with authentik, you need to create an applica
         - Set the **ACS URL** to `https://company.zoom.us/saml/SSO`.
         - Set the **Issuer** to `authentik`.
         - Set the **Service Provider Binding** to `Post`.
+        - Set the **SLS URL** to `https://company.zoom.us/saml/SingleLogout`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Native)`.
         - Set the **Audience** to `company.zoom.us`.
         - Under **Advanced protocol settings**, select an available **Signing Certificate**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
