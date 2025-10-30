@@ -15,8 +15,6 @@ import type { NavigableButton, WizardButton } from "#components/ak-wizard/types"
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 
-import { TypeCreate } from "@goauthentik/api";
-
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -57,7 +55,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     @bound
     onSelect(ev: CustomEvent<LocalTypeCreate>) {
         ev.stopPropagation();
-        const detail: TypeCreate = ev.detail;
+        const detail = ev.detail;
         this.handleUpdate({ providerModel: detail.modelName });
     }
 
