@@ -58,8 +58,9 @@ The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC
 
 Restart the Miniflux service for the changes to take effect.
 
-Existing Miniflux accounts must be first linked to your Authentik account.
-To do that, log in using your existing Miniflux credentials, go to Settings and click on Link my OpenID Connect account.
+:::info Existing Miniflux accounts
+Existing Miniflux accounts must first be linked to a matching authentik account. To do this, log in using your existing Miniflux credentials, go to **Settings** and click on **Link my OpenID Connect account**.
+:::
 
 ## Configuration verification
 
