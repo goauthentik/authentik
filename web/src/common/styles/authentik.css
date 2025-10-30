@@ -182,6 +182,17 @@ html > form > input {
     overflow: hidden;
 }
 
+@media not (prefers-contrast: more) {
+    .less-contrast-sr-only {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+}
+
 /* #endregion */
 
 /* #region Icons */
@@ -668,7 +679,8 @@ fieldset {
 }
 
 .pf-c-form__helper-text {
-    text-wrap: pretty;
+    text-wrap: balance;
+    text-wrap: pretty; /* Supporting browsers. */
 }
 
 ::placeholder {
