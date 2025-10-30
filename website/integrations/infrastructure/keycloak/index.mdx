@@ -101,7 +101,7 @@ To support the integration of Keycloak with authentik, you need to create an app
 3. Set the **Service provider entity ID** to `https://authentik.company/application/saml/<slug>/metadata/`
 4. Click **Submit**.
 5. Verify that the following options are properly configured in Keycloak after submitting:
-    - **Service provider entity ID** is set to `https://keycloak.company/realms/<realm>`.
+    - **Service provider entity ID** is set to `https://keycloak.company/realms/<keycloak-realm-name>`.
     - **Identity provider entity ID** is set to `authentik`.
     - **Single Sign-On Service URL** is set to `https://authentik.connorpeshek.me/application/saml/keycloak-saml/sso/binding/post/`.
     - **Single logout service URL** is set to `https://authentik.connorpeshek.me/application/saml/keycloak-saml/slo/binding/post/`.
