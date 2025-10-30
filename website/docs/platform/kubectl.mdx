@@ -52,9 +52,11 @@ If you have already deployed the authentik OAuth CLI application/provider pair, 
 
 ## Kubernetes configuration
 
+To integrate authentik Platform with your kubernetes deployment, you'll need to configure kubeadm.
+
 ### Configure kubeadm settings
 
-Add the following `extraArgs` to your `Kubeadm_config.yml` file:
+Add the following `extraArgs` to your `kubeadm_config.yml` file:
 
 ```yaml
 - name: oidc-client-id
@@ -69,4 +71,16 @@ Add the following `extraArgs` to your `Kubeadm_config.yml` file:
   value: email
 ```
 
-https://github.com/BeryJu/infrastructure/blob/main/roles/beryjuio_kube/templates/kubeadm_config.yml#L11-L20
+Run the following command to apply the changes to an existing Kubernetes cluster:
+
+```sh
+kubeadm upgrade apply <version> --config=kubeadm_config.yml
+```
+
+Where <version> matches the target Kubernetes version specified in your config file.
+
+:::info Example config file
+An example `kubeadm_config.yml` is available on the [authentik Platform GitHub repository](https://github.com/BeryJu/infrastructure/blob/main/roles/beryjuio_kube/templates/kubeadm_config.yml#L11-L20).
+:::
+
+## Usage
