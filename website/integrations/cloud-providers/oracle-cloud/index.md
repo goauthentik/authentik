@@ -68,7 +68,7 @@ To integrate authentik with Oracle Cloud, you must configure authentik as a soci
 
 ## Configuration verification
 
-To confirm that authentik is correctly configured with Oracle Cloud, log out of your current session. Then, try signing in again either by selecting the application's icon in the User Library or by going directly to the Oracle Cloud login page, depending on your setup. On the login page, click **authentik**. You'll be redirected to authentik, and after a successful login, automatically signed in to Oracle Cloud.
+To confirm that authentik is correctly configured with Oracle Cloud, log out of your current session. Then, try signing in by either selecting the application's icon in the User Library or by going directly to the Oracle Cloud login page, depending on your setup. On the login page, click **authentik**. You'll be redirected to authentik, and after a successful login, automatically signed in to Oracle Cloud.
 
 ## Resources
 
