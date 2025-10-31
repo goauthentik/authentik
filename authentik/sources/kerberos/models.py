@@ -1,7 +1,7 @@
 """authentik Kerberos Source Models"""
 
-from base64 import b64decode
 import os
+from base64 import b64decode
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Any
@@ -14,7 +14,8 @@ from django.shortcuts import reverse
 from django.templatetags.static import static
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from kadmin import KAdmin, KAdminApiVersion, KAdm5Variant, exceptions as kadmin_exceptions
+from kadmin import KAdm5Variant, KAdmin, KAdminApiVersion
+from kadmin import exceptions as kadmin_exceptions
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
