@@ -1,5 +1,6 @@
 """authentik Kerberos Source Models"""
 
+from base64 import b64decode
 import os
 from pathlib import Path
 from tempfile import gettempdir
@@ -8,14 +9,12 @@ from typing import Any
 import gssapi
 import pglock
 from django.db import connection, models
-from django.db.models.fields import b64decode
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from kadmin import KAdmin, KAdminApiVersion
-from kadmin.exceptions import PyKAdminException
+from kadmin import KAdmin, KAdminApiVersion, KAdm5Variant, exceptions as kadmin_exceptions
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -43,7 +42,6 @@ _kadmin_connections: dict[str, Any] = {}
 class KAdminType(models.TextChoices):
     MIT = "MIT"
     HEIMDAL = "Heimdal"
-    OTHER = "other"
 
 
 class KerberosSource(ScheduledModel, Source):
@@ -55,7 +53,7 @@ class KerberosSource(ScheduledModel, Source):
         help_text=_("Custom krb5.conf to use. Uses the system one by default"),
     )
     kadmin_type = models.TextField(
-        choices=KAdminType.choices, default=KAdminType.OTHER, help_text=_("KAdmin server type")
+        choices=KAdminType.choices, default=KAdminType.MIT, help_text=_("KAdmin server type")
     )
 
     sync_users = models.BooleanField(
@@ -239,13 +237,14 @@ class KerberosSource(ScheduledModel, Source):
         return str(conf_path)
 
     def _kadmin_init(self) -> KAdmin | None:
-        api_version = None
+        variant = KAdm5Variant.MitClient
+        api_version = KAdminApiVersion.Version2
         match self.kadmin_type:
             case KAdminType.MIT:
+                variant = KAdm5Variant.MitClient
                 api_version = KAdminApiVersion.Version4
             case KAdminType.HEIMDAL:
-                api_version = KAdminApiVersion.Version2
-            case KAdminType.OTHER:
+                variant = KAdm5Variant.HeimdalClient
                 api_version = KAdminApiVersion.Version2
         # kadmin doesn't use a ccache for its connection
         # as such, we don't need to create a separate ccache for each source
@@ -253,6 +252,7 @@ class KerberosSource(ScheduledModel, Source):
             return None
         if self.sync_password:
             return KAdmin.with_password(
+                variant,
                 self.sync_principal,
                 self.sync_password,
                 api_version=api_version,
@@ -265,12 +265,14 @@ class KerberosSource(ScheduledModel, Source):
                 keytab_path.write_bytes(b64decode(self.sync_keytab))
                 keytab = f"FILE:{keytab_path}"
             return KAdmin.with_keytab(
+                variant,
                 self.sync_principal,
                 keytab,
                 api_version=api_version,
             )
         if self.sync_ccache:
             return KAdmin.with_ccache(
+                variant,
                 self.sync_principal,
                 self.sync_ccache,
                 api_version=api_version,
@@ -285,9 +287,9 @@ class KerberosSource(ScheduledModel, Source):
                 _kadmin_connections[str(self.pk)] = self._kadmin_init()
         return _kadmin_connections.get(str(self.pk), None)
 
-    def check_connection(self) -> dict[str, str]:
+    def check_connection(self) -> dict[str, str | bool]:
         """Check Kerberos Connection"""
-        status = {"status": "ok"}
+        status: dict[str, str | bool] = {"status": "ok"}
         if not self.sync_users:
             return status
         with Krb5ConfContext(self):
@@ -297,7 +299,7 @@ class KerberosSource(ScheduledModel, Source):
                     status["status"] = "no connection"
                     return status
                 status["principal_exists"] = kadm.principal_exists(self.sync_principal)
-            except PyKAdminException as exc:
+            except kadmin_exceptions.PyKAdminException as exc:
                 status["status"] = str(exc)
         return status
 
