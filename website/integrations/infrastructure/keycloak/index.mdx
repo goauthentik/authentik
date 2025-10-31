@@ -9,7 +9,7 @@ import Tabs from "@theme/Tabs";
 
 ## What is Keycloak
 
-> Keycloak is an open-source IAM platform. It can both be used as an Identity Provider and as an application. This guide is for configuring Keycloak as an application.
+> Keycloak is an open-source Identity and Access Management (IAM) platform. It can be used both as an Identity Provider and as an application.
 >
 > -- https://keycloak.org
 
@@ -99,14 +99,14 @@ To support the integration of Keycloak with authentik, you need to create an app
 1. Log in to Keycloak as an administrator.
 2. Navigate to **Configure** > **Identity Providers** and click **SAML v2.0**.
 3. Set the **Service provider entity ID** to `https://authentik.company/application/saml/<slug>/metadata/`
-
 4. Click **Submit**.
-   </TabItem>
-    </Tabs>
+
+  </TabItem>
+</Tabs>
 
 ## Configuration verification
 
-To ensure that authentik is correctly integrated with Keycloak, log out and then log back in by clicking **SAML** or **OIDC**. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Keycloak dashboard.
+To ensure that authentik is correctly integrated with Keycloak, log out and then log back in by clicking **SAML** or **OIDC** on the login screen. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Keycloak dashboard.
 
 ## Resources
 

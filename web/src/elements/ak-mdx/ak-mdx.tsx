@@ -1,6 +1,7 @@
 import "#elements/Alert";
 
 import { globalAK } from "#common/global";
+import { BrandedHTMLPolicy } from "#common/purify";
 import OneDark from "#common/styles/one-dark.css";
 
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
@@ -98,7 +99,7 @@ export class AKMDX extends AKElement {
             nextMDXModule = await fetchMDXModule(pathname);
         } else {
             nextMDXModule = {
-                content: this.content || "",
+                content: `${BrandedHTMLPolicy.createHTML(this.content || "")}`,
             };
         }
 
@@ -144,7 +145,6 @@ export class AKMDX extends AKElement {
         });
 
         const { frontmatter = {} } = mdxExports;
-
         this.#reactRoot.render(
             <MDXModuleContext.Provider value={mdxModule}>
                 <Content

@@ -10,6 +10,14 @@
     }
 }
 
+td.pf-c-table__toggle:first-child > .pf-c-button {
+    --pf-c-button--PaddingLeft: 0;
+}
+
+td ak-mdx::part(content) {
+    --pf-c-content--FontSize: 1em;
+}
+
 /**
  * TODO: Row actions need a better approach to alignment,
  * but this will at least get the buttons in a grid-like layout.
