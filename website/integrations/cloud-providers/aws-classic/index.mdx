@@ -19,25 +19,25 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## Configuration methods
 
-There are several methods to integrate authentik with AWS. Below are the steps to configure each method.
+AWS Classic IAM can be integreated with authentik via SAML or OIDC. Below are the steps to configure each method.
 
-:::note
-SCIM Provisioning is only possible in conjunction with [IAM Identity Center](../aws/index.mdx), not Classic IAM.
+:::info SCIM Provisioning Limitation
+SCIM Provisioning is only supported in conjunction with [IAM Identity Center](../aws/index.mdx), not Classic IAM.
 :::
 
 <Tabs
-  defaultValue="iam"
+  defaultValue="iam-saml"
   values={[
-    { label: "Classic IAM (SAML)", value: "iam" },
+    { label: "Classic IAM (SAML)", value: "iam-saml" },
     { label: "Classic IAM (OIDC)", value: "iam-oidc" },
   ]}>
-  <TabItem value="iam">
+  <TabItem value="iam-saml">
 
 ## authentik configuration
 

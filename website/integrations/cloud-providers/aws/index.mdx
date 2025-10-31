@@ -19,20 +19,8 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
-
-## Configuration methods
-
-There are several methods to integrate authentik with AWS. Below are the steps to configure each method.
-
-:::note
-IAM Identity Center needs a user pre-provisioned manually or via SCIM.
-:::
-
-:::note
-SCIM Provisioning is only possible in conjunction with IAM Identity Center, not Classic IAM.
 :::
 
 ## SAML Configuration
@@ -40,6 +28,10 @@ SCIM Provisioning is only possible in conjunction with IAM Identity Center, not 
 ### Prerequisites
 
 - An AWS account with IAM Identity Center enabled
+
+:::info User Provisioning
+IAM Identity Center needs a user pre-provisioned manually or via SCIM. Accounts are not created upon login.
+:::
 
 ### Download AWS service Provider metadata file
 
@@ -94,11 +86,15 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 7. Click **Next**.
 8. (todo)
 
-## SCIM Configuration
+## SCIM Configuration (optional)
 
 ### Prerequisites
 
 - Completed IAM Identity Center (SAML) setup.
+
+:::info SCIM Provisioning Limitation
+SCIM Provisioning is only supported in conjunction with IAM Identity Center, not [Classic IAM](../aws-classic/index.mdx).
+:::
 
 ### Enable automatic provisioning in AWS
 
