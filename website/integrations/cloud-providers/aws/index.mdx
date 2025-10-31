@@ -38,6 +38,7 @@ IAM Identity Center needs a user pre-provisioned manually or via SCIM. Accounts 
 4. Select **External Identity Provider**.
 5. Click **Download metadata file** to download the **Service provider metadata** file. This file will be required in the next section.
 6. Take note of the **AWS access portal sign-in URL**. This value will be required in the next section.
+7. Keep this page open, you will need to return to it after configuring authentik.
 
 ### authentik configuration
 
@@ -73,13 +74,10 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 
 ### AWS configuration
 
-1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
-2. Navigate to **IAM Identity Center** > **Settings** > **Identity Source**.
-3. Click **Actions** > **Change identity source**.
-4. Select **External Identity Provider**.
-5. Under **Identity provider metadata** > **IdP SAML metadata**, click **Choose file**, and then upload your authentik metadata file.
-6. Click **Next**.
-7. Type `ACCEPT` in the **Confirm that you want to change your identity source by entering ACCEPT in the field below.** field and click **Add/Change Identity Provider**.
+1. Return to the AWS Identity Provider page.
+2. Under **Identity provider metadata** > **IdP SAML metadata**, click **Choose file**, and then upload your authentik metadata file.
+3. Click **Next**.
+4. Type `ACCEPT` in the **Confirm that you want to change your identity source by entering ACCEPT in the field below.** field and click **Add/Change Identity Provider**.
 
 ## SCIM Configuration (optional)
 
