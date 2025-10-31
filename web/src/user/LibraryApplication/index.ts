@@ -28,6 +28,7 @@ export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
     editURL?: string | URL | null;
     background?: string | null;
+    titleWidth?: number;
     appIndex: number;
     groupIndex: number;
     targetRef?: RefOrCallback | null;
@@ -37,6 +38,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     editURL,
     background,
+    titleWidth,
     appIndex,
     groupIndex,
     className = "",
@@ -83,7 +85,10 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         part="card-wrapper"
         data-application-name=${ifPresent(dataID)}
         aria-describedby=${descriptionID}
-        style=${styleMap({ background: background || null })}
+        style=${styleMap({
+            "background": background || null,
+            "--ak-card-title-width": titleWidth ? `${titleWidth}px` : null,
+        })}
         ${spread(props)}
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
