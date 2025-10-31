@@ -4,9 +4,6 @@ sidebar_label: Amazon Web Services (IAM Identity Centre)
 support_level: authentik
 ---
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-
 ## What is AWS
 
 > AWS, or Amazon Web Services, is a comprehensive cloud computing platform. It provides a wide array of on-demand IT services like computing power, storage, and databases, allowing businesses to build and run applications, and manage infrastructure through the internet.
@@ -50,7 +47,7 @@ To support the integration of AWS with authentik using SAML, you need to create 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `AWS Identity Center`), an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `aws-slug` placeholder defined earlier.
+    - **Application**: provide a descriptive name (e.g. `AWS Identity Center`), an optional group for the type of application, the policy engine mode, and optional UI settings.
         - Under **UI Settings**, set the **Launch URL** to the **AWS access portal sign-in URL** copied from AWS.
     - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
@@ -64,16 +61,15 @@ To support the integration of AWS with authentik using SAML, you need to create 
 
 3. Click **Submit** to save the new application and provider.
 
-:::note
+:::info NameID
 The NameID field of type email is matched in AWS against the AWS username attribute, not the email attribute.
 :::
 
-#### Download metadata file and signing certificate
+#### Download metadata file
 
 1. Log into authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
 3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
-4. Under **Related objects** > **Download signing certificate**, click **Download**. This signing certificate will be required in the next section.
 
 ### AWS configuration
 
@@ -82,9 +78,8 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 3. Click **Actions** > **Change identity source**.
 4. Select **External Identity Provider**.
 5. Under **Identity provider metadata** > **IdP SAML metadata**, click **Choose file**, and then upload your authentik metadata file.
-6. Under **Identity provider metadata** > **IdP certificate**, click **Choose file**, and then upload your authentik signing certificate.
-7. Click **Next**.
-8. (todo)
+6. Click **Next**.
+7. Type `ACCEPT` in the **Confirm that you want to change your identity source by entering ACCEPT in the field below.** field and click **Add/Change Identity Provider**.
 
 ## SCIM Configuration (optional)
 
