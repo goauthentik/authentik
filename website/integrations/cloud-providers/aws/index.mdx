@@ -1,6 +1,6 @@
 ---
-title: Integrate with Amazon Web Services
-sidebar_label: Amazon Web Services
+title: Integrate with Amazon Web Services (IAM Identity Centre)
+sidebar_label: Amazon Web Services (IAM Identity Centre)
 support_level: authentik
 ---
 
@@ -35,107 +35,13 @@ IAM Identity Center needs a user pre-provisioned manually or via SCIM.
 SCIM Provisioning is only possible in conjunction with IAM Identity Center, not Classic IAM.
 :::
 
-<Tabs
-  defaultValue="iam"
-  values={[
-    { label: "Classic IAM (SAML)", value: "iam" },
-    { label: "IAM Identity Center (SAML)", value: "identity-center-saml" },
-    { label: "Classic IAM (OIDC)", value: "iam-oidc" },
-    { label: "SCIM Provisioning (Optional)", value: "scim" },
-  ]}>
-  <TabItem value="iam">
+## SAML Configuration
 
-## authentik configuration
-
-To support the integration of AWS with authentik via the Classic IAM method, you need to create two property mappings and an application/provider pair in authentik.
-
-### Create property mappings
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
-3. Configure the first mapping for the user's _role assignment_:
-    - **Name**: provide a descriptive name
-    - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/Role`
-    - **Friendly Name**: Leave blank
-    - **Expression**: Choose one of these options:
-
-        For a static role:
-
-        ```python
-        return "arn:aws:iam::<aws_account_ID>:role/saml_role,arn:aws:iam::<aws_account_ID>:saml-provider/authentik"
-        ```
-
-        For role assignment based on group membership:
-
-        ```python
-        role_name = user.group_attributes().get("aws_role", "")
-        return f"arn:aws:iam::<aws_account_ID>:role/{role_name},arn:aws:iam::<aws_account_ID>:saml-provider/authentik"
-        ```
-
-        For multiple roles:
-
-        ```python
-        return [
-            "arn:aws:iam::<aws_account_ID>:role/role_a,arn:aws:iam::<aws_account_ID>:saml-provider/authentik",
-            "arn:aws:iam::<aws_account_ID>:role/role_b,arn:aws:iam::<aws_account_ID>:saml-provider/authentik",
-            "arn:aws:iam::<aws_account_ID>:role/role_c,arn:aws:iam::<aws_account_ID>:saml-provider/authentik",
-        ]
-        ```
-
-4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _session name_:
-    - **Name**: provide a descriptive name
-    - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
-    - **Friendly Name**: Leave blank
-    - **Expression**: `return user.username`
-
-5. Click **Finish**.
-
-### Create an application and provider in authentik
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. "AWS"), an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `aws-slug` placeholder defined earlier.
-    - **Choose a Provider type**: select **SAML Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-        - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
-        - Set the **Audience** to `urn:amazon:webservices`
-        - Under **Advanced protocol settings**, add both property mappings you created in the previous section
-        - NAME ID EDIT
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
-
-3. Click **Submit** to save the new application and provider.
-
-:::note
-The NameID field of type email is matched in AWS against the AWS username attribute, not the email attribute.
-:::
-
-### Download metadata file
-
-1. Log into authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
-3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
-
-## AWS configuration
-
-1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
-2. Create an IAM role with the desired permissions and note the ARN.
-3. Navigate to [IAM Identity Providers](https://console.aws.amazon.com/iam/home#/providers).
-4. Click **Create Provider** and configure:
-    - Select **SAML** as the provider type.
-    - Upload the metadata file from authentik.
-5. Add the property mappings to the SAML Provider.
-6. Create an application and assign the appropriate policies.
-7. Connect the provider to your application.
-
-</TabItem>
-
-  <TabItem value="identity-center-saml">
-
-## Prerequisites
+### Prerequisites
 
 - An AWS account with IAM Identity Center enabled
 
-## Download AWS service Provider metadata file
+### Download AWS service Provider metadata file
 
 1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
 2. Navigate to **IAM Identity Center** > **Settings** > **Identity Source**.
@@ -144,11 +50,11 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 5. Click **Download metadata file** to download the **Service provider metadata** file. This file will be required in the next section.
 6. Take note of the **AWS access portal sign-in URL**. This value will be required in the next section.
 
-## authentik configuration
+### authentik configuration
 
 To support the integration of AWS with authentik using SAML, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+#### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -170,14 +76,14 @@ To support the integration of AWS with authentik using SAML, you need to create 
 The NameID field of type email is matched in AWS against the AWS username attribute, not the email attribute.
 :::
 
-### Download metadata file and signing certificate
+#### Download metadata file and signing certificate
 
 1. Log into authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
 3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
 4. Under **Related objects** > **Download signing certificate**, click **Download**. This signing certificate will be required in the next section.
 
-## AWS configuration
+### AWS configuration
 
 1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
 2. Navigate to **IAM Identity Center** > **Settings** > **Identity Source**.
@@ -188,64 +94,13 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 7. Click **Next**.
 8. (todo)
 
-</TabItem>
+## SCIM Configuration
 
-  <TabItem value="iam-oidc">
-
-## Prerequisites
-
-- An AWS account with IAM Identity Center enabled
-
-:::info AWS OIDC limitations
-AWS does not support direct OIDC login for the AWS Management Console.
-
-OIDC in AWS is mainly used for federated access to AWS resources and programmatic access, such as:
-
-    - Machine-to-machine authentication (CI/CD pipelines, automated scripts, etc.)
-    - Web applications requesting temporary AWS credentials via OIDC tokens
-    - Service account integrations in Kubernetes clusters (like EKS OIDC provider)
-
-:::
-
-## authentik configuration
-
-To support the integration of AWS with authentik using OIDC, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g., `AWS-OIDC`), an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to match the AWS resource that you want to access via OIDC.
-        - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
-
-3. Click **Submit** to save the new application and provider.
-
-## AWS configuration
-
-1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
-2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Identity providers**.
-3. Click **Add provider** and configure the following fields:
-    - **Provider type**: `OpenID Connect`
-    - **Provider URL**: `https://authentik.company/application/o/<application-slug>/`
-    - **Audience**: set to the Client ID from authentik
-4. Click **Add provider**
-5. On the **Identity providers** page, click on the name of the provider that you just added.
-6. Click **Assign role** and either create a new role or select an existing role. This will determine the AWS permissions of any user authenticated via OIDC.
-
-</TabItem>
-
-  <TabItem value="scim">
-
-## Prerequisites
+### Prerequisites
 
 - Completed IAM Identity Center (SAML) setup.
 
-## Enable automatic provisioning in AWS
+### Enable automatic provisioning in AWS
 
 1. Log in to the AWS Management Console as an administrator that has permissions to modify identity sources.
 2. Navigate to **IAM Identity Center** > **Settings** > **Identity Source**.
@@ -253,11 +108,11 @@ To support the integration of AWS with authentik using OIDC, you need to create 
    Alternatively if automatic provisioning is already enabled, under **Identity source** click **Action** > **Manage provisioning**.
 4. Take note of the **SCIM endpoint** and **Access token**. These values will be required in authentik.
 
-## authentik configuration
+### authentik configuration
 
 To support the integration of AWS with authentik using SCIM, you need to create two property mappings and a SCIM provider in authentik.
 
-### Create property mappings
+#### Create property mappings
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SCIM Mapping**, and click **Next**.
@@ -283,7 +138,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 
 5. Click **Finish**.
 
-### Configure a SCIM provider in authentik
+#### Configure a SCIM provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Providers** > **Providers** and click **Create**.
@@ -304,12 +159,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 
 The SCIM provider will automatically sync when users, groups, or memberships change. You can manually sync from SCIM provider page.
 
-</TabItem>
-</Tabs>
+## Resources
 
-## Additional Resources
-
-- [AWS Docs - Create a SAML identity provider in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml.html)
-- [AWS Docs - Create an OpenID Connect (OIDC) identity provider in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html)
 - [AWS Docs - What is IAM Identity Center?](https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html)
 - [AWS Docs - Provisioning an external identity provider into IAM Identity Center using SCIM](https://docs.aws.amazon.com/singlesignon/latest/userguide/provision-automatically.html)
