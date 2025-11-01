@@ -77,11 +77,38 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        sig_errors = []
+        if self._source.verification_kp and self._source.signed_response:
+            resp_error = self._verify_signed("/samlp:Response")
+            if resp_error == "":
+                self.response_signature_verified = True
+            else:
+                self.response_signature_verified = False
+                sig_errors.append(resp_error)
+
         if self._source.encryption_kp:
             self._decrypt_response()
 
-        if self._source.verification_kp:
-            self._verify_signed()
+        if self._source.verification_kp and self._source.signed_assertion:
+            assert_error = self._verify_signed("/samlp:Response/saml:Assertion")
+            if assert_error != "":
+                raise InvalidSignature(f"Assertion signature invalid: {assert_error}")
+
+        if (
+            self._source.verification_kp
+            and self._source.signed_response
+            and (self.response_signature_verified is not True)
+        ):
+            post_error = self._verify_signed("/samlp:Response")
+            if post_error == "":
+                self.response_signature_verified = True
+            else:
+                self.response_signature_verified = False
+                sig_errors.append(resp_error)
+
+        if self._source.signed_response and (self.response_signature_verified is False):
+            raise InvalidSignature(f"SAML Response signature invalid: {'; '.join(sig_errors)}")
+
         self._verify_request_id()
         self._verify_status()
 
@@ -114,45 +141,34 @@ class ResponseProcessor:
             decrypted_assertion,
         )
 
-    def _verify_signed(self):
+    def _verify_signed(self, xpath: str) -> str:
         """Verify SAML Response's Signature"""
-        signatures = []
+        nodes = self._root.xpath(xpath, namespaces=NS_MAP)
+        if len(nodes) != 1:
+            return f"no-node:{xpath}"
+        node = nodes[0]
+        sigs = node.findall("ds:Signature", namespaces=NS_MAP)
+        if not sigs:
+            return f"{xpath}: no-signature"
+        if len(sigs) > 1:
+            return f"{xpath}: multiple-signatures ({len(sigs)})"
+        sig = sigs[0]
 
-        if self._source.signed_response:
-            signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
-
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Response element.")
-            signatures.extend(signature_nodes)
-
-        if self._source.signed_assertion:
-            signature_nodes = self._root.xpath(
-                "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
-            )
-
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Assertion element.")
-            signatures.extend(signature_nodes)
-
-        if len(signatures) == 0:
-            raise InvalidSignature()
-
-        for signature_node in signatures:
-            xmlsec.tree.add_ids(self._root, ["ID"])
-
-            ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                self._source.verification_kp.certificate_data,
-                xmlsec.constants.KeyDataFormatCertPem,
-            )
-            ctx.key = key
-
-            ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
-            try:
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise InvalidSignature() from exc
-            LOGGER.debug("Successfully verified signature")
+        xmlsec.tree.add_ids(self._root, ["ID"])
+        ctx = xmlsec.SignatureContext()
+        key = xmlsec.Key.from_memory(
+            self._source.verification_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+        ctx.key = key
+        try:
+            ctx.verify(sig)
+            return ""  # OK
+        except xmlsec.Error as exc:
+            tag = node.tag.split("}", 1)[-1]
+            ref_uri = sig.xpath("ds:SignedInfo/ds:Reference/@URI", namespaces=NS_MAP)
+            ref_uri = ref_uri[0] if ref_uri else "N/A"
+            return f"{tag}:ref={ref_uri}: {exc}"
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:

@@ -258,3 +258,56 @@ class TestResponseProcessor(TestCase):
 
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
+
+    def test_verification_incorrect_response(self):
+        """Test verifying signature inside response"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_incorrect_signed_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
+
+    def test_signed_encrypted_response(self):
+        """Test signed & encrypted response"""
+        key = load_fixture("fixtures/signature_cert2.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/test_signed_encrypted_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
