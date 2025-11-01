@@ -1,0 +1,19 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 3580.
+#	http://www.ietf.org/rfc/rfc3580.txt
+#
+#	$Id$
+#
+VALUE	Acct-Terminate-Cause		Supplicant-Restart	19
+VALUE	Acct-Terminate-Cause		Reauthentication-Failure 20
+VALUE	Acct-Terminate-Cause		Port-Reinit		21
+VALUE	Acct-Terminate-Cause		Port-Disabled		22
+
+VALUE	NAS-Port-Type			Token-Ring		20
+VALUE	NAS-Port-Type			FDDI			21
+
+VALUE	Tunnel-Type			VLAN			13
