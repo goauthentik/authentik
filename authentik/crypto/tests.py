@@ -337,6 +337,8 @@ class TestCrypto(APITestCase):
                 _cert.write(builder.certificate)
             with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
                 _key.write(builder.private_key)
+            with open(f"{temp_dir}/tls-combined.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
             with CONFIG.patch("cert_discovery_dir", temp_dir):
                 certificate_discovery.send()
         keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
@@ -347,4 +349,7 @@ class TestCrypto(APITestCase):
         self.assertIsNotNone(keypair.private_key)
         self.assertTrue(
             CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
+        )
+        self.assertFalse(
+            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "tls-combined").exists()
         )
