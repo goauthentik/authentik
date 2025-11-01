@@ -3,6 +3,7 @@
 import os
 from urllib.parse import parse_qsl, urlsplit
 
+from botocore.awsrequest import AWSRequest
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.files.storage import FileSystemStorage
@@ -97,16 +98,13 @@ class S3Storage(BaseS3Storage):
         )
 
         if self.custom_domain:
-            # Key parameter can't be empty. Use "/" and remove it later.
-            params["Key"] = "/"
-            root_url_signed = self.bucket.meta.client.generate_presigned_url(
-                "get_object", Params=params, ExpiresIn=expire
+            custom_url = f"{self.url_protocol}//{self.custom_domain}/{name}"
+            request = AWSRequest(http_method or "GET", custom_url)
+            self.bucket.meta.client._request_signer.sign(
+                "GetObject", request, signing_type="presign-url", expires_in=expire
             )
-            # Remove signing parameter and previously added key "/".
-            root_url = self._strip_signing_parameters(root_url_signed)[:-1]
-            # Replace bucket domain with custom domain.
-            custom_url = f"{self.url_protocol}//{self.custom_domain}/"
-            url = url.replace(root_url, custom_url)
+            prepared_request = request.prepare()
+            url = prepared_request.url
 
         if self.querystring_auth:
             return url
