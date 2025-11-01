@@ -83,6 +83,7 @@ TENANT_APPS = [
     "authentik.crypto",
     "authentik.enterprise",
     "authentik.events",
+    "authentik.files",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
