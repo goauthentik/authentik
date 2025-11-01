@@ -19,7 +19,7 @@ class AuthentikAdminConfig(ManagedAppConfig):
     default = True
 
     @ManagedAppConfig.reconcile_global
-    def clear_update_notifications(self):
+    def clear_update_notifications(self) -> None:
         """Clear update notifications on startup if the notification was for the version
         we're running now."""
         from packaging.version import parse
@@ -28,6 +28,8 @@ class AuthentikAdminConfig(ManagedAppConfig):
         from authentik.events.models import EventAction, Notification
 
         for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
+            if notification.event is None:
+                continue
             if "new_version" not in notification.event.context:
                 continue
             notification_version = notification.event.context["new_version"]
