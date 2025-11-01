@@ -30,6 +30,7 @@ const LayoutColumnCount = {
 } as const satisfies Record<LayoutType, number>;
 
 export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivElement> {
+    measurements?: WeakMap<Application, number>;
     groupedApps: AppGroupEntry[];
     layout: LayoutType;
     background?: string | null;
@@ -46,6 +47,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     background,
     selectedApp,
     targetRef,
+    measurements,
     ...props
 }) => {
     const columnCount = LayoutColumnCount[layout] ?? 1;
@@ -84,6 +86,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                         apps,
                         (application) => application.pk,
                         (application, appIndex) => {
+                            const titleWidth = measurements?.get(application);
                             const selected = selectedApp === application;
 
                             const editURL = canEdit
@@ -96,6 +99,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                                 groupIndex,
                                 background,
                                 editURL,
+                                titleWidth,
                                 "targetRef": selected ? targetRef : null,
                                 "aria-selected": selected,
                             });

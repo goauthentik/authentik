@@ -8,6 +8,7 @@ import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import type { PageUIConfig } from "./types.js";
 
+import { TextMeasurer } from "#common/text/measurement";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -82,6 +83,9 @@ export class LibraryPage extends AKElement {
     @property({ type: Boolean })
     public admin = false;
 
+    #textMeasurer = new TextMeasurer();
+
+    #titleMeasurements = new WeakMap<Application, number>();
     #applications: Application[] = [];
 
     /**
@@ -98,6 +102,12 @@ export class LibraryPage extends AKElement {
         this.#applications = value;
 
         this.fuse.setCollection(this.searchEnabled ? this.#applications : []);
+
+        for (const app of this.#applications) {
+            const metrics = this.#textMeasurer.measure(app.name);
+            const titleWidth = Math.ceil(metrics.width);
+            this.#titleMeasurements.set(app, titleWidth);
+        }
     }
 
     /**
@@ -296,6 +306,7 @@ export class LibraryPage extends AKElement {
             background,
             selectedApp,
             groupedApps,
+            measurements: this.#titleMeasurements,
             targetRef: this.targetRef,
         });
     }
