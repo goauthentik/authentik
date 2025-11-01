@@ -23,10 +23,8 @@ interface CaptchaProviderPreset {
     supportsScore: boolean;
     score?: { min: number; max: number };
     help: {
-        pubText: string;
         pubLinkText: string;
         pubLinkUrl: string;
-        privText: string;
         privLinkText: string;
         privLinkUrl: string;
     };
@@ -45,10 +43,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         interactive: true,
         supportsScore: false,
         help: {
-            pubText: "Site key for your CAPTCHA provider. Get keys from the",
             pubLinkText: "reCAPTCHA admin console",
             pubLinkUrl: "https://www.google.com/recaptcha/admin",
-            privText: "Secret key for your CAPTCHA provider. Get keys from the",
             privLinkText: "reCAPTCHA admin console",
             privLinkUrl: "https://www.google.com/recaptcha/admin",
         },
@@ -61,10 +57,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubText: "Site key for your CAPTCHA provider. Get keys from the",
             pubLinkText: "reCAPTCHA admin console",
             pubLinkUrl: "https://www.google.com/recaptcha/admin",
-            privText: "Secret key for your CAPTCHA provider. Get keys from the",
             privLinkText: "reCAPTCHA admin console",
             privLinkUrl: "https://www.google.com/recaptcha/admin",
         },
@@ -77,10 +71,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubText: "Site key for your CAPTCHA provider. Get keys from",
             pubLinkText: "Google Cloud reCAPTCHA Enterprise",
             pubLinkUrl: "https://cloud.google.com/recaptcha-enterprise",
-            privText: "Secret key for your CAPTCHA provider. Get keys from",
             privLinkText: "Google Cloud reCAPTCHA Enterprise",
             privLinkUrl: "https://cloud.google.com/recaptcha-enterprise",
         },
@@ -93,10 +85,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.0, max: 0.5 },
         help: {
-            pubText: "Site key for your CAPTCHA provider. Get keys from the",
             pubLinkText: "hCaptcha dashboard",
             pubLinkUrl: "https://dashboard.hcaptcha.com",
-            privText: "Secret key for your CAPTCHA provider. Get keys from the",
             privLinkText: "hCaptcha dashboard",
             privLinkUrl: "https://dashboard.hcaptcha.com",
         },
@@ -108,10 +98,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         interactive: true,
         supportsScore: false,
         help: {
-            pubText: "Site key for your CAPTCHA provider. Get keys from the",
             pubLinkText: "Cloudflare dashboard",
             pubLinkUrl: "https://dash.cloudflare.com",
-            privText: "Secret key for your CAPTCHA provider. Get keys from the",
             privLinkText: "Cloudflare dashboard",
             privLinkUrl: "https://dash.cloudflare.com",
         },
@@ -124,10 +112,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubText: "Site key from your CAPTCHA provider.",
             pubLinkText: "",
             pubLinkUrl: "",
-            privText: "Secret key from your CAPTCHA provider.",
             privLinkText: "",
             privLinkUrl: "",
         },
@@ -168,6 +154,34 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         super.firstUpdated(changedProperties);
         this.selectedProvider = this.detectProviderFromInstance();
         this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
+    }
+
+    /**
+     * Get localized help text for public/private key fields.
+     * These are methods that return msg() calls with string literals instead of
+     * storing translatable strings in the preset objects, which would break i18n.
+     * It would also be illogical due to repetition of the help text.
+     * The Lit localize library requires msg() to be called with string literals at
+     * compile time so it can extract them for translation.
+     */
+    getPublicKeyHelpText(): string {
+        if (this.selectedProvider === "custom") {
+            return msg("Site key from your CAPTCHA provider.");
+        }
+        if (this.selectedProvider === "recaptcha_enterprise") {
+            return msg("Site key for your CAPTCHA provider. Get keys from");
+        }
+        return msg("Site key for your CAPTCHA provider. Get keys from the");
+    }
+
+    getPrivateKeyHelpText(): string {
+        if (this.selectedProvider === "custom") {
+            return msg("Secret key from your CAPTCHA provider.");
+        }
+        if (this.selectedProvider === "recaptcha_enterprise") {
+            return msg("Secret key for your CAPTCHA provider. Get keys from");
+        }
+        return msg("Secret key for your CAPTCHA provider. Get keys from the");
     }
 
     /**
@@ -252,7 +266,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         // TemplateResult for rich HTML content (like links), whereas the standard help
         // property only accepts plain strings
         const privKeyHelp = html`<p class="pf-c-form__helper-text">
-            ${msg(this.currentPreset.help.privText)}
+            ${this.getPrivateKeyHelpText()}
             ${this.currentPreset.help.privLinkUrl
                 ? html`<a
                           target="_blank"
@@ -275,7 +289,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${msg(this.currentPreset.help.pubText)}
+                    ${this.getPublicKeyHelpText()}
                     ${this.currentPreset.help.pubLinkUrl
                         ? html`<a
                                   target="_blank"
