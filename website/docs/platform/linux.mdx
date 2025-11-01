@@ -1,0 +1,64 @@
+---
+title: Platform on Linux Workstation
+sidebar_label: Linux Workstation
+---
+
+## What does it do
+
+Allows you to SSH to Linux hosts using authentik credentials.
+
+## Prerequisites
+
+authentik Platform configured in authentik and a configured Linux host as described in the [Linux host guide](./linux-host.md).
+
+## Install Platform
+
+Follow these steps to install authentik Platform on your Linux client:
+
+1. Open a Terminal session and install the required GPG key:
+
+    ```sh
+    curl -fsSL https://pkg.goauthentik.io/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
+    ```
+
+2. Add the repository:
+
+    ```sh
+    echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goauthentik.io stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
+    ```
+
+3. Update your repositories and install the authentik Platform Package:
+
+    ```sh
+    sudo apt update
+    sudo apt install authentik-cli authentik-agent authentik-sysd
+    ```
+
+4. Confirm that authentik Platform is installed by entering the following command: `ak`
+   You should see a response that starts with: `authentik CLI v<version_number>`
+
+## Configure Platform
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak config setup --authentik-url <authentik_FQDN>
+```
+
+2. A browser will open and direct you to the authentik login page. Once authenticated, Platform will be configured.
+
+## Usage
+
+To SSH to a [Linux host](./linux-host.mdx) via authentik Platform:
+
+1. Open a Terminal session and run the following command:
+
+    ```
+    ak ssh <hostname>
+    ```
+
+2. The SSH session will connect.
+
+:::info Start on boot
+authentik-agent doesn't currently run on boot - must be manually started after boot.
+:::
