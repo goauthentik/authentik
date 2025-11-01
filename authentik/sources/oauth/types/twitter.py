@@ -25,9 +25,6 @@ class TwitterOAuthCallback(OAuthCallback):
 
     client_class = UserprofileHeaderAuthClient
 
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("data", {}).get("id", "")
-
 
 @registry.register()
 class TwitterType(SourceType):
@@ -46,6 +43,7 @@ class TwitterType(SourceType):
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         data = info.get("data", {})
         return {
+            "id": info.get("data", {}).get("id"),
             "username": data.get("username"),
             "email": None,
             "name": data.get("name"),

@@ -239,6 +239,8 @@ class SAMLSource(Source):
             if key == "groups":
                 continue
             attributes[key] = BaseEvaluator.expr_flatten(value)
+
+        attributes["id"] = str(name_id.text)
         attributes["username"] = name_id.text
 
         return attributes
