@@ -31,6 +31,10 @@ ifeq ($(UNAME), Darwin)
 			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
 			BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
 		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			KRB_PATH = PATH="$(shell brew --prefix krb5)/sbin:$(shell brew --prefix krb5)/bin:$$PATH"
+		endif
 	endif
 endif
 
@@ -50,7 +54,7 @@ go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
-	uv run coverage run manage.py test --keepdb authentik
+	$(KRB_PATH) uv run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
 	uv run coverage html
 	uv run coverage report
 
