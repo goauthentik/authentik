@@ -52,11 +52,13 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>

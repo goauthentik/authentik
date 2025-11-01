@@ -138,9 +138,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             <ak-text-input
                 name="name"
                 autocomplete="off"
-                placeholder=${msg("Application name")}
+                placeholder=${msg("Type an application name...")}
                 value=${ifDefined(this.instance?.name)}
-                label=${msg("Name")}
+                label=${msg("Application Name")}
+                spellcheck="false"
                 required
                 help=${msg("The name displayed in the application library.")}
             ></ak-text-input>
@@ -197,7 +198,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     <ak-text-input
                         name="metaLaunchUrl"
                         label=${msg("Launch URL")}
-                        placeholder="https://..."
+                        placeholder=${msg("https://...")}
                         value=${ifDefined(this.instance?.metaLaunchUrl)}
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
