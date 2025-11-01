@@ -114,7 +114,7 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # postgresql
     libpq-dev \
     # python-kadmin-rs
-    clang libkrb5-dev sccache \
+    krb5-multidev libkrb5-dev heimdal-multidev libclang-dev \
     # xmlsec
     libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -156,7 +156,7 @@ WORKDIR /
 RUN apt-get update && \
     apt-get upgrade -y && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 libltdl7 libxslt1.1 && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkdb5-10 libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     pip3 install --no-cache-dir --upgrade pip && \
