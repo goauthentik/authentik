@@ -5,7 +5,6 @@ from multiprocessing.connection import Connection
 
 from django.core.cache import cache
 from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
@@ -121,7 +120,7 @@ class PolicyProcess(PROCESS_CLASS):
         )
         return policy_result
 
-    def profiling_wrapper(self):
+    def profiling_wrapper(self) -> PolicyResult:
         """Run with profiling enabled"""
         with (
             start_span(
@@ -135,7 +134,6 @@ class PolicyProcess(PROCESS_CLASS):
                 mode="execute_process",
             ).time(),
         ):
-            span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
             return self.execute()

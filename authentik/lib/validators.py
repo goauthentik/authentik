@@ -1,9 +1,16 @@
 """Serializer validators"""
 
+from typing import TYPE_CHECKING, Any, TypeVar
+
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
+
+if TYPE_CHECKING:
+    from django.utils.functional import _StrPromise
+
+_IN = TypeVar("_IN")  # Instance Type
 
 
 class RequiredTogetherValidator:
@@ -12,13 +19,13 @@ class RequiredTogetherValidator:
 
     fields: list[str]
     requires_context = True
-    message = _("The fields {field_names} must be used together.")
+    message: "str | _StrPromise" = _("The fields {field_names} must be used together.")
 
-    def __init__(self, fields: list[str], message: str | None = None) -> None:
+    def __init__(self, fields: list[str], message: "str | _StrPromise | None" = None) -> None:
         self.fields = fields
         self.message = message or self.message
 
-    def __call__(self, attrs: dict, serializer: Serializer):
+    def __call__(self, attrs: dict[Any, Any], serializer: Serializer[_IN]) -> None:
         """Check that if any of the fields in `self.fields` are set, all of them must be set"""
         if any(field in attrs for field in self.fields) and not all(
             field in attrs for field in self.fields
@@ -27,5 +34,5 @@ class RequiredTogetherValidator:
             message = self.message.format(field_names=field_names)
             raise ValidationError(message, code="required")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__name__}(fields={smart_repr(self.fields)})>"
