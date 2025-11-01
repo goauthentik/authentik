@@ -285,7 +285,7 @@ export abstract class Table<T extends object>
     @property({ attribute: false })
     public data: PaginatedResponse<T> | null = null;
 
-    @property({ type: Number })
+    @property({ type: Number, useDefault: true })
     public page = getURLParam(this.#pageParam, 1);
 
     /**
@@ -396,7 +396,7 @@ export abstract class Table<T extends object>
     protected willUpdate(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("page")) {
             updateURLParams({
-                [this.#pageParam]: this.page,
+                [this.#pageParam]: this.page === 1 ? null : this.page,
             });
         }
         if (changedProperties.has("search")) {
