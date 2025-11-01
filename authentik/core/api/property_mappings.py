@@ -21,6 +21,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.api.validation import validate
 from authentik.blueprints.api import ManagedSerializer
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
@@ -128,23 +129,20 @@ class PropertyMappingViewSet(
         ],
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def test(self, request: Request, pk: str) -> Response:
+    @validate(PropertyMappingTestSerializer)
+    def test(self, request: Request, pk: str, instance: PropertyMappingTestSerializer) -> Response:
         """Test Property Mapping"""
         _mapping: PropertyMapping = self.get_object()
         # Use `get_subclass` to get correct class and correct `.evaluate` implementation
         mapping: PropertyMapping = PropertyMapping.objects.get_subclass(pk=_mapping.pk)
         # FIXME: when we separate policy mappings between ones for sources
         # and ones for providers, we need to make the user field optional for the source mapping
-        test_params = self.PropertyMappingTestSerializer(data=request.data)
-        if not test_params.is_valid():
-            return Response(test_params.errors, status=400)
-
         format_result = str(request.GET.get("format_result", "false")).lower() == "true"
 
-        context: dict = test_params.validated_data.get("context", {})
+        context: dict = instance.validated_data.get("context", {})
         context.setdefault("user", None)
 
-        if user := test_params.validated_data.get("user"):
+        if user := instance.validated_data.get("user"):
             # User permission check, only allow mapping testing for users that are readable
             users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
                 pk=user.pk
@@ -152,7 +150,7 @@ class PropertyMappingViewSet(
             if not users.exists():
                 raise PermissionDenied()
             context["user"] = user
-        if group := test_params.validated_data.get("group"):
+        if group := instance.validated_data.get("group"):
             # Group permission check, only allow mapping testing for groups that are readable
             groups = get_objects_for_user(request.user, "authentik_core.view_group").filter(
                 pk=group.pk
