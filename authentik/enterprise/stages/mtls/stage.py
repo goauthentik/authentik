@@ -79,7 +79,9 @@ class MTLSStageView(ChallengeStageView):
     def _parse_cert_traefik(self) -> list[Certificate]:
         """Parse certificates in the format traefik gives to us"""
         ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
-        return self.__parse_single_cert(ftcc_raw)
+        return self.__parse_single_cert(
+            f"-----BEGIN+CERTIFICATE-----%0A{ftcc_raw}-----END+CERTIFICATE-----%0A"
+            )
 
     def _parse_cert_outpost(self) -> list[Certificate]:
         """Parse certificates in the format outposts give to us. Also authenticates
