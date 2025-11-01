@@ -40,3 +40,5 @@ class AuthentikCoreConfig(ManagedAppConfig):
                 crontab="9-59/5 * * * *",
             ),
         ]
+
+pass
