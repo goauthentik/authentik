@@ -6,10 +6,12 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
 
 import { AKElement } from "#elements/Base";
 import { serializeForm } from "#elements/forms/Form";
+
+import type { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared";
+import type { ApplicationWizardState } from "#admin/applications/wizard/types";
 
 import { snakeCase } from "change-case";
 
@@ -19,10 +21,10 @@ import { property, query } from "lit/decorators.js";
 export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...AwadStyles];
 
-    label = "";
+    abstract label: string;
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    wizard!: ApplicationWizardState<T>;
 
     @property({ type: Object, attribute: false })
     errors: Record<string | number | symbol, string> = {};

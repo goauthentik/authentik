@@ -32,10 +32,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("LDAP Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(
-            this.wizard.provider as LDAPProvider,
-            this.wizard.errors.provider ?? {},
-        );
+        return this.renderForm(this.wizard.provider, this.wizard.errors.provider ?? {});
     }
 }
 

@@ -7,12 +7,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 
-import {
-    type OAuth2Provider,
-    OAuth2ProviderRequest,
-    type PaginatedOAuthSourceList,
-    SourcesApi,
-} from "@goauthentik/api";
+import { OAuth2ProviderRequest, type PaginatedOAuthSourceList, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -43,7 +38,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             });
     }
 
-    renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
+    renderForm(provider: OAuth2ProviderRequest, errors: ApplicationTransactionValidationError) {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
@@ -67,7 +62,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.provider as OAuth2Provider, this.wizard.errors);
+        return this.renderForm(this.wizard.provider, this.wizard.errors);
     }
 }
 
