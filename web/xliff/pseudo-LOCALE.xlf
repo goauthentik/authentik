@@ -10253,4 +10253,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
 </trans-unit>
+<trans-unit id="sdd35b688281b6dea">
+  <source>Japanese</source>
+</trans-unit>
 </body></file></xliff>

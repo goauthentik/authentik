@@ -10726,6 +10726,9 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
 </trans-unit>
+<trans-unit id="sdd35b688281b6dea">
+  <source>Japanese</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
