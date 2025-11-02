@@ -7,10 +7,11 @@ import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { formatElapsedTime } from "#common/temporal";
-import { me } from "#common/users";
+import { isGuest } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { WithSession } from "#elements/mixins/session";
 import { PaginatedResponse } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -27,7 +28,7 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-notification-drawer")
-export class NotificationDrawer extends AKElement {
+export class NotificationDrawer extends WithSession(AKElement) {
     @property({ attribute: false })
     notifications?: PaginatedResponse<Notification>;
 
@@ -63,19 +64,28 @@ export class NotificationDrawer extends AKElement {
         `,
     ];
 
-    firstUpdated(): void {
-        me().then((user) => {
-            new EventsApi(DEFAULT_CONFIG)
-                .eventsNotificationsList({
-                    seen: false,
-                    ordering: "-created",
-                    user: user.user.pk,
-                })
-                .then((r) => {
-                    this.notifications = r;
-                    this.unread = r.results.length;
-                });
-        });
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.refreshNotifications();
+    }
+
+    protected async refreshNotifications(): Promise<void> {
+        const { currentUser } = this;
+
+        if (!currentUser || isGuest(currentUser)) {
+            return Promise.resolve();
+        }
+
+        return new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList({
+                seen: false,
+                ordering: "-created",
+                user: currentUser.pk,
+            })
+            .then((r) => {
+                this.notifications = r;
+                this.unread = r.results.length;
+            });
     }
 
     #renderItem = (item: Notification): TemplateResult => {
@@ -114,7 +124,7 @@ export class NotificationDrawer extends AKElement {
                                 },
                             })
                             .then(() => {
-                                this.firstUpdated();
+                                this.refreshNotifications();
                                 this.dispatchEvent(
                                     new CustomEvent(EVENT_REFRESH, {
                                         bubbles: true,
@@ -143,7 +153,7 @@ export class NotificationDrawer extends AKElement {
                 level: MessageLevel.success,
                 message: msg("Successfully cleared notifications"),
             });
-            this.firstUpdated();
+            this.refreshNotifications();
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
