@@ -86,7 +86,6 @@ class TestBrands(APITestCase):
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
-        print("AAAAAAAAA")
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
@@ -128,6 +127,50 @@ class TestBrands(APITestCase):
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "custom",
+                "branding_custom_css": "",
+                "matched_domain": "bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    def test_brand_subdomain_same_suffix(self):
+        """Test Current brand API"""
+        Brand.objects.all().delete()
+        Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
+        Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom-strong",
+                "branding_custom_css": "",
+                "matched_domain": "foo.bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    def test_brand_subdomain_other_suffix(self):
+        """Test Current brand API"""
+        Brand.objects.all().delete()
+        Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
+        Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="other.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom-weak",
                 "branding_custom_css": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
