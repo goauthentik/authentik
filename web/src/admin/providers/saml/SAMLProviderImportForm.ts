@@ -17,7 +17,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     }
 
     async send(data: SAMLProvider): Promise<unknown> {
-        const file = this.files().get("metadata");
+        const file = this.files().get("file");
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
