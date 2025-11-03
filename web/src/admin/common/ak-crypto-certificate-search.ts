@@ -11,6 +11,7 @@ import {
     CertificateKeyPair,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    KeyTypeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -67,6 +68,24 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public singleton = false;
 
     /**
+     * Set to `true` to include certificate details (fingerprints, expiry, private key type, etc.)
+     * in the API response. Defaults to `false` for performance.
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "include-details" })
+    public includeDetails = false;
+
+    /**
+     * Optional array of allowed key algorithm types to filter certificates.
+     * When set, only certificates with matching key algorithms will be shown.
+     * Works for both full keypairs and certificate-only entries.
+     * Example: [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
+     * @attr
+     */
+    @property({ type: Array, attribute: "allowed-key-types" })
+    public allowedKeyTypes?: KeyTypeEnum[];
+
+    /**
      * @todo Document this.
      */
     public selectedKeypair?: CertificateKeyPair;
@@ -98,10 +117,13 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: false,
+            includeDetails: this.includeDetails,
         };
         if (query !== undefined) {
             args.search = query;
+        }
+        if (this.allowedKeyTypes?.length) {
+            args.keyType = this.allowedKeyTypes;
         }
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             args,
