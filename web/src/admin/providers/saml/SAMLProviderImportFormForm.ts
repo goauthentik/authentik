@@ -2,14 +2,22 @@ import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    type ProvidersSamlImportMetadataCreateRequest,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
-export function renderForm() {
+export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRequest> = {}) {
     return html`
-        <ak-text-input name="name" label=${msg("Name")} required></ak-text-input>
+        <ak-text-input
+            name="name"
+            label=${msg("Name")}
+            .value=${provider.name ?? ""}
+            required
+        ></ak-text-input>
 
         <ak-form-element-horizontal
             label=${msg("Authorization flow")}
