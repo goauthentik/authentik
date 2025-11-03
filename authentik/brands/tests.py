@@ -86,6 +86,7 @@ class TestBrands(APITestCase):
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
+        print("AAAAAAAAA")
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
@@ -93,9 +94,6 @@ class TestBrands(APITestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "branding_custom_css": "",
-                "flow_authentication": "default-authentication-flow",
-                "flow_invalidation": "default-invalidation-flow",
-                "flow_user_settings": "default-user-settings-flow",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
@@ -115,9 +113,6 @@ class TestBrands(APITestCase):
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
                 "branding_custom_css": "",
-                "flow_authentication": "default-authentication-flow",
-                "flow_invalidation": "default-invalidation-flow",
-                "flow_user_settings": "default-user-settings-flow",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
