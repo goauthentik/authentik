@@ -159,7 +159,14 @@ export class NavigationButtons extends WithSession(AKElement) {
 
     renderAvatar() {
         const { currentUser } = this;
+
         if (!currentUser) {
+            return nothing;
+        }
+
+        const { avatar } = currentUser;
+
+        if (!avatar || avatar.endsWith("user_default.png")) {
             return nothing;
         }
 
@@ -167,9 +174,7 @@ export class NavigationButtons extends WithSession(AKElement) {
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             aria-hidden="true"
         >
-            ${currentUser.avatar
-                ? html`<img src=${currentUser.avatar} alt=${msg("Avatar image")} />`
-                : nothing}
+            <img src=${avatar} alt=${msg("Avatar image")} />
         </div>`;
     }
 
