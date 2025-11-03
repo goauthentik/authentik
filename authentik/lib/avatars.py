@@ -187,6 +187,9 @@ def avatar_mode_url(user: "User", mode: str) -> str | None:
         if res.status_code == HttpResponseNotFound.status_code:
             cache.set(cache_key_image_url, None)
             return None
+        if not res.headers.get("Content-Type", "").startswith("image/"):
+            cache.set(cache_key_image_url, None)
+            return None
         res.raise_for_status()
     except (Timeout, ConnectionError, HTTPError):
         cache.set(cache_key_hostname_available, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
