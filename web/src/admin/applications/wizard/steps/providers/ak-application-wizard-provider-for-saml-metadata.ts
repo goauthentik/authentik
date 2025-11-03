@@ -2,6 +2,8 @@ import "#admin/applications/wizard/ak-wizard-title";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
+import { createFileMap } from "#elements/utils/inputs";
+
 import { renderForm } from "#admin/providers/saml/SAMLProviderImportFormForm";
 
 import type { ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";
@@ -13,6 +15,20 @@ import { html } from "lit";
 @customElement("ak-application-wizard-provider-for-saml-metadata")
 export class ApplicationWizardProviderSamlMetadataForm extends ApplicationWizardProviderForm<ProvidersSamlImportMetadataCreateRequest> {
     label = msg("Configure SAML Provider from Metadata");
+
+    override get formValues() {
+        const data = super.formValues;
+
+        // Get the file input separately since serializeForm doesn't handle files
+        const fileMap = createFileMap(this.form?.querySelectorAll("ak-form-element-horizontal"));
+        const file = fileMap.get("file");
+
+        if (file) {
+            data.file = file;
+        }
+
+        return data;
+    }
 
     renderForm() {
         return html`
