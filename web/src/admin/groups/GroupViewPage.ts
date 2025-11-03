@@ -1,7 +1,6 @@
 import "#admin/groups/GroupForm";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/ak-page-header";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -9,6 +8,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -16,10 +16,12 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -71,17 +73,7 @@ export class GroupViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-users"
-                header=${msg(str`Group ${this.group?.name || ""}`)}
-                description=${this.group?.name || ""}
-            >
-            </ak-page-header>
-            ${this.renderBody()}`;
-    }
-
-    renderBody(): SlottedTemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.group) {
             return nothing;
         }
@@ -168,8 +160,10 @@ export class GroupViewPage extends AKElement {
                         >
                             <div class="pf-c-card__title">${msg("Notes")}</div>
                             <div class="pf-c-card__body">
-                                ${Object.hasOwn(this.group?.attributes || {}, "notes")
-                                    ? html`${this.group.attributes?.notes}`
+                                ${this.group?.attributes?.notes
+                                    ? html`<ak-mdx
+                                          .content=${this.group.attributes.notes}
+                                      ></ak-mdx>`
                                     : html`
                                           <p>
                                               ${msg(
@@ -220,6 +214,15 @@ export class GroupViewPage extends AKElement {
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-users",
+            header: this.group?.name ? msg(str`Group ${this.group.name}`) : msg("Group"),
+            description: this.group?.name,
+        });
     }
 }
 

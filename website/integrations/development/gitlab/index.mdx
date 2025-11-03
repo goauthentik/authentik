@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `gitlab.company` is the FQDN of the GitLab installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -55,7 +55,7 @@ To support the integration of GitLab with authentik, you need to create an appli
         - Set the **ACS URL** to `https://gitlab.company/users/auth/saml/callback`.
         - Set the **Audience** and **Issuer** to `https://gitlab.company`.
         - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, select an available signing certificate.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 
 ### GitLab configuration

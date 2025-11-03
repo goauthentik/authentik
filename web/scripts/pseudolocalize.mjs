@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 /**
  * @file Pseudo-localization script.
  *

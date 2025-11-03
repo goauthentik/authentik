@@ -99,26 +99,14 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html`<td></td>
-            <td colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users have access to this entitlement.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list
-                            .target=${item.pbmUuid}
-                            .allowedTypes=${[
-                                PolicyBindingCheckTarget.group,
-                                PolicyBindingCheckTarget.user,
-                            ]}
-                        >
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>${msg("These bindings control which users have access to this entitlement.")}</p>
+            <ak-bound-policies-list
+                .target=${item.pbmUuid}
+                .allowedTypes=${[PolicyBindingCheckTarget.group, PolicyBindingCheckTarget.user]}
+            >
+            </ak-bound-policies-list>
+        </div>`;
     }
 
     renderEmpty(): TemplateResult {

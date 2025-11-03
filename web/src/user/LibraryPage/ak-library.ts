@@ -34,18 +34,24 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
-    @state()
-    ready = false;
+    static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
+
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
 
     @state()
-    isAdmin = false;
+    protected ready = false;
+
+    @state()
+    protected admin = false;
 
     /**
      * The list of applications. This is the *complete* list; the constructor fetches as many pages
      * as the server announces when page one is accessed, and then concatenates them all together.
      */
     @state()
-    apps: Application[] = [];
+    protected apps: Application[] = [];
 
     @state()
     uiConfig: PageUIConfig;
@@ -65,8 +71,8 @@ export class LibraryPage extends AKElement {
         };
 
         Promise.all([this.fetchApplications(), me()]).then(([applications, meStatus]) => {
-            this.isAdmin = meStatus.user.isSuperuser;
             this.apps = applications;
+            this.admin = meStatus.user.isSuperuser;
             this.ready = true;
         });
     }
@@ -111,7 +117,7 @@ export class LibraryPage extends AKElement {
 
     running() {
         return html`<ak-library-impl
-            ?isadmin=${this.isAdmin}
+            ?admin=${this.admin}
             .apps=${this.apps}
             .uiConfig=${this.uiConfig}
         ></ak-library-impl>`;

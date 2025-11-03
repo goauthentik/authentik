@@ -24,15 +24,16 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
-import { SidebarToggleEventDetail } from "#components/ak-page-header";
+import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import Styles from "#admin/AdminInterface/styles.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, eventOptions, property, query } from "lit/decorators.js";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -64,10 +65,9 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     @property({ type: Boolean, reflect: true })
     public sidebarOpen = false;
 
-    @eventOptions({ passive: true })
-    protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {
-        this.sidebarOpen = !!event.detail.open;
-    }
+    #onPageNavMenuEvent = (event: PageNavMenuToggle) => {
+        this.sidebarOpen = event.open;
+    };
 
     #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
@@ -79,46 +79,13 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     //#region Styles
 
     static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFPage,
         PFButton,
         PFDrawer,
         PFNav,
-        css`
-            .pf-c-page__main,
-            .pf-c-drawer__content,
-            .pf-c-page__drawer {
-                z-index: auto !important;
-                background-color: transparent;
-            }
-
-            .display-none {
-                display: none;
-            }
-
-            .pf-c-page {
-                background-color: var(--pf-c-page--BackgroundColor) !important;
-            }
-
-            :host([theme="dark"]) {
-                /* Global page background colour */
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                }
-            }
-
-            ak-page-navbar {
-                grid-area: header;
-            }
-
-            .ak-sidebar {
-                grid-area: nav;
-            }
-
-            .pf-c-drawer__panel {
-                z-index: var(--pf-global--ZIndex--xl);
-            }
-        `,
+        Styles,
     ];
 
     //#endregion
@@ -134,6 +101,9 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
+            passive: true,
+        });
     }
 
     public connectedCallback() {
@@ -196,9 +166,8 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
-            <ak-skip-to-content></ak-skip-to-content>
             <div class="pf-c-page">
-                <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
+                <ak-page-navbar ?open=${this.sidebarOpen}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
@@ -215,17 +184,15 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <div class="pf-c-page__main">
-                                        <ak-router-outlet
-                                            role="presentation"
-                                            class="pf-c-page__main"
-                                            tabindex="-1"
-                                            id="main-content"
-                                            defaultUrl="/administration/overview"
-                                            .routes=${ROUTES}
-                                        >
-                                        </ak-router-outlet>
-                                    </div>
+                                    <ak-router-outlet
+                                        role="presentation"
+                                        class="pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        defaultUrl="/administration/overview"
+                                        .routes=${ROUTES}
+                                    >
+                                    </ak-router-outlet>
                                 </div>
                             </div>
                             <ak-notification-drawer

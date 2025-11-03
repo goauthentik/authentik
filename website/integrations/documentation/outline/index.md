@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `outline.company` is the FQDN of the Outline installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,7 +37,7 @@ To support the integration of Outline with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://outline.company/auth/oidc.callback`.
     - Select any available signing key.
-    - Under **Advanced Protocol Settings**, set the **Subject Mode** to **Based on the User's username**.
+    - Under **Advanced protocol settings**, set the **Subject Mode** to **Based on the User's username**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

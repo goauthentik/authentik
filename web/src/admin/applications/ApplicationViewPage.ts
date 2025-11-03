@@ -4,7 +4,6 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
@@ -12,11 +11,11 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
-import { ifPresent } from "#elements/utils/attributes";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import {
     Application,
@@ -116,21 +115,6 @@ export class ApplicationViewPage extends AKElement {
     //#region Render
 
     render(): TemplateResult {
-        return html`<ak-page-header
-                header=${this.application?.name || msg("Loading")}
-                description=${ifPresent(this.application?.metaPublisher)}
-            >
-                <ak-app-icon
-                    size=${PFSize.Medium}
-                    name=${ifPresent(this.application?.name)}
-                    icon=${ifPresent(this.application?.metaIcon)}
-                    slot="icon"
-                ></ak-app-icon>
-            </ak-page-header>
-            ${this.renderApp()}`;
-    }
-
-    renderApp(): TemplateResult {
         if (this.error) {
             return html`<ak-empty-state icon="fa-ban"
                 ><span>${msg(str`Failed to fetch application "${this.applicationSlug}".`)}</span>
@@ -392,6 +376,15 @@ export class ApplicationViewPage extends AKElement {
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            header: this.application?.name ?? msg("Loading application..."),
+            description: this.application?.metaPublisher,
+            icon: this.application?.metaIcon,
+        });
     }
 }
 

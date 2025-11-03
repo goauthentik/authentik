@@ -4,8 +4,8 @@ title: "Markdown template: procedural"
 
 add brief description of the feature/functionality
 
-:::info
-if needed, use this syntax to add a note (info) or warning (warning)
+:::info Add a title here
+If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
 :::
 
 ## Prerequisites

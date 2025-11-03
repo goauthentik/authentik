@@ -1,9 +1,9 @@
 ---
-title: "Combination topic"
+title: "Combination topic (most common)"
 ---
 
-:::info
-**How to use this template**: start with the markdown version of the template, either by copying the [`combo.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+:::info How to use this template
+Start with the markdown version of the template, either by copying the [`combo.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
 
 ```shell
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/combo.tmpl.md

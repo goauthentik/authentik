@@ -52,21 +52,23 @@ class BaseMigration:
         """Run the actual migration"""
 
 
-def wait_for_lock(cursor: Cursor):
+def wait_for_lock(conn: Connection, cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
     global LOCKED  # noqa: PLW0603
     LOGGER.info("waiting to acquire database lock")
-    cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
+    with conn.transaction():
+        cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     LOCKED = True
 
 
-def release_lock(cursor: Cursor):
+def release_lock(conn: Connection, cursor: Cursor):
     """Release database lock"""
     global LOCKED  # noqa: PLW0603
     if not LOCKED:
         return
     LOGGER.info("releasing database lock")
-    cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    with conn.transaction():
+        cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
     LOCKED = False
 
 
@@ -84,7 +86,7 @@ def run_migrations():
     )
     curr = conn.cursor()
     try:
-        wait_for_lock(curr)
+        wait_for_lock(conn, curr)
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):
@@ -98,6 +100,7 @@ def run_migrations():
                 if name != "Migration":
                     continue
                 migration = sub(curr, conn)
+                curr.execute(f"SET search_path = {CONFIG.get("postgresql.default_schema")}")
                 if migration.needs_migration():
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
@@ -123,7 +126,7 @@ def run_migrations():
             check_args.append("--deploy")
         execute_from_command_line(check_args)
     finally:
-        release_lock(curr)
+        release_lock(conn, curr)
         curr.close()
         conn.close()
 

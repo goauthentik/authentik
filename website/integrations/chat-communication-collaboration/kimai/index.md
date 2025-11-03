@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik Install
 - `admin.group` is the authentik group to be made Admin in Kimai
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -38,7 +38,7 @@ To support the integration of Kimai with authentik, you need to create an applic
     - Set the **Issuer** to `https://authentik.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Set the **Audience** to `https://kimai.company/auth/saml`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

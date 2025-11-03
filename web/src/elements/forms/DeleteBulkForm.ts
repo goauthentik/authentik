@@ -58,6 +58,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         return name || null;
     }
 
+    @state()
     protected get columns(): TableColumn[] {
         return this.metadata(this.objects[0]).map((element) => [element.key]);
     }
@@ -84,13 +85,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
             }
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
-        return html`<td colspan="2">
-            <div class="pf-c-table__expandable-row-content">
-                ${this.usedBy
-                    ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-                    : nothing}
-            </div>
-        </td>`;
+        return html`${this.usedBy
+            ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
+            : nothing}`;
     }
 
     renderUsedBy(usedBy: UsedBy[]): TemplateResult {

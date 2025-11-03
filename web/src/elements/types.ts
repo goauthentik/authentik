@@ -65,7 +65,7 @@ export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
 export type LitFC<P> = (
     props: P,
     children?: null | SlottedTemplateResult,
-) => SlottedTemplateResult | SlottedTemplateResult[];
+) => SlottedTemplateResult | SlottedTemplateResult[] | null;
 
 //#endregion
 

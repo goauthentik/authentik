@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from dramatiq.actor import Actor
+from psqlextra.query import ConflictAction
 
 if TYPE_CHECKING:
     from authentik.tasks.schedules.models import Schedule
@@ -34,33 +35,35 @@ class ScheduleSpec:
         return pickle.dumps(self.kwargs)
 
     def get_options(self) -> bytes:
-        return pickle.dumps(self.options)
+        options = self.options
+        if self.uid is not None:
+            options["uid"] = self.uid
+        return pickle.dumps(options)
 
     def update_or_create(self) -> "Schedule":
         from authentik.tasks.schedules.models import Schedule
 
-        query = {
-            "actor_name": self.actor.actor_name,
-            "identifier": self.identifier,
-        }
-        defaults = {
-            **query,
+        update_values = {
             "_uid": self.uid,
             "paused": self.paused,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),
             "options": self.get_options(),
         }
-        create_defaults = {
-            **defaults,
+        create_values = {
+            **update_values,
             "crontab": self.crontab,
             "rel_obj": self.rel_obj,
         }
 
-        schedule, _ = Schedule.objects.update_or_create(
-            **query,
-            defaults=defaults,
-            create_defaults=create_defaults,
+        schedule = Schedule.objects.on_conflict(
+            ["actor_name", "identifier"],
+            ConflictAction.UPDATE,
+            update_values=update_values,
+        ).insert_and_get(
+            actor_name=self.actor.actor_name,
+            identifier=self.identifier,
+            **create_values,
         )
 
         return schedule

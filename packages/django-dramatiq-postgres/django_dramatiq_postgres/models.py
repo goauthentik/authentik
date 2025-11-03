@@ -1,5 +1,7 @@
 import pickle  # nosec
+from datetime import datetime, timedelta
 from enum import StrEnum, auto
+from typing import Any
 from uuid import uuid4
 
 import pgtrigger
@@ -8,7 +10,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.timezone import datetime, now, timedelta
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker, get_broker
@@ -29,6 +31,9 @@ class TaskState(models.TextChoices):
 
     QUEUED = "queued"
     CONSUMED = "consumed"
+    PREPROCESS = "preprocess"
+    RUNNING = "running"
+    POSTPROCESS = "postprocess"
     REJECTED = "rejected"
     DONE = "done"
 
@@ -45,6 +50,8 @@ class TaskBase(models.Model):
         help_text=_("Task status"),
     )
     mtime = models.DateTimeField(default=now, help_text=_("Task last modified time"))
+    retries = models.PositiveBigIntegerField(default=0, help_text=_("Number of retries"))
+    eta = models.DateTimeField(null=True, help_text=_("Planned execution time"))
 
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
@@ -53,13 +60,20 @@ class TaskBase(models.Model):
         abstract = True
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
-        indexes = (models.Index(fields=("state", "mtime")),)
+        indexes = (
+            models.Index(fields=("queue_name",)),
+            models.Index(fields=("queue_name", "state")),
+            models.Index(fields=("message_id", "queue_name", "state", "eta")),
+            models.Index(fields=("message_id", "state", "eta")),
+            models.Index(fields=("message_id", "queue_name", "state")),
+            models.Index(fields=("state", "mtime", "result_expiry")),
+        )
         triggers = (
             pgtrigger.Trigger(
                 name="notify_enqueueing",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.After,
-                condition=pgtrigger.Q(new__state=TaskState.QUEUED),
+                condition=pgtrigger.Q(new__state=TaskState.QUEUED, new__eta=None),
                 timing=pgtrigger.Deferred,
                 func=f"""
                     PERFORM pg_notify(
@@ -71,11 +85,11 @@ class TaskBase(models.Model):
             ),
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.message_id)
 
 
-def validate_crontab(value):
+def validate_crontab(value: str) -> None:
     try:
         Cron(value)
     except ValueError as exc:
@@ -119,14 +133,14 @@ class ScheduleBase(models.Model):
             ),
         )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._original_crontab = self.crontab
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Schedule {self.actor_name} ({self.id})"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         if self.crontab != self._original_crontab:
             self.next_run = self.compute_next_run(now())
 
@@ -135,16 +149,16 @@ class ScheduleBase(models.Model):
         self._original_crontab = self.crontab
 
     @classmethod
-    def dispatch_by_actor(cls, actor: Actor):
+    def dispatch_by_actor(cls, actor: Actor[Any, Any]) -> None:
         """Dispatch a schedule by looking up its actor.
         Only available for schedules without custom arguments."""
-        schedule = cls.objects.filter(actor_name=actor.actor_name, paused=False).first()
+        schedule = cls._default_manager.filter(actor_name=actor.actor_name, paused=False).first()
         if schedule:
             schedule.send()
 
-    def send(self, broker: Broker | None = None) -> Message:
+    def send(self, broker: Broker | None = None) -> Message[Any]:
         broker = broker or get_broker()
-        actor: Actor = broker.get_actor(self.actor_name)
+        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)  # type: ignore[no-untyped-call]
         return actor.send_with_options(
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec
@@ -153,7 +167,7 @@ class ScheduleBase(models.Model):
         )
 
     def compute_next_run(self, next_run: datetime | None = None) -> datetime:
-        next_run: datetime = self.next_run if not next_run else next_run
+        next_run = self.next_run if not next_run else next_run
         while True:
             next_run = Cron(self.crontab).schedule(next_run).next()
             if next_run > now():

@@ -6,13 +6,14 @@ from pathlib import Path
 from tempfile import gettempdir
 
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 from authentik.lib.config import CONFIG
 
 SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
 
 
-def all_subclasses[T](cls: T, sort=True) -> list[T] | set[T]:
+def all_subclasses[T: type](cls: T, sort=True) -> list[T] | set[T]:
     """Recursively return all subclassess of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
@@ -62,3 +63,13 @@ def get_env() -> str:
     if "AK_APPLIANCE" in os.environ:
         return os.environ["AK_APPLIANCE"]
     return "custom"
+
+
+def ConditionalInheritance(path: str):
+    """Conditionally inherit from a class, intended for things like authentik.enterprise,
+    without which authentik should still be able to run"""
+    try:
+        cls = import_string(path)
+        return cls
+    except ModuleNotFoundError:
+        return object

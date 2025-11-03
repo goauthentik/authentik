@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `argocd.company` is the FQDN of the ArgoCD installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -47,7 +47,7 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## ArgoCD Configuration
 
-:::note
+:::info
 We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
 :::
 

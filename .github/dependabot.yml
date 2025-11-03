@@ -1,7 +1,15 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - /
+      # Required to update composite actions
+      # https://github.com/dependabot/dependabot-core/issues/6704
+      - /.github/actions/cherry-pick
+      - /.github/actions/setup
+      - /.github/actions/docker-push-variables
+      - /.github/actions/comment-pr-instructions
+      - /.github/actions/test-results
     schedule:
       interval: daily
       time: "04:00"
@@ -134,7 +142,9 @@ updates:
     labels:
       - dependencies
   - package-ecosystem: docker
-    directory: "/"
+    directories:
+      - /
+      - /website
     schedule:
       interval: daily
       time: "04:00"
@@ -146,6 +156,7 @@ updates:
   - package-ecosystem: docker-compose
     directories:
       # - /scripts # Maybe
+      - /scripts/api
       - /tests/e2e
     schedule:
       interval: daily

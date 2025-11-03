@@ -34,12 +34,12 @@ import Tabs from "@theme/Tabs";
 <Tabs groupId="OS">
     <TabItem value="Linux" label="Linux" default>
         ```shell
-        wget https://goauthentik.io/docker-compose.yml
+        wget https://docs.goauthentik.io/docker-compose.yml
         ```
     </TabItem>
     <TabItem value="macOS" label="macOS">
         ```shell
-        curl -O https://goauthentik.io/docker-compose.yml
+        curl -O https://docs.goauthentik.io/docker-compose.yml
         ```
     </TabItem>
 </Tabs>
@@ -66,25 +66,9 @@ echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 
 ## Email configuration (optional but recommended)
 
-It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
 
-To configure email credentials, append this block to your `.env` file
-
-```shell
-# SMTP Host Emails are sent to
-AUTHENTIK_EMAIL__HOST=localhost
-AUTHENTIK_EMAIL__PORT=25
-# Optionally authenticate (don't add quotation marks to your password)
-AUTHENTIK_EMAIL__USERNAME=
-AUTHENTIK_EMAIL__PASSWORD=
-# Use StartTLS
-AUTHENTIK_EMAIL__USE_TLS=false
-# Use SSL
-AUTHENTIK_EMAIL__USE_SSL=false
-AUTHENTIK_EMAIL__TIMEOUT=10
-# Email address authentik will send from, should have a correct @domain
-AUTHENTIK_EMAIL__FROM=authentik@localhost
-```
+For more information, refer to our [Email configuration](../email.mdx) documentation.
 
 ## Startup
 

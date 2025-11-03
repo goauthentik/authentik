@@ -42,7 +42,7 @@ class UserWriteStageView(StageView):
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.

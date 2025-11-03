@@ -3,9 +3,10 @@
 import re
 import socket
 from ipaddress import ip_address, ip_network
+from smtplib import SMTPException
 from textwrap import indent
 from types import CodeType
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
@@ -29,6 +30,10 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
+from authentik.stages.email.utils import TemplateEmailMessage
+
+if TYPE_CHECKING:
+    from authentik.stages.email.models import EmailStage
 
 LOGGER = get_logger()
 
@@ -57,11 +62,12 @@ class BaseEvaluator:
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
+            "ak_create_jwt": self.expr_create_jwt,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_logger": get_logger(self._filename).bind(),
+            "ak_send_email": self.expr_send_email,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
-            "ak_create_jwt": self.expr_create_jwt,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
@@ -196,7 +202,7 @@ class BaseEvaluator:
         validity: str = "seconds=60",
     ) -> str | None:
         """Issue a JWT for a given provider"""
-        request: HttpRequest = self._context.get("http_request")
+        request: HttpRequest | None = self._context.get("http_request")
         if not request:
             return None
         if not isinstance(provider, OAuth2Provider):
@@ -215,6 +221,81 @@ class BaseEvaluator:
         access_token.id_token = IDToken.new(provider, access_token, request)
         access_token.save()
         return access_token.token
+
+    def expr_send_email(
+        self,
+        address: str | list[str],
+        subject: str,
+        body: str | None = None,
+        stage: "EmailStage | None" = None,
+        template: str | None = None,
+        context: dict | None = None,
+    ) -> bool:
+        """Send an email using authentik's email system
+
+        Args:
+            address: Email address(es) to send to. Can be:
+                - Single email: "user@example.com"
+                - List of emails: ["user1@example.com", "user2@example.com"]
+            subject: Email subject
+            body: Email body (plain text/HTML). Mutually exclusive with template.
+            stage: EmailStage instance to use for settings. If None, uses global settings.
+            template: Template name to render. Mutually exclusive with body.
+            context: Additional context variables for template rendering.
+
+        Returns:
+            bool: True if email was queued successfully, False otherwise
+        """
+        # Deferred imports to avoid circular import issues
+        from authentik.stages.email.tasks import send_mails
+
+        if body and template:
+            raise ValueError("body and template parameters are mutually exclusive")
+
+        if not body and not template:
+            raise ValueError("Either body or template parameter must be provided")
+
+        # Normalize address parameter to list of (name, email) tuples
+        if isinstance(address, str):
+            # Single email address
+            to_addresses = [("", address)]
+        elif isinstance(address, list):
+            if not address:
+                raise ValueError("Address list cannot be empty")
+            # List of email strings
+            to_addresses = [("", email) for email in address]
+        else:
+            raise ValueError("Address must be a string or list of strings")
+
+        try:
+            if template is not None:
+                # Use all available context from the evaluator for template rendering
+                template_context = self._context.copy()
+                # Add any custom context passed to the function
+                if context:
+                    template_context.update(context)
+
+                # Use template rendering
+                message = TemplateEmailMessage(
+                    subject=subject,
+                    to=to_addresses,
+                    template_name=template,
+                    template_context=template_context,
+                )
+            else:
+                # Use plain body
+                message = TemplateEmailMessage(
+                    subject=subject,
+                    to=to_addresses,
+                    body=body,
+                )
+
+            send_mails(stage, message)
+            return True
+
+        except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
+            LOGGER.warning("Failed to send email", exc=exc, addresses=to_addresses, subject=subject)
+            return False
 
     def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
@@ -255,7 +336,8 @@ class BaseEvaluator:
                 # So, this is a bit questionable. Essentially, we are edit the stacktrace
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling
-                exc.__traceback__ = exc.__traceback__.tb_next
+                if exc.__traceback__ is not None:
+                    exc.__traceback__ = exc.__traceback__.tb_next
                 if not isinstance(exc, ControlFlowException):
                     self.handle_error(exc, expression_source)
                 raise exc

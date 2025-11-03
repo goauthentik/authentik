@@ -1,9 +1,10 @@
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/Radio.css";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -34,24 +35,11 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
     #fieldID: string = this.name || IDGenerator.randomID();
 
     static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFRadio,
         PFForm,
-        css`
-            .pf-c-form__group-control {
-                padding-top: calc(
-                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                );
-            }
-            .pf-c-radio {
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .pf-c-radio__description {
-                text-wrap: balance;
-            }
-        `,
+        Styles,
     ];
 
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
@@ -91,7 +79,10 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
         const changeListener = this.#buildChangeListener(option);
 
-        return html`<div class="pf-c-radio" @click=${changeListener}>
+        return html`<div
+            class="pf-c-radio ${option.disabled ? "pf-m-disabled" : ""}"
+            @click=${changeListener}
+        >
             <input
                 class="pf-c-radio__input"
                 type="radio"
