@@ -86,7 +86,6 @@ class TestBrands(APITestCase):
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
-        print("AAAAAAAAA")
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
