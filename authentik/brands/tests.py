@@ -1,5 +1,6 @@
 """Test brands"""
 
+from json import loads
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -86,8 +87,12 @@ class TestBrands(APITestCase):
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
-        self.assertJSONEqual(
-            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
+        response = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        response.pop("flow_authentication", None)
+        response.pop("flow_invalidation", None)
+        response.pop("flow_user_settings", None)
+        self.assertEqual(
+            response,
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
@@ -105,8 +110,12 @@ class TestBrands(APITestCase):
     def test_blueprint_with_other_brand(self):
         """Test Current brand API"""
         Brand.objects.create(domain="bar.baz", branding_title="custom")
-        self.assertJSONEqual(
-            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
+        response = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        response.pop("flow_authentication", None)
+        response.pop("flow_invalidation", None)
+        response.pop("flow_user_settings", None)
+        self.assertEqual(
+            response,
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
