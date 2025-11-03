@@ -59,27 +59,7 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     parameters = {"size": "158", "rating": "g", "default": "404"}
     gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters)}"
 
-    full_key = CACHE_KEY_GRAVATAR + mail_hash
-    if cache.has_key(full_key):
-        cache.touch(full_key)
-        return cache.get(full_key)
-
-    try:
-        # Since we specify a default of 404, do a HEAD request
-        # (HEAD since we don't need the body)
-        # so if that returns a 404, move onto the next mode
-        res = get_http_session().head(gravatar_url, timeout=5)
-        if res.status_code == HttpResponseNotFound.status_code:
-            cache.set(full_key, None)
-            return None
-        res.raise_for_status()
-    except (Timeout, ConnectionError, HTTPError):
-        cache.set(CACHE_KEY_GRAVATAR_AVAILABLE, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
-        return None
-    except RequestException:
-        return gravatar_url
-    cache.set(full_key, gravatar_url)
-    return gravatar_url
+    return avatar_mode_url(user, gravatar_url)
 
 
 def generate_colors(text: str) -> tuple[str, str]:
@@ -195,17 +175,17 @@ def avatar_mode_url(user: "User", mode: str) -> str | None:
     if not cache.get(cache_key_hostname_available, True):
         return None
 
-    cache_key_full = "goauthentik.io/lib/avatars/{hostname}/avatars/{mail_hash}"
+    cache_key_image_url = f"goauthentik.io/lib/avatars/{hostname}/{mail_hash}"
 
-    if cache.has_key(cache_key_full):
-        cache.touch(cache_key_full)
-        return cache.get(cache_key_full)
+    if cache.has_key(cache_key_image_url):
+        cache.touch(cache_key_image_url)
+        return cache.get(cache_key_image_url)
 
     try:
         res = get_http_session().head(formatted_url, timeout=5, allow_redirects=True)
 
         if res.status_code == HttpResponseNotFound.status_code:
-            cache.set(cache_key_full, None)
+            cache.set(cache_key_image_url, None)
             return None
         res.raise_for_status()
     except (Timeout, ConnectionError, HTTPError):
@@ -214,7 +194,7 @@ def avatar_mode_url(user: "User", mode: str) -> str | None:
     except RequestException:
         return formatted_url
 
-    cache.set(cache_key_full, formatted_url)
+    cache.set(cache_key_image_url, formatted_url, timeout=GRAVATAR_STATUS_TTL_SECONDS)
     return formatted_url
 
 
