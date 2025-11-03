@@ -1145,10 +1145,14 @@ version = "0.1.0"
 source = { editable = "packages/django-postgres-cache" }
 dependencies = [
     { name = "django" },
+    { name = "django-postgres-extra" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "django", specifier = ">=4.2,<6.0" }]
+requires-dist = [
+    { name = "django", specifier = ">=4.2,<6.0" },
+    { name = "django-postgres-extra", specifier = ">=2.0,<2.1" },
+]
 
 [[package]]
 name = "django-postgres-extra"

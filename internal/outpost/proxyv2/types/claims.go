@@ -1,10 +1,10 @@
 package types
 
 type ProxyClaims struct {
-	UserAttributes  map[string]interface{} `json:"user_attributes"`
-	BackendOverride string                 `json:"backend_override"`
-	HostHeader      string                 `json:"host_header"`
-	IsSuperuser     bool                   `json:"is_superuser"`
+	UserAttributes  map[string]any `json:"user_attributes" mapstructure:"user_attributes"`
+	BackendOverride string         `json:"backend_override" mapstructure:"backend_override"`
+	HostHeader      string         `json:"host_header" mapstructure:"host_header"`
+	IsSuperuser     bool           `json:"is_superuser" mapstructure:"is_superuser"`
 }
 
 type Claims struct {
@@ -19,5 +19,5 @@ type Claims struct {
 	Sid               string       `json:"sid" mapstructure:"sid"`
 	Proxy             *ProxyClaims `json:"ak_proxy" mapstructure:"ak_proxy"`
 
-	RawToken string `mapstructure:"-"`
+	RawToken string `json:"raw_token" mapstructure:"raw_token"`
 }

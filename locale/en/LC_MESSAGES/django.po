@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 00:11+0000\n"
+"POT-Creation-Date: 2025-10-28 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1101,6 +1101,14 @@ msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py

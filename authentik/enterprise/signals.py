@@ -1,6 +1,6 @@
 """Enterprise signals"""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from django.core.cache import cache
 from django.db.models.signals import post_delete, post_save, pre_save
@@ -33,7 +33,7 @@ def monitoring_set_enterprise(sender, **kwargs):
     )
     GAUGE_LICENSE_USAGE.labels(user_type="internal").set(percentage_internal)
     GAUGE_LICENSE_USAGE.labels(user_type="external").set(percentage_external)
-    GAUGE_LICENSE_EXPIRY.set((summary.latest_valid - now()).total_seconds())
+    GAUGE_LICENSE_EXPIRY.set((summary.latest_valid.replace(tzinfo=UTC) - now()).total_seconds())
 
 
 @receiver(pre_save, sender=License)
