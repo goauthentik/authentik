@@ -75,7 +75,7 @@ export class UserSettingsPage extends AKElement {
             @media screen and (min-width: 1200px) {
                 :host {
                     width: 90rem;
-                    width: 90rem;
+                    max-width: 100%;
                     align-self: center;
                 }
             }
