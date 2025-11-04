@@ -10,6 +10,7 @@ support_level: community
 > https://www.glpi-project.org
 
 ## Preparation
+
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -19,22 +20,23 @@ By default GLPI only offers OAuth that is only available to subscribers. This gu
 > https://github.com/DonutsNL/samlsso
 
 1. Download latest release `samlsso.zip` and unpack it in `glpiroot/data/marketplace`
-2. Activate the plugin in **Setup** > **Plugins** 
+2. Activate the plugin in **Setup** > **Plugins**
 
 ## GLPI configuration base
 
 1. Add a new instance in **Setup** > **samlSSO**
+
 - **General**
-	- Friendly name: authentik
-	- Login icon: find an icon from [FontAwesome](https://fontawesome.com/)
-	- Is active: true
+    - Friendly name: authentik
+    - Login icon: find an icon from [FontAwesome](https://fontawesome.com/)
+    - Is active: true
 - **Transit**
-	- Validate XML: true
+    - Validate XML: true
 - **Security**
-	- Strict: true
-	- Jit user creation: true
+    - Strict: true
+    - Jit user creation: true
+
 2. Click **Save** to create an instance
-  
 
 ## authentik configuration
 
@@ -52,34 +54,37 @@ To support the integration of GLPI with authentik, you need to create an applica
     - Issuer: `created GLPI samlSSO instance > Service Provider > Entity ID`
     - Service Provider Binding: **Post**
     - Under Advanced protocol settings
-	    - Select any available signing key.
-		    - Enable `Sign assertions`
-	    - NameID Property Mapping: `authentik default SAML Mapping: Email `
+        - Select any available signing key.
+            - Enable `Sign assertions`
+        - NameID Property Mapping: `authentik default SAML Mapping: Email `
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## GLPI configuration
+
 1. Find your created `samlSSO` instance
+
 - Under **Identity Provider**
-	- **Entity ID**: **Service Provider** > **Entity ID** without `/` in the end
-	- **SSO URL**: authentik's providers `SSO URL (Redirect)`
-	- **SLO URL**: authentik's providers `SLO URL (Redirect)`
-	- **X509 certificate**: under authenik provider `Download signing certificate` and copy/paste file contents
+    - **Entity ID**: **Service Provider** > **Entity ID** without `/` in the end
+    - **SSO URL**: authentik's providers `SSO URL (Redirect)`
+    - **SLO URL**: authentik's providers `SLO URL (Redirect)`
+    - **X509 certificate**: under authenik provider `Download signing certificate` and copy/paste file contents
+
 2. Click **Save** to apply changes and you can now try it out
 
 > Note: GLPI using `redirect` url, while authentik's provider being configured in `post` is not a mistake
 
 ### JIT rules
+
 Its also possible to auto assign profiles/groups as the user is created. Sadly it won't look at authenticated users groups.
+
 1. Go to **JIT import rules** in **Setup** > **samlSSO** > **JIT import rules**
 2. Add a new one
-	- Under **criteria** exists checks against the authenticated user
-	- Under **Actions** exists GLPI's actions on what to do if criteria matches against the authenticated user 
-		- You may want to add `recursive=yes` as an action, that way matched users have access to all entities
+    - Under **criteria** exists checks against the authenticated user
+    - Under **Actions** exists GLPI's actions on what to do if criteria matches against the authenticated user
+        - You may want to add `recursive=yes` as an action, that way matched users have access to all entities
 
 ## Configuration verification
+
 To confirm that authentik is properly configured with GLPI, log out and click the new button on the right side. You will be redirected to authentik and once authenticated, you will be signed in to GLPI.
-
-
-
