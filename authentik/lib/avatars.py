@@ -22,9 +22,7 @@ if TYPE_CHECKING:
 
 GRAVATAR_URL = "https://www.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
-CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
-CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
-GRAVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
+AVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
 SVG_NS_MAP = {None: SVG_XML_NS}
@@ -52,8 +50,6 @@ def avatar_mode_attribute(user: "User", mode: str) -> str | None:
 
 def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     """Gravatar avatars"""
-    if not cache.get(CACHE_KEY_GRAVATAR_AVAILABLE, True):
-        return None
 
     mail_hash = sha256(user.email.lower().encode("utf-8")).hexdigest()  # nosec
     parameters = {"size": "158", "rating": "g", "default": "404"}
@@ -185,19 +181,19 @@ def avatar_mode_url(user: "User", mode: str) -> str | None:
         res = get_http_session().head(formatted_url, timeout=5, allow_redirects=True)
 
         if res.status_code == HttpResponseNotFound.status_code:
-            cache.set(cache_key_image_url, None)
+            cache.set(cache_key_image_url, None, timeout=AVATAR_STATUS_TTL_SECONDS)
             return None
         if not res.headers.get("Content-Type", "").startswith("image/"):
-            cache.set(cache_key_image_url, None)
+            cache.set(cache_key_image_url, None, timeout=AVATAR_STATUS_TTL_SECONDS)
             return None
         res.raise_for_status()
     except (Timeout, ConnectionError, HTTPError):
-        cache.set(cache_key_hostname_available, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
+        cache.set(cache_key_hostname_available, False, timeout=AVATAR_STATUS_TTL_SECONDS)
         return None
     except RequestException:
         return formatted_url
 
-    cache.set(cache_key_image_url, formatted_url, timeout=GRAVATAR_STATUS_TTL_SECONDS)
+    cache.set(cache_key_image_url, formatted_url, timeout=AVATAR_STATUS_TTL_SECONDS)
     return formatted_url
 
 
