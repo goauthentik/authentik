@@ -6419,9 +6419,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
 </trans-unit>
-<trans-unit id="s8a598f7aef81c3bc">
-  <source>Key used to encrypt the tokens.</source>
-</trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
 </trans-unit>
@@ -7562,9 +7559,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
 </trans-unit>
@@ -8193,6 +8187,33 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+</trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="sbdab4eb1812adc78">
+  <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+</trans-unit>
+<trans-unit id="s998fea0fa7bb4188">
+  <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
 </trans-unit>
     </body>
   </file>

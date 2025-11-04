@@ -255,6 +255,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
+                        singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

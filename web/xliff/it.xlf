@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="it" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -586,9 +586,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>La URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; non è stata trovata.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>La URL "
+        <x id="0" equiv-text="${this.url}"/>" non è stata trovata.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1068,7 +1068,7 @@
       </trans-unit>
       <trans-unit id="sde949d0ef44572eb">
         <source>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
-        <target>Richiede che l'utente abbia un attributo &quot;upn&quot; impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
+        <target>Richiede che l'utente abbia un attributo "upn" impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
         
       </trans-unit>
       <trans-unit id="s9f23ed1799b4d49a">
@@ -1228,7 +1228,7 @@
       </trans-unit>
       <trans-unit id="s211b75e868072162">
         <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
-        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su &quot;domain.tld&quot;.</target>
+        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su "domain.tld".</target>
         
       </trans-unit>
       <trans-unit id="s2345170f7e272668">
@@ -1662,8 +1662,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>Inserisci un URL completo, un percorso relativo oppure utilizza &quot;fa://fa-test&quot; per utilizzare l'icona &quot;fa-test&quot; di Font Awesome.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>Inserisci un URL completo, un percorso relativo oppure utilizza "fa://fa-test" per utilizzare l'icona "fa-test" di Font Awesome.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3042,7 +3042,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
-        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID &quot;Transient&quot; e l'utente non si disconnette manualmente.</target>
+        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID "Transient" e l'utente non si disconnette manualmente.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3179,7 +3179,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s9f8aac89fe318acc">
         <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
-        <target>Opzionale: imposta il valore &quot;friendlyname&quot; dell'attributo di asserzione.</target>
+        <target>Opzionale: imposta il valore "friendlyname" dell'attributo di asserzione.</target>
         
       </trans-unit>
       <trans-unit id="s851c108679653d2a">
@@ -3650,10 +3650,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Sei sicuro di voler aggiornare
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
-        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>"
+        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4001,7 +4001,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s7520286c8419a266">
         <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
-        <target>Dati facoltativi che vengono caricati nella variabile di contesto &quot;prompt_data&quot; del flusso. YAML o JSON.</target>
+        <target>Dati facoltativi che vengono caricati nella variabile di contesto "prompt_data" del flusso. YAML o JSON.</target>
         
       </trans-unit>
       <trans-unit id="sb8795b799c70776a">
@@ -4683,8 +4683,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>Un autenticatore &quot;roaming&quot;, come un YubiKey</target>
+        <source>A "roaming" authenticator, like a YubiKey</source>
+        <target>Un autenticatore "roaming", come un YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -4989,7 +4989,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5170f9ef331949c0">
         <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile &quot;prompt_data&quot;.</target>
+        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile "prompt_data".</target>
         
       </trans-unit>
       <trans-unit id="s36cb242ac90353bc">
@@ -5042,8 +5042,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di &quot;rimanere firmato&quot;, che estenderà la sessione entro il momento specificato qui.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di "rimanere firmato", che estenderà la sessione entro il momento specificato qui.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -5064,7 +5064,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s927398c400970760">
         <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
-        <target>Scrivi qualsiasi dati dal contesto del flusso &quot;prompt_data&quot; all'utente attualmente in sospeso. Se nessun utente
+        <target>Scrivi qualsiasi dati dal contesto del flusso "prompt_data" all'utente attualmente in sospeso. Se nessun utente
  è in sospeso, viene creato un nuovo utente e vengono scritti dati.</target>
       </trans-unit>
       <trans-unit id="sb379d861cbed0b47">
@@ -7097,7 +7097,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Un suggerimento, &quot;New Application Wizard&quot;, è attualmente nascosto</target>
+  <target>Un suggerimento, "New Application Wizard", è attualmente nascosto</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7204,7 +7204,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Utente creato con successo e aggiunto al gruppo <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Questo utente sarà aggiunto al gruppo &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8323,7 +8323,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Fornisci agli utenti un pulsante &quot;Mostra password&quot;.</target>
+  <target>Fornisci agli utenti un pulsante "Mostra password".</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8454,7 +8454,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Gruppo di sincronizzazione</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, del tipo <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -8496,10 +8496,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
   <target>Chiave di crittografia</target>
-</trans-unit>
-<trans-unit id="s8a598f7aef81c3bc">
-  <source>Key used to encrypt the tokens.</source>
-  <target>Chiave utilizzato per crittografare i token.</target>
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
@@ -8702,8 +8698,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>URI di reindirizzamento validi dopo un flusso di autorizzazione riuscito. Specificare anche eventuali origini per i flussi impliciti.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su &quot;.*&quot;. Tieni presente le possibili implicazioni per la sicurezza.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su ".*". Tieni presente le possibili implicazioni per la sicurezza.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9357,7 +9353,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
-  <target>Campo che contiene i ND dei gruppi di cui l'utente è membro. Questo campo viene utilizzato per cercare i gruppi degli utenti, ad esempio &quot;memberOf&quot;. Per cercare gruppi nidificati in un ambiente Active Directory, utilizzare &quot;memberOf:1.2.840.113556.1.4.1941:&quot;.</target>
+  <target>Campo che contiene i ND dei gruppi di cui l'utente è membro. Questo campo viene utilizzato per cercare i gruppi degli utenti, ad esempio "memberOf". Per cercare gruppi nidificati in un ambiente Active Directory, utilizzare "memberOf:1.2.840.113556.1.4.1941:".</target>
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
@@ -9440,8 +9436,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Come eseguire l'autenticazione durante un flusso di richiesta del token authorization_code</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Abilita &quot;Ricordami su questo dispositivo&quot;</target>
+  <source>Enable "Remember me on this device"</source>
+  <target>Abilita "Ricordami su questo dispositivo"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -9585,7 +9581,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
-  <target>Se non viene selezionato alcun gruppo e l'opzione &quot;Invia notifica all'utente dell'evento&quot; è disabilitata, la regola è disabilitata.</target>
+  <target>Se non viene selezionato alcun gruppo e l'opzione "Invia notifica all'utente dell'evento" è disabilitata, la regola è disabilitata.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
@@ -9593,7 +9589,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento, oltre a tutti gli utenti del gruppo sopra indicato. L'utente dell'evento sarà sempre il primo a inviare una notifica solo all'utente dell'evento che ha abilitato &quot;Invia una volta&quot; nel trasporto delle notifiche.</target>
+  <target>Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento, oltre a tutti gli utenti del gruppo sopra indicato. L'utente dell'evento sarà sempre il primo a inviare una notifica solo all'utente dell'evento che ha abilitato "Invia una volta" nel trasporto delle notifiche.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
@@ -9791,7 +9787,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
   <source>Account Recovery Max Attempts</source>
@@ -9887,10 +9883,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -9925,9 +9921,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
 </trans-unit>
@@ -9953,31 +9946,31 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Provider not assigned to any application.</source>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
 </trans-unit>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
@@ -9993,10 +9986,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>OCI Support</source>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${username}"/></source>
@@ -10098,7 +10091,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s2e7448caf3df574a">
   <source>Verify Assertion Signature</source>
@@ -10146,16 +10139,16 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Unnamed</source>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
@@ -10278,7 +10271,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Group Search</source>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
 <trans-unit id="s62dfa9c45cb3025a">
   <source>New Group</source>
@@ -10305,16 +10298,16 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>New service account...</source>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -10503,7 +10496,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source/>
+  <source></source>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
@@ -10530,7 +10523,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>The user's display name.</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
+  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -10556,6 +10549,33 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+</trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="sbdab4eb1812adc78">
+  <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+</trans-unit>
+<trans-unit id="s998fea0fa7bb4188">
+  <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
 </trans-unit>
     </body>
   </file>

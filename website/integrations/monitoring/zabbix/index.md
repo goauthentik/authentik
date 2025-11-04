@@ -35,10 +35,13 @@ To support the integration of Zabbix with authentik, you need to create an appli
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to `https://zabbix.company/zabbix/index_sso.php?acs`.
+    - Set the **ACS URL** to `https://zabbix.company/index_sso.php?acs`.
     - Set the **Issuer** to `zabbix`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Set the **Single Logout Service** to `https://zabbix.company/index_sso.php?sls`.
+    - Set the **SLS Binding** to `Redirect`.
+    - Set the **Logout Method** to `Front-channel (Iframe)`.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
