@@ -2,8 +2,7 @@
 
 from typing import Any
 
-from django.db.models import F, Q, Case, IntegerField, When
-from django.db.models import Value
+from django.db.models import Case, F, IntegerField, Q, Value, When
 from django.db.models.functions import Length
 from django.http.request import HttpRequest
 from django.utils.html import _json_script_escapes
