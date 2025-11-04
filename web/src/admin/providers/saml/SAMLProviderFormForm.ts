@@ -194,7 +194,6 @@ export function renderForm({
                     placeholder="https://..."
                     input-hint="code"
                     input-mode="url"
-
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
