@@ -81,10 +81,10 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public includeDetails = false;
 
     /**
-     * Optional array of allowed key algorithm types to filter certificates.
-     * When set, only certificates or keypairs with matching key algorithms will be shown.
-     * Since every certificate has to be parsed to be filtered, this can impact performance
-     * the more certificates a user has and should avoid being used when possible.
+     * When allowedKeyTypes is set, only certificates or keypairs with matching
+     * key algorithms will be shown. Since certificates must be parsed to
+     * extract algorithm details, an instance with many certificates may experience
+     * long delays and server performance slowdowns. Avoid setting this field whenever possible.
      * @attr
      * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
      */
