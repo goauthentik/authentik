@@ -16,6 +16,14 @@ from authentik.providers.saml.models import SAMLProvider
 from authentik.tenants.flags import Flag
 
 
+def clear_brands(func):
+    def inner(*args, **kwargs):
+        Brand.objects.all().delete()
+        func(*args, **kwargs)
+
+    return inner
+
+
 class TestBrands(APITestCase):
     """Test brands"""
 
@@ -27,9 +35,9 @@ class TestBrands(APITestCase):
             if _flag.visibility == "public":
                 self.default_flags[_flag.key] = _flag.get()
 
+    @clear_brands
     def test_current_brand(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
         brand = create_test_brand()
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
@@ -46,9 +54,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_brand_subdomain(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
         Brand.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
             self.client.get(
@@ -67,9 +75,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_fallback(self):
         """Test fallback brand"""
-        Brand.objects.all().delete()
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
@@ -85,6 +93,7 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
@@ -107,6 +116,7 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint_with_other_brand(self):
         """Test Current brand API"""
@@ -146,9 +156,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_brand_subdomain_same_suffix(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
         Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
         Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
         self.assertJSONEqual(
@@ -168,9 +178,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_brand_subdomain_other_suffix(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
         Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
         Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
         self.assertJSONEqual(
@@ -190,9 +200,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_create_default_multiple(self):
         """Test attempted creation of multiple default brands"""
-        Brand.objects.all().delete()
         Brand.objects.create(
             domain="foo",
             default=True,
@@ -205,17 +215,17 @@ class TestBrands(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    @clear_brands
     def test_webfinger_no_app(self):
         """Test Webfinger"""
-        Brand.objects.all().delete()
         create_test_brand()
         self.assertJSONEqual(
             self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
         )
 
+    @clear_brands
     def test_webfinger_not_supported(self):
         """Test Webfinger"""
-        Brand.objects.all().delete()
         brand = create_test_brand()
         provider = SAMLProvider.objects.create(
             name=generate_id(),
@@ -227,9 +237,9 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
         )
 
+    @clear_brands
     def test_webfinger_oidc(self):
         """Test Webfinger"""
-        Brand.objects.all().delete()
         brand = create_test_brand()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
@@ -250,9 +260,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_branding_url(self):
         """Test branding attributes return correct values"""
-        Brand.objects.all().delete()
         brand = create_test_brand()
         brand.branding_default_flow_background = "https://goauthentik.io/img/icon.png"
         brand.branding_favicon = "https://goauthentik.io/img/icon.png"
@@ -276,9 +286,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @clear_brands
     def test_custom_css(self):
         """Test custom_css"""
-        Brand.objects.all().delete()
         brand = create_test_brand()
         brand.branding_custom_css = """* {
             font-family: "Foo bar";
