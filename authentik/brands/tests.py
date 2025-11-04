@@ -16,14 +16,6 @@ from authentik.providers.saml.models import SAMLProvider
 from authentik.tenants.flags import Flag
 
 
-def clear_brands(func):
-    def inner(*args, **kwargs):
-        Brand.objects.all().delete()
-        func(*args, **kwargs)
-
-    return inner
-
-
 class TestBrands(APITestCase):
     """Test brands"""
 
@@ -34,8 +26,8 @@ class TestBrands(APITestCase):
             _flag = flag()
             if _flag.visibility == "public":
                 self.default_flags[_flag.key] = _flag.get()
+        Brand.objects.all().delete()
 
-    @clear_brands
     def test_current_brand(self):
         """Test Current brand API"""
         brand = create_test_brand()
@@ -54,7 +46,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_brand_subdomain(self):
         """Test Current brand API"""
         Brand.objects.create(domain="bar.baz", branding_title="custom")
@@ -75,7 +66,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_fallback(self):
         """Test fallback brand"""
         self.assertJSONEqual(
@@ -93,7 +83,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
@@ -116,7 +105,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     @apply_blueprint("default/default-brand.yaml")
     def test_blueprint_with_other_brand(self):
         """Test Current brand API"""
@@ -156,7 +144,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_brand_subdomain_same_suffix(self):
         """Test Current brand API"""
         Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
@@ -178,7 +165,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_brand_subdomain_other_suffix(self):
         """Test Current brand API"""
         Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
@@ -200,7 +186,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_create_default_multiple(self):
         """Test attempted creation of multiple default brands"""
         Brand.objects.create(
@@ -215,7 +200,6 @@ class TestBrands(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-    @clear_brands
     def test_webfinger_no_app(self):
         """Test Webfinger"""
         create_test_brand()
@@ -223,7 +207,6 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
         )
 
-    @clear_brands
     def test_webfinger_not_supported(self):
         """Test Webfinger"""
         brand = create_test_brand()
@@ -237,7 +220,6 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
         )
 
-    @clear_brands
     def test_webfinger_oidc(self):
         """Test Webfinger"""
         brand = create_test_brand()
@@ -260,7 +242,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_branding_url(self):
         """Test branding attributes return correct values"""
         brand = create_test_brand()
@@ -286,7 +267,6 @@ class TestBrands(APITestCase):
             },
         )
 
-    @clear_brands
     def test_custom_css(self):
         """Test custom_css"""
         brand = create_test_brand()
