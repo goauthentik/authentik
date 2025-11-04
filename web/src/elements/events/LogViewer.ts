@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
+import "#elements/timestamp/ak-timestamp";
 
 import { formatElapsedTime } from "#common/temporal";
 
@@ -101,7 +102,7 @@ export class LogViewer extends Table<LogEvent> {
 
     row(item: LogEvent): SlottedTemplateResult[] {
         return [
-            html`${formatElapsedTime(item.timestamp)}`,
+            html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}
