@@ -181,6 +181,7 @@ export function renderForm({
                 ></ak-radio-input>
                 <ak-text-input
                     label=${msg("Issuer")}
+                    input-hint="code"
                     name="issuer"
                     value="${provider.issuer || "authentik"}"
                     required
@@ -190,6 +191,10 @@ export function renderForm({
                 <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
+                    placeholder="https://..."
+                    input-hint="code"
+                    input-mode="url"
+
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
