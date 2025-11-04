@@ -1,16 +1,5 @@
 [licenses]
-allow = [
-  #"MIT",
-  #"Apache-2.0",
-  #"Apache-2.0 WITH LLVM-exception",
-]
-# Allow 1 or more licenses on a per-crate basis, so that particular licenses
-# aren't accepted for every possible crate as with the normal allow list
-exceptions = [
-  # Each entry is the crate and version constraint, and its specific allow
-  # list
-  #{ allow = ["Zlib"], crate = "adler32" },
-]
+allow = ["MIT", "Apache-2.0", "BSD-3-Clause", "Unicode-3.0", "ISC", "OpenSSL"]
 
 [bans]
 multiple-versions = "warn"

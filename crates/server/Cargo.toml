@@ -2,5 +2,14 @@
 name = "server"
 version = "0.0.0"
 edition = "2024"
+license.workspace = true
 
 [dependencies]
+axum = { version = "0.8.6", features = ["http2", "macros", "ws"] }
+axum-server = { version = "0.7.2", features = ["tls-rustls"] }
+rustls = { version = "0.23.35", features = ["fips", "custom-provider"] }
+tokio = { version = "1.48.0", features = ["full"] }
+tower = "0.5.2"
+tracing = "0.1.41"
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.20", features = ["json"] }
