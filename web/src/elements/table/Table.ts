@@ -29,9 +29,9 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
-import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -264,11 +264,25 @@ export abstract class Table<T extends object>
         }
     }
 
+    /**
+     * Whether the table is currently fetching data.
+     */
     @state()
     protected loading = false;
 
+    /**
+     * A timestamp of the last attempt to refresh the table data.
+     */
     @state()
     protected lastRefreshedAt: Date | null = null;
+
+    /**
+     * A cached grouping of the last fetched results.
+     *
+     * @see {@linkcode Table.fetch}
+     */
+    @state()
+    protected groups: GroupResult<T>[] = [];
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
@@ -317,6 +331,9 @@ export abstract class Table<T extends object>
     @property({ type: Boolean })
     public checkboxChip = false;
 
+    /**
+     * A mapping of the current items to their respective identifiers.
+     */
     #itemKeys = new WeakMap<T, string | number>();
 
     @property({ attribute: false })
@@ -441,6 +458,8 @@ export abstract class Table<T extends object>
             .then((data) => {
                 this.data = data;
                 this.error = null;
+
+                this.groups = this.groupBy(this.data.results);
 
                 this.page = this.data.pagination.current;
                 const nextExpanded = new Set<string | number>();
@@ -582,53 +601,35 @@ export abstract class Table<T extends object>
             return this.renderEmpty();
         }
 
-        const groups = this.groupBy(this.data.results);
-
-        if (groups.length === 1) {
-            const [firstGroup] = groups;
+        if (this.groups.length === 1) {
+            const [firstGroup] = this.groups;
             const [groupKey, groupItems] = firstGroup;
 
             if (!groupKey) {
                 return html`<tbody>
-                    ${repeat(
-                        groupItems,
-                        (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
-                        (item, itemIndex) =>
-                            this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
+                    ${groupItems.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, groupItems, 0),
                     )}
                 </tbody>`;
             }
         }
 
-        return repeat(
-            groups,
-            ([group]) => group,
-            ([group, items], groupIndex) => {
-                const groupHeaderID = `table-group-${groupIndex}`;
+        return this.groups.map(([groupName, items], groupIndex) => {
+            const groupHeaderID = `table-group-${groupIndex}`;
 
-                return html`<thead>
-                        <tr>
-                            <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
-                                ${group}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${repeat(
-                            items,
-                            (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
-                            (item, itemIndex) =>
-                                this.#renderRowGroupItem(
-                                    item,
-                                    itemIndex,
-                                    items,
-                                    groupIndex,
-                                    groups,
-                                ),
-                        )}
-                    </tbody>`;
-            },
-        ) as SlottedTemplateResult[];
+            return html`<thead>
+                    <tr>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                            ${groupName}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, items, groupIndex),
+                    )}
+                </tbody>`;
+        });
     }
 
     //#region Expansion
@@ -660,7 +661,7 @@ export abstract class Table<T extends object>
     };
 
     #selectItemListener(item: T, event?: InputEvent | PointerEvent) {
-        const { target, currentTarget } = event ?? {};
+        const { target } = event ?? {};
 
         const itemKey = this.#itemKeys.get(item);
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
@@ -705,26 +706,23 @@ export abstract class Table<T extends object>
         return [["", items]];
     }
 
-    #renderRowGroupItem(
-        item: T,
-        rowIndex: number,
-        items: T[],
-        groupIndex: number,
-        groups: GroupResult<T>[],
-    ): TemplateResult {
-        const groupHeaderID = groups.length > 1 ? `table-group-${groupIndex}` : null;
+    #renderRowGroupItem(item: T, rowIndex: number, items: T[], groupIndex: number): TemplateResult {
+        const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
 
         const itemKey = this.#itemKeys.get(item);
         const expanded = !!(itemKey && this.expandedElements.has(itemKey));
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
 
         const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
-        const rowKey = `row-${groupIndex}-${rowIndex}`;
 
         const selectItem = this.#selectItemListener.bind(this, item);
 
-        const renderCheckbox = () =>
-            html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
+        const renderCheckbox = () => {
+            if (!this.checkbox) {
+                return nothing;
+            }
+
+            return html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
                 <label aria-label="${msg(str`Select "${rowLabel}" row`)}"
                     ><input
                         type="checkbox"
@@ -733,10 +731,15 @@ export abstract class Table<T extends object>
                         @click=${(event: PointerEvent) => event.stopPropagation()}
                 /></label>
             </td>`;
+        };
 
         const expandItem = this.#toggleExpansion.bind(this, itemKey);
 
         const renderExpansion = () => {
+            if (!this.expandable) {
+                return nothing;
+            }
+
             return html`<td
                 class="pf-c-table__toggle pf-m-pressable"
                 role="presentation"
@@ -783,29 +786,26 @@ export abstract class Table<T extends object>
                 @click=${this.rowClickListener.bind(this, item)}
                 aria-selected=${selected.toString()}
                 class="${classMap({
-                    "pf-m-hoverable": this.checkbox || this.clickable,
+                    "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
                 })}"
             >
-                ${this.checkbox ? renderCheckbox() : nothing}
-                ${this.expandable ? renderExpansion() : nothing}
-                ${repeat(
-                    this.row(item),
-                    (_cell, columnIndex) => columnIndex,
-                    (cell, columnIndex) => {
-                        const columnID = this.#columnIDs.get(this.columns[columnIndex]);
+                ${guard([this.checkbox, selected], renderCheckbox)}
+                ${guard([this.expandable, expanded], renderExpansion)}
+                ${this.row(item).map((cell, columnIndex) => {
+                    const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
-                        const headers = groupHeaderID
-                            ? `${groupHeaderID} ${columnID}`.trim()
-                            : columnID;
+                    const headers = groupHeaderID
+                        ? `${groupHeaderID} ${columnID}`.trim()
+                        : columnID;
 
-                        return html`<td
-                            class=${ifPresent(!columnID, "presentational")}
-                            headers=${ifPresent(headers)}
-                        >
-                            ${cell}
-                        </td>`;
-                    },
-                )}
+                    return html`<td
+                        @click=${this.rowClickListener.bind(this, item)}
+                        class=${ifPresent(!columnID, "presentational")}
+                        headers=${ifPresent(headers)}
+                    >
+                        ${cell}
+                    </td>`;
+                })}
             </tr>
             ${expansionContent}
         `;
@@ -1036,29 +1036,25 @@ export abstract class Table<T extends object>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                             ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                            ${repeat(
-                                this.columns,
-                                ([label], idx) => label ?? idx,
-                                (column, idx) => {
-                                    const [label, orderBy, ariaLabel] = column;
-                                    const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
+                            ${this.columns.map((column, idx) => {
+                                const [label, orderBy, ariaLabel] = column;
+                                const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
 
-                                    return renderTableColumn({
-                                        label,
-                                        id: columnID,
-                                        ariaLabel,
-                                        orderBy,
-                                        table: this,
-                                        columnIndex: idx,
-                                    });
-                                },
-                            )}
+                                return renderTableColumn({
+                                    label,
+                                    id: columnID,
+                                    ariaLabel,
+                                    orderBy,
+                                    table: this,
+                                    columnIndex: idx,
+                                });
+                            })}
                         </tr>
                     </thead>
                     ${this.renderRows()}
                 </table>
             </div>
-            ${this.paginated ? renderBottomPagination() : nothing}`;
+            ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
     }
 
     render(): TemplateResult {
