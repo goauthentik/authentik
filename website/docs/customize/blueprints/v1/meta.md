@@ -23,3 +23,18 @@ See [examples](https://github.com/search?q=repo%3Agoauthentik%2Fauthentik+path%3
 - `required`: (Default: `true`) Configure if the blueprint instance must exist
 
     If this is set to `true` and no blueprint instance matches the query above, an error will be thrown. Otherwise, execution will continue without applying anything extra.
+
+### `authentik_blueprints.metacleanblueprint`
+
+This meta model can be used to remove all objects of the given model from database. This allows setting up from the blueprint from scratch, ensuring nothing left in database.
+
+#### Attributes
+
+- `model_name`: Name of the model whose objects are to be removed
+
+    Example:
+
+    ```yaml
+    attrs:
+        model_name: authentik_providers_oauth2.oauth2provider
+    ```
