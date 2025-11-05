@@ -13,7 +13,7 @@ SAML property mappings allow you embed information into the SAML authentication 
 Scope mappings are used by the OAuth2 provider to map information from authentik to OAuth2/OIDC claims. Values returned by a scope mapping are added as custom claims to access and ID tokens.
 
 :::info Default value for `email_verified`
-By default, authentik sets the `email_verified` claim to `false`, since it has no way to confirm whether a user's email is verified. Setting this claim to `true` by default could introduce unintended security risks.
+By default, authentik sets the `email_verified` claim to `False`, since it has no way to confirm whether a user's email is verified. Setting this claim to `True` by default could introduce unintended security risks.
 
 Be aware that some applications might require this claim to be true to successfully authenticate users. In this case you should create a custom email scope mapping that returns `email_verified` as `True`, using the following expression:
 
