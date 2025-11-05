@@ -3253,11 +3253,11 @@ wheels = [
 
 [[package]]
 name = "std-uritemplate"
-version = "2.0.6"
+version = "2.0.8"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/89/7c/86a0dc9e04aed42b33a3071a2db322851a9b9fa0bbee17b1e8eeaa3b739a/std_uritemplate-2.0.6.tar.gz", hash = "sha256:73353da20f3c7d73a4e7bc0ec0acdbd51787978048632280a1a33731916fb947", size = 6019, upload-time = "2025-09-30T09:08:15.419Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/62/61866776cd32df3f984ff2f79b1428e10700e0a33ca7a7536e3fcba3cf2a/std_uritemplate-2.0.8.tar.gz", hash = "sha256:138ceff2c5bfef18a650372a5e8c82fe7f780c87235513de6c342fb5f7e18347", size = 6018, upload-time = "2025-10-16T15:51:29.774Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/f5/27964189cab657421991ee8504335206a14cae95d8e3c8aedfbf029ed665/std_uritemplate-2.0.6-py3-none-any.whl", hash = "sha256:18220dabdfa0610e2871245336b147ac7e40e111a935b5afcc60f7cad26adbb7", size = 6511, upload-time = "2025-09-30T09:08:14.457Z" },
+    { url = "https://files.pythonhosted.org/packages/64/97/b4f2f442fee92a1406f08b4fbc990bd7d02dc84b3b5e6315a59fa9b2a9f4/std_uritemplate-2.0.8-py3-none-any.whl", hash = "sha256:839807a7f9d07f0bad1a88977c3428bd97b9ff0d229412a0bf36123d8c724257", size = 6512, upload-time = "2025-10-16T15:51:28.713Z" },
 ]
 
 [[package]]
