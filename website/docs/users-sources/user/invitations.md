@@ -64,7 +64,11 @@ We have two pre-defined blueprints, the`Example - Invitation-based Enrollment` b
 
 ![Create an invitation modal](./create_invite.png)
 
-Configure the following settings: - **Name**: provide a name for your invitation object. - **Expires**: select a date for when you want the invitation to expire. - **Flow**: In the drop-down menu, select the enrollment flow to use (`invitation-enrollment-flow-external`, `invitation-enrollment-flow-internal`, `invitation-enrollment-flow-internal-engineering`, or ` default-enrollment-flow` depending on which blueprint you used). - **Custom attributes**: (_optional_) Enter JSON or YAML to pre-fill user information. This data is merged with the user's input during enrollment.
+Configure the following settings: 
+- **Name**: provide a name for your invitation object. 
+- **Expires**: select a date for when you want the invitation to expire. 
+- **Flow**: In the drop-down menu, select the enrollment flow to use (`invitation-enrollment-flow-external`, `invitation-enrollment-flow-internal`, `invitation-enrollment-flow-internal-engineering`, or ` default-enrollment-flow` depending on which blueprint you used). 
+- **Custom attributes**: (_optional_) Enter JSON or YAML to pre-fill user information. This data is merged with the user's input during enrollment.
 
 <details>
 <summary>Example custom attributes:</summary>
