@@ -8497,10 +8497,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Encryption Key</source>
   <target>Chiave di crittografia</target>
 </trans-unit>
-<trans-unit id="s8a598f7aef81c3bc">
-  <source>Key used to encrypt the tokens.</source>
-  <target>Chiave utilizzato per crittografare i token.</target>
-</trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
   <target>Dispositivo del tipo <x id="0" equiv-text="${device.verboseName}"/> non può essere eliminato</target>
@@ -9925,9 +9921,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
 </trans-unit>
@@ -10439,12 +10432,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
 </trans-unit>
-<trans-unit id="s1ff2128af96d843f">
-  <source>Available applications</source>
-</trans-unit>
-<trans-unit id="sda842e40ed1d9a2f">
-  <source>Application search</source>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
 </trans-unit>
@@ -10530,7 +10517,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>The user's display name.</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -10556,6 +10543,54 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+</trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="sbdab4eb1812adc78">
+  <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+</trans-unit>
+<trans-unit id="s998fea0fa7bb4188">
+  <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
+</trans-unit>
+<trans-unit id="s7ea73e0b3b45e385">
+  <source>application</source>
+</trans-unit>
+<trans-unit id="s45915ee0293ce5d4">
+  <source>Ungrouped</source>
+</trans-unit>
+<trans-unit id="sa4fb160e26323b02">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="s8a9abf934b0dc89d">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="sb1d445efd39638d4">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="sddbc2a3be190464b">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="s91cfe4fac0957ee7">
+  <source>Application list</source>
 </trans-unit>
     </body>
   </file>

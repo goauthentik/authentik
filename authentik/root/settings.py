@@ -430,6 +430,7 @@ DRAMATIQ = {
             },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
+        ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.ModelDataMiddleware", {}),

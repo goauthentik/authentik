@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-trixie@sha256:7534a6264850325fcce93e47b87a0e3fddd96b308440245e6ab1325fa8a44c91 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,13 +31,14 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:9b4cedf932e97194f1825124830f2eec14254d90162dad28f97e505971543115
 
 ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="goauthentik.io LDAP outpost, see https://goauthentik.io for more info." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \

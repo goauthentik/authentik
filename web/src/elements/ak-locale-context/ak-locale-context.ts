@@ -8,7 +8,6 @@ import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { customEvent } from "#elements/utils/customEvents";
 
-import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
@@ -26,6 +25,10 @@ import { customElement, property } from "lit/decorators.js";
  */
 @customElement("ak-locale-context")
 export class LocaleContext extends WithBrandConfig(AKElement) {
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
+
     /// @attribute The text representation of the current locale */
     @property({ attribute: true, type: String })
     locale = DEFAULT_LOCALE;
@@ -89,10 +92,6 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         // You will almost never have cause to catch this event. Lit's own `@localized()` decorator
         // works just fine for almost every use case.
         this.dispatchEvent(customEvent(EVENT_LOCALE_CHANGE));
-    }
-
-    render() {
-        return html`<slot></slot>`;
     }
 }
 
