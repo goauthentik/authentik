@@ -1,5 +1,5 @@
 [package]
-name = "authentik-server"
+name = "authentik-config"
 version = "0.0.0"
 authors.workspace = true
 edition.workspace = true
@@ -9,12 +9,11 @@ repository.workspace = true
 license-file.workspace = true
 
 [dependencies]
-clap.workspace = true
+config.workspace = true
+glob.workspace = true
 miette.workspace = true
-shadow-rs.workspace = true
-
-[build-dependencies]
-shadow-rs.workspace = true
+serde.workspace = true
+serde_yaml_ng.workspace = true
 
 [lints]
 workspace = true

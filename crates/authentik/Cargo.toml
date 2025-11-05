@@ -1,5 +1,5 @@
 [package]
-name = "authentik-server"
+name = "authentik"
 version = "0.0.0"
 authors.workspace = true
 edition.workspace = true
@@ -7,11 +7,14 @@ readme.workspace = true
 homepage.workspace = true
 repository.workspace = true
 license-file.workspace = true
+default-run = "authentik"
 
 [dependencies]
-clap.workspace = true
 miette.workspace = true
+clap.workspace = true
 shadow-rs.workspace = true
+
+authentik-server.workspace = true
 
 [build-dependencies]
 shadow-rs.workspace = true
