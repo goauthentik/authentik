@@ -4516,6 +4516,20 @@ paths:
           type: boolean
           default: true
       - in: query
+        name: key_type
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - dsa
+            - ec
+            - ed25519
+            - ed448
+            - rsa
+        description: Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified
+          multiple times (e.g. '?key_type=rsa&key_type=ec')
+      - in: query
         name: managed
         schema:
           type: string
@@ -33271,10 +33285,10 @@ components:
           type: boolean
           description: Show if this keypair has a private key configured or not
           readOnly: true
-        private_key_type:
-          type: string
+        key_type:
+          allOf:
+          - $ref: '#/components/schemas/KeyTypeEnum'
           nullable: true
-          description: Get the private key's type, if set
           readOnly: true
         certificate_download_url:
           type: string
@@ -33299,12 +33313,12 @@ components:
       - certificate_download_url
       - fingerprint_sha1
       - fingerprint_sha256
+      - key_type
       - managed
       - name
       - pk
       - private_key_available
       - private_key_download_url
-      - private_key_type
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -37613,6 +37627,14 @@ components:
       - name
       - realm
       - slug
+    KeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      - ed25519
+      - ed448
+      type: string
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
