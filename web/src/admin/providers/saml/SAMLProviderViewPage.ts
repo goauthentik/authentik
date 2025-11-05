@@ -390,7 +390,9 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider?.issuer)}"
+                                              value="${ifDefined(
+                                                  this.provider?.issuer ?? undefined,
+                                              )}"
                                           />
                                       </div>
                                       <div class="pf-c-form__group">

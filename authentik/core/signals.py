@@ -39,6 +39,55 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
     cache.delete_many(keys)
 
 
+@receiver(post_save, sender=Application)
+def post_save_application_saml_issuer(sender: type[Model], instance: Application, **_):
+    """Generate SAML provider issuer when application is linked to a SAML provider"""
+    from authentik.lib.config import CONFIG
+    from authentik.providers.saml.models import SAMLProvider
+
+    LOGGER.debug("Application saved, checking for SAML issuer generation", app=instance.slug)
+
+    # Only process if application has a provider
+    if not instance.provider:
+        LOGGER.debug("Application has no provider, skipping", app=instance.slug)
+        return
+
+    # Check if provider is a SAML provider by trying to access the samlprovider attribute
+    try:
+        provider = instance.provider.samlprovider
+    except (AttributeError, SAMLProvider.DoesNotExist):
+        LOGGER.debug(
+            "Provider is not SAML, skipping",
+            app=instance.slug,
+            provider_type=type(instance.provider).__name__,
+        )
+        return
+
+    # Only set issuer if it's null
+    if provider.issuer:
+        LOGGER.debug(
+            "Issuer already set, skipping",
+            app=instance.slug,
+            provider=provider.name,
+            issuer=provider.issuer,
+        )
+        return
+
+    # Generate the issuer URL
+    scheme = "https" if not CONFIG.get_bool("authentik.debug", False) else "http"
+    domain = CONFIG.get("server.domain", "localhost:9000")
+    path = f"/application/saml/{instance.slug}/"
+    provider.issuer = f"{scheme}://{domain}{path}"
+    provider.save()
+
+    LOGGER.info(
+        "Generated issuer for SAML provider",
+        provider=provider.name,
+        application=instance.slug,
+        issuer=provider.issuer,
+    )
+
+
 @receiver(user_logged_in)
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
