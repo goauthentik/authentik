@@ -140,7 +140,9 @@ export function renderForm({
     return html` <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             required
             .errorMessages=${errors.name}
         ></ak-text-input>
@@ -165,12 +167,16 @@ export function renderForm({
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("Issuer")}
+                    input-hint="code"
                     name="issuer"
                     value="${provider.issuer || "authentik"}"
                     required
@@ -191,6 +197,9 @@ export function renderForm({
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
@@ -210,6 +219,9 @@ export function renderForm({
                 <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
