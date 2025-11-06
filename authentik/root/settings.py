@@ -474,9 +474,9 @@ STORAGES = {
 }
 
 # Django 5.2.8 and CVE-2025-64458 added a strong enforcement of 2048 characters
-# as the maximum for a URL to redirect to, mostly for running on windows.
-# However our URLs can easily exceed that with OAuth/SAML Query parameters or hash values
-# 8192 should cover most cases..
+# as the maximum for a URL to redirect to, mostly for running on Windows.
+# However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
+# 8192 should cover most cases.
 http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
 
 
