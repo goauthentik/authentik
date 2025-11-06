@@ -1,5 +1,5 @@
 [package]
-name = "authentik-config"
+name = "authentik-worker"
 version = "0.0.0"
 authors.workspace = true
 edition.workspace = true
@@ -10,11 +10,16 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
-config.workspace = true
+clap.workspace = true
 color-eyre.workspace = true
-glob.workspace = true
-serde.workspace = true
-serde_yaml_ng.workspace = true
+fork.workspace = true
+nix.workspace = true
+pyo3.workspace = true
+signal-hook.workspace = true
+shadow-rs.workspace = true
+
+[build-dependencies]
+shadow-rs.workspace = true
 
 [lints]
 workspace = true

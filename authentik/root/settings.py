@@ -436,14 +436,14 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
-        (
-            "authentik.tasks.middleware.MetricsMiddleware",
-            {
-                "prefix": "authentik",
-            },
-        ),
+        # ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
+        # ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
+        # (
+        #     "authentik.tasks.middleware.MetricsMiddleware",
+        #     {
+        #         "prefix": "authentik",
+        #     },
+        # ),
         ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
     ),
     "test": TEST,

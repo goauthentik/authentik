@@ -1,4 +1,4 @@
-use authentik_server::{Cli, run};
+use authentik_worker::{Cli, run};
 use clap::Parser;
 use color_eyre::eyre::Result;
 

@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use miette::Result;
+use color_eyre::eyre::Result;
 
 shadow_rs::shadow!(build);
 
@@ -14,12 +14,15 @@ struct Cli {
 #[derive(Subcommand)]
 enum Command {
     Server(authentik_server::Cli),
+    Worker(authentik_worker::Cli),
 }
 
 fn main() -> Result<()> {
+    color_eyre::install()?;
     let cli = Cli::parse();
 
     match cli.command {
         Command::Server(args) => authentik_server::run(args),
+        Command::Worker(args) => authentik_worker::run(args),
     }
 }

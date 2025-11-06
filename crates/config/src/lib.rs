@@ -4,7 +4,7 @@ use std::{
     sync::OnceLock,
 };
 
-use miette::Result;
+use color_eyre::eyre::Result;
 use serde::{Deserialize, Serialize};
 
 static DEFAULT_CONFIG: &str = include_str!("../../../authentik/lib/default.yml");

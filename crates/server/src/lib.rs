@@ -1,5 +1,5 @@
 use clap::Parser;
-use miette::Result;
+use color_eyre::eyre::Result;
 
 shadow_rs::shadow!(build);
 
