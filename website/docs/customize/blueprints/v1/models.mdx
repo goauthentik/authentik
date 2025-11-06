@@ -135,6 +135,21 @@ For example:
           - authentik_blueprints.view_blueprintinstance
 ```
 
+## `authentik_stages_invitation.invitation`:ak-version[2025.12]
+
+The `created_by` field can be set to a user. If no value is given, the internal hidden anonymous user is used.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_stages_invitation.invitation
+  identifiers:
+      name: test-invitation
+  attrs:
+      created_by: !Find [authentik_core.user, [username, "my-admin-user"]]
+```
+
 ## `authentik_policies.policybinding`
 
 ### Required fields
