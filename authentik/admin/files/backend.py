@@ -252,23 +252,8 @@ class FileBackend(Backend):
                     schema=connection.schema_name,
                     backend_type=self._backend_type)
 
-        LOGGER.debug("FileBackend.base_path calling get_config for file.path")
-        file_path_config = self.get_config("file.path")
-        LOGGER.debug("FileBackend.base_path file.path config retrieved",
-                    value=file_path_config,
-                    value_type=type(file_path_config).__name__,
-                    value_str=str(file_path_config),
-                    is_none=file_path_config is None,
-                    value_repr=repr(file_path_config))
-
-        if file_path_config is None:
-            LOGGER.error("Storage file path not configured",
-                        usage=self.usage.value,
-                        schema=connection.schema_name)
-            raise ValueError("storage.file.path not configured")
-
-        LOGGER.debug("FileBackend.base_path creating Path object", file_path_config=file_path_config)
-        base_dir = Path(file_path_config)
+        file_path = self.get_config("file.path", "/data")
+        base_dir = Path(file_path)
         LOGGER.debug("FileBackend.base_path base_dir created", base_dir=str(base_dir))
 
         result = base_dir / self.usage.value / connection.schema_name

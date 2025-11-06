@@ -152,6 +152,7 @@ worker:
 storage:
   backend: file # or s3
   file:
+    path: ./data
   s3:
     # How to talk to s3
     # region: "us-east-1"

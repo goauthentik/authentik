@@ -67,17 +67,16 @@ class ConfigView(APIView):
         """Get all capabilities this server instance supports"""
         caps = []
         deb_test = settings.DEBUG or settings.TEST
-        backend = CONFIG.get("storage.media.backend", CONFIG.get("storage.backend", "file"))
+        backend = CONFIG.get("storage.backend", "file")
 
         if backend == "s3" or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         elif backend == "file":
+            # For file backend, check if /data is a mount point
             try:
-                file_path = CONFIG.get("storage.media.file.path", CONFIG.get("storage.file.path"))
-                if Path(file_path).is_mount():
+                if Path("/data").is_mount():
                     caps.append(Capabilities.CAN_SAVE_MEDIA)
             except (TypeError, AttributeError):
-                # file.path not configured
                 pass
         for processor in get_context_processors():
             if cap := processor.capability():
