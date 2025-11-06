@@ -30,8 +30,28 @@ To _apply_ a blueprint means that the content in the blueprint file is initiated
 - A Flow import is a YAML file uploaded via the browser/API. This file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
 :::info
-Be aware of how editing a default flow impacts the related flow import. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then create and apply the corollary default import flow (blueprint).
+Be aware of how editing a default flow impacts the related flow import. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then crseeate and apply the corollary blueprint for the default import flow.
 :::
+
+## Blueprint execution
+
+When a blueprint is applied, all entries are processed within a single **atomic database transaction**. This means:
+
+- If any entry fails validation or encounters an error, the **entire blueprint is rolled back**
+- No partial changes are committed - it's all-or-nothing
+- This ensures database consistency and prevents incomplete configurations
+
+Additionally, all blueprints have access to built-in context variables:
+
+- `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
+- `goauthentik.io/rbac/models`: Dictionary of available RBAC models
+
+These can be accessed using the `!Context` tag, for example:
+
+```yaml
+conditions:
+    - !Context goauthentik.io/enterprise/licensed
+```
 
 ## Storage of blueprints
 
