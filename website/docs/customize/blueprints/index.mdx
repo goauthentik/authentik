@@ -15,7 +15,7 @@ Blueprints can be applied in one of two ways:
 - as a _Blueprint instance_
 - as a _Flow import_
 
-To _apply_ a blueprint means that the content in the blueprint file is initiated (as a blueprint instance) and used by authentik.
+To _apply_ a blueprint means that the content in the blueprint file is initiated and used by authentik.
 
 ### Blueprint instance
 
@@ -29,10 +29,11 @@ To _apply_ a blueprint means that the content in the blueprint file is initiated
 
 - A Flow import is a YAML file uploaded via the browser/API. This file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
+:::info
+Be aware of how editing a default flow impacts the related flow import. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then create and apply the corollary default import flow (blueprint).
 :::
-Be aware of how editing a flow impacts the related flow. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow (which is based on the blueprint) plus any changes you made to the flow. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then create and apply the corollary default blueprint.
 
-## Storage of bueprints
+## Storage of blueprints
 
 When you add a new blueprint instance, you can define where the `.yaml` file is stored.
 
@@ -72,7 +73,7 @@ To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) ca
 oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
 ```
 
-## Internally in authentik's database
+### Internally in authentik's database
 
 Blueprints can be stored in authentik's database, which allows blueprints to be managed via external configuration management tools like Terraform.
 
