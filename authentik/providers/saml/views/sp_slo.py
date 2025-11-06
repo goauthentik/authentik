@@ -26,6 +26,7 @@ from authentik.providers.saml.models import (
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
+from authentik.providers.saml.tasks import send_saml_logout_response
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
@@ -115,6 +116,34 @@ class SPInitiatedSLOView(PolicyAccessView):
 
                 plan.context[PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS] = [logout_data]
                 plan.append_stage(in_memory_stage(NativeLogoutStageView))
+            elif self.provider.logout_method == SAMLLogoutMethods.BACKCHANNEL:
+                # Backchannel mode - server sends logout response directly to SP in background
+                # No user interaction needed
+                if self.provider.sls_binding != SAMLBindings.POST:
+                    LOGGER.warning(
+                        "Backchannel logout requires POST binding, but provider is configured "
+                        "with %s binding",
+                        self.provider.sls_binding,
+                        provider=self.provider,
+                    )
+
+                # Queue the logout response to be sent in the background
+                # This doesn't block the user's logout from completing
+                send_saml_logout_response.send(
+                    provider_pk=self.provider.pk,
+                    sls_url=self.provider.sls_url,
+                    logout_request_id=logout_request.id if logout_request else None,
+                    relay_state=relay_state,
+                )
+
+                LOGGER.debug(
+                    "Queued backchannel logout response",
+                    provider=self.provider,
+                    sls_url=self.provider.sls_url,
+                )
+
+                # Just end the session - no user interaction needed
+                plan.append_stage(in_memory_stage(SessionEndStage))
             else:
                 # Iframe mode (default for FRONTCHANNEL_IFRAME) - user stays on authentik
                 processor = LogoutResponseProcessor(
