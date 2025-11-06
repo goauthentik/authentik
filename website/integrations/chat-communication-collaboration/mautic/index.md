@@ -73,15 +73,14 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
         - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
         - Set the **Issuer** to `mautic.company`
         - Set the **Service Provider Binding** to `Post`
-        - Under **Advanced protocol settings** set the **Signing Certificate** to `authentik Self-signed Certificate` and check **Sign assertions** and **Sign responses**
-        - Under **Advanced protocol settings** add the newly created property mappings `SAML-FirstName-from-Name` and `SAML-LastName-from-Name` under **Property Mappings**. **Property Mappings**.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**, check **Sign assertions** and **Sign responses**, and add the two **Property Mappings** you created in the previous section.
 3. Click **Submit** to save the new application and provider.
 4. Go to **Applications** > **Providers** and click on `mautic-provider`.
     - Under **Metadata** click on **Download** to save the file as `mautic-provider\_authentik_meta.xml`.
 
 ## Mautic configuration
 
-:::note
+:::info
 
 When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Configuration > System Settings**, make sure that:
 

@@ -60,7 +60,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
-    public sidebarLabel = () => msg("Select type");
+    public override label = msg("Select type");
 
     public reset = () => {
         super.reset();

@@ -233,9 +233,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         """Get shadow root element's inner shadowRoot"""
         if not container:
             container = self.driver
-        shadow_root = container.find_element(By.CSS_SELECTOR, selector)
-        element = self.driver.execute_script("return arguments[0].shadowRoot", shadow_root)
-        return element
+        el = container.find_element(By.CSS_SELECTOR, selector)
+        return el.shadow_root
 
     def shady_dom(self) -> WebElement:
         class wrapper:

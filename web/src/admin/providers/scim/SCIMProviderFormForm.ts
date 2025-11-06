@@ -7,6 +7,9 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
 import "#admin/common/ak-license-notice";
+import "#components/ak-number-input";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
@@ -96,27 +99,28 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     }
 }
 
-export function renderForm(
-    update: () => void,
-    provider?: Partial<SCIMProvider>,
-    errors: ValidationError = {},
-) {
+export interface SCIMProviderFormProps {
+    update: () => void;
+    provider?: Partial<SCIMProvider>;
+    errors?: ValidationError;
+}
+
+export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
     return html`
         <ak-text-input
             name="name"
-            value=${ifDefined(provider?.name)}
+            value=${ifDefined(provider.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name}
+            .errorMessages=${errors.name}
             required
-            help=${msg("Method's display Name.")}
         ></ak-text-input>
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
-                    value="${provider?.url ?? ""}"
-                    .errorMessages=${errors?.url}
+                    value="${provider.url ?? ""}"
+                    .errorMessages=${errors.url}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
                     input-hint="code"
@@ -125,7 +129,7 @@ export function renderForm(
                 <ak-switch-input
                     name="verifyCertificates"
                     label=${msg("Verify SCIM server's certificates")}
-                    ?checked=${provider?.verifyCertificates ?? true}
+                    ?checked=${provider.verifyCertificates ?? true}
                 >
                 </ak-switch-input>
 
@@ -168,7 +172,7 @@ export function renderForm(
                 <ak-radio-input
                     name="compatibilityMode"
                     label=${msg("Compatibility Mode")}
-                    .value=${provider?.compatibilityMode}
+                    .value=${provider.compatibilityMode}
                     required
                     .options=${[
                         {
@@ -204,7 +208,7 @@ export function renderForm(
                         <input
                             class="pf-c-switch__input"
                             type="checkbox"
-                            ?checked=${provider?.dryRun ?? false}
+                            ?checked=${provider.dryRun ?? false}
                         />
                         <span class="pf-c-switch__toggle">
                             <span class="pf-c-switch__toggle-icon">
@@ -226,7 +230,7 @@ export function renderForm(
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
-                    ?checked=${provider?.excludeUsersServiceAccount ?? true}
+                    ?checked=${provider.excludeUsersServiceAccount ?? true}
                 >
                 </ak-switch-input>
 
@@ -250,7 +254,7 @@ export function renderForm(
                             return group ? group.pk : undefined;
                         }}
                         .selected=${(group: Group): boolean => {
-                            return group.pk === provider?.filterGroup;
+                            return group.pk === provider.filterGroup;
                         }}
                         blankable
                     >
@@ -271,7 +275,7 @@ export function renderForm(
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
-                            provider?.propertyMappings,
+                            provider.propertyMappings,
                             "goauthentik.io/providers/scim/user",
                         )}
                         available-label=${msg("Available User Property Mappings")}
@@ -288,7 +292,7 @@ export function renderForm(
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
                         .selector=${propertyMappingsSelector(
-                            provider?.propertyMappingsGroup,
+                            provider.propertyMappingsGroup,
                             "goauthentik.io/providers/scim/group",
                         )}
                         available-label=${msg("Available Group Property Mappings")}
@@ -298,6 +302,30 @@ export function renderForm(
                         ${msg("Property mappings used to group creation.")}
                     </p>
                 </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>
+
+        <ak-form-group label="${msg("Sync settings")}">
+            <div class="pf-c-form">
+                <ak-number-input
+                    label=${msg("Page size")}
+                    required
+                    name="pageSize"
+                    value="${provider.syncPageSize ?? 100}"
+                    help=${msg("Controls the number of objects synced in a single task.")}
+                ></ak-number-input>
+                <ak-text-input
+                    name="syncPageTimeout"
+                    label=${msg("Page timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.syncPageTimeout ?? "minutes=30"}"
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg("Timeout for synchronization of a single page.")}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
             </div>
         </ak-form-group>
     `;

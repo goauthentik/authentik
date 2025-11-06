@@ -83,29 +83,28 @@ export class ScheduleList extends Table<Schedule> {
         if (this.relObjId !== undefined) {
             return nothing;
         }
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.showOnlyStandalone}
-                                @change=${this.#toggleShowOnlyStandalone}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"> </i>
-                                </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.showOnlyStandalone}
+                            @change=${this.#toggleShowOnlyStandalone}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"> </i>
                             </span>
-                            <span class="pf-c-switch__label">
-                                ${msg("Show only standalone schedules")}
-                            </span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label">
+                            ${msg("Show only standalone schedules")}
+                        </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     row(item: Schedule): SlottedTemplateResult[] {
@@ -151,17 +150,13 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html` <td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <div class="pf-c-content">
-                    <ak-task-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${item.id}"
-                    ></ak-task-list>
-                </div>
-            </div>
-        </td>`;
+        return html`<div class="pf-c-content">
+            <ak-task-list
+                .relObjAppLabel=${appLabel}
+                .relObjModel=${modelName}
+                .relObjId="${item.id}"
+            ></ak-task-list>
+        </div>`;
     }
 }
 

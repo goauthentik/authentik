@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `netbird.company` is the FQDN of the NetBird installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -39,7 +39,7 @@ To support the integration of NetBird with authentik, you need to create an appl
         - Add a `Strict` redirect: `http://localhost:53000`.
         - Add a `Regex` redirect: `https://<netbird.company>/.*`.
         - Select any available signing key.
-    - Under **Advanced Protocol Settings**:
+    - Under **Advanced protocol settings**:
         - Set **Access Code Validity** to `minutes=10`.
         - Set **Subject Mode** to be `Based on the User's ID`.
         - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.
@@ -49,7 +49,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 It is important to set a signing key to secure the provider because this is a `Public` client.
 :::
 
-:::note
+:::info
 If an access group is created for the Netbird application, the Netbird service account must be included in the group. Otherwise you will see a 401 error after login.
 :::
 

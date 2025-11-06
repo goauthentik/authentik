@@ -1,33 +1,34 @@
 [project]
 name = "authentik"
-version = "2025.10.0-rc1"
+version = "2025.12.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
-  "channels-redis==4.3.0",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.1.12",
+  "django==5.2.7",
+  "django-channels-postgres",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
+  "django-postgres-cache",
+  "django-postgres-extra==2.0.9",
   "django-filter==25.1",
   "django-guardian==3.0.3",
   "django-model-utils==5.0.0",
   "django-pglock==1.7.2",
   "django-pgtrigger==4.15.2",
   "django-prometheus==2.4.1",
-  "django-redis==6.0.0",
   "django-storages[s3]==1.14.6",
-  "django-tenants==3.8.0",
+  "django-tenants==3.9.0",
   "djangoql==0.18.1",
   "djangorestframework-guardian==0.4.0",
-  "djangorestframework==3.16.0",
+  "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.7.3",
   "drf-spectacular==0.28.0",
@@ -79,6 +80,7 @@ dev = [
   "aws-cdk-lib==2.188.0",
   "bandit==1.8.3",
   "black==25.1.0",
+  "bpython==0.25",
   "channels[daphne]==4.3.1",
   "codespell==2.4.1",
   "colorama==0.4.6",
@@ -102,6 +104,7 @@ dev = [
   "requests-mock==1.12.1",
   "ruff==0.11.9",
   "selenium==4.32.0",
+  "types-channels==4.3.0.20250822",
   "types-ldap3==2.9.13.20250622",
 ]
 
@@ -118,12 +121,17 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
+django-postgres-cache = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 
 [tool.uv.workspace]
-members = ["packages/django-dramatiq-postgres"]
+members = [
+  "packages/django-channels-postgres",
+  "packages/django-dramatiq-postgres",
+  "packages/django-postgres-cache",
+]
 
 [project.scripts]
 ak = "lifecycle.ak:main"
@@ -200,6 +208,14 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
+follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cron_converter.*", "msgpack.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = [
   "authentik.admin.*",
   "authentik.api.*",
@@ -236,6 +252,7 @@ module = [
   "authentik.sources.plex.*",
   "authentik.sources.saml.*",
   "authentik.sources.scim.*",
+  "authentik.sources.telegram.*",
   "authentik.stages.authenticator_duo.*",
   "authentik.stages.authenticator_email.*",
   "authentik.stages.authenticator_sms.*",
@@ -261,7 +278,6 @@ module = [
   "authentik.tasks.*",
   "authentik.tasks.schedules.*",
   "authentik.tenants.*",
-  "django_dramatiq_postgres.*",
   "lifecycle.*",
   "tests.e2e.*",
   "tests.integration.*",

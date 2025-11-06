@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
+import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
 
 import { AdminApi, Version } from "@goauthentik/api";
 
@@ -10,7 +11,10 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    icon = "pf-icon pf-icon-bundle";
+    public static styles = [...super.styles, Styles];
+
+    public override icon = "pf-icon pf-icon-bundle";
+    public override label = msg("Version");
 
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
@@ -46,10 +50,6 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             icon: "fa fa-question-circle",
             message: html`${msg("Latest version unknown")}`,
         });
-    }
-
-    renderHeader(): TemplateResult {
-        return html`${msg("Version")}`;
     }
 
     renderValue(): TemplateResult {

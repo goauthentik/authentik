@@ -4,7 +4,7 @@ sidebar_label: Frappe
 support_level: community
 ---
 
-:::note
+:::info
 These instructions apply to all projects in the Frappe Family.
 :::
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `provider` is the name for the social login provider in Frappe.
 
-:::note
+:::info
 This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
@@ -41,7 +41,7 @@ To support the integration of Frappe with authentik, you need to create an appli
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`.
     - Select any available signing key.
-    - Under **Advanced Protocol Settings**, set **Subject mode** to be `Based on the Users's username`.
+    - Under **Advanced protocol settings**, set **Subject mode** to be `Based on the Users's username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `123412341234` is your AWS account ID.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -126,7 +126,7 @@ To support the integration of AWS with authentik using IAM Identity Center, you 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
     - Upload the metadata file from AWS (obtained in AWS Configuration steps)
     - Copy the **Issuer URL** to the **Audience** field
-    - Under **Advanced Protocol Settings**, set your **Signing Certificate**
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

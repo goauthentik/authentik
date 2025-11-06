@@ -1,5 +1,6 @@
 import "#components/ak-event-info";
 import "#elements/Tabs";
+import "#elements/timestamp/ak-timestamp";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
@@ -8,21 +9,26 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
-import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
+    public override role = "region";
+    public override ariaLabel = msg("Recent events");
+    public override label = msg("Events");
+
     @property()
     order = "-created";
 
@@ -37,18 +43,10 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     static styles: CSSResult[] = [
+        // ---
         ...super.styles,
         PFCard,
-        css`
-            .pf-c-card__title {
-                --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
-                --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-            }
-            * {
-                word-break: break-all;
-            }
-        `,
+        Styles,
     ];
 
     protected override rowLabel(item: Event): string {
@@ -60,13 +58,13 @@ export class RecentEventsCard extends Table<Event> {
         [msg("User"), "user"],
         [msg("Creation Date"), "created"],
         [msg("Client IP"), "client_ip"],
-        [msg("Brand"), "brand_name"],
     ];
 
     renderToolbar(): TemplateResult {
-        return html`<div class="pf-c-card__title">
-            <i class="pf-icon pf-icon-catalog" aria-hidden="true"></i>&nbsp;${msg("Recent events")}
-        </div>`;
+        return html`<h1 class="pf-c-card__title">
+            <i class="pf-icon pf-icon-catalog" aria-hidden="true"></i>
+            ${msg("Recent events")}
+        </h1>`;
     }
 
     row(item: EventWithContext): SlottedTemplateResult[] {
@@ -74,10 +72,9 @@ export class RecentEventsCard extends Table<Event> {
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            Timestamp(item.created),
+            html`<ak-timestamp .timestamp=${item.created}></ak-timestamp>`,
             html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.brand?.name || msg("-")}</span>`,
         ];
     }
 

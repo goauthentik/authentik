@@ -19,7 +19,7 @@ To use the Email Authenticator Setup stage in a flow, follow these steps:
     - **Name**: provide a descriptive name, such as Email Authenticator Setup.
     - **Authenticator type name**: define the display name for this stage.
     - **Use global connection settings**: the stage can be configured in two ways: global settings or stage-specific settings.
-        - Enable (toggle on) the **Use global connection settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../../install-config/install/kubernetes#optional-step-configure-global-email-credentials).
+        - Enable (toggle on) the **Use global connection settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../../install-config/install/kubernetes#email-configuration-optional-but-recommended).
 
         - If you need different email settings for this stage, disable (toggle off) **Use global connection settings** and configure the following options:
 

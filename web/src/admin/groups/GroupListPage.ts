@@ -13,7 +13,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,11 +22,14 @@ export class GroupListPage extends TablePage<Group> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
+    public searchPlaceholder = msg("Search for a group by name…");
+    public searchLabel = msg("Group Search");
     public pageTitle = msg("Groups");
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",
     );
     public pageIcon = "pf-icon pf-icon-users";
+    public supportsQL = true;
 
     @property()
     order = "name";
@@ -70,7 +73,11 @@ export class GroupListPage extends TablePage<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a
+                href="#/identity/groups/${item.pk}"
+                aria-label=${msg(str`View details of group "${item.name}"`)}
+                >${item.name}</a
+            >`,
             html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
@@ -92,10 +99,10 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Group")}</span>
+                <span slot="submit">${msg("Create Group")}</span>
+                <span slot="header">${msg("New Group")}</span>
                 <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Group")}</button>
             </ak-forms-modal>
         `;
     }

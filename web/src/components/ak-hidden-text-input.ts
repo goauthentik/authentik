@@ -82,6 +82,9 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     @property({ type: String })
     public autocomplete?: AutoFill;
 
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly: boolean = false;
+
     /**
      * @property
      * @attribute
@@ -117,7 +120,10 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
                 "pf-m-monospace": code,
             })}"
             spellcheck=${code ? "false" : "true"}
+            id=${ifPresent(this.fieldID)}
+            aria-describedby=${this.helpID}
             ?required=${this.required}
+            ?readonly=${this.readOnly}
         />`;
     }
 
@@ -127,7 +133,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
             this.value = (ev.target as T).value;
         };
 
-        return html` <div style="display: flex; gap: 0.25rem">
+        return html`<div style="display: flex;" part="control">
             ${this.renderInputField(setValue, code)}
             <ak-visibility-toggle
                 part="toggle"

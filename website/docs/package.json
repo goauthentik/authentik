@@ -23,12 +23,12 @@
         "@goauthentik/docusaurus-config": "^2.1.2",
         "@goauthentik/docusaurus-theme": "*",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.1.15",
-        "@types/react-dom": "^19.1.9",
+        "@types/react": "^19.2.2",
+        "@types/react-dom": "^19.2.2",
         "prism-react-renderer": "^2.3.0",
         "react": "^19.1.1",
         "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^19.1.1",
+        "react-dom": "^19.2.0",
         "unist-util-visit": "^5.0.0"
     },
     "engines": {

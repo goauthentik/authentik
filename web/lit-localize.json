@@ -2,8 +2,9 @@
     "$schema": "https://raw.githubusercontent.com/lit/lit/main/packages/localize-tools/config.schema.json",
     "sourceLocale": "en",
     "targetLocales": [
-        "en",
+        "cs_CZ",
         "de",
+        "en",
         "es",
         "fr",
         "it",
@@ -12,9 +13,9 @@
         "pl",
         "ru",
         "tr",
+        "zh-CN",
         "zh-Hans",
         "zh-Hant",
-        "zh-CN",
         "zh_TW",
         "pseudo-LOCALE"
     ],

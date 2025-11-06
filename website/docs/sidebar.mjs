@@ -83,6 +83,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
             "install-config/reverse-proxy",
@@ -132,6 +133,15 @@ const items = [
                     },
                     {
                         type: "category",
+                        label: "Single Logout",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/single-logout/index",
+                        },
+                        items: [],
+                    },
+                    {
+                        type: "category",
                         label: "Google Workspace Provider",
                         link: {
                             type: "doc",
@@ -175,7 +185,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
-                            "add-secure-apps/providers/oauth2/backchannel-logout",
+                            "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },
@@ -219,7 +229,18 @@ const items = [
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
-                    "add-secure-apps/providers/saml/index",
+                    {
+                        type: "category",
+                        label: "SAML Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/saml/index",
+                        },
+                        items: [
+                            "add-secure-apps/providers/saml/create-saml-provider",
+                            "add-secure-apps/providers/saml/saml_single_logout",
+                        ],
+                    },
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
@@ -554,8 +575,19 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
-                            "users-sources/sources/social-logins/entra-id/index",
                             "users-sources/sources/social-logins/discord/index",
+                            {
+                                type: "category",
+                                label: "Entra ID",
+                                link: {
+                                    type: "doc",
+                                    id: "users-sources/sources/social-logins/entra-id/index",
+                                },
+                                items: [
+                                    "users-sources/sources/social-logins/entra-id/oauth/index",
+                                    "users-sources/sources/social-logins/entra-id/scim/index",
+                                ],
+                            },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
                             {
@@ -571,8 +603,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
-                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/telegram/index",
+                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
                         ],
                     },
@@ -689,10 +722,10 @@ const items = [
                             id: "developer-docs/docs/templates/index",
                         },
                         items: [
+                            "developer-docs/docs/templates/combo",
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],

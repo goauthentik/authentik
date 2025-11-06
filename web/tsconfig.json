@@ -45,6 +45,10 @@
         "storybook-static",
         "src/**/*.test.ts",
         "./tests",
+        // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
+        // Remove when we upgrade past that.
+        "scripts/pseudolocalize.mjs",
+        "scripts/build-locales.mjs",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"

@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -69,7 +69,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
         - Temporarily set the **ACS URL** to `https://temp.temp`
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
+            - Set an available **Signing certificate**.
             - Toggle off **Sign assertions**.
             - Toggle on **Sign responses**.
             - **Property mappings**:
@@ -110,7 +110,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
 2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
 3. Click **Save**.
 
-:::note
+:::info
 SSO login must be specifically enabled on Ironclad user accounts. SSO login on the original Ironclad administrator account can only be enabled by Ironclad support. To request this, contact them at `support@ironcladapp.com`.
 
 For new user accounts, SSO login can be selected when creating the account.

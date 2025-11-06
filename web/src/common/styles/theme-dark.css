@@ -14,6 +14,8 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
 }
 
 body {
@@ -21,9 +23,17 @@ body {
     color-scheme: dark;
 }
 
-.pf-c-radio {
-    --pf-c-radio__label--Color: var(--ak-dark-foreground);
+/* #region Scrollbars */
+
+:root {
+    /**
+     * Scrollbar colors derived from default user agent styles.
+     */
+    --ak-scrollbar-background-color: hsl(0 0% 18%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
 }
+
+/* #endregion */
 
 /* Global page background colour */
 .pf-c-page {
@@ -77,6 +87,22 @@ body {
 
 /* #endregion */
 
+/* #region Fields */
+
+fieldset {
+    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+    }
+
+    @media (prefers-contrast: less) {
+        --ak-fieldset-border-color: transparent;
+    }
+}
+
+/* #endregion */
+
 .pf-c-toolbar {
     --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
 }
@@ -86,20 +112,20 @@ body {
 }
 
 /* #region Tables */
+
 .pf-c-table {
+    --pf-global--Color--100: var(--ak-dark-foreground);
     --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
     --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
     --pf-c-table--cell--Color: var(--ak-dark-foreground);
     --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
     --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
 }
 
 .pf-c-table__text {
     color: var(--ak-dark-foreground);
-}
-
-.pf-c-table__sort:not(.pf-m-selected) .pf-c-table__button .pf-c-table__text {
-    color: var(--ak-dark-foreground) !important;
 }
 
 .pf-c-table__sort-indicator i {
@@ -112,38 +138,6 @@ body {
 
 /* #endregion  */
 
-/* #region Tabs */
-
-.pf-c-tabs {
-    background-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__link::before {
-    border-color: transparent;
-}
-
-.pf-c-tabs__item.pf-m-current {
-    --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
-}
-
-.pf-c-tabs__link {
-    --pf-c-tabs__link--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
-    background-color: transparent;
-}
-
-/* #endregion */
-
 /* #Region Mobile Tables */
 @media screen and (max-width: 1200px) {
     .pf-m-grid-xl.pf-c-table tbody:first-of-type {
@@ -152,6 +146,23 @@ body {
     .pf-m-grid-xl.pf-c-table tr:not(.pf-c-table__expandable-row) {
         border-bottom-color: var(--ak-dark-background);
     }
+}
+
+/* #endregion */
+
+/* #region Page layout */
+
+/**
+ * Our reversal of the page header on the light theme requires us to set the colors
+ * back to their PatternFly defaults.
+ */
+.pf-c-page__header {
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    --pf-global--Color--200: var(--pf-global--Color--light-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
 }
 
 /* #endregion */
@@ -198,40 +209,28 @@ select[multiple] option:checked {
     color: var(--ak-dark-background);
 }
 
-.pf-c-input-group {
-    --pf-c-input-group--BackgroundColor: transparent;
-}
-
 select.pf-c-form-control {
     --pf-c-form-control__select--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%23fafafa' d='M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z'/%3E%3C/svg%3E");
 }
 
 .pf-c-form-control {
-    --pf-c-form-control--BorderTopColor: transparent !important;
-    --pf-c-form-control--BorderRightColor: transparent !important;
-    --pf-c-form-control--BorderLeftColor: transparent !important;
-    --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
-    --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--Color: var(--ak-dark-foreground);
+    /* !important is required to ensure priority when in compatibility mode. */
 
-    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
+    --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
 }
 
-.pf-c-switch__input:checked ~ .pf-c-switch__label {
+/* #endregion */
+
+/* #region Switch */
+.pf-c-switch__label {
+    --pf-c-switch__input--not-checked__label--Color: var(--ak-dark-foreground);
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
 }
 
-/* select toggle */
-.pf-c-select__toggle::before {
-    --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
-    --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
-    --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
-}
+/* #endregion */
 
-.pf-c-select__toggle.pf-m-typeahead {
-    --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
-}
+/* #region Select */
 
 .pf-c-select__menu {
     --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
@@ -254,16 +253,18 @@ select.pf-c-form-control {
     --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
 
-.pf-c-button:disabled {
-    color: var(--ak-dark-background-lighter);
-}
+/* #region Buttons */
 
-.pf-c-button.pf-m-plain {
-    --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
-    --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+.pf-c-button {
+    --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--300);
 
-    &:focus:hover {
-        color: var(--pf-c-button--m-plain--hover--Color);
+    &.pf-m-plain {
+        --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
+        --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+
+        &:focus:hover {
+            color: var(--pf-c-button--m-plain--hover--Color);
+        }
     }
 }
 
@@ -288,6 +289,8 @@ select.pf-c-form-control {
     }
 }
 
+/* #endregion */
+
 .pf-c-form__label-text {
     color: var(--ak-dark-foreground);
 }
@@ -301,18 +304,10 @@ select.pf-c-form-control {
 }
 
 .pf-c-dropdown__menu {
-    --pf-c-dropdown__menu--BackgroundColor: var(--ak-dark-background);
-}
-
-.pf-c-dropdown__menu-item {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
-}
-
-.pf-c-dropdown__menu-item:hover,
-.pf-c-dropdown__menu-item:focus {
-    --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background-light-ish);
-    --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
+    --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
+    --pf-c-dropdown__menu-item--hover--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
+    --pf-c-dropdown__menu-item--hover--Color: var(--pf-global--Color--light-100);
 }
 
 .pf-c-toggle-group__button {
@@ -326,11 +321,6 @@ select.pf-c-form-control {
 .pf-c-toggle-group__button.pf-m-selected {
     color: var(--ak-dark-foreground) !important;
     background-color: var(--pf-global--primary-color--100) !important;
-}
-
-/* inputs help text */
-.pf-c-form__helper-text:not(.pf-m-error) {
-    color: var(--ak-dark-foreground);
 }
 
 /* #endregion */
@@ -389,11 +379,13 @@ select.pf-c-form-control {
 }
 
 .pf-c-notification-drawer {
-    --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background);
+    --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background) !important;
+    --pf-c-notification-drawer__header--BackgroundColor: var(
+        --ak-dark-background-lighter
+    ) !important;
 }
 
 .pf-c-notification-drawer__header {
-    background-color: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
 

@@ -222,16 +222,14 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <div class="pf-c-page__main">
-                                        <ak-router-outlet
-                                            class="pf-l-bullseye__item pf-c-page__main"
-                                            tabindex="-1"
-                                            id="main-content"
-                                            defaultUrl="/library"
-                                            .routes=${ROUTES}
-                                        >
-                                        </ak-router-outlet>
-                                    </div>
+                                    <ak-router-outlet
+                                        class="pf-l-bullseye__item pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        defaultUrl="/library"
+                                        .routes=${ROUTES}
+                                    >
+                                    </ak-router-outlet>
                                 </div>
                             </div>
                             <ak-notification-drawer
@@ -263,6 +261,10 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
 //
 @customElement("ak-interface-user")
 export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
+    public static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
+
+    public override tabIndex = -1;
+
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

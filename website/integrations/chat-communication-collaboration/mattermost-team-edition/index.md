@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `mattermost.company` is the FQDN of the Mattermost installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -43,7 +43,7 @@ To support the integration of Mattermost Team Edition with authentik, you need t
         }
         ```
 
-:::note
+:::info
 The following `id` property mapping is optional. If omitted, Mattermost will generate user IDs based on email addresses, resulting in names such as `person-example.com` for `person@example.com`. Since these IDs serve as nicknames, this format may be undesirable.
 :::
 

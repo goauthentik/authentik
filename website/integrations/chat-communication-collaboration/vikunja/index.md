@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://vikunja.io/
 
-:::note
+:::info
 This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker Compose install https://vikunja.io/docs/full-docker-example/. Instructions may differ between versions.
 :::
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of authentik.
 - `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -83,11 +83,11 @@ auth:
         clientsecret: THIS IS THE CLIENT SECRET YOU COPIED FROM STEP 1 in authentik
 ```
 
-:::note
+:::info
 You need to restart the Vikunja API after applying the OpenID configuration to Vikunja.
 :::
 
-:::note
+:::info
 Vikunja Configuration Reference: https://vikunja.io/docs/config-options/#auth
 :::
 

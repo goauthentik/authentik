@@ -21,6 +21,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
     protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by domain or brand name...");
     public pageTitle = msg("Brands");
     public pageDescription = msg("Configure visual settings and defaults for different domains.");
     public pageIcon = "pf-icon pf-icon-tenant";
@@ -100,10 +101,10 @@ export class BrandListPage extends TablePage<Brand> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Brand")}</span>
+                <span slot="submit">${msg("Create Brand")}</span>
+                <span slot="header">${msg("New Brand")}</span>
                 <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Brand")}</button>
             </ak-forms-modal>
         `;
     }
