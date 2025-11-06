@@ -61,6 +61,14 @@ class SAMLProvider(Provider):
     acs_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
     )
+    sp_binding = models.TextField(
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        verbose_name=_("Service Provider Binding"),
+        help_text=_(
+            "This determines how authentik sends the response back to the Service Provider."
+        ),
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -70,14 +78,6 @@ class SAMLProvider(Provider):
         ),
     )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
-    sp_binding = models.TextField(
-        choices=SAMLBindings.choices,
-        default=SAMLBindings.REDIRECT,
-        verbose_name=_("Service Provider Binding"),
-        help_text=_(
-            "This determines how authentik sends the response back to the Service Provider."
-        ),
-    )
     sls_url = models.TextField(
         blank=True,
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
