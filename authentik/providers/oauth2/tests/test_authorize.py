@@ -6,6 +6,7 @@ from urllib.parse import parse_qs, urlparse
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.timezone import now
+from structlog.stdlib import get_logger
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
@@ -27,6 +28,8 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
+
+logger = get_logger()
 
 
 class TestAuthorize(OAuthTestCase):
@@ -459,6 +462,10 @@ class TestAuthorize(OAuthTestCase):
                     "redirect_uri": "http://localhost",
                     "nonce": generate_id(),
                 },
+            )
+            print("\n\n$$$ RESPONSE:\n", response, response.url, response.content)
+            logger.warning(
+                "Response details", response=response, url=response.url, content=response.content
             )
             self.assertEqual(response.status_code, 302)
             token: AccessToken = AccessToken.objects.filter(user=user).first()
