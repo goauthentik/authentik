@@ -1,0 +1,13 @@
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-modal-box,
+    .pf-c-modal-box__header,
+    .pf-c-modal-box__footer,
+    .pf-c-modal-box__body {
+        background-color: var(--ak-dark-background);
+    }
+}
+
+/* #endregion */

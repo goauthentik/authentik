@@ -1,7 +1,7 @@
 /**
  * @file MDX plugin for ESBuild.
  *
- * @import { Plugin, PluginBuild } from "esbuild"
+ * @import { Plugin, PluginBuild, BuildContext } from "esbuild"
  */
 
 import { readFile } from "node:fs/promises";
@@ -48,6 +48,19 @@ export function styleLoaderPlugin() {
     return {
         name: "global-css-plugin",
         setup(build) {
+            const { absWorkingDir = process.cwd() } = build.initialOptions;
+
+            /**
+             * @type {Map<string, BuildContext>}
+             */
+            const disposables = new Map();
+
+            build.onDispose(async () => {
+                for (const ctx of disposables.values()) {
+                    await ctx.dispose();
+                }
+            });
+
             build.onLoad({ filter: /patternfly-base.css/ }, () => {
                 return {
                     contents: "",
@@ -99,34 +112,48 @@ export function styleLoaderPlugin() {
              */
             build.onLoad({ filter: /.*/, namespace: CSSNamespace.Bundled }, async (args) => {
                 const cssContent = await readFile(args.path, "utf8");
+                let context = disposables.get(args.path);
+
+                if (!context) {
+                    context = await build.esbuild.context({
+                        stdin: {
+                            contents: cssContent,
+                            resolveDir: dirname(args.path),
+                            loader: "css",
+                        },
+                        metafile: true,
+                        bundle: true,
+                        write: false,
+                        minify: build.initialOptions.minify || false,
+                        logLevel: "silent",
+                        loader: { ".woff": "empty", ".woff2": "empty" },
+                        plugins: [
+                            {
+                                name: "font-resolver",
+                                setup(fontBuild) {
+                                    fontBuild.onResolve(...fontResolverArgs);
+                                },
+                            },
+                        ],
+                    });
+
+                    disposables.set(args.path, context);
+                }
+
+                await context.cancel();
 
                 // Resolve the CSS content by bundling it with ESBuild.
-                const result = await build.esbuild.build({
-                    stdin: {
-                        contents: cssContent,
-                        resolveDir: dirname(args.path),
-                        loader: "css",
-                    },
-                    bundle: true,
-                    write: false,
-                    minify: build.initialOptions.minify || false,
-                    logLevel: "silent",
-                    loader: { ".woff": "empty", ".woff2": "empty" },
-                    plugins: [
-                        {
-                            name: "font-resolver",
-                            setup(fontBuild) {
-                                fontBuild.onResolve(...fontResolverArgs);
-                            },
-                        },
-                    ],
-                });
+                const result = await context.rebuild();
 
-                const bundledCSS = result.outputFiles[0].text;
+                const bundledCSS = result.outputFiles?.[0].text;
+                const { inputs = {} } = result.metafile || {};
+                const relativePaths = Object.keys(inputs).filter((path) => path !== "<stdin>");
+                const watchFiles = relativePaths.map((path) => join(absWorkingDir, path));
 
                 return {
                     contents: bundledCSS,
                     loader: "text",
+                    watchFiles,
                 };
             });
         },

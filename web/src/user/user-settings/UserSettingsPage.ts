@@ -15,11 +15,12 @@ import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 
 import type { UserInterface } from "#user/index.entrypoint";
+import Styles from "#user/user-settings/styles.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -48,36 +49,7 @@ export class UserSettingsPage extends AKElement {
         PFForm,
         PFFormControl,
         PFStack,
-        css`
-            .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-
-            .pf-c-page__main {
-                min-height: 100vh;
-            }
-            .pf-c-page__main,
-            .pf-c-page__main {
-                overflow: unset;
-            }
-
-            @media screen and (min-width: 1200px) {
-                :host {
-                    width: 90rem;
-                    max-width: 100%;
-                    align-self: center;
-                }
-            }
-        `,
+        Styles,
     ];
 
     @state()

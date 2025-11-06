@@ -2,10 +2,10 @@
  * @file Theme utilities.
  */
 
-import AKBase from "#common/styles/authentik.css" with { type: "bundled-text" };
-import PFBase from "#common/styles/patternfly/v4/base.css" with { type: "bundled-text" };
-import AKBaseDark from "#common/styles/theme-dark.css" with { type: "bundled-text" };
 import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
+
+import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
+import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -25,13 +25,6 @@ export const $PFBase = createStyleSheetUnsafe(PFBase);
  * and additional customizations.
  */
 export const $AKBase = createStyleSheetUnsafe(AKBase);
-
-/**
- * A global style sheet for the authentik dark theme.
- *
- * @see {@linkcode $PFBase} for details.
- */
-export const $AKBaseDark = createStyleSheetUnsafe(AKBaseDark);
 
 //#endregion
 
@@ -237,14 +230,7 @@ export function applyUITheme(
     setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
         const appendedSheets = additionalStyleSheets.filter(Boolean) as CSSStyleSheet[];
 
-        if (currentUITheme === UiThemeEnum.Dark) {
-            return [...currentStyleSheets, $AKBaseDark, ...appendedSheets];
-        }
-
-        return [
-            ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
-            ...appendedSheets,
-        ];
+        return [...currentStyleSheets, ...appendedSheets];
     });
 }
 
@@ -260,17 +246,6 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
 
     const applyStyleSheets: UIThemeListener = (currentUITheme) => {
         console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
-
-        setAdoptedStyleSheets(document, (currentStyleSheets) => {
-            if (currentUITheme === "dark") {
-                return [...currentStyleSheets, $AKBase, $AKBaseDark];
-            }
-
-            return [
-                ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
-                $AKBase,
-            ];
-        });
 
         document.documentElement.dataset.theme = currentUITheme;
     };

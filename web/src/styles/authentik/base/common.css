@@ -1,0 +1,90 @@
+/* #region Screen readers */
+
+.sr-only {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* #endregion */
+
+/* #region Modifiers */
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
+}
+
+.pf-m-success {
+    color: var(--pf-global--success-color--100) !important;
+}
+
+.pf-m-warning {
+    color: var(--pf-global--warning-color--100);
+}
+
+.pf-m-danger {
+    color: var(--pf-global--danger-color--100);
+}
+
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+/* #endregion */
+
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    /**
+     * Our reversal of Patternfly's light variables requires us to set the colors
+     * back to their defaults when in dark mode.
+     */
+    .pf-m-dark {
+        --pf-global--Color--100: var(--pf-global--Color--light-100);
+        --pf-global--Color--200: var(--pf-global--Color--light-200);
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+        --pf-global--link--Color: var(--pf-global--link--Color--light);
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
+    }
+
+    .pf-u-mb-xl {
+        color: var(--ak-dark-foreground);
+    }
+}
+
+/* #endregion */

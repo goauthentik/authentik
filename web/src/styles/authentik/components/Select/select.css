@@ -1,0 +1,37 @@
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-select__toggle::before {
+        --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
+        --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
+    }
+
+    .pf-c-select__toggle.pf-m-typeahead {
+        --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
+    }
+
+    .pf-c-select__menu {
+        --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-select__menu-item {
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-select__menu-wrapper:hover,
+    .pf-c-select__menu-item:hover {
+        --pf-c-select__menu-item--hover--BackgroundColor: var(--ak-dark-background-lighter);
+    }
+
+    .pf-c-select__menu-wrapper:focus-within,
+    .pf-c-select__menu-wrapper.pf-m-focus,
+    .pf-c-select__menu-item:focus,
+    .pf-c-select__menu-item.pf-m-focus {
+        --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+}
+
+/* #endregion */

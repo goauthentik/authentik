@@ -9,7 +9,7 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
-import Styles from "./FlowExecutor.css";
+import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
@@ -486,7 +486,7 @@ export class FlowExecutor
                                 <div class="pf-c-login" data-layout=${layout} part="login">
                                     ${this.loading && this.challenge
                                         ? html`<ak-loading-overlay
-                                              part="login-overlay"
+                                              class="pf-c-login__overlay"
                                           ></ak-loading-overlay>`
                                         : nothing}
 
@@ -500,8 +500,12 @@ export class FlowExecutor
                                             part="branding"
                                         >
                                             <img
+                                                class="branding-logo"
                                                 part="branding-logo"
-                                                src="${themeImage(this.brandingLogo)}"
+                                                src="${themeImage(
+                                                    this.brandingLogo,
+                                                    this.activeTheme,
+                                                )}"
                                                 alt="${msg("authentik Logo")}"
                                                 role="presentation"
                                             />

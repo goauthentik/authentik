@@ -1,0 +1,71 @@
+.pf-c-table {
+    --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+    --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+}
+
+.pf-c-table__sort.pf-m-selected {
+    text-decoration: underline;
+
+    .pf-c-table__button .pf-c-table__text {
+        --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+
+        --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+    }
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-table {
+        --pf-global--Color--100: var(--ak-dark-foreground);
+        --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
+        --pf-c-table--cell--Color: var(--ak-dark-foreground);
+        --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+        --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-global--link--Color: var(--pf-global--link--Color--light);
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+    }
+
+    .pf-c-table__text {
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-table__sort-indicator i {
+        color: var(--ak-dark-foreground) !important;
+    }
+
+    .pf-c-table__expandable-row.pf-m-expanded {
+        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(
+            --ak-dark-background-lighter
+        );
+    }
+
+    /* #endregion  */
+
+    /* #region Mobile Tables */
+
+    @media screen and (max-width: 1200px) {
+        .pf-m-grid-xl.pf-c-table tbody:first-of-type {
+            border-top-color: var(--ak-dark-background);
+        }
+        .pf-m-grid-xl.pf-c-table tr:not(.pf-c-table__expandable-row) {
+            border-bottom-color: var(--ak-dark-background);
+        }
+    }
+
+    /* #endregion */
+
+    .pf-c-toolbar {
+        --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
+    }
+
+    .pf-c-pagination.pf-m-bottom {
+        background-color: var(--ak-dark-background-light);
+    }
+
+    .pf-c-table__toggle-icon {
+        color: var(--ak-dark-foreground);
+    }
+}

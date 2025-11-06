@@ -4,7 +4,7 @@
  * @import { Preview } from "@storybook/web-components";
  */
 
-import "#common/styles/storybook.css";
+import "#styles/authentik/storybook.css";
 
 import { ThemedDocsContainer } from "./DocsContainer.tsx";
 import { extendStorybookTheme } from "./theme.js";

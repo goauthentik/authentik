@@ -1,0 +1,15 @@
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-data-list {
+        padding-inline-start: 0;
+        border-top-color: var(--ak-dark-background-lighter);
+    }
+
+    .pf-c-data-list__item {
+        --pf-c-data-list__item--BackgroundColor: transparent;
+        --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
+    }
+}

@@ -1,0 +1,24 @@
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-wizard__nav {
+        --pf-c-wizard__nav--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-c-wizard__nav--lg--BorderRightColor: transparent;
+    }
+
+    .pf-c-wizard__main {
+        background-color: var(--ak-dark-background-light-ish);
+    }
+
+    .pf-c-wizard__footer {
+        --pf-c-wizard__footer--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+
+    .pf-c-wizard__toggle-num,
+    .pf-c-wizard__nav-link::before {
+        --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
+    }
+}
+
+/* #endregion */

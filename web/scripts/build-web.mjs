@@ -163,7 +163,6 @@ async function doWatch() {
 
     const buildContext = await esbuild.context(buildOptions);
 
-    await buildContext.rebuild();
     await buildContext.watch();
 
     const httpURL = new URL("http://localhost");

@@ -18,7 +18,10 @@ const styles = css`
     }
     ul.pf-c-list.pf-m-inline {
         justify-content: center;
-        padding: calc(var(--pf-global--spacer--xs) / 2) 0px;
+        padding: 0;
+        padding-block-start: calc(var(--pf-global--spacer--xs) / 2);
+        column-gap: var(--pf-global--spacer--xl);
+        row-gap: var(--pf-global--spacer--md);
     }
 `;
 

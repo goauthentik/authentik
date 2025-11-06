@@ -86,13 +86,13 @@ export const EntryPoint = /** @type {const} */ ({
         in: resolve(PackageRoot, "src", "polyfill", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "poly"),
     },
-    ThemeBase: {
-        in: resolve(PackageRoot, "src", "common", "styles", "base.global.css"),
-        out: resolve(DistDirectory, "styles", "base"),
+    InterfaceStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "interface.global.css"),
+        out: resolve(DistDirectory, "styles", "interface"),
     },
-    ThemeDark: {
-        in: resolve(PackageRoot, "src", "common", "styles", "dark.global.css"),
-        out: resolve(DistDirectory, "styles", "dark"),
+    StaticStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "static.global.css"),
+        out: resolve(DistDirectory, "styles", "static"),
     },
 });
 

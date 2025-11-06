@@ -1,0 +1,62 @@
+.pf-c-page__main,
+.pf-c-drawer__content,
+.pf-c-page__drawer {
+    z-index: auto !important;
+    background-color: transparent !important;
+}
+.pf-c-page__header {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: black !important;
+}
+
+:host([theme="light"]) .pf-c-button.pf-m-secondary {
+    color: var(--ak-global--Color--100) !important;
+}
+
+.pf-c-page {
+    background-color: transparent;
+}
+
+.display-none {
+    display: none;
+}
+
+.pf-c-brand {
+    min-height: 32px;
+    height: 32px;
+}
+
+.has-notifications {
+    color: #2b9af3;
+}
+
+.background-wrapper {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background-color: var(--pf-c-page--BackgroundColor) !important;
+}
+
+.background-default-slant {
+    background-color: white; /*var(--ak-accent);*/
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
+    height: 50vh;
+}
+
+:host([theme="dark"]) .background-default-slant {
+    background-color: black;
+}
+
+ak-locale-context {
+    display: flex;
+    flex-direction: column;
+}
+
+.pf-c-drawer__main {
+    min-height: calc(100vh - 76px);
+    max-height: calc(100vh - 76px);
+}

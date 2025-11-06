@@ -32,6 +32,7 @@
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
+        "./styles/*": "./src/styles/*",
         "./elements/*": "./src/elements/*",
         "./common/*": "./src/common/*",
         "./components/*": "./src/components/*",
@@ -53,7 +54,7 @@
         }
     },
     "imports": {
-        "#common/*.css": "./src/common/*.css",
+        "#styles/*.css": "./src/styles/*.css",
         "#common/*": "./src/common/*.js",
         "#elements/*.css": "./src/elements/*.css",
         "#elements/*": "./src/elements/*.js",
@@ -224,9 +225,7 @@
                 "./dist/enterprise/**",
                 "./dist/poly-*.js",
                 "./dist/poly-*.js.map",
-                "./dist/theme-dark.css",
-                "./dist/one-dark.css",
-                "./dist/patternfly.min.css"
+                "./dist/styles/**"
             ],
             "dependencies": [
                 "build-locales",
