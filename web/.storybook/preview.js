@@ -4,6 +4,7 @@
  * @import { Preview } from "@storybook/web-components";
  */
 
+import "#styles/authentik/interface.global.css";
 import "#styles/authentik/storybook.css";
 
 import { ThemedDocsContainer } from "./DocsContainer.tsx";

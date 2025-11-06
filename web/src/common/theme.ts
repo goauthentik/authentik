@@ -2,31 +2,9 @@
  * @file Theme utilities.
  */
 
-import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
-
-import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
-import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
+import { setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";
-
-//#region Stylesheet Exports
-
-/**
- * Patternfly base styles, providing common variables and resets.
- *
- * @remarks
- *
- * This style sheet **must** be included before any other styles that depend on Patternfly variables.
- */
-export const $PFBase = createStyleSheetUnsafe(PFBase);
-
-/**
- * authentik base styles, providing overrides to Patternfly's initial definitions,
- * and additional customizations.
- */
-export const $AKBase = createStyleSheetUnsafe(AKBase);
-
-//#endregion
 
 //#region Scheme Types
 

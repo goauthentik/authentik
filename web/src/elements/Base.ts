@@ -1,8 +1,6 @@
 import { globalAK } from "#common/global";
 import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
 import {
-    $AKBase,
-    $PFBase,
     applyUITheme,
     createUIThemeEffect,
     CSSColorSchemeValue,
@@ -11,11 +9,29 @@ import {
     resolveUITheme,
 } from "#common/theme";
 
+import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
+import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
+
 import { UiThemeEnum } from "@goauthentik/api";
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+
+/**
+ * Patternfly base styles, providing common variables and resets.
+ *
+ * @remarks
+ *
+ * This style sheet **must** be included before any other styles that depend on Patternfly variables.
+ */
+const $PFBase = createStyleSheetUnsafe(PFBase);
+
+/**
+ * authentik base styles, providing overrides to Patternfly's initial definitions,
+ * and additional customizations.
+ */
+const $AKBase = createStyleSheetUnsafe(AKBase);
 
 export interface AKElementProps {
     activeTheme: ResolvedUITheme;
