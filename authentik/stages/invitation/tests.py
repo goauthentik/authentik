@@ -16,9 +16,9 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import (
-    INVITATION_TOKEN_KEY,
-    INVITATION_TOKEN_KEY_CONTEXT,
+    PLAN_CONTEXT_INVITATION_TOKEN,
     PLAN_CONTEXT_PROMPT,
+    QS_INVITATION_TOKEN_KEY,
 )
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -89,7 +89,7 @@ class TestInvitationStage(FlowTestCase):
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
 
         session = self.client.session
@@ -114,7 +114,7 @@ class TestInvitationStage(FlowTestCase):
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
 
         session = self.client.session
@@ -134,7 +134,7 @@ class TestInvitationStage(FlowTestCase):
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY_CONTEXT: invite.pk.hex}
+        plan.context[PLAN_CONTEXT_PROMPT] = {PLAN_CONTEXT_INVITATION_TOKEN: invite.pk.hex}
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

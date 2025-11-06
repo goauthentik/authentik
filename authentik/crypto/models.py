@@ -6,6 +6,11 @@ from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
@@ -18,6 +23,16 @@ from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
+
+
+class KeyType(models.TextChoices):
+    """Cryptographic key algorithm types"""
+
+    RSA = "rsa", _("RSA")
+    EC = "ec", _("Elliptic Curve")
+    DSA = "dsa", _("DSA")
+    ED25519 = "ed25519", _("Ed25519")
+    ED448 = "ed448", _("Ed448")
 
 
 def fingerprint_sha256(cert: Certificate) -> str:
@@ -102,6 +117,22 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
             if self.key_data
             else ""
         )  # nosec
+
+    @property
+    def key_type(self) -> str | None:
+        """Get the key algorithm type from the certificate's public key"""
+        public_key = self.certificate.public_key()
+        if isinstance(public_key, RSAPublicKey):
+            return KeyType.RSA
+        if isinstance(public_key, EllipticCurvePublicKey):
+            return KeyType.EC
+        if isinstance(public_key, DSAPublicKey):
+            return KeyType.DSA
+        if isinstance(public_key, Ed25519PublicKey):
+            return KeyType.ED25519
+        if isinstance(public_key, Ed448PublicKey):
+            return KeyType.ED448
+        return None
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"

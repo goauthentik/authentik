@@ -182,6 +182,17 @@ html > form > input {
     overflow: hidden;
 }
 
+@media not (prefers-contrast: more) {
+    .less-contrast-sr-only {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+}
+
 /* #endregion */
 
 /* #region Icons */
@@ -225,9 +236,63 @@ html > form > input {
 
 /* #region Form controls */
 
+/* TODO: Move after PF5 */
+
+:root {
+    --ak-c-form-control-BackgroundColor: transparent;
+    --ak-c-form-control-BackgroundColor--hover: color-mix(in srgb, transparent 100%, Field 50%);
+    --ak-c-form-control-BackgroundColor--focus: color-mix(in srgb, transparent 100%, Field 75%);
+}
+
+@media (prefers-contrast: more) {
+    :root {
+        --ak-c-form-control-BackgroundColor: color-mix(in srgb, transparent 100%, Field 50%);
+        --ak-c-form-control-BackgroundColor--hover: color-mix(in srgb, transparent 100%, Field 75%);
+        --ak-c-form-control-BackgroundColor--focus: Field;
+    }
+}
+
 .pf-c-form-control {
-    --pf-c-form-control--readonly--BackgroundColor: var(--pf-global--BackgroundColor--200);
-    --pf-c-form-control--disabled--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    /* !important is required to ensure priority when in compatibility mode. */
+
+    --pf-c-form-control--readonly--BackgroundColor: var(
+        --pf-global--BackgroundColor--200
+    ) !important;
+    --pf-c-form-control--disabled--BackgroundColor: var(
+        --pf-global--BackgroundColor--200
+    ) !important;
+
+    --pf-c-form-control--BorderTopColor: transparent;
+    --pf-c-form-control--BorderRightColor: transparent;
+    --pf-c-form-control--BorderLeftColor: transparent;
+
+    --pf-c-form-control--Color: FieldText !important;
+    --pf-c-form-control--BackgroundColor: var(--ak-c-form-control-BackgroundColor) !important;
+
+    &:hover {
+        --pf-c-form-control--BackgroundColor: var(
+            --ak-c-form-control-BackgroundColor--hover
+        ) !important;
+    }
+
+    &:focus {
+        --pf-c-form-control--BackgroundColor: var(
+            --ak-c-form-control-BackgroundColor--focus
+        ) !important;
+
+        @media not (prefers-contrast: more) {
+            outline: none;
+        }
+
+        @media (prefers-contrast: more) {
+            outline-offset: 0.25em;
+        }
+    }
+
+    @media (prefers-contrast: more) {
+        --pf-c-text-input-group--placeholder--Color: GrayText;
+        --pf-c-form-control--placeholder--Color: GrayText;
+    }
 
     /* #region Caps Lock */
 
@@ -242,10 +307,70 @@ html > form > input {
     /* #endregion */
 }
 
+input.pf-c-form-control {
+    &[type="text"],
+    &[type="email"],
+    &[type="password"],
+    &[type="search"],
+    textarea {
+        @media not (prefers-contrast: more) {
+            border-inline: 0;
+            border-block-start-color: transparent;
+        }
+
+        @media (prefers-contrast: more) {
+            border: 1px solid ButtonBorder !important;
+
+            &:focus {
+                border: 1px solid Highlight !important;
+            }
+        }
+    }
+}
+
+@media (prefers-contrast: less) {
+    input {
+        outline: none !important;
+    }
+}
+
+.pf-c-input-group {
+    --pf-c-input-group--BackgroundColor: transparent !important;
+}
+
 /* #region Buttons */
 
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+}
+
+/* #endregion */
+
+/* #region Select */
+
+.pf-c-select {
+    --pf-c-select__toggle--BackgroundColor: transparent;
+    --pf-c-select__toggle-typeahead--BackgroundColor: var(--ak-c-form-control-BackgroundColor);
+}
+
+.pf-c-select__toggle-typeahead {
+    &:hover {
+        --pf-c-select__toggle-typeahead--BackgroundColor: var(
+            --ak-c-form-control-BackgroundColor--hover
+        );
+    }
+
+    &:focus {
+        --pf-c-select__toggle-typeahead--BackgroundColor: var(
+            --ak-c-form-control-BackgroundColor--focus
+        );
+    }
+}
+
+.pf-c-select__toggle::before {
+    --pf-c-select__toggle--before--BorderTopColor: transparent;
+    --pf-c-select__toggle--before--BorderRightColor: transparent;
+    --pf-c-select__toggle--before--BorderLeftColor: transparent;
 }
 
 /* #endregion */
@@ -523,7 +648,23 @@ fieldset {
 
 /* #endregion */
 
-/* #region Switch  */
+/* #region Radio */
+
+.pf-c-radio {
+    cursor: pointer;
+    user-select: none;
+    --pf-c-radio__label--Color: FieldText;
+    --pf-c-radio__description--Color: GrayText;
+
+    @media (prefers-contrast: more) {
+        --pf-c-radio__description--Color: color-mix(in srgb, GrayText 100%, FieldText 75%);
+    }
+}
+
+/* #endregion */
+
+/* #region Switch */
+
 .pf-c-switch {
     --pf-c-switch__input--focus__toggle--OutlineWidth: 0;
 
@@ -538,7 +679,8 @@ fieldset {
 }
 
 .pf-c-form__helper-text {
-    text-wrap: pretty;
+    text-wrap: balance;
+    text-wrap: pretty; /* Supporting browsers. */
 }
 
 ::placeholder {
@@ -552,7 +694,7 @@ fieldset {
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
 
-    &::placeholder {
+    &:not([inputmode="url"])::placeholder {
         font-family: var(--pf-global--FontFamily--sans-serif);
     }
 }

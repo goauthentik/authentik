@@ -55,6 +55,11 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
+	if ac.IsEmbedded() {
+		l.Info("using PostgreSQL session backend")
+	} else {
+		l.Info("using filesystem session backend")
+	}
 	s := &ProxyServer{
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),
@@ -190,7 +195,7 @@ func (ps *ProxyServer) Stop() error {
 }
 
 func (ps *ProxyServer) serve(listener net.Listener) {
-	srv := &http.Server{Handler: ps.mux}
+	srv := web.Server(ps.mux)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})
