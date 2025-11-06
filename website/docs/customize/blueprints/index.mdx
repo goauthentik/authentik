@@ -32,31 +32,13 @@ To _apply_ a blueprint means that the content in the blueprint file is initiated
 :::
 Be aware of how editing a flow impacts the related flow. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow (which is based on the blueprint) plus any changes you made to the flow. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then create and apply the corollary default blueprint.
 
-## Add or edit blueprints
+## Storage of bueprints
 
-...words here...
+When you add a new blueprint instance, you can define where the `.yaml` file is stored.
 
-#### Create a new blueprint instance
+### As a local file
 
-1. Log in as an administrator to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Customization > Blueprints**.
-3. Click **Create** and define the new blueprint instance.
-    - **Name**: provide a descriptive name.
-    - **Enabled**: toggle on or off. Disabled blueprints cannot be applied.
-    - **Blueprint**: select the blueprint upon which you want this new instance to be based. You can select a blueprint file from either a **Local path** (these are part of your authentik installation), an **OCI registry**, or **Internal** (you add the file contents there in the field).
-    - **Additional Settings**:
-        - **Context**: here you can add any key:value variable that you want to use in the blueprint instance.
-4. Click **Create** to save the new blueprint instance.
-
-### Add a new Flow import
-
-I have no idea how...
-
-... also need to cover how to edit one...
-
-## Storage - File
-
-The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple default subdirectories:
+The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple of default subdirectories:
 
 - `/blueprints/default`: Default blueprints for default flows, tenants, etc
 - `/blueprints/example`: Example blueprints for common configurations and flows
@@ -74,7 +56,7 @@ Please note that, by default, blueprint discovery and evaluation is not guarante
 If you have dependencies between blueprints, you should use [meta models](./v1/meta#authentik_blueprintsmetaapplyblueprint) to make sure that objects are created in the correct order.
 :::
 
-## Storage - OCI
+### In an OCI registry
 
 Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.
 
@@ -90,7 +72,7 @@ To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) ca
 oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
 ```
 
-## Storage - Internal
+## Internally in authentik's database
 
 Blueprints can be stored in authentik's database, which allows blueprints to be managed via external configuration management tools like Terraform.
 
