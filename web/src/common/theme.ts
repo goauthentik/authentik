@@ -81,8 +81,8 @@ export function formatColorScheme(theme: ResolvedUITheme): ResolvedCSSColorSchem
 export function formatColorScheme(
     colorScheme: ResolvedCSSColorSchemeValue,
 ): ResolvedCSSColorSchemeValue;
-export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue;
-export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue {
+export function formatColorScheme(hint?: string): CSSColorSchemeValue;
+export function formatColorScheme(hint?: string): CSSColorSchemeValue {
     if (!hint) return "auto";
 
     switch (hint) {
@@ -113,7 +113,7 @@ export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue {
  * @category CSS
  */
 export function resolveUITheme(
-    hint?: UIThemeHint,
+    hint?: string,
     defaultUITheme: ResolvedUITheme = UiThemeEnum.Light,
 ): ResolvedUITheme {
     const colorScheme = formatColorScheme(hint);
@@ -150,35 +150,59 @@ export function createUIThemeEffect(
     effect: UIThemeListener,
     listenerOptions?: AddEventListenerOptions,
 ): UIThemeDestructor {
-    const colorSchemeTarget = resolveUITheme();
-    const invertedColorSchemeTarget = UIThemeInversion[colorSchemeTarget];
+    const colorSchemeTarget: ResolvedUITheme = "light";
+    const inversionTarget = UIThemeInversion[colorSchemeTarget];
 
-    let previousUITheme: ResolvedUITheme | undefined;
+    const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
 
     // First, wrap the effect to ensure we can abort it.
-    const changeListener = (event: MediaQueryListEvent) => {
+    const mediaChangeListener = (event: MediaQueryListEvent) => {
         if (listenerOptions?.signal?.aborted) return;
 
-        const currentUITheme = event.matches ? colorSchemeTarget : invertedColorSchemeTarget;
+        const { themeChoice, theme: previousTheme } = document.documentElement.dataset;
 
-        if (previousUITheme === currentUITheme) return;
+        if (themeChoice && themeChoice !== "auto") {
+            console.debug(
+                `authentik/theme (document): skipping media query change due to explicit choice (${themeChoice})`,
+            );
+            return;
+        }
 
-        previousUITheme = currentUITheme;
+        const currentUITheme = event.matches ? colorSchemeTarget : inversionTarget;
+
+        if (previousTheme === currentUITheme) return;
 
         effect(currentUITheme);
     };
 
-    const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
+    const themeChoiceListener = () => {
+        let theme = formatColorScheme(document.documentElement.dataset.themeChoice);
 
-    // Trigger the effect immediately.
-    effect(colorSchemeTarget);
+        if (theme === "auto") {
+            theme = mediaQueryList.matches
+                ? colorSchemeTarget
+                : UIThemeInversion[colorSchemeTarget];
+        }
+
+        document.documentElement.dataset.theme = theme;
+
+        effect(theme);
+    };
+
+    const documentObserver = new MutationObserver(themeChoiceListener);
+
+    documentObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme-choice"],
+    });
 
     // Listen for changes to the color scheme...
-    mediaQueryList.addEventListener("change", changeListener, listenerOptions);
+    mediaQueryList.addEventListener("change", mediaChangeListener);
 
     // Finally, allow the caller to remove the effect.
     const cleanup = () => {
-        mediaQueryList.removeEventListener("change", changeListener);
+        documentObserver.disconnect();
+        mediaQueryList.removeEventListener("change", mediaChangeListener);
     };
 
     listenerOptions?.signal?.addEventListener("abort", cleanup);
@@ -202,7 +226,6 @@ export function createUIThemeEffect(
  */
 export function applyUITheme(
     styleRoot: StyleRoot,
-    currentUITheme: ResolvedUITheme = resolveUITheme(),
     ...additionalStyleSheets: Array<CSSStyleSheet | undefined | null>
 ): void {
     setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
@@ -212,29 +235,50 @@ export function applyUITheme(
     });
 }
 
+export class ThemeChangeEvent extends Event {
+    static readonly eventName = "ak-theme-change";
+
+    public readonly theme: ResolvedUITheme;
+
+    constructor(hint?: string) {
+        super(ThemeChangeEvent.eventName, { bubbles: true, composed: true });
+
+        this.theme = resolveUITheme(hint);
+    }
+}
+
+declare global {
+    interface GlobalEventHandlersEventMap {
+        [ThemeChangeEvent.eventName]: ThemeChangeEvent;
+    }
+}
+
 /**
  * Applies the given theme to the document, i.e. the `<html>` element.
  *
  * @param hint The color scheme hint to use.
  */
-export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "auto"): void {
-    const preferredColorScheme = formatColorScheme(hint);
+export const applyDocumentTheme: UIThemeListener = (currentUITheme) => {
+    console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
-    if (document.documentElement.dataset.theme === preferredColorScheme) return;
+    const { themeChoice } = document.documentElement.dataset;
 
-    const applyStyleSheets: UIThemeListener = (currentUITheme) => {
-        console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+    if (themeChoice && themeChoice !== "auto") {
+        console.debug(
+            `authentik/theme (document): skipping theme application due to explicit choice (${themeChoice})`,
+        );
 
-        document.documentElement.dataset.theme = currentUITheme;
-    };
+        document.dispatchEvent(new ThemeChangeEvent(themeChoice));
 
-    if (preferredColorScheme === "auto") {
-        createUIThemeEffect(applyStyleSheets);
         return;
     }
 
-    applyStyleSheets(preferredColorScheme);
-}
+    document.documentElement.dataset.theme = currentUITheme;
+
+    console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+
+    document.dispatchEvent(new ThemeChangeEvent(currentUITheme));
+};
 
 /**
  * A CSS variable representing the global background image.

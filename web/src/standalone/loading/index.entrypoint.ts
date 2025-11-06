@@ -1,6 +1,3 @@
-import { globalAK } from "#common/global";
-import { applyDocumentTheme } from "#common/theme";
-
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
@@ -34,12 +31,6 @@ export class Loading extends AKElement {
             }
         `,
     ];
-
-    constructor() {
-        super();
-
-        applyDocumentTheme(globalAK().brand.uiTheme);
-    }
 
     public connectedCallback(): void {
         super.connectedCallback();

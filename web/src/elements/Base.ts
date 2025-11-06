@@ -1,18 +1,9 @@
 import { globalAK } from "#common/global";
 import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
-import {
-    applyUITheme,
-    createUIThemeEffect,
-    CSSColorSchemeValue,
-    formatColorScheme,
-    ResolvedUITheme,
-    resolveUITheme,
-} from "#common/theme";
+import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from "#common/theme";
 
 import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
 import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
@@ -65,8 +56,10 @@ export class AKElement extends LitElement implements AKElementProps {
 
         const { brand } = globalAK();
 
-        this.preferredColorScheme = formatColorScheme(brand.uiTheme);
-        this.activeTheme = resolveUITheme(brand?.uiTheme);
+        const preferredColorScheme = resolveUITheme(
+            document.documentElement.dataset.theme || globalAK().brand.uiTheme,
+        );
+        this.activeTheme = preferredColorScheme;
 
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
@@ -133,11 +126,6 @@ export class AKElement extends LitElement implements AKElementProps {
     //#region Private Properties
 
     /**
-     * The preferred color scheme used to look up the UI theme.
-     */
-    protected readonly preferredColorScheme: CSSColorSchemeValue;
-
-    /**
      * A custom CSS style sheet to apply to the element.
      */
     readonly #customCSSStyleSheet: CSSStyleSheet | null;
@@ -160,25 +148,17 @@ export class AKElement extends LitElement implements AKElementProps {
 
         this.#themeAbortController = new AbortController();
 
-        if (this.preferredColorScheme === "dark") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Dark, this.#customCSSStyleSheet);
+        document.addEventListener(
+            ThemeChangeEvent.eventName,
+            (event) => {
+                applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
 
-            this.activeTheme = UiThemeEnum.Dark;
-        } else if (this.preferredColorScheme === "light") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet);
-            this.activeTheme = UiThemeEnum.Light;
-        } else if (this.preferredColorScheme === "auto") {
-            createUIThemeEffect(
-                (nextUITheme) => {
-                    applyUITheme(nextStyleRoot, nextUITheme, this.#customCSSStyleSheet);
-
-                    this.activeTheme = nextUITheme;
-                },
-                {
-                    signal: this.#themeAbortController.signal,
-                },
-            );
-        }
+                this.activeTheme = event.theme;
+            },
+            {
+                signal: this.#themeAbortController.signal,
+            },
+        );
     }
 
     protected get styleRoot(): StyleRoot | undefined {

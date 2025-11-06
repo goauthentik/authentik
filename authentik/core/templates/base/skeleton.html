@@ -3,8 +3,10 @@
 {% load authentik_core %}
 
 <!DOCTYPE html>
-
-<html data-theme="{{ ui_theme|default:'auto' }}">
+<html
+    data-theme="{% if ui_theme == "dark" %}dark{% else %}light{% endif %}"
+    data-theme-choice="{% if ui_theme == "dark" %}dark{% elif ui_theme == "light" %}light{% else %}auto{% endif %}"
+>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">

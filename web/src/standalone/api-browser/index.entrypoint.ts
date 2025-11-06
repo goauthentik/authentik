@@ -45,14 +45,18 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @state()
     textColor = "#000000";
 
-    firstUpdated(): void {
-        createUIThemeEffect((theme) => {
-            document.documentElement.dataset.theme = theme;
-            const style = getComputedStyle(document.body);
+    #synchronizeTheme = () => {
+        const style = getComputedStyle(document.body);
 
-            this.bgColor = rgba2hex(style.backgroundColor.trim());
-            this.textColor = rgba2hex(style.color.trim());
-        });
+        this.bgColor = rgba2hex(style.backgroundColor.trim());
+        this.textColor = rgba2hex(style.color.trim());
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.#synchronizeTheme();
+        createUIThemeEffect(this.#synchronizeTheme);
     }
 
     render(): TemplateResult {

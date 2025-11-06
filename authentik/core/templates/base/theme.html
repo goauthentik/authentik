@@ -15,17 +15,29 @@
     "use strict";
 
     (function () {
-      const theme =
-        new URLSearchParams(window.location.search).get("theme") ||
-        window.localStorage?.getItem("theme");
+        try {
+            const initialThemeChoice =
+                new URLSearchParams(window.location.search).get("theme") ||
+                window.localStorage?.getItem("theme");
 
-      // Set the theme attribute on root element.
-      document.documentElement.dataset.theme =
-        theme || window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            const themeChoice =
+                initialThemeChoice || document.documentElement.dataset.themeChoice || "auto";
 
-      // Set theme choice attribute.
-      document.documentElement.dataset.themeChoice = theme || "system";
-  })();
+            document.documentElement.dataset.themeChoice = themeChoice;
+
+            if (themeChoice === "auto") {
+                document.documentElement.dataset.theme = window.matchMedia(
+                    "(prefers-color-scheme: dark)",
+                ).matches
+                    ? "dark"
+                    : "light";
+            } else {
+                document.documentElement.dataset.theme = themeChoice;
+            }
+        } catch (e) {
+            console.error("Failed to apply theme", e);
+        }
+    })();
   </script>
 
   <meta name="color-scheme" content="light dark" />

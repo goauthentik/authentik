@@ -7,8 +7,11 @@ body {
 }
 
 body {
-    background-color: var(--ak-global--background-color, var(--pf-global--BackgroundColor--150));
-
+    background-color: var(
+        --ak-global--background-color,
+        var(--pf-global--BackgroundColor--150, Canvas)
+    );
+    color: var(--pf-global--Color--100, CanvasText);
     &::before {
         content: "";
         position: fixed;
@@ -36,20 +39,22 @@ html > form > input {
     left: -2000px;
 }
 
+/* #region Light Theme */
+
+html[data-theme="light"] body {
+    color-scheme: light;
+}
+
+/* #endregion */
+
 /* #region Dark Theme */
 
-html[data-theme="dark"] {
-    /* #region Document */
+html[data-theme="dark"] body {
+    color-scheme: dark;
 
-    body {
-        color-scheme: dark;
-    }
-
-    body:has(ak-flow-executor) {
+    &:has(ak-flow-executor) {
         background-color: var(--pf-global--BackgroundColor--150);
     }
-
-    /* #endregion */
 }
 
 /* #endregion */
