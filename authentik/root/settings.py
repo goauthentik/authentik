@@ -6,7 +6,7 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from django.utils import http
+from django.http import response as http_response
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -477,7 +477,7 @@ STORAGES = {
 # as the maximum for a URL to redirect to, mostly for running on windows.
 # However our URLs can easily exceed that with OAuth/SAML Query parameters or hash values
 # 8192 should cover most cases..
-http.MAX_URL_LENGTH = http.MAX_URL_LENGTH * 4
+http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
 
 
 # Media files
