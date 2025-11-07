@@ -6,6 +6,7 @@ from hashlib import sha256
 from typing import Any, Optional
 from uuid import uuid4
 
+import pgtrigger
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser, Permission
@@ -21,6 +22,8 @@ from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings
 from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.indexes import UniqueIndex
+from psqlextra.models import PostgresMaterializedViewModel
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -260,11 +263,23 @@ class GroupParentageNode(models.Model):
 
         db_table = "authentik_core_groupparentage"
 
+        triggers = [
+            pgtrigger.Trigger(
+                name="refresh_groupancestry",
+                operation=pgtrigger.Insert | pgtrigger.Update | pgtrigger.Delete,
+                when=pgtrigger.After,
+                func="""
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY authentik_core_groupancestry;
+                    RETURN NULL;
+                """,
+            ),
+        ]
+
     def __str__(self) -> str:
         return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
 
 
-class GroupAncestryNode(models.Model):
+class GroupAncestryNode(PostgresMaterializedViewModel):
     descendant = models.ForeignKey(
         Group, related_name="ancestor_nodes", on_delete=models.DO_NOTHING
     )
@@ -276,7 +291,33 @@ class GroupAncestryNode(models.Model):
         # This is a transitive closure of authentik_core_groupparentage
         # See https://en.wikipedia.org/wiki/Transitive_closure#In_graph_theory
         db_table = "authentik_core_groupancestry"
-        managed = False
+        indexes = [
+            models.Index(fields=["descendant"]),
+            models.Index(fields=["ancestor"]),
+            UniqueIndex(fields=["id"]),
+        ]
+
+    class ViewMeta:
+        query = """
+            WITH RECURSIVE accumulator AS (
+                SELECT
+                child_id::text || '-' || parent_id::text as id,
+                child_id AS descendant_id,
+                parent_id AS ancestor_id
+                FROM authentik_core_groupparentage
+
+                UNION
+
+                SELECT
+                accumulator.descendant_id::text || '-' || current.parent_id::text as id,
+                accumulator.descendant_id,
+                current.parent_id AS ancestor_id
+                FROM accumulator
+                JOIN authentik_core_groupparentage current
+                ON accumulator.ancestor_id = current.child_id
+            )
+            SELECT * FROM accumulator
+        """
 
     def __str__(self) -> str:
         return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
