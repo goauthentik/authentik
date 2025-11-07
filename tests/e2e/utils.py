@@ -262,13 +262,34 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         body_text = context.text.strip()
 
+        inner_html = context.get_attribute("innerHTML") or ""
+        if "redirecting" in inner_html.lower():
+            try:
+                wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
+            except TimeoutException:
+                snippet = context.text.strip()[:500].replace("\n", " ")
+
+                self.fail(
+                    f"Timed out waiting for redirect to finish at {self.driver.current_url}. "
+                    f"Current content: {snippet or '<empty>'}"
+                )
+
+            body_text = context.text.strip()
+
+        snippet = body_text[:500].replace("\n", " ")
+
+        if not body_text.startswith("{") and not body_text.startswith("["):
+            self.fail(
+                f"Expected JSON content but got non-JSON text at {self.driver.current_url}: "
+                f"{snippet or '<empty>'}"
+            )
+
         try:
             body_json = loads(body_text)
         except JSONDecodeError as e:
-            snippet = body_text[:500].replace("\n", " ")
             self.fail(
                 f"Expected JSON but got invalid content at {self.driver.current_url}: "
-                f"{snippet} (JSON error: {e})"
+                f"{snippet or '<empty>'} (JSON error: {e})"
             )
 
         return body_json
