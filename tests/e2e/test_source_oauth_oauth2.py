@@ -1,6 +1,5 @@
 """test OAuth Source"""
 
-from json import loads
 from pathlib import Path
 from time import sleep
 
@@ -187,17 +186,36 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        next_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
+        expected_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
+        self.driver.get(expected_url)
 
-        # Print to debug
+        self.wait_for_url(expected_url)
 
-        print("Waiting for URL:", next_url)
-        self.driver.get(self.url("authentik_api:usersourceconnection-list") + "?format=json")
+        body_json = self.parse_json_content()
+        results = body_json.get("results")
+        current_url = self.driver.current_url
 
-        body_json = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
-        sleep(60)
-        results = body_json["results"]
-        self.assertEqual(len(results), 1)
+        self.assertIsInstance(
+            results,
+            list,
+            f"Expected 'results' to be a list at {current_url}: {results}",
+        )
+        self.assertEqual(
+            len(results),
+            1,
+            f"Expected exactly 1 result at {current_url}, got {len(results)}: {results}",
+        )
+
         connection = results[0]
-        self.assertEqual(connection["source_obj"]["slug"], self.slug)
-        self.assertEqual(connection["user"], self.user.pk)
+
+        self.assertEqual(
+            connection.get("source_obj", {}).get("slug"),
+            self.slug,
+            f"Expected slug '{self.slug}' at {self.driver.current_url}, got: {connection}",
+        )
+
+        self.assertEqual(
+            connection.get("user"),
+            self.user.pk,
+            f"Expected user {self.user.pk} at {self.driver.current_url}, got: {connection}",
+        )

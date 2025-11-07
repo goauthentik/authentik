@@ -41,6 +41,8 @@ from authentik.root.test_runner import get_docker_tag
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
 
+JSONType = dict[str, Any] | list[Any] | str | int | float | bool | None
+
 
 def get_local_ip() -> str:
     """Get the local machine's IP"""
@@ -206,14 +208,14 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::endgroup::")
         self.driver.quit()
 
-    def wait_for_url(self, desired_url):
+    def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
         self.wait.until(
             lambda driver: driver.current_url == desired_url,
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 
-    def url(self, view, query: dict | None = None, **kwargs) -> str:
+    def url(self, view: str, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         url = self.live_server_url + reverse(view, kwargs=kwargs)
         if query:
@@ -226,6 +228,50 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         if path:
             return f"{url}#{path}"
         return url
+
+    def parse_json_content(
+        self, context: WebElement | None = None, timeout: float | None = 10
+    ) -> JSONType:
+        """
+        Parse JSON from a Selenium element's text content.
+
+        If `context` is not provided, defaults to the <body> element.
+        Raises a clear test failure if the element isn't found, the text doesn't appear
+        within `timeout` seconds, or the text is not valid JSON.
+        """
+
+        try:
+            if context is None:
+                context = self.driver.find_element(By.TAG_NAME, "body")
+        except NoSuchElementException:
+            self.fail(
+                f"No element found (defaulted to <body>). Current URL: {self.driver.current_url}"
+            )
+
+        wait_timeout = timeout or self.wait_timeout
+        wait = WebDriverWait(context, wait_timeout)
+
+        try:
+            wait.until(lambda d: len(d.text.strip()) != 0)
+        except TimeoutException:
+            snippet = context.text.strip()[:500].replace("\n", " ")
+            self.fail(
+                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
+                f"Current content: {snippet or '<empty>'}"
+            )
+
+        body_text = context.text.strip()
+
+        try:
+            body_json = json.loads(body_text)
+        except json.JSONDecodeError as e:
+            snippet = body_text[:500].replace("\n", " ")
+            self.fail(
+                f"Expected JSON but got invalid content at {self.driver.current_url}: "
+                f"{snippet} (JSON error: {e})"
+            )
+
+        return body_json
 
     def get_shadow_root(
         self, selector: str, container: WebElement | WebDriver | None = None
@@ -287,13 +333,48 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
-        self.driver.get(self.url("authentik_api:user-me") + "?format=json")
-        user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        user = UserSerializer(data=json.loads(user_json)["user"])
-        user.is_valid()
-        self.assertEqual(user["username"].value, expected_user.username)
-        self.assertEqual(user["name"].value, expected_user.name)
-        self.assertEqual(user["email"].value, expected_user.email)
+
+        expected_url = self.url("authentik_api:user-me") + "?format=json"
+        self.driver.get(expected_url)
+
+        self.wait.until(lambda d: d.current_url == expected_url)
+
+        user_json = self.parse_json_content()
+        data = user_json.get("user")
+
+        self.assertIsNotNone(
+            data,
+            f"Missing 'user' key in response at {self.driver.current_url}: {json.dumps(user_json, indent=2)[:500].replace('\n', ' ')}"
+        )
+
+        # Initialize serializer and check validity
+        user = UserSerializer(data=data)
+
+        if not user.is_valid():
+            errors_snippet = json.dumps(user.errors, indent=2).replace("\n", " ")
+            self.fail(f"UserSerializer is invalid at {self.driver.current_url}: {errors_snippet}")
+
+        # Build a snippet for debugging actual values
+        snippet = json.dumps(user.data, indent=2)[:500].replace("\n", " ")
+
+        # Assert individual fields with contextual messages
+        self.assertEqual(
+            user["username"].value,
+            expected_user.username,
+            f"Username mismatch at {self.driver.current_url}: {snippet}"
+        )
+
+        self.assertEqual(
+            user["name"].value,
+            expected_user.name,
+            f"Name mismatch at {self.driver.current_url}: {snippet}"
+        )
+
+        self.assertEqual(
+            user["email"].value,
+            expected_user.email,
+            f"Email mismatch at {self.driver.current_url}: {snippet}"
+        )
 
 
 @lru_cache
