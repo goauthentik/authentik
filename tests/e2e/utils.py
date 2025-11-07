@@ -261,8 +261,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             )
 
         body_text = context.text.strip()
-
         inner_html = context.get_attribute("innerHTML") or ""
+
         if "redirecting" in inner_html.lower():
             try:
                 wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
@@ -274,6 +274,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                     f"Current content: {snippet or '<empty>'}"
                 )
 
+            inner_html = context.get_attribute("innerHTML") or ""
             body_text = context.text.strip()
 
         snippet = body_text[:500].replace("\n", " ")
@@ -282,6 +283,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             self.fail(
                 f"Expected JSON content but got non-JSON text at {self.driver.current_url}: "
                 f"{snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
             )
 
         try:
@@ -289,7 +291,9 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         except JSONDecodeError as e:
             self.fail(
                 f"Expected JSON but got invalid content at {self.driver.current_url}: "
-                f"{snippet or '<empty>'} (JSON error: {e})"
+                f"{snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
+                f"(JSON error: {e})"
             )
 
         return body_json
