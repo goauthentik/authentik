@@ -15,7 +15,7 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
 ### Add and apply a new blueprint instance
 
 1. Log in as an administrator to authentik, and open the Admin interface.
-2. Navigate to **Customization > Blueprints**.
+2. Navigate to **Customization** > **Blueprints**.
 3. Click **Create** and define the new blueprint instance.
     - **Name**: provide a descriptive name.
     - **Enabled**: toggle on or off. Disabled blueprints cannot be applied.
