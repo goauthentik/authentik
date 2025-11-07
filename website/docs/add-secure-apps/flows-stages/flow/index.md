@@ -32,7 +32,7 @@ Keep in mind that in certain circumstances, policies cannot match against users 
 
 Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints)) to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality to existing workflows, or to add a new, custom workflow.
 
-Yiu can create your own flow or download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
+You can create your own flow or download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
 Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
 
