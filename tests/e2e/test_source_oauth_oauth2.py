@@ -91,11 +91,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+                (By.CSS_SELECTOR, "fieldset[name='login-sources'] button")
             )
         )
         identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+            By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
@@ -135,11 +135,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         wait.until(
             ec.presence_of_element_located(
-                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+                (By.CSS_SELECTOR, "fieldset[name='login-sources'] button")
             )
         )
         identification_stage.find_element(
-            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+            By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
         # Now we should be at the IDP, wait for the login field
@@ -187,8 +187,15 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
+        next_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
+
+        # Print to debug
+
+        print("Waiting for URL:", next_url)
         self.driver.get(self.url("authentik_api:usersourceconnection-list") + "?format=json")
+
         body_json = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        sleep(60)
         results = body_json["results"]
         self.assertEqual(len(results), 1)
         connection = results[0]

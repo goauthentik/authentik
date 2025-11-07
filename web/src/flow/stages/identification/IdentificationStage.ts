@@ -11,6 +11,7 @@ import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
 import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+import Styles from "#flow/stages/identification/styles.css";
 
 import {
     FlowDesignationEnum,
@@ -21,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -60,37 +61,7 @@ export class IdentificationStage extends BaseStage<
         PFTitle,
         PFButton,
         ...AkRememberMeController.styles,
-        css`
-            /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
-                background-color: transparent;
-                border: 0;
-                display: flex;
-                align-items: stretch;
-            }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-            }
-
-            .captcha-container {
-                /* compatibility-mode-fix */
-                & {
-                    position: relative;
-                }
-
-                .faux-input {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    opacity: 0;
-                    pointer-events: none;
-                }
-            }
-        `,
+        Styles,
     ];
 
     /**
@@ -271,19 +242,20 @@ export class IdentificationStage extends BaseStage<
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
-        return html`<li class="pf-c-login__main-footer-links-item">
-            <button
-                type="button"
-                @click=${() => {
-                    if (!this.host) return;
-                    this.host.challenge = source.challenge;
-                }}
-                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
-            >
-                <span class="pf-c-button__icon pf-m-start">${icon}</span>
-                ${this.challenge.showSourceLabels ? source.name : ""}
-            </button>
-        </li>`;
+
+        return html`<button
+            type="button"
+            @click=${() => {
+                if (!this.host) return;
+                this.host.challenge = source.challenge;
+            }}
+            part="source-item"
+            class="pf-c-button pf-m-block pf-m-plain"
+            aria-label=${msg(str`Continue with ${source.name}`)}
+        >
+            <span class="pf-c-button__icon pf-m-start">${icon}</span>
+            ${this.challenge.showSourceLabels ? source.name : ""}
+        </button>`;
     }
 
     renderFooter() {
@@ -436,13 +408,20 @@ export class IdentificationStage extends BaseStage<
                     : nothing}
             </form>
             ${this.challenge.sources?.length
-                ? html`<ul slot="footer" class="pf-c-login__main-footer-links">
+                ? html`<fieldset
+                      slot="footer"
+                      part="source-list"
+                      role="group"
+                      name="login-sources"
+                      class="pf-c-form__group"
+                  >
+                      <legend class="sr-only">${msg("Login sources")}</legend>
                       ${repeat(
                           this.challenge.sources,
-                          (source) => source.name,
+                          (source, idx) => source.name + idx,
                           (source) => this.renderSource(source),
                       )}
-                  </ul> `
+                  </fieldset> `
                 : null}
             ${this.renderFooter()}
         </ak-flow-card>`;

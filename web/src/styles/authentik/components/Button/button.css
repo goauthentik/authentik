@@ -8,10 +8,15 @@
 :host([theme="dark"]) {
     .pf-c-button {
         --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--300);
+        --pf-c-button--m-plain--hover--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-c-button--m-plain--active--BackgroundColor: var(--ak-dark-background-lighter);
+        --pf-c-button--m-plain--focus--BackgroundColor: var(--ak-dark-background-lighter);
 
         &.pf-m-plain {
-            --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
+            --pf-c-button--disabled--BackgroundColor: transparent;
             --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+            --pf-c-button--m-plain--active--BackgroundColor: var(--ak-dark-background-lighter);
+            --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
 
             &:focus:hover {
                 color: var(--pf-c-button--m-plain--hover--Color);

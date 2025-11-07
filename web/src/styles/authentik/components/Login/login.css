@@ -8,8 +8,8 @@
     --pf-c-login__main-body--PaddingBottom: 0;
     --pf-c-login__main-footer--PaddingBottom: clamp(
         var(--pf-global--spacer--xs),
-        7dvw,
-        var(--pf-global--spacer--3xl)
+        6dvw,
+        var(--pf-global--spacer--xl)
     );
 
     flex: 1 1 auto;
@@ -110,7 +110,7 @@
 
 .pf-c-login__main-header.pf-c-brand {
     padding-inline: calc(var(--ak-login--padding) / 4);
-    padding-block-start: clamp(var(--pf-global--spacer--xs), 7dvw, var(--pf-global--spacer--3xl));
+    padding-block-start: clamp(var(--pf-global--spacer--xs), 7dvw, var(--pf-global--spacer--2xl));
     padding-block-end: calc(var(--ak-login--padding) / 2);
 
     display: flex;
@@ -246,13 +246,6 @@
 :host([theme="dark"]) {
     .pf-c-login {
         --pf-c-login__main--BackgroundColor: var(--ak-dark-background);
-    }
-
-    @media (min-width: 35rem) and (min-height: 50rem) {
-        .pf-c-login__main-footer-links-item img,
-        .pf-c-login__main-footer-links-item .fas {
-            filter: invert(1);
-        }
     }
 
     .pf-c-login__main-footer-band {

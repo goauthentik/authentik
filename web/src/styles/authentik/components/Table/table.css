@@ -18,6 +18,7 @@
 [data-theme="dark"],
 :host([theme="dark"]) {
     .pf-c-table {
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-300);
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);

@@ -1,0 +1,49 @@
+fieldset[name="login-sources"] {
+    --ak-login-sources-padding-inline: var(--pf-global--spacer--xl);
+
+    padding-inline: var(--ak-login-sources-padding-inline) !important;
+    padding-block-start: var(--pf-global--spacer--lg) !important;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--pf-global--spacer--sm);
+
+    .pf-c-button {
+        color: inherit;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        gap: var(--pf-global--spacer--sm);
+    }
+
+    .pf-c-button__icon img {
+        height: var(--pf-global--FontSize--2xl);
+        fill: var(--pf-global--icon--Color--light);
+    }
+
+    @media (min-width: 768px) {
+        --ak-login-sources-padding-inline: var(--pf-global--spacer--2xl);
+    }
+}
+
+.captcha-container {
+    /* compatibility-mode-fix */
+    & {
+        position: relative;
+    }
+
+    .faux-input {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+:host([theme="dark"]) fieldset[name="login-sources"] .pf-c-button__icon {
+    img,
+    .pf-c-button__icon .fas {
+        filter: invert(1);
+    }
+}
