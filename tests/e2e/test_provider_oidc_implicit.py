@@ -1,6 +1,6 @@
 """test OAuth2 OpenID Provider flow"""
 
-from json import loads
+from json import dumps
 from time import sleep
 
 from selenium.webdriver.common.by import By
@@ -149,12 +149,29 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.driver.get("http://localhost:9009/implicit/")
         self.wait.until(ec.title_contains("authentik"))
         self.login()
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
-        self.assertEqual(body["profile"]["nickname"], self.user.username)
-        self.assertEqual(body["profile"]["name"], self.user.name)
-        self.assertEqual(body["profile"]["email"], self.user.email)
+
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
+
+        profile = body.get("profile", {})
+
+        self.assertEqual(
+            profile.get("nickname"),
+            self.user.username,
+            f"Nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            profile.get("name"),
+            self.user.name,
+            f"Name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            profile.get("email"),
+            self.user.email,
+            f"Email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -218,13 +235,28 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             "[type=submit]",
         ).click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["profile"]["nickname"], self.user.username)
-        self.assertEqual(body["profile"]["name"], self.user.name)
-        self.assertEqual(body["profile"]["email"], self.user.email)
+        profile = body.get("profile", {})
+
+        self.assertEqual(
+            profile.get("nickname"),
+            self.user.username,
+            f"Nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            profile.get("name"),
+            self.user.name,
+            f"Name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            profile.get("email"),
+            self.user.email,
+            f"Email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(

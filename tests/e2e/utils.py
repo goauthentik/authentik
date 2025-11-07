@@ -1,9 +1,9 @@
 """authentik e2e testing utilities"""
 
-import json
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
+from json import JSONDecodeError, dumps, loads
 from os import environ, getenv
 from sys import stderr
 from time import sleep
@@ -263,8 +263,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         body_text = context.text.strip()
 
         try:
-            body_json = json.loads(body_text)
-        except json.JSONDecodeError as e:
+            body_json = loads(body_text)
+        except JSONDecodeError as e:
             snippet = body_text[:500].replace("\n", " ")
             self.fail(
                 f"Expected JSON but got invalid content at {self.driver.current_url}: "
@@ -341,39 +341,37 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         user_json = self.parse_json_content()
         data = user_json.get("user")
+        snippet = dumps(user_json, indent=2)[:500].replace("\n", " ")
 
         self.assertIsNotNone(
             data,
-            f"Missing 'user' key in response at {self.driver.current_url}: {json.dumps(user_json, indent=2)[:500].replace('\n', ' ')}"
+            f"Missing 'user' key in response at {self.driver.current_url}: {snippet}",
         )
 
-        # Initialize serializer and check validity
         user = UserSerializer(data=data)
 
         if not user.is_valid():
-            errors_snippet = json.dumps(user.errors, indent=2).replace("\n", " ")
+            errors_snippet = dumps(user.errors, indent=2).replace("\n", " ")
             self.fail(f"UserSerializer is invalid at {self.driver.current_url}: {errors_snippet}")
 
-        # Build a snippet for debugging actual values
-        snippet = json.dumps(user.data, indent=2)[:500].replace("\n", " ")
+        snippet = dumps(user.data, indent=2)[:500].replace("\n", " ")
 
-        # Assert individual fields with contextual messages
         self.assertEqual(
             user["username"].value,
             expected_user.username,
-            f"Username mismatch at {self.driver.current_url}: {snippet}"
+            f"Username mismatch at {self.driver.current_url}: {snippet}",
         )
 
         self.assertEqual(
             user["name"].value,
             expected_user.name,
-            f"Name mismatch at {self.driver.current_url}: {snippet}"
+            f"Name mismatch at {self.driver.current_url}: {snippet}",
         )
 
         self.assertEqual(
             user["email"].value,
             expected_user.email,
-            f"Email mismatch at {self.driver.current_url}: {snippet}"
+            f"Email mismatch at {self.driver.current_url}: {snippet}",
         )
 
 
