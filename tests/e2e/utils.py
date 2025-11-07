@@ -371,11 +371,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         user = UserSerializer(data=data)
 
-        if not user.is_valid():
-            errors_snippet = dumps(user.errors, indent=2).replace("\n", " ")
-            self.fail(f"UserSerializer is invalid at {self.driver.current_url}: {errors_snippet}")
-
-        snippet = dumps(user.data, indent=2)[:500].replace("\n", " ")
+        user.is_valid()
 
         self.assertEqual(
             user["username"].value,
