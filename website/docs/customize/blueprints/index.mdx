@@ -29,11 +29,11 @@ To learn how to apply, create, modify, and manage blueprints, refer to [Working 
 
 - You can apply a pre-configured flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is out of the box.
 
-This YAML file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
+    This YAML file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
-:::info
-Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
-:::
+    :::info
+    Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
+    :::
 
 ## Blueprint execution
 
@@ -48,14 +48,16 @@ Additionally, all blueprints have access to built-in context variables:
 - `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
 - `goauthentik.io/rbac/models`: Dictionary of available RBAC models
 
-These can be accessed using the `!Context` tag, for example:
+When you create or edit a blueprint instance, these context variables can be accessed using the `!Context` tag in the YAML file (or in the UI under **Advanced settings** on the Create/Edit page).
+
+**Example**:
 
 ```yaml
 conditions:
     - !Context goauthentik.io/enterprise/licensed
 ```
 
-## Storage of blueprints
+## Blueprint storage
 
 When you add a new blueprint instance, you can define where the `.yaml` file is stored.
 

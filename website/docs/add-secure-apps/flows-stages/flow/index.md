@@ -30,9 +30,9 @@ Keep in mind that in certain circumstances, policies cannot match against users 
 
 ## Import or export a flow
 
-Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints))to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints)) to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality to existing workflows, or to add a new, custom workflow.
 
-Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
+Yiu can create your own flow or download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
 Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
 
@@ -88,3 +88,9 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
 - **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands.md#branding-settings).
+
+## Edit or delete a flow
+
+- To edit a flow, navigate to **Customization > Flows** in the Admin interface, and then click **Edit** for the flow that you want to modify.
+
+- To delete a flow, navigate to **Customization > Flows** in the Admin interface, select the checkbox in front of the flow instance that you want to delete, and then click **Delete** at the top of the list. You can retrieve and re-apply that flow by following the steps above to create a new flow.
