@@ -19,6 +19,8 @@ import {
 const base = resolveUITheme();
 const theme = extendStorybookTheme(base);
 
+applyDocumentTheme(base);
+
 createUIThemeEffect(applyDocumentTheme);
 
 /**

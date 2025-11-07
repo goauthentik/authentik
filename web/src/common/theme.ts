@@ -258,7 +258,7 @@ declare global {
  *
  * @param hint The color scheme hint to use.
  */
-export const applyDocumentTheme: UIThemeListener = (currentUITheme) => {
+export const applyDocumentTheme = ((currentUITheme = resolveUITheme()): void => {
     console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
     const { themeChoice } = document.documentElement.dataset;
@@ -278,7 +278,7 @@ export const applyDocumentTheme: UIThemeListener = (currentUITheme) => {
     console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
     document.dispatchEvent(new ThemeChangeEvent(currentUITheme));
-};
+}) satisfies UIThemeListener;
 
 /**
  * A CSS variable representing the global background image.
