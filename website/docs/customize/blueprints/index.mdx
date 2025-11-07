@@ -8,31 +8,31 @@ Blueprints are used to manage authentik default flows and other system objects. 
 
 Custom blueprint instances can be used to replace or modify default blueprints in certain circumstances. For example, you could modify the `default-authentication-flow` to change the layout of the login panel from the center to one side of the page.
 
-## Types of blueprints
+## Applying blueprints
 
-Blueprints can be applied in one of two ways:
+To _apply_ a blueprint means that the content in the blueprint file is initiated and used by authentik. Blueprints can be applied in one of two ways:
 
-- as a _Blueprint instance_
-- as a _Flow import_
-
-To _apply_ a blueprint means that the content in the blueprint file is initiated and used by authentik.
+- as a _blueprint instance_ (a new instance of a configuration that you can then further customize)
+- as an _imported flow_ (to add a new flow, or to revert to the default, out-of-box flow)
 
 To learn how to apply, create, modify, and manage blueprints, refer to [Working with blueprints](./working_with_blueprints.md).
 
 ### Blueprint instance
 
-- A Blueprint _instance_ is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+- A Blueprint _instance_ is an instantiation of a blueprint. Each instance is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
 
     :::info
     authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint instance file is created, and trigger a blueprint apply when a file is modified.
     :::
 
-### Flow import
+### Imported flow
 
-- A Flow import is a YAML file uploaded via the browser/API. This file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
+- You can apply a pre-configured flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is out of the box.
+
+This YAML file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
 :::info
-Be aware of how editing a default flow impacts the related flow import. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then create and apply the corollary blueprint for the default import flow.
+Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
 :::
 
 ## Blueprint execution

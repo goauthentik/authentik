@@ -22,7 +22,7 @@ By default, policies are evaluated dynamically, right before the stage (to which
 
 This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.mdx).
 
-## Permissions
+## Policies and permissions
 
 Flows can have [policies](../stages/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
@@ -30,7 +30,7 @@ Keep in mind that in certain circumstances, policies cannot match against users 
 
 ## Import or export a flow
 
-Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints))to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
 
 Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
