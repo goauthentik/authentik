@@ -5023,6 +5023,8 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - file_deleted
+            - file_uploaded
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -5308,6 +5310,8 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - file_deleted
+            - file_uploaded
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -9075,6 +9079,8 @@ paths:
           - configuration_error
           - custom_
           - email_sent
+          - file_deleted
+          - file_uploaded
           - flow_execution
           - impersonation_ended
           - impersonation_started
@@ -34861,6 +34867,8 @@ components:
       - model_deleted
       - email_sent
       - update_available
+      - file_uploaded
+      - file_deleted
       - custom_
       type: string
     EventMatcherPolicy:

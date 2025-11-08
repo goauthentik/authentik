@@ -6,4 +6,3 @@ class AuthentikFilesConfig(ManagedAppConfig):
     label = "authentik_files"
     verbose_name = "authentik Files"
     default = True
-    #mountpoint = "api/v3/"

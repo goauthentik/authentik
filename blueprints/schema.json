@@ -6665,6 +6665,8 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "file_uploaded",
+                        "file_deleted",
                         "custom_"
                     ],
                     "title": "Action"
@@ -6766,6 +6768,8 @@
                                 "model_deleted",
                                 "email_sent",
                                 "update_available",
+                                "file_uploaded",
+                                "file_deleted",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -7511,6 +7515,8 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "file_uploaded",
+                        "file_deleted",
                         "custom_"
                     ],
                     "title": "Action",

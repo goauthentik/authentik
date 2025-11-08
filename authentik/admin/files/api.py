@@ -16,6 +16,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.admin.files.backend import (
     Backend,
     FileBackend,
@@ -393,6 +394,16 @@ class FileViewSet(ViewSet):
                    backend=backend.__class__.__name__,
                    size=len(content))
 
+        # Audit log for file upload
+        Event.new(
+            EventAction.FILE_UPLOADED,
+            file_path=file_path,
+            usage=usage.value,
+            backend=backend.__class__.__name__,
+            size=len(content),
+            mime_type=get_mime_from_filename(file_path),
+        ).from_http(request)
+
         return Response(self._build_file_response(file_path, backend, usage))
 
     @extend_schema(
@@ -464,5 +475,13 @@ class FileViewSet(ViewSet):
                    file_path=file_path,
                    usage=usage.value,
                    backend=backend.__class__.__name__)
+
+        # Audit log for file deletion
+        Event.new(
+            EventAction.FILE_DELETED,
+            file_path=file_path,
+            usage=usage.value,
+            backend=backend.__class__.__name__,
+        ).from_http(request)
 
         return Response({"message": f"File {file_path} deleted successfully"})

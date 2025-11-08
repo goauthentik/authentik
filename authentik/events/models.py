@@ -117,6 +117,9 @@ class EventAction(models.TextChoices):
 
     UPDATE_AVAILABLE = "update_available"
 
+    FILE_UPLOADED = "file_uploaded"
+    FILE_DELETED = "file_deleted"
+
     CUSTOM_PREFIX = "custom_"
 
 
