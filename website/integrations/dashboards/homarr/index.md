@@ -45,14 +45,15 @@ To support the integration of Homarr with authentik, you need to create an appli
 Add the following environment variables to your Homarr configuration. Make sure to fill in the Client ID, Client Secret, OIDC Issuer, and OIDC URI from your authentik instance.
 
 ```sh
-AUTH_PROVIDERS="oidc,credentials"
+AUTH_PROVIDERS=oidc,credentials
 AUTH_OIDC_CLIENT_ID=<Client ID from authentik>
 AUTH_OIDC_CLIENT_SECRET=<Client secret from authentik>
 AUTH_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
 AUTH_OIDC_URI=https://authentik.company/application/o/authorize
 AUTH_OIDC_CLIENT_NAME=authentik
-OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
-# Optional: You can add this if you only want to allow auto login via authentik
+# Optional: Enable this if you want to allow migrating Homarr accounts between OIDC providers.
+# AUTH_OIDC_ENABLE_DANGEROUS_ACCOUNT_LINKING=true
+# Optional: Enable this if you want to skip the login button and auto-login via authentik.
 # AUTH_OIDC_AUTO_LOGIN=true
 ```
 

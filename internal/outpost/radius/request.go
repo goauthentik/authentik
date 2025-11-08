@@ -1,6 +1,7 @@
 package radius
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/md5"
 	"errors"
@@ -45,7 +46,7 @@ func (r *RadiusRequest) validateMessageAuthenticator() error {
 		return err
 	}
 	hash.Write(encode)
-	if !hmac.Equal(mauth, hash.Sum(nil)) {
+	if bytes.Equal(mauth, hash.Sum(nil)) {
 		return ErrInvalidMessageAuthenticator
 	}
 	return nil
