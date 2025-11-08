@@ -108,7 +108,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-status-label
                 type="info"
                 ?good=${item.privateKeyAvailable}
-                good-label=${msg(str`Yes (${item.privateKeyType?.toUpperCase()})`)}
+                good-label=${msg(str`Yes (${item.keyType?.toUpperCase()})`)}
             >
             </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
