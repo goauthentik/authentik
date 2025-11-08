@@ -191,6 +191,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
+        sleep(2)
+
         expected_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
         self.driver.get(expected_url)
 
