@@ -264,13 +264,15 @@ export class IdentificationStage extends BaseStage<
         const enrollmentItem = enrollUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
                   ${msg("Need an account?")}
-                  <a id="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+                  <a name="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
               </div>`
             : null;
 
         const recoveryItem = recoveryUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
-                  <a id="recovery" href="${recoveryUrl}">${msg("Forgot username or password?")}</a>
+                  <a name="recovery" href="${recoveryUrl}"
+                      >${msg("Forgot username or password?")}</a
+                  >
               </div>`
             : null;
 
