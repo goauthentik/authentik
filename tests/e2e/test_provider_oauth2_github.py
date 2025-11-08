@@ -158,7 +158,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",

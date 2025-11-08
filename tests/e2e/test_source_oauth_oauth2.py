@@ -105,7 +105,12 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
+
+        current_url = self.driver.current_url
+
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+
+        self.wait_for_navigation_from(current_url)
 
         # At this point we've been redirected back
         # and we're asked for the username
@@ -191,19 +196,20 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.wait_for_url(expected_url)
 
-        body_json = self.parse_json_content()
-        results = body_json.get("results")
+        body = self.parse_json_content()
+        results = body.get("results")
         current_url = self.driver.current_url
 
         self.assertIsInstance(
             results,
             list,
-            f"Expected 'results' to be a list at {current_url}: {results}",
+            f"Expected 'results' to be a list at {current_url}: {body}",
         )
+
         self.assertEqual(
             len(results),
             1,
-            f"Expected exactly 1 result at {current_url}, got {len(results)}: {results}",
+            f"Expected exactly 1 result at {current_url}, got {len(results)}: {body}",
         )
 
         connection = results[0]

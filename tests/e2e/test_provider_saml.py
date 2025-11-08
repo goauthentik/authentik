@@ -250,7 +250,7 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
             "Consent stage header mismatch",
         )
         consent_stage.find_element(
@@ -345,7 +345,7 @@ class TestProviderSAML(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,

@@ -215,6 +215,13 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 
+    def wait_for_navigation_from(self, current_url: str):
+        """Wait until URL changes from `current_url`."""
+        self.wait.until(
+            lambda driver: driver.current_url != current_url,
+            f"URL {self.driver.current_url} hasn't changed from {current_url}",
+        )
+
     def url(self, view: str, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         url = self.live_server_url + reverse(view, kwargs=kwargs)
@@ -268,10 +275,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
             except TimeoutException:
                 snippet = context.text.strip()[:500].replace("\n", " ")
+                inner_html = context.get_attribute("innerHTML") or ""
 
                 self.fail(
                     f"Timed out waiting for redirect to finish at {self.driver.current_url}. "
                     f"Current content: {snippet or '<empty>'}"
+                    f"{inner_html or '<empty>'}"
                 )
 
             inner_html = context.get_attribute("innerHTML") or ""
