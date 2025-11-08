@@ -333,7 +333,7 @@ class FileBackend(Backend):
 
     def file_url(self, name: str) -> str:
         prefix = CONFIG.get("web.path", "/")[:-1]
-        return f"{prefix}/{self.usage.value}/{connection.schema_name}/{name}"
+        return f"{prefix}/static/{self.usage.value}/{connection.schema_name}/{name}"
 
     def file_size(self, name: str) -> int:
         path = self.base_path / Path(name)
@@ -341,6 +341,11 @@ class FileBackend(Backend):
             return path.stat().st_size if path.exists() else 0
         except Exception:
             return 0
+
+    def file_exists(self, name: str) -> bool:
+        """Check if a file exists"""
+        path = self.base_path / Path(name)
+        return path.exists()
 
 
 class S3Backend(Backend):
@@ -476,6 +481,17 @@ class S3Backend(Backend):
             return response.get("ContentLength", 0)
         except Exception:
             return 0
+
+    def file_exists(self, name: str) -> bool:
+        """Check if a file exists in S3"""
+        try:
+            self.client.head_object(
+                Bucket=self.bucket_name,
+                Key=f"{self.base_path}{name}",
+            )
+            return True
+        except Exception:
+            return False
 
 
 def get_allowed_api_usages() -> list[Usage]:

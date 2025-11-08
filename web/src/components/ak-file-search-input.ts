@@ -91,9 +91,14 @@ export class AkFileSearchInput extends AKElement {
                 .value=${renderValue}
                 .selected=${this.#selected}
                 ?blankable=${this.blankable}
+                creatable
             >
             </ak-search-select>
-            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
+            ${this.help
+                ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
+                : html`<p class="pf-c-form__helper-text">
+                      You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.
+                  </p>`}
         </ak-form-element-horizontal>`;
     }
 }

@@ -17,6 +17,14 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
     @state()
     selectedFile?: File;
 
+    private clearFileInput() {
+        this.selectedFile = undefined;
+        const fileInput = this.shadowRoot?.querySelector<HTMLInputElement>("#file-input");
+        if (fileInput) {
+            fileInput.value = "";
+        }
+    }
+
     async send(): Promise<void> {
         if (!this.selectedFile) {
             throw new Error(msg("Please select a file"));
@@ -47,20 +55,26 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             finalPath = customName + ext;
         }
 
-        await api.filesUploadCreate({
-            file: this.selectedFile,
-            path: finalPath,
-            usage: this.usage,
-        } as any);
+        try {
+            await api.filesUploadCreate({
+                file: this.selectedFile,
+                path: finalPath,
+                usage: this.usage,
+            } as any);
 
-        showMessage({
-            level: MessageLevel.success,
-            message: msg("File uploaded successfully"),
-        });
+            showMessage({
+                level: MessageLevel.success,
+                message: msg("File uploaded successfully"),
+            });
 
-        // Reset form first, then clear state
-        this.reset();
-        this.selectedFile = undefined;
+            // Clear the file input and state on success
+            this.clearFileInput();
+            this.reset();
+        } catch (error) {
+            // Clear the file input on error too
+            this.clearFileInput();
+            throw error;
+        }
     }
 
     renderForm() {

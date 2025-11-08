@@ -41,10 +41,10 @@ def sanitize_file_path(file_path: str) -> str:
     # Strip whitespace
     file_path = file_path.strip()
 
-    # Allow alphanumeric, dots, hyphens, underscores, and forward slashes (for paths)
-    if not re.match(r"^[a-zA-Z0-9._/-]+$", file_path):
+    # Allow alphanumeric, dots, hyphens, and underscores only
+    if not re.match(r"^[a-zA-Z0-9._-]+$", file_path):
         raise ValidationError(
-            _("Filename can only contain letters, numbers, dots, hyphens, and underscores")
+            _("Filename can only contain letters (a-z, A-Z), numbers (0-9), dots (.), hyphens (-), and underscores (_)")
         )
 
     # Convert to posix path for consistent handling
@@ -334,6 +334,21 @@ class FileViewSet(ViewSet):
         custom_path = serializer.validated_data.get("path", "").strip()
         usage_value = serializer.validated_data.get("usage", Usage.MEDIA.value)
 
+        # Validate file size (3MB = 3 * 1024 * 1024 bytes)
+        max_size = 3 * 1024 * 1024
+        if file.size > max_size:
+            raise ValidationError({
+                "file": [f"File size ({file.size / 1024 / 1024:.2f}MB) exceeds maximum allowed size (3MB)."]
+            })
+
+        # Validate file type for media files (images only)
+        if usage_value == Usage.MEDIA.value:
+            content_type = file.content_type or ""
+            if not content_type.startswith("image/"):
+                raise ValidationError({
+                    "file": [f"Only image files are allowed for media uploads. Got: {content_type}"]
+                })
+
         LOGGER.debug("FileViewSet.upload validated data",
                     original_filename=file.name,
                     custom_path=custom_path,
@@ -378,6 +393,15 @@ class FileViewSet(ViewSet):
         LOGGER.debug("FileViewSet.upload sanitizing path", unsanitized_path=file_path)
         file_path = sanitize_file_path(file_path)
         LOGGER.debug("FileViewSet.upload path sanitized", sanitized_path=file_path)
+
+        # Check if file already exists
+        if backend.file_exists(file_path):
+            LOGGER.warning("File upload blocked - duplicate filename",
+                          file_path=file_path,
+                          backend=backend.__class__.__name__)
+            raise ValidationError({
+                "path": [f"A file with the name '{file_path}' already exists. Please use a different name."]
+            })
 
         # Save to backend
         LOGGER.debug("FileViewSet.upload reading file content", file_size=file.size)

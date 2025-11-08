@@ -70,14 +70,14 @@ func (ws *WebServer) configureStatic() {
 		fsFiles.ServeHTTP(w, r)
 	})
 
-	// Serve media files: /media/{schema}/{filepath}
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+	// Serve media files: /static/media/{schema}/{filepath}
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/media/").Handler(pathStripper(
 		fileHandler,
-		"media/",
+		"static/",
 		config.Get().Web.Path,
 	))
 
-	// Serve report files: /reports/{schema}/{filepath} with token authentication
+	// Serve report files: /static/reports/{schema}/{filepath} with token authentication
 	reportsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Require token parameter for reports access
 		token := r.URL.Query().Get("token")
@@ -88,9 +88,9 @@ func (ws *WebServer) configureStatic() {
 		// TODO: Validate token against database
 		fileHandler.ServeHTTP(w, r)
 	})
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/reports/").Handler(pathStripper(
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/reports/").Handler(pathStripper(
 		reportsHandler,
-		"reports/",
+		"static/",
 		config.Get().Web.Path,
 	))
 
