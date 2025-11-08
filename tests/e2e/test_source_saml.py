@@ -231,7 +231,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.assertIn(
             source.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,

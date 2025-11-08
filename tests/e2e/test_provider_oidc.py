@@ -266,10 +266,15 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             app.name,
             consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
+
+        current_url = self.driver.current_url
+
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
+
+        self.wait_for_navigation_from(current_url)
 
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")

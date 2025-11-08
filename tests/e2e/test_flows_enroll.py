@@ -193,7 +193,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.assertEqual(
             "Continue to confirm this email address.",
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
 
         # Back on the main tab, confirm
