@@ -21,11 +21,13 @@ import { ApplicationRequest, ValidationError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { property } from "lit/decorators.js";
 
-export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
+export class ApplicationWizardStep<
+    T extends Partial<ApplicationRequest> = Partial<ApplicationRequest>,
+> extends WizardStep {
     static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    wizard!: ApplicationWizardState<T>;
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.

@@ -1,27 +1,12 @@
+import { WizardReadyProviderSuffix } from "#admin/applications/wizard/steps/ProviderChoices";
+import { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared";
+
 import {
     type ApplicationRequest,
-    type LDAPProviderRequest,
-    type OAuth2ProviderRequest,
     type PolicyBinding,
-    type ProvidersSamlImportMetadataCreateRequest,
     type ProxyMode,
-    type ProxyProviderRequest,
-    type RACProviderRequest,
-    type RadiusProviderRequest,
-    type SAMLProviderRequest,
-    type SCIMProviderRequest,
     type ValidationError,
 } from "@goauthentik/api";
-
-export type OneOfProvider =
-    | Partial<SCIMProviderRequest>
-    | Partial<SAMLProviderRequest>
-    | Partial<ProvidersSamlImportMetadataCreateRequest>
-    | Partial<RACProviderRequest>
-    | Partial<RadiusProviderRequest>
-    | Partial<ProxyProviderRequest>
-    | Partial<OAuth2ProviderRequest>
-    | Partial<LDAPProviderRequest>;
 
 export type ValidationRecord = { [key: string]: string[] };
 
@@ -56,22 +41,18 @@ export function isApplicationTransactionValidationError(
 // configured bindings" page in the wizard. The PolicyBinding is converted into a
 // PolicyBindingRequest during the submission phase.
 
-export interface ApplicationWizardState {
+export interface ApplicationWizardState<
+    T extends OneOfProvider | Partial<ApplicationRequest> = OneOfProvider,
+> {
     app: Partial<ApplicationRequest>;
-    providerModel: string;
-    provider: OneOfProvider;
+    providerModel?: WizardReadyProviderSuffix;
+    provider?: T;
     proxyMode: ProxyMode;
     bindings: PolicyBinding[];
     currentBinding: number;
     errors: ValidationError | ApplicationTransactionValidationError;
 }
 
-export interface ApplicationWizardStateUpdate {
-    app?: Partial<ApplicationRequest>;
-    providerModel?: string;
-    provider?: OneOfProvider;
-    proxyMode?: ProxyMode;
-    bindings?: PolicyBinding[];
-    currentBinding?: number;
-    errors?: ValidationError;
-}
+export type ApplicationWizardStateUpdate<
+    T extends OneOfProvider | Partial<ApplicationRequest> = OneOfProvider,
+> = Partial<ApplicationWizardState<T>>;
