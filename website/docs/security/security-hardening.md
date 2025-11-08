@@ -64,15 +64,16 @@ authentik requires at least the following allowed locations:
 
 ```
 default-src 'self';
-img-src https: http: data:;
+img-src https: data:;
 object-src 'none';
 style-src 'self' 'unsafe-inline';    # Required due to Lit/ShadowDOM
 script-src 'self' 'unsafe-inline';   # Required for generated scripts
 ```
 
-Your use case might require more allowed locations for various directives, e.g.
+Your use case might require more allowed locations for various directives, for example:
 
 - when using a CAPTCHA service
 - when using Sentry
 - when using any custom JavaScript in a prompt stage
 - when using Spotlight Sidecar for development
+- when using images hosted via HTTP
