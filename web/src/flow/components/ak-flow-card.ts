@@ -1,5 +1,7 @@
 import "#elements/EmptyState";
 
+import Styles from "./ak-flow-card.css";
+
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -31,7 +33,7 @@ export class FlowCard extends AKElement {
     @property({ type: Boolean })
     loading = false;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFTitle];
+    static styles: CSSResult[] = [PFBase, PFLogin, PFTitle, Styles];
 
     render() {
         let inner = html`<slot></slot>`;
