@@ -9,9 +9,14 @@ from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
-from django_filters.filters import BooleanFilter
+from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+)
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -33,7 +38,7 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
@@ -50,7 +55,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_expiry = SerializerMethodField()
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
-    private_key_type = SerializerMethodField()
+    key_type = SerializerMethodField()
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -90,14 +95,12 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
-    def get_private_key_type(self, instance: CertificateKeyPair) -> str | None:
-        """Get the private key's type, if set"""
+    @extend_schema_field(ChoiceField(choices=KeyType.choices, allow_null=True))
+    def get_key_type(self, instance: CertificateKeyPair) -> str | None:
+        """Get the key algorithm type from the certificate's public key"""
         if not self._should_include_details:
             return None
-        key = instance.private_key
-        if key:
-            return key.__class__.__name__.replace("_", "").lower().replace("privatekey", "")
-        return None
+        return instance.key_type
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -161,7 +164,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "cert_expiry",
             "cert_subject",
             "private_key_available",
-            "private_key_type",
+            "key_type",
             "certificate_download_url",
             "private_key_download_url",
             "managed",
@@ -198,11 +201,30 @@ class CertificateKeyPairFilter(FilterSet):
         label="Only return certificate-key pairs with keys", method="filter_has_key"
     )
 
+    key_type = MultipleChoiceFilter(
+        choices=KeyType.choices,
+        label="Filter by key algorithm type",
+        method="filter_key_type",
+    )
+
     def filter_has_key(self, queryset, name, value):  # pragma: no cover
         """Only return certificate-key pairs with keys"""
         if not value:
             return queryset
         return queryset.exclude(key_data__exact="")
+
+    def filter_key_type(self, queryset, name, value):  # pragma: no cover
+        """Filter certificates by key type using the public key from the certificate"""
+        if not value:
+            return queryset
+
+        # value is a list of KeyType enum values from MultipleChoiceFilter
+        filtered_pks = []
+        for cert in queryset:
+            if cert.key_type in value:
+                filtered_pks.append(cert.pk)
+
+        return queryset.filter(pk__in=filtered_pks)
 
     class Meta:
         model = CertificateKeyPair
@@ -227,6 +249,17 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                 bool,
                 required=False,
                 description="Only return certificate-key pairs with keys",
+            ),
+            OpenApiParameter(
+                "key_type",
+                OpenApiTypes.STR,
+                required=False,
+                many=True,
+                enum=[choice[0] for choice in KeyType.choices],
+                description=(
+                    "Filter by key algorithm type (RSA, EC, DSA, etc). "
+                    "Can be specified multiple times (e.g. '?key_type=rsa&key_type=ec')"
+                ),
             ),
             OpenApiParameter("include_details", bool, default=True),
         ]
