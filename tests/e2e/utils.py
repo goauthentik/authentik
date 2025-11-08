@@ -210,9 +210,11 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
+
         self.wait.until(
             lambda driver: driver.current_url == desired_url,
-            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
+            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}. "
+            f"HTML: {self.driver.page_source[:1000]}",
         )
 
     def wait_for_navigation_from(self, current_url: str):
