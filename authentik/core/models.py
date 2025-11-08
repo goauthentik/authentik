@@ -785,6 +785,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         - Font Awesome icons (fa://fa-icon-name)
         - Static paths (/static/...)
         - External URLs (http://, https://...)
+
+        Note: Returns relative URLs. Use get_icon_url_with_request() for full URLs.
         """
         if not self.icon:
             return None
@@ -792,6 +794,24 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         from authentik.admin.files.backend import Usage, resolve_file_url
 
         return resolve_file_url(self.icon, Usage.MEDIA)
+
+    def get_icon_url_with_request(self, request=None) -> str | None:
+        """Get the FULL URL to the icon including domain
+
+        Args:
+            request: Optional HTTP request for getting domain/scheme
+
+        Returns:
+            Full URL with domain for uploaded files, relative URL if no request provided
+        """
+        if not self.icon:
+            return None
+
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        # Convert HttpRequest to DRF Request if needed
+        drf_request = request if hasattr(request, '_request') else None
+        return resolve_file_url_with_request(self.icon, Usage.MEDIA, drf_request)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

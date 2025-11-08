@@ -117,9 +117,23 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()
-    branding_logo = CharField(source="branding_logo_url")
-    branding_favicon = CharField(source="branding_favicon_url")
+    branding_logo = SerializerMethodField()
+    branding_favicon = SerializerMethodField()
     branding_custom_css = CharField()
+
+    def get_branding_logo(self, obj: Brand) -> str:
+        """Get the full URL to the branding logo"""
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        request = self.context.get("request")
+        return resolve_file_url_with_request(obj.branding_logo, Usage.MEDIA, request)
+
+    def get_branding_favicon(self, obj: Brand) -> str:
+        """Get the full URL to the branding favicon"""
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        request = self.context.get("request")
+        return resolve_file_url_with_request(obj.branding_favicon, Usage.MEDIA, request)
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
@@ -191,4 +205,4 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
     def current(self, request: Request) -> Response:
         """Get current brand"""
         brand: Brand = request._request.brand
-        return Response(CurrentBrandSerializer(brand).data)
+        return Response(CurrentBrandSerializer(brand, context={"request": request}).data)
