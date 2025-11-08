@@ -21,6 +21,8 @@ import {
     UserFieldsEnum,
 } from "@goauthentik/api";
 
+import { kebabCase } from "change-case";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -250,7 +252,8 @@ export class IdentificationStage extends BaseStage<
                 this.host.challenge = source.challenge;
             }}
             part="source-item"
-            class="pf-c-button pf-m-block pf-m-plain"
+            name=${`source-${kebabCase(source.name)}`}
+            class="pf-c-button pf-m-block source-button"
             aria-label=${msg(str`Continue with ${source.name}`)}
         >
             <span class="pf-c-button__icon pf-m-start">${icon}</span>
