@@ -1,19 +1,31 @@
 fieldset[name="login-sources"] {
     --ak-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
-    padding-inline: var(--ak-login-sources-padding-inline) !important;
-    padding-block-start: var(--pf-global--spacer--lg) !important;
     flex: 1 1 auto;
     display: flex;
     flex-flow: row wrap;
     gap: var(--pf-global--spacer--sm);
 
-    .pf-c-button {
-        color: inherit;
-        align-items: center;
+    /* compatibility-mode-fix */
+
+    & {
+        padding-inline: var(--ak-login-sources-padding-inline) !important;
+        padding-block-start: var(--pf-global--spacer--lg) !important;
+    }
+
+    .source-button {
         display: flex;
+        align-items: center;
         justify-content: center;
         gap: var(--pf-global--spacer--sm);
+
+        &:hover {
+            background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
+        }
+
+        .pf-c-button__icon {
+            line-height: 1;
+        }
     }
 
     .pf-c-button__icon img {

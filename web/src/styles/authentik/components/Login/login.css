@@ -1,9 +1,24 @@
+/* #region Login Component */
+
 /* compatibility-mode-fix */
 .pf-c-login.pf-c-login {
+    --ak-login--padding-max: 8dvw;
+    --ak-login--padding: clamp(
+        var(--pf-global--spacer--md),
+        var(--pf-global--spacer--2xl),
+        var(--ak-login--padding-max)
+    );
+
     --ak-login--header-min-height: var(--pf-global--spacer--lg);
     --ak-login--header-max-height: clamp(0, 45%, 15dvh);
+
+    --ak-login--footer-padding-block: var(--pf-global--spacer--md);
+
     --ak-login--max-width: 35rem;
-    --ak-login--main-column-width: minmax(min-content, var(--ak-login--max-width));
+    --ak-login--main-column-width: minmax(
+        min(100dvw, var(--ak-login--max-width)),
+        var(--ak-login--max-width)
+    );
 
     --pf-c-login__main-body--PaddingBottom: 0;
     --pf-c-login__main-footer--PaddingBottom: clamp(
@@ -22,7 +37,7 @@
     min-height: 100dvh;
 
     grid-template-rows:
-        [header] minmax(0, clamp(1rem, 15%, 15dvh))
+        [header] minmax(clamp(0.5rem, 15dvh, 3dvh), auto)
         [main] minmax(auto, min-content)
         [footer] minmax(min-content, auto);
 
@@ -65,7 +80,35 @@
     }
 }
 
-/* #region Main */
+/* #region Page Header */
+
+.pf-c-login__header {
+    grid-area: header;
+    padding-inline: calc(var(--ak-login--padding) / 2);
+    align-self: start;
+
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/* #endregion */
+
+/* #region Page Footer */
+
+/* compatibility-mode-fix */
+.pf-c-login__main-footer .pf-c-button__icon {
+    vertical-align: middle;
+}
+
+/* compatibility-mode-fix */
+.pf-c-login__main-footer .source-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pf-global--spacer--sm);
+}
+
+/* #region Card Main */
 
 .pf-c-login__main {
     --pf-c-login__container--PaddingLeft: 0 !important;
@@ -73,13 +116,6 @@
 
     grid-area: main;
     margin: 0;
-
-    --ak-login--padding-max: 8dvw;
-    --ak-login--padding: clamp(
-        var(--pf-global--spacer--md),
-        var(--pf-global--spacer--2xl),
-        var(--ak-login--padding-max)
-    );
 
     position: relative;
     max-width: var(--ak-login--max-width);
@@ -97,7 +133,7 @@
 
 /* #endregion */
 
-/* #region Header */
+/* #region Main Header */
 
 .pf-c-login__main-header {
     padding-inline: var(--ak-login--padding);
@@ -109,8 +145,17 @@
 }
 
 .pf-c-login__main-header.pf-c-brand {
+    --ak-login--main-padding-block-start: clamp(
+        var(--pf-global--spacer--xs),
+        7dvw,
+        var(--pf-global--spacer--2xl)
+    );
+
     padding-inline: calc(var(--ak-login--padding) / 4);
-    padding-block-start: clamp(var(--pf-global--spacer--xs), 7dvw, var(--pf-global--spacer--2xl));
+    padding-block-start: calc(
+        var(--ak-login--main-padding-block-start) - var(--ak-login--footer-padding-block)
+    );
+
     padding-block-end: calc(var(--ak-login--padding) / 2);
 
     display: flex;
@@ -130,7 +175,7 @@
 
 /* #endregion */
 
-/* #region Footer */
+/* #region Main Footer */
 
 .pf-c-login__main-footer-band {
     @media (max-width: 35rem) or (max-height: 17.5rem) {
@@ -166,8 +211,6 @@
         --ak-login--max-width: 36rem;
         --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
         .pf-c-login__main {
-            aspect-ratio: auto;
-
             height: 100%;
             justify-content: normal;
         }
@@ -217,8 +260,9 @@
     display: flex;
     flex-direction: column;
     align-self: end;
+    justify-content: center;
     padding-inline: var(--pf-global--spacer--2xl);
-    padding-block: var(--pf-global--spacer--md) !important;
+    padding-block: var(--ak-login--footer-padding-block) !important;
 
     ul.pf-c-list.pf-m-inline {
         justify-content: center;
@@ -230,7 +274,7 @@
     }
 
     @media (max-width: 35rem) {
-        color: inherit;
+        color: var(--pf-global--Color--300);
     }
 }
 

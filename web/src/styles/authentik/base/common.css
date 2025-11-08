@@ -12,6 +12,7 @@
 /* #endregion */
 
 /* #region Modifiers */
+
 .pf-m-dark {
     --pf-global--Color--100: var(--pf-global--Color--dark-100);
     --pf-global--Color--200: var(--pf-global--Color--dark-200);

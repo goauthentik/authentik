@@ -490,6 +490,28 @@ export class FlowExecutor
                                           ></ak-loading-overlay>`
                                         : nothing}
 
+                                    <header class="pf-c-login__header" part="flow-header">
+                                        ${this.inspectorAvailable && !this.inspectorOpen
+                                            ? html`<button
+                                                  aria-label=${this.inspectorOpen
+                                                      ? msg("Close flow inspector")
+                                                      : msg("Open flow inspector")}
+                                                  aria-expanded=${this.inspectorOpen
+                                                      ? "true"
+                                                      : "false"}
+                                                  class="inspector-toggle pf-c-button pf-m-primary"
+                                                  aria-controls="flow-inspector"
+                                                  @click=${() => {
+                                                      this.inspectorOpen = true;
+                                                  }}
+                                              >
+                                                  <i
+                                                      class="fa fa-search-plus"
+                                                      aria-hidden="true"
+                                                  ></i>
+                                              </button>`
+                                            : nothing}
+                                    </header>
                                     <main
                                         class="pf-c-login__main"
                                         aria-label=${msg("Authentication form")}
@@ -528,21 +550,7 @@ export class FlowExecutor
                                 </div>
                             </div>
                         </div>
-                        ${this.inspectorAvailable && !this.inspectorOpen
-                            ? html`<button
-                                  aria-label=${this.inspectorOpen
-                                      ? msg("Close flow inspector")
-                                      : msg("Open flow inspector")}
-                                  aria-expanded=${this.inspectorOpen ? "true" : "false"}
-                                  class="inspector-toggle pf-c-button pf-m-primary"
-                                  aria-controls="flow-inspector"
-                                  @click=${() => {
-                                      this.inspectorOpen = true;
-                                  }}
-                              >
-                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
-                              </button>`
-                            : nothing}
+
                         ${until(this.renderInspector())}
                     </div>
                 </div>
