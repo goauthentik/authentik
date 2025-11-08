@@ -195,7 +195,7 @@ func (ps *ProxyServer) Stop() error {
 }
 
 func (ps *ProxyServer) serve(listener net.Listener) {
-	srv := &http.Server{Handler: ps.mux}
+	srv := web.Server(ps.mux)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

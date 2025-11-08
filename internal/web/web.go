@@ -241,9 +241,7 @@ func (ws *WebServer) listenPlain() {
 }
 
 func (ws *WebServer) serve(listener net.Listener) {
-	srv := &http.Server{
-		Handler: ws.mainRouter,
-	}
+	srv := web.Server(ws.mainRouter)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})
