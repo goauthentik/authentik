@@ -41,6 +41,7 @@ html[data-theme="dark"],
     --pf-global--BackgroundColor--150: var(--pf-global--BackgroundColor--dark-100) !important;
     --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;
     --pf-global--BackgroundColor--300: var(--pf-global--BackgroundColor--dark-300) !important;
+    --pf-global--Color--300: var(--ak-dark-foreground-darker) !important;
     --pf-global--Color--100: var(--ak-dark-foreground) !important;
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
