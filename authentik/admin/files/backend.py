@@ -533,6 +533,9 @@ def resolve_file_url(file_path: str, usage: Usage) -> str:
 
     This is a convenience function that automatically determines the correct backend
     based on the file path and returns the appropriate URL.
+
+    Note: Returns relative URLs for FileBackend. Use resolve_file_url_with_request()
+    for full URLs with domain.
     """
     if not file_path:
         return file_path
@@ -554,3 +557,61 @@ def resolve_file_url(file_path: str, usage: Usage) -> str:
 
     backend = get_storage_backend(usage)
     return backend.file_url(file_path)
+
+
+def resolve_file_url_with_request(file_path: str, usage: Usage, request=None) -> str:
+    """Resolve a file path to its FULL URL using the appropriate backend
+
+    Args:
+        file_path: The file path to resolve
+        usage: The usage type (MEDIA, REPORTS, etc.) to determine which backend to use
+        request: Optional HTTP request to extract host information for building full URLs
+
+    Handles:
+    - Static files (/static/...) - returns full URL with domain
+    - Passthrough URLs (fa://, http://, https://...) - returns as-is
+    - Storage files (uploaded files) - returns full URL for FileBackend, presigned URL for S3Backend
+
+    This function builds complete URLs including the scheme and domain, suitable for
+    API responses where the consumer needs an absolute URL.
+    """
+    if not file_path:
+        return file_path
+
+    # Passthrough backend for external URLs and Font Awesome - return as-is
+    if file_path.startswith("fa://") or file_path.startswith("http"):
+        backend = PassthroughBackend(usage)
+        return backend.file_url(file_path)
+
+    # Get host and scheme from request if available
+    host = None
+    scheme = "https"  # Default to https
+    if request:
+        try:
+            host = request._request.get_host()
+            scheme = "https" if request._request.is_secure() else "http"
+        except Exception:
+            pass
+
+    # Static backend for built-in static files
+    if file_path.startswith("/static") or file_path.startswith("web/dist/assets"):
+        backend = StaticBackend(usage)
+        relative_url = backend.file_url(file_path)
+        if host:
+            return f"{scheme}://{host}{relative_url}"
+        return relative_url
+
+    # Storage backend for uploaded files - need to strip schema prefix if present
+    schema_prefix = f"{connection.schema_name}/"
+    if file_path.startswith(schema_prefix):
+        file_path = file_path.removeprefix(schema_prefix)
+
+    backend = get_storage_backend(usage)
+    url = backend.file_url(file_path)
+
+    # For S3Backend, file_url already returns a full presigned URL
+    # For FileBackend, we need to prepend the scheme and host
+    if host and isinstance(backend, FileBackend) and not url.startswith("http"):
+        return f"{scheme}://{host}{url}"
+
+    return url

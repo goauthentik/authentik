@@ -31339,14 +31339,7 @@ components:
         meta_icon_url:
           type: string
           nullable: true
-          description: |-
-            Get the URL to the App Icon image using the appropriate backend
-
-            Handles:
-            - File paths from authentik.files storage (e.g., "my-icon.png")
-            - Font Awesome icons (fa://fa-icon-name)
-            - Static paths (/static/...)
-            - External URLs (http://, https://...)
+          description: Get the full URL to the App Icon image
           readOnly: true
         meta_description:
           type: string
@@ -32885,12 +32878,24 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_logo_url:
+          type: string
+          description: Get the full URL to the branding logo
+          readOnly: true
         branding_favicon:
           type: string
+        branding_favicon_url:
+          type: string
+          description: Get the full URL to the branding favicon
+          readOnly: true
         branding_custom_css:
           type: string
         branding_default_flow_background:
           type: string
+        branding_default_flow_background_url:
+          type: string
+          description: Get the full URL to the default flow background
+          readOnly: true
         flow_authentication:
           type: string
           format: uuid
@@ -32937,6 +32942,9 @@ components:
           additionalProperties: {}
       required:
       - brand_uuid
+      - branding_default_flow_background_url
+      - branding_favicon_url
+      - branding_logo_url
       - domain
     BrandRequest:
       type: object
@@ -35339,14 +35347,8 @@ components:
           description: Background shown during execution
         background_url:
           type: string
-          description: |-
-            Get the URL to the background image using the appropriate backend
-
-            Handles:
-            - File paths from authentik.files storage (e.g., "my-background.png")
-            - Font Awesome icons (fa://fa-icon-name)
-            - Static paths (/static/...)
-            - External URLs (http://, https://...)
+          nullable: true
+          description: Get the full URL to the background image
           readOnly: true
         stages:
           type: array
@@ -37410,6 +37412,8 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -38076,6 +38080,8 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         server_uri:
           type: string
@@ -39785,6 +39791,7 @@ components:
         icon_url:
           type: string
           nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -46610,6 +46617,8 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -49073,6 +49082,8 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -50594,14 +50605,7 @@ components:
         icon_url:
           type: string
           nullable: true
-          description: |-
-            Get the URL to the icon using the appropriate backend
-
-            Handles:
-            - File paths from authentik.files storage (e.g., "my-icon.png")
-            - Font Awesome icons (fa://fa-icon-name)
-            - Static paths (/static/...)
-            - External URLs (http://, https://...)
+          description: Get the full URL to the icon
           readOnly: true
       required:
       - component
@@ -51232,6 +51236,7 @@ components:
         icon_url:
           type: string
           nullable: true
+          description: Get the full URL to the icon
           readOnly: true
         bot_username:
           type: string

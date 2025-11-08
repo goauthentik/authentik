@@ -29,7 +29,17 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     managed = ReadOnlyField()
     component = SerializerMethodField()
-    icon_url = ReadOnlyField()
+    icon_url = SerializerMethodField()
+
+    def get_icon_url(self, obj: Source) -> str | None:
+        """Get the full URL to the icon"""
+        if not obj.icon:
+            return None
+
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        request = self.context.get("request")
+        return resolve_file_url_with_request(obj.icon, Usage.MEDIA, request)
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

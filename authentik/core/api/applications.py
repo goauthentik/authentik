@@ -51,7 +51,17 @@ class ApplicationSerializer(ModelSerializer):
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
-    meta_icon_url = ReadOnlyField(source="get_meta_icon")
+    meta_icon_url = SerializerMethodField()
+
+    def get_meta_icon_url(self, app: Application) -> str | None:
+        """Get the full URL to the App Icon image"""
+        if not app.meta_icon:
+            return None
+
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        request = self.context.get("request")
+        return resolve_file_url_with_request(app.meta_icon, Usage.MEDIA, request)
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""

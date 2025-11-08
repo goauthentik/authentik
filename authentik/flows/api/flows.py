@@ -45,10 +45,20 @@ class FileUploadSerializer(PassiveSerializer):
 class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
-    background_url = ReadOnlyField()
+    background_url = SerializerMethodField()
 
     cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
+
+    def get_background_url(self, flow: Flow) -> str | None:
+        """Get the full URL to the background image"""
+        if not flow.background:
+            return None
+
+        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+
+        request = self.context.get("request")
+        return resolve_file_url_with_request(flow.background, Usage.MEDIA, request)
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
