@@ -1,11 +1,11 @@
 ---
-title: Integrate with Frappe
+title: Integrate with Frappe/ERPNext
 sidebar_label: Frappe
 support_level: community
 ---
 
 :::info
-These instructions apply to all projects in the Frappe Family.
+These instructions apply to all projects in the Frappe Family, including ERPNext.
 :::
 
 ## What is Frappe
@@ -70,7 +70,7 @@ To support the integration of Frappe with authentik, you need to create an appli
         - **Client URLs**:
             - **Authorize URL**: `/application/o/authorize/`
             - **Access Token URL**: `/application/o/token/`
-            - **Redirect URL**: `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`
+            - **Redirect URL**: `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider` (note: remember to replace "provider" with the actual name of the provider in Frappe)
             - **API Endpoint**: `/application/o/userinfo/`
               ![](./frappe3.png)
 
