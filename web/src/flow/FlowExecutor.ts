@@ -22,9 +22,11 @@ import { WebsocketClient } from "#common/ws";
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { LitPropertyRecord } from "#elements/types";
+import { exportParts } from "#elements/utils/attributes";
 import { themeImage } from "#elements/utils/images";
 
-import { StageHost, SubmitOptions } from "#flow/stages/base";
+import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
 import {
     CapabilitiesEnum,
@@ -36,6 +38,8 @@ import {
     FlowsApi,
     ShellChallenge,
 } from "@goauthentik/api";
+
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -275,174 +279,129 @@ export class FlowExecutor
     //#region Render
 
     async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
+        const { challenge, inspectorOpen } = this;
+
+        const stageProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
+            ".challenge": challenge!,
+            ".host": this,
+        };
+
+        const props = {
+            ...stageProps,
+            part: "challenge",
+            exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
+        };
+
         switch (component) {
             case "ak-stage-access-denied":
                 await import("#flow/stages/access_denied/AccessDeniedStage");
-                return html`<ak-stage-access-denied
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-access-denied>`;
+                return html`<ak-stage-access-denied ${spread(props)}></ak-stage-access-denied>`;
             case "ak-stage-identification":
                 await import("#flow/stages/identification/IdentificationStage");
-                return html`<ak-stage-identification
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-identification>`;
+                return html`<ak-stage-identification ${spread(props)}></ak-stage-identification>`;
             case "ak-stage-password":
                 await import("#flow/stages/password/PasswordStage");
-                return html`<ak-stage-password
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-password>`;
+                return html`<ak-stage-password ${spread(props)}></ak-stage-password>`;
             case "ak-stage-captcha":
                 await import("#flow/stages/captcha/CaptchaStage");
-                return html`<ak-stage-captcha
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-captcha>`;
+                return html`<ak-stage-captcha ${spread(props)}></ak-stage-captcha>`;
             case "ak-stage-consent":
                 await import("#flow/stages/consent/ConsentStage");
-                return html`<ak-stage-consent
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-consent>`;
+                return html`<ak-stage-consent ${spread(props)}></ak-stage-consent>`;
             case "ak-stage-dummy":
                 await import("#flow/stages/dummy/DummyStage");
-                return html`<ak-stage-dummy
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-dummy>`;
+                return html`<ak-stage-dummy ${spread(props)}></ak-stage-dummy>`;
             case "ak-stage-email":
                 await import("#flow/stages/email/EmailStage");
-                return html`<ak-stage-email
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-email>`;
+                return html`<ak-stage-email ${spread(props)}></ak-stage-email>`;
             case "ak-stage-autosubmit":
                 await import("#flow/stages/autosubmit/AutosubmitStage");
-                return html`<ak-stage-autosubmit
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-autosubmit>`;
+                return html`<ak-stage-autosubmit ${spread(props)}></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
                 await import("#flow/stages/prompt/PromptStage");
-                return html`<ak-stage-prompt
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-prompt>`;
+                return html`<ak-stage-prompt ${spread(props)}></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
                 await import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage");
                 return html`<ak-stage-authenticator-totp
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
                 await import("#flow/stages/authenticator_duo/AuthenticatorDuoStage");
                 return html`<ak-stage-authenticator-duo
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
                 await import("#flow/stages/authenticator_static/AuthenticatorStaticStage");
                 return html`<ak-stage-authenticator-static
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-static>`;
             case "ak-stage-authenticator-webauthn":
                 return html`<ak-stage-authenticator-webauthn
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-email":
                 await import("#flow/stages/authenticator_email/AuthenticatorEmailStage");
                 return html`<ak-stage-authenticator-email
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("#flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
                 await import("#flow/stages/authenticator_validate/AuthenticatorValidateStage");
                 return html`<ak-stage-authenticator-validate
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
                 await import("#flow/stages/user_login/UserLoginStage");
-                return html`<ak-stage-user-login
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-user-login>`;
+                return html`<ak-stage-user-login ${spread(props)}></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
-                return html`<ak-flow-source-plex
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-flow-source-plex>`;
+                return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;
             case "ak-source-oauth-apple":
                 return html`<ak-flow-source-oauth-apple
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-source-oauth-apple>`;
             case "ak-source-telegram":
-                return html`<ak-flow-source-telegram
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-flow-source-telegram>`;
+                return html`<ak-flow-source-telegram ${spread(props)}></ak-flow-source-telegram>`;
             // Providers
             case "ak-provider-oauth2-device-code":
                 await import("#flow/providers/oauth2/DeviceCode");
                 return html`<ak-flow-provider-oauth2-code
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-provider-oauth2-code>`;
             case "ak-provider-oauth2-device-code-finish":
                 await import("#flow/providers/oauth2/DeviceCodeFinish");
                 return html`<ak-flow-provider-oauth2-code-finish
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-provider-oauth2-code-finish>`;
             case "ak-stage-session-end":
                 await import("#flow/providers/SessionEnd");
-                return html`<ak-stage-session-end
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-session-end>`;
+                return html`<ak-stage-session-end ${spread(props)}></ak-stage-session-end>`;
             case "ak-provider-saml-native-logout":
                 await import("#flow/providers/saml/NativeLogoutStage");
                 return html`<ak-provider-saml-native-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-provider-saml-native-logout>`;
             case "ak-provider-iframe-logout":
                 await import("#flow/providers/IFrameLogoutStage");
                 return html`<ak-provider-iframe-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-provider-iframe-logout>`;
             // Internal stages
             case "ak-stage-flow-error":
-                return html`<ak-stage-flow-error
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-flow-error>`;
+                return html`<ak-stage-flow-error ${spread(props)}></ak-stage-flow-error>`;
             case "xak-flow-redirect":
-                return html`<ak-stage-redirect
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                    ?promptUser=${this.inspectorOpen}
-                >
+                return html`<ak-stage-redirect ${spread(props)} ?promptUser=${inspectorOpen}>
                 </ak-stage-redirect>`;
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case "xak-flow-frame":
                 return html`<xak-flow-frame
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    .host=${this}
+                    .challenge=${challenge}
                 ></xak-flow-frame>`;
             default:
                 return html`Invalid native challenge element`;
@@ -539,6 +498,7 @@ export class FlowExecutor
 
                                     <ak-brand-links
                                         part="brand-links"
+                                        exportparts="list:brand-links-list, list-item:brand-links-list-item"
                                         role="contentinfo"
                                         aria-label=${msg("Site footer")}
                                         class="pf-c-login__footer ${layout ===
