@@ -1,0 +1,38 @@
+{
+    "name": "authentik",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/ak-root",
+    "containerEnv": {
+        "LOCAL_PROJECT_DIR": "${localWorkspaceFolder}"
+    },
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "forwardPorts": [9000, 9443],
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "bashmish.es6-string-css",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "golang.go",
+                "Gruntfuggly.todo-tree",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.pylint",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "redhat.vscode-yaml",
+                "Tobermory.es6-string-html",
+                "charliermarsh.ruff"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/ak-root/.venv/bin/python",
+                "python.terminal.activateEnvironment": true
+            }
+        }
+    }
+}

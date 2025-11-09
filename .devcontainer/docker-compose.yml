@@ -1,0 +1,69 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../:/ak-root
+    entrypoint: []
+    command: sleep infinity
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_DEBUG: "true"
+      AUTHENTIK_SECRET_KEY: "devcontainer-secret-key-change-me"
+      AUTHENTIK_POSTGRESQL__USER: postgres
+      AUTHENTIK_POSTGRESQL__PASSWORD: postgres
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
+      AUTHENTIK_LOG_LEVEL: debug
+      # Ensure venv python is used for all subprocesses (fixes Django autoreload)
+      PATH: "/ak-root/.venv/bin:${PATH}"
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+
+  postgresql:
+    image: docker.io/library/postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d authentik -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: authentik
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+
+  # Optional: S3 for media storage testing
+  s3:
+    image: docker.io/zenko/cloudserver
+    environment:
+      REMOTE_MANAGEMENT_DISABLE: "1"
+      SCALITY_ACCESS_KEY_ID: accessKey1
+      SCALITY_SECRET_ACCESS_KEY: secretKey1
+    ports:
+      - "8020:8000"
+    volumes:
+      - s3-data:/usr/src/app/localData
+      - s3-metadata:/usr/src/app/localMetadata
+
+  # Optional: Spotlight for Sentry debugging
+  spotlight:
+    image: ghcr.io/getsentry/spotlight:latest
+    ports:
+      - "8969:8969"
+
+volumes:
+  postgres-data:
+  s3-data:
+  s3-metadata:
