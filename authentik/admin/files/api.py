@@ -1,5 +1,6 @@
 from pathlib import Path, PurePosixPath
 
+from botocore.exceptions import BotoCoreError, ClientError
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers
 from rest_framework.decorators import action
@@ -61,6 +62,57 @@ class FileViewSet(ViewSet):
     parser_classes = [MultiPartParser]
     # Dummy queryset for permission checks
     queryset = User.objects.none()
+
+    def _handle_storage_error(self, error: Exception, operation: str) -> None:
+        """Convert storage backend errors to user-friendly ValidationErrors.
+
+        Args:
+            error: The exception that occurred
+            operation: Description of the operation that failed (e.g., "list files", "upload")
+
+        Raises:
+            ValidationError
+        """
+        if isinstance(error, ClientError):
+            error_code = error.response.get("Error", {}).get("Code", "Unknown")
+            error_msg = error.response.get("Error", {}).get("Message", str(error))
+
+            LOGGER.error(
+                "S3 client error",
+                operation=operation,
+                error_code=error_code,
+                error_message=error_msg,
+            )
+
+            # For common error codes
+            if error_code == "SignatureDoesNotMatch":
+                raise ValidationError(
+                    "S3 authentication failed. Please check your access key, secret key, and region configuration."
+                ) from error
+            elif error_code == "NoSuchBucket":
+                raise ValidationError(
+                    f"S3 bucket not found. Please verify the bucket name in your configuration."
+                ) from error
+            elif error_code == "AccessDenied":
+                raise ValidationError(
+                    "S3 access denied. Please check your credentials and bucket permissions."
+                ) from error
+            else:
+                raise ValidationError(
+                    f"S3 error during {operation}: {error_code} - {error_msg}"
+                ) from error
+        elif isinstance(error, BotoCoreError):
+            LOGGER.error(
+                "S3 connection error",
+                operation=operation,
+                error=str(error),
+            )
+            raise ValidationError(
+                f"Failed to connect to S3 storage: {str(error)}"
+            ) from error
+        else:
+            # Re-raise non-S3 errors
+            raise
 
     def _build_file_response(self, file_path: str, backend: Backend, usage: Usage) -> dict:
         """Build standardized file response with schema prefix for display.
@@ -140,6 +192,14 @@ class FileViewSet(ViewSet):
                 required=False,
                 description="Include static files in the results",
             ),
+            # Useful for the Admin interface where static by default allows passthrough and static
+            # So, we need to add a param to omit in this case
+            OpenApiParameter(
+                name="omit",
+                type=str,
+                required=False,
+                description="Comma-separated list of backend types to exclude (e.g., 'passthrough,static')",
+            ),
         ],
         responses={200: FileSerializer(many=True)},
     )
@@ -148,6 +208,7 @@ class FileViewSet(ViewSet):
         usage_param = request.query_params.get("usage", Usage.MEDIA.value)
         search_query = request.query_params.get("search", "").strip().lower()
         include_static = request.query_params.get("includeStatic", "false").lower() == "true"
+        omit_param = request.query_params.get("omit", "").strip().lower()
 
         try:
             usage = Usage(usage_param)
@@ -167,24 +228,35 @@ class FileViewSet(ViewSet):
             )
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
+        # Parse omit parameter to get list of backend types to exclude
+        omit_backends = set()
+        if omit_param:
+            omit_backends = {b.strip() for b in omit_param.split(",") if b.strip()}
+
         backends = [BackendFactory.create(usage)]
 
         # For MEDIA usage, always include static and passthrough backends
         if usage == Usage.MEDIA:
-            backends.append(StaticBackend(usage))
-            backends.append(PassthroughBackend(usage))
+            if "static" not in omit_backends:
+                backends.append(StaticBackend(usage))
+            if "passthrough" not in omit_backends:
+                backends.append(PassthroughBackend(usage))
         elif include_static:
-            backends.append(StaticBackend(usage))
+            if "static" not in omit_backends:
+                backends.append(StaticBackend(usage))
 
         # Backend is source of truth - list all files from storage
         files = []
         for backend in backends:
-            for file_path in backend.list_files():
-                # Apply search filter if provided
-                if search_query and search_query not in file_path.lower():
-                    continue
+            try:
+                for file_path in backend.list_files():
+                    # Apply search filter if provided
+                    if search_query and search_query not in file_path.lower():
+                        continue
 
-                files.append(self._build_file_response(file_path, backend, backend.usage))
+                    files.append(self._build_file_response(file_path, backend, backend.usage))
+            except (ClientError, BotoCoreError) as e:
+                self._handle_storage_error(e, "list files")
 
         LOGGER.info(
             "Listed files",
@@ -192,6 +264,7 @@ class FileViewSet(ViewSet):
             total_files=len(files),
             search_applied=bool(search_query),
             include_static=include_static,
+            omitted_backends=list(omit_backends) if omit_backends else None,
         )
         return Response(self._build_paginated_response(files))
 
@@ -267,7 +340,10 @@ class FileViewSet(ViewSet):
 
         # Save to backend
         content = file.read()
-        backend.save_file(file_path, content)
+        try:
+            backend.save_file(file_path, content)
+        except (ClientError, BotoCoreError) as e:
+            self._handle_storage_error(e, "upload file")
 
         LOGGER.info(
             "File uploaded",
@@ -339,7 +415,10 @@ class FileViewSet(ViewSet):
         backend = BackendFactory.create(usage)
 
         # Delete from backend
-        backend.delete_file(file_path)
+        try:
+            backend.delete_file(file_path)
+        except (ClientError, BotoCoreError) as e:
+            self._handle_storage_error(e, "delete file")
 
         LOGGER.info(
             "File deleted",

@@ -6057,6 +6057,11 @@ paths:
         schema:
           type: boolean
         description: Include static files in the results
+      - in: query
+        name: omit
+        schema:
+          type: string
+        description: Comma-separated list of backend types to exclude (e.g., 'passthrough,static')
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: usage

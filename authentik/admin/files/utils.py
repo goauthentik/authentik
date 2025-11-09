@@ -77,30 +77,25 @@ class RequestWrapper:
         return path
 
 
-def get_storage_config(usage: "Usage", key: str, default: Any = None) -> Any:
-    """Get storage configuration with ovrride support.
+def get_storage_config(key: str, default: Any = None) -> Any:
+    """Get storage configuration.
 
-    Looking order:
-    1. storage.<usage>.<key> (e.g., storage.media.backend)
-    2. storage.<key> (e.g., storage.backend)
-    3. default value
+    Storage configuration is shared across all usages (media, reports).
+    The usage type only affects the path prefix in storage.
 
     Args:
-        usage: Usage type enum
         key: Configuration key
         default: Default value if not found
 
     Returns:
-        Configuration value
+        Configuration value from storage.{key} or default
+
+    Example:
+        get_storage_config("s3.bucket_name")
+        -> looks up storage.s3.bucket_name
     """
-    usage_key = f"storage.{usage.value}.{key}"
-    fallback_key = f"storage.{key}"
-
-    usage_specific = CONFIG.get(usage_key, None)
-    if usage_specific is not None:
-        return usage_specific
-
-    return CONFIG.get(fallback_key, default)
+    storage_key = f"storage.{key}"
+    return CONFIG.get(storage_key, default)
 
 
 def get_mime_from_filename(filename: str) -> str:

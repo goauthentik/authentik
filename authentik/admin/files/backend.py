@@ -47,7 +47,7 @@ class Backend(ABC):
         self.usage = usage
         # Only get backend config for manageable backends
         if self.manageable:
-            self._backend_type = get_storage_config(usage, "backend", "file")
+            self._backend_type = get_storage_config("backend", "file")
             LOGGER.info(
                 "Initialized storage backend",
                 backend=self.__class__.__name__,
@@ -58,7 +58,7 @@ class Backend(ABC):
             self._backend_type = None
 
     def get_config(self, key: str, default=None):
-        """Get configuration value with usage-specific override support.
+        """Get storage configuration value.
 
         Args:
             key: Configuration key to look up
@@ -67,7 +67,7 @@ class Backend(ABC):
         Returns:
             Configuration value
         """
-        return get_storage_config(self.usage, key, default)
+        return get_storage_config(key, default)
 
     @abstractmethod
     def supports_file_path(self, file_path: str) -> bool:

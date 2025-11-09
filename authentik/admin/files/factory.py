@@ -43,7 +43,7 @@ class BackendFactory:
         Raises:
             ValidationError: If backend type is unknown
         """
-        backend_type = get_storage_config(usage, "backend", "file")
+        backend_type = get_storage_config("backend", "file")
 
         if backend_type not in cls._backends:
             LOGGER.error(

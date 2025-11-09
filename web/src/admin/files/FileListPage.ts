@@ -69,6 +69,7 @@ export class FileListPage extends TablePage<FileItem> {
         const response = (await api.filesList({
             usage: this.usage,
             ...(this.search ? { search: this.search } : {}),
+            omit: "passthrough,static",
         })) as unknown as PaginatedResponse<FileItem>;
 
         return response;
