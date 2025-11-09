@@ -192,7 +192,7 @@ class FileViewSet(ViewSet):
                 required=False,
                 description="Include static files in the results",
             ),
-            # Useful for the Admin interface where static by default allows passthrough and static
+            # Useful for the Admin interface where media usage by default allows passthrough and static backends too
             # So, we need to add a param to omit in this case
             OpenApiParameter(
                 name="omit",
