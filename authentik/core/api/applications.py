@@ -8,16 +8,18 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url_full
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
@@ -28,7 +30,6 @@ from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
-from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
@@ -58,10 +59,8 @@ class ApplicationSerializer(ModelSerializer):
         if not app.meta_icon:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
-
         request = self.context.get("request")
-        return resolve_file_url_with_request(app.meta_icon, Usage.MEDIA, request)
+        return resolve_file_url_full(app.meta_icon, Usage.MEDIA, request)
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -289,4 +288,3 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
 
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
-

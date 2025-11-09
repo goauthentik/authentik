@@ -3,12 +3,15 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+
 import { AKLabel } from "#components/ak-label";
+
 import { IDGenerator } from "#packages/core/id";
 
-import { FilesApi, FileUploadRequestUsageEnum } from "@goauthentik/api";
+import { FilesApi, FilesListUsageEnum, FileUploadRequestUsageEnum } from "@goauthentik/api";
 
-import { html, nothing } from "lit";
+import { msg } from "@lit/localize";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 interface FileItem {
@@ -19,13 +22,26 @@ interface FileItem {
     usage: string;
 }
 
+interface PaginatedFileResponse {
+    pagination: {
+        next: number;
+        previous: number;
+        count: number;
+        current: number;
+        total_pages: number;
+        start_index: number;
+        end_index: number;
+    };
+    results: FileItem[];
+}
+
 const renderElement = (item: FileItem) => item.name;
 const renderValue = (item: FileItem | undefined) => item?.name;
 
 /**
  * File Search Input Component
  *
- * Search/select dropdown for files from authentik.files storage.
+ * Search/select dropdown for files from authentik.admin.files storage.
  * Supports uploaded files, static files, and external URLs/Font Awesome icons via PassthroughBackend.
  */
 @customElement("ak-file-search-input")
@@ -56,9 +72,6 @@ export class AkFileSearchInput extends AKElement {
     @property({ type: String })
     usage: FileUploadRequestUsageEnum = FileUploadRequestUsageEnum.Media;
 
-    @property({ type: Array })
-    specialUsages: string[] = [];
-
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
@@ -66,15 +79,50 @@ export class AkFileSearchInput extends AKElement {
         return this.value === item.name;
     };
 
-    async #fetch(query?: string): Promise<FileItem[]> {
-        const api = new FilesApi(DEFAULT_CONFIG);
-        const response: any = await api.filesList({
-            usage: this.usage as any,
-            ...(query ? { search: query } : {}),
-            ...(this.specialUsages.length > 0 ? { specialUsages: this.specialUsages.join(",") } : {}),
-        });
+    override firstUpdated() {
+        // If we have a value but it's not in the fetched results (liek fa:// or custom URL),
+        // the search-select won't show it. We need to add it to the initial fetch.
+        if (this.value) {
+            // Search-select will call #fetch and then try to select using #selected
+            // And then if the value isn't found in results, creatable mode will handle it
+        }
+    }
 
-        return response.results || [];
+    async #fetch(query?: string): Promise<FileItem[]> {
+        try {
+            const api = new FilesApi(DEFAULT_CONFIG);
+            const response = (await api.filesList({
+                usage: this.usage as FilesListUsageEnum,
+                ...(query ? { search: query } : {}),
+            })) as unknown as PaginatedFileResponse;
+
+            if (!response || !Array.isArray(response.results)) {
+                console.error("Invalid response format from files API", response);
+                return [];
+            }
+
+            let results = response.results;
+
+            // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
+            // add it as a synthetic item so it shows up as selected
+            if (this.value && !results.find(item => item.name === this.value)) {
+                results = [
+                    {
+                        name: this.value,
+                        url: this.value,
+                        mime_type: "",
+                        size: 0,
+                        usage: this.usage,
+                    },
+                    ...results,
+                ];
+            }
+
+            return results;
+        } catch (error) {
+            console.error(msg("Failed to fetch files"), error);
+            return [];
+        }
     }
 
     render() {
@@ -97,7 +145,8 @@ export class AkFileSearchInput extends AKElement {
             ${this.help
                 ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
                 : html`<p class="pf-c-form__helper-text">
-                      You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.
+                      You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name),
+                      or upload a new file.
                   </p>`}
         </ak-form-element-horizontal>`;
     }

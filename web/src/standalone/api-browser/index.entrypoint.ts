@@ -10,7 +10,7 @@ import { getCookie } from "#common/utils";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -98,11 +98,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
                     }}
                 >
                     <div slot="nav-logo">
-                        <img
-                            alt="${msg("authentik Logo")}"
-                            class="logo"
-                            src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        />
+                        ${renderImage(this.brandingLogo, msg("authentik Logo"), "logo")}
                     </div>
                 </rapi-doc>
             </ak-locale-context>

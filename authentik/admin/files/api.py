@@ -1,9 +1,5 @@
-import re
-import uuid
-from enum import Enum
 from pathlib import Path, PurePosixPath
 
-from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers
 from rest_framework.decorators import action
@@ -14,73 +10,24 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backend import Backend, Usage, get_allowed_api_usages
+from authentik.admin.files.backends import PassthroughBackend, StaticBackend
+from authentik.admin.files.factory import BackendFactory
+from authentik.admin.files.utils import (
+    add_schema_prefix,
+    get_mime_from_filename,
+    strip_schema_prefix,
+)
+from authentik.admin.files.validation import (
+    sanitize_file_path,
+    validate_file_size,
+    validate_file_type,
+)
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.admin.files.backend import (
-    Backend,
-    FileBackend,
-    PassthroughBackend,
-    S3Backend,
-    StaticBackend,
-    Usage,
-    get_allowed_api_usages,
-    get_mime_from_filename,
-    get_storage_config,
-)
 
 LOGGER = get_logger()
-
-
-def sanitize_file_path(file_path: str) -> str:
-    """Sanitize file path to prevent directory traversal attacks and ensure safe filenames.
-    """
-    if not file_path:
-        raise ValidationError(_("File path cannot be empty"))
-
-    # Strip whitespace
-    file_path = file_path.strip()
-
-    # Allow alphanumeric, dots, hyphens, and underscores only
-    if not re.match(r"^[a-zA-Z0-9._-]+$", file_path):
-        raise ValidationError(
-            _("Filename can only contain letters (a-z, A-Z), numbers (0-9), dots (.), hyphens (-), and underscores (_)")
-        )
-
-    # Convert to posix path for consistent handling
-    path = PurePosixPath(file_path)
-
-    # Check for absolute paths
-    if path.is_absolute():
-        raise ValidationError(_("Absolute paths are not allowed"))
-
-    # Normalize the path and check for directory traversal
-    normalized = str(path)
-
-    # Check for parent directory references or current directory at start
-    if ".." in path.parts:
-        raise ValidationError(_("Parent directory references (..) are not allowed"))
-
-    # Disallow paths starting with dot (hidden files at root level)
-    if normalized.startswith("."):
-        raise ValidationError(_("Paths cannot start with '.'"))
-
-    # Check path length limits
-    if len(normalized) > 1024:
-        raise ValidationError(_("File path too long (max 1024 characters)"))
-
-    for part in path.parts:
-        if len(part) > 255:
-            raise ValidationError(_("Path component too long (max 255 characters)"))
-
-    # Remove any duplicate slashes
-    normalized = re.sub(r"/+", "/", normalized)
-
-    # Final safety check: ensure the normalized path doesn't escape
-    if normalized.startswith("/") or normalized.startswith(".."):
-        raise ValidationError("Invalid file path")
-
-    return normalized
 
 
 class FileSerializer(PassiveSerializer):
@@ -115,10 +62,8 @@ class FileViewSet(ViewSet):
     # Dummy queryset for permission checks
     queryset = User.objects.none()
 
-    def _build_file_response(
-        self, file_path: str, backend: Backend, usage: Usage
-    ) -> dict:
-        """Build standardized file response with schema prefix for display
+    def _build_file_response(self, file_path: str, backend: Backend, usage: Usage) -> dict:
+        """Build standardized file response with schema prefix for display.
 
         Args:
             file_path: Relative file path (e.g., "my-icon.png")
@@ -126,14 +71,12 @@ class FileViewSet(ViewSet):
             usage: Usage type
 
         Returns:
-            Dictionary with file information including schema-prefixed name
+            Dictionary with file information
         """
-        from django.db import connection
-
         # Only include schema prefix for manageable backends (MEDIA, REPORTS)
         # Non-manageable files (static, passthrough) are shared across tenants
         if backend.manageable:
-            display_name = f"{connection.schema_name}/{file_path}"
+            display_name = add_schema_prefix(file_path)
         else:
             display_name = file_path
 
@@ -145,22 +88,8 @@ class FileViewSet(ViewSet):
             "usage": usage.value,
         }
 
-    def _strip_schema_prefix(self, file_path: str) -> str:
-        """Strip schema prefix from file path if present
-
-        Args:
-            file_path: File path possibly with schema prefix (e.g., "public/my-icon.png")
-
-        Returns:
-            File path without schema prefix (e.g., "my-icon.png")
-        """
-        from django.db import connection
-
-        schema_prefix = f"{connection.schema_name}/"
-        return file_path.removeprefix(schema_prefix)
-
     def _build_paginated_response(self, results: list) -> dict:
-        """Build standardized paginated response
+        """Build standardized paginated response.
 
         Args:
             results: List of file response dictionaries
@@ -181,31 +110,6 @@ class FileViewSet(ViewSet):
             },
             "results": results,
         }
-
-    def _get_backend(self, usage: Usage) -> Backend:
-        """Get the appropriate backend instance based on configuration
-
-        Supports usage-specific overrides:
-        - storage.media.backend or storage.reports.backend
-        - Falls back to storage.backend
-        """
-        LOGGER.debug("FileViewSet._get_backend called", usage=usage.value)
-        backend_type = get_storage_config(usage, "backend", "file")
-        LOGGER.debug("FileViewSet._get_backend backend_type determined",
-                    backend_type=backend_type,
-                    usage=usage.value)
-
-        if backend_type == "file":
-            LOGGER.debug("FileViewSet._get_backend creating FileBackend")
-            return FileBackend(usage)
-        elif backend_type == "s3":
-            LOGGER.debug("FileViewSet._get_backend creating S3Backend")
-            return S3Backend(usage)
-        else:
-            LOGGER.error("Unknown storage backend configured",
-                        backend_type=backend_type,
-                        usage=usage.value)
-            raise ValidationError(f"Unknown storage backend: {backend_type}")
 
     @extend_schema(responses={200: UsageSerializer(many=True)})
     @action(detail=False, methods=["GET"])
@@ -240,81 +144,55 @@ class FileViewSet(ViewSet):
         responses={200: FileSerializer(many=True)},
     )
     def list(self, request: Request) -> Response:
-        """List files from storage backend"""
+        """List files from storage backend."""
         usage_param = request.query_params.get("usage", Usage.MEDIA.value)
         search_query = request.query_params.get("search", "").strip().lower()
-        include_static = request.query_params.get("includeStatic", "").lower() in ("true", "1", "yes")
-
-        LOGGER.debug("FileViewSet.list called",
-                    usage_param=usage_param,
-                    search_query=search_query,
-                    include_static=include_static,
-                    user=request.user.username if hasattr(request.user, 'username') else 'anonymous')
+        include_static = request.query_params.get("includeStatic", "false").lower() == "true"
 
         try:
             usage = Usage(usage_param)
-            LOGGER.debug("FileViewSet.list usage parsed", usage=usage.value)
         except ValueError as e:
-            LOGGER.warning("Invalid usage parameter provided",
-                          usage_param=usage_param,
-                          error=str(e))
-            raise ValidationError(f"Invalid usage: {usage_param}")
+            LOGGER.warning(
+                "Invalid usage parameter provided", usage_param=usage_param, error=str(e)
+            )
+            raise ValidationError(f"Invalid usage: {usage_param}") from e
 
         allowed_usages = get_allowed_api_usages()
-        LOGGER.debug("FileViewSet.list allowed_usages check",
-                    allowed_usages=[u.value for u in allowed_usages],
-                    requested_usage=usage.value)
 
         if usage not in allowed_usages:
-            LOGGER.warning("Usage not accessible via API",
-                          usage=usage.value,
-                          allowed_usages=[u.value for u in allowed_usages])
+            LOGGER.warning(
+                "Usage not accessible via API",
+                usage=usage.value,
+                allowed_usages=[u.value for u in allowed_usages],
+            )
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
-        LOGGER.debug("FileViewSet.list getting primary backend", usage=usage.value)
-        backends = [self._get_backend(usage)]
-        LOGGER.debug("FileViewSet.list backends initialized",
-                    backend_count=len(backends),
-                    primary_backend=backends[0].__class__.__name__,
-                    include_static=include_static)
+        backends = [BackendFactory.create(usage)]
 
-        if include_static:
-            LOGGER.debug("FileViewSet.list adding StaticBackend")
+        # For MEDIA usage, always include static and passthrough backends
+        if usage == Usage.MEDIA:
+            backends.append(StaticBackend(usage))
+            backends.append(PassthroughBackend(usage))
+        elif include_static:
             backends.append(StaticBackend(usage))
 
         # Backend is source of truth - list all files from storage
         files = []
-        LOGGER.debug("FileViewSet.list iterating backends", backend_count=len(backends))
-        for idx, backend in enumerate(backends):
-            LOGGER.debug("FileViewSet.list processing backend",
-                        backend_index=idx,
-                        backend=backend.__class__.__name__,
-                        usage=backend.usage.value)
-
-            file_count_from_backend = 0
+        for backend in backends:
             for file_path in backend.list_files():
                 # Apply search filter if provided
                 if search_query and search_query not in file_path.lower():
-                    LOGGER.debug("FileViewSet.list skipping file (search filter)",
-                                file=file_path,
-                                search_query=search_query)
                     continue
 
-                file_count_from_backend += 1
-                LOGGER.debug("FileViewSet.list adding file",
-                            file=file_path,
-                            backend=backend.__class__.__name__)
                 files.append(self._build_file_response(file_path, backend, backend.usage))
 
-            LOGGER.debug("FileViewSet.list backend iteration complete",
-                        backend=backend.__class__.__name__,
-                        files_from_backend=file_count_from_backend)
-
-        LOGGER.info("Listing files complete",
-                   usage=usage.value,
-                   total_files=len(files),
-                   search_applied=bool(search_query),
-                   include_static=include_static)
+        LOGGER.info(
+            "Listed files",
+            usage=usage.value,
+            total_files=len(files),
+            search_applied=bool(search_query),
+            include_static=include_static,
+        )
         return Response(self._build_paginated_response(files))
 
     @extend_schema(
@@ -323,10 +201,7 @@ class FileViewSet(ViewSet):
     )
     @action(detail=False, methods=["POST"])
     def upload(self, request: Request) -> Response:
-        """Upload file to storage backend"""
-        LOGGER.debug("FileViewSet.upload called",
-                    user=request.user.username if hasattr(request.user, 'username') else 'anonymous')
-
+        """Upload file to storage backend."""
         serializer = FileUploadRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -334,44 +209,28 @@ class FileViewSet(ViewSet):
         custom_path = serializer.validated_data.get("path", "").strip()
         usage_value = serializer.validated_data.get("usage", Usage.MEDIA.value)
 
-        # Validate file size (3MB = 3 * 1024 * 1024 bytes)
-        max_size = 3 * 1024 * 1024
-        if file.size > max_size:
-            raise ValidationError({
-                "file": [f"File size ({file.size / 1024 / 1024:.2f}MB) exceeds maximum allowed size (3MB)."]
-            })
-
-        # Validate file type for media files (images only)
-        if usage_value == Usage.MEDIA.value:
-            content_type = file.content_type or ""
-            if not content_type.startswith("image/"):
-                raise ValidationError({
-                    "file": [f"Only image files are allowed for media uploads. Got: {content_type}"]
-                })
-
-        LOGGER.debug("FileViewSet.upload validated data",
-                    original_filename=file.name,
-                    custom_path=custom_path,
-                    usage_value=usage_value,
-                    file_size=file.size)
+        # Validate file size and type
+        validate_file_size(file.size)
+        validate_file_type(file.content_type or "", usage_value)
 
         try:
             usage = Usage(usage_value)
-            LOGGER.debug("FileViewSet.upload usage parsed", usage=usage.value)
         except ValueError as e:
-            LOGGER.warning("Invalid usage parameter in upload",
-                          usage_value=usage_value,
-                          error=str(e))
-            raise ValidationError(f"Invalid usage: {usage_value}")
+            LOGGER.warning(
+                "Invalid usage parameter in upload", usage_value=usage_value, error=str(e)
+            )
+            raise ValidationError(f"Invalid usage: {usage_value}") from e
 
         allowed_usages = get_allowed_api_usages()
         if usage not in allowed_usages:
-            LOGGER.warning("Upload attempted with disallowed usage",
-                          usage=usage.value,
-                          allowed_usages=[u.value for u in allowed_usages])
+            LOGGER.warning(
+                "Upload attempted with disallowed usage",
+                usage=usage.value,
+                allowed_usages=[u.value for u in allowed_usages],
+            )
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
-        backend = self._get_backend(usage)
+        backend = BackendFactory.create(usage)
 
         # Determine file path
         if custom_path:
@@ -381,42 +240,42 @@ class FileViewSet(ViewSet):
             path_obj = PurePosixPath(file_path)
             if not path_obj.suffix and Path(file.name).suffix:
                 file_path = f"{file_path}{Path(file.name).suffix}"
-                LOGGER.debug("FileViewSet.upload added extension to custom path",
-                            original_path=custom_path,
-                            final_path=file_path)
         else:
             # Use original filename
             file_path = file.name
-            LOGGER.debug("FileViewSet.upload using original filename", file_path=file_path)
 
         # Sanitize path to prevent directory traversal
-        LOGGER.debug("FileViewSet.upload sanitizing path", unsanitized_path=file_path)
         file_path = sanitize_file_path(file_path)
-        LOGGER.debug("FileViewSet.upload path sanitized", sanitized_path=file_path)
 
         # Check if file already exists
         if backend.file_exists(file_path):
-            LOGGER.warning("File upload blocked - duplicate filename",
-                          file_path=file_path,
-                          backend=backend.__class__.__name__)
-            raise ValidationError({
-                "path": [f"A file with the name '{file_path}' already exists. Please use a different name."]
-            })
+            LOGGER.warning(
+                "File upload blocked - duplicate filename",
+                file_path=file_path,
+                backend=backend.__class__.__name__,
+            )
+            raise ValidationError(
+                {
+                    "path": [
+                        (
+                            f"A file with the name '{file_path}' already exists. "
+                            "Please use a different name."
+                        )
+                    ]
+                }
+            )
 
         # Save to backend
-        LOGGER.debug("FileViewSet.upload reading file content", file_size=file.size)
         content = file.read()
-        LOGGER.debug("FileViewSet.upload saving to backend",
-                    backend=backend.__class__.__name__,
-                    file_path=file_path,
-                    content_size=len(content))
         backend.save_file(file_path, content)
 
-        LOGGER.info("File uploaded successfully",
-                   file_path=file_path,
-                   usage=usage.value,
-                   backend=backend.__class__.__name__,
-                   size=len(content))
+        LOGGER.info(
+            "File uploaded",
+            file_path=file_path,
+            usage=usage.value,
+            backend=backend.__class__.__name__,
+            size=len(content),
+        )
 
         # Audit log for file upload
         Event.new(
@@ -450,55 +309,44 @@ class FileViewSet(ViewSet):
     )
     @action(detail=False, methods=["DELETE"])
     def delete(self, request: Request) -> Response:
-        """Delete file from storage backend"""
+        """Delete file from storage backend."""
         file_path = request.query_params.get("name")
         usage_param = request.query_params.get("usage", Usage.MEDIA.value)
 
-        LOGGER.debug("FileViewSet.delete called",
-                    file_path=file_path,
-                    usage_param=usage_param,
-                    user=request.user.username if hasattr(request.user, 'username') else 'anonymous')
-
         if not file_path:
-            LOGGER.warning("Delete attempted without file path")
             raise ValidationError("name parameter is required")
 
-        LOGGER.debug("FileViewSet.delete stripping schema prefix", original_path=file_path)
-        file_path = self._strip_schema_prefix(file_path)
-        LOGGER.debug("FileViewSet.delete schema prefix stripped", file_path=file_path)
-
-        LOGGER.debug("FileViewSet.delete sanitizing path", unsanitized_path=file_path)
+        file_path = strip_schema_prefix(file_path)
         file_path = sanitize_file_path(file_path)
-        LOGGER.debug("FileViewSet.delete path sanitized", sanitized_path=file_path)
 
         try:
             usage = Usage(usage_param)
-            LOGGER.debug("FileViewSet.delete usage parsed", usage=usage.value)
         except ValueError as e:
-            LOGGER.warning("Invalid usage parameter in delete",
-                          usage_param=usage_param,
-                          error=str(e))
-            raise ValidationError(f"Invalid usage: {usage_param}")
+            LOGGER.warning(
+                "Invalid usage parameter in delete", usage_param=usage_param, error=str(e)
+            )
+            raise ValidationError(f"Invalid usage: {usage_param}") from e
 
         allowed_usages = get_allowed_api_usages()
         if usage not in allowed_usages:
-            LOGGER.warning("Delete attempted with disallowed usage",
-                          usage=usage.value,
-                          allowed_usages=[u.value for u in allowed_usages])
+            LOGGER.warning(
+                "Delete attempted with disallowed usage",
+                usage=usage.value,
+                allowed_usages=[u.value for u in allowed_usages],
+            )
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
-        backend = self._get_backend(usage)
+        backend = BackendFactory.create(usage)
 
         # Delete from backend
-        LOGGER.debug("FileViewSet.delete deleting from backend",
-                    backend=backend.__class__.__name__,
-                    file_path=file_path)
         backend.delete_file(file_path)
 
-        LOGGER.info("File deleted successfully",
-                   file_path=file_path,
-                   usage=usage.value,
-                   backend=backend.__class__.__name__)
+        LOGGER.info(
+            "File deleted",
+            file_path=file_path,
+            usage=usage.value,
+            backend=backend.__class__.__name__,
+        )
 
         # Audit log for file deletion
         Event.new(

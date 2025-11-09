@@ -2,7 +2,7 @@
 
 from collections.abc import Iterable
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -12,14 +12,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url_full
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.policies.engine import PolicyEngine
-from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -36,10 +36,8 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
         if not obj.icon:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
-
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.icon, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.icon, Usage.MEDIA, request)
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

@@ -1,13 +1,14 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
+
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
 
 import { FilesApi, FileUploadRequestUsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { customElement, property, state } from "lit/decorators.js";
 import { html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
@@ -34,24 +35,26 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         const safeFilenameRegex = /^[a-zA-Z0-9._-]+$/;
         if (!safeFilenameRegex.test(this.selectedFile.name)) {
             throw new Error(
-                msg("Filename can only contain letters, numbers, dots, hyphens, and underscores")
+                msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
             );
         }
 
         const api = new FilesApi(DEFAULT_CONFIG);
-        const customName = (
-            this.shadowRoot?.querySelector<HTMLInputElement>("#file-name")
-        )?.value?.trim();
+        const customName = this.shadowRoot
+            ?.querySelector<HTMLInputElement>("#file-name")
+            ?.value?.trim();
 
         // If custom name provided, validate and append original extension
         let finalPath = this.selectedFile.name;
         if (customName) {
             if (!safeFilenameRegex.test(customName)) {
                 throw new Error(
-                    msg("Filename can only contain letters, numbers, dots, hyphens, and underscores")
+                    msg(
+                        "Filename can only contain letters, numbers, dots, hyphens, and underscores",
+                    ),
                 );
             }
-            const ext = this.selectedFile.name.substring(this.selectedFile.name.lastIndexOf('.'));
+            const ext = this.selectedFile.name.substring(this.selectedFile.name.lastIndexOf("."));
             finalPath = customName + ext;
         }
 
@@ -60,7 +63,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                 file: this.selectedFile,
                 path: finalPath,
                 usage: this.usage,
-            } as any);
+            });
 
             showMessage({
                 level: MessageLevel.success,
@@ -113,7 +116,9 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                             placeholder=${msg("Leave empty to use original filename")}
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Optionally rename the file (without extension). Leave empty to keep the original filename.")}
+                            ${msg(
+                                "Optionally rename the file (without extension). Leave empty to keep the original filename.",
+                            )}
                         </p>
                     </div>
                 </div>

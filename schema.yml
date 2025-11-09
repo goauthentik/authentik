@@ -6050,7 +6050,7 @@ paths:
   /files/:
     get:
       operationId: files_list
-      description: List files from storage backend
+      description: List files from storage backend.
       parameters:
       - in: query
         name: includeStatic
@@ -6086,7 +6086,7 @@ paths:
   /files/delete/:
     delete:
       operationId: files_delete_destroy
-      description: Delete file from storage backend
+      description: Delete file from storage backend.
       parameters:
       - $ref: '#/components/parameters/QueryName'
       - in: query
@@ -6111,7 +6111,7 @@ paths:
   /files/upload/:
     post:
       operationId: files_upload_create
-      description: Upload file to storage backend
+      description: Upload file to storage backend.
       tags:
       - files
       requestBody:
@@ -33866,8 +33866,12 @@ components:
           type: string
         branding_logo:
           type: string
+          description: Get the full URL to the branding logo
+          readOnly: true
         branding_favicon:
           type: string
+          description: Get the full URL to the branding favicon
+          readOnly: true
         branding_custom_css:
           type: string
         ui_footer_links:

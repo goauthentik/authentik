@@ -19,11 +19,10 @@ import "./components/ak-provider-search-input.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { Application, CoreApi, FileUploadRequestUsageEnum, Provider } from "@goauthentik/api";
@@ -64,28 +63,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         const currentSlug = this.instance?.slug;
 
-        // For updates, only send changed fields
-        if (currentSlug && this.instance) {
-            const changedFields: Partial<Application> = {};
-
-            // Compare each field and only include if changed
-            (Object.keys(applicationRequest) as Array<keyof Application>).forEach((key) => {
-                const newValue = applicationRequest[key];
-                const oldValue = this.instance?.[key];
-
-                // Include field if it's different from the original
-                if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-                    (changedFields as any)[key] = newValue;
-                }
-            });
-
-            applicationRequest = changedFields as Application;
-        }
-
         const app = await (currentSlug
-            ? this.#api.coreApplicationsPartialUpdate({
+            ? this.#api.coreApplicationsUpdate({
+                  applicationRequest,
                   slug: currentSlug,
-                  patchedApplicationRequest: applicationRequest,
               })
             : this.#api.coreApplicationsCreate({ applicationRequest }));
 
@@ -204,7 +185,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         label=${msg("Icon")}
                         value=${ifDefined(this.instance?.metaIcon)}
                         .usage=${FileUploadRequestUsageEnum.Media}
-                        .specialUsages=${["passthrough"]}
                         help=${msg(
                             "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                         )}

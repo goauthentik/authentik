@@ -195,11 +195,10 @@ class Flow(SerializerModel, PolicyBindingModel):
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
 
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
+        from authentik.admin.files.backend import Usage
+        from authentik.admin.files.service import resolve_file_url_full
 
-        # todo: dunno? come back to this later
-        drf_request = request if hasattr(request, '_request') else None
-        return resolve_file_url_with_request(self.background, Usage.MEDIA, drf_request)
+        return resolve_file_url_full(self.background, Usage.MEDIA, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

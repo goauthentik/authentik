@@ -187,7 +187,6 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             label=${msg("Icon")}
                             value=${ifDefined(app.metaIcon)}
                             .usage=${FileUploadRequestUsageEnum.Media}
-                            .specialUsages=${["passthrough"]}
                             help=${msg(
                                 "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                             )}

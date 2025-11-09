@@ -12,10 +12,10 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
-import { config, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -38,7 +38,7 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 const authorizationCodeAuthMethodOptions = [
@@ -86,7 +86,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
 
     @property({ attribute: false })
     providerType: SourceType | null = null;
-
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;

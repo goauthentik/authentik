@@ -14,6 +14,8 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url_full
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -39,24 +41,21 @@ class BrandSerializer(ModelSerializer):
 
     def get_branding_logo_url(self, obj: Brand) -> str:
         """Get the full URL to the branding logo"""
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.branding_logo, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.branding_logo, Usage.MEDIA, request)
 
     def get_branding_favicon_url(self, obj: Brand) -> str:
         """Get the full URL to the branding favicon"""
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.branding_favicon, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.branding_favicon, Usage.MEDIA, request)
 
     def get_branding_default_flow_background_url(self, obj: Brand) -> str:
         """Get the full URL to the default flow background"""
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.branding_default_flow_background, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.branding_default_flow_background, Usage.MEDIA, request)
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):
@@ -123,17 +122,16 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     def get_branding_logo(self, obj: Brand) -> str:
         """Get the full URL to the branding logo"""
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.branding_logo, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.branding_logo, Usage.MEDIA, request)
 
     def get_branding_favicon(self, obj: Brand) -> str:
         """Get the full URL to the branding favicon"""
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
         request = self.context.get("request")
-        return resolve_file_url_with_request(obj.branding_favicon, Usage.MEDIA, request)
+        return resolve_file_url_full(obj.branding_favicon, Usage.MEDIA, request)
+
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,

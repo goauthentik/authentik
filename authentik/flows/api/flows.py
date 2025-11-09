@@ -7,15 +7,17 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, FileField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import BooleanField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url_full
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
@@ -55,10 +57,8 @@ class FlowSerializer(ModelSerializer):
         if not flow.background:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
-
         request = self.context.get("request")
-        return resolve_file_url_with_request(flow.background, Usage.MEDIA, request)
+        return resolve_file_url_full(flow.background, Usage.MEDIA, request)
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""

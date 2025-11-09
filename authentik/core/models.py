@@ -29,7 +29,6 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -42,6 +41,9 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -581,7 +583,7 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.meta_icon:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url
+ 
 
         return resolve_file_url(self.meta_icon, Usage.MEDIA)
 
@@ -791,7 +793,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url
+
 
         return resolve_file_url(self.icon, Usage.MEDIA)
 
@@ -807,11 +809,9 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-        from authentik.admin.files.backend import Usage, resolve_file_url_with_request
 
-        # Convert HttpRequest to DRF Request if needed
-        drf_request = request if hasattr(request, '_request') else None
-        return resolve_file_url_with_request(self.icon, Usage.MEDIA, drf_request)
+
+        return resolve_file_url_full(self.icon, Usage.MEDIA, request)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

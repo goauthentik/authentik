@@ -101,7 +101,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Logo")}
                         value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
                         .usage=${"media"}
-                        .specialUsages=${["static"]}
                         help=${msg("Logo shown in sidebar/header and flow executor.")}
                     ></ak-file-search-input>
 
@@ -111,7 +110,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Favicon")}
                         value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
                         .usage=${"media"}
-                        .specialUsages=${["static"]}
                         help=${msg("Icon shown in the browser tab.")}
                     ></ak-file-search-input>
 

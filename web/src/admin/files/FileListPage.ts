@@ -5,12 +5,17 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatBytes } from "#common/utils/bytes";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { FilesApi, FileUploadRequestUsageEnum } from "@goauthentik/api";
+import {
+    FilesApi,
+    FilesDeleteDestroyUsageEnum,
+    FileUploadRequestUsageEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -21,7 +26,7 @@ interface FileItem {
     url: string;
     mime_type: string;
     size: number;
-    usage: string;
+    usage: FileUploadRequestUsageEnum;
 }
 
 interface UsageType {
@@ -61,12 +66,12 @@ export class FileListPage extends TablePage<FileItem> {
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
         const api = new FilesApi(DEFAULT_CONFIG);
-        const response: any = await api.filesList({
-            usage: this.usage as any,
+        const response = (await api.filesList({
+            usage: this.usage,
             ...(this.search ? { search: this.search } : {}),
-        });
+        })) as unknown as PaginatedResponse<FileItem>;
 
-        return response as PaginatedResponse<FileItem>;
+        return response;
     }
 
     protected columns: TableColumn[] = [
@@ -88,7 +93,10 @@ export class FileListPage extends TablePage<FileItem> {
             >
                 ${this.usageTypes.map(
                     (usageType) => html`
-                        <option value=${usageType.value} ?selected=${this.usage === usageType.value}>
+                        <option
+                            value=${usageType.value}
+                            ?selected=${this.usage === usageType.value}
+                        >
                             ${usageType.label}
                         </option>
                     `,
@@ -113,7 +121,7 @@ export class FileListPage extends TablePage<FileItem> {
             .delete=${(item: FileItem) => {
                 return new FilesApi(DEFAULT_CONFIG).filesDeleteDestroy({
                     name: item.name,
-                    usage: item.usage as any,
+                    usage: item.usage as FilesDeleteDestroyUsageEnum,
                 });
             }}
         >
@@ -124,14 +132,6 @@ export class FileListPage extends TablePage<FileItem> {
     }
 
     row(item: FileItem): SlottedTemplateResult[] {
-        const formatBytes = (bytes: number) => {
-            if (bytes === 0) return "0 B";
-            const k = 1024;
-            const sizes = ["B", "KB", "MB", "GB"];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
-        };
-
         return [
             html`<div>${item.name}</div>`,
             html`<div>${item.mime_type || "-"}</div>`,

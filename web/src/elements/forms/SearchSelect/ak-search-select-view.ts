@@ -397,6 +397,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             const newDisplayValue = this.findDisplayForValue(this.value);
             if (newDisplayValue) {
                 this.displayValue = newDisplayValue;
+            } else {
+                // If no display value found (e.g., custom creatable value), use the value itself
+                this.displayValue = this.value;
             }
         }
     }

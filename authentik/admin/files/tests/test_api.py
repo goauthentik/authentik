@@ -82,9 +82,7 @@ class TestFileAPI(TestCase):
 
             # Delete file
             url = reverse("authentik_api:files-delete")
-            response = self.client.delete(
-                f"{url}?name={file_name}&usage={Usage.MEDIA.value}"
-            )
+            response = self.client.delete(f"{url}?name={file_name}&usage={Usage.MEDIA.value}")
 
             self.assertEqual(response.status_code, 200)
 
