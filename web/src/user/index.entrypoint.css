@@ -6,10 +6,13 @@
     background-color: transparent !important;
     box-shadow: none !important;
     color: black !important;
-}
 
-:host([theme="light"]) .pf-c-button.pf-m-secondary {
-    color: var(--ak-global--Color--100) !important;
+    .pf-c-button {
+        --pf-c-button--m-secondary--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--active--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--focus--Color: var(--pf-global--primary-color--100);
+    }
 }
 
 .pf-c-page {

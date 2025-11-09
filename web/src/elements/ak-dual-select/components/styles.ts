@@ -102,7 +102,7 @@ export const globalVariables = css`
         );
 
         --pf-c-dual-list-selector__list-item-row--focus-within--BackgroundColor: var(
-            --ak-dark-background-darker
+            --pf-global--palette--black-1000
         );
 
         --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(

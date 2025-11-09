@@ -1,0 +1,10 @@
+:host([theme="dark"]) {
+    /* .pf-c-tree-view__node:focus {
+        --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
+    }
+
+    .pf-c-tree-view__content:hover,
+    .pf-c-tree-view__content:focus-within {
+        --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+    } */
+}

@@ -1,9 +1,3 @@
-/* .pf-c-page {
-    --pf-c-page__header--BackgroundColor: transparent;
-    --pf-c-page--BackgroundColor: transparent;
-    --pf-c-page__main-section--BackgroundColor: transparent;
-} */
-
 /**
  * We reverse the page header colors because PatternFly assumes a dark header
  * on light themes. The opposite must be done for dark themes.

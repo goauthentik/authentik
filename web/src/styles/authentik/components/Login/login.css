@@ -80,6 +80,13 @@
     }
 }
 
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-login {
+        --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    }
+}
+
 /* #region Page Header */
 
 .pf-c-login__header {
@@ -183,6 +190,15 @@
     }
 }
 
+[data-theme="dark"],
+:host([theme="dark"]) {
+    .pf-c-login__main-footer-band {
+        --pf-c-login__main-footer-band--BackgroundColor: var(
+            --pf-global--BackgroundColor--dark-300
+        );
+    }
+}
+
 /* #endregion */
 
 /* #region Layout variations */
@@ -281,16 +297,3 @@
 /* #endregion */
 
 /* #region Dark Theme */
-
-[data-theme="dark"],
-:host([theme="dark"]) {
-    .pf-c-login {
-        --pf-c-login__main--BackgroundColor: var(--ak-dark-background);
-    }
-
-    .pf-c-login__main-footer-band {
-        --pf-c-login__main-footer-band--BackgroundColor: var(
-            --pf-global--BackgroundColor--dark-300
-        );
-    }
-}

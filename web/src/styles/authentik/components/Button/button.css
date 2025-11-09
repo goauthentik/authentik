@@ -1,5 +1,17 @@
 .pf-c-button {
     --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--light-200);
+    --pf-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --pf-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --pf-c-button--focus--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+}
+
+a.pf-c-button {
+    &.pf-m-plain,
+    &.pf-m-secondary {
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 /* #region Dark Theme */
@@ -7,6 +19,9 @@
 [data-theme="dark"],
 :host([theme="dark"]) {
     .pf-c-button {
+        --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--200);
+        --pf-c-button--m-secondary--hover--after--BorderColor: var(--pf-global--primary-color--200);
+
         --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--300);
         --pf-c-button--m-plain--hover--BackgroundColor: var(--ak-dark-background-lighter);
         --pf-c-button--m-plain--active--BackgroundColor: var(--ak-dark-background-lighter);
@@ -22,6 +37,10 @@
                 color: var(--pf-c-button--m-plain--hover--Color);
             }
         }
+
+        &.pf-m-secondary {
+            --pf-global--primary-color--200: var(--pf-global--primary-color--light-100);
+        }
     }
 
     .pf-c-button.pf-m-control {
@@ -35,14 +54,16 @@
 
     .pf-m-tertiary,
     .pf-c-button.pf-m-tertiary {
-        --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
+        --pf-c-button--m-tertiary--Color: var(--pf-global--Color--400);
         --pf-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--sm);
         --pf-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--sm);
 
-        color: var(--ak-dark-foreground-darker);
+        --pf-c-button--m-tertiary--after--BorderColor: var(--pf-global--Color--200);
+        --pf-c-button--m-tertiary--hover--after--BorderColor: var(--pf-global--Color--300);
+        --pf-c-button--m-tertiary--hover--Color: var(--pf-global--Color--100);
 
         &:hover {
-            --pf-c-button--after--BorderColor: var(--ak-dark-foreground);
+            --pf-c-button--m-tertiary--Color: var(--pf-c-button--m-tertiary--hover--Color);
         }
     }
 }

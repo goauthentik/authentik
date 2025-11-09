@@ -1,7 +1,23 @@
-/* #region Dark Theme */
+.pf-c-data-list__cell {
+    display: flex;
+    align-items: center;
+}
 
-[data-theme="dark"],
+.pf-c-data-list__cell img {
+    max-width: 48px;
+    width: 48px;
+    margin-right: 16px;
+}
+
+.pf-c-data-list__item {
+    background-color: transparent;
+}
+
 :host([theme="dark"]) {
+    .pf-c-data-list__cell img {
+        filter: invert(1);
+    }
+
     .pf-c-data-list {
         padding-inline-start: 0;
         border-top-color: var(--ak-dark-background-lighter);

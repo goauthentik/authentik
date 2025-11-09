@@ -72,6 +72,11 @@ td:has(ak-rbac-object-permission-modal) {
     flex-flow: row wrap;
     padding-inline: var(--pf-global--spacer--md);
     gap: var(--pf-global--spacer--sm);
+
+    .pf-c-button.pf-m-secondary:hover,
+    ::part(spinner-button):hover {
+        text-decoration: underline;
+    }
 }
 
 .pf-c-toolbar__content {

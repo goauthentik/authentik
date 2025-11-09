@@ -1,6 +1,5 @@
 /* #region Dark Theme */
 
-[data-theme="dark"],
 :host([theme="dark"]) {
     .pf-c-select__toggle::before {
         --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);

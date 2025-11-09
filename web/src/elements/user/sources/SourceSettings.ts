@@ -8,13 +8,14 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/user/sources/SourceSettings.css";
 
 import { renderSourceIcon } from "#admin/sources/utils";
 
 import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
@@ -33,26 +34,7 @@ export class UserSourceSettingsPage extends AKElement {
     @property({ type: Boolean })
     canConnect = true;
 
-    static styles: CSSResult[] = [
-        PFDataList,
-        css`
-            .pf-c-data-list__cell {
-                display: flex;
-                align-items: center;
-            }
-            .pf-c-data-list__cell img {
-                max-width: 48px;
-                width: 48px;
-                margin-right: 16px;
-            }
-            :host([theme="dark"]) .pf-c-data-list__cell img {
-                filter: invert(1);
-            }
-            .pf-c-data-list__item {
-                background-color: transparent;
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFDataList, Styles];
 
     constructor() {
         super();
