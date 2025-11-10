@@ -76,6 +76,7 @@ jobs:
           fetch-depth: 0
       - name: checkout stable
         run: |
+          set -e -x -o pipefail
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
