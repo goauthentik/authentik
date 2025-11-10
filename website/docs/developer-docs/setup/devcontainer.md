@@ -146,4 +146,3 @@ After your code passes all checks, submit a pull request on [GitHub](https://git
 - Include tests for your changes where appropriate
 
 Thank you for contributing to authentik!
-

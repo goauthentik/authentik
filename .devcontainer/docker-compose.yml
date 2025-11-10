@@ -11,7 +11,7 @@ services:
       postgresql:
         condition: service_healthy
     environment:
-      AUTHENTIK_DEBUG: "true"
+      AUTHENTIK_DEBUG: true
       AUTHENTIK_SECRET_KEY: "devcontainer-secret-key-change-me"
       AUTHENTIK_POSTGRESQL__USER: postgres
       AUTHENTIK_POSTGRESQL__PASSWORD: postgres
@@ -20,7 +20,6 @@ services:
       AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
       AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
       AUTHENTIK_LOG_LEVEL: debug
-      # Ensure venv python is used for all subprocesses (fixes Django autoreload)
       PATH: "/ak-root/.venv/bin:${PATH}"
     ports:
       - "9000:9000"
@@ -44,7 +43,6 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
 
-  # Optional: S3 for media storage testing
   s3:
     image: docker.io/zenko/cloudserver
     environment:
@@ -57,7 +55,6 @@ services:
       - s3-data:/usr/src/app/localData
       - s3-metadata:/usr/src/app/localMetadata
 
-  # Optional: Spotlight for Sentry debugging
   spotlight:
     image: ghcr.io/getsentry/spotlight:latest
     ports:
