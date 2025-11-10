@@ -21,6 +21,6 @@ COPY ./SECURITY.md /work/
 
 RUN npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:f547e3d0d5d02f7009737b284abc87d808e4252b42dceea361811e9fc606287f
+FROM docker.io/library/nginx:1.29-trixie@sha256:1beed3ca46acebe9d3fb62e9067f03d05d5bfa97a00f30938a0a3580563272ad
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html
