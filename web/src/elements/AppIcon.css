@@ -38,6 +38,7 @@
     font-size: var(--icon-font-size, var(--icon-height));
     color: var(--ak-global--Color--100);
     padding: var(--icon-border);
+    height: var(--icon-height);
     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
     line-height: 1;
     filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));

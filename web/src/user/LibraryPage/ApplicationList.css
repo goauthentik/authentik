@@ -5,11 +5,16 @@
     --app-card-min-width: 6.5rem;
     --app-group-header-min-height: calc(var(--app-card-min-width) / 4);
     --app-icon-offset: 1rem;
-    --app-card-row-coefficient: 3.5;
+    --app-card-row-coefficient: 2.5;
+    --app-card-font-size-minimum: var(--pf-global--FontSize--md);
+    --app-card-font-size-maximum: var(--pf-global--FontSize--md);
+    --app-card-line-clamp: 3;
 
     @media (min-width: 390px) {
+        --app-card-row-coefficient: 3.5;
         --app-card-aspect-ratio: 1;
         --app-group-template-columns: repeat(auto-fill, var(--app-card-min-width));
+        --app-card-font-size-minimum: 0.6rem;
     }
 
     @media (min-width: 409px) {
@@ -19,6 +24,8 @@
     @media (min-width: 768px) {
         --app-icon-offset: 0.5rem;
         --app-card-min-width: 10rem;
+        --app-card-font-size-minimum: 0.9rem;
+        --app-card-line-clamp: 3;
     }
 }
 
@@ -76,6 +83,15 @@
 /* #region Title */
 
 [part="card-title"] {
+    --font-size-adjustment: calc(
+        (var(--app-card-min-width) / var(--ak-card-title-width, var(--app-card-min-width)))
+    );
+    --pf-c-card__title--FontSize: clamp(
+        var(--app-card-font-size-minimum),
+        calc(1rem * var(--font-size-adjustment, 1)),
+        var(--app-card-font-size-maximum)
+    );
+
     padding: 0 !important;
     z-index: 1;
     text-stroke-width: 0.15em;
@@ -93,16 +109,16 @@
 
     .clamp-wrapper {
         --clamp-padding: calc(0.1em * var(--app-card-row-coefficient));
-
         display: box;
         display: -webkit-box;
-        line-clamp: 2;
-        -webkit-line-clamp: 2;
+        line-clamp: var(--app-card-line-clamp);
+        -webkit-line-clamp: var(--app-card-line-clamp);
         box-orient: vertical;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-align: center;
         text-wrap: balance;
+        word-break: break-word;
         line-height: 1.2;
         padding-block: var(--clamp-padding);
         max-height: calc((var(--pf-global--LineHeight--md) * 2rem) - (var(--clamp-padding) / 2));
