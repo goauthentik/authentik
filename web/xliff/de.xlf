@@ -1311,11 +1311,6 @@
         <target>Aussteller</target>
         
       </trans-unit>
-      <trans-unit id="sf54c562d8a10ce77">
-        <source>Also known as EntityID.</source>
-        <target>Auch bekannt als EntityID.</target>
-        
-      </trans-unit>
       <trans-unit id="s991b750e2d5c4234">
         <source>Service Provider Binding</source>
         <target>Service Provider Bindung</target>
@@ -5897,7 +5892,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
         
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
         <target>Ja (
  <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
@@ -8813,10 +8808,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Not a valid slug</source>
   <target>Kein gültiger Slug</target>
 </trans-unit>
-<trans-unit id="s177577c23ed3ca7e">
-  <source>Configure The Application</source>
-  <target>Anwendung konfigurieren</target>
-</trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
   <target>Bindings konfigurieren</target>
@@ -10725,6 +10716,12 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+</trans-unit>
+<trans-unit id="s0268ce9f2abb84de">
+  <source>Configure the Application</source>
+</trans-unit>
+<trans-unit id="sd4fd64791f73d37b">
+  <source>Also known as Entity ID.</source>
 </trans-unit>
     </body>
   </file>
