@@ -17,6 +17,7 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
+MAX_JSON_RETRIES = 5
 
 class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
@@ -198,8 +199,25 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.wait_for_url(expected_url)
 
-        body = self.parse_json_content()
-        results = body.get("results")
+        body = None
+        results = []
+
+        for attempt in range(MAX_JSON_RETRIES):
+            body = self.parse_json_content()
+            results = body.get("results", [])
+
+            if results:
+                break
+            if attempt < MAX_JSON_RETRIES - 1:
+                self.logger.debug(
+                    f"[Attempt {attempt + 1}/{MAX_JSON_RETRIES}] No results yet, sleeping 1s… "
+                    f"(Current URL: {self.driver.current_url})"
+                )
+
+                self.driver.refresh()
+
+                sleep(1)
+
         current_url = self.driver.current_url
 
         self.assertIsInstance(
@@ -211,7 +229,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.assertEqual(
             len(results),
             1,
-            f"Expected exactly 1 result at {current_url}, got {len(results)}: {body}",
+            f"Expected exactly 1 result after {MAX_JSON_RETRIES} retries at {current_url}, "
+            f"got {len(results)}: {body}",
         )
 
         connection = results[0]
@@ -219,11 +238,12 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.assertEqual(
             connection.get("source_obj", {}).get("slug"),
             self.slug,
-            f"Expected slug '{self.slug}' at {self.driver.current_url}, got: {connection}",
+            f"Expected slug '{self.slug}' at {current_url}, got: {connection}",
         )
 
         self.assertEqual(
             connection.get("user"),
             self.user.pk,
-            f"Expected user {self.user.pk} at {self.driver.current_url}, got: {connection}",
+            f"Expected user {self.user.pk} at {current_url}, got: {connection}",
         )
+
