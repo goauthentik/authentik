@@ -84,7 +84,7 @@ jobs:
           # Previous stable tag
           prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           # Current version family based on
-          current_version_family=$(python -c "from authentik import VERSION; print(VERSION)" | grep -vE -- 'rc[0-9]+$')
+          current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$')
           if [[ -n $current_version_family ]]; then
               prev_stable=$current_version_family
           fi
