@@ -45,7 +45,7 @@ function run_authentik {
     if [[ -x "$(command -v authentik)" ]]; then
         exec authentik $@
     else
-        exec go run -v ./cmd/server/ $@
+        exec env GOFIPS140=latest CGO_ENABLED=1 go run -v ./cmd/server/ $@
     fi
 }
 
