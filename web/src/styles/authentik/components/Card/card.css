@@ -24,21 +24,14 @@
 
 /* #region Dark Theme */
 
-[data-theme="dark"],
-:host([theme="dark"]) {
-    .pf-c-card {
-        --pf-c-card--m-non-selectable-raised--BackgroundColor: var(
-            --pf-global--BackgroundColor--dark-200
-        );
+[data-theme="dark"] .pf-c-card,
+:host([theme="dark"]) .pf-c-card {
+    --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-card--m-non-selectable-raised--BackgroundColor: var(
+        --pf-global--BackgroundColor--dark-200
+    );
 
-        &.ak-m-enterprise-only {
-            --pf-c-card--m-non-selectable-raised--BackgroundColor: var(
-                --pf-global--info-color--200
-            );
-
-            --pf-c-card--m-non-selectable-raised--before--BackgroundColor: var(
-                --pf-global--info-color--100
-            );
-        }
-    }
+    --pf-c-card--m-non-selectable-raised--before--BackgroundColor: var(
+        --pf-global--info-color--100
+    );
 }

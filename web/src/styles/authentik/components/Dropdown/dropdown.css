@@ -9,8 +9,8 @@
 
 /* #region Dark Theme */
 
-[data-theme="dark"],
-:host([theme="dark"]) {
+[data-theme="dark"] .pf-c-dropdown,
+:host([theme="dark"]) .pf-c-dropdown {
     .pf-c-dropdown__toggle::before {
         border-color: transparent;
     }

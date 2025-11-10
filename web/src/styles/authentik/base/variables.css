@@ -30,12 +30,7 @@ html[data-theme="dark"] {
     --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
     --pf-global--Color--300: var(--pf-global--Color--light-300) !important;
 
-    /* TODO: Hover colors on dark theme need review. */
-    --pf-global--danger-color--100: var(--pf-global--palette--red-200);
-    --pf-global--danger-color--200: var(--pf-global--palette--red-100);
-
     /* TODO: We've seemed to have drifted from PF's dark-100 usage. Revisit this after PF 5. */
-    /* --pf-global--BackgroundColor--100: #1c1e21 !important; */
     --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
 
     --pf-global--BackgroundColor--dark-100: #18191a !important;
@@ -49,6 +44,26 @@ html[data-theme="dark"] {
 
     --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
     --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
+
+    /* #region Dispositions */
+
+    /* TODO: Revisit this after PF 5. */
+
+    --pf-global--default-color--100: var(--pf-global--palette--cyan-100);
+    --pf-global--default-color--300: var(--pf-global--palette--cyan-200);
+
+    --pf-global--info-color--100: var(--pf-global--palette--blue-200);
+    --pf-global--info-color--200: var(--pf-global--palette--blue-50);
+
+    --pf-global--warning-color--100: var(--pf-global--palette--gold-300);
+    --pf-global--warning-color--200: var(--pf-global--palette--gold-50);
+
+    --pf-global--danger-color--100: var(--pf-global--palette--red-100);
+    --pf-global--danger-color--200: var(--pf-global--palette--red-50);
+
+    --pf-global--success-color--100: var(--pf-global--palette--green-400);
+
+    /* #endregion */
 }
 
 /* #endregion */

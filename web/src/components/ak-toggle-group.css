@@ -1,6 +1,9 @@
+.pf-c-toggle-group {
+    justify-content: center;
+}
+
 /* #region Dark Theme */
 
-[data-theme="dark"],
 :host([theme="dark"]) {
     .pf-c-toggle-group__button {
         color: var(--ak-dark-foreground) !important;

@@ -145,7 +145,7 @@ fieldset {
         color: var(--ak-dark-background);
     }
 
-    .pf-c-input-group {
+    .pf-c-input-group:not(:has(.pf-c-switch)) {
         --pf-c-input-group--BackgroundColor: transparent;
 
         --pf-global--Color--100: var(--pf-global--Color--light-100);

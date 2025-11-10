@@ -80,11 +80,9 @@
     }
 }
 
-[data-theme="dark"],
-:host([theme="dark"]) {
-    .pf-c-login {
-        --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--150);
-    }
+[data-theme="dark"] .pf-c-login,
+:host([theme="dark"]) .pf-c-login {
+    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--150);
 }
 
 /* #region Page Header */
@@ -190,13 +188,9 @@
     }
 }
 
-[data-theme="dark"],
-:host([theme="dark"]) {
-    .pf-c-login__main-footer-band {
-        --pf-c-login__main-footer-band--BackgroundColor: var(
-            --pf-global--BackgroundColor--dark-300
-        );
-    }
+[data-theme="dark"] .pf-c-login__main-footer-band,
+:host([theme="dark"]) .pf-c-login__main-footer-band {
+    --pf-c-login__main-footer-band--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
 }
 
 /* #endregion */
