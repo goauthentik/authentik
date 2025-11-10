@@ -6,7 +6,7 @@ echo "Running authentik devcontainer setup"
 echo "======================================"
 
 echo ""
-echo "Step 1/5: Installing Node and docs dependencies"
+echo "Step 1/5: Installing dependencies"
 make install
 
 echo ""
