@@ -82,8 +82,8 @@ When using the container installation of Joplin, set the following environment v
 
 ```bash
 SAML_ENABLED="true"
-SAML_IDP_CONFIG_FILE:=/joplin-idp.xml
-SAML_SP_CONFIG_FILE:=/joplin-sp.xml
+SAML_IDP_CONFIG_FILE=/joplin-idp.xml
+SAML_SP_CONFIG_FILE=/joplin-sp.xml
 APP_BASE_URL=https://joplin.company
 API_BASE_URL=https://joplin.company
 DELETE_EXPIRED_SESSIONS_SCHEDULE=""
