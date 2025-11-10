@@ -25,6 +25,14 @@
 
 /* #region Dark Theme */
 
+:host([theme="dark"]) .pf-c-toolbar {
+    --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
+}
+
+:host([theme="dark"]) .pf-c-pagination {
+    --pf-c-pagination--m-bottom--BackgroundColor: var(--ak-dark-background-light);
+}
+
 :host([theme="dark"]) .pf-c-table {
     --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-300);
     --pf-global--Color--100: var(--ak-dark-foreground);
@@ -47,14 +55,6 @@
         --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(
             --ak-dark-background-lighter
         );
-    }
-
-    .pf-c-toolbar {
-        --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
-    }
-
-    .pf-c-pagination.pf-m-bottom {
-        background-color: var(--ak-dark-background-light);
     }
 
     .pf-c-button:has(.pf-c-table__toggle-icon) {
