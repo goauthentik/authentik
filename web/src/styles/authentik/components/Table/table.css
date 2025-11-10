@@ -3,6 +3,16 @@
     --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
 }
 
+.pf-c-toolbar {
+    .pf-c-button.pf-m-danger:disabled {
+        opacity: var(--ak-table--toolbar--bulk-delete-disabled-opacity, 0.5);
+    }
+
+    @media (prefers-contrast: more) {
+        --ak-table--toolbar--bulk-delete-disabled-opacity: 0.75;
+    }
+}
+
 .pf-c-table__sort.pf-m-selected {
     text-decoration: underline;
 

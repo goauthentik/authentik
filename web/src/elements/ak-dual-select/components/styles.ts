@@ -97,7 +97,6 @@ export const globalVariables = css`
     :host([theme="dark"]) {
         --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
-        --pf-c-dual-list-selector__list-item-row--BackgroundColor: red;
 
         --pf-c-dual-list-selector__list-item-row--focus-within--BackgroundColor: var(
             --pf-global--BackgroundColor--dark-200

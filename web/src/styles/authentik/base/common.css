@@ -23,18 +23,6 @@
     --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
 }
 
-.pf-m-success {
-    color: var(--pf-global--success-color--100) !important;
-}
-
-.pf-m-warning {
-    color: var(--pf-global--warning-color--100);
-}
-
-.pf-m-danger {
-    color: var(--pf-global--danger-color--100);
-}
-
 .pf-m-monospace {
     font-family: var(--pf-global--FontFamily--monospace);
 

@@ -13,12 +13,8 @@
     --ak-sidebar--minimum-auto-width: 80rem;
 
     --pf-global--disabled-color--100: GrayText;
-    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 100%, CanvasText 75%);
-    --pf-global--disabled-color--300: color-mix(in srgb, GrayText 100%, CanvasText 100%);
-    --pf-c-nav__link--PaddingTop: 0.5rem;
-    --pf-c-nav__link--PaddingRight: 0.5rem;
-    --pf-c-nav__link--PaddingBottom: 0.5rem;
-    --pf-c-nav__link--PaddingLeft: 0.5rem;
+    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 100%, transparent 100%);
+    --pf-global--disabled-color--300: color-mix(in srgb, GrayText 75%, Canvas 100%);
 }
 
 /* #endregion */
@@ -45,6 +41,9 @@ html[data-theme="dark"] {
     --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
     --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
 
+    --pf-global--disabled-color--100: color-mix(in srgb, GrayText 100%, CanvasText 25%);
+    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 10%, transparent 100%);
+
     /* #region Dispositions */
 
     /* TODO: Revisit this after PF 5. */
@@ -61,7 +60,8 @@ html[data-theme="dark"] {
     --pf-global--danger-color--100: var(--pf-global--palette--red-100);
     --pf-global--danger-color--200: var(--pf-global--palette--red-50);
 
-    --pf-global--success-color--100: var(--pf-global--palette--green-400);
+    --pf-global--success-color--100: var(--pf-global--palette--green-300);
+    --pf-global--success-color--200: var(--pf-global--palette--green-50);
 
     /* #endregion */
 }
