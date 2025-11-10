@@ -322,10 +322,13 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         if not container:
             container = self.driver
         wait = WebDriverWait(container, timeout)
+
         # wait for host element presence
         host = wait.until(lambda c: c.find_element(By.CSS_SELECTOR, selector))
-        # try several times to grab its shadowRoot (handles transient re-renders)
+
         attempts = 0
+
+        # try several times to grab its shadowRoot (handles transient re-renders)
         while attempts < SHADOW_ROOT_RETRIES:
             try:
                 return host.shadow_root
@@ -338,16 +341,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 except NoSuchElementException:
                     # loop and retry finding host
                     pass
-        raise RuntimeError(f"Failed to obtain shadow root for selector {selector} after retries")
+        inner_html = host.get_attribute("innerHTML") or "<no host>"
+        raise RuntimeError(
+            f"Failed to obtain shadow root for selector {selector} after {SHADOW_ROOT_RETRIES} retries"
+            f"Host innerHTML: {inner_html}"
+        )
 
-    # def get_shadow_root(
-    #     self, selector: str, container: WebElement | WebDriver | None = None
-    # ) -> WebElement:
-    #     """Get shadow root element's inner shadowRoot"""
-    #     if not container:
-    #         container = self.driver
-    #     el = container.find_element(By.CSS_SELECTOR, selector)
-    #     return el.shadow_root
 
     def shady_dom(self) -> WebElement:
         class wrapper:
