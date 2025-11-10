@@ -47340,8 +47340,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
-      - apple
       - openidconnect
+      - adfs
+      - apple
       - entraid
       - azuread
       - discord
