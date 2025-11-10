@@ -19,6 +19,7 @@ from tests.e2e.utils import SeleniumTestCase, retry
 
 MAX_JSON_RETRIES = 5
 
+
 class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
 
@@ -70,6 +71,22 @@ class TestSourceOAuth2(SeleniumTestCase):
         ident_stage.sources.set([source])
         ident_stage.save()
 
+    def login_via_oauth_provider(self):
+        """Perform login at the OAuth provider (Dex)"""
+        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
+
+        current_url = self.driver.current_url
+
+        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
+        self.driver.find_element(By.ID, "password").send_keys("password")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
+
+        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+
+        self.wait.until(ec.url_changes(current_url))
+
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
@@ -98,20 +115,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the login field
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-
-        current_url = self.driver.current_url
-
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
-
-        self.wait_for_navigation_from(current_url)
+        self.login_via_oauth_provider()
 
         # At this point we've been redirected back
         # and we're asked for the username
@@ -147,18 +151,9 @@ class TestSourceOAuth2(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the login field
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+        self.login_via_oauth_provider()
 
-        # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
-
-        # Wait until we've logged in
-        self.wait_for_url(self.if_user_url())
+        self.wait.until(ec.url_matches(self.if_user_url()))
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -173,7 +168,12 @@ class TestSourceOAuth2(SeleniumTestCase):
         "default/flow-default-source-pre-authentication.yaml",
     )
     def test_oauth_link(self):
-        """test OAuth Source link OIDC"""
+        """
+        Test OAuth Source link OIDC
+
+        This test will enroll the user via OAuth, then log in as admin and link the OAuth
+        source to the admin user.
+        """
         self.create_objects()
         self.driver.get(self.live_server_url)
         self.login()
@@ -182,18 +182,11 @@ class TestSourceOAuth2(SeleniumTestCase):
             self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.slug)
         )
 
-        # Now we should be at the IDP, wait for the login field
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+        self.login_via_oauth_provider()
 
-        # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+        sleep(1)
 
-        sleep(2)
-
+        # Now fetch the API to verify the connection was created.
         expected_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
         self.driver.get(expected_url)
 
@@ -246,4 +239,3 @@ class TestSourceOAuth2(SeleniumTestCase):
             self.user.pk,
             f"Expected user {self.user.pk} at {current_url}, got: {connection}",
         )
-

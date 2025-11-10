@@ -238,7 +238,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             "[type=submit]",
         ).click()
 
-        self.wait_for_navigation_from(current_url)
+        self.wait.until(ec.url_changes(current_url))
 
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")

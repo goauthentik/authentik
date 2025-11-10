@@ -146,6 +146,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.driver.get("http://localhost:9009")
         self.login()
+
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -163,7 +164,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             "[type=submit]",
         ).click()
 
-        self.wait_for_navigation_from(current_url)
+        self.wait.until(ec.url_changes(current_url))
 
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
@@ -274,7 +275,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             "[type=submit]",
         ).click()
 
-        self.wait_for_navigation_from(current_url)
+        self.wait.until(ec.url_changes(current_url))
 
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")

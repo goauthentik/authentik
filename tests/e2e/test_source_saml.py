@@ -104,6 +104,15 @@ class TestSourceSAML(SeleniumTestCase):
             },
         )
 
+    def login_via_saml_source(self):
+        """Perform login at the SAML IDP"""
+        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.driver.find_element(By.ID, "username").send_keys("user1")
+        self.driver.find_element(By.ID, "password").send_keys("user1pass")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        self.wait_for_url(self.if_user_url())
+
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
@@ -156,14 +165,7 @@ class TestSourceSAML(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the username field
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait_for_url(self.if_user_url())
+        self.login_via_saml_source()
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -238,14 +240,7 @@ class TestSourceSAML(SeleniumTestCase):
             "[type=submit]",
         ).click()
 
-        # Now we should be at the IDP, wait for the username field
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait_for_url(self.if_user_url())
+        self.login_via_saml_source()
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -307,14 +302,7 @@ class TestSourceSAML(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the username field
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait_for_url(self.if_user_url())
+        self.login_via_saml_source()
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -376,14 +364,7 @@ class TestSourceSAML(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the username field
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait_for_url(self.if_user_url())
+        self.login_via_saml_source()
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -410,14 +391,7 @@ class TestSourceSAML(SeleniumTestCase):
             By.CSS_SELECTOR, "fieldset[name='login-sources'] button"
         ).click()
 
-        # Now we should be at the IDP, wait for the username field
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-
-        # Wait until we're logged in
-        self.wait_for_url(self.if_user_url())
+        self.login_via_saml_source()
 
         # sleep(999999)
         self.assert_user(

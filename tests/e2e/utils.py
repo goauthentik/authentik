@@ -223,13 +223,6 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             f"HTML: {self.driver.page_source[:1000]}",
         )
 
-    def wait_for_navigation_from(self, current_url: str):
-        """Wait until URL changes from `current_url`."""
-        self.wait.until(
-            lambda driver: driver.current_url != current_url,
-            f"URL {self.driver.current_url} hasn't changed from {current_url}",
-        )
-
     def url(self, view: str, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         url = self.live_server_url + reverse(view, kwargs=kwargs)
@@ -341,12 +334,13 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 except NoSuchElementException:
                     # loop and retry finding host
                     pass
+
         inner_html = host.get_attribute("innerHTML") or "<no host>"
+
         raise RuntimeError(
-            f"Failed to obtain shadow root for selector {selector} after {SHADOW_ROOT_RETRIES} retries"
+            f"Failed to obtain shadow root for {selector} after {attempts} attempts. "
             f"Host innerHTML: {inner_html}"
         )
-
 
     def shady_dom(self) -> WebElement:
         class wrapper:
@@ -361,7 +355,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         return wrapper(self.driver)
 
     def login(self, shadow_dom=True):
-        """Do entire login flow"""
+        """Perform the entire authentik login flow."""
 
         if shadow_dom:
             flow_executor = self.get_shadow_root("ak-flow-executor")
