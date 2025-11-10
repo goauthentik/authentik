@@ -75,7 +75,7 @@ The SP File needs to reflect the `entityID`, that is the string set in the **slu
 </md:EntityDescriptor>
 ```
 
-Save this file somwhere, where Joplin can read it. This is the IDP Config File.
+Save this file somewhere, where Joplin can read it. This is the IDP Config File.
 
 The second confiruation file will be the file downloaded from authentik. Note the path for this file as well.
 When using the container installation of Joplin, set the following environment variables. Use the path where the files above were saved:
