@@ -38,7 +38,7 @@ require (
 	golang.org/x/sync v0.18.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/postgres v1.6.0
-	gorm.io/gorm v1.31.0
+	gorm.io/gorm v1.31.1
 	layeh.com/radius v0.0.0-20231213012653-1006025d24f8
 )
 
