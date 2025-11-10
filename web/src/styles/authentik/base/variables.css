@@ -5,7 +5,6 @@
     --ak-dark-foreground: #fafafa;
     --ak-dark-background: #18191a;
     --ak-dark-background-light: #1c1e21;
-    --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
 
     --ak-global--background-contrast: var(--pf-global--Color--100);
@@ -36,7 +35,9 @@ html[data-theme="dark"] {
     --pf-global--danger-color--200: var(--pf-global--palette--red-100);
 
     /* TODO: We've seemed to have drifted from PF's dark-100 usage. Revisit this after PF 5. */
-    --pf-global--BackgroundColor--100: #1c1e21 !important;
+    /* --pf-global--BackgroundColor--100: #1c1e21 !important; */
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
+
     --pf-global--BackgroundColor--dark-100: #18191a !important;
     --pf-global--BackgroundColor--150: var(--pf-global--BackgroundColor--dark-100) !important;
     --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;

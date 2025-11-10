@@ -9,16 +9,8 @@
 /* #region Dark Theme */
 
 :host([theme="dark"]) {
-    .pf-c-expandable-section__toggle-text {
-        color: var(--ak-dark-foreground);
-    }
-
-    .pf-c-expandable-section__toggle-icon {
-        color: var(--ak-dark-foreground);
-    }
-
     .pf-c-expandable-section.pf-m-display-lg {
-        background-color: var(--ak-dark-background-light-ish);
+        background-color: var(--pf-global--BackgroundColor--100);
     }
 }
 

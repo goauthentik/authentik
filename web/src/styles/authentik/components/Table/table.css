@@ -23,7 +23,6 @@
         --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
-        --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
         --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
         --pf-global--link--Color: var(--pf-global--link--Color--light);
         --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
@@ -66,7 +65,11 @@
         background-color: var(--ak-dark-background-light);
     }
 
-    .pf-c-table__toggle-icon {
-        color: var(--ak-dark-foreground);
+    .pf-c-button:has(.pf-c-table__toggle-icon) {
+        background-color: transparent !important;
+
+        &:hover {
+            color: var(--pf-c-button--m-plain--hover--Color) !important;
+        }
     }
 }

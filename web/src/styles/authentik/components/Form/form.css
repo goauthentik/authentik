@@ -27,6 +27,10 @@
 /* #region Form controls */
 
 .pf-c-form-control {
+    --pf-c-form-control--BorderTopColor: transparent !important;
+    --pf-c-form-control--BorderRightColor: transparent !important;
+    --pf-c-form-control--BorderLeftColor: transparent !important;
+
     --pf-c-form-control--readonly--BackgroundColor: var(--pf-global--BackgroundColor--200);
     --pf-c-form-control--disabled--BackgroundColor: var(--pf-global--BackgroundColor--200);
 
@@ -143,6 +147,14 @@ fieldset {
 
     .pf-c-input-group {
         --pf-c-input-group--BackgroundColor: transparent;
+
+        --pf-global--Color--100: var(--pf-global--Color--light-100);
+        --pf-global--Color--200: var(--pf-global--Color--light-200);
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+        --pf-global--link--Color: var(--pf-global--link--Color--light);
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
     }
 
     select.pf-c-form-control {
@@ -152,12 +164,16 @@ fieldset {
     .pf-c-form-control {
         /* !important is required to ensure priority when in compatibility mode. */
 
-        --pf-c-form-control--BorderTopColor: transparent !important;
-        --pf-c-form-control--BorderRightColor: transparent !important;
-        --pf-c-form-control--BorderLeftColor: transparent !important;
-        --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
+        --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
+        --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
+        --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
+        --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
+
         --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
-        --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
 
         --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
         --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;

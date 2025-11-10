@@ -2,7 +2,6 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { setURLParams } from "#elements/router/RouteMatch";
-import Styles from "#elements/TreeView.css";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { msg, str } from "@lit/localize";
@@ -166,7 +165,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static styles: CSSResult[] = [PFTreeView, Styles];
+    static styles: CSSResult[] = [PFTreeView];
 
     @property({ type: String })
     public label: string | null = null;

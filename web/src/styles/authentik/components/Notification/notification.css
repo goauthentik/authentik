@@ -18,11 +18,8 @@
     }
 
     .pf-c-notification-drawer__list-item {
-        background-color: var(--ak-dark-background-light-ish);
         color: var(--ak-dark-foreground);
-        --pf-c-notification-drawer__list-item--BorderBottomColor: var(
-            --ak-dark-background-lighter
-        ) !important;
+        --pf-c-notification-drawer__list-item--BorderBottomColor: var(--pf-global--Color--dark-200);
     }
 }
 
