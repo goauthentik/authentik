@@ -10,6 +10,12 @@
         "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
     "forwardPorts": [9000, 9443],
+    "portsAttributes": {
+        "8000": {
+            "label": "Django Backend (Internal Only)",
+            "onAutoForward": "ignore"
+        }
+    },
     "postCreateCommand": "bash .devcontainer/setup.sh",
     "customizations": {
         "vscode": {
