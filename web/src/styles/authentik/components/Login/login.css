@@ -258,10 +258,6 @@
 
 /* #endregion */
 
-.pf-c-data-list {
-    padding-inline-start: 0;
-}
-
 .pf-c-login__footer {
     --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
     min-height: var(--pf-global--spacer--2xl);
