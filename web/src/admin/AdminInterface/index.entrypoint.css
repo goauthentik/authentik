@@ -1,3 +1,7 @@
+.pf-c-page {
+    height: 100dvh;
+}
+
 .pf-c-page__main {
     scrollbar-gutter: stable;
 }
