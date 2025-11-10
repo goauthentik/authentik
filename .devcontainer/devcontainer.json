@@ -12,7 +12,15 @@
     "forwardPorts": [9000, 9443],
     "portsAttributes": {
         "8000": {
-            "label": "Django Backend (Internal Only)",
+            "onAutoForward": "ignore"
+        },
+        "3963": {
+            "onAutoForward": "ignore"
+        },
+        "35151": {
+            "onAutoForward": "ignore"
+        },
+        "9901": {
             "onAutoForward": "ignore"
         }
     },

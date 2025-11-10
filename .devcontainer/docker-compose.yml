@@ -17,8 +17,6 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: postgres
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
-      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
       AUTHENTIK_LOG_LEVEL: debug
       PATH: "/ak-root/.venv/bin:${PATH}"
     ports:

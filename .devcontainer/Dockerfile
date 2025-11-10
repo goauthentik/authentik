@@ -25,15 +25,15 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential pkg-config libffi-dev git \
+    build-essential pkg-config libffi-dev git binutils \
     # cryptography
     curl \
     # libxml
     libxslt-dev zlib1g-dev \
     # postgresql
     libpq-dev \
-    # python-kadmin-rs
-    clang libkrb5-dev sccache \
+    # python-kadmin-rs and kerberos testing
+    clang libkrb5-dev sccache krb5-kdc krb5-admin-server \
     # xmlsec
     libltdl-dev && \
     # Install Rust (required for cryptography and other native packages)
@@ -72,8 +72,12 @@ RUN adduser --system --no-create-home --uid 1000 --group --home /authentik authe
     mkdir -p /certs /media /authentik/.ssh && \
     chown authentik:authentik /certs /media /authentik/.ssh
 
-# Add Go to PATH
-ENV PATH="/usr/local/go/bin:${PATH}"
+# Add Go to PATH and set GOPATH
+ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}" \
+    GOPATH="/root/go"
+
+# Install golangci-lint for Go linting using official install script
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/go/bin v2.6.1
 
 # FIPS configuration for Go development
 # Don't set GOFIPS/GOFIPS140 globally to avoid breaking Go tools like docker-compose
