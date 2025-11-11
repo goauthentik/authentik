@@ -448,7 +448,7 @@ msgstr "Todennettu istunto"
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
-msgstr "Autentikoidut istunnot"
+msgstr "Todennetut istunnot"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
