@@ -415,6 +415,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
         const scriptElement = document.createElement("script");
 
+        scriptElement.nonce = window.litNonce;
         scriptElement.src = this.challenge.jsUrl;
         scriptElement.async = true;
         scriptElement.defer = true;

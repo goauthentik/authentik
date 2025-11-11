@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block head %}
-<style>
+<style nonce="{{ csp_nonce }}">
 :root {
     --ak-flow-background: url("{{ request.brand.branding_default_flow_background_url }}");
     --pf-c-background-image--BackgroundImage: var(--ak-flow-background);

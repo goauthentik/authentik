@@ -24,6 +24,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
 
     firstUpdated(): void {
         const appleAuth = document.createElement("script");
+        appleAuth.nonce = window.litNonce;
         appleAuth.src =
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
         appleAuth.type = "text/javascript";

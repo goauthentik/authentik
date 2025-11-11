@@ -38,6 +38,7 @@ export class TelegramLogin extends BaseStage<
 
     firstUpdated(): void {
         const widgetScript = document.createElement("script");
+        widgetScript.nonce = window.litNonce;
         widgetScript.src = "https://telegram.org/js/telegram-widget.js?22";
         widgetScript.type = "text/javascript";
         widgetScript.setAttribute("data-radius", "0");
