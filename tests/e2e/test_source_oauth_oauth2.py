@@ -50,14 +50,19 @@ class TestSourceOAuth2(SeleniumTestCase):
             },
         )
 
-    def find_settings_tab_panel(self, tab_name: str) -> WebDriverWait:
-        """Find a settings tab panel by tab name"""
+    def find_settings_tab_panel(self, tab_name: str, panel_content_selector: str):
+        """Find a settings tab panel by name"""
         url_after_login = self.driver.current_url
         user_settings_url = self.if_user_url() + "#/settings"
-        self.driver.get(user_settings_url)
+        hash_route = ';%7B"page"%3A"page-' + tab_name + '"%7D'
+
+        self.driver.get(user_settings_url + hash_route)
+
+        # A refresh is required because the hash change doesn't always trigger a reload.
+        self.driver.refresh()
 
         try:
-            self.wait.until(ec.url_matches(user_settings_url))
+            self.wait.until(ec.url_contains(user_settings_url))
         except TimeoutException:
             self.fail(
                 f"Timed out waiting for user settings page"
@@ -103,15 +108,9 @@ class TestSourceOAuth2(SeleniumTestCase):
             By.CSS_SELECTOR, "ak-user-settings"
         ).shadow_root
 
-        tabs = user_settings.find_element(By.CSS_SELECTOR, "ak-tabs").shadow_root
+        tab_panel = user_settings.find_element(By.CSS_SELECTOR, panel_content_selector).shadow_root
 
-        tabs.find_element(By.CSS_SELECTOR, "button[name=page-sources]").click()
-
-        source_settings_tab_panel = user_settings.find_element(
-            By.CSS_SELECTOR, tab_name
-        ).shadow_root
-
-        return source_settings_tab_panel
+        return tab_panel
 
     def create_objects(self):
         """Create required objects"""
@@ -258,7 +257,9 @@ class TestSourceOAuth2(SeleniumTestCase):
         sourceElement = None
 
         for attempt in range(MAX_REFRESH_RETRIES):
-            source_settings_tab_panel = self.find_settings_tab_panel("ak-user-settings-source")
+            source_settings_tab_panel = self.find_settings_tab_panel(
+                "sources", "ak-user-settings-source"
+            )
 
             try:
                 sourceElement = source_settings_tab_panel.find_element(By.CSS_SELECTOR, selector)
@@ -275,7 +276,6 @@ class TestSourceOAuth2(SeleniumTestCase):
                 )
 
                 sleep(1)
-                self.driver.refresh()
 
         if not sourceElement:
             context = self.driver.find_element(By.TAG_NAME, "body")
@@ -284,7 +284,8 @@ class TestSourceOAuth2(SeleniumTestCase):
             snippet = context.text.strip()[:1000].replace("\n", " ")
 
             self.fail(
-                f"Source element with selector '{selector}' not found at {self.driver.current_url}"
+                f"Selector '{selector}' not found at {self.driver.current_url}"
+                f" after {MAX_REFRESH_RETRIES} retries. "
                 f"Current content: {snippet or '<empty>'}"
                 f"{inner_html or '<empty>'}"
             )
