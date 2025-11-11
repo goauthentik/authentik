@@ -15,9 +15,10 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import NoSuchElementException, SeleniumTestCase, TimeoutException, retry
 
-MAX_JSON_RETRIES = 5
+MAX_REFRESH_RETRIES = 5
+INTERFACE_TIMEOUT = 10
 
 
 class TestSourceOAuth2(SeleniumTestCase):
@@ -49,6 +50,69 @@ class TestSourceOAuth2(SeleniumTestCase):
             },
         )
 
+    def find_settings_tab_panel(self, tab_name: str) -> WebDriverWait:
+        """Find a settings tab panel by tab name"""
+        url_after_login = self.driver.current_url
+        user_settings_url = self.if_user_url() + "#/settings"
+        self.driver.get(user_settings_url)
+
+        try:
+            self.wait.until(ec.url_matches(user_settings_url))
+        except TimeoutException:
+            self.fail(
+                f"Timed out waiting for user settings page"
+                f"Initial URL after OAuth linking: {url_after_login} "
+                f"Current URL: {self.driver.current_url} "
+                f"Expected URL: {user_settings_url})"
+            )
+
+        try:
+            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user")))
+        except TimeoutException:
+            context = self.driver.find_element(By.TAG_NAME, "body")
+            inner_html = context.get_attribute("innerHTML") or ""
+
+            snippet = context.text.strip()[:1000].replace("\n", " ")
+
+            self.fail(
+                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
+                f"Current content: {snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
+            )
+
+        interface = self.driver.find_element(By.CSS_SELECTOR, "ak-interface-user").shadow_root
+
+        interface_wait = WebDriverWait(interface, INTERFACE_TIMEOUT)
+
+        try:
+            interface_wait.until(
+                ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
+            )
+        except TimeoutException:
+            snippet = context.text.strip()[:1000].replace("\n", " ")
+            self.fail(
+                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
+                f"Current content: {snippet or '<empty>'}"
+            )
+
+        interface_presentation = interface.find_element(
+            By.CSS_SELECTOR, "ak-interface-user-presentation"
+        ).shadow_root
+
+        user_settings = interface_presentation.find_element(
+            By.CSS_SELECTOR, "ak-user-settings"
+        ).shadow_root
+
+        tabs = user_settings.find_element(By.CSS_SELECTOR, "ak-tabs").shadow_root
+
+        tabs.find_element(By.CSS_SELECTOR, "button[name=page-sources]").click()
+
+        source_settings_tab_panel = user_settings.find_element(
+            By.CSS_SELECTOR, tab_name
+        ).shadow_root
+
+        return source_settings_tab_panel
+
     def create_objects(self):
         """Create required objects"""
         # Bootstrap all needed objects
@@ -75,7 +139,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         """Perform login at the OAuth provider (Dex)"""
         self.wait.until(ec.presence_of_element_located((By.ID, "login")))
 
-        current_url = self.driver.current_url
+        initial_provider_url = self.driver.current_url
 
         self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
         self.driver.find_element(By.ID, "password").send_keys("password")
@@ -85,7 +149,13 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        self.wait.until(ec.url_changes(current_url))
+        self.wait.until(ec.url_changes(initial_provider_url))
+
+        self.assertNotEqual(
+            initial_provider_url,
+            self.driver.current_url,
+            "Expected to be redirected after login at OAuth provider",
+        )
 
     @retry()
     @apply_blueprint(
@@ -167,7 +237,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         "default/flow-default-source-enrollment.yaml",
         "default/flow-default-source-pre-authentication.yaml",
     )
-    def test_oauth_link(self):
+    def test_oauth_link(self) -> None:
         """
         Test OAuth Source link OIDC
 
@@ -184,58 +254,63 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.login_via_oauth_provider()
 
-        sleep(1)
+        selector = f"[data-test-id=source-settings-list-item][data-slug='{self.slug}']"
+        sourceElement = None
 
-        # Now fetch the API to verify the connection was created.
-        expected_url = self.url("authentik_api:usersourceconnection-list") + "?format=json"
-        self.driver.get(expected_url)
+        for attempt in range(MAX_REFRESH_RETRIES):
+            source_settings_tab_panel = self.find_settings_tab_panel("ak-user-settings-source")
 
-        self.wait_for_url(expected_url)
+            try:
+                sourceElement = source_settings_tab_panel.find_element(By.CSS_SELECTOR, selector)
+            except NoSuchElementException:
+                sourceElement = None
 
-        body = None
-        results = []
-
-        for attempt in range(MAX_JSON_RETRIES):
-            body = self.parse_json_content()
-            results = body.get("results", [])
-
-            if results:
+            if sourceElement:
                 break
-            if attempt < MAX_JSON_RETRIES - 1:
+
+            if attempt < MAX_REFRESH_RETRIES - 1:
                 self.logger.debug(
-                    f"[Attempt {attempt + 1}/{MAX_JSON_RETRIES}] No results yet, sleeping 1s… "
+                    f"[Attempt {attempt + 1}/{MAX_REFRESH_RETRIES}] No results yet, sleeping 1s… "
                     f"(Current URL: {self.driver.current_url})"
                 )
 
+                sleep(1)
                 self.driver.refresh()
 
-                sleep(1)
+        if not sourceElement:
+            context = self.driver.find_element(By.TAG_NAME, "body")
+            inner_html = context.get_attribute("innerHTML") or ""
 
-        current_url = self.driver.current_url
+            snippet = context.text.strip()[:1000].replace("\n", " ")
 
-        self.assertIsInstance(
-            results,
-            list,
-            f"Expected 'results' to be a list at {current_url}: {body}",
+            self.fail(
+                f"Source element with selector '{selector}' not found at {self.driver.current_url}"
+                f"Current content: {snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
+            )
+
+        data_source_component_attribute = sourceElement.get_attribute("data-source-component")
+
+        self.assertIsNotNone(
+            data_source_component_attribute,
+            f"Source Component not found in source element at {self.driver.current_url}",
         )
 
         self.assertEqual(
-            len(results),
-            1,
-            f"Expected exactly 1 result after {MAX_JSON_RETRIES} retries at {current_url}, "
-            f"got {len(results)}: {body}",
+            data_source_component_attribute,
+            "ak-user-settings-source-oauth",
+            "Unexpected source component",
         )
 
-        connection = results[0]
+        connection_user_pk_attribute = sourceElement.get_attribute("data-connection-user-pk")
 
-        self.assertEqual(
-            connection.get("source_obj", {}).get("slug"),
-            self.slug,
-            f"Expected slug '{self.slug}' at {current_url}, got: {connection}",
+        self.assertIsNotNone(
+            connection_user_pk_attribute,
+            f"Connection User PK not found in source element at {self.driver.current_url}",
         )
 
         self.assertEqual(
-            connection.get("user"),
+            int(connection_user_pk_attribute),
             self.user.pk,
-            f"Expected user {self.user.pk} at {current_url}, got: {connection}",
+            f"Unexpected user {self.driver.current_url}",
         )

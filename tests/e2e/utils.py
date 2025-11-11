@@ -311,17 +311,19 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def get_shadow_root(
         self, selector: str, container: WebElement | WebDriver | None = None, timeout: float = 10
     ) -> WebElement:
-        """Get shadow root element's inner shadowRoot (robust to re-renders)."""
+        """Get the shadow root of a web component specified by `selector`."""
         if not container:
             container = self.driver
         wait = WebDriverWait(container, timeout)
+        host: WebElement | None = None
 
-        # wait for host element presence
-        host = wait.until(lambda c: c.find_element(By.CSS_SELECTOR, selector))
+        try:
+            host = wait.until(lambda c: c.find_element(By.CSS_SELECTOR, selector))
+        except TimeoutException:
+            self.fail(f"Timed out waiting for shadow host {selector} to appear")
 
         attempts = 0
 
-        # try several times to grab its shadowRoot (handles transient re-renders)
         while attempts < SHADOW_ROOT_RETRIES:
             try:
                 return host.shadow_root

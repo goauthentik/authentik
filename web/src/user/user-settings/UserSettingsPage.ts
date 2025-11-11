@@ -13,6 +13,7 @@ import { rootInterface } from "#common/theme";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import type { UserInterface } from "#user/index.entrypoint";
 import Styles from "#user/user-settings/styles.css";
@@ -164,7 +165,8 @@ export class UserSettingsPage extends AKElement {
                                 )}
                             </div>
                             <ak-user-settings-source
-                                userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                allow-configuration
+                                user-id=${ifPresent(rootInterface<UserInterface>()?.me?.user.pk)}
                             ></ak-user-settings-source>
                         </div>
                     </div>
