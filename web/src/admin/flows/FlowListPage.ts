@@ -1,5 +1,5 @@
 import "#admin/flows/FlowForm";
-import "#admin/flows/FlowImportForm";
+import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
@@ -136,7 +136,7 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
                 <span slot="header">${msg("Import Flow")}</span>
-                <ak-flow-import-form slot="form"> </ak-flow-import-form>
+                <ak-blueprint-import-form slot="form"> </ak-blueprint-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
         `;
