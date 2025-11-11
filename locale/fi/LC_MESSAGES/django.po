@@ -3202,8 +3202,7 @@ msgstr ""
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
 msgstr ""
-"Salli ystävien tunnistautua, vaikkei heillä olisi käytössä samoja "
-"palvelimia."
+"Salli ystävien todentaa, vaikkei heillä olisi käytössä samoja palvelimia."
 
 #: authentik/sources/plex/models.py
 msgid "Plex token used to check friends"
