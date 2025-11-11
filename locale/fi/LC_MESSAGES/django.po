@@ -2678,7 +2678,8 @@ msgstr "Kun käyttäjä muuttaa salasanansa, synkronoi se Kerberosiin"
 
 #: authentik/sources/kerberos/models.py
 msgid "Principal to authenticate to kadmin for sync."
-msgstr "Käyttäjä, jolla tunnistaudutaan kadminiin synkronointia varten."
+msgstr ""
+"Käyttäjä, jota käytetään kadminiin todentamisessa synkronointia varten."
 
 #: authentik/sources/kerberos/models.py
 msgid "Password to authenticate to kadmin for sync"
