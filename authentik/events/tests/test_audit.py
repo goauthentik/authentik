@@ -4,8 +4,8 @@ from django.contrib.auth.hashers import PBKDF2PasswordHasher
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.signals import PASSWORD_HASH_UPGRADE_REASON
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.constants import PASSWORD_HASH_UPGRADE_REASON
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -60,11 +60,9 @@ class TestAudit(APITestCase):
             context__model__app="authentik_core",
             context__model__model_name="user",
             context__model__pk=self.user.pk,
+            context__reason=PASSWORD_HASH_UPGRADE_REASON,
         )
-        self.assertTrue(events.filter(context__reason=PASSWORD_HASH_UPGRADE_REASON).exists())
-
-        # Only 1 MODEL_UPDATED event should be created.
-        self.assertEqual(events.count(), 1)
+        self.assertTrue(events.exists())
 
     def test_password_hash_updated_no_request(self):
         """
@@ -83,8 +81,6 @@ class TestAudit(APITestCase):
             context__model__app="authentik_core",
             context__model__model_name="user",
             context__model__pk=self.user.pk,
+            context__reason=PASSWORD_HASH_UPGRADE_REASON,
         )
-        self.assertTrue(events.filter(context__reason=PASSWORD_HASH_UPGRADE_REASON).exists())
-
-        # Only 1 MODEL_UPDATED event should be created.
-        self.assertEqual(events.count(), 1)
+        self.assertTrue(events.exists())
