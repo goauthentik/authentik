@@ -130,7 +130,7 @@
         "@types/react-dom": "^19.2.2",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
-        "@vitest/browser": "^3.2.4",
+        "@vitest/browser": "^4.0.8",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
