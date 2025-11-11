@@ -3580,7 +3580,7 @@ msgstr ""
 #: authentik/stages/authenticator_sms/models.py
 #, python-brace-format
 msgid "Use this code to authenticate in authentik: {token}"
-msgstr "Käytä tätä koodia tunnistautuaksesi authentikiin: {token}"
+msgstr "Käytä tätä koodia authentik-todentamisessa: {token}"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"
