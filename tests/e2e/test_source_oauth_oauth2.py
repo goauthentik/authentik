@@ -249,6 +249,9 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.live_server_url)
         self.login()
 
+        # Ensure that a stable session is created before linking.
+        sleep(3)
+
         self.driver.get(
             self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.slug)
         )
