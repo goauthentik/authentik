@@ -65,3 +65,26 @@ class TestAudit(APITestCase):
 
         # Only 1 MODEL_UPDATED event should be created.
         self.assertEqual(events.count(), 1)
+
+    def test_password_hash_updated_no_request(self):
+        """
+        Tests password hash update outside the request/response cycle.
+        """
+        with patch.object(
+            PBKDF2PasswordHasher,
+            "iterations",
+            new_callable=PropertyMock,
+            return_value=PBKDF2PasswordHasher.iterations + 100_000,
+        ):
+            self.client.login(username=self.user.username, password=self.user.username)
+
+        events = Event.objects.filter(
+            action=EventAction.MODEL_UPDATED,
+            context__model__app="authentik_core",
+            context__model__model_name="user",
+            context__model__pk=self.user.pk,
+        )
+        self.assertTrue(events.filter(context__reason=PASSWORD_HASH_UPGRADE_REASON).exists())
+
+        # Only 1 MODEL_UPDATED event should be created.
+        self.assertEqual(events.count(), 1)
