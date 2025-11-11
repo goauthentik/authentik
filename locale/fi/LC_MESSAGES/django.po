@@ -3698,7 +3698,7 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Device classes which can be used to authenticate"
-msgstr "Laitetyypit, joita voi käyttää tunnistautumiseen"
+msgstr "Laitetyypit, joita voi käyttää todentamiseen"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid ""
