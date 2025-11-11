@@ -1608,7 +1608,7 @@ msgstr ""
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Authenticate in this tab"
-msgstr "Tunnistaudu tällä välilehdellä"
+msgstr "Kirjaudu tällä välilehdellä"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
