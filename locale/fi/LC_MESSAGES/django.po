@@ -444,7 +444,7 @@ msgstr "Istunnot"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
-msgstr "Autentikoitu istunto"
+msgstr "Todennettu istunto"
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
