@@ -2699,8 +2699,8 @@ msgid ""
 "Credentials cache to authenticate to kadmin for sync. Must be in the form "
 "TYPE:residual"
 msgstr ""
-"Tunnistetietojen välimuistitiedosto, jolla tunnistaudutaan kadminiin "
-"synkronointia varten. Täytyy olla muodossa TYPE:residual"
+"Tunnistetietojen välimuistitiedosto, jota käytetään kadminiin todentamisessa"
+" synkronointia varten. Täytyy olla muodossa TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
