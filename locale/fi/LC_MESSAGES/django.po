@@ -2339,8 +2339,8 @@ msgid ""
 "methods the user used to authenticate."
 msgstr ""
 "Määritä, kuinka AuthnContextClassRef-arvo luodaan. Kun tämä jätetään "
-"tyhjäksi, AuthnContextClassRef asetetaan käyttäjän tunnistautumisessa "
-"käyttämien tunnistautumismenetelmien mukaan."
+"tyhjäksi, AuthnContextClassRef asetetaan käyttäjän todentamisessa käyttämien"
+" todentamismenetelmien mukaan."
 
 #: authentik/providers/saml/models.py
 msgid ""
