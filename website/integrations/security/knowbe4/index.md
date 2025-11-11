@@ -72,7 +72,7 @@ If SSO misconfiguration locks you out and you enabled **Allow Admins w/MFA to By
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with KnowBe4, log out of your current session. Then, on the KnowBe4 login portal, enter an email address that is configured for SSO. You should be redirected to authentik to login, and if successful, you should then be redirected to the KnowBe4 console.
+To confirm that authentik is properly configured with KnowBe4, log out of your current session. Next, go to the KnowBe4 login portal and enter an email address that uses SSO. You should be redirected to authentik, and upon successful login, logged in to the KnowBe4 console.
 
 ## Resources
 
