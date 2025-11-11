@@ -5,7 +5,7 @@
 
 {% block head %}
 {{ block.super }}
-<script>
+<script nonce="{{ csp_nonce }}">
 "use strict";
 
 let redirecting = false;

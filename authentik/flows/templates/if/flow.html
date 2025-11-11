@@ -7,10 +7,10 @@
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
-<script>ShadyDOM = { force: true };</script>
+<script nonce="{{ csp_nonce }}">ShadyDOM = { force: true };</script>
 {% endif %}
 {% include "base/header_js.html" %}
-<script>
+<script nonce="{{ csp_nonce }}">
 window.authentik.flow = {
     "layout": "{{ flow.layout }}",
 };
@@ -19,7 +19,7 @@ window.authentik.flow = {
 
 {% block head %}
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
-<style>
+<style nonce="{{ csp_nonce }}">
 :root {
     --ak-flow-background: url("{{ flow_background_url }}");
 }

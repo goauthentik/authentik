@@ -30,10 +30,10 @@ import OL from "ol/ol.css";
 export class Map extends OlMap {
     public render() {
         return html`
-            <style>
+            <style nonce="${window.litNonce!}">
                 ${OL}
             </style>
-            <style>
+            <style nonce="${window.litNonce!}">
                 :host {
                     display: block;
                 }

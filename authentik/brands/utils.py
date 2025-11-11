@@ -65,4 +65,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "footer_links": tenant.footer_links,
         "html_meta": {**get_http_meta()},
         "version": authentik_full_version(),
+        "csp_nonce": request.request_id,
     }
