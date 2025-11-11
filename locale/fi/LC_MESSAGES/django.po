@@ -1914,9 +1914,9 @@ msgid ""
 "duration, it will be renewed. When set to seconds=0, token will always be "
 "renewed. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Tunnistetta päivitettäessä, jos päivitystunniste on voimassa vähemmän kuin "
-"tämän ajan, se uusitaan. Jos asetetaan seconds=0, tunniste päivitetään aina."
-" (Muoto: hours=1;minutes=2;seconds=3)."
+"Tunnusta päivitettäessä, jos päivitystunnus on voimassa vähemmän kuin tämän "
+"ajan, se uusitaan. Jos asetetaan seconds=0, tunnus uusitaan aina. (Muoto: "
+"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2004,7 +2004,7 @@ msgstr "ID-tunniste"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Token"
-msgstr "OAuth2-päivitystunniste"
+msgstr "OAuth2-päivitystunnus"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
