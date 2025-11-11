@@ -37,6 +37,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                 start_period=1 * 1_000 * 1_000_000,
             ),
             environment={
+                "AK_HOST": self.host,
                 "AK_REDIRECT_URL": self.url(
                     "authentik_sources_oauth:oauth-client-callback",
                     source_slug=self.slug,
@@ -125,9 +126,9 @@ class TestSourceOAuth2(SeleniumTestCase):
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             provider_type="openidconnect",
-            authorization_url="http://127.0.0.1:5556/dex/auth",
-            access_token_url="http://127.0.0.1:5556/dex/token",
-            profile_url="http://127.0.0.1:5556/dex/userinfo",
+            authorization_url=f"http://{self.host}:5556/dex/auth",
+            access_token_url=f"http://{self.host}:5556/dex/token",
+            profile_url=f"http://{self.host}:5556/dex/userinfo",
             consumer_key="example-app",
             consumer_secret=self.client_secret,
         )
