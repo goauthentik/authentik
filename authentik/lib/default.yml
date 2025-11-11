@@ -166,3 +166,5 @@ storage:
       # How to render file URLs
       # custom_domain: null
       secure_urls: True
+
+secret_key: jA3dTnIKuq4DhNguDVYdeyoVcO1BQD/QgGHt+UeUEcX4oeInY/xjnkDxnCTY/n

@@ -22,6 +22,9 @@ from authentik.core.models import (
 password_changed = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
 login_failed = Signal()
+password_hash_updated = Signal()
+
+PASSWORD_HASH_UPGRADE_REASON = "Password hash upgraded"
 
 LOGGER = get_logger()
 
