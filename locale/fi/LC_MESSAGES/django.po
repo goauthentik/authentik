@@ -1203,9 +1203,8 @@ msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
 msgstr ""
-"Prosessi, jota tunnistautunut käyttäjä käyttää tämän vaiheen "
-"määrittämiseksi. Jos tämä jätetään tyhjäksi, käyttäjä ei pysty määrittämään "
-"tätä vaihetta."
+"Prosessi, jota todennettu käyttäjä käyttää tämän vaiheen määrittämiseksi. "
+"Jos tämä jätetään tyhjäksi, käyttäjä ei pysty määrittämään tätä vaihetta."
 
 #: authentik/flows/models.py
 msgid "Flow Token"
