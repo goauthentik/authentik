@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField
+from rest_framework.fields import BooleanField, CharField, DateTimeField
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer
@@ -16,6 +17,8 @@ from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
+from authentik.events.logs import LogEventSerializer
+from authentik.lib.utils.file import FileUploadSerializer
 from authentik.rbac.decorators import permission_required
 
 
@@ -97,6 +100,13 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "path"]
     ordering = ["name"]
 
+
+    class BlueprintImportResultSerializer(PassiveSerializer):
+        """Logs of an attempted flow import"""
+
+        logs = LogEventSerializer(many=True, read_only=True)
+        success = BooleanField(read_only=True)
+
     @extend_schema(
         responses={
             200: ListSerializer(
@@ -131,3 +141,56 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         blueprint = self.get_object()
         apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)
+
+    @permission_required(
+        None,
+        [
+            "authentik_flows.add_flow",
+            "authentik_flows.change_flow",
+            "authentik_flows.add_flowstagebinding",
+            "authentik_flows.change_flowstagebinding",
+            "authentik_flows.add_stage",
+            "authentik_flows.change_stage",
+            "authentik_policies.add_policy",
+            "authentik_policies.change_policy",
+            "authentik_policies.add_policybinding",
+            "authentik_policies.change_policybinding",
+            "authentik_stages_prompt.add_prompt",
+            "authentik_stages_prompt.change_prompt",
+        ],
+    )
+    @extend_schema(
+        request={"multipart/form-data": FileUploadSerializer},
+        responses={
+            204: BlueprintImportResultSerializer,
+            400: BlueprintImportResultSerializer,
+        },
+    )
+    @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
+    def import_(self, request: Request) -> Response:
+        """Import flow from .yaml file"""
+        import_response = self.BlueprintImportResultSerializer(
+            data={
+                "logs": [],
+                "success": False,
+            }
+        )
+        import_response.is_valid()
+        file = request.FILES.get("file", None)
+        if not file:
+            return Response(data=import_response.initial_data, status=400)
+
+        importer = Importer.from_string(file.read().decode())
+        valid, logs = importer.validate()
+        import_response.initial_data["logs"] = [LogEventSerializer(log).data for log in logs]
+        import_response.initial_data["success"] = valid
+        import_response.is_valid()
+        if not valid:
+            return Response(data=import_response.initial_data, status=200)
+
+        successful = importer.apply()
+        import_response.initial_data["success"] = successful
+        import_response.is_valid()
+        if not successful:
+            return Response(data=import_response.initial_data, status=200)
+        return Response(data=import_response.initial_data, status=200)
