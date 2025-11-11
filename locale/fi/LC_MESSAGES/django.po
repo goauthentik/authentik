@@ -2008,7 +2008,7 @@ msgstr "OAuth2-päivitystunnus"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
-msgstr "OAuth2-päivitystunnisteet"
+msgstr "OAuth2-päivitystunnukset"
 
 #: authentik/providers/oauth2/models.py
 msgid "Device Token"
