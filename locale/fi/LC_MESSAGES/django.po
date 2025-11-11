@@ -456,7 +456,7 @@ msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
 "with the source you've previously signed up with."
 msgstr ""
-"Tunnistautumispyyntö lähteen {source} kanssa on estetty. Tunnistaudu "
+"Todentamispyyntö lähteen {source} kautta on estetty. Tee todennus "
 "käyttämällä lähdettä, jota olet käyttänyt rekisteröityessäsi."
 
 #: authentik/core/sources/flow_manager.py
@@ -466,7 +466,7 @@ msgstr "Määritettyä prosessia ei löytynyt."
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully authenticated with {source}!"
-msgstr "Tunnistautuminen lähteen {source} kanssa onnistui!"
+msgstr "Todennus lähteen {source} kanssa onnistui!"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
