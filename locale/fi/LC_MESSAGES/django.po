@@ -3300,8 +3300,8 @@ msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
 msgstr ""
-"Sallii IdP-lähtöiset tunnistautumisprosessit. Tämä voi olla tietoturvariski,"
-" koska pyynnön ID:tä ei validoida."
+"Sallii IdP-lähtöiset todentamisprosessit. Tämä voi olla tietoturvariski, "
+"koska pyynnön ID:tä ei validoida."
 
 #: authentik/sources/saml/models.py
 msgid ""
@@ -3431,7 +3431,7 @@ msgstr "Ryhmän Telegram-lähteen yhteydet"
 
 #: authentik/sources/telegram/stage.py
 msgid "Authentication date is too old"
-msgstr "Tunnistautumispäivämäärä on liian vanha"
+msgstr "Todennuspäivämäärä on liian vanha"
 
 #: authentik/sources/telegram/stage.py
 msgid "Invalid hash"
