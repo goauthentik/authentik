@@ -2691,8 +2691,8 @@ msgid ""
 "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
 "form TYPE:residual"
 msgstr ""
-"Keytab-tiedosto, jolla tunnistaudutaan kadminiin synkronointia varten. "
-"Täytyy olla base64-koodattu tai muodossa TYPE:residual"
+"Keytab-tiedosto, jota käytetään kadminiin todentamisessa synkronointia "
+"varten. Täytyy olla base64-koodattu tai muodossa TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
