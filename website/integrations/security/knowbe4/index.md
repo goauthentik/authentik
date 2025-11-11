@@ -48,7 +48,7 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
 
 1. Log in to the [KnowBe4 Admin Console](https://eu.knowbe4.com/ui/login).
 2. Navigate to **Account Integrations** > **SAML**.
-3. Enable the options that match your deployment requirements. A common configuration enables:
+3. Set the following required configurations:
     - **Enable SAML SSO**
     - **Disable non-SAML Logins for All Users**
     - **Allow Admins w/MFA to Bypass SAML Login**
