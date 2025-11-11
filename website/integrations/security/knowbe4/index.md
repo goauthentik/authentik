@@ -46,7 +46,7 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
 
 ## KnowBe4 configuration
 
-1. Sign in to the KnowBe4 Admin Console.
+1. Log in to the [KnowBe4 Admin Console](https://eu.knowbe4.com/ui/login).
 2. Navigate to **Account Integrations** > **SAML**.
 3. Enable the options that match your deployment requirements. A common configuration enables:
     - **Enable SAML SSO**
@@ -56,27 +56,24 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
 4. Provide the authentik endpoints and certificate details:
     - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **IdP Cert Fingerprint**: Set to the SHA-256 thumbprint of the authentik signing certificate.
-5. Note the read-only values displayed by KnowBe4; you will need these values in the next section:
-    - **Entity ID**
-    - **SSO Callback (ACS) URL**
-6. Take note of the **Bypass-SSO Login URL**.
-
-## Reconfigure authentik provider
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created KnowBe4 provider.
-3. Under **Protocol settings**, set the following required configurations:
-    - Set the **ACS URL** to the **SSO Callback (ACS) URL** from KnowBe4.
-    - Set the **Issuer** and **Audience** to the **Entity ID** from KnowBe4.
-4. Click **Update**.
+5. Take note of the **Entity ID** and **SSO Callback (ACS) URL**. They will be required in the next section.
 
 :::info SSO Misconfiguration
 If SSO misconfiguration locks you out and you enabled **Allow Admins w/MFA to Bypass SAML Login**, use the **Bypass-SSO Login URL** displayed in KnowBe4 to authenticate with your credentials and fix or disable the SAML settings.
 :::
 
+## Reconfigure authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created KnowBe4 provider.
+3. Update the following fields:
+    - Set the **ACS URL** to the **SSO Callback (ACS) URL** from KnowBe4.
+    - Set the **Issuer** and **Audience** to the **Entity ID** from KnowBe4.
+4. Click **Update**.
+
 ## Configuration verification
 
-To confirm that authentik is properly configured with KnowBe4, first log out. On the KnowBe4 login portal enter an email address configured for SSO. You should be redirected to authentik to login, and if successful, you should then be redirected to the KnowBe4 console.
+To confirm that authentik is properly configured with KnowBe4, log out of your current session. Then, on the KnowBe4 login portal, enter an email address that is configured for SSO. You should be redirected to authentik to login, and if successful, you should then be redirected to the KnowBe4 console.
 
 ## Resources
 
