@@ -3184,7 +3184,7 @@ msgstr ""
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
 msgid "Authentication failed: {reason}"
-msgstr "Tunnistautuminen epäonnistui: {reason}"
+msgstr "Todentaminen epäonnistui: {reason}"
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
@@ -3267,7 +3267,7 @@ msgstr "POST-liitos automaattisella vahvistuksella"
 
 #: authentik/sources/saml/models.py authentik/sources/telegram/models.py
 msgid "Flow used before authentication."
-msgstr "Prosessi, jota käytetään ennen tunnistautumista."
+msgstr "Prosessi, jota käytetään ennen todentamista."
 
 #: authentik/sources/saml/models.py
 msgid "Issuer"
