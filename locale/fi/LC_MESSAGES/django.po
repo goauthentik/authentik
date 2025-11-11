@@ -2652,7 +2652,7 @@ msgstr "Luo avain, jolla voidaan palauttaa pääsy authentikiin."
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Käytti palautuslinkkiä tunnistautumiseen."
+msgstr "Käytti palautuslinkkiä todentamiseen."
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos realm"
