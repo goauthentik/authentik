@@ -4115,7 +4115,7 @@ msgstr "Tunnistautumisvaiheet"
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
-msgstr "Tunnistautuminen epäonnistui."
+msgstr "Todentaminen epäonnistui."
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
