@@ -1311,11 +1311,6 @@
         <target>Émetteur</target>
         
       </trans-unit>
-      <trans-unit id="sf54c562d8a10ce77">
-        <source>Also known as EntityID.</source>
-        <target>Également appelé EntityID.</target>
-        
-      </trans-unit>
       <trans-unit id="s991b750e2d5c4234">
         <source>Service Provider Binding</source>
         <target>Liaison du fournisseur de services</target>
@@ -5899,7 +5894,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
         <target>Oui (
         <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
@@ -8819,10 +8814,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Not a valid slug</source>
   <target>Slug invalide</target>
 </trans-unit>
-<trans-unit id="s177577c23ed3ca7e">
-  <source>Configure The Application</source>
-  <target>Configurer l'application</target>
-</trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
   <target>Configurer les liaisons</target>
@@ -10898,6 +10889,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+</trans-unit>
+<trans-unit id="s0268ce9f2abb84de">
+  <source>Configure the Application</source>
+</trans-unit>
+<trans-unit id="sd4fd64791f73d37b">
+  <source>Also known as Entity ID.</source>
 </trans-unit>
     </body>
   </file>
