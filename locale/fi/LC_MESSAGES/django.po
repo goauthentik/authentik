@@ -2538,7 +2538,7 @@ msgstr "Todennustunniste"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
-msgstr "OAuth-lähde, jota käytetään tunnistautumiseen"
+msgstr "OAuth-lähde, jota käytetään todentamiseen"
 
 #: authentik/providers/scim/models.py
 msgid "Additional OAuth parameters, such as grant_type"
@@ -2769,7 +2769,7 @@ msgstr "Synkronoi Kerberos-lähde."
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
-msgstr "SPNEGO-tunnistautuminen vaaditaan"
+msgstr "SPNEGO-todentaminen vaaditaan"
 
 #: authentik/sources/kerberos/views.py
 msgid ""
@@ -3019,8 +3019,7 @@ msgid ""
 "How to perform authentication during an authorization_code token request "
 "flow"
 msgstr ""
-"Kuinka tunnistautuminen tehdään authorization_code-avainpyyntöprosessin "
-"aikana"
+"Kuinka todentaminen tehdään authorization_code-avainpyyntöprosessin aikana"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
