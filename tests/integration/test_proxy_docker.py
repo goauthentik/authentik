@@ -30,7 +30,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.run_container(
-            image="docker.io/library/docker:24.0.7-dind-alpine3.18",
+            image="docker.io/library/docker:28.5.2-dind-alpine3.22",
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(
