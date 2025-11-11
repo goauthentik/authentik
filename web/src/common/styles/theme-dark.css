@@ -35,10 +35,6 @@ body {
 
 /* #endregion */
 
-.pf-c-radio {
-    --pf-c-radio__label--Color: var(--ak-dark-foreground);
-}
-
 /* Global page background colour */
 .pf-c-page {
     --pf-c-page--BackgroundColor: var(--ak-dark-background);
@@ -213,23 +209,12 @@ select[multiple] option:checked {
     color: var(--ak-dark-background);
 }
 
-.pf-c-input-group {
-    --pf-c-input-group--BackgroundColor: transparent;
-}
-
 select.pf-c-form-control {
     --pf-c-form-control__select--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%23fafafa' d='M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z'/%3E%3C/svg%3E");
 }
 
 .pf-c-form-control {
     /* !important is required to ensure priority when in compatibility mode. */
-
-    --pf-c-form-control--BorderTopColor: transparent !important;
-    --pf-c-form-control--BorderRightColor: transparent !important;
-    --pf-c-form-control--BorderLeftColor: transparent !important;
-    --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
-    --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
-    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
 
     --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
     --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
@@ -245,16 +230,7 @@ select.pf-c-form-control {
 
 /* #endregion */
 
-/* select toggle */
-.pf-c-select__toggle::before {
-    --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
-    --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
-    --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
-}
-
-.pf-c-select__toggle.pf-m-typeahead {
-    --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
-}
+/* #region Select */
 
 .pf-c-select__menu {
     --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
@@ -326,6 +302,7 @@ select.pf-c-form-control {
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }
+
 .pf-c-dropdown__menu {
     --pf-c-dropdown__menu--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
     --pf-c-dropdown__menu-item--Color: var(--pf-global--Color--light-100);
