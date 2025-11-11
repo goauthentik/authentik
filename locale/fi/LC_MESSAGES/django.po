@@ -1949,7 +1949,7 @@ msgid ""
 "authenticate."
 msgstr ""
 "Mitä tahansa JWT:tä, joka on salattu valitun lähteen JWK:lla, voidaan "
-"käyttää tunnistautumiseen."
+"käyttää todentamiseen."
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Provider"
