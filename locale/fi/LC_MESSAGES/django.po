@@ -1604,7 +1604,7 @@ msgid ""
 "You're already authenticating in another tab. This page will refresh once "
 "authentication is completed."
 msgstr ""
-"Kirjaudut jo toisella välilehdellä. Tämä sivu päivittyy kun todennus on "
+"Tunnistaudut jo toisella välilehdellä. Tämä sivu päivittyy kun todennus on "
 "valmis."
 
 #: authentik/policies/templates/policies/buffer.html
