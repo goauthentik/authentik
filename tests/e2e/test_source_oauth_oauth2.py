@@ -53,7 +53,8 @@ class TestSourceOAuth2(SeleniumTestCase):
     def find_settings_tab_panel(self, tab_name: str, panel_content_selector: str):
         """Find a settings tab panel by name"""
         url_after_login = self.driver.current_url
-        user_settings_url = self.if_user_url() + "#/settings"
+
+        user_settings_url = self.if_user_url("/settings")
         hash_route = ';%7B"page"%3A"page-' + tab_name + '"%7D'
 
         self.driver.get(user_settings_url + hash_route)
@@ -252,6 +253,14 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
 
         self.login_via_oauth_provider()
+
+        post_login_expected_url = self.if_user_url("/settings;page-sources")
+
+        self.assertEqual(
+            self.driver.current_url,
+            post_login_expected_url,
+            "Expected to be redirected to user settings after linking OAuth source",
+        )
 
         selector = f"[data-test-id=source-settings-list-item][data-slug='{self.slug}']"
         sourceElement = None
