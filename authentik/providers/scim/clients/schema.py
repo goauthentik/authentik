@@ -113,6 +113,7 @@ class Group(BaseGroup):
 
 
 class Bulk(BaseBulk):
+
     maxOperations: int = Field()
 
 
@@ -143,6 +144,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
 
 
 class PatchOp(str, Enum):
+
     replace = "replace"
     remove = "remove"
     add = "add"

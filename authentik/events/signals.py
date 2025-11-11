@@ -122,8 +122,8 @@ def on_password_hash_updated(sender, user: User, **_):
     This change can happen automatically due to a new Django version update
     or due to a manual change of the `iterations/rounds` setting of the password hasher.
 
-    Creates a MODEL_UPDATED event with a reason to distinguish password hash upgrades
-    from regular user model updates.
+    A MODEL_UPDATED event with a reason to distinguish password hash upgrades
+    from regular user model updates is created.
     """
     from authentik.events.middleware import _CTX_REQUEST
 
