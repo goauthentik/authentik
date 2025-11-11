@@ -2485,7 +2485,7 @@ msgstr "SAML-palveluntarjoajat metatiedoista"
 
 #: authentik/providers/saml/models.py
 msgid "Link to the user's authenticated session"
-msgstr "Linkki käyttäjän autentikoituun istuntoon"
+msgstr "Linkki käyttäjän todennettuun istuntoon"
 
 #: authentik/providers/saml/models.py
 msgid "SAML SessionIndex for this session"
