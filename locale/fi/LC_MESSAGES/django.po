@@ -384,7 +384,7 @@ msgstr "Lähteen sisäinen nimi, käytetään URLeissa."
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
-msgstr "Prosessi, jota käytetään kun tunnistetaan olemassa olevia käyttäjiä."
+msgstr "Prosessi, jota käytetään kun todennetaan olemassa olevia käyttäjiä."
 
 #: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
@@ -395,7 +395,7 @@ msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
-"Kuinka lähde määrittää, tunnistetaanko olemassa oleva käyttäjä vai "
+"Kuinka lähde määrittää, todennetaanko olemassa oleva käyttäjä vai "
 "rekisteröidäänkö uusi."
 
 #: authentik/core/models.py
