@@ -278,8 +278,8 @@ msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
-"Prosessi, jota käytetään todentamiseen, kun tunnistautumaton käyttäjä "
-"yrittää käyttää siihen kytkettyä sovellusta."
+"Prosessi, jota käytetään todentamiseen, kun todentamaton käyttäjä yrittää "
+"käyttää siihen kytkettyä sovellusta."
 
 #: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
