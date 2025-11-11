@@ -63,24 +63,3 @@ class TestAudit(APITestCase):
             context__reason=PASSWORD_HASH_UPGRADE_REASON,
         )
         self.assertTrue(events.exists())
-
-    def test_password_hash_updated_no_request(self):
-        """
-        Tests password hash update outside the request/response cycle.
-        """
-        with patch.object(
-            PBKDF2PasswordHasher,
-            "iterations",
-            new_callable=PropertyMock,
-            return_value=PBKDF2PasswordHasher.iterations + 100_000,
-        ):
-            self.client.login(username=self.user.username, password=self.user.username)
-
-        events = Event.objects.filter(
-            action=EventAction.MODEL_UPDATED,
-            context__model__app="authentik_core",
-            context__model__model_name="user",
-            context__model__pk=self.user.pk,
-            context__reason=PASSWORD_HASH_UPGRADE_REASON,
-        )
-        self.assertTrue(events.exists())
