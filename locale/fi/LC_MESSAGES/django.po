@@ -2806,7 +2806,7 @@ msgstr ""
 msgid ""
 "Client certificate to authenticate against the LDAP Server's Certificate."
 msgstr ""
-"Asiakkaan sertifikaatti, joka varmennetaan LDAP-palvelimen sertifikaatilla"
+"Asiakkaan sertifikaatti, joka todennetaan LDAP-palvelimen sertifikaatilla"
 
 #: authentik/sources/ldap/models.py
 msgid "Bind CN"
