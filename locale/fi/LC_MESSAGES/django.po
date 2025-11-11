@@ -1292,7 +1292,7 @@ msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
-"Tunnistautumisessa käytettävä Sertifikaatti/Avain. Voidaan jättää tyhjäksi, "
+"Todennuksessa käytettävä Sertifikaatti/Avain. Voidaan jättää tyhjäksi, "
 "jolloin tunnistautumista ei tehdä."
 
 #: authentik/outposts/models.py
@@ -1467,7 +1467,7 @@ msgstr "Asiakkaan IP-osoite ei sijaitse sallitussa maassa."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance from previous authentication is larger than threshold."
-msgstr "Etäisyys edellisestä tunnistautumisesta on raja-arvoa pidempi."
+msgstr "Etäisyys edellisestä todennuksesta on raja-arvoa pidempi."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
@@ -1597,7 +1597,7 @@ msgstr "Mainepistemäärät"
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Waiting for authentication..."
-msgstr "Odotetaan tunnistautumista..."
+msgstr "Odotetaan todennusta..."
 
 #: authentik/policies/templates/policies/buffer.html
 msgid ""
