@@ -29,7 +29,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.slug = generate_id()
         super().setUp()
         self.run_container(
-            image="ghcr.io/dexidp/dex:v2.28.1",
+            image="ghcr.io/dexidp/dex:v2.44.0",
             ports={"5556": "5556"},
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
