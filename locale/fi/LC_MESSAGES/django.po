@@ -132,7 +132,7 @@ msgid ""
 "authenticating."
 msgstr ""
 "Kun tämä asetus on käytössä, ulkoiset käyttäjät ohjataan tähän sovellukseen "
-"tunnistautumisen jälkeen."
+"todentamisen jälkeen."
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
