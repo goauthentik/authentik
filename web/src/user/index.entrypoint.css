@@ -1,0 +1,63 @@
+.pf-c-drawer__panel {
+    z-index: var(--pf-global--ZIndex--md);
+}
+
+.pf-c-page__header {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: black !important;
+
+    .pf-c-button {
+        --pf-c-button--m-secondary--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--active--Color: var(--pf-global--primary-color--100);
+        --pf-c-button--m-secondary--focus--Color: var(--pf-global--primary-color--100);
+    }
+}
+
+.pf-c-page {
+    background-color: transparent;
+}
+
+.display-none {
+    display: none;
+}
+
+.pf-c-brand {
+    min-height: 32px;
+    height: 32px;
+}
+
+.has-notifications {
+    color: #2b9af3;
+}
+
+.background-wrapper {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background-color: var(--pf-c-page--BackgroundColor) !important;
+}
+
+.background-default-slant {
+    background-color: white; /*var(--ak-accent);*/
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
+    height: 50vh;
+}
+
+:host([theme="dark"]) .background-default-slant {
+    background-color: black;
+}
+
+ak-locale-context {
+    display: flex;
+    flex-direction: column;
+}
+
+.pf-c-drawer__main {
+    min-height: calc(100vh - 76px);
+    max-height: calc(100vh - 76px);
+}

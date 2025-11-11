@@ -1,6 +1,6 @@
 """test OAuth2 OpenID Provider flow"""
 
-from json import loads
+from json import dumps
 from time import sleep
 
 from selenium.webdriver.common.by import By
@@ -146,6 +146,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.driver.get("http://localhost:9009")
         self.login()
+
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -153,26 +154,63 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
+
+        current_url = self.driver.current_url
+
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        self.wait.until(ec.url_changes(current_url))
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
-        self.assertEqual(body["IDTokenClaims"]["amr"], ["pwd"])
-        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
-        self.assertEqual(body["UserInfo"]["name"], self.user.name)
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("nickname"),
+            self.user.username,
+            f"IDTokenClaims.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
 
-        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
-        self.assertEqual(body["UserInfo"]["email"], self.user.email)
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("amr"),
+            ["pwd"],
+            f"IDTokenClaims.amr mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("name"),
+            self.user.name,
+            f"IDTokenClaims.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("IDTokenClaims", {}).get("email"),
+            self.user.email,
+            f"IDTokenClaims.email mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        # UserInfo assertions
+        self.assertEqual(
+            body.get("UserInfo", {}).get("nickname"),
+            self.user.username,
+            f"UserInfo.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("UserInfo", {}).get("name"),
+            self.user.name,
+            f"UserInfo.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("UserInfo", {}).get("email"),
+            self.user.email,
+            f"UserInfo.email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -227,25 +265,56 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
+
+        current_url = self.driver.current_url
+
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
         ).click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
-        self.wait.until(ec.text_to_be_present_in_element((By.CSS_SELECTOR, "pre"), "{"))
-        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        self.wait.until(ec.url_changes(current_url))
 
-        self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
-        self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
+        body = self.parse_json_content()
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)
-        self.assertEqual(body["UserInfo"]["name"], self.user.name)
+        id_token_claims = body.get("IDTokenClaims", {})
+        user_info = body.get("UserInfo", {})
 
-        self.assertEqual(body["IDTokenClaims"]["email"], self.user.email)
-        self.assertEqual(body["UserInfo"]["email"], self.user.email)
+        self.assertEqual(
+            id_token_claims.get("nickname"),
+            self.user.username,
+            f"IDTokenClaims.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("nickname"),
+            self.user.username,
+            f"UserInfo.nickname mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            id_token_claims.get("name"),
+            self.user.name,
+            f"IDTokenClaims.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("name"),
+            self.user.name,
+            f"UserInfo.name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            id_token_claims.get("email"),
+            self.user.email,
+            f"IDTokenClaims.email mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            user_info.get("email"),
+            self.user.email,
+            f"UserInfo.email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -297,8 +366,10 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.setup_client()
         self.driver.get("http://localhost:9009")
         self.login()
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[data-test-id='card-title']"))
+        )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "[data-test-id='card-title']").text,
             "Permission denied",
         )

@@ -151,18 +151,21 @@ export class Tabs extends AKElement {
 
     renderTab(slotName: string, tabPanel: Element): TemplateResult {
         return html` <li
+            part="tab-item"
             class="pf-c-tabs__item ${slotName === this.activeTabName ? CURRENT_CLASS : ""}"
         >
             <button
                 type="button"
                 role="tab"
+                part="tab-button"
                 id=${`${slotName}-tab`}
+                name=${slotName}
                 aria-selected=${slotName === this.activeTabName ? "true" : "false"}
                 aria-controls=${ifPresent(slotName)}
                 class="pf-c-tabs__link"
                 @click=${() => this.activateTab(slotName)}
             >
-                <span class="pf-c-tabs__item-text"> ${tabPanel.getAttribute("aria-label")}</span>
+                <span class="pf-c-tabs__item-text">${tabPanel.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }

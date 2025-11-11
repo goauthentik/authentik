@@ -59,7 +59,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
             :host([theme="dark"]) {
                 --captcha-background-to: var(--ak-dark-background-light);
-                --captcha-background-from: var(--ak-dark-background-light-ish);
+                --captcha-background-from: var(--pf-global--BackgroundColor--300);
             }
 
             @keyframes captcha-background-animation {

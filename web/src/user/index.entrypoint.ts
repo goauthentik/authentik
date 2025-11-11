@@ -26,14 +26,16 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 import { themeImage } from "#elements/utils/images";
 
+import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
 
 import { EventsApi, SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -43,67 +45,11 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
-
-const customStyles = css`
-    .pf-c-page__main,
-    .pf-c-drawer__content,
-    .pf-c-page__drawer {
-        z-index: auto !important;
-        background-color: transparent !important;
-    }
-    .pf-c-page__header {
-        background-color: transparent !important;
-        box-shadow: none !important;
-        color: black !important;
-    }
-    :host([theme="light"]) .pf-c-button.pf-m-secondary {
-        color: var(--ak-global--Color--100) !important;
-    }
-    .pf-c-page {
-        background-color: transparent;
-    }
-    .display-none {
-        display: none;
-    }
-    .pf-c-brand {
-        min-height: 32px;
-        height: 32px;
-    }
-    .has-notifications {
-        color: #2b9af3;
-    }
-    .background-wrapper {
-        height: 100vh;
-        width: 100%;
-        position: fixed;
-        z-index: -1;
-        top: 0;
-        left: 0;
-        background-color: var(--pf-c-page--BackgroundColor) !important;
-    }
-    .background-default-slant {
-        background-color: white; /*var(--ak-accent);*/
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
-        height: 50vh;
-    }
-    :host([theme="dark"]) .background-default-slant {
-        background-color: black;
-    }
-    ak-locale-context {
-        display: flex;
-        flex-direction: column;
-    }
-    .pf-c-drawer__main {
-        min-height: calc(100vh - 76px);
-        max-height: calc(100vh - 76px);
-    }
-`;
 
 //  ___                     _        _   _
 // | _ \_ _ ___ ___ ___ _ _| |_ __ _| |_(_)___ _ _
@@ -122,7 +68,6 @@ const customStyles = css`
 // @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(AKElement) {
     static styles = [
-        PFBase,
         PFDisplay,
         PFBrand,
         PFPage,
@@ -131,7 +76,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
         PFDrawer,
         PFDropdown,
         PFNotificationBadge,
-        customStyles,
+        Styles,
     ];
 
     @property({ type: Object })
@@ -191,11 +136,13 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
             throw new Error("ak-interface-user-presentation misused; no valid values passed");
         }
 
+        const backgroundStyles = this.uiConfig.theme.background;
+
         return html`<ak-locale-context>
             <ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
-                <div class="background-wrapper" style="${this.uiConfig.theme.background}">
-                    ${(this.uiConfig.theme.background || "") === ""
+                <div class="background-wrapper" style=${ifPresent(backgroundStyles)}>
+                    ${!backgroundStyles
                         ? html`<div class="background-default-slant"></div>`
                         : nothing}
                 </div>
@@ -204,7 +151,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${themeImage(this.brandingLogo)}"
+                                src="${themeImage(this.brandingLogo, this.activeTheme)}"
                                 alt="${this.brandingTitle}"
                             />
                         </a>
