@@ -1128,7 +1128,7 @@ msgid ""
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
 "Määrittää, mihin tätä prosessia käytetään. Esimerkiksi todennusprosessi "
-"ohjaa edelleen kun tunnustautumaton käyttäjä avaa authentikin."
+"ohjaa edelleen kun todentamaton käyttäjä avaa authentikin."
 
 #: authentik/flows/models.py
 msgid "Background shown during execution"
