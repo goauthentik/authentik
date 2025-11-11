@@ -24,7 +24,7 @@ password_changed = Signal()
 login_failed = Signal()
 password_hash_updated = Signal()
 
-PASSWORD_HASH_UPGRADE_REASON = "Password hash upgraded"
+PASSWORD_HASH_UPGRADE_REASON = "Password hash upgraded"  # noqa # nosec
 
 LOGGER = get_logger()
 
