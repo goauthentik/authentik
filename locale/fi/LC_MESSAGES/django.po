@@ -1127,9 +1127,8 @@ msgid ""
 "Decides what this Flow is used for. For example, the Authentication flow is "
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
-"Määrittää, mihin tätä prosessia käytetään. Esimerkiksi "
-"tunnistautumisprosessi ohjaa edelleen kun tunnustautumaton käyttäjä avaa "
-"authentikin."
+"Määrittää, mihin tätä prosessia käytetään. Esimerkiksi todennusprosessi "
+"ohjaa edelleen kun tunnustautumaton käyttäjä avaa authentikin."
 
 #: authentik/flows/models.py
 msgid "Background shown during execution"
@@ -1149,8 +1148,7 @@ msgstr "Määritä, mitä tapahtuu kun prosessi estää käyttäjän pääsyn."
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
-msgstr ""
-"Tarvittava tunnistautumisen ja valtuutuksen taso prosessiin pääsemiseksi."
+msgstr "Tarvittava todennuksen ja valtuutuksen taso prosessiin pääsemiseksi."
 
 #: authentik/flows/models.py
 msgid "Flows"
