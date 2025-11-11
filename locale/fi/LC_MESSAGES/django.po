@@ -2683,7 +2683,8 @@ msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Password to authenticate to kadmin for sync"
-msgstr "Salasana, kätetään kdaminiin todentamisessa synkronointia varten."
+msgstr ""
+"Salasana, jota käytetään kdaminiin todentamisessa synkronointia varten."
 
 #: authentik/sources/kerberos/models.py
 msgid ""
