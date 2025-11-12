@@ -55,15 +55,24 @@ def extract_certificate_metadata(certificate: Certificate) -> dict:
 
 
 @receiver(pre_save, sender="authentik_crypto.CertificateKeyPair")
-def certificate_key_pair_pre_save(sender: type[Model], instance, **_):
+def certificate_key_pair_pre_save(sender: type[Model], instance, **_):  # noqa: ARG001
     """Automatically populate certificate metadata fields before saving"""
     from authentik.crypto.models import CertificateKeyPair
 
     if not isinstance(instance, CertificateKeyPair):
         return
 
-    # Extract all metadata from the certificate
-    metadata = extract_certificate_metadata(instance.certificate)
+    # Only extract metadata if certificate_data is present
+    if not instance.certificate_data:
+        return
+
+    # Try to extract metadata from the certificate
+    # If the certificate data is invalid, skip metadata extraction
+    try:
+        metadata = extract_certificate_metadata(instance.certificate)
+    except (ValueError, TypeError, AttributeError):
+        # Invalid certificate data, skip metadata extraction
+        return
 
     # Update instance fields (only set key_type if not already set)
     if not instance.key_type:
