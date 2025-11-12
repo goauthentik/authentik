@@ -9219,7 +9219,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s754153d9e524ffce">
   <source>Clear Application cache</source>
-  <target>アプリケーションキャッシュをクリア</target>
+  <target>アプリキャッシュをクリア</target>
 </trans-unit>
 <trans-unit id="sea5092df2c72b064">
   <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
