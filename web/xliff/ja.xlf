@@ -6400,7 +6400,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s2656433a3b1f7e86">
         <source>My applications</source>
-        <target>マイアプリケーション</target>
+        <target> 自分のアプリ</target>
         
       </trans-unit>
       <trans-unit id="s06c92148da82be0d">
