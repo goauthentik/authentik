@@ -6391,7 +6391,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sf34026321b35315c">
         <source>Either no applications are defined, or you don’t have access to any.</source>
-        <target>アプリケーションが定義されていないか、どのアプリケーションにもアクセスできません。</target>
+        <target>アプリが定義されていないか、どのアプリにもアクセスできません。</target>
       </trans-unit>
       <trans-unit id="s1cf2298d92c327a6">
         <source>My Applications</source>
