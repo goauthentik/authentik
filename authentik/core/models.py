@@ -586,6 +586,7 @@ class Application(SerializerModel, PolicyBindingModel):
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         from authentik.core.api.users import UserSerializer
+
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
