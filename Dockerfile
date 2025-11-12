@@ -164,7 +164,7 @@ RUN apt-get update && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
     mkdir -p /certs /data /media /blueprints && \
-    ln -s /data/media /media && \
+    ln -s /media /data/media && \
     mkdir -p /authentik/.ssh && \
     mkdir -p /ak-root && \
     chown authentik:authentik /certs /data /media /authentik/.ssh /ak-root
