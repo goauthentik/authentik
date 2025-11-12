@@ -6142,12 +6142,12 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s7073489bb01b3c24">
         <source>Application already has access to the following permissions:</source>
-        <target>アプリケーションは既に次の権限にアクセスできます:</target>
+        <target>アプリは既に次の権限にアクセスできます:</target>
         
       </trans-unit>
       <trans-unit id="s98dc556f8bf707dc">
         <source>Application requires following new permissions:</source>
-        <target>アプリケーションには以下の新しい権限が必要です:</target>
+        <target>アプリには以下の新しい権限が必要です:</target>
         
       </trans-unit>
       <trans-unit id="sbd19064fc3f405c1">
