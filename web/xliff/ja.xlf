@@ -10858,7 +10858,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
-  <target>アプリケーション</target>
+  <target>アプリ</target>
 </trans-unit>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
