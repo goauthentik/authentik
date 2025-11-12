@@ -98,41 +98,6 @@ func checkWorker() int {
 		log.WithError(err).Warning("failed to signal worker process")
 		return 1
 	}
-	h := &http.Client{
-		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
-	}
-
-	host, port := splitHostPort(config.Get().Listen.HTTP)
-
-	if host == "0.0.0.0" || host == "::" {
-		url := fmt.Sprintf("http://%s:%s/-/health/ready/", "::1", port)
-		_, err := h.Head(url)
-		if err != nil {
-			log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
-			url := fmt.Sprintf("http://%s:%s/-/health/ready/", "127.0.0.1", port)
-			res, err := h.Head(url)
-			if err != nil {
-				log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
-				return 1
-			}
-			if res.StatusCode >= 400 {
-				log.WithField("status", res.StatusCode).Warning("unhealthy status code")
-				return 1
-			}
-		}
-	} else {
-		url := fmt.Sprintf("http://%s:%s/-/health/ready/", host, port)
-		res, err := h.Head(url)
-		if err != nil {
-			log.WithError(err).Warning("failed to send healthcheck request")
-			return 1
-		}
-		if res.StatusCode >= 400 {
-			log.WithField("status", res.StatusCode).Warning("unhealthy status code")
-			return 1
-		}
-	}
-
 	log.Info("successfully checked health")
 	return 0
 }
