@@ -8,12 +8,14 @@ import { me } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 
+import Styles from "#components/ak-nav-button.css";
+
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -53,40 +55,7 @@ export class NavigationButtons extends AKElement {
         PFDrawer,
         PFDropdown,
         PFNotificationBadge,
-        css`
-            .pf-c-page__header-tools {
-                display: flex;
-            }
-
-            .pf-c-avatar {
-                background-color: var(--pf-global--BackgroundColor--light-200);
-                overflow: hidden;
-
-                img {
-                    width: 100%;
-                    height: 100%;
-                    aspect-ratio: 1 / 1;
-                }
-            }
-
-            :host([theme="dark"]) {
-                .pf-c-page__header-tools {
-                    color: var(--ak-dark-foreground) !important;
-                }
-
-                .pf-c-avatar {
-                    background-color: var(--pf-global--BackgroundColor--dark-300);
-                }
-            }
-
-            :host([theme="light"]) {
-                .pf-c-page__header-tools-item .fas,
-                .pf-c-notification-badge__count,
-                .pf-c-page__header-tools-group .pf-c-button {
-                    color: var(--ak-global--Color--100) !important;
-                }
-            }
-        `,
+        Styles,
     ];
 
     async firstUpdated() {

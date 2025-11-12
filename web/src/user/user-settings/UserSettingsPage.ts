@@ -13,13 +13,15 @@ import { rootInterface } from "#common/theme";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import type { UserInterface } from "#user/index.entrypoint";
+import Styles from "#user/user-settings/styles.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -31,7 +33,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -39,7 +40,6 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFDisplay,
         PFGallery,
@@ -50,36 +50,7 @@ export class UserSettingsPage extends AKElement {
         PFForm,
         PFFormControl,
         PFStack,
-        css`
-            .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page {
-                --pf-c-page--BackgroundColor: transparent;
-            }
-            :host([theme="dark"]) .pf-c-page__main-section {
-                --pf-c-page__main-section--BackgroundColor: transparent;
-            }
-
-            .pf-c-page__main {
-                min-height: 100vh;
-            }
-            .pf-c-page__main,
-            .pf-c-page__main {
-                overflow: unset;
-            }
-
-            @media screen and (min-width: 1200px) {
-                :host {
-                    width: 90rem;
-                    max-width: 100%;
-                    align-self: center;
-                }
-            }
-        `,
+        Styles,
     ];
 
     @state()
@@ -194,7 +165,8 @@ export class UserSettingsPage extends AKElement {
                                 )}
                             </div>
                             <ak-user-settings-source
-                                userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                allow-configuration
+                                user-id=${ifPresent(rootInterface<UserInterface>()?.me?.user.pk)}
                             ></ak-user-settings-source>
                         </div>
                     </div>

@@ -65,7 +65,9 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
                 justify-content: center;
                 align-items: center;
                 position: absolute;
-                background-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+                background-color: var(
+                    --pf-global--BackgroundColor--dark-transparent-200
+                ) !important;
                 z-index: 1;
             }
             :host([topmost]) {

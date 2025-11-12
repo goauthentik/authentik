@@ -1311,11 +1311,6 @@
         <target>Emisor</target>
         
       </trans-unit>
-      <trans-unit id="sf54c562d8a10ce77">
-        <source>Also known as EntityID.</source>
-        <target>También conocido como EntityID.</target>
-        
-      </trans-unit>
       <trans-unit id="s991b750e2d5c4234">
         <source>Service Provider Binding</source>
         <target>Vínculo de Proveedores de Servicios</target>
@@ -5901,7 +5896,7 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
         
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
         <target>Sí (
         <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
@@ -8818,10 +8813,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>Not a valid slug</source>
   <target>No es un slug válido</target>
 </trans-unit>
-<trans-unit id="s177577c23ed3ca7e">
-  <source>Configure The Application</source>
-  <target>Configurar La Aplicación</target>
-</trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
   <target>Configurar Vinculaciones</target>
@@ -10643,6 +10634,12 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+</trans-unit>
+<trans-unit id="s0268ce9f2abb84de">
+  <source>Configure the Application</source>
+</trans-unit>
+<trans-unit id="sd4fd64791f73d37b">
+  <source>Also known as Entity ID.</source>
 </trans-unit>
     </body>
   </file>

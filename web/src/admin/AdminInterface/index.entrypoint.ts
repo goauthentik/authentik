@@ -27,7 +27,7 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
-import Styles from "#admin/AdminInterface/styles.css";
+import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
