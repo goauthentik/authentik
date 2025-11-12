@@ -47,7 +47,8 @@ class DataExport(SerializerModel):
         return DataExportSerializer
 
     def generate(self) -> None:
-        assert not self.completed
+        if self.completed:
+            raise AssertionError("Data export must only be generated once")
 
         model_class = self.content_type.model_class()
         model_verbose_name = model_class._meta.verbose_name
