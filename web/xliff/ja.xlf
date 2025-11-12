@@ -2253,7 +2253,7 @@
       </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
-        <target>選択したアプリケーションで作成されたイベントに一致します。空のままにすると、すべてのアプリケーションが一致します。</target>
+        <target>選択したアプリで作成されたイベントに一致します。空のままにすると、すべてのアプリが一致します。</target>
         
       </trans-unit>
       <trans-unit id="s5a13f4bbe004503f">
