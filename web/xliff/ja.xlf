@@ -10031,7 +10031,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
   <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target><x id="0" equiv-text="${item.name}"/>のアプリケーション アイコン</target>
+  <target><x id="0" equiv-text="${item.name}"/>のアプリ アイコン</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
   <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
