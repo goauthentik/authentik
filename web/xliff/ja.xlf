@@ -2558,7 +2558,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
-        <target>警告：このアプリケーションは、どのアウトポストでも使用されていません。</target>
+        <target>警告：このアプリは、どのアウトポストでも使用されていません。</target>
         
       </trans-unit>
       <trans-unit id="sb6cbd4f92ebaf5d8">
