@@ -1,13 +1,13 @@
 import "#elements/EmptyState";
 import "#elements/Expand";
 
-import Styles from "./FlowInspector.css";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+
+import Styles from "#flow/FlowInspector.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 

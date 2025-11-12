@@ -62,7 +62,9 @@ export abstract class BaseStage<
         delegatesFocus: true,
     };
 
-    protected host!: StageHost;
+    // TODO: Should have a property but this needs some refactoring first.
+    // @property({ attribute: false })
+    public host!: StageHost;
 
     @property({ attribute: false })
     public challenge!: Tin;

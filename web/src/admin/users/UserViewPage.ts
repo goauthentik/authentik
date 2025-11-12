@@ -23,6 +23,7 @@ import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
 import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -355,7 +356,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-user-settings-source userId=${user.pk} .canConnect=${false}>
+                        <ak-user-settings-source user-id=${user.pk}>
                         </ak-user-settings-source>
                     </div>
                 </div>
@@ -420,8 +421,8 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         >
                             <div class="pf-c-card__title">${msg("Notes")}</div>
                             <div class="pf-c-card__body">
-                                ${Object.hasOwn(this.user?.attributes || {}, "notes")
-                                    ? html`${this.user.attributes?.notes}`
+                                ${this.user?.attributes?.notes
+                                    ? html`<ak-mdx .content=${this.user.attributes.notes}></ak-mdx>`
                                     : html`
                                           <p>
                                               ${msg(

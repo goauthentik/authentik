@@ -27,11 +27,12 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -78,50 +79,13 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     //#region Styles
 
     static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFPage,
         PFButton,
         PFDrawer,
         PFNav,
-        css`
-            .pf-c-page__main {
-                scrollbar-gutter: stable;
-            }
-
-            .pf-c-page__main,
-            .pf-c-drawer__content,
-            .pf-c-page__drawer {
-                z-index: auto !important;
-                background-color: transparent;
-            }
-
-            .display-none {
-                display: none;
-            }
-
-            .pf-c-page {
-                background-color: var(--pf-c-page--BackgroundColor) !important;
-            }
-
-            :host([theme="dark"]) {
-                /* Global page background colour */
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                }
-            }
-
-            ak-page-navbar {
-                grid-area: header;
-            }
-
-            .ak-sidebar {
-                grid-area: nav;
-            }
-
-            .pf-c-drawer__panel {
-                z-index: var(--pf-global--ZIndex--xl);
-            }
-        `,
+        Styles,
     ];
 
     //#endregion

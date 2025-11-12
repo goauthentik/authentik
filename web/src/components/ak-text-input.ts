@@ -52,6 +52,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
             aria-describedby=${this.helpID}
             placeholder=${ifPresent(this.placeholder)}
+            inputmode=${ifPresent(this.inputMode)}
             ?required=${this.required}
         />`;
     }

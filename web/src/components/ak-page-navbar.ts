@@ -68,6 +68,11 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
                 --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
                 --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
                 color: var(--ak-dark-foreground);
+
+                .sidebar-trigger,
+                .notification-trigger {
+                    background-color: transparent !important;
+                }
             }
 
             .main-content {
@@ -360,7 +365,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
                             <img
-                                src=${themeImage(this.brandingLogo)}
+                                src=${themeImage(this.brandingLogo, this.activeTheme)}
                                 alt="${msg("authentik Logo")}"
                                 loading="lazy"
                             />

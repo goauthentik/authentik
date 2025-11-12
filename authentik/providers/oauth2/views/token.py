@@ -378,9 +378,11 @@ class TokenParams:
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"]["kid"]
-        fallback_alg = decode_unvalidated["header"]["alg"]
+        expected_kid = decode_unvalidated["header"].get("kid")
+        fallback_alg = decode_unvalidated["header"].get("alg")
         token = source = None
+        if not expected_kid or not fallback_alg:
+            return None, None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):

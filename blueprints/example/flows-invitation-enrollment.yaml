@@ -1,0 +1,396 @@
+# Example - Invitation-based Enrollment Blueprint
+#
+# This blueprint demonstrates invitation-based user enrollment with support for
+# internal and external user types, automatic group assignment, and user path organization.
+#
+# What this blueprint creates:
+# - 3 enrollment flows:
+#   * External users flow (invitation-enrollment-flow-external)
+#   * Internal users flow (invitation-enrollment-flow-internal)
+#   * Internal users flow with automatic group assignment (invitation-enrollment-flow-internal-engineering)
+# - 3 invitation stages (one for each flow)
+# - Prompt fields for collecting user credentials and details (username, password, name, email)
+# - 2 prompt stages (credentials and user details)
+# - 3 user write stages configured for different user types and paths:
+#   * External users: user_type=external, path=users/external
+#   * Internal users: user_type=internal, path=users/internal
+#   * Engineering team: user_type=internal, path=users/internal/engineering, auto-assigned to engineering-team group
+# - 1 user login stage
+# - 1 example group (engineering-team)
+# - 5 example invitations demonstrating different use cases
+#
+# For detailed documentation, see:
+# https://docs.goauthentik.io/users-sources/user/invitations/
+#
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Invitation-based Enrollment
+entries:
+  # Flow definition for external users
+  - identifiers:
+      slug: invitation-enrollment-flow-external
+    model: authentik_flows.flow
+    id: flow-external
+    attrs:
+      name: Invitation Enrollment Flow (External Users)
+      title: Welcome! Complete your enrollment
+      designation: enrollment
+      authentication: require_unauthenticated
+
+  # Flow definition for internal users
+  - identifiers:
+      slug: invitation-enrollment-flow-internal
+    model: authentik_flows.flow
+    id: flow-internal
+    attrs:
+      name: Invitation Enrollment Flow (Internal Users)
+      title: Welcome! Complete your enrollment
+      designation: enrollment
+      authentication: require_unauthenticated
+
+  # Flow definition for internal users with group assignment
+  - identifiers:
+      slug: invitation-enrollment-flow-internal-engineering
+    model: authentik_flows.flow
+    id: flow-internal-engineering
+    attrs:
+      name: Invitation Enrollment Flow (Internal - Engineering Team)
+      title: Welcome to the Engineering Team!
+      designation: enrollment
+      authentication: require_unauthenticated
+
+  # Invitation Stage for external users
+  - identifiers:
+      name: invitation-enrollment-invitation-external
+    id: invitation-stage-external
+    model: authentik_stages_invitation.invitationstage
+    attrs:
+      continue_flow_without_invitation: false
+
+  # Invitation Stage for internal users
+  - identifiers:
+      name: invitation-enrollment-invitation-internal
+    id: invitation-stage-internal
+    model: authentik_stages_invitation.invitationstage
+    attrs:
+      continue_flow_without_invitation: false
+
+  # Invitation Stage for internal engineering users
+  - identifiers:
+      name: invitation-enrollment-invitation-internal-engineering
+    id: invitation-stage-internal-engineering
+    model: authentik_stages_invitation.invitationstage
+    attrs:
+      continue_flow_without_invitation: false
+
+  # Prompt fields for user information
+  - id: prompt-field-username
+    model: authentik_stages_prompt.prompt
+    identifiers:
+      name: invitation-enrollment-field-username
+    attrs:
+      field_key: username
+      label: Username
+      type: username
+      required: true
+      placeholder: Username
+      placeholder_expression: false
+      order: 0
+
+  - identifiers:
+      name: invitation-enrollment-field-password
+    id: prompt-field-password
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password
+      label: Password
+      type: password
+      required: true
+      placeholder: Password
+      placeholder_expression: false
+      order: 1
+
+  - identifiers:
+      name: invitation-enrollment-field-password-repeat
+    id: prompt-field-password-repeat
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password_repeat
+      label: Password (repeat)
+      type: password
+      required: true
+      placeholder: Password (repeat)
+      placeholder_expression: false
+      order: 2
+
+  - identifiers:
+      name: invitation-enrollment-field-name
+    id: prompt-field-name
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: name
+      label: Name
+      type: text
+      required: true
+      placeholder: Name
+      placeholder_expression: false
+      order: 0
+
+  - identifiers:
+      name: invitation-enrollment-field-email
+    id: prompt-field-email
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: email
+      label: Email
+      type: email
+      required: true
+      placeholder: Email
+      placeholder_expression: false
+      order: 1
+
+  # Prompt stage for credentials
+  - identifiers:
+      name: invitation-enrollment-prompt-credentials
+    id: prompt-stage-credentials
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-username
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+
+  # Prompt stage for user details
+  - identifiers:
+      name: invitation-enrollment-prompt-details
+    id: prompt-stage-details
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-name
+        - !KeyOf prompt-field-email
+
+  # User write stage for external users
+  - identifiers:
+      name: invitation-enrollment-user-write-external
+    id: user-write-stage-external
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      user_creation_mode: always_create
+      user_type: external
+      user_path_template: users/external
+
+  # User write stage for internal users
+  - identifiers:
+      name: invitation-enrollment-user-write-internal
+    id: user-write-stage-internal
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      user_creation_mode: always_create
+      user_type: internal
+      user_path_template: users/internal
+
+  # Example group for demonstrating group assignment
+  - identifiers:
+      name: engineering-team
+    id: group-engineering
+    model: authentik_core.group
+    attrs:
+      is_superuser: false
+
+  # User write stage for internal users with group assignment
+  - identifiers:
+      name: invitation-enrollment-user-write-internal-engineering
+    id: user-write-stage-internal-engineering
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      user_creation_mode: always_create
+      user_type: internal
+      user_path_template: users/internal/engineering
+      create_users_group: !KeyOf group-engineering
+
+  # User login stage
+  - identifiers:
+      name: invitation-enrollment-user-login
+    id: user-login-stage
+    model: authentik_stages_user_login.userloginstage
+
+  # Flow stage bindings for EXTERNAL users flow
+  - identifiers:
+      target: !KeyOf flow-external
+      stage: !KeyOf invitation-stage-external
+      order: 5
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+
+  - identifiers:
+      target: !KeyOf flow-external
+      stage: !KeyOf prompt-stage-credentials
+      order: 10
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-external
+      stage: !KeyOf prompt-stage-details
+      order: 15
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-external
+      stage: !KeyOf user-write-stage-external
+      order: 20
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-external
+      stage: !KeyOf user-login-stage
+      order: 100
+    model: authentik_flows.flowstagebinding
+
+  # Flow stage bindings for INTERNAL users flow
+  - identifiers:
+      target: !KeyOf flow-internal
+      stage: !KeyOf invitation-stage-internal
+      order: 5
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+
+  - identifiers:
+      target: !KeyOf flow-internal
+      stage: !KeyOf prompt-stage-credentials
+      order: 10
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal
+      stage: !KeyOf prompt-stage-details
+      order: 15
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal
+      stage: !KeyOf user-write-stage-internal
+      order: 20
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal
+      stage: !KeyOf user-login-stage
+      order: 100
+    model: authentik_flows.flowstagebinding
+
+  # Flow stage bindings for INTERNAL ENGINEERING users flow (with group assignment)
+  - identifiers:
+      target: !KeyOf flow-internal-engineering
+      stage: !KeyOf invitation-stage-internal-engineering
+      order: 5
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+
+  - identifiers:
+      target: !KeyOf flow-internal-engineering
+      stage: !KeyOf prompt-stage-credentials
+      order: 10
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal-engineering
+      stage: !KeyOf prompt-stage-details
+      order: 15
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal-engineering
+      stage: !KeyOf user-write-stage-internal-engineering
+      order: 20
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow-internal-engineering
+      stage: !KeyOf user-login-stage
+      order: 100
+    model: authentik_flows.flowstagebinding
+
+  # Example invitations
+
+  # EXTERNAL USER INVITATIONS
+
+  # Example 1: Basic single-use invitation for external user
+  - identifiers:
+      name: example-external-basic-invitation
+    model: authentik_stages_invitation.invitation
+    id: invitation-external-basic
+    attrs:
+      flow: !KeyOf flow-external
+      single_use: false
+      fixed_data: {}
+
+  # Example 2: Multi-use invitation for external users with pre-filled email
+  - identifiers:
+      name: example-external-prefilled-email-invitation
+    model: authentik_stages_invitation.invitation
+    id: invitation-external-prefilled-email
+    attrs:
+      flow: !KeyOf flow-external
+      single_use: true
+      expires: "2028-12-31T23:59:59Z"
+      fixed_data:
+        email: "external@example.com"
+
+  # INTERNAL USER INVITATIONS
+
+  # Example 3: Single-use invitation for internal user with pre-filled fields
+  - identifiers:
+      name: example-internal-prefilled-invitation
+    model: authentik_stages_invitation.invitation
+    id: invitation-internal-prefilled
+    attrs:
+      flow: !KeyOf flow-internal
+      single_use: true
+      expires: "2028-12-31T23:59:59Z"
+      fixed_data:
+        name: "Jane Smith"
+        email: "jane.smith@company.com"
+
+  # Example 4: Long-term multi-use invitation for internal department
+  - identifiers:
+      name: example-internal-department-invitation
+    model: authentik_stages_invitation.invitation
+    id: invitation-internal-department
+    attrs:
+      flow: !KeyOf flow-internal
+      single_use: false
+      expires:  "2028-12-31T23:59:59Z"
+      fixed_data:
+        attributes:
+          department: "Engineering"
+          team: "Backend"
+
+  # Example 5: Invitation with automatic group assignment
+  - identifiers:
+      name: example-engineering-team-invitation
+    model: authentik_stages_invitation.invitation
+    id: invitation-engineering-team
+    attrs:
+      flow: !KeyOf flow-internal-engineering
+      single_use: false
+      expires: "2028-12-31T23:59:59Z"
+      fixed_data:
+        attributes:
+          department: "Engineering"
+
+  # Note: Group assignment works by using a flow with a UserWriteStage that has
+  # 'create_users_group' configured. See example 5 above - users enrolling via
+  # the 'invitation-enrollment-flow-internal-engineering' flow will automatically
+  # be added to the 'engineering-team' group.
+  #
+  # Groups cannot be set directly in invitation fixed_data because they require
+  # database relationships that must be established after user creation.

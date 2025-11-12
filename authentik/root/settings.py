@@ -6,6 +6,7 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
+from django.http import response as http_response
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -429,6 +430,7 @@ DRAMATIQ = {
             },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
+        ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.ModelDataMiddleware", {}),
@@ -470,6 +472,12 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# Django 5.2.8 and CVE-2025-64458 added a strong enforcement of 2048 characters
+# as the maximum for a URL to redirect to, mostly for running on Windows.
+# However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
+# 8192 should cover most cases.
+http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
 
 
 # Media files
