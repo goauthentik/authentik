@@ -154,7 +154,7 @@ storage:
   media:
     backend: file # or s3
     file:
-      path: ./media
+      path: ./data/media
     s3:
       # How to talk to s3
       # region: "us-east-1"
