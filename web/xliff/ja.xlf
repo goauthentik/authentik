@@ -7261,7 +7261,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s008496c7716b9812">
   <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
-  <target>これらのバインディングは、このエンドポイントにアクセスできるユーザーを制御します。ユーザーはアプリケーションへのアクセス権も持つ必要があります。</target>
+  <target>これらのバインディングは、このエンドポイントにアクセスできるユーザーを制御します。ユーザーはアプリへのアクセス権も持つ必要があります。</target>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
@@ -7596,7 +7596,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
-  <target>利用可能なアプリケーション</target>
+  <target>利用可能なアプリ</target>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
