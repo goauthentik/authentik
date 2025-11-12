@@ -8934,7 +8934,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
-  <target>これらのエンタイトルメントを使用して、このアプリケーションのユーザーアクセスを設定できます。</target>
+  <target>エンタイトルメントを使用して、このアプリのユーザーアクセスを設定できます。</target>
 </trans-unit>
 <trans-unit id="s82cced87e15e0665">
   <source>Worker with incorrect version connected.</source>
