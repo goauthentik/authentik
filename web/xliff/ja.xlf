@@ -8902,7 +8902,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8a48455905fc14e6">
   <source>Application entitlement(s)</source>
-  <target>アプリケーションエンタイトルメント</target>
+  <target>アプリエンタイトルメント</target>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
