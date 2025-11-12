@@ -10242,7 +10242,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2643b2f95c0c38a0">
   <source>Select an application...</source>
-  <target>アプリケーションを選択...</target>
+  <target>アプリを選択...</target>
 </trans-unit>
 <trans-unit id="s5d4669050d36a5ab">
   <source>Select a recovery flow...</source>
@@ -10789,7 +10789,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
-  <target>アプリケーションを編集...</target>
+  <target>アプリを編集...</target>
 </trans-unit>
 <trans-unit id="ellipsis">
   <source>...</source>
