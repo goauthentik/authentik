@@ -18,6 +18,7 @@ Follow these steps to install authentik Platform on your Windows client:
 2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
 3. Once the download is complete, install the MSI file.
 4. _(Optional)_ During installation, select [Windows Credential Provider](<#Windows-Credential-Provider-(WCP)>) if you want to log in to the Windows device using authentik credentials.
+
 5. Confirm that authentik Platform is installed by opening a Powershell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
@@ -79,10 +80,33 @@ If you have already deployed the authentik OAuth CLI application/provider pair, 
 
 3. Click **Submit** to save the new application and provider.
 
+#### Create an application and provider in authentik for Windows Credential Provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: set the slug to 'wcp', provide a descriptive name (e.g. `authentik-wcp`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **Client type** to `Public`.
+        - Set the **Client ID** to `authentik-wcp`.
+        - Select any available signing key.
+        - Under **Machine-to-Machine authentication settings** select the previously created `authentik-cli` provider as a **Federated OIDC Provider**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
+
+3. Click **Submit** to save the new application and provider.
+
+:::warning Application slug
+The application slug must be set to 'wcp'.
+:::
+
 ### Windows Credential Provider configuration
 
 Now you'll need to configure Windows Credential Provider on the Windows device that you want to log in to.
 
 #### Configure Windows Credential Provider
 
-@Jens
+## Logging
+
+authentik Platform primarily outputs logs to Windows Event Viewer.
+
+The Windows Credential Provider logs to the `wcp` file in Program Files... TODO:

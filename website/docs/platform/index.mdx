@@ -4,11 +4,7 @@ sidebar_label: authentik Platform
 ---
 
 :::warning
-authentik Platform is currently in early preview stage and is in under heavy development. Breaking changes and bugs should be expected.
-
-It is not recommended for production use.
-
-The current deployment methods are only for early preview and do not reflect their final form.
+authentik Platform is currently in early preview stage and is in under heavy development. It is not recommended for production use.
 :::
 
 ## What is authentik Platform?
@@ -21,13 +17,41 @@ It currently supports:
     - authenticating to CLI applications such as [`kubectl`](./kubectl.mdx) and [`aws`](./aws.mdx).
     - logging in to [Windows devices](./windows.mdx)
 
-It can be installed on [macOS](./macos.mdx), [Linux](./linux.mdx) and [Windows](./windows.mdx).
-
 Packages are available [here](https://pkg.goauthentik.io); a `.pkg` file for macOS, a `.msi` file for Windows and `.deb` packages for Linux.
+
+## authentik Platform components
+
+On all platforms; Linux, macOS and Windows, authentik platform uses the following core components:
+
+#### authentik-cli
+
+Provides commands for interacting with authentik-agent.
+
+#### authentik-agent
+
+User service.
+
+#### authentik-sysd
+
+System service.
+
+## Important Considerations
+
+This is a very early preview of authentik Platform. The features, methods and even the name are yet to be confirmed.
+
+Breaking changes and bugs should be expected.
+
+The current deployment methods are only for early preview and do not reflect their final form.
+
+Sentry reporting is enabled by default and currently can't be disabled.
+
+Most of the CLI commands have a -v flag for verbose
+
+## How to provide feedback and report bugs
 
 ## Links
 
-Guides for installing, configuring and using authentik Platform on different systems and services:
+Guides for installing, configuring and using authentik Platform on different platforms and services:
 
 - [macOS Workstation](./macos.mdx)
 - [Linux Workstation](./linux.mdx)
