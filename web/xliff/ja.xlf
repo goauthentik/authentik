@@ -9223,7 +9223,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sea5092df2c72b064">
   <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
-  <target>アプリケーションキャッシュをクリアしてもよろしいですか？これにより、すべてのポリシーが次の使用時に再評価されます。</target>
+  <target> アプリキャッシュをクリアしてもよろしいですか？すべてのポリシーは次回の使用時に再評価されます。</target>
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
