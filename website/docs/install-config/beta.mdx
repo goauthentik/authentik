@@ -2,6 +2,9 @@
 title: Beta and Release Candidate versions
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 You can test upcoming authentik versions before they are released as stable. There are two types of pre-release versions available:
 
 - **Release Candidates (RC)**: Near-final versions that are feature-complete and undergoing final testing before a stable release. RCs are more stable than Beta versions and are recommended for testing in staging environments.
@@ -17,9 +20,6 @@ Downgrading from RC or Beta versions is not supported. It is recommended to take
 
 Release Candidates are available for testing before major version releases. To use an RC version, you need to specify the exact RC tag (e.g., `2025.10.0-rc3`).
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-
 <Tabs
   defaultValue="docker-compose"
   values={[
@@ -34,7 +34,7 @@ Add the following block to your `.env` file, replacing `2025.10.0-rc3` with the 
 AUTHENTIK_TAG=2025.10.0-rc3
 ```
 
-Next, run the upgrade commands:
+Next, pull the image and redeploy:
 
 ```shell
 docker compose pull
