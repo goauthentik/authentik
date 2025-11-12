@@ -11332,7 +11332,8 @@
                         "patreon",
                         "reddit",
                         "twitch",
-                        "twitter"
+                        "twitter",
+                        "wechat"
                     ],
                     "title": "Provider type"
                 },
