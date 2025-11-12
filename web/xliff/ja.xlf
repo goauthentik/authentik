@@ -6386,7 +6386,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sc741dfb09d3395f0">
         <source>No Applications available.</source>
-        <target>利用可能なアプリケーションがありません。</target>
+        <target>利用可能なアプリがありません。</target>
         
       </trans-unit>
       <trans-unit id="sf34026321b35315c">
