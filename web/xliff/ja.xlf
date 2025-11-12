@@ -8247,7 +8247,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac85801a25b7bb27">
   <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
-  <target>設定されている場合、外部ユーザーは別のアプリケーションへのアクセスを試みていないときにこのアプリケーションに自動的にリダイレクトされます</target>
+  <target>設定されている場合、外部ユーザーは別のアプリケーションへのアクセスを試みていないときにこのアプリに自動的にリダイレクトされます</target>
 </trans-unit>
 <trans-unit id="s9f4d6296b906d591">
   <source>Warning: One or more license(s) have expired.</source>
