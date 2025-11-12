@@ -10027,7 +10027,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
-  <target>アプリケーション ドキュメント</target>
+  <target>アプリのドキュメント</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
   <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
