@@ -3484,7 +3484,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sec1808532fe107b9">
         <source>Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.</source>
-        <target>ユーザーがプロパティに基づいてアプリケーションを使用できるようにし、パスワード基準を適用し、ステージを選択的に適用します。</target>
+        <target>ユーザーがプロパティに基づいてアプリを使用できるようにし、パスワード基準を適用し、ステージを選択的に適用します。</target>
         
       </trans-unit>
       <trans-unit id="se16ac750b81fa93d">
