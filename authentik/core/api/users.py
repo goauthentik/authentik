@@ -76,13 +76,13 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.enterprise.reports.api.reports import ExportMixin
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.flow import pickle_flow_token_for_email
@@ -426,7 +426,11 @@ class UsersFilter(FilterSet):
         ]
 
 
-class UserViewSet(ExportMixin, UsedByMixin, ModelViewSet):
+class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """User Viewset"""
 
     queryset = User.objects.none()

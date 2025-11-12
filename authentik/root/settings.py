@@ -85,7 +85,6 @@ TENANT_APPS = [
     "authentik.endpoints",
     "authentik.endpoints.connectors.agent",
     "authentik.enterprise",
-    "authentik.enterprise.reports",
     "authentik.events",
     "authentik.flows",
     "authentik.outposts",
