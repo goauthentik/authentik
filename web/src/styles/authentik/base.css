@@ -1,6 +1,7 @@
 @import "./base/common.css";
 @import "./base/scrollbars.css";
 @import "./components/Alert/alert.css";
+@import "./components/Banner/banner.css";
 @import "./components/Label/label.css";
 @import "./components/Icon/icon.css";
 @import "./components/Tabs/tabs.css";

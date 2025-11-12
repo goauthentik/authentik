@@ -1,5 +1,10 @@
 .pf-c-page {
     height: 100dvh;
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200) !important;
+}
+
+:host([theme="dark"]) .pf-c-page {
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--150) !important;
 }
 
 .pf-c-page__main {

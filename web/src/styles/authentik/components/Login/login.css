@@ -82,7 +82,7 @@
 
 [data-theme="dark"] .pf-c-login,
 :host([theme="dark"]) .pf-c-login {
-    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
 }
 
 /* #region Page Header */
