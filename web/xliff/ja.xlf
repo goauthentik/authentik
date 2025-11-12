@@ -9211,7 +9211,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s34661765d81e7340">
   <source>Successfully cleared application cache</source>
-  <target>アプリケーションキャッシュを削除しました。</target>
+  <target> アプリケーションキャッシュをクリアしました。</target>
 </trans-unit>
 <trans-unit id="s9377ae285bc0157c">
   <source>Failed to delete application cache</source>
