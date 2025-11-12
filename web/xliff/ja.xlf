@@ -7600,7 +7600,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
-  <target>選択されたアプリケーション</target>
+  <target>選択されたアプリ</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
