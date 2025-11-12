@@ -167,7 +167,7 @@ RUN apt-get update && \
     ln -s /media /data/media && \
     mkdir -p /authentik/.ssh && \
     mkdir -p /ak-root && \
-    chown authentik:authentik /certs /data /media /authentik/.ssh /ak-root
+    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
