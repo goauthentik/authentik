@@ -95,7 +95,12 @@ class SCIMUserTests(TestCase):
         """Test user creation with custom schema"""
         schema = SCIMMapping.objects.create(
             name="custom_schema",
-            expression="""return {"schemas": ["foo"]}""",
+            expression="""return {
+                "schemas": ["urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User"],
+                "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User": {
+                    "startDate": "2024-04-10T00:00:00+0000",
+                },
+            }""",
         )
         self.provider.property_mappings.add(schema)
         scim_id = generate_id()
@@ -121,7 +126,10 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
-                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User", "foo"],
+                "schemas": [
+                    "urn:ietf:params:scim:schemas:core:2.0:User",
+                    "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User",
+                ],
                 "active": True,
                 "emails": [
                     {
@@ -138,6 +146,9 @@ class SCIMUserTests(TestCase):
                 },
                 "displayName": f"{uid} {uid}",
                 "userName": uid,
+                "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User": {
+                    "startDate": "2024-04-10T00:00:00+0000",
+                },
             },
         )
 

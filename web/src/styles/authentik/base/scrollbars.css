@@ -1,0 +1,105 @@
+/**
+ * Scrollbar colors derived from default user agent styles.
+ *
+ * @remarks
+ *
+ * Scrollbar colors may be ignored by the browser depending on a few factors:
+ *
+ * - A preference for increased contrast
+ * - A preference for scrollbar visibility
+ * - The pointer precision available
+ * - Operating system differences
+ */
+
+/* #region Light theme */
+
+:root {
+    --ak-scrollbar-background-color: hsl(0 0% 98%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 76%);
+}
+
+/* #endregion */
+
+/* #region Dark theme */
+
+html[data-theme="dark"],
+:host([theme="dark"]) {
+    /**
+     * Scrollbar colors derived from default user agent styles.
+     */
+    --ak-scrollbar-background-color: hsl(0 0% 18%);
+    --ak-scrollbar-thumb-background-color: hsl(0 0% 42%);
+
+    /* #endregion */
+}
+
+/* #endregion */
+
+/* #region Scrollbar Styles */
+
+/* Applicable to browsers with a WebKit lineage (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    background: var(--ak-scrollbar-background-color);
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        max-height: 12px;
+        max-width: 12px;
+    }
+}
+
+/* Necessary to avoid background color mismatch. */
+::-webkit-scrollbar-track {
+    background: var(--ak-scrollbar-background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ak-scrollbar-thumb-background-color);
+    /* Applies consistent shape across browsers and platforms */
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: content-box;
+
+    /* Emulate thin scrollbar sizing. */
+    @media (pointer: fine) {
+        border: 3px solid transparent;
+        border-radius: 8px;
+    }
+}
+
+/**
+ * Hides arrow buttons on the scrollbar.
+ * Not applicable to Edge when scrollbars are set to always visible.
+ */
+::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+@supports (scrollbar-color: auto) {
+    :root {
+        /**
+         * Applies consistent colors across browsers and platforms.
+         * Not applicable when thin scrollbars are preferred.
+         */
+        scrollbar-color: var(--ak-scrollbar-thumb-background-color)
+            var(--ak-scrollbar-background-color);
+    }
+}
+
+@supports (scrollbar-width: thin) {
+    .pf-c-page__main,
+    .pf-c-nav__list,
+    .pf-c-card__body {
+        scrollbar-width: thin;
+
+        @media (pointer: coarse) {
+            /**
+             * Avoids issues on touch devices where thin scrollbars
+             * are difficult to interact with.
+             */
+            scrollbar-width: auto;
+        }
+    }
+}

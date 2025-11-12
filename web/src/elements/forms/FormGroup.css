@@ -1,10 +1,10 @@
 :host([theme="dark"]) {
-    --marker-color: var(--pf-global--Color--200);
-    --marker-color-hover: var(--ak-dark-foreground-darker);
+    --marker-color: var(--pf-global--Color--300);
+    --marker-color-hover: var(--pf-global--Color--200);
 
     details {
         @media (prefers-contrast: more) {
-            background: var(--ak-dark-background-light);
+            background: var(--pf-global--BackgroundColor--150);
         }
     }
 }

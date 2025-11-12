@@ -236,7 +236,7 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
  *
  * - A string, which will be rendered as text.
  * - A TemplateResult, which will be rendered as HTML.
- * - `nothing`, which will not be rendered.
+ * - `nothing` or `null`, which will not be rendered.
  */
-export type SlottedTemplateResult = string | TemplateResult | typeof nothing;
+export type SlottedTemplateResult = string | TemplateResult | typeof nothing | null;
 export type Spread = { [key: string]: unknown };
