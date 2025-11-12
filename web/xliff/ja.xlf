@@ -2583,7 +2583,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sf22f7f8a9309b4ed">
         <source>Check Application access</source>
-        <target>アプリケーションアクセスを確認</target>
+        <target>アプリアクセスを確認</target>
         
       </trans-unit>
       <trans-unit id="s2474e7fb1aec9f05">
