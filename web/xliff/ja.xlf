@@ -8930,7 +8930,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sfafbd9bddb38d172">
   <source>Application entitlements are in preview.</source>
-  <target>アプリケーションエンタイトルメントはプレビュー中です。</target>
+  <target> アプリのエンタイトルメントはプレビュー段階です。</target>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
