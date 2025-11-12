@@ -8914,7 +8914,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
-  <target>アプリケーションエンタイトルメントが作成されていません。</target>
+  <target>エンタイトルメントが作成されていません。</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
