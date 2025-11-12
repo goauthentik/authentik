@@ -9811,7 +9811,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
-  <target>アプリケーション「<x id="0" equiv-text="${this.applicationSlug}"/>」の取得に失敗しました。</target>
+  <target>アプリ「<x id="0" equiv-text="${this.applicationSlug}"/>」の取得に失敗しました。</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
   <source>Account Recovery Max Attempts</source>
