@@ -8243,7 +8243,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdc4f72f6a46ae2c8">
   <source>Default application</source>
-  <target>デフォルトアプリケーション</target>
+  <target>デフォルトアプリ</target>
 </trans-unit>
 <trans-unit id="sac85801a25b7bb27">
   <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
