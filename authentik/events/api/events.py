@@ -20,8 +20,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.enterprise.reports.api.reports import ExportMixin
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.reflection import ConditionalInheritance
 
 
 class EventVolumeSerializer(PassiveSerializer):
@@ -117,7 +117,9 @@ class EventsFilter(django_filters.FilterSet):
         fields = ["action", "client_ip", "username"]
 
 
-class EventViewSet(ExportMixin, ModelViewSet):
+class EventViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"), ModelViewSet
+):
     """Event Read-Only Viewset"""
 
     queryset = Event.objects.all()

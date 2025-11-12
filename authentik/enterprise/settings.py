@@ -8,6 +8,7 @@ TENANT_APPS = [
     "authentik.enterprise.providers.radius",
     "authentik.enterprise.providers.scim",
     "authentik.enterprise.providers.ssf",
+    "authentik.enterprise.reports",
     "authentik.enterprise.search",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     "authentik.enterprise.stages.mtls",
