@@ -60,22 +60,6 @@ func checkServer() int {
 	return 0
 }
 
-func splitHostPort(address string) (host, port string) {
-	lastColon := strings.LastIndex(address, ":")
-	if lastColon == -1 {
-		return address, ""
-	}
-
-	host = address[:lastColon]
-	port = address[lastColon+1:]
-
-	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
-		host = host[1 : len(host)-1]
-	}
-
-	return host, port
-}
-
 func checkWorker() int {
 	pidB, err := os.ReadFile(workerPidFile)
 	if err != nil {
