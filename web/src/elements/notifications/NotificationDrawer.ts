@@ -78,6 +78,12 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
+    renderHyperlink(item: Notification): TemplateResult | typeof nothing {
+        if (item.hyperlink)
+            return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
+        else return nothing;
+    }
+
     #renderItem = (item: Notification): TemplateResult => {
         const label = actionToLabel(item.event?.action);
         const level = severityToLevel(item.severity);
@@ -134,6 +140,7 @@ export class NotificationDrawer extends AKElement {
                     ${formatElapsedTime(item.created!)}
                 </pf-tooltip></small
             >
+            ${this.renderHyperlink(item)}
         </li>`;
     };
 

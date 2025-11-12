@@ -1,3 +1,4 @@
+import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
@@ -161,6 +162,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    private async createExport() {
+        await new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate({
+            ...(await this.defaultEndpointConfig()),
+            pathStartswith: this.activePath,
+            isActive: this.hideDeactivated ? true : undefined,
+        });
+    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -396,6 +405,11 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     ${msg("New Service Account")}
                 </button>
             </ak-forms-modal>
+            <ak-reports-export-button
+                .createExport=${async () => {
+                    await this.createExport();
+                }}
+            ></ak-reports-export-button>
         `;
     }
 

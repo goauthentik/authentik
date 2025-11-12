@@ -26,4 +26,4 @@ def chunked_queryset(queryset: QuerySet, chunk_size: int = 1_000):
     for chunk in get_chunks(queryset):
         reset_queries()
         gc.collect()
-        yield from chunk.iterator()
+        yield from chunk.iterator(chunk_size=chunk_size)
