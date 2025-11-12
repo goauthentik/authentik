@@ -9641,7 +9641,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd2b106933823b754">
   <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
-  <target>Duo MFA、Access、または Beyond プランを使用する場合は、Admin API アプリケーションを作成できます。これにより、authentik
+  <target>Duo MFA、Access、または Beyond プランを使用する場合は、Admin API アプリを作成できます。これにより、authentik
           がデバイスを自動的にインポートできます。</target>
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
