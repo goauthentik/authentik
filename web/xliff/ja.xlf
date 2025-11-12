@@ -9807,7 +9807,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
-  <target>例: コラボレーション、コミュニケーション、社内など</target>
+  <target>例：協力、コミュニケーション、内部など</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
