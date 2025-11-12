@@ -3822,7 +3822,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s506beb486fa41241">
         <source>Application authorizations</source>
-        <target>アプリケーション認可</target>
+        <target>アプリ認可</target>
         
       </trans-unit>
       <trans-unit id="s7301a7069b7bc83e">
@@ -6137,7 +6137,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s14c552fb0a4c0186">
         <source>Application requires following permissions:</source>
-        <target>アプリケーションには以下の権限が必要です:</target>
+        <target>アプリには以下の権限が必要です:</target>
         
       </trans-unit>
       <trans-unit id="s7073489bb01b3c24">
