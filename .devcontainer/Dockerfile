@@ -15,11 +15,10 @@ ENV VENV_PATH="/ak-root/.venv" \
 
 WORKDIR /ak-root
 
-# Copy uv package manager (same as production)
+# Copy uv package manager
 COPY --from=ghcr.io/astral-sh/uv:0.9.7@sha256:ba4857bf2a068e9bc0e64eed8563b065908a4cd6bfb66b531a9c424c8e25e142 /uv /uvx /bin/
 
-# Install build dependencies (matching production python-deps stage)
-# These are kept in devcontainer since we need to build/rebuild packages during development
+# Install build dependencies
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
     apt-get update && \
@@ -43,11 +42,11 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
 # Add Rust to PATH
 ENV PATH="/root/.cargo/bin:$PATH"
 
-# Environment for building native Python packages (matching production)
+# Environment for building native Python packages
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
     RUSTUP_PERMIT_COPY_RENAME="true"
 
-# Install Go 1.25 (matching production)
+# Install Go 1.25
 RUN apt-get update && \
     apt-get install -y --no-install-recommends wget && \
     ARCH=$(dpkg --print-architecture) && \
@@ -56,7 +55,7 @@ RUN apt-get update && \
     rm "go1.25.4.linux-${ARCH}.tar.gz" && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 24 (matching production)
+# Install Node.js 24
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
