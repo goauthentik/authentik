@@ -5,7 +5,10 @@ sidebar_label: Windows Client
 
 ## What does it do
 
-Allows you to SSH to Linux hosts using authentik credentials or optionally log in to the Windows device if Windows Credential Provider is installed.
+Allows you to:
+
+- SSH to Linux hosts using authentik credentials
+- Optionally log in to the Windows device if [Windows Credential Provider](<#Windows-Credential-Provider-(WCP)>) is installed.
 
 ## Install Platform
 
@@ -50,7 +53,7 @@ It currently only supports local login; RDP login is not supported.
 :::warning
 
 - WCP is only supported on Windows 11.
-- The password of the Windows user account that's logged in to is set to a random string when WCP is enabled.
+- When WCP is enabled, the password of the Windows user account that's used is set to a random string.
 - WCP can cause issues with user encrypted directories.
   @Jens anything else worth mentioning?
 
