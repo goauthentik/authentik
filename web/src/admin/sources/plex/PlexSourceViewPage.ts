@@ -17,7 +17,7 @@ import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     PlexSource,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -170,7 +170,7 @@ export class PlexSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesPlexPlexsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesPlexPlexsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

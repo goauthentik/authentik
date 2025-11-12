@@ -1,7 +1,6 @@
 """Test Application Entitlements API"""
 
 from django.urls import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, ApplicationEntitlement, Group
@@ -49,7 +48,8 @@ class TestApplicationEntitlements(APITestCase):
     def test_group_indirect(self):
         """Test indirect group"""
         parent = Group.objects.create(name=generate_id())
-        group = Group.objects.create(name=generate_id(), parent=parent)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(parent)
         self.user.ak_groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=parent, order=0)
@@ -76,8 +76,8 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_api_perms_global(self):
         """Test API creation with global permissions"""
-        assign_perm("authentik_core.add_applicationentitlement", self.user)
-        assign_perm("authentik_core.view_application", self.user)
+        self.user.assign_perms_to_managed_role("authentik_core.add_applicationentitlement")
+        self.user.assign_perms_to_managed_role("authentik_core.view_application")
         self.client.force_login(self.user)
         res = self.client.post(
             reverse("authentik_api:applicationentitlement-list"),
@@ -90,8 +90,8 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_api_perms_scoped(self):
         """Test API creation with scoped permissions"""
-        assign_perm("authentik_core.add_applicationentitlement", self.user)
-        assign_perm("authentik_core.view_application", self.user, self.app)
+        self.user.assign_perms_to_managed_role("authentik_core.add_applicationentitlement")
+        self.user.assign_perms_to_managed_role("authentik_core.view_application", self.app)
         self.client.force_login(self.user)
         res = self.client.post(
             reverse("authentik_api:applicationentitlement-list"),
@@ -104,7 +104,7 @@ class TestApplicationEntitlements(APITestCase):
 
     def test_api_perms_missing(self):
         """Test API creation with no permissions"""
-        assign_perm("authentik_core.add_applicationentitlement", self.user)
+        self.user.assign_perms_to_managed_role("authentik_core.add_applicationentitlement")
         self.client.force_login(self.user)
         res = self.client.post(
             reverse("authentik_api:applicationentitlement-list"),

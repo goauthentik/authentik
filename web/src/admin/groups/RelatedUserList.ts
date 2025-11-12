@@ -29,7 +29,15 @@ import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
 
-import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreUsersListTypeEnum,
+    Group,
+    RbacApi,
+    Role,
+    SessionUser,
+    User,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -43,7 +51,10 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
     @property({ attribute: false })
-    group?: Group;
+    targetGroup?: Group;
+
+    @property({ attribute: false })
+    targetRole?: Role;
 
     @state()
     usersToAdd: User[] = [];
@@ -55,12 +66,23 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
     async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((user) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                    groupUuid: this.group?.pk || "",
-                    userAccountRequest: {
-                        pk: user,
-                    },
-                });
+                if (this.targetGroup) {
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                        groupUuid: this.targetGroup.pk,
+                        userAccountRequest: {
+                            pk: user,
+                        },
+                    });
+                }
+                if (this.targetRole) {
+                    return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                        uuid: this.targetRole.pk,
+                        // todo: rename this
+                        userAccountSerializerForRoleRequest: {
+                            pk: user,
+                        },
+                    });
+                }
             }),
         );
         return data;
@@ -124,8 +146,8 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     public override searchPlaceholder = msg("Search for users by username or display name...");
-    public override searchLabel = msg("Group User Search");
-    public override label = msg("Group Users");
+    public override searchLabel = msg("User Search");
+    public override label = msg("Users");
 
     expandable = true;
     checkbox = true;
@@ -135,6 +157,9 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     @property({ attribute: false })
     targetGroup?: Group;
+
+    @property({ attribute: false })
+    targetRole?: Role;
 
     @property()
     order = "last_login";
@@ -150,11 +175,13 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
+            ...(this.targetGroup && { groupsByPk: [this.targetGroup.pk] }),
+            ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
             includeGroups: false,
+            includeRoles: false,
         });
         this.me = await me();
         return users;
@@ -175,10 +202,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
-            actionLabel=${msg("Remove Users(s)")}
+            actionLabel=${msg("Remove User(s)")}
             action=${msg("removed")}
             actionSubtext=${msg(
-                str`Are you sure you want to remove the selected users from the group ${this.targetGroup?.name}?`,
+                str`Are you sure you want to remove the selected users from ${this.targetGroup?.name || this.targetRole?.name}?`,
             )}
             .objects=${this.selectedElements}
             .metadata=${(item: User) => {
@@ -189,12 +216,22 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 ];
             }}
             .delete=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
-                    groupUuid: this.targetGroup?.pk || "",
-                    userAccountRequest: {
-                        pk: item.pk,
-                    },
-                });
+                if (this.targetGroup) {
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                        groupUuid: this.targetGroup.pk,
+                        userAccountRequest: {
+                            pk: item.pk,
+                        },
+                    });
+                }
+                if (this.targetRole) {
+                    return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveUserCreate({
+                        uuid: this.targetRole.pk,
+                        userAccountSerializerForRoleRequest: {
+                            pk: item.pk,
+                        },
+                    });
+                }
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
@@ -388,7 +425,18 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                 </div>
                             `
                           : nothing}
-                      <ak-user-related-add .group=${this.targetGroup} slot="form">
+                      <ak-user-related-add .targetGroup=${this.targetGroup} slot="form">
+                      </ak-user-related-add>
+                      <button slot="trigger" class="pf-c-button pf-m-primary">
+                          ${msg("Add existing user")}
+                      </button>
+                  </ak-forms-modal>`
+                : nothing}
+            ${this.targetRole
+                ? html`<ak-forms-modal>
+                      <span slot="submit">${msg("Assign")}</span>
+                      <span slot="header">${msg("Assign Additional Users")}</span>
+                      <ak-user-related-add .targetRole=${this.targetRole} slot="form">
                       </ak-user-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
                           ${msg("Add existing user")}
@@ -426,9 +474,21 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                               str`This user will be added to the group "${this.targetGroup.name}".`,
                                           )}
                                       </div>
+                                      <ak-user-form .targetGroup=${this.targetGroup} slot="form">
+                                      </ak-user-form>
                                   `
                                 : nothing}
-                            <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
+                            ${this.targetRole
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the role "${this.targetRole.name}".`,
+                                          )}
+                                      </div>
+                                      <ak-user-form .targetRole=${this.targetRole} slot="form">
+                                      </ak-user-form>
+                                  `
+                                : nothing}
                             <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("New user...")}
                             </a>
@@ -448,10 +508,25 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                               str`This user will be added to the group "${this.targetGroup.name}".`,
                                           )}
                                       </div>
+                                      <ak-user-service-account-form
+                                          .targetGroup=${this.targetGroup}
+                                          slot="form"
+                                      ></ak-user-service-account-form>
                                   `
                                 : nothing}
-                            <ak-user-service-account-form .group=${this.targetGroup} slot="form">
-                            </ak-user-service-account-form>
+                            ${this.targetRole
+                                ? html`
+                                      <div class="pf-c-banner pf-m-info" slot="above-form">
+                                          ${msg(
+                                              str`This user will be added to the role "${this.targetRole.name}".`,
+                                          )}
+                                      </div>
+                                      <ak-user-service-account-form
+                                          .targetRole=${this.targetRole}
+                                          slot="form"
+                                      ></ak-user-service-account-form>
+                                  `
+                                : nothing}
                             <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${msg("New service account...")}
                             </a>

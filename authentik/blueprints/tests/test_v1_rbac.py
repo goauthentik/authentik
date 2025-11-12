@@ -36,10 +36,7 @@ class TestBlueprintsV1RBAC(TransactionTestCase):
         self.assertTrue(importer.apply())
         role = Role.objects.filter(name=uid).first()
         self.assertIsNotNone(role)
-        self.assertEqual(
-            list(role.group.permissions.all().values_list("codename", flat=True)),
-            ["view_blueprintinstance"],
-        )
+        self.assertEqual(get_perms(role), {"authentik_blueprints.view_blueprintinstance"})
 
     def test_object_permission(self):
         """Test permissions"""
@@ -53,5 +50,5 @@ class TestBlueprintsV1RBAC(TransactionTestCase):
         user = User.objects.filter(username=uid).first()
         role = Role.objects.filter(name=uid).first()
         self.assertIsNotNone(flow)
-        self.assertEqual(get_perms(user, flow), ["view_flow"])
-        self.assertEqual(get_perms(role.group, flow), ["view_flow"])
+        self.assertEqual(get_perms(user, flow), {"authentik_flows.view_flow"})
+        self.assertEqual(get_perms(role, flow), {"authentik_flows.view_flow"})
