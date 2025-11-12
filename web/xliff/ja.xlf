@@ -10866,11 +10866,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
   <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target>&quot;<x id="1" equiv-text="${query}"/>&quot; に対して <x id="0" equiv-text="${count}"/> アプリケーションが見つかりました</target>
+  <target>&quot;<x id="1" equiv-text="${query}"/>&quot; に対して <x id="0" equiv-text="${count}"/> アプリが見つかりました</target>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
   <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target>&quot;<x id="1" equiv-text="${query}"/>&quot; に対して <x id="0" equiv-text="${count}"/> アプリケーションが見つかりました</target>
+  <target>&quot;<x id="1" equiv-text="${query}"/>&quot; に対して <x id="0" equiv-text="${count}"/> アプリが見つかりました</target>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
   <source><x id="0" equiv-text="${count}"/> application available</source>
