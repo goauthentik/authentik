@@ -10878,7 +10878,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sddbc2a3be190464b">
   <source><x id="0" equiv-text="${count}"/> applications available</source>
-  <target><x id="0" equiv-text="${count}"/> アプリケーション利用可能</target>
+  <target><x id="0" equiv-text="${count}"/> アプリ利用可能</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
