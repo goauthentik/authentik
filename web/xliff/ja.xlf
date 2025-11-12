@@ -9569,7 +9569,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sab4db6a3bd6abc1e">
   <source>This application does currently not have any application entitlements defined.</source>
-  <target>このアプリケーションは、現在、定義されたアプリケーションエンタイトルメントを持っていません。</target>
+  <target> このアプリには現在、アプリのエンタイトルメントが定義されていません。</target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
