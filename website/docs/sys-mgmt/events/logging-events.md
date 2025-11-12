@@ -59,3 +59,15 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
 3. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
    :::
+
+## Export events:ak-enterprise
+
+You can export the events to a CSV file. To request a data export:
+
+1. Go to **Events > Logs** in the Admin interface.
+2. Specify a [search query](#tell-me-more) and set ordering as needed. The data export will honor these settings.
+3. Click **Export** above the event list.
+4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the Admin interface notification area.
+5. Click **Download** in the notification to download the CSV file.
+
+To review, download, or delete past data exports, go to **Events > Data Exports** in the Admin interface.

@@ -76,6 +76,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.enterprise.reports.api.reports import ExportMixin
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -425,7 +426,7 @@ class UsersFilter(FilterSet):
         ]
 
 
-class UserViewSet(UsedByMixin, ModelViewSet):
+class UserViewSet(ExportMixin, UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()

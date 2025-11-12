@@ -117,6 +117,8 @@ class EventAction(models.TextChoices):
 
     UPDATE_AVAILABLE = "update_available"
 
+    EXPORT_READY = "export_ready"
+
     CUSTOM_PREFIX = "custom_"
 
 
@@ -260,6 +262,14 @@ class Event(SerializerModel, ExpiringModel):
         if "message" in self.context:
             return self.context["message"]
         return f"{self.action}: {self.context}"
+
+    @property
+    def hyperlink(self) -> str | None:
+        return self.context.get("hyperlink")
+
+    @property
+    def hyperlink_label(self) -> str | None:
+        return self.context.get("hyperlink_label")
 
     def __str__(self) -> str:
         return f"Event action={self.action} user={self.user} context={self.context}"
@@ -532,6 +542,8 @@ class Notification(SerializerModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     severity = models.TextField(choices=NotificationSeverity.choices)
     body = models.TextField()
+    hyperlink = models.URLField(blank=True, null=True)
+    hyperlink_label = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
     seen = models.BooleanField(default=False)

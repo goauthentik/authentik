@@ -20,6 +20,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.enterprise.reports.api.reports import ExportMixin
 from authentik.events.models import Event, EventAction
 
 
@@ -116,7 +117,7 @@ class EventsFilter(django_filters.FilterSet):
         fields = ["action", "client_ip", "username"]
 
 
-class EventViewSet(ModelViewSet):
+class EventViewSet(ExportMixin, ModelViewSet):
     """Event Read-Only Viewset"""
 
     queryset = Event.objects.all()

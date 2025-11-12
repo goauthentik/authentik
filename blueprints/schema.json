@@ -904,6 +904,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_enterprise_reports.dataexport"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         },
                         "id": {
@@ -5337,6 +5377,10 @@
                             "authentik_enterprise.delete_licenseusage",
                             "authentik_enterprise.view_license",
                             "authentik_enterprise.view_licenseusage",
+                            "authentik_enterprise_reports.add_dataexport",
+                            "authentik_enterprise_reports.change_dataexport",
+                            "authentik_enterprise_reports.delete_dataexport",
+                            "authentik_enterprise_reports.view_dataexport",
                             "authentik_events.add_event",
                             "authentik_events.add_notification",
                             "authentik_events.add_notificationrule",
@@ -6867,6 +6911,43 @@
                 }
             }
         },
+        "model_authentik_enterprise_reports.dataexport": {
+            "type": "object",
+            "properties": {
+                "query_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Query params"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_enterprise_reports.dataexport_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_dataexport",
+                            "change_dataexport",
+                            "delete_dataexport",
+                            "view_dataexport"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
             "type": "object",
             "properties": {
@@ -7316,6 +7397,7 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "export_ready",
                         "custom_"
                     ],
                     "title": "Action"
@@ -7380,6 +7462,22 @@
         "model_authentik_events.notification": {
             "type": "object",
             "properties": {
+                "hyperlink": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "uri",
+                    "maxLength": 200,
+                    "title": "Hyperlink"
+                },
+                "hyperlink_label": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Hyperlink label"
+                },
                 "event": {
                     "type": "object",
                     "properties": {
@@ -7417,6 +7515,7 @@
                                 "model_deleted",
                                 "email_sent",
                                 "update_available",
+                                "export_ready",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -8160,6 +8259,7 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "export_ready",
                         "custom_"
                     ],
                     "title": "Action",
@@ -8191,6 +8291,7 @@
                         "authentik.endpoints",
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
+                        "authentik.enterprise.reports",
                         "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
@@ -8279,6 +8380,7 @@
                         "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
+                        "authentik_enterprise_reports.dataexport",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -10626,6 +10728,10 @@
                             "authentik_enterprise.delete_licenseusage",
                             "authentik_enterprise.view_license",
                             "authentik_enterprise.view_licenseusage",
+                            "authentik_enterprise_reports.add_dataexport",
+                            "authentik_enterprise_reports.change_dataexport",
+                            "authentik_enterprise_reports.delete_dataexport",
+                            "authentik_enterprise_reports.view_dataexport",
                             "authentik_events.add_event",
                             "authentik_events.add_notification",
                             "authentik_events.add_notificationrule",

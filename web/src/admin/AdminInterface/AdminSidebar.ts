@@ -71,7 +71,8 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
         ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notification Transports")]]
+        ["/events/transports", msg("Notification Transports")],
+        ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
     [null, msg("Customization"), null, [
         ["/policy/policies", msg("Policies")],
