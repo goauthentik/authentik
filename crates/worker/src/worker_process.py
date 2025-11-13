@@ -52,7 +52,7 @@ def worker_process(
         broker.emit_after("process_boot")
 
         logger.debug("Starting worker threads...")
-        worker = Worker(broker, queues=None, worker_threads=threads)  # TODO: args
+        worker = Worker(broker, worker_threads=threads)
         worker.start()
     except ImportError:
         logger.exception("Failed to import module.")
