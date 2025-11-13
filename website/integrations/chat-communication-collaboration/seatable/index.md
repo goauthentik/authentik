@@ -104,4 +104,4 @@ Check `opt/seatable-server/seatable/logs/dtable_web.log` for troubleshooting inf
 ## Additional Resources
 
 - [SeaTable Admin Manual: Single-Node Deployment](https://admin.seatable.com/installation/basic-setup/)
-- [SeaTable ADmin Manual: SAML](https://admin.seatable.com/configuration/authentication/saml/)
+- [SeaTable Admin Manual: SAML](https://admin.seatable.com/configuration/authentication/saml/)
