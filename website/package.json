@@ -22,7 +22,7 @@
         "@goauthentik/eslint-config": "^1.0.5",
         "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
-        "@types/node": "^24.10.0",
+        "@types/node": "^24.10.1",
         "@typescript-eslint/eslint-plugin": "^8.46.4",
         "@typescript-eslint/parser": "^8.46.4",
         "escape-string-regexp": "^5.0.0",
@@ -35,9 +35,9 @@
         "typescript-eslint": "^8.46.4"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.6.1",
-        "@rspack/binding-linux-arm64-gnu": "1.6.1",
-        "@rspack/binding-linux-x64-gnu": "1.6.1",
+        "@rspack/binding-darwin-arm64": "1.6.2",
+        "@rspack/binding-linux-arm64-gnu": "1.6.2",
+        "@rspack/binding-linux-x64-gnu": "1.6.2",
         "@swc/core-darwin-arm64": "1.15.1",
         "@swc/core-linux-arm64-gnu": "1.15.1",
         "@swc/core-linux-x64-gnu": "1.15.1",

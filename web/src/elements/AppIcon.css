@@ -36,7 +36,6 @@
 
 .icon {
     font-size: var(--icon-font-size, var(--icon-height));
-    color: var(--ak-global--Color--100);
     padding: var(--icon-border);
     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
     line-height: 1;
