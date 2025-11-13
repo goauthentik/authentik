@@ -36,7 +36,7 @@ ak config setup --authentik-url <authentik_FQDN>
 
 To SSH to a configured [Linux host](./linux-host.mdx) via authentik Platform:
 
-1. CD to program files TODO:
+1. CD to program files `C:\Program Files\Authentik Security Inc\cli`:
 2. Open a Powershell or Terminal window and run the following command:
 
     ```
@@ -105,18 +105,18 @@ Now you'll need to configure Windows Credential Provider on the Windows device t
 
 #### Configure Windows Credential Provider
 
-You'll need to add the following registry entry: TODO:
+You'll need to add the following registry entry:
 
 ```
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\CLSID\{7BCC7941-18BA-4A8E-8E0A-1D0F8E73577A}]
-"URL"="https://authentik.company"                        ; authentik URL
-"ClientID"="authentik-wcp"    ; Client ID
+"URL"="https://authentik.company"       ; authentik URL
+"ClientID"="authentik-wcp"              ; Client ID
 ```
 
 ## Logging
 
 authentik Platform primarily outputs logs to Windows Event Viewer.
 
-The Windows Credential Provider logs to the `wcp` file in Program Files... TODO:
+The Windows Credential Provider logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`:
