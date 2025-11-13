@@ -37,7 +37,7 @@
     /**
      * Lighten the main section background to contrast page content.
      */
-    --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--200);
 
     --pf-c-page__header-tools--c-button--m-selected--before--BackgroundColor: var(
         --pf-global--BackgroundColor--300
