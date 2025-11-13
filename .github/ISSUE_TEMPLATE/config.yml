@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: authentik GitHub Discussions
+    url: https://github.com/goauthentik/authentik/discussions
+    about: Please ask and answer questions here rather than creating issues.
+  - name: authentik Discussions
+    url: https://discord.com/invite/jg33eMhnj6
+    about: Alternatively, visit our Discord to discuss.
+  - name: authentik Security Vulnerability reporting
+    url: https://docs.goauthentik.io/security/policy/#reporting-a-vulnerability
+    about: Please follow this guide for reporting security vulnerabilities.
