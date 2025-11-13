@@ -15,13 +15,14 @@ import {
     renderSidebarItems,
 } from "./AdminSidebar.js";
 
+import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
-import { me } from "#common/users";
 import { WebsocketClient } from "#common/ws";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
 import { PageNavMenuToggle } from "#components/ak-page-navbar";
@@ -30,9 +31,9 @@ import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum, UiThemeEnum } from "@goauthentik/api";
 
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -47,7 +48,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterface) {
+export class AdminInterface extends WithCapabilitiesConfig(WithSession(AuthenticatedInterface)) {
     //#region Properties
 
     @property({ type: Boolean })
@@ -55,9 +56,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     @property({ type: Boolean })
     public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    @property({ type: Object, attribute: false })
-    public user?: SessionUser;
 
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
@@ -93,7 +91,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     //#region Lifecycle
 
     constructor() {
-        configureSentry(true);
+        configureSentry();
 
         super();
 
@@ -135,22 +133,21 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         WebsocketClient.close();
     }
 
-    async firstUpdated(): Promise<void> {
-        me().then((session) => {
-            this.user = session;
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
 
-            const canAccessAdmin =
-                this.user.user.isSuperuser ||
-                // TODO: somehow add `access_admin_interface` to the API schema
-                this.user.user.systemPermissions.includes("access_admin_interface");
-
-            if (!canAccessAdmin && this.user.user.pk > 0) {
+        if (changedProperties.has("session")) {
+            if (isAPIResultReady(this.session) && !canAccessAdmin(this.session.user)) {
                 window.location.assign("/if/user/");
             }
-        });
+        }
     }
 
     render(): TemplateResult {
+        if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
+            return html`<slot></slot>`;
+        }
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,
