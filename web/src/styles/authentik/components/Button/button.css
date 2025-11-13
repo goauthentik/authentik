@@ -5,7 +5,7 @@
          * way that we've come to expect. This is a workaround until PF5 is adopted.
          */
         --pf-global--disabled-color--100: var(--pf-global--danger-color--50);
-        --pf-global--disabled-color--200: var(--pf-global--palette--red-50);
+        --pf-global--disabled-color--200: transparent;
         --pf-global--disabled-color--300: var(--pf-global--danger-color--100);
     }
 }
@@ -83,7 +83,6 @@ a.pf-c-button {
     */
 
     &.pf-m-danger {
-        --pf-global--disabled-color--200: transparent;
         --pf-global--disabled-color--100: var(--pf-global--palette--red-100);
     }
 
