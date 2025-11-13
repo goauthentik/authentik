@@ -95,11 +95,17 @@ export class Tabs extends AKElement {
             childList: true,
             subtree: true,
         });
+
+        this.dispatchActivateEvent();
     }
 
     public override disconnectedCallback(): void {
         this.#observer?.disconnect();
         super.disconnectedCallback();
+    }
+
+    public findActiveTabPanel(): Element | null {
+        return this.querySelector(`[slot='${this.activeTabName}']`);
     }
 
     public activateTab(nextTabName: string): void {
@@ -125,11 +131,17 @@ export class Tabs extends AKElement {
 
         this.activeTabName = nextTabName;
 
-        const page = this.querySelector(`[slot='${this.activeTabName}']`);
-        if (!page) return;
+        this.dispatchActivateEvent();
+    }
 
-        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
-        page.dispatchEvent(new CustomEvent("activate"));
+    public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
+        if (!tabPanel) {
+            console.warn("Cannot dispatch activate event, no tab panel found");
+            return;
+        }
+
+        tabPanel.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        tabPanel.dispatchEvent(new CustomEvent("activate"));
     }
 
     #delegateFocusListener = (event: FocusEvent) => {
