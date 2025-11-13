@@ -137,12 +137,35 @@ def certificate_discovery():
         except (OSError, ValueError) as exc:
             LOGGER.warning("Failed to open file or invalid format", exc=exc, file=path)
     for name, cert_data in certs.items():
+        # First, try to find by filename-based managed field
         cert = CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % name).first()
+
+        # If not found by filename and we have a private key, check for existing key match
+        if not cert and name in private_keys:
+            existing_with_key = (
+                CertificateKeyPair.objects.filter(
+                    managed__startswith="goauthentik.io/crypto/discovered/",
+                    key_data=private_keys[name],
+                )
+                .exclude(key_data="")
+                .first()
+            )
+            if existing_with_key:
+                cert = existing_with_key
+                # Update name and managed field to reflect the new filename
+                if cert.name != name:
+                    cert.name = name
+                    cert.managed = MANAGED_DISCOVERED % name
+                    cert.save()
+
+        # Create new certificate if not found
         if not cert:
             cert = CertificateKeyPair(
                 name=name,
                 managed=MANAGED_DISCOVERED % name,
             )
+
+        # Update certificate data if changed
         dirty = False
         if cert.certificate_data != cert_data:
             cert.certificate_data = cert_data
