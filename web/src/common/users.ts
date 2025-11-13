@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
 import { UIConfig, UserDisplay } from "#common/ui/config";
 
@@ -85,23 +84,6 @@ export async function me(requestInit?: RequestInit): Promise<SessionUser> {
 
     return new CoreApi(DEFAULT_CONFIG)
         .coreUsersMeRetrieve(requestInit)
-        .then((nextSession) => {
-            const locale: string | undefined = nextSession.user.settings.locale;
-
-            if (locale) {
-                console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
-
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_LOCALE_REQUEST, {
-                        composed: true,
-                        bubbles: true,
-                        detail: { locale },
-                    }),
-                );
-            }
-
-            return nextSession;
-        })
         .catch(async (error: unknown) => {
             if (isResponseErrorLike(error)) {
                 const { response } = error;

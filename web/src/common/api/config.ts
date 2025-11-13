@@ -4,11 +4,10 @@ import {
     LocaleMiddleware,
     LoggingMiddleware,
 } from "#common/api/middleware";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Config, Configuration, CurrentBrand, RootApi } from "@goauthentik/api";
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
@@ -33,34 +32,6 @@ export function brandSetFavicon(brand: CurrentBrand) {
         }
         relIcon.href = brand.brandingFavicon;
     });
-}
-
-export function brandSetLocale(brand: CurrentBrand) {
-    if (brand.defaultLocale === "") {
-        return;
-    }
-    console.debug("authentik/locale: setting locale from brand default");
-    window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail: { locale: brand.defaultLocale },
-        }),
-    );
-}
-
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
 }
 
 export const DEFAULT_CONFIG = new Configuration({

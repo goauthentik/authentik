@@ -1,3 +1,43 @@
+/* #region Generic Families */
+
+:root {
+    --ak-generic-serif: serif;
+    --ak-generic-sans-serif: "RedHatText", sans-serif;
+    --ak-generic-monospace: "RedHatMono", "Fira Code", "Courier New", monospace;
+    --ak-generic-symbols: "Noto Sans Symbols", "Segoe UI Symbol", "Apple Symbols", sans-serif;
+    --ak-generic-emoji:
+        "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", emoji, sans-serif;
+    --ak-generic-body: var(--ak-generic-sans-serif);
+    --ak-generic-heading: var(--ak-generic-body);
+    --ak-generic-display: "RedHatDisplay", var(--ak-generic-heading);
+}
+
+/* #endregion */
+
+/* #region Font Families */
+
+:root {
+    --ak-font-family-sans-serif: var(--ak-generic-sans-serif);
+    --ak-font-family-heading: var(--ak-generic-heading);
+    --ak-font-family-monospace: var(--ak-generic-monospace);
+}
+
+/* #endregion */
+
+/* #region PF Mapping */
+
+:root {
+    --pf-global--FontFamily--sans-serif: var(--ak-font-family-sans-serif);
+    --pf-global--FontFamily--heading--sans-serif: var(--ak-font-family-heading);
+    --pf-global--FontFamily--monospace: var(--ak-font-family-monospace);
+    --pf-global--FontFamily--redhat-updated--sans-serif: var(--ak-font-family-sans-serif);
+    --pf-global--FontFamily--redhat-updated--heading--sans-serif: var(--ak-font-family-heading);
+}
+
+/* #endregion */
+
+/* #region Font Sizes and Weights */
+
 :root {
     --pf-global--FontSize--4xl: 2.25rem;
     --pf-global--FontSize--3xl: 1.75rem;
@@ -17,32 +57,4 @@
     --pf-global--LineHeight--md: 1.5;
 }
 
-:root {
-    --pf-global--FontFamily--sans-serif:
-        "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--heading--sans-serif:
-        "RedHatDisplay", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--monospace:
-        "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace;
-    --pf-global--FontFamily--redhat-updated--sans-serif:
-        "RedHatTextUpdated", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--redhat-updated--heading--sans-serif:
-        "RedHatDisplayUpdated", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--redhat--monospace:
-        "RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New",
-        monospace;
-    --pf-global--FontFamily--redhatVF--sans-serif:
-        "RedHatTextVF", "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--redhatVF--heading--sans-serif:
-        "RedHatDisplayVF", "RedHatDisplay", "Overpass", overpass, helvetica, arial, sans-serif;
-    --pf-global--FontFamily--redhatVF--monospace:
-        "RedHatMonoVF", "RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco,
-        "Courier New", monospace;
-    --pf-global--FontFamily--overpass--sans-serif:
-        "overpass", overpass, "open sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
-        "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol";
-    --pf-global--FontFamily--overpass--monospace:
-        "overpass-mono", overpass-mono, "SFMono-Regular", menlo, monaco, consolas,
-        "Liberation Mono", "Courier New", monospace;
-}
+/* #endregion */

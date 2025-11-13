@@ -1,0 +1,39 @@
+/** #region Japanese (日本語) */
+
+/** #endregion */
+
+/** #region Chinese (中文) */
+
+html[lang^="zh"] {
+    --ak-font-family-sans-serif:
+        "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
+        sans-serif, var(--ak-generic-sans-serif);
+    --ak-font-family-serif: "Noto Serif SC", var(--ak-generic-serif);
+
+    --ak-font-family-heading:
+        "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
+        sans-serif;
+
+    --pf-c-content--h1--FontWeight: 500;
+
+    body {
+        font-size: 18px;
+        line-height: 1.7777777778;
+        letter-spacing: 0.048em;
+    }
+}
+
+/** #endregion */
+
+/** #region Korean (한국어) */
+
+html[lang="ko"] {
+    --ak-font-family-sans-serif:
+        "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif,
+        var(--ak-generic-sans-serif);
+    --ak-font-family-serif: "Noto Serif KR", var(--ak-generic-serif);
+    --ak-font-family-heading:
+        "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+/** #endregion */
