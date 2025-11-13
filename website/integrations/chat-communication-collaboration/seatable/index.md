@@ -100,7 +100,7 @@ Restart the SeaTable service or Docker container to apply the changes.
 
 ## Configuration verification
 
-To confirm that authentik is integrated correctly with SeaTable, log out, then navigate to the SeaTable login page, then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to the SeaTable.
+To confirm that authentik is integrated correctly with SeaTable, log out, then navigate to the SeaTable login page, then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to SeaTable.
 
 :::info Troubleshooting
 Check `opt/seatable-server/seatable/logs/dtable_web.log` for troubleshooting info if authentication fails.
