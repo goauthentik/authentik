@@ -76,7 +76,6 @@ authentik's **metadata download URL** returns a 302 redirect but SeaTable requir
 
 ```sh
 curl -s -L -o /dev/null -w "%{url_effective}\n" "<metadata_download_URL>" 2>&1 | tail -n1
-    ```
 
 The output of this command will be required as the `SAML_REMOTE_METADATA_URL` in the next section.
 
