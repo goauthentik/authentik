@@ -16,7 +16,7 @@ from authentik.stages.authenticator.models import Device, ThrottlingMixin
 
 
 class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Setup static token authentication for the user."""
+    """Setup static token based authentication for the user."""
 
     token_count = models.PositiveIntegerField(default=6)
     token_length = models.PositiveIntegerField(default=12)
