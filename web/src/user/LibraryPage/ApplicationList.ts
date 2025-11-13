@@ -73,7 +73,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                     aria-activedescendant=${activeDescendantID}
                 >
                     <legend
-                        class="pf-c-content ${!groupLabel ? "less-contrast-sr-only" : ""}"
+                        class="pf-c-content ${!groupLabel ? "sr-only more-contrast-only" : ""}"
                         part="app-group-header"
                     >
                         <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
