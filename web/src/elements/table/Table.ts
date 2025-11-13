@@ -11,11 +11,11 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { uiConfig } from "#common/ui/config";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -71,7 +71,7 @@ export type TableInstance = InstanceType<typeof Table> & {
 };
 
 export abstract class Table<T extends object>
-    extends WithLicenseSummary(AKElement)
+    extends WithLicenseSummary(WithSession(AKElement))
     implements TableLike
 {
     static styles: CSSResult[] = [
@@ -294,7 +294,7 @@ export abstract class Table<T extends object>
         return {
             ordering: this.order,
             page: this.page,
-            pageSize: (await uiConfig()).pagination.perPage,
+            pageSize: this.uiConfig.pagination.perPage,
             search: this.searchEnabled ? this.search || "" : undefined,
         };
     }
