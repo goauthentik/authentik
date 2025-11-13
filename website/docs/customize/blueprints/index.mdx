@@ -6,7 +6,7 @@ Blueprints provide a way to template, automate, and distribute authentik configu
 
 Blueprints are used to manage authentik default flows and other system objects. For example, authentik's `default-authentication-flow` is, under the covers, a blueprint.
 
-Custom blueprint instances can be used to replace or modify default blueprints in certain circumstances. For example, you could modify the `default-authentication-flow` to change the layout of the login panel from the center to one side of the page.
+Custom blueprints can be used to replace or modify default blueprints in certain circumstances. For example, you could modify the `default-authentication-flow` to change the layout of the login panel from the center to one side of the page.
 
 ## Applying blueprints
 
@@ -19,21 +19,21 @@ To learn how to apply, create, modify, and manage blueprints, refer to [Working 
 
 ### Blueprint instance
 
-- A Blueprint _instance_ is an instantiation of a blueprint. Each instance is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+A Blueprint _instance_ is an instantiation of a blueprint. Each instance is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
 
-    :::info
-    authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint instance file is created, and trigger a blueprint apply when a file is modified.
-    :::
+:::info
+authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint instance file is created, and trigger a blueprint apply when a file is modified.
+:::
 
 ### Imported flow
 
-- You can apply a pre-configured flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is out of the box.
+You can apply a pre-configured flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is out of the box.
 
-    This YAML file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
+This YAML file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
-    :::info
-    Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
-    :::
+:::info
+Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merging of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to 1.) _first_ delete the modified flow, and 2.) then [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
+:::
 
 ## Blueprint execution
 
@@ -48,7 +48,7 @@ Additionally, all blueprints have access to built-in context variables:
 - `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
 - `goauthentik.io/rbac/models`: Dictionary of available RBAC models
 
-When you create or edit a blueprint instance, these context variables can be accessed using the `!Context` tag in the YAML file (or in the UI under **Advanced settings** on the Create/Edit page).
+When you create or edit a blueprint instance, these context variables can be accessed using the `!Context` tag in the YAML file (or in th e UI under **Advanced settings** on the Create/Edit page).
 
 **Example**:
 
@@ -59,7 +59,7 @@ conditions:
 
 ## Blueprint storage
 
-When you add a new blueprint instance, you can define where the `.yaml` file is stored.
+When you add a new blueprint instance, you can define where the `.yaml` file is stored: as a local file, in an OCI registry, or internally in authentik's database.
 
 ### As a local file
 
