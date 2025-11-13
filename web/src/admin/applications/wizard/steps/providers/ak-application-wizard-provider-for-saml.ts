@@ -6,7 +6,12 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { SAMLBindingsEnum, SAMLProvider, SAMLProviderLogoutMethodEnum } from "@goauthentik/api";
+import {
+    KeyTypeEnum,
+    SAMLBindingsEnum,
+    SAMLProvider,
+    SAMLProviderLogoutMethodEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -28,8 +33,12 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     @state()
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
+    @state()
+    protected signingKeyType: KeyTypeEnum | null = null;
+
     get formValues() {
         const values = super.formValues;
+
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
             values.slsBinding === SAMLBindingsEnum.Redirect &&
@@ -48,6 +57,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {
@@ -83,6 +93,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
+                    signingKeyType: this.signingKeyType,
                     setHasSlsUrl,
                     hasSlsUrl: this.hasSlsUrl,
                     setSlsBinding,

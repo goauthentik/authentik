@@ -15,7 +15,6 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
     extend_schema,
-    extend_schema_field,
 )
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -55,7 +54,12 @@ class CertificateKeyPairSerializer(ModelSerializer):
     cert_expiry = SerializerMethodField()
     cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
-    key_type = SerializerMethodField()
+    key_type = ChoiceField(
+        choices=KeyType.choices,
+        read_only=True,
+        required=False,
+        allow_null=True,
+    )
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -64,8 +68,8 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def _should_include_details(self) -> bool:
         request: Request = self.context.get("request", None)
         if not request:
-            return True
-        return str(request.query_params.get("include_details", "true")).lower() == "true"
+            return False
+        return str(request.query_params.get("include_details", "false")).lower() == "true"
 
     def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> str | None:
         "Get certificate Hash (SHA256)"
@@ -94,13 +98,6 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
-
-    @extend_schema_field(ChoiceField(choices=KeyType.choices, allow_null=True))
-    def get_key_type(self, instance: CertificateKeyPair) -> str | None:
-        """Get the key algorithm type from the certificate's public key"""
-        if not self._should_include_details:
-            return None
-        return instance.key_type
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -214,17 +211,12 @@ class CertificateKeyPairFilter(FilterSet):
         return queryset.exclude(key_data__exact="")
 
     def filter_key_type(self, queryset, name, value):  # pragma: no cover
-        """Filter certificates by key type using the public key from the certificate"""
+        """Filter certificates by key type using the stored database field"""
         if not value:
             return queryset
 
         # value is a list of KeyType enum values from MultipleChoiceFilter
-        filtered_pks = []
-        for cert in queryset:
-            if cert.key_type in value:
-                filtered_pks.append(cert.pk)
-
-        return queryset.filter(pk__in=filtered_pks)
+        return queryset.filter(key_type_stored__in=value)
 
     class Meta:
         model = CertificateKeyPair

@@ -55,6 +55,13 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         blank=True,
         default="",
     )
+    key_type_stored = models.CharField(
+        max_length=16,
+        choices=KeyType.choices,
+        null=True,
+        blank=True,
+        help_text=_("Key algorithm type detected from the certificate's public key"),
+    )
 
     _cert: Certificate | None = None
     _private_key: PrivateKeyTypes | None = None
@@ -121,18 +128,37 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def key_type(self) -> str | None:
         """Get the key algorithm type from the certificate's public key"""
-        public_key = self.certificate.public_key()
-        if isinstance(public_key, RSAPublicKey):
-            return KeyType.RSA
-        if isinstance(public_key, EllipticCurvePublicKey):
-            return KeyType.EC
-        if isinstance(public_key, DSAPublicKey):
-            return KeyType.DSA
-        if isinstance(public_key, Ed25519PublicKey):
-            return KeyType.ED25519
-        if isinstance(public_key, Ed448PublicKey):
-            return KeyType.ED448
+        # Use stored value if available
+        if self.key_type_stored:
+            return self.key_type_stored
+
+        # Fallback to parsing certificate if not stored
+        return self._detect_key_type()
+
+    def _detect_key_type(self) -> str | None:
+        """Detect the key algorithm type by parsing the certificate's public key"""
+        try:
+            public_key = self.certificate.public_key()
+            if isinstance(public_key, RSAPublicKey):
+                return KeyType.RSA
+            if isinstance(public_key, EllipticCurvePublicKey):
+                return KeyType.EC
+            if isinstance(public_key, DSAPublicKey):
+                return KeyType.DSA
+            if isinstance(public_key, Ed25519PublicKey):
+                return KeyType.ED25519
+            if isinstance(public_key, Ed448PublicKey):
+                return KeyType.ED448
+        except (ValueError, TypeError, AttributeError) as exc:
+            LOGGER.warning("Failed to detect key type", exc=exc)
         return None
+
+    def save(self, *args, **kwargs):
+        """Override save to automatically populate key_type_stored"""
+        # Detect and store the key type if not already set
+        if not self.key_type_stored:
+            self.key_type_stored = self._detect_key_type()
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
