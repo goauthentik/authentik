@@ -20,7 +20,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 
 
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Use Email-based authentication instead of authenticator-based."""
+    """Setup Email-based authentication for the user."""
 
     use_global_settings = models.BooleanField(
         default=False,
