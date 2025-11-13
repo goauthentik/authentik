@@ -1,0 +1,19 @@
+.pf-c-drawer__body {
+    display: flex;
+    flex-flow: column;
+}
+
+.pf-c-drawer__content {
+    --pf-c-drawer__content--BackgroundColor: transparent;
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-drawer,
+:host([theme="dark"]) .pf-c-drawer {
+    .pf-c-drawer__panel {
+        background-color: var(--ak-dark-background);
+    }
+}
+
+/* #endregion */

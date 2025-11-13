@@ -3,12 +3,6 @@
     --ak-table-stripe-background: var(--pf-global--BackgroundColor--light-200);
 }
 
-:host([theme="dark"]) {
-    --ak-mermaid-message-text: var(--ak-dark-foreground);
-    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
-    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
-}
-
 ak-alert + p {
     margin-block-start: var(--pf-global--spacer--md);
 }
@@ -79,3 +73,23 @@ svg[id^="mermaid-svg-"] {
         paint-order: stroke;
     }
 }
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) {
+    --ak-mermaid-message-text: var(--ak-dark-foreground);
+    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
+    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
+
+    svg[id^="mermaid-svg-"] {
+        line[class^="messageLine"] {
+            /*
+            Mermaid's support for dynamic palette changes leaves a lot to be desired.
+            This is a workaround to keep content readable while not breaking the rest of the theme.
+         */
+            filter: invert(1) !important;
+        }
+    }
+}
+
+/* #endregion */
