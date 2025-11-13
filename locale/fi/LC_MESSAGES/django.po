@@ -4,20 +4,20 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Skyler Mäntysaari, 2024
 # Marc Schmitt, 2025
 # Ville Ranki, 2025
 # Jani Hast, 2025
 # MarkoTukiainen, 2025
+# Skyler Mäntysaari, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-10 00:11+0000\n"
+"POT-Creation-Date: 2025-11-13 03:19+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: MarkoTukiainen, 2025\n"
+"Last-Translator: Skyler Mäntysaari, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -486,6 +486,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr "Poista SAML-lähteiden luomat tilapäiset käyttäjät."
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "Siirry etusivulle"
 
@@ -1621,6 +1622,10 @@ msgstr "Käyttäjän avatar"
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr "Et sinä?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "Virhe"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
