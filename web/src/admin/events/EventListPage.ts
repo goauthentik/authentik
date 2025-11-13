@@ -1,5 +1,6 @@
 import "#admin/events/EventMap";
 import "#admin/events/EventVolumeChart";
+import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -117,6 +118,21 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
 
     renderExpanded(item: Event): TemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
+    }
+
+    protected renderToolbar(): TemplateResult {
+        return html`${super.renderToolbar()}
+            <ak-reports-export-button
+                .createExport=${async () => {
+                    await this.createExport();
+                }}
+            ></ak-reports-export-button>`;
+    }
+
+    private async createExport() {
+        await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate({
+            ...(await this.defaultEndpointConfig()),
+        });
     }
 }
 

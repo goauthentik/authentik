@@ -1,6 +1,13 @@
+import "#admin/common/ak-license-notice";
+
+import { WithCapabilitiesConfig } from "../mixins/capabilities";
+import { WithLicenseSummary } from "../mixins/license";
+
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -16,10 +23,11 @@ export interface SidebarItemProperties {
     path?: string;
     activeWhen?: string[];
     expanded?: boolean;
+    enterprise?: boolean;
 }
 
 @customElement("ak-sidebar-item")
-export class SidebarItem extends AKElement {
+export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKElement)) {
     static styles: CSSResult[] = [
         PFBase,
         PFPage,
@@ -72,6 +80,14 @@ export class SidebarItem extends AKElement {
             .pf-c-nav__item {
                 --pf-c-nav__item--MarginTop: 0px;
             }
+            .pf-c-nav__enterprise-notice {
+                color: var(--pf-global--Color--dark-200);
+                background-color: var(--pf-global--Color--light-300);
+                font-size: var(--pf-global--FontSize--xs);
+                margin-left: 0.5rem;
+                padding: 0.1rem 0.5rem;
+                border-radius: var(--pf-global--BorderRadius--sm);
+            }
         `,
     ];
 
@@ -96,6 +112,9 @@ export class SidebarItem extends AKElement {
     public highlight?: boolean;
 
     public parent?: SidebarItem;
+
+    @property({ type: Boolean })
+    public enterprise = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
@@ -243,7 +262,18 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
+    renderEnterpriseRequired() {
+        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+            ${this.label}
+            <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
+        </a>`;
+    }
+
     renderWithPath() {
+        if (this.enterprise && !this.hasEnterpriseLicense) {
+            if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+            else return this.renderEnterpriseRequired();
+        }
         return html`
             <a
                 id="sidebar-nav-link-${this.path}"
