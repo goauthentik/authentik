@@ -59,6 +59,8 @@ To support the integration of authentik with SeaTable you need to configure cert
 
 ### Setup required certificates
 
+SeaTable requires the signing certificate from authentik and its own signing certificate. Follow these steps to configure the required certificates on your SeaTable deployment:
+
 1. Connect to you SeaTable server.
 2. Create a `/opt/seatable-server/certs` directory and navigate to it.
 3. Copy the signing certificate that you downloaded from authentik to this directory and name it `idp.crt`.
