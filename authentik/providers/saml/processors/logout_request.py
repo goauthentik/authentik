@@ -4,6 +4,7 @@ import base64
 from urllib.parse import quote, urlencode
 
 import xmlsec
+from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element
 
@@ -32,11 +33,12 @@ class LogoutRequestProcessor:
     name_id_format: str
     session_index: str | None
     relay_state: str | None
+    http_request: HttpRequest | None
 
     _issue_instant: str
     _request_id: str
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         provider: SAMLProvider,
         user: User | None,
@@ -45,6 +47,7 @@ class LogoutRequestProcessor:
         name_id_format: str = SAML_NAME_ID_FORMAT_EMAIL,
         session_index: str | None = None,
         relay_state: str | None = None,
+        http_request: HttpRequest | None = None,
     ):
         self.provider = provider
         self.user = user
@@ -53,14 +56,29 @@ class LogoutRequestProcessor:
         self.name_id_format = name_id_format
         self.session_index = session_index
         self.relay_state = relay_state
+        self.http_request = http_request
 
         self._issue_instant = get_time_string()
         self._request_id = get_random_id()
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value, with fallback to generated URL if empty"""
+        # If user has set an override issuer, use it
+        if self.provider.issuer:
+            return self.provider.issuer
+
+        # Otherwise, build off of request
+        if self.http_request:
+            application_slug = self.provider.application.slug
+            return self.http_request.build_absolute_uri(f"/application/saml/{application_slug}/")
+
+        # Return default if unable to generate url
+        return "authentik"
+
     def get_issuer(self) -> Element:
         """Get Issuer element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer")
-        issuer.text = self.provider.issuer
+        issuer.text = self._get_issuer_value()
         return issuer
 
     def get_name_id(self) -> Element:

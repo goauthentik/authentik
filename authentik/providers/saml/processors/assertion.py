@@ -136,10 +136,24 @@ class AssertionProcessor:
                 continue
         return attribute_statement
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value, with fallback to generated URL if empty"""
+        # If user has set an override issuer, use it
+        if self.provider.issuer:
+            return self.provider.issuer
+
+        # Otherwise, build off of request
+        if self.http_request:
+            application_slug = self.provider.application.slug
+            return self.http_request.build_absolute_uri(f"/application/saml/{application_slug}/")
+
+        # Return default if unable to generate url
+        return "authentik"
+
     def get_issuer(self) -> Element:
         """Get Issuer Element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer", nsmap=NS_MAP)
-        issuer.text = self.provider.issuer
+        issuer.text = self._get_issuer_value()
         return issuer
 
     def get_assertion_auth_n_statement(self) -> Element:
