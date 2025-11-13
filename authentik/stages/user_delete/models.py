@@ -8,7 +8,7 @@ from authentik.flows.models import Stage
 
 
 class UserDeleteStage(Stage):
-    """Delete the currently pending user without confirmation.
+    """Delete the pending user without confirmation.
     Use with caution."""
 
     @property
