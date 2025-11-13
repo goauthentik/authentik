@@ -64,9 +64,9 @@ To support the integration of authentik with SeaTable you need to configure cert
 3. Copy the signing certificate that you downloaded from authentik to this directory and name it `idp.crt`.
 4. Generate a certificate and key with the following command:
 
-    ```sh
-    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout sp.key -out sp.crt
-    ```
+```sh
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout sp.key -out sp.crt
+```
 
 After completing these steps, the `/opt/seatable-server/certs` directory should contain: `idp.crt`, `sp.crt`, and `sp.key`.
 
