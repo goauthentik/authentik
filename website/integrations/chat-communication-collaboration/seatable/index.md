@@ -82,7 +82,7 @@ The output of this command will be required as the `SAML_REMOTE_METADATA_URL` in
 
 ### Configure SAML authentication
 
-Add the following block to your SeaTable configuration file located at `/opt/seatable-server/seatable/conf/dtable_web_settings.py`.
+Add the following block to your SeaTable configuration file:
 
 ```python title="/opt/seatable-server/seatable/conf/dtable_web_settings.py"
 ENABLE_SAML = True
