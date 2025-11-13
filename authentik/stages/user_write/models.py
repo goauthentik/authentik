@@ -18,7 +18,7 @@ class UserCreationMode(models.TextChoices):
 
 
 class UserWriteStage(Stage):
-    """ currently pending data into the pending user, or if no user exists,
+    """Write pending data into the pending user, or if no user exists,
     create a new user with the data."""
 
     user_creation_mode = models.TextField(
