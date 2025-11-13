@@ -1,14 +1,17 @@
 .pf-c-page {
     height: 100dvh;
-    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200) !important;
-}
-
-:host([theme="dark"]) .pf-c-page {
-    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--150) !important;
 }
 
 .pf-c-page__main {
+    display: flex;
+    flex-flow: column;
     scrollbar-gutter: stable;
+
+    & > :first-child {
+        display: flex;
+        flex-grow: 1;
+        flex-flow: column;
+    }
 }
 
 .pf-c-page__main,
