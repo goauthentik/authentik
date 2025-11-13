@@ -15,7 +15,7 @@ from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
-from django.utils.functional import SimpleLazyObject, cached_property
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_cte import CTE, with_cte
@@ -585,18 +585,16 @@ class Application(SerializerModel, PolicyBindingModel):
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+        from authentik.core.api.users import UserSerializer
+
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
         if user and url:
-            if isinstance(user, SimpleLazyObject):
-                user._setup()
-                user = user._wrapped
             try:
-                return url % user.__dict__
-
+                return url % UserSerializer(instance=user).data
             except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url

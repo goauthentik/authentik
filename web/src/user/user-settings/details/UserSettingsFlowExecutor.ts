@@ -32,7 +32,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
@@ -57,7 +56,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
+    static styles: CSSResult[] = [PFCard, PFPage, PFButton, PFContent];
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
