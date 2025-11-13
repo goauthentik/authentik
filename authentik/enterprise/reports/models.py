@@ -1,10 +1,6 @@
-import csv
-import io
-from dataclasses import dataclass
 from uuid import uuid4
 
 from django.contrib.contenttypes.models import ContentType
-from django.core.files.storage import default_storage
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
@@ -12,18 +8,11 @@ from rest_framework.settings import api_settings
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.models import User
+from authentik.enterprise.reports.utils import ChunkedCSVOutputFile, MockRequest
 from authentik.events.models import Event, EventAction, Notification, NotificationSeverity
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.db import chunked_queryset
-from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
-
-
-@dataclass
-class MockRequest:
-    user: User
-    query_params: dict[str, str]
-    tenant: Tenant
 
 
 class DataExport(SerializerModel):
@@ -60,13 +49,15 @@ class DataExport(SerializerModel):
             context={"request": self._get_request()}, instance=queryset, many=True
         )
         filename = f"{model_verbose_name_plural.lower()}_{self.id}.csv"
-        with default_storage.open(filename, mode="wb") as raw:
-            with io.TextIOWrapper(raw, encoding="utf-8", newline="") as text:
-                writer = csv.writer(text)
-                writer.writerow([field.label for field in serializer.child.fields.values()])
-                for d in serializer.data:
-                    writer.writerow(d.values())
-        self.file.name = filename
+
+        def rows():
+            yield [field.label for field in serializer.child.fields.values()]
+            for record in queryset:
+                # not using serializer.data because that produces a list with the data internally
+                yield serializer.child.to_representation(record).values()
+
+        f = ChunkedCSVOutputFile(rows(), name=filename)
+        self.file.save(filename, f)
         self.completed = True
         self.save()
 
