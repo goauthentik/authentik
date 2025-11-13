@@ -1,30 +1,31 @@
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
-use axum::response::Response;
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Response},
+};
 use axum_server::Handle;
 use color_eyre::eyre::{Report, eyre};
-use nix::sys::signal::SigSet;
-use nix::sys::signal::SigmaskHow;
-use nix::sys::signal::Signal;
-use nix::sys::signal::kill;
-use nix::sys::signal::pthread_sigmask;
-use nix::sys::wait::waitpid;
-use nix::unistd::Pid;
-use pyo3::IntoPyObjectExt;
-use pyo3::types::IntoPyDict;
-use pyo3::types::PyIterator;
-use pyo3::types::PyList;
-use pyo3::types::PyNone;
-use pyo3::types::PyString;
+use nix::{
+    sys::{
+        signal::{SigSet, SigmaskHow, Signal, kill, pthread_sigmask},
+        wait::waitpid,
+    },
+    unistd::Pid,
+};
+use pyo3::{
+    IntoPyObjectExt,
+    types::{IntoPyDict, PyIterator, PyList, PyString},
+};
 use signal_hook::consts::signal::*;
-use std::env;
-use std::io::Write;
-use std::sync::Arc;
-use std::sync::atomic::AtomicBool;
-use std::sync::atomic::Ordering;
-use std::time::Duration;
-use tokio::sync::RwLock;
-use tokio::task::JoinSet;
+use std::{
+    env,
+    io::Write,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+    time::Duration,
+};
+use tokio::{sync::RwLock, task::JoinSet};
 use tracing::{debug, error, info, warn};
 
 use clap::Parser;
@@ -120,6 +121,7 @@ fn start_local_worker(
     Ok(())
 }
 
+#[allow(clippy::type_complexity)]
 fn make_pipes<'a>(
     py: Python<'a>,
 ) -> Result<(Py<PyAny>, Bound<'a, PyAny>, Py<PyAny>, Bound<'a, PyAny>)> {
@@ -143,6 +145,7 @@ fn make_pipes<'a>(
     ))
 }
 
+#[allow(clippy::type_complexity)]
 fn start_worker_processes(
     processes: usize,
     threads: usize,
@@ -432,15 +435,15 @@ mod healthcheck {
 
 mod metrics {
     use super::State;
-    use axum::body::Body;
-    use axum::http::StatusCode;
-    use axum::response::{IntoResponse, Response};
+    use axum::{body::Body, http::StatusCode, response::Response};
     use color_eyre::eyre::Result;
-    use pyo3::ffi::c_str;
-    use pyo3::types::{PyBytes, PyDict, PyString};
-    use pyo3::{IntoPyObjectExt, prelude::*};
-    use std::net::SocketAddr;
-    use std::sync::Arc;
+    use pyo3::{
+        IntoPyObjectExt,
+        ffi::c_str,
+        prelude::*,
+        types::{PyBytes, PyDict},
+    };
+    use std::{net::SocketAddr, sync::Arc};
     use tokio::sync::RwLock;
 
     use crate::AppError;
@@ -502,9 +505,10 @@ output = generate_latest(registry)
 mod worker_status {
     use super::State;
     use color_eyre::eyre::Result;
-    use std::sync::Arc;
-    use std::sync::atomic::Ordering;
-    use std::time::Duration;
+    use std::{
+        sync::{Arc, atomic::Ordering},
+        time::Duration,
+    };
     use tokio::sync::RwLock;
 
     pub(super) async fn run(state: Arc<RwLock<State>>) -> Result<()> {
@@ -531,10 +535,7 @@ where
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong"),
-        )
-            .into_response()
+        warn!("Error occured: {:?}", self.0);
+        (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
     }
 }
