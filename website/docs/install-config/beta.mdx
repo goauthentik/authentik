@@ -8,12 +8,12 @@ import Tabs from "@theme/Tabs";
 You can test upcoming authentik versions before they are released as stable. There are two types of pre-release versions available:
 
 - **Release Candidates (RC)**: Near-final versions that are feature-complete and undergoing final testing before a stable release. RCs are more stable than Beta versions and are recommended for testing in staging environments.
-- **Beta versions**: Early access to major new features that are still in active development. Beta versions may have more bugs and breaking changes.
+- **Beta versions**: Early builds that include new, or experimental features and may introduce bugs or breaking changes.
 
-It is recommended to upgrade to the latest stable release before upgrading to RC or Beta images.
+It is recommended to upgrade your installation to the latest stable release before switching from stable to an RC or Beta version.
 
 :::warning
-Downgrading from RC or Beta versions is not supported. It is recommended to take a backup before upgrading, or test these versions on a separate install. Upgrading from RC or Beta versions to the next stable release is usually possible, however also not supported.
+Downgrading from RC or Beta versions is not supported. It is recommended to take a backup before upgrading, or test these versions on a separate installation. Upgrading from RC or Beta versions to the next stable release generally works, but is not officially supported.
 :::
 
 ## Release Candidate (RC) versions
@@ -44,7 +44,7 @@ docker compose up -d
   </TabItem>
 
   <TabItem value="kubernetes">
-Add the following block to your `values.yml` file, replacing `2025.10.0-rc3` with the desired RC version:
+Add the following block to your `values.yaml` file, replacing `2025.10.0-rc3` with the desired RC version:
 
 ```yaml
 image:
