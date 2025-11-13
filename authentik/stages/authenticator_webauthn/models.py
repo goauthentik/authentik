@@ -68,7 +68,7 @@ class AuthenticatorAttachment(models.TextChoices):
 
 
 class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Stage to enroll WebAuthn-based authenticators."""
+    """Setup WebAuthn-based authentication for the user."""
 
     user_verification = models.TextField(
         choices=UserVerification.choices,
