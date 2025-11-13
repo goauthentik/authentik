@@ -20,6 +20,7 @@ pyo3.workspace = true
 signal-hook.workspace = true
 shadow-rs.workspace = true
 tokio.workspace = true
+tracing.workspace = true
 
 [build-dependencies]
 shadow-rs.workspace = true

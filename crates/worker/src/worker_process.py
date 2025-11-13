@@ -1,4 +1,3 @@
-import multiprocessing
 import random
 import signal
 import sys
@@ -6,7 +5,7 @@ import time
 from types import FrameType
 
 from dramatiq.broker import get_broker
-from dramatiq.cli import RET_CONNECT, RET_IMPORT, RET_KILLED, try_block_signals, try_unblock_signals
+from dramatiq.cli import RET_CONNECT, RET_IMPORT, RET_KILLED
 from dramatiq.compat import StreamablePipe
 from dramatiq.errors import ConnectionError
 from dramatiq.worker import Worker
@@ -23,7 +22,7 @@ def worker_process(
 
     sys.stdout = stdout_pipe
     sys.stderr = stderr_pipe
-    logger = get_logger(worker_id=worker_id)
+    logger = get_logger("dramatiq_worker", worker_id=worker_id)
 
     def termhandler(signum: int, frame: FrameType | None):
         nonlocal running
@@ -40,7 +39,7 @@ def worker_process(
 
     # Unblock the blocked signals inherited from the parent process
     # before we start any worker threads and trigger middleware hooks.
-    try_unblock_signals()
+    signal.pthread_sigmask(signal.SIG_UNBLOCK, [signal.SIGINT, signal.SIGTERM, signal.SIGHUP])
 
     try:
         # Re-seed the random number generator from urandom on
@@ -71,30 +70,3 @@ def worker_process(
     broker.close()
     stdout_pipe.close()
     stderr_pipe.close()
-
-
-def main(processes: int, threads: int):
-    # To prevent the main process from exiting due to signals after worker
-    # processes and fork processes have been defined but before the signal
-    # handling has been configured for those processes, block those signals
-    # that the main process is expected to handle.
-    try_block_signals()
-
-    workers = []
-    for worker_id in range(processes):
-        stdout_read_pipe, stdout_write_pipe = multiprocessing.Pipe(duplex=False)
-        stderr_read_pipe, stderr_write_pipe = multiprocessing.Pipe(duplex=False)
-        proc = multiprocessing.Process(
-            target=worker_process,
-            args=(
-                worker_id,
-                threads,
-                StreamablePipe(stdout_write_pipe),
-                StreamablePipe(stderr_write_pipe),
-            ),
-            daemon=False,
-        )
-        proc.start()
-        workers.append((worker_id, proc.pid, stdout_read_pipe, stderr_read_pipe))
-        stdout_write_pipe.close()
-        stderr_write_pipe.close()
