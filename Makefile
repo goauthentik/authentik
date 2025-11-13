@@ -57,6 +57,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	uv run black $(PY_SOURCES)
 	uv run ruff check --fix $(PY_SOURCES)
+	cargo +nightly fmt
 
 lint-codespell:  ## Reports spelling errors.
 	uv run codespell -w

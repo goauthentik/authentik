@@ -1,21 +1,3 @@
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
-use axum_server::Handle;
-use color_eyre::eyre::{Report, eyre};
-use nix::{
-    sys::{
-        signal::{SigSet, SigmaskHow, Signal, kill, pthread_sigmask},
-        wait::waitpid,
-    },
-    unistd::Pid,
-};
-use pyo3::{
-    IntoPyObjectExt,
-    types::{IntoPyDict, PyIterator, PyList, PyString},
-};
-use signal_hook::consts::signal::*;
 use std::{
     env,
     io::Write,
@@ -25,12 +7,30 @@ use std::{
     },
     time::Duration,
 };
+
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Response},
+};
+use axum_server::Handle;
+use clap::Parser;
+use color_eyre::eyre::{Report, Result, eyre};
+use nix::{
+    sys::{
+        signal::{SigSet, SigmaskHow, Signal, kill, pthread_sigmask},
+        wait::waitpid,
+    },
+    unistd::Pid,
+};
+use pyo3::{
+    IntoPyObjectExt,
+    ffi::c_str,
+    prelude::*,
+    types::{IntoPyDict, PyIterator, PyList, PyString},
+};
+use signal_hook::consts::signal::*;
 use tokio::{sync::RwLock, task::JoinSet};
 use tracing::{debug, error, info, warn};
-
-use clap::Parser;
-use color_eyre::eyre::Result;
-use pyo3::{ffi::c_str, prelude::*};
 
 shadow_rs::shadow!(build);
 
@@ -287,7 +287,8 @@ fn watch_workers(state_lock: Arc<RwLock<State>>) -> Result<()> {
                 Ok(None) => continue,
                 Ok(Some(exitcode)) => {
                     error!(
-                        "Worker with PID {} exited unexpectedly (code {exitcode}). Shutting down...",
+                        "Worker with PID {} exited unexpectedly (code {exitcode}). Shutting \
+                         down...",
                         worker_process.pid
                     );
                     state.shutdown();
@@ -406,7 +407,7 @@ pub async fn run(_cli: Cli) -> Result<()> {
         }
 
         if !errors.is_empty() {
-            return Err(eyre!("Errors encounted in worker: {:?}", errors));
+            return Err(eyre!("Errors encountered in worker: {:?}", errors));
         }
     }
 
@@ -414,12 +415,12 @@ pub async fn run(_cli: Cli) -> Result<()> {
 }
 
 mod healthcheck {
-    use std::net::SocketAddr;
+    use std::{net::SocketAddr, sync::Arc};
+
+    use color_eyre::eyre::Result;
+    use tokio::sync::RwLock;
 
     use super::State;
-    use color_eyre::eyre::Result;
-    use std::sync::Arc;
-    use tokio::sync::RwLock;
 
     pub(super) async fn run(state: Arc<RwLock<State>>) -> Result<()> {
         let app = axum::Router::new().fallback(|| async { "ok" });
@@ -434,7 +435,8 @@ mod healthcheck {
 }
 
 mod metrics {
-    use super::State;
+    use std::{net::SocketAddr, sync::Arc};
+
     use axum::{body::Body, http::StatusCode, response::Response};
     use color_eyre::eyre::Result;
     use pyo3::{
@@ -443,9 +445,9 @@ mod metrics {
         prelude::*,
         types::{PyBytes, PyDict},
     };
-    use std::{net::SocketAddr, sync::Arc};
     use tokio::sync::RwLock;
 
+    use super::State;
     use crate::AppError;
 
     async fn metrics_handler() -> Result<Response, AppError> {
@@ -503,13 +505,15 @@ output = generate_latest(registry)
 }
 
 mod worker_status {
-    use super::State;
-    use color_eyre::eyre::Result;
     use std::{
         sync::{Arc, atomic::Ordering},
         time::Duration,
     };
+
+    use color_eyre::eyre::Result;
     use tokio::sync::RwLock;
+
+    use super::State;
 
     pub(super) async fn run(state: Arc<RwLock<State>>) -> Result<()> {
         loop {
@@ -525,8 +529,7 @@ mod worker_status {
 struct AppError(color_eyre::eyre::Error);
 
 impl<E> From<E> for AppError
-where
-    E: Into<color_eyre::eyre::Error>,
+where E: Into<color_eyre::eyre::Error>
 {
     fn from(err: E) -> Self {
         Self(err.into())
@@ -535,7 +538,7 @@ where
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        warn!("Error occured: {:?}", self.0);
+        warn!("Error occurred: {:?}", self.0);
         (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
     }
 }
