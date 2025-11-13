@@ -110,8 +110,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#enroll")))
-        identification_stage.find_element(By.CSS_SELECTOR, "#enroll").click()
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "a[name='enroll']")))
+        identification_stage.find_element(By.CSS_SELECTOR, "a[name='enroll']").click()
 
         # First prompt stage
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -193,7 +193,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.assertEqual(
             "Continue to confirm this email address.",
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
 
         # Back on the main tab, confirm

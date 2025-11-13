@@ -76,7 +76,11 @@ export class AuthenticatorStaticStage extends BaseStage<
 
                 <fieldset class="pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
                 </fieldset>
