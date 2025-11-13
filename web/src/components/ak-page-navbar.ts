@@ -3,15 +3,13 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { getConfigForUser, UIConfig, UserDisplay } from "#common/ui/config";
-import { me } from "#common/users";
+import { UserDisplay } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
 import { themeImage } from "#elements/utils/images";
-
-import { SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -40,7 +38,10 @@ export interface PageHeaderInit {
  * dispatched by the `ak-page-header` component.
  */
 @customElement("ak-page-navbar")
-export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHeaderInit {
+export class AKPageNavbar
+    extends WithBrandConfig(WithSession(AKElement))
+    implements PageHeaderInit
+{
     //#region Static Properties
 
     static styles: CSSResult[] = [
@@ -263,12 +264,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     @property({ type: Boolean, reflect: true })
     public open?: boolean;
 
-    @state()
-    protected session?: SessionUser;
-
-    @state()
-    protected uiConfig!: UIConfig;
-
     //#endregion
 
     //#region Private Methods
@@ -325,8 +320,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     }
 
     public async firstUpdated() {
-        this.session = await me();
-        this.uiConfig = getConfigForUser(this.session.user);
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
@@ -403,7 +396,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
-                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
+                        <ak-nav-buttons>
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
