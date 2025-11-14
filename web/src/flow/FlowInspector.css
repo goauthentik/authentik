@@ -2,10 +2,6 @@
     height: 100dvh;
 }
 
-.pf-c-card {
-    --pf-c-card--BackgroundColor: var(--pf-c-notification-drawer--BackgroundColor);
-}
-
 :host {
     background-color: var(--pf-c-notification-drawer--BackgroundColor);
 }

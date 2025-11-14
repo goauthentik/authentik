@@ -1301,11 +1301,6 @@
         <target>Yayımcı</target>
         
       </trans-unit>
-      <trans-unit id="sf54c562d8a10ce77">
-        <source>Also known as EntityID.</source>
-        <target>EntityID olarak da bilinir.</target>
-        
-      </trans-unit>
       <trans-unit id="s991b750e2d5c4234">
         <source>Service Provider Binding</source>
         <target>Servis Sağlayıcı Bağlama</target>
@@ -5866,7 +5861,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
         
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
         <target>Evet (
         <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
@@ -8731,9 +8726,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s317f3ab0da3d068a">
   <source>Not a valid slug</source>
 </trans-unit>
-<trans-unit id="s177577c23ed3ca7e">
-  <source>Configure The Application</source>
-</trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
 </trans-unit>
@@ -10302,6 +10294,36 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+</trans-unit>
+<trans-unit id="s0268ce9f2abb84de">
+  <source>Configure the Application</source>
+</trans-unit>
+<trans-unit id="sd4fd64791f73d37b">
+  <source>Also known as Entity ID.</source>
+</trans-unit>
+<trans-unit id="source-settings-list-item-label">
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+</trans-unit>
+<trans-unit id="s20b2b040b332bb55">
+  <source>Source Settings</source>
+</trans-unit>
+<trans-unit id="sdd35b688281b6dea">
+  <source>Japanese</source>
+</trans-unit>
+<trans-unit id="seb6ab868740e4e36">
+  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+</trans-unit>
+<trans-unit id="s05a941e4b4bfca9f">
+  <source>Additional actions</source>
+</trans-unit>
+<trans-unit id="s53dddf1733e26c98">
+  <source>Login sources</source>
+</trans-unit>
+<trans-unit id="sa00a53efc9c70de5">
+  <source>Please wait while the content is loading</source>
+</trans-unit>
+<trans-unit id="sf609e15e71559cd2">
+  <source>Failed to fetch applications.</source>
 </trans-unit>
     </body>
   </file>
