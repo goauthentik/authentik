@@ -51,6 +51,7 @@ const BASE_ESBUILD_OPTIONS = {
     minify: NodeEnvironment === "production",
     legalComments: "external",
     splitting: true,
+    color: !process.env.NO_COLOR,
     treeShaking: true,
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
@@ -252,8 +253,7 @@ await cleanDistDirectory()
                     });
                 });
             })
-            .catch((error) => {
-                logger.error(error);
+            .catch(() => {
                 process.exit(1);
             }),
     );
