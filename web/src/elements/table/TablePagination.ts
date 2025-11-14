@@ -50,6 +50,10 @@ export class TablePagination extends AKElement {
                         }
                     }
                 }
+
+                .pf-c-options-menu__toggle {
+                    color: var(--ak-dark-foreground);
+                }
             }
         `,
     ];

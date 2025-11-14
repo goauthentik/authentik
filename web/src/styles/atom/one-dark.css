@@ -4,11 +4,6 @@
  * @see https://github.com/atom/one-dark-syntax
  */
 
-/* Defined to better identify the One Dark theme when debugging constructed stylesheets. */
-.__HIGHLIGHT_THEME_ONE_DARK__ {
-    --__HIGHLIGHT_THEME_ONE_DARK__: 1;
-}
-
 :root {
     --one-dark-base: #282c34;
     --one-dark-mono-1: #abb2bf;

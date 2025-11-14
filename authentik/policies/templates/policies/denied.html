@@ -12,8 +12,7 @@
 {% endblock %}
 
 {% block card %}
-<form class="pf-c-form">
-    {% csrf_token %}
+<div class="pf-c-form">
     {% if user.is_authenticated %}
         <div class="pf-c-form__group">
             <div class="form-control-static">
@@ -29,7 +28,7 @@
     {% endif %}
     <div class="pf-c-form__group">
         <p>
-            <i class="pf-icon pf-icon-error-circle-o"></i>
+            <i class="pf-icon pf-icon-error-circle-o pf-u-font-size-2xl" role="img" aria-label="{% trans 'Error' %}"></i>
             {% trans 'Request has been denied.' %}
         </p>
         {% if error %}
@@ -71,5 +70,11 @@
             {% endif %}
         {% endif %}
     </div>
-</form>
+
+    <div class="pf-c-form__group">
+        <a id="ak-back-home" href="{% url 'authentik_core:root-redirect' %}" class="pf-c-button pf-m-primary pf-m-block">
+            {% trans 'Go home' %}
+        </a>
+    </div>
+</div>
 {% endblock %}
