@@ -29,8 +29,8 @@ class FileBackend(Backend):
     @property
     def base_path(self) -> Path:
         """Path structure: {base_dir}/{usage}/{schema}"""
-        # TODO: There must be a better way of doing this? ./data in local dev with 
-        # /data in containers, tho containers might still use ./data since 
+        # TODO: There must be a better way of doing this? ./data in local dev with
+        # /data in containers, tho containers might still use ./data since
         # it's the "default" value
         file_path = self.get_config("file.path", "/data")
         base_dir = Path(file_path)

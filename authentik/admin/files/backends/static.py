@@ -26,7 +26,9 @@ class StaticBackend(Backend):
 
     def supports_file_path(self, file_path: str) -> bool:
         """Check if file path is a static path."""
-        return file_path.startswith(STATIC_PATH_PREFIX) or file_path.startswith("web/dist/assets") # see service.py comment
+        return file_path.startswith(STATIC_PATH_PREFIX) or file_path.startswith(
+            "web/dist/assets"
+        )  # see service.py comment
 
     def list_files(self) -> Generator[str]:
         """List all static files."""

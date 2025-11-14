@@ -60,17 +60,14 @@ class S3Backend(Backend):
         endpoint_url = self.get_config("s3.endpoint", None)
         region_name = self.get_config("s3.region", None)
 
-        # Configure addressing style wich needed for R2 and some S3-compatible services
+        # Configure addressing style which needed for R2 and some S3-compatible services
         addressing_style = self.get_config("s3.addressing_style", "auto")
 
         return self.session.client(
             "s3",
             endpoint_url=endpoint_url,
             region_name=region_name,
-            config=Config(
-                signature_version="s3v4",
-                s3={"addressing_style": addressing_style}
-            ),
+            config=Config(signature_version="s3v4", s3={"addressing_style": addressing_style}),
         )
 
     def supports_file_path(self, file_path: str) -> bool:

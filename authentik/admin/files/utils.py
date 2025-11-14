@@ -11,7 +11,6 @@ from authentik.lib.config import CONFIG
 if TYPE_CHECKING:
     from rest_framework.request import Request
 
-    from authentik.admin.files.backend import Usage
 
 
 class RequestWrapper:
@@ -130,8 +129,8 @@ def get_schema_name() -> str:
 
 
 def strip_schema_prefix(file_path: str) -> str:
-    """Strip schema prefix from file path if present. 
-    
+    """Strip schema prefix from file path if present.
+
     This is what we store in the database.
 
     Args:
@@ -145,8 +144,8 @@ def strip_schema_prefix(file_path: str) -> str:
 
 
 def add_schema_prefix(file_path: str) -> str:
-    """Add schema prefix to file path for display purposes. 
-    
+    """Add schema prefix to file path for display purposes.
+
     This is what we use to build the URLs and what we render in the UI.
 
     Args:

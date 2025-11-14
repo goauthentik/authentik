@@ -25,6 +25,8 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backend import Usage
+from authentik.admin.files.service import resolve_file_url
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -41,9 +43,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
-
-from authentik.admin.files.backend import Usage
-from authentik.admin.files.service import resolve_file_url
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -583,8 +582,6 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.meta_icon:
             return None
 
- 
-
         return resolve_file_url(self.meta_icon, Usage.MEDIA)
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
@@ -793,8 +790,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-
-
         return resolve_file_url(self.icon, Usage.MEDIA)
 
     def get_icon_url_with_request(self, request=None) -> str | None:
@@ -808,8 +803,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """
         if not self.icon:
             return None
-
-
 
         return resolve_file_url_full(self.icon, Usage.MEDIA, request)
 

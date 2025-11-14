@@ -91,7 +91,7 @@ class FileViewSet(ViewSet):
                 ) from error
             elif error_code == "NoSuchBucket":
                 raise ValidationError(
-                    f"S3 bucket not found. Please verify the bucket name in your configuration."
+                    "S3 bucket not found. Please verify the bucket name in your configuration."
                 ) from error
             elif error_code == "AccessDenied":
                 raise ValidationError(

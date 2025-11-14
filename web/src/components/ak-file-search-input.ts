@@ -80,7 +80,7 @@ export class AkFileSearchInput extends AKElement {
     };
 
     override firstUpdated() {
-        // If we have a value but it's not in the fetched results (liek fa:// or custom URL),
+        // If we have a value but it's not in the fetched results (like fa:// or custom URL),
         // the search-select won't show it. We need to add it to the initial fetch.
         if (this.value) {
             // Search-select will call #fetch and then try to select using #selected

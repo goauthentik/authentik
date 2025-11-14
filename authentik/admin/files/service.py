@@ -54,7 +54,8 @@ def resolve_file_url(file_path: str, usage: Usage) -> str:
     backend = BackendFactory.create(usage)
     return backend.file_url(file_path)
 
-# TODO we could mabye pass boolean needs_full_url instead of duplicating this function
+
+# TODO we could maybe pass boolean needs_full_url instead of duplicating this function
 def resolve_file_url_full(
     file_path: str,
     usage: Usage,

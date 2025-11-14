@@ -69,7 +69,7 @@ def sanitize_file_path(file_path: str) -> str:
             )
 
     # Remove any duplicate slashes
-    # TODO: mabye raise a ValidationError here too
+    # TODO: maybe raise a ValidationError here too
     normalized = re.sub(r"/+", "/", normalized)
 
     return normalized
