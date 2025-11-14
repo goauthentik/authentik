@@ -42,7 +42,7 @@ class DeviceConnection(SerializerModel):
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
-
+    last_update = models.DateTimeField(auto_now=True)
 
 class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)

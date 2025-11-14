@@ -5018,6 +5018,37 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/check_in/:
+    post:
+      operationId: endpoints_agents_connectors_check_in_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: header
+        name: authorization
+        schema:
+          type: string
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceFactsRequest'
+        required: true
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/enroll/:
     post:
       operationId: endpoints_agents_connectors_enroll_create
@@ -32426,11 +32457,16 @@ components:
           type: string
         auth_terminate_session_on_expiry:
           type: boolean
+          readOnly: true
+        refresh_interval:
+          type: integer
+          readOnly: true
       required:
       - auth_terminate_session_on_expiry
       - authentication_flow
       - nss_gid_offset
       - nss_uid_offset
+      - refresh_interval
     AgentConnector:
       type: object
       properties:

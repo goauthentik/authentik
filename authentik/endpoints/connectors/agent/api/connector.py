@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
+from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -30,9 +30,13 @@ class AgentConfigSerializer(PassiveSerializer):
     nss_gid_offset = IntegerField()
     authentication_flow = CharField()
     auth_terminate_session_on_expiry = SerializerMethodField()
+    refresh_interval = SerializerMethodField()
 
-    def get_auth_terminate_session_on_expiry(*args):
+    def get_auth_terminate_session_on_expiry(*args) -> bool:
         return False
+
+    def get_refresh_interval(*args) -> int:
+        return 30
 
 
 class EnrollSerializer(PassiveSerializer):
@@ -92,9 +96,24 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
                 "data": {},
             },
         )
-        token = DeviceToken.objects.create(device=connection, expires=False)
+        token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {
                 "token": token.key,
             }
         )
+
+    @extend_schema(
+        request=DeviceFacts(),
+        parameters=[OpenApiParameter("authorization", OpenApiTypes.STR, location="header")],
+        responses={204: OpenApiResponse("Successfully checked in")},
+    )
+    @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
+    def check_in(self, request: Request):
+        device = authenticate_device(request)
+        data = DeviceFacts(data=request.data)
+        # data.is_valid(raise_exception=True)
+        connection: DeviceConnection = device.device
+        connection.data = request.data
+        connection.save()
+        return Response(status=204)
