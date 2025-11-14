@@ -1,7 +1,7 @@
 /**
  * @file MDX plugin for ESBuild.
  *
- * @import { Plugin, PluginBuild, BuildContext } from "esbuild"
+ * @import { Plugin, PluginBuild, BuildContext, BuildOptions } from "esbuild"
  */
 
 import { readFile } from "node:fs/promises";
@@ -17,11 +17,18 @@ const CSSNamespace = /** @type {const} */ ({
 });
 
 /**
+ * @typedef StyleLoaderPluginOptions
+ *
+ * @property {boolean} [watch] Whether to watch for file changes.
+ */
+
+/**
  * Selectively apply the ESBuild `css` loader.
  *
+ * @param {StyleLoaderPluginOptions} [options]
  * @returns {Plugin}
  */
-export function styleLoaderPlugin() {
+export function styleLoaderPlugin({ watch = false } = {}) {
     const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
     const require = createRequire(import.meta.url);
 
@@ -114,28 +121,43 @@ export function styleLoaderPlugin() {
                 const cssContent = await readFile(args.path, "utf8");
                 let context = disposables.get(args.path);
 
-                if (!context) {
-                    context = await build.esbuild.context({
-                        stdin: {
-                            contents: cssContent,
-                            resolveDir: dirname(args.path),
-                            loader: "css",
-                        },
-                        metafile: true,
-                        bundle: true,
-                        write: false,
-                        minify: build.initialOptions.minify || false,
-                        logLevel: "silent",
-                        loader: { ".woff": "empty", ".woff2": "empty" },
-                        plugins: [
-                            {
-                                name: "font-resolver",
-                                setup(fontBuild) {
-                                    fontBuild.onResolve(...fontResolverArgs);
-                                },
+                /**
+                 * @type {BuildOptions}
+                 */
+                const buildOptions = {
+                    stdin: {
+                        contents: cssContent,
+                        resolveDir: dirname(args.path),
+                        loader: "css",
+                    },
+                    metafile: true,
+                    bundle: true,
+                    write: false,
+                    minify: build.initialOptions.minify || false,
+                    logLevel: "silent",
+                    loader: { ".woff": "empty", ".woff2": "empty" },
+                    plugins: [
+                        {
+                            name: "font-resolver",
+                            setup(fontBuild) {
+                                fontBuild.onResolve(...fontResolverArgs);
                             },
-                        ],
-                    });
+                        },
+                    ],
+                };
+
+                if (!watch) {
+                    const result = await build.esbuild.build(buildOptions);
+                    const bundledCSS = result.outputFiles?.[0].text;
+
+                    return {
+                        contents: bundledCSS,
+                        loader: "text",
+                    };
+                }
+
+                if (!context) {
+                    context = await build.esbuild.context(buildOptions);
 
                     disposables.set(args.path, context);
                 }

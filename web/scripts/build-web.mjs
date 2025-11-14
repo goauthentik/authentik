@@ -78,7 +78,6 @@ const BASE_ESBUILD_OPTIONS = {
                 },
             ],
         }),
-        styleLoaderPlugin(),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
@@ -156,7 +155,7 @@ async function doWatch() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
-        plugins: developmentPlugins,
+        plugins: [...developmentPlugins, styleLoaderPlugin({ watch: true })],
     });
 
     const buildContext = await esbuild.context(buildOptions);
@@ -202,6 +201,7 @@ async function doBuild() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin()],
     });
 
     await esbuild.build(buildOptions);
