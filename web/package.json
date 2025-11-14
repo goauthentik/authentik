@@ -5,12 +5,11 @@
     "private": true,
     "scripts": {
         "build": "wireit",
-        "build-locales": "wireit",
-        "build-locales:build": "wireit",
         "build-proxy": "wireit",
+        "build:locales": "wireit",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "wireit",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
@@ -27,7 +26,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "tsc": "wireit",
-        "watch": "run-s build-locales esbuild:watch"
+        "watch": "run-s build:locales bundler:watch"
     },
     "type": "module",
     "exports": {
@@ -228,7 +227,7 @@
                 "./dist/styles/**"
             ],
             "dependencies": [
-                "build-locales",
+                "build:locales",
                 "build:sfe"
             ],
             "env": {
@@ -241,16 +240,13 @@
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
             "dependencies": [
-                "build-locales"
+                "build:locales"
             ]
         },
-        "build-locales:build": {
-            "command": "lit-localize build"
-        },
-        "build-locales:repair": {
+        "locales:repair": {
             "command": "prettier --write ./src/locale-codes.ts"
         },
-        "build-locales": {
+        "build:locales": {
             "command": "node scripts/build-locales.mjs",
             "files": [
                 "./xliff/*.xlf"
@@ -259,9 +255,6 @@
                 "./src/locales/*.ts",
                 "./src/locale-codes.ts"
             ]
-        },
-        "extract-locales": {
-            "command": "lit-localize extract"
         },
         "lint:components": {
             "command": "lit-analyzer src"
@@ -272,7 +265,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "build-locales"
+                "build:locales"
             ]
         },
         "lint:lockfile": {
@@ -304,7 +297,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "build-locales"
+                "build:locales"
             ]
         }
     },
