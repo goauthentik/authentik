@@ -211,4 +211,4 @@ source_docs/
 /vendor/
 
 ### Docker ###
-docker-compose.override.yml
+compose.override.yml
