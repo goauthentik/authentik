@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://joplinapp.org/
 
-Joplin Server is the self-hosted component that let's you host the server component to sync notes between your devices.
+Joplin Server is a self-hosted service that lets you sync notes between your devices.
 
 ## Preparation
 
@@ -73,7 +73,7 @@ To support the integration of Joplin with authentik, you need to create property
 
 ## Joplin configuration
 
-To configure Joplin with authentik, you must configure Joplin with two SAML configuration files and set the appropriate environment variables.
+To configure Joplin with authentik, create two SAML configuration files and set the appropriate environment variables.
 
 ### Create the Service Provider configuration file
 
