@@ -42,7 +42,7 @@ base = {
             "image": authentik_image,
             "ports": ["${COMPOSE_PORT_HTTP:-9000}:9000", "${COMPOSE_PORT_HTTPS:-9443}:9443"],
             "restart": "unless-stopped",
-            "volumes": ["./media:/media", "./custom-templates:/templates"],
+            "volumes": ["./media:/data/media", "./custom-templates:/templates"],
         },
         "worker": {
             "command": "worker",
@@ -62,7 +62,7 @@ base = {
             "user": "root",
             "volumes": [
                 "/var/run/docker.sock:/var/run/docker.sock",
-                "./media:/media",
+                "./media:/data/media",
                 "./certs:/certs",
                 "./custom-templates:/templates",
             ],
