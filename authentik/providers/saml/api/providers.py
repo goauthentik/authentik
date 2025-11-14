@@ -23,6 +23,7 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -317,12 +318,10 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    def import_metadata(self, request: Request) -> Response:
+    @validate(SAMLProviderImportSerializer)
+    def import_metadata(self, request: Request, instance: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        data = SAMLProviderImportSerializer(data=request.data)
-        if not data.is_valid():
-            raise ValidationError(data.errors)
-        file = data.validated_data["file"]
+        file = instance.validated_data["file"]
         # Validate syntax first
         try:
             fromstring(file.read())
@@ -332,9 +331,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
             metadata.to_provider(
-                data.validated_data["name"],
-                data.validated_data["authorization_flow"],
-                data.validated_data["invalidation_flow"],
+                instance.validated_data["name"],
+                instance.validated_data["authorization_flow"],
+                instance.validated_data["invalidation_flow"],
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

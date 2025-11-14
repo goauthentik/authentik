@@ -33,6 +33,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
@@ -276,17 +277,16 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=False, methods=["POST"])
-    def generate(self, request: Request) -> Response:
+    @validate(CertificateGenerationSerializer)
+    def generate(self, request: Request, instance: CertificateGenerationSerializer) -> Response:
         """Generate a new, self-signed certificate-key pair"""
-        data = CertificateGenerationSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        raw_san = data.validated_data.get("subject_alt_name", "")
+        raw_san = instance.validated_data.get("subject_alt_name", "")
         sans = raw_san.split(",") if raw_san != "" else []
-        builder = CertificateBuilder(data.validated_data["name"])
-        builder.alg = data.validated_data["alg"]
+        builder = CertificateBuilder(instance.validated_data["name"])
+        builder.alg = instance.validated_data["alg"]
         builder.build(
             subject_alt_names=sans,
-            validity_days=int(data.validated_data["validity_days"]),
+            validity_days=int(instance.validated_data["validity_days"]),
         )
         instance = builder.save()
         serializer = self.get_serializer(instance)
