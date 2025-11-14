@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 To support the integration of Microsoft365 with authentik, you need to:
 
 1. Create a property mapping for users' immutable identifier in authentik.
-2. Create a property mapping for MFA (_optional_)
+2. Create a property mapping for MFA (_optional_).
 3. Create an application/provider pair in authentik.
 4. Download a certificate file.
 
