@@ -14,4 +14,5 @@ class DeviceConnectionSerializer(ModelSerializer):
             "connector",
             "connector_obj",
             "data",
+            "last_update",
         ]

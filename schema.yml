@@ -35518,10 +35518,15 @@ components:
         data:
           type: object
           additionalProperties: {}
+        last_update:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - connector
       - connector_obj
       - device
+      - last_update
     DeviceConnectionRequest:
       type: object
       properties:
