@@ -29,6 +29,12 @@ This documentation lists only the settings that you need to change from their de
 FortiMail 7.6.4 and later, allows you to configure separate service providers for the admin and user/webmail portals. If you plan to use the user/webmail portal, avoid importing FortiMail’s auto-generated metadata directly, as you will need to edit the ACS URL in that XML to replace the host with your user-facing FQDN.
 :::
 
+## authentik configuration
+
+To support the integration of the FortiMail with authentik, you need to create an application/provider pair in authentik.
+
+You can configure either Admin Portal SSO or User Portal SSO (or both), depending on the intended user and the desired scope of authentication.
+
 <Tabs
   defaultValue="admin"
   values={[
@@ -36,10 +42,6 @@ FortiMail 7.6.4 and later, allows you to configure separate service providers fo
     { label: "User Portal SSO", value: "user" },
   ]}>
   <TabItem value="admin">
-
-## authentik configuration
-
-To support the integration of the FortiMail Admin Portal with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -74,7 +76,7 @@ To support the integration of the FortiMail Admin Portal with authentik, you nee
 
 Ensure that these values match those configured in authentik. If not, update the values in authentik and re-download the [authentik metadata file](#download-metadata-file).
 
-4. Upload the authentik SAML metadata file you downloaded in the previous step.
+4. Upload the authentik SAML metadata file that you downloaded in the previous step.
 5. Switch to the **Profile** tab and configure the attribute mapping:
     - Set **Attribute used to identify email address** to `http://schemas.goauthentik.io/2021/02/saml/username`.
 
