@@ -3,8 +3,6 @@ import "#elements/sidebar/SidebarVersion";
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";
 
-import { UiThemeEnum } from "@goauthentik/api";
-
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -25,20 +23,20 @@ export class Sidebar extends AKElement {
     hidden = false;
 
     render(): TemplateResult {
-        return html`<div
-            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
-            role="presentation"
-        >
+        return html`<div part="nav" class="pf-c-nav" role="presentation">
             <ul
                 id="global-nav"
                 ?hidden=${this.hidden}
                 aria-label=${msg("Global navigation")}
                 role="navigation"
                 class="pf-c-nav__list"
+                part="list"
             >
                 <slot></slot>
             </ul>
-            <ak-sidebar-version></ak-sidebar-version>
+            <ak-sidebar-version
+                exportparts="trigger:about-dialog-trigger, button-content:about-dialog-button-content, product-name, product-version"
+            ></ak-sidebar-version>
         </div>`;
     }
 }

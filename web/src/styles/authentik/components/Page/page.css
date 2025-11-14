@@ -2,8 +2,10 @@
  * Extensions of PF4's sidebar color to better match our existing dark theme.
  */
 .pf-c-page {
-    --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+    --pf-c-page__main-nav--BackgroundColor: var(--pf-global--BackgroundColor--200);
     --pf-c-page__sidebar--m-dark--BackgroundColor: var(--pf-global--BackgroundColor--100);
+
+    --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-light--BackgroundColor);
 
     .pf-c-page__sidebar {
         z-index: calc(var(--pf-c-page__header--ZIndex) + 1);
@@ -14,6 +16,12 @@
             --pf-c-page__sidebar--BoxShadow: var(--pf-global--BoxShadow--sm-right);
         }
     }
+}
+
+ak-tabs::part(row) {
+    background-color: var(--pf-global--BackgroundColor--100);
+    margin-block-start: 0;
+    padding-block-start: var(--pf-global--spacer--sm);
 }
 
 /**
@@ -34,6 +42,8 @@
 
 [data-theme="dark"] .pf-c-page,
 :host([theme="dark"]) .pf-c-page {
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200) !important;
+
     /**
      * Lighten the main section background to contrast page content.
      */

@@ -1,5 +1,5 @@
 :host {
-    z-index: 100;
+    z-index: var(--pf-global--ZIndex--xs);
     box-shadow: none !important;
 }
 
@@ -18,21 +18,9 @@
     --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
 }
 
-.pf-c-nav__section + .pf-c-nav__section {
-    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
-}
-
 .pf-c-nav__list .sidebar-brand {
     max-height: 82px;
     margin-bottom: -0.5rem;
-}
-
-nav {
-    display: flex;
-    flex-direction: column;
-    max-height: 100vh;
-    height: 100%;
-    overflow-y: hidden;
 }
 
 .pf-c-nav__list {
@@ -40,16 +28,18 @@ nav {
     overflow-y: auto;
 }
 
-.pf-c-nav__link {
-    --pf-c-nav__link--PaddingTop: 0.5rem;
-    --pf-c-nav__link--PaddingRight: 0.5rem;
-    --pf-c-nav__link--PaddingBottom: 0.5rem;
-}
-
-.pf-c-nav__section-title {
-    font-size: 12px;
-}
-
 .pf-c-nav__item {
-    --pf-c-nav__item--MarginTop: 0px;
+    user-select: none;
+    --pf-c-nav__item--MarginTop: 0;
+    --pf-c-nav__link--m-current--after--BorderLeftWidth: 1px;
+}
+
+.pf-c-nav__link::after {
+    transition-property: border-color;
+    transition-timing-function: cubic-bezier(0.08, 0.52, 0.52, 1);
+    transition-duration: 0.2s;
+}
+
+.pf-c-nav__item:not(.pf-m-expandable) {
+    --pf-c-nav__link--after--BorderLeftWidth: 1px !important;
 }
