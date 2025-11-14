@@ -115,7 +115,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
-        return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
+        return html` <ak-wizard-title>${msg("Configure the Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
