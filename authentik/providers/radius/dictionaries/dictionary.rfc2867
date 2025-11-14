@@ -1,0 +1,19 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 2867.
+#	http://www.ietf.org/rfc/rfc2867.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Acct-Tunnel-Connection			68	string
+ATTRIBUTE	Acct-Tunnel-Packets-Lost		86	integer
+
+VALUE	Acct-Status-Type		Tunnel-Start		9
+VALUE	Acct-Status-Type		Tunnel-Stop		10
+VALUE	Acct-Status-Type		Tunnel-Reject		11
+VALUE	Acct-Status-Type		Tunnel-Link-Start	12
+VALUE	Acct-Status-Type		Tunnel-Link-Stop	13
+VALUE	Acct-Status-Type		Tunnel-Link-Reject	14
