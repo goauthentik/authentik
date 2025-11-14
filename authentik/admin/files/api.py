@@ -108,7 +108,7 @@ class FileViewSet(ViewSet):
                 error=str(error),
             )
             raise ValidationError(
-                f"Failed to connect to S3 storage: {str(error)}"
+                "Failed to connect to S3 storage. Please check your configuration or try again later."
             ) from error
         else:
             # Re-raise non-S3 errors
