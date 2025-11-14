@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -29,6 +29,10 @@ class AgentConfigSerializer(PassiveSerializer):
     nss_uid_offset = IntegerField()
     nss_gid_offset = IntegerField()
     authentication_flow = CharField()
+    auth_terminate_session_on_expiry = SerializerMethodField()
+
+    def get_auth_terminate_session_on_expiry(*args):
+        return False
 
 
 class EnrollSerializer(PassiveSerializer):

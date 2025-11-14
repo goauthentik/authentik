@@ -5007,8 +5007,6 @@ paths:
         using this object
       tags:
       - endpoints
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -32426,7 +32424,10 @@ components:
           type: integer
         authentication_flow:
           type: string
+        auth_terminate_session_on_expiry:
+          type: boolean
       required:
+      - auth_terminate_session_on_expiry
       - authentication_flow
       - nss_gid_offset
       - nss_uid_offset
