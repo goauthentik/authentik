@@ -424,6 +424,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints.deviceuserbinding"
                         },
                         "id": {
@@ -493,46 +533,6 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_endpoints.endpointstage"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_endpoints_connectors_agent.agentconnector"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
                         }
                     }
                 },
@@ -933,46 +933,6 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_stages_authenticator_endpoint_gdtc.endpointdevice"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.endpointdevice_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.endpointdevice"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.endpointdevice"
                         }
                     }
                 },
@@ -5343,12 +5303,16 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_endpoints_connectors_fleet.add_fleetconnector",
@@ -5985,6 +5949,82 @@
                 }
             }
         },
+        "model_authentik_endpoints_connectors_agent.agentconnector": {
+            "type": "object",
+            "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "nss_uid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss uid offset"
+                },
+                "nss_gid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss gid offset"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow"
+                },
+                "challenge_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Challenge key"
+                },
+                "tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Tokens"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentconnector",
+                            "change_agentconnector",
+                            "delete_agentconnector",
+                            "view_agentconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_endpoints.deviceuserbinding": {
             "type": "object",
             "properties": {
@@ -6176,82 +6216,6 @@
                             "change_endpointstage",
                             "delete_endpointstage",
                             "view_endpointstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_endpoints_connectors_agent.agentconnector": {
-            "type": "object",
-            "properties": {
-                "connector_uuid": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Connector uuid"
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "enabled": {
-                    "type": "boolean",
-                    "title": "Enabled"
-                },
-                "nss_uid_offset": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Nss uid offset"
-                },
-                "nss_gid_offset": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Nss gid offset"
-                },
-                "authentication_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Authentication flow"
-                },
-                "challenge_key": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Challenge key"
-                },
-                "tokens": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Tokens"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_endpoints_connectors_agent.agentconnector_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_agentconnector",
-                            "change_agentconnector",
-                            "delete_agentconnector",
-                            "view_agentconnector"
                         ]
                     },
                     "user": {
@@ -6977,50 +6941,6 @@
                             "change_authenticatorendpointgdtcstage",
                             "delete_authenticatorendpointgdtcstage",
                             "view_authenticatorendpointgdtcstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_stages_authenticator_endpoint_gdtc.endpointdevice": {
-            "type": "object",
-            "properties": {
-                "pk": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Uuid"
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 64,
-                    "minLength": 1,
-                    "title": "Name",
-                    "description": "The human-readable name of this device."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_authenticator_endpoint_gdtc.endpointdevice_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_endpointdevice",
-                            "change_endpointdevice",
-                            "delete_endpointdevice",
-                            "view_endpointdevice"
                         ]
                     },
                     "user": {
@@ -8228,6 +8148,7 @@
                         "authentik.core",
                         "authentik.crypto",
                         "authentik.endpoints",
+                        "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
                         "authentik.events",
                         "authentik.flows",
@@ -8282,7 +8203,6 @@
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.enterprise.audit",
-                        "authentik.enterprise.endpoints.connectors.agent",
                         "authentik.enterprise.endpoints.connectors.fleet",
                         "authentik.enterprise.endpoints.connectors.google_chrome",
                         "authentik.enterprise.policies.unique_password",
@@ -8315,6 +8235,7 @@
                         "authentik_crypto.certificatekeypair",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.endpointstage",
+                        "authentik_endpoints_connectors_agent.agentconnector",
                         "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -8407,7 +8328,6 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
-                        "authentik_endpoints_connectors_agent.agentconnector",
                         "authentik_endpoints_connectors_fleet.fleetconnector",
                         "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
@@ -8417,7 +8337,6 @@
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
-                        "authentik_stages_authenticator_endpoint_gdtc.endpointdevice",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
                     ],
@@ -10631,12 +10550,16 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_endpoints_connectors_fleet.add_fleetconnector",

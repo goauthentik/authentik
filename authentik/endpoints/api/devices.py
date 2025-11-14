@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
-from authentik.endpoints.common_data import CommonDeviceDataSerializer
+from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device
 
 
@@ -14,7 +14,7 @@ class EndpointDeviceSerializer(ModelSerializer):
 
     data = SerializerMethodField()
 
-    def get_data(self, instance: Device) -> CommonDeviceDataSerializer:
+    def get_data(self, instance: Device) -> DeviceFacts:
         return instance.data
 
     class Meta:

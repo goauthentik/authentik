@@ -6,8 +6,9 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.models import Connector
+from authentik.endpoints.models import Connector, DeviceConnection
 from authentik.flows.stage import StageView
+from authentik.lib.generators import generate_key
 
 
 class AgentConnector(Connector):
@@ -24,7 +25,7 @@ class AgentConnector(Connector):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.endpoints.connectors.agent.api.connector import (
+        from authentik.endpoints.connectors.agent.api.connector import (
             AgentConnectorSerializer,
         )
 
@@ -32,7 +33,7 @@ class AgentConnector(Connector):
 
     @property
     def stage(self) -> type[StageView] | None:
-        from authentik.enterprise.endpoints.connectors.agent.stage import (
+        from authentik.endpoints.connectors.agent.stage import (
             AuthenticatorEndpointStageView,
         )
 
@@ -41,6 +42,13 @@ class AgentConnector(Connector):
     @property
     def component(self) -> str:
         return "ak-endpoints-connector-agent"
+
+
+class DeviceToken(ExpiringModel):
+
+    token_uuid = models.UUIDField(primary_key=True, default=uuid4)
+    device = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
+    key = models.TextField(default=generate_key)
 
 
 class EnrollmentToken(ExpiringModel):

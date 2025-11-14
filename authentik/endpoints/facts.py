@@ -1,6 +1,8 @@
 from django.db.models import TextChoices
 from rest_framework.serializers import BooleanField, CharField, ChoiceField, ListField, Serializer
 
+from authentik.core.api.utils import JSONDictField
+
 
 class OSFamily(TextChoices):
     linux = "linux"
@@ -40,9 +42,10 @@ class SoftwareSerializer(Serializer):
     version = CharField()
 
 
-class CommonDeviceDataSerializer(Serializer):
+class DeviceFacts(Serializer):
     os = OperatingSystemSerializer(required=False, allow_null=True)
     disks = ListField(child=DiskSerializer(), required=False, allow_null=True)
     network = NetworkSerializer(required=False, allow_null=True)
     hardware = HardwareSerializer(required=False, allow_null=True)
     software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
+    vendor = JSONDictField()

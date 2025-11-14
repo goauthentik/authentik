@@ -1,7 +1,7 @@
 from django.urls import path
 
-from authentik.enterprise.endpoints.connectors.agent.api.connector import AgentConnectorViewSet
-from authentik.enterprise.endpoints.connectors.agent.views.apple_ssoext import SSOExtensionView
+from authentik.endpoints.connectors.agent.api.connector import AgentConnectorViewSet
+from authentik.endpoints.connectors.agent.views.apple_ssoext import SSOExtensionView
 
 api_urlpatterns = [("endpoints/agents/connectors", AgentConnectorViewSet)]
 

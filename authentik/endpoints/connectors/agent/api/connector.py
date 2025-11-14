@@ -8,10 +8,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.endpoints.common_data import CommonDeviceDataSerializer
+from authentik.endpoints.connectors.agent.api._auth import (
+    authenticate_device,
+    authenticate_enrollment,
+)
+from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken
+from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device, DeviceConnection
-from authentik.enterprise.endpoints.connectors.agent.api._auth import authenticate
-from authentik.enterprise.endpoints.connectors.agent.models import AgentConnector
 
 
 class AgentConnectorSerializer(ModelSerializer):
@@ -45,7 +48,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     serializer_class = AgentConnectorSerializer
 
     @extend_schema(
-        request=CommonDeviceDataSerializer(),
+        request=DeviceFacts(),
         responses={201: OpenApiResponse(description="Report created.")},
     )
     @action(methods=["POST"], detail=False)
@@ -56,9 +59,10 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         responses=AgentConfigSerializer(),
         request=OpenApiTypes.NONE,
     )
-    @action(methods=["GET"], detail=False)
+    @action(methods=["GET"], detail=False, authentication_classes=[], permission_classes=[])
     def agent_config(self, request: Request):
-        connector = authenticate(request)
+        token = authenticate_device(request)
+        connector: AgentConnector = token.device.connector.agentconnector
         return Response(AgentConfigSerializer(connector).data)
 
     @extend_schema(
@@ -68,7 +72,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     )
     @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
     def enroll(self, request: Request):
-        connector = authenticate(request)
+        connector = authenticate_enrollment(request)
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device, _ = Device.objects.get_or_create(
@@ -77,17 +81,16 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
                 "name": data.validated_data["device_name"],
             },
         )
-        DeviceConnection.objects.update_or_create(
+        connection, _ = DeviceConnection.objects.update_or_create(
             device=device,
             connector=connector,
             create_defaults={
                 "data": {},
             },
         )
+        token = DeviceToken.objects.create(device=connection, expires=False)
         return Response(
-            EnrollResponseSerializer(
-                data={
-                    "token": "foo",
-                }
-            ).data
+            {
+                "token": token.key,
+            }
         )

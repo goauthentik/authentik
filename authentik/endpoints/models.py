@@ -7,7 +7,7 @@ from django.utils.functional import cached_property
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 
-from authentik.endpoints.common_data import CommonDeviceDataSerializer
+from authentik.endpoints.facts import DeviceFacts
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
@@ -26,7 +26,7 @@ class Device(PolicyBindingModel):
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
     @cached_property
-    def data(self) -> CommonDeviceDataSerializer:
+    def data(self) -> DeviceFacts:
         data = {}
         for _data in self.deviceconnection_set.all().values_list("data", flat=True):
             always_merger.merge(data, _data)

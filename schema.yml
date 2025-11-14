@@ -5060,7 +5060,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CommonDeviceDataRequest'
+              $ref: '#/components/schemas/DeviceFactsRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -19463,7 +19464,6 @@ paths:
           - authentik_stages_authenticator_email.authenticatoremailstage
           - authentik_stages_authenticator_email.emaildevice
           - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
-          - authentik_stages_authenticator_endpoint_gdtc.endpointdevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -19678,7 +19678,6 @@ paths:
           - authentik_stages_authenticator_email.authenticatoremailstage
           - authentik_stages_authenticator_email.emaildevice
           - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
-          - authentik_stages_authenticator_endpoint_gdtc.endpointdevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -32528,6 +32527,7 @@ components:
       - authentik.core
       - authentik.crypto
       - authentik.endpoints
+      - authentik.endpoints.connectors.agent
       - authentik.enterprise
       - authentik.events
       - authentik.flows
@@ -32582,7 +32582,6 @@ components:
       - authentik.brands
       - authentik.blueprints
       - authentik.enterprise.audit
-      - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.endpoints.connectors.google_chrome
       - authentik.enterprise.policies.unique_password
@@ -34702,56 +34701,6 @@ components:
       - confidential
       - public
       type: string
-    CommonDeviceData:
-      type: object
-      properties:
-        os:
-          allOf:
-          - $ref: '#/components/schemas/OperatingSystem'
-          nullable: true
-        disks:
-          type: array
-          items:
-            $ref: '#/components/schemas/Disk'
-          nullable: true
-        network:
-          allOf:
-          - $ref: '#/components/schemas/Network'
-          nullable: true
-        hardware:
-          allOf:
-          - $ref: '#/components/schemas/Hardware'
-          nullable: true
-        software:
-          type: array
-          items:
-            $ref: '#/components/schemas/Software'
-          nullable: true
-    CommonDeviceDataRequest:
-      type: object
-      properties:
-        os:
-          allOf:
-          - $ref: '#/components/schemas/OperatingSystemRequest'
-          nullable: true
-        disks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiskRequest'
-          nullable: true
-        network:
-          allOf:
-          - $ref: '#/components/schemas/NetworkRequest'
-          nullable: true
-        hardware:
-          allOf:
-          - $ref: '#/components/schemas/HardwareRequest'
-          nullable: true
-        software:
-          type: array
-          items:
-            $ref: '#/components/schemas/SoftwareRequest'
-          nullable: true
     CompatibilityModeEnum:
       enum:
       - default
@@ -35557,6 +35506,66 @@ components:
       required:
       - connector
       - device
+    DeviceFacts:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystem'
+          nullable: true
+        disks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disk'
+          nullable: true
+        network:
+          allOf:
+          - $ref: '#/components/schemas/Network'
+          nullable: true
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/Hardware'
+          nullable: true
+        software:
+          type: array
+          items:
+            $ref: '#/components/schemas/Software'
+          nullable: true
+        vendor:
+          type: object
+          additionalProperties: {}
+      required:
+      - vendor
+    DeviceFactsRequest:
+      type: object
+      properties:
+        os:
+          allOf:
+          - $ref: '#/components/schemas/OperatingSystemRequest'
+          nullable: true
+        disks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskRequest'
+          nullable: true
+        network:
+          allOf:
+          - $ref: '#/components/schemas/NetworkRequest'
+          nullable: true
+        hardware:
+          allOf:
+          - $ref: '#/components/schemas/HardwareRequest'
+          nullable: true
+        software:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoftwareRequest'
+          nullable: true
+        vendor:
+          type: object
+          additionalProperties: {}
+      required:
+      - vendor
     DeviceGroup:
       type: object
       properties:
@@ -36252,7 +36261,7 @@ components:
             $ref: '#/components/schemas/DeviceConnection'
         data:
           allOf:
-          - $ref: '#/components/schemas/CommonDeviceData'
+          - $ref: '#/components/schemas/DeviceFacts'
           readOnly: true
       required:
       - connections
@@ -40516,6 +40525,7 @@ components:
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
+      - authentik_endpoints_connectors_agent.agentconnector
       - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -40608,7 +40618,6 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
-      - authentik_endpoints_connectors_agent.agentconnector
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_policies_unique_password.uniquepasswordpolicy
@@ -40618,7 +40627,6 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
-      - authentik_stages_authenticator_endpoint_gdtc.endpointdevice
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       type: string
