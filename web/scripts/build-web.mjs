@@ -137,9 +137,11 @@ function doHelp() {
     process.exit(0);
 }
 
+/**
+ *
+ * @returns {Promise<() => Promise<void>>} dispose
+ */
 async function doWatch() {
-    const { promise, resolve, reject } = Promise.withResolvers();
-
     logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
     const entryPoints = Object.values(EntryPoint);
@@ -155,7 +157,7 @@ async function doWatch() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
-        plugins: [...developmentPlugins, styleLoaderPlugin({ watch: true })],
+        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
     });
 
     const buildContext = await esbuild.context(buildOptions);
@@ -173,25 +175,13 @@ async function doWatch() {
     logger.info(`🔓 ${httpURL.href}`);
     logger.info(`🔒 ${httpsURL.href}`);
 
-    let disposing = false;
-
-    const delegateShutdown = () => {
+    return () => {
+        logger.info("🛑 Shutting down build watcher...");
         logger.flush();
         console.log("");
 
-        // We prevent multiple attempts to dispose the context
-        // because ESBuild will repeatedly restart its internal clean-up logic.
-        // However, sending a second SIGINT will still exit the process immediately.
-        if (disposing) return;
-
-        disposing = true;
-
-        return buildContext.dispose().then(resolve).catch(reject);
+        return buildContext.dispose();
     };
-
-    process.on("SIGINT", delegateShutdown);
-
-    return promise;
 }
 
 async function doBuild() {
@@ -201,7 +191,7 @@ async function doBuild() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
-        plugins: [styleLoaderPlugin()],
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
@@ -243,11 +233,27 @@ await cleanDistDirectory()
     // ---
     .then(() =>
         delegateCommand()
-            .then(() => {
-                process.exit(0);
+            .then((dispose) => {
+                if (!dispose) {
+                    process.exit(0);
+                }
+
+                return new Promise((resolve) => {
+                    // We prevent multiple attempts to dispose the context
+                    // because ESBuild will repeatedly restart its internal clean-up logic.
+                    // However, sending a second SIGINT will still exit the process immediately.
+                    let disposing = false;
+
+                    process.on("SIGINT", () => {
+                        if (disposing) return;
+                        disposing = true;
+
+                        dispose().then(resolve);
+                    });
+                });
             })
             .catch((error) => {
-                process.exit(1);
                 logger.error(error);
+                process.exit(1);
             }),
     );

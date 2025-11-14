@@ -2,11 +2,14 @@
  * @file MDX plugin for ESBuild.
  *
  * @import { Plugin, PluginBuild, BuildContext, BuildOptions } from "esbuild"
+ * @import { BaseLogger } from "pino"
  */
 
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
+
+import { ConsoleLogger } from "#logger/node";
 
 import { resolvePackage } from "@goauthentik/core/paths/node";
 
@@ -20,6 +23,7 @@ const CSSNamespace = /** @type {const} */ ({
  * @typedef StyleLoaderPluginOptions
  *
  * @property {boolean} [watch] Whether to watch for file changes.
+ * @property {BaseLogger} [logger]
  */
 
 /**
@@ -28,7 +32,10 @@ const CSSNamespace = /** @type {const} */ ({
  * @param {StyleLoaderPluginOptions} [options]
  * @returns {Plugin}
  */
-export function styleLoaderPlugin({ watch = false } = {}) {
+export function styleLoaderPlugin({
+    watch = false,
+    logger = ConsoleLogger.child({ name: "style-loader-plugin" }),
+} = {}) {
     const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
     const require = createRequire(import.meta.url);
 
@@ -63,7 +70,8 @@ export function styleLoaderPlugin({ watch = false } = {}) {
             const disposables = new Map();
 
             build.onDispose(async () => {
-                for (const ctx of disposables.values()) {
+                for (const [filePath, ctx] of disposables) {
+                    logger.debug(`Disposing CSS build context for ${filePath}`);
                     await ctx.dispose();
                 }
             });
@@ -157,12 +165,14 @@ export function styleLoaderPlugin({ watch = false } = {}) {
                 }
 
                 if (!context) {
+                    const relativePath = relative(absWorkingDir, args.path);
+                    logger.debug(`Watching ${relativePath}`);
                     context = await build.esbuild.context(buildOptions);
 
                     disposables.set(args.path, context);
+                } else {
+                    await context.cancel();
                 }
-
-                await context.cancel();
 
                 // Resolve the CSS content by bundling it with ESBuild.
                 const result = await context.rebuild();
