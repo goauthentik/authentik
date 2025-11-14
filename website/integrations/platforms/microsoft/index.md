@@ -2,6 +2,7 @@
 title: Integrate with Microsoft365
 sidebar_label: Microsoft365
 support_level: community
+toc_max_heading_level: 5
 ---
 
 ## What is Microsoft365
@@ -25,26 +26,33 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Microsoft365 with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
-### Create property mapping
+### Mapping immutable identifier for users
 
 Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during SAML federation. This identifier is sent as the SAML `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
 
-- **For users synchronized from Active Directory:** If you are using an [Active Directory source](/docs/users-sources/sources/directory-sync/active-directory/) in authentik, the immutable identifier is typically the base64-encoded `objectGUID` from AD. You will need to create a property mapping on your Active Directory source that stores this value in a custom user attribute (for example, `entra_immutable_id`).
-- **For cloud-only users:** If your users only exist in authentik (not synchronized from AD), you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
+#### For users synchronized from Active Directory
+
+If you are using an [Active Directory source](/docs/users-sources/sources/directory-sync/active-directory/) in authentik, the immutable identifier is typically the base64-encoded `objectGUID` from Active Directory. You will need to create a property mapping on your Active Directory source in authentik that stores this value in a custom user attribute, for example: `entra_immutable_id`.
+
+#### For cloud-only users
+
+If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
+
+#### Create a property mapping in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-    - **Select type**: select **SAML Property Mapping**.
-    - **Configure the SAML Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra Immutable ID`), and, optionally a description.
+    - **Select type**: select **SAML Provider Property Mapping**.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra Immutable ID`), and, optionally a friendly name.
         - **SAML Attribute Name**: `NameID`
         - **Expression**:
 
         ```python showLineNumbers
-        # For AD users with entra_immutable_id attribute.
-        # Replace to whatever you set this attribute's name to.
+        # For users synchronized from Active Directory with the 'entra_immutable_id' attribute.
+        # Replace 'entra_immutable_id' with whatever you set this attribute's name to.
         return user.attributes.get("entra_immutable_id", "")
 
-        # OR for cloud-only users using email as immutable ID
+        # OR for cloud-only users with email address as their immutable ID
         # return user.email
         ```
 
@@ -54,7 +62,7 @@ Microsoft Entra ID requires a unique and [immutable identifier (called `Immutabl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://login.microsoftonline.com/login.srf`.
@@ -72,12 +80,12 @@ Microsoft Entra ID requires a unique and [immutable identifier (called `Immutabl
 ### Download certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **System** > **Certificates** and click on the name of the certificate that you selected as the signing certificate for your provider.
-3. Click **Download Certificate** to download the certificate. This file will be required in the next section and must first be encoded in Base64 and renamed to end with the `.cer` file extension.
+2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider that you created in the previous section.
+3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section. Before being used in the next section, you will need rename the file ending from `.pem` to `.cer`.
 
-## Microsoft configuration
+## Microsoft365 configuration
 
-You must use the [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/) to federate your Microsoft Entra domain with authentik. The module can be installed by running:
+You must use the [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/) module to federate your Microsoft Entra domain with authentik. The module can be installed by running the following Powershell command:
 
 ```powershell
 Install-Module Microsoft.Graph -Scope CurrentUser
@@ -87,9 +95,13 @@ Install-Module Microsoft.Graph -Scope CurrentUser
 
 Before configuring federation, you need to set the `ImmutableId` for each user in Entra ID to match the identifier that authentik will send.
 
+#### For users synchronized from Active Directory
+
+If you're synchronizing users from Active Directory to authentik, the `ImmutableId` should already be set by Microsoft Entra Connect (typically from the `objectGUID`). Verify this is configured correctly before proceeding with federation.
+
 #### For cloud-only users
 
-```powershell
+```powershell showLineNumbers
 # 1. Connect to Microsoft Graph
 Connect-MgGraph -Scopes "User.ReadWrite.All"
 
@@ -104,19 +116,15 @@ foreach ($user in $users) {
 }
 ```
 
-#### For AD-synced users
-
-If you're synchronizing users from Active Directory to authentik, the ImmutableId should already be set by Microsoft Entra Connect (typically from the `objectGUID`). Verify this is configured correctly before proceeding with federation.
-
 ### Configure domain federation
 
 Run the following PowerShell commands to configure the federation between Microsoft Entra ID and authentik.
 
-:::note
+:::info Domain Verification
 Domain creation and DNS verification are outside the scope of this guide. Ensure your custom domain is already added and verified in Microsoft Entra ID before proceeding with this guide.
 :::
 
-```powershell
+```powershell showLineNumbers
 # 1. Connect to Microsoft Graph
 Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All", "User.Read.All", "Application.ReadWrite.All"
 
@@ -148,7 +156,7 @@ New-MgDomainFederationConfiguration `
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting the [Microsoft AI Slop dashboard which probably has a better name](https://m365.cloud.microsoft/), clicking **Sign In**, entering an email address in your federated domain, then **Next**. You should be redirected to authentik and back to Microsoft upon a successful login.
+To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting the [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticeted, redirected back to Microsoft and logged in.
 
 ## References
 
