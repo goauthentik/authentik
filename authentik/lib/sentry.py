@@ -1,7 +1,7 @@
 """authentik sentry integration"""
 
 from asyncio.exceptions import CancelledError
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
@@ -33,6 +33,9 @@ from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
 _root_path = CONFIG.get("web.path", "/")
+
+if TYPE_CHECKING:
+    from sentry_sdk._types import Event
 
 
 class SentryIgnoredException(Exception):
@@ -79,10 +82,11 @@ class SentryTransport(HttpTransport):
 
     def __init__(self, options: dict[str, Any]) -> None:
         super().__init__(options)
+        assert self.parsed_dsn is not None  # nosec
         self._auth = self.parsed_dsn.to_auth(authentik_user_agent())
 
 
-def sentry_init(**sentry_init_kwargs):
+def sentry_init(**sentry_init_kwargs: Any) -> None:
     """Configure sentry SDK"""
     sentry_env = CONFIG.get("error_reporting.environment", "customer")
     kwargs = {
@@ -116,7 +120,7 @@ def sentry_init(**sentry_init_kwargs):
     set_tag("authentik.component", "backend")
 
 
-def traces_sampler(sampling_context: dict) -> float:
+def traces_sampler(sampling_context: dict[str, Any]) -> float:
     """Custom sampler to ignore certain routes"""
     path = sampling_context.get("asgi_scope", {}).get("path", "")
     _type = sampling_context.get("asgi_scope", {}).get("type", "")
@@ -135,7 +139,7 @@ def should_ignore_exception(exc: Exception) -> bool:
     return isinstance(exc, ignored_classes)
 
 
-def before_send(event: dict, hint: dict) -> dict | None:
+def before_send(event: "Event", hint: dict[str, Any]) -> "Event | None":
     """Check if error is database error, and ignore if so"""
     exc_value = None
     if "exc_info" in hint:
@@ -157,7 +161,7 @@ def before_send(event: dict, hint: dict) -> dict | None:
     return event
 
 
-def get_http_meta():
+def get_http_meta() -> dict[str, Any]:
     """Get sentry-related meta key-values"""
     scope = get_current_scope()
     meta = {

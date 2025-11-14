@@ -1,16 +1,18 @@
 """Migration helpers"""
 
-from collections.abc import Iterable
+from collections.abc import Callable, Collection, Generator
 
 from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
-def fallback_names(app: str, model: str, field: str):
+def fallback_names(
+    app: str, model: str, field: str
+) -> Callable[[Apps, BaseDatabaseSchemaEditor], None]:
     """Factory function that checks all instances of `app`.`model` instance's `field`
     to prevent any duplicates"""
 
-    def migrator(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    def migrator(apps: Apps, schema_editor: BaseDatabaseSchemaEditor) -> None:
         db_alias = schema_editor.connection.alias
 
         klass = apps.get_model(app, model)
@@ -35,7 +37,7 @@ def fallback_names(app: str, model: str, field: str):
     return migrator
 
 
-def progress_bar(iterable: Iterable):
+def progress_bar[R](iterable: Collection[R]) -> Generator[R]:
     """Call in a loop to create terminal progress bar
     https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console"""
 
@@ -50,7 +52,7 @@ def progress_bar(iterable: Iterable):
     if total < 1:
         return
 
-    def print_progress_bar(iteration):
+    def print_progress_bar(iteration: int) -> None:
         """Progress Bar Printing Function"""
         percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
         filled_length = int(length * iteration // total)

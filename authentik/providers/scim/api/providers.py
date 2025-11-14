@@ -1,10 +1,7 @@
 """SCIM Provider API Views"""
 
-from rest_framework.viewsets import ModelViewSet
-
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
-from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
+from authentik.lib.sync.outgoing.api import OutgoingSyncProviderViewSet
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
@@ -45,13 +42,16 @@ class SCIMProviderSerializer(
         extra_kwargs = {}
 
 
-class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+class SCIMProviderViewSet(OutgoingSyncProviderViewSet):
     """SCIMProvider Viewset"""
 
     queryset = SCIMProvider.objects.all()
     serializer_class = SCIMProviderSerializer
-    filterset_fields = ["name", "exclude_users_service_account", "url", "filter_group"]
-    search_fields = ["name", "url"]
-    ordering = ["name", "url"]
+    filterset_fields = OutgoingSyncProviderViewSet.filterset_fields + [
+        "url",
+    ]
+    search_fields = OutgoingSyncProviderViewSet.search_fields + [
+        "url",
+    ]
     sync_task = scim_sync
     sync_objects_task = scim_sync_objects

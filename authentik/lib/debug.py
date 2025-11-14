@@ -1,3 +1,5 @@
+from typing import Any
+
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -5,11 +7,11 @@ from authentik.lib.config import CONFIG
 LOGGER = get_logger()
 
 
-def start_debug_server(**kwargs) -> bool:
+def start_debug_server(**kwargs: Any) -> bool:
     """Attempt to start a debugpy server in the current process.
     Returns true if the server was started successfully, otherwise false"""
     if not CONFIG.get_bool("debug") and not CONFIG.get_bool("debugger"):
-        return
+        return False
     try:
         import debugpy
     except ImportError:
