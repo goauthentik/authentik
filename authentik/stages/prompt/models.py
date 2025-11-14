@@ -329,7 +329,7 @@ class Prompt(SerializerModel):
 
 
 class PromptStage(Stage):
-    """Define arbitrary prompts for the user."""
+    """Prompt the user to enter information."""
 
     fields = models.ManyToManyField(Prompt)
 
