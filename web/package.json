@@ -6,8 +6,9 @@
     "scripts": {
         "build": "wireit",
         "build-proxy": "wireit",
+        "build:locales": "wireit",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "lit-localize extract",
         "format": "wireit",
         "lint": "eslint --fix .",
@@ -16,8 +17,6 @@
         "lint:lockfile": "wireit",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
-        "locales": "wireit",
-        "locales:build": "lit-localize build",
         "precommit": "wireit",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u .",
@@ -27,7 +26,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "tsc": "wireit",
-        "watch": "run-s locales esbuild:watch"
+        "watch": "run-s build:locales bundler:watch"
     },
     "type": "module",
     "exports": {
@@ -228,7 +227,7 @@
                 "./dist/styles/**"
             ],
             "dependencies": [
-                "locales",
+                "build:locales",
                 "build:sfe"
             ],
             "env": {
@@ -241,13 +240,13 @@
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
             "dependencies": [
-                "locales"
+                "build:locales"
             ]
         },
         "locales:repair": {
             "command": "prettier --write ./src/locale-codes.ts"
         },
-        "locales": {
+        "build:locales": {
             "command": "node scripts/build-locales.mjs",
             "files": [
                 "./xliff/*.xlf"
@@ -266,7 +265,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "locales"
+                "build:locales"
             ]
         },
         "lint:lockfile": {
@@ -298,7 +297,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "locales"
+                "build:locales"
             ]
         }
     },

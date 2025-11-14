@@ -93,7 +93,7 @@ if (upToDate) {
 }
 
 logger.info("Locale ./src is out-of-date, rebuilding...");
-const status = spawnSync("npm", ["run", "locales:build"], { encoding: "utf8" });
+const status = spawnSync("npx", ["lit-localize", "build"], { encoding: "utf8" });
 
 // Count all the missing message warnings
 const counts = status.stderr.split("\n").reduce((acc, line) => {
