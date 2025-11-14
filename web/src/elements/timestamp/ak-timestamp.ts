@@ -1,16 +1,25 @@
 import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { html, nothing } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-timestamp")
 export class AKTimestamp extends AKElement {
     #timestamp: Date | null = null;
 
-    @property({ attribute: false })
+    @property({
+        attribute: false,
+        hasChanged(value, previousValue) {
+            if (value instanceof Date && previousValue instanceof Date) {
+                return value.getTime() !== previousValue.getTime();
+            }
+            return value !== previousValue;
+        },
+    })
     public get timestamp(): Date | null {
         return this.#timestamp;
     }
@@ -19,33 +28,83 @@ export class AKTimestamp extends AKElement {
         this.#timestamp = value ? (value instanceof Date ? value : new Date(value)) : null;
     }
 
-    @property({ type: Boolean })
+    @intersectionObserver()
+    public visible = false;
+
+    @property({ type: Boolean, useDefault: true })
     public elapsed: boolean = true;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, useDefault: true })
     public datetime: boolean = false;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, useDefault: true })
     public refresh: boolean = false;
 
     #interval = -1;
+    #animationFrameID = -1;
 
     public connectedCallback(): void {
         super.connectedCallback();
-
-        if (this.refresh) {
-            this.#interval = self.setInterval(() => {
-                this.requestUpdate();
-            }, 1000 * 60);
-        }
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        if (this.#interval !== -1) {
-            self.clearInterval(this.#interval);
+        this.stopInterval();
+        cancelAnimationFrame(this.#animationFrameID);
+    }
+
+    public updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (changed.has("visible") || changed.has("timestamp") || changed.has("refresh")) {
+            cancelAnimationFrame(this.#animationFrameID);
+            this.#animationFrameID = requestAnimationFrame(this.startInterval);
         }
     }
+
+    public stopInterval = () => {
+        clearInterval(this.#interval);
+    };
+
+    public startInterval = () => {
+        this.stopInterval();
+
+        if (
+            !this.timestamp ||
+            !this.refresh ||
+            document.visibilityState !== "visible" ||
+            !this.visible
+        ) {
+            return;
+        }
+
+        const moment = this.timestamp.getTime();
+        const start = Date.now();
+
+        // Adjust interval based on how close we are to the minute mark,
+        // allowing the elapsed time to at first update every second for the first minute,
+        // then every minute afterwards.
+
+        if (start >= moment - 60000 && start <= moment + 60000) {
+            this.#interval = self.setInterval(() => {
+                if (!this.visible || document.visibilityState !== "visible") return;
+
+                this.requestUpdate();
+
+                const now = Date.now();
+
+                if (now < moment - 60000 || now > moment + 60000) {
+                    this.startInterval();
+                }
+            }, 1000);
+        } else {
+            this.#interval = self.setInterval(() => {
+                if (!this.visible || document.visibilityState !== "visible") return;
+
+                this.requestUpdate();
+            }, 1000 * 60);
+        }
+    };
 
     public render() {
         if (!this.timestamp || this.timestamp.getTime() === 0) {
