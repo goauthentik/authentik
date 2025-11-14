@@ -11,6 +11,7 @@
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { PackageRoot } from "#paths/node";
 
@@ -22,6 +23,7 @@ import { TransformLitLocalizer } from "@lit/localize-tools/lib/modes/transform.j
 
 const pseudoLocale = /** @type {Locale} */ ("pseudo-LOCALE");
 const targetLocales = [pseudoLocale];
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * @type {ConfigFile}
