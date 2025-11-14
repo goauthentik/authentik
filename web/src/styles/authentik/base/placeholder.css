@@ -1,0 +1,35 @@
+:not(:defined) {
+    outline: 1px dashed orange;
+}
+
+ak-flow-executor:not(:defined) {
+    display: flex;
+    min-height: 100dvh;
+    flex-flow: column nowrap;
+}
+
+.ak-c-placeholder {
+    color: var(--ak-c-placeholder--Color, var(--pf-global--Color--100));
+    font-family:
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    font-size: xx-large;
+    text-align: center;
+    border: 1px dashed red;
+    place-content: center;
+    place-items: center;
+    place-self: center;
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column wrap;
+    gap: 2rem;
+
+    .pf-c-spinner {
+        --pf-c-spinner--diameter: 5rem;
+    }
+}
