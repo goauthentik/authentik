@@ -1,0 +1,69 @@
+.pf-c-table {
+    --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+    --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+}
+
+.pf-c-toolbar {
+    .pf-c-button.pf-m-danger:disabled {
+        opacity: var(--ak-table--toolbar--bulk-delete-disabled-opacity, 0.5);
+    }
+
+    @media (prefers-contrast: more) {
+        --ak-table--toolbar--bulk-delete-disabled-opacity: 0.75;
+    }
+}
+
+.pf-c-table__sort.pf-m-selected {
+    text-decoration: underline;
+
+    .pf-c-table__button .pf-c-table__text {
+        --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+
+        --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+    }
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) .pf-c-toolbar {
+    --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
+}
+
+:host([theme="dark"]) .pf-c-pagination {
+    --pf-c-pagination--m-bottom--BackgroundColor: var(--ak-dark-background-light);
+}
+
+:host([theme="dark"]) .pf-c-table {
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-300);
+    --pf-global--Color--100: var(--ak-dark-foreground);
+    --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
+    --pf-c-table--cell--Color: var(--ak-dark-foreground);
+    --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+
+    .pf-c-table__text {
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-table__sort-indicator i {
+        color: var(--ak-dark-foreground) !important;
+    }
+
+    .pf-c-table__expandable-row.pf-m-expanded {
+        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(
+            --ak-dark-background-lighter
+        );
+    }
+
+    .pf-c-button:has(.pf-c-table__toggle-icon) {
+        background-color: transparent !important;
+
+        &:hover {
+            color: var(--pf-c-button--m-plain--hover--Color) !important;
+        }
+    }
+}
+
+/* #endregion  */

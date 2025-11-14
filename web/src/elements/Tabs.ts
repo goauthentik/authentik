@@ -95,11 +95,17 @@ export class Tabs extends AKElement {
             childList: true,
             subtree: true,
         });
+
+        this.dispatchActivateEvent();
     }
 
     public override disconnectedCallback(): void {
         this.#observer?.disconnect();
         super.disconnectedCallback();
+    }
+
+    public findActiveTabPanel(): Element | null {
+        return this.querySelector(`[slot='${this.activeTabName}']`);
     }
 
     public activateTab(nextTabName: string): void {
@@ -125,11 +131,17 @@ export class Tabs extends AKElement {
 
         this.activeTabName = nextTabName;
 
-        const page = this.querySelector(`[slot='${this.activeTabName}']`);
-        if (!page) return;
+        this.dispatchActivateEvent();
+    }
 
-        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
-        page.dispatchEvent(new CustomEvent("activate"));
+    public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
+        if (!tabPanel) {
+            console.warn("Cannot dispatch activate event, no tab panel found");
+            return;
+        }
+
+        tabPanel.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        tabPanel.dispatchEvent(new CustomEvent("activate"));
     }
 
     #delegateFocusListener = (event: FocusEvent) => {
@@ -151,18 +163,21 @@ export class Tabs extends AKElement {
 
     renderTab(slotName: string, tabPanel: Element): TemplateResult {
         return html` <li
+            part="tab-item"
             class="pf-c-tabs__item ${slotName === this.activeTabName ? CURRENT_CLASS : ""}"
         >
             <button
                 type="button"
                 role="tab"
+                part="tab-button"
                 id=${`${slotName}-tab`}
+                name=${slotName}
                 aria-selected=${slotName === this.activeTabName ? "true" : "false"}
                 aria-controls=${ifPresent(slotName)}
                 class="pf-c-tabs__link"
                 @click=${() => this.activateTab(slotName)}
             >
-                <span class="pf-c-tabs__item-text"> ${tabPanel.getAttribute("aria-label")}</span>
+                <span class="pf-c-tabs__item-text">${tabPanel.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
