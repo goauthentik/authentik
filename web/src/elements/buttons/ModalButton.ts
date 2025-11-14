@@ -65,6 +65,9 @@ export abstract class ModalButton extends AKElement {
         PFContent,
         MODAL_BUTTON_STYLES,
         css`
+            .pf-c-button.pf-m-primary {
+                --pf-c-button--m-primary--BackgroundColor: var(--pf-global--primary-color--100);
+            }
             .locked {
                 overflow-y: hidden !important;
             }

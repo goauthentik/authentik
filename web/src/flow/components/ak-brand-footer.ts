@@ -18,7 +18,10 @@ const styles = css`
     }
     ul.pf-c-list.pf-m-inline {
         justify-content: center;
-        padding: calc(var(--pf-global--spacer--xs) / 2) 0px;
+        padding: 0;
+        padding-block-start: calc(var(--pf-global--spacer--xs) / 2);
+        column-gap: var(--pf-global--spacer--xl);
+        row-gap: var(--pf-global--spacer--md);
     }
 `;
 
@@ -32,7 +35,7 @@ export class BrandLinks extends AKElement {
     render() {
         const links = [...(this.links ?? [])];
 
-        return html` <ul aria-label=${msg("Site links")} class="pf-c-list pf-m-inline">
+        return html`<ul aria-label=${msg("Site links")} class="pf-c-list pf-m-inline" part="list">
             ${map(links, (link) => {
                 const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
 
@@ -40,11 +43,11 @@ export class BrandLinks extends AKElement {
                     return html`<li><a href="${link.href}">${children}</a></li>`;
                 }
 
-                return html`<li>
-                    <span> ${children}</span>
+                return html`<li part="list-item">
+                    <span>${children}</span>
                 </li>`;
             })}
-            <li><span>${msg("Powered by authentik")}</span></li>
+            <li part="list-item"><span>${msg("Powered by authentik")}</span></li>
         </ul>`;
     }
 }
