@@ -24,9 +24,9 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Microsoft365 with authentik, you need to create a property mapping and an application/provider pair in authentik.
+To support the integration of Microsoft365 with authentik, you need to create two property mappings and an application/provider pair in authentik.
 
-### Mapping immutable identifier for users
+### Property mapping for users' immutable identifier
 
 Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during SAML federation. This identifier is sent as the SAML `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
 
@@ -38,13 +38,13 @@ If you are using an [Active Directory source](/docs/users-sources/sources/direct
 
 If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
 
-#### Create a property mapping in authentik
+#### Create a property mapping in authentik for `ImmutableId`
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra Immutable ID`), and, optionally a friendly name.
-        - **SAML Attribute Name**: `NameID`
+        - **SAML Attribute Name**: `http://schemas.microsoft.com/claims/multipleauthn`
         - **Expression**:
 
         ```python showLineNumbers
@@ -54,6 +54,23 @@ If your users aren't synchronized from Active Directory and only exist in authen
 
         # OR for cloud-only users with email address as their immutable ID
         # return user.email
+        ```
+
+3. Click **Finish** to save the property mapping.
+
+### Create a property mapping in authentik for `AuthnContextClassRef`
+
+If MFA is configured in Microsoft365, then you also need to create a property mapping for `AuthnContextClassRef`, otherwise the user will be prompted for credentials twice.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **SAML Provider Property Mapping**.
+    - **Configure the SAML Provider Property Mapping**: provide a descriptive name (e.g. `Microsoft Entra AuthnContextClassRef`), and, optionally a friendly name.
+        - **SAML Attribute Name**: `AuthnContextClassRef`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return "http://schemas.microsoft.com/claims/multipleauthn"
         ```
 
 3. Click **Finish** to save the property mapping.
@@ -71,8 +88,9 @@ If your users aren't synchronized from Active Directory and only exist in authen
         - Set the **Audience** to `urn:federation:MicrosoftOnline`.
         - Under **Advanced protocol settings**:
             - Set **Signing Certificate** to use any available certificate.
-            - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the property mapping created in the previous section.
-            - Set the **Default NameID Property Mapping** to: `authentik default SAML Mapping: Email`.
+            - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the ImmutableID property mapping created in the previous section.
+            - Set **Default NameID Property Mapping** to: `authentik default SAML Mapping: Email`.
+            - Set **AuthnContextClassRef** to the `AuthnContextClassRef` property mapping that you created in the previous section.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -100,6 +118,8 @@ Before configuring federation, you need to set the `ImmutableId` for each user i
 If you're synchronizing users from Active Directory to authentik, the `ImmutableId` should already be set by Microsoft Entra Connect (typically from the `objectGUID`). Verify this is configured correctly before proceeding with federation.
 
 #### For cloud-only users
+
+If your users aren't synchronized from Active Directory and only exist in authentik, run the following Powershell commands:
 
 ```powershell showLineNumbers
 # 1. Connect to Microsoft Graph
