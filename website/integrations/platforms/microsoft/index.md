@@ -25,11 +25,13 @@ This documentation lists only the settings that you need to change from their de
 ## authentik configuration
 
 To support the integration of Microsoft365 with authentik, you need to:
-1. create _two property mappings_in authetnik
-2. create _an application/provider pair_ in authentik
-3. Download a certificate file
 
-### Property mapping for users' immutable identifier
+1. Create a property mapping for users' immutable identifier in authentik.
+2. Create a property mapping for MFA (_optional_)
+3. Create an application/provider pair in authentik.
+4. Download a certificate file.
+
+### 1. Property mapping for users' immutable identifier
 
 Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during SAML federation. This identifier is sent as the SAML `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
 
@@ -61,7 +63,7 @@ If your users aren't synchronized from Active Directory and only exist in authen
 
 3. Click **Finish** to save the property mapping.
 
-### Property mapping for MFA
+### 2. Property mapping for MFA
 
 If MFA is configured in Microsoft365, then you also need to create a property mapping for `AuthnContextClassRef`, otherwise the user will be prompted for credentials twice.
 
@@ -80,7 +82,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
 
 3. Click **Finish** to save the property mapping.
 
-### Create an application and provider in authentik
+### 3. Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -100,7 +102,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
 
 3. Click **Submit** to save the new application and provider.
 
-### Download certificate file
+### 4. Download certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider that you created in the previous section.
