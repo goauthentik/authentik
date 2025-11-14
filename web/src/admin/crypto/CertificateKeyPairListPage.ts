@@ -45,9 +45,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            await this.defaultEndpointConfig(),
-        );
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+            ...(await this.defaultEndpointConfig()),
+        });
     }
 
     protected columns: TableColumn[] = [

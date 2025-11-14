@@ -167,21 +167,24 @@ class TestCrypto(APITestCase):
         self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
         self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
 
-    def test_list_without_details(self):
-        """Test API List (no details)"""
+    def test_list_always_includes_details(self):
+        """Test API List always includes certificate details"""
         cert = create_test_cert()
         self.client.force_login(create_test_admin_user())
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
             ),
-            data={"name": cert.name, "include_details": False},
+            data={"name": cert.name},
         )
         self.assertEqual(200, response.status_code)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
-        self.assertEqual(api_cert["fingerprint_sha1"], None)
-        self.assertEqual(api_cert["fingerprint_sha256"], None)
+        # All details should now always be included
+        self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
+        self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
+        self.assertIsNotNone(api_cert["cert_expiry"])
+        self.assertIsNotNone(api_cert["cert_subject"])
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
