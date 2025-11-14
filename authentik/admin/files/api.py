@@ -99,7 +99,7 @@ class FileViewSet(ViewSet):
                 ) from error
             else:
                 raise ValidationError(
-                    f"S3 error during {operation}: {error_code} - {error_msg}"
+                    f"An error occurred during {operation}. Please check your storage configuration or contact support."
                 ) from error
         elif isinstance(error, BotoCoreError):
             LOGGER.error(
