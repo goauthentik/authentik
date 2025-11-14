@@ -443,12 +443,6 @@ export class FlowExecutor
                         <div class="pf-c-drawer__content" part="drawer-content">
                             <div class="pf-c-drawer__body" part="drawer-body">
                                 <div class="pf-c-login" data-layout=${layout} part="login">
-                                    ${this.loading && this.challenge
-                                        ? html`<ak-loading-overlay
-                                              class="pf-c-login__overlay"
-                                          ></ak-loading-overlay>`
-                                        : nothing}
-
                                     <header class="pf-c-login__header" part="flow-header">
                                         ${this.inspectorAvailable && !this.inspectorOpen
                                             ? html`<button
@@ -491,6 +485,9 @@ export class FlowExecutor
                                                 role="presentation"
                                             />
                                         </div>
+                                        ${this.loading && this.challenge
+                                            ? html`<ak-loading-overlay></ak-loading-overlay>`
+                                            : nothing}
                                         ${component
                                             ? until(this.renderChallenge(component))
                                             : this.renderLoading()}

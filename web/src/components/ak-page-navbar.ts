@@ -75,7 +75,7 @@ export class AKPageNavbar
             }
 
             .main-content {
-                border-bottom: var(--pf-global--BorderWidth--sm);
+                border-bottom-width: 0.5px;
                 border-bottom-style: solid;
                 border-bottom-color: var(--pf-global--BorderColor--100);
                 background-color: var(--pf-c-page__main-nav--BackgroundColor);

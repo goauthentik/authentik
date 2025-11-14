@@ -125,10 +125,11 @@ export class SidebarItem extends AKElement {
 
     renderWithChildren() {
         return html`<li
+            part="list-item-expandable"
             aria-label=${ifDefined(this.label)}
             role="heading"
             ${ref(this.#listRef)}
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+            class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
             <button
                 class="pf-c-nav__link"
@@ -165,9 +166,10 @@ export class SidebarItem extends AKElement {
 
     renderWithPathAndChildren() {
         return html`<li
+            part="list-item"
             role="presentation"
             aria-label=${ifDefined(this.label)}
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+            class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
             ${this.label}
             <button
@@ -198,6 +200,7 @@ export class SidebarItem extends AKElement {
     renderWithPath() {
         return html`
             <a
+                part="link"
                 id="sidebar-nav-link-${this.path}"
                 href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
@@ -218,6 +221,7 @@ export class SidebarItem extends AKElement {
         }
 
         return html`<li
+            part="list-item"
             role="presentation"
             aria-label=${ifDefined(this.label)}
             class="pf-c-nav__item"
