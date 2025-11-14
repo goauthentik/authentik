@@ -177,9 +177,9 @@ async function doWatch() {
     logger.info(`🔒 ${httpsURL.href}`);
 
     return () => {
-        logger.info("🛑 Shutting down build watcher...");
         logger.flush();
-        console.log("");
+        console.info("");
+        console.info("🛑 Stopping file watcher...");
 
         return buildContext.dispose();
     };
@@ -239,21 +239,38 @@ await cleanDistDirectory()
                     process.exit(0);
                 }
 
-                return new Promise((resolve) => {
+                /**
+                 * @type {Promise<void>}
+                 */
+                const signalListener = new Promise((resolve) => {
                     // We prevent multiple attempts to dispose the context
                     // because ESBuild will repeatedly restart its internal clean-up logic.
                     // However, sending a second SIGINT will still exit the process immediately.
-                    let disposing = false;
+                    let signalCount = 0;
 
                     process.on("SIGINT", () => {
-                        if (disposing) return;
-                        disposing = true;
-
-                        dispose().then(resolve);
+                        if (signalCount > 3) {
+                            // Something is taking too long and the user wants to exit now.
+                            console.log("🛑 Forcing exit...");
+                            process.exit(0);
+                        }
                     });
+
+                    process.once("SIGINT", () => {
+                        signalCount++;
+
+                        dispose().finally(() => {
+                            console.log("✅ Done!");
+
+                            resolve();
+                        });
+                    });
+
+                    logger.info("🚪 Press Ctrl+C to exit.");
                 });
+
+                return signalListener;
             })
-            .catch(() => {
-                process.exit(1);
-            }),
+            .then(() => process.exit(0))
+            .catch(() => process.exit(1)),
     );
