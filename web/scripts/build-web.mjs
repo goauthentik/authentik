@@ -19,7 +19,7 @@ import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
-import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
@@ -36,8 +36,6 @@ const publicBundledDefinitions = Object.fromEntries(
     Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
 );
 logger.info(publicBundledDefinitions, "Bundle definitions");
-
-const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
 /**
  * @type {Readonly<BuildOptions>}
@@ -198,7 +196,7 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
+    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
     const entryPoints = Object.values(EntryPoint);
 
@@ -248,7 +246,8 @@ await cleanDistDirectory()
             .then(() => {
                 process.exit(0);
             })
-            .catch(() => {
+            .catch((error) => {
                 process.exit(1);
+                logger.error(error);
             }),
     );

@@ -19,7 +19,12 @@ import { spawnSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
+import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
+
+const logger = ConsoleLogger.child({ name: "Locales 🌐" });
+const localesDirectory = "./src/locales";
+const xliffPath = "./xliff";
 
 /**
  * @type {ConfigFile}
@@ -34,8 +39,8 @@ const localizeRules = JSON.parse(
  * @returns {boolean}
  */
 function generatedFileIsUpToDateWithXliffSource(loc) {
-    const xliff = path.join("./xliff", `${loc}.xlf`);
-    const gened = path.join("./src/locales", `${loc}.ts`);
+    const xliff = path.join(xliffPath, `${loc}.xlf`);
+    const gened = path.join(localesDirectory, `${loc}.ts`);
 
     // Returns false if: the expected XLF file doesn't exist, The expected
     // generated file doesn't exist, or the XLF file is newer (has a higher date)
@@ -50,7 +55,7 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
     try {
         xlfStat = statSync(xliff);
     } catch (_error) {
-        console.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
+        logger.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
         process.exit(1);
     }
 
@@ -71,33 +76,42 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
     return genedStat.mtimeMs >= xlfStat.mtimeMs;
 }
 
+logger.info("Checking source files...");
+
+const localeList = [localizeRules.sourceLocale, ...localizeRules.targetLocales];
+
 // For all the expected files, find out if any aren't up-to-date.
-const upToDate = localizeRules.targetLocales.reduce(
+const upToDate = localeList.reduce(
     (acc, loc) => acc && generatedFileIsUpToDateWithXliffSource(loc),
     true,
 );
 
-if (!upToDate) {
-    const status = spawnSync("npm", ["run", "build-locales:build"], { encoding: "utf8" });
+if (upToDate) {
+    logger.info(`Locale ${localesDirectory} is up-to-date!`);
 
-    // Count all the missing message warnings
-    const counts = status.stderr.split("\n").reduce((acc, line) => {
-        const match = /^([\w-]+) message/.exec(line);
-        if (!match) {
-            return acc;
-        }
-        acc.set(match[1], (acc.get(match[1]) || 0) + 1);
-        return acc;
-    }, new Map());
-
-    const locales = Array.from(counts.keys());
-    locales.sort();
-
-    const report = locales
-        .map((locale) => `Locale '${locale}' has ${counts.get(locale)} missing translations`)
-        .join("\n");
-
-    console.log(`Translation tables rebuilt.\n${report}\n`);
+    process.exit(0);
 }
 
-console.log("Locale ./src is up-to-date");
+logger.info("Locale ./src is out-of-date, rebuilding...");
+const status = spawnSync("npm", ["run", "locales:build"], { encoding: "utf8" });
+
+// Count all the missing message warnings
+const counts = status.stderr.split("\n").reduce((acc, line) => {
+    const match = /^([\w-]+) message/.exec(line);
+    if (!match) {
+        return acc;
+    }
+    acc.set(match[1], (acc.get(match[1]) || 0) + 1);
+    return acc;
+}, new Map());
+
+const locales = Array.from(counts.keys());
+locales.sort();
+
+const report = locales
+    .map((locale) => `Locale '${locale}' has ${counts.get(locale)} missing translations`)
+    .join("\n");
+
+logger.info(`Translation tables rebuilt.\n${report}\n`);
+
+logger.info("Complete.");
