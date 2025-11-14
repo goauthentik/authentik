@@ -27,6 +27,7 @@ from authentik.providers.scim.clients.schema import (
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
     SCIMMapping,
     SCIMProvider,
     SCIMProviderGroup,
@@ -128,8 +129,27 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     def _update_patch(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
+        """Apply provider-specific parameters for PATCH request"""
+        if connection.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
+            for attr in ("displayName", "externalId"):
+                self._update_patch_call(group, scim_group, connection, attr)
+        else:
+            self._update_patch_call(group, scim_group, connection)
+        return self.patch_compare_users(group)
+
+    def _update_patch_call(
+        self,
+        group: Group,
+        scim_group: SCIMGroupSchema,
+        connection: SCIMProviderGroup,
+        attr: str = None,
+    ):
         """Update a group via PATCH request"""
         # Patch group's attributes instead of replacing it and re-adding users if we can
+        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
+        value = group_dict
+        if attr is not None:
+            value = group_dict[attr]
         self._request(
             "PATCH",
             f"/Groups/{connection.scim_id}",
@@ -137,8 +157,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 Operations=[
                     PatchOperation(
                         op=PatchOp.replace,
-                        path=None,
-                        value=scim_group.model_dump(mode="json", exclude_unset=True),
+                        path=attr,
+                        value=value,
                     )
                 ]
             ).model_dump(
