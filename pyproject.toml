@@ -280,6 +280,7 @@ module = [
   "authentik.tasks.*",
   "authentik.tasks.schedules.*",
   "authentik.tenants.*",
+  "guardian.*",
   "lifecycle.*",
   "tests.e2e.*",
   "tests.integration.*",
