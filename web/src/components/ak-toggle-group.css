@@ -1,0 +1,22 @@
+.pf-c-toggle-group {
+    justify-content: center;
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) {
+    .pf-c-toggle-group__button {
+        color: var(--ak-dark-foreground) !important;
+    }
+
+    .pf-c-toggle-group__button:not(.pf-m-selected) {
+        background-color: var(--ak-dark-background-light) !important;
+    }
+
+    .pf-c-toggle-group__button.pf-m-selected {
+        color: var(--ak-dark-foreground) !important;
+        background-color: var(--pf-global--primary-color--100) !important;
+    }
+}
+
+/* #endregion */

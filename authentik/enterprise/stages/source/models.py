@@ -10,7 +10,7 @@ from authentik.lib.utils.time import timedelta_string_validator
 
 
 class SourceStage(Stage):
-    """Suspend the current flow execution and send the user to a source,
+    """Suspend the current flow execution and send the user to a federated source,
     after which this flow execution is resumed."""
 
     source = models.ForeignKey("authentik_core.Source", on_delete=models.CASCADE)

@@ -1,0 +1,8 @@
+@import "../styles/authentik/components/Login/login.css";
+
+.inspector-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+}

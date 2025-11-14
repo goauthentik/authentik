@@ -15000,6 +15000,10 @@
                     "additionalProperties": true,
                     "title": "Fixed data"
                 },
+                "created_by": {
+                    "type": "integer",
+                    "title": "Created by"
+                },
                 "single_use": {
                     "type": "boolean",
                     "title": "Single use",

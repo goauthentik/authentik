@@ -1,0 +1,13 @@
+.pf-c-select {
+    --pf-c-select__toggle--before--BorderTopColor: transparent;
+    --pf-c-select__toggle--before--BorderRightColor: transparent;
+    --pf-c-select__toggle--before--BorderLeftColor: transparent;
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) .pf-c-select {
+    --pf-global--BackgroundColor--100: var(--ak-dark-background-light);
+}
+
+/* #endregion */

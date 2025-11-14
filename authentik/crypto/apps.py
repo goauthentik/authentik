@@ -2,6 +2,8 @@
 
 from datetime import UTC, datetime
 
+from dramatiq.broker import get_broker
+
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import fqdn_rand
@@ -69,6 +71,12 @@ class AuthentikCryptoConfig(ManagedAppConfig):
                 "key_data": builder.private_key,
             },
         )
+
+    @ManagedAppConfig.reconcile_global
+    def tasks_middlewares(self):
+        from authentik.crypto.tasks import CertificateWatcherMiddleware
+
+        get_broker().add_middleware(CertificateWatcherMiddleware())
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
