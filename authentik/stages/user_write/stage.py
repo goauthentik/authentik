@@ -115,7 +115,11 @@ class UserWriteStageView(StageView):
                 continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
-                user.attributes.update(value)
+                if isinstance(value, dict):
+                    sanitized_values = {k: sanitize_item(v) for k, v in value.items()}
+                    user.attributes.update(sanitized_values)
+                else:
+                    user.attributes.update(value)
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
