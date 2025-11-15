@@ -77,9 +77,12 @@ export class NativeLogoutStage extends BaseStage<
 
         // For POST binding, render auto-submit form
         if (this.challenge.binding === SAMLBindingsEnum.Post) {
+            const messageKey = this.challenge.samlResponse ? "response" : "request";
             return html`<ak-flow-card .challenge=${this.challenge} loading>
                 <span slot="title"
-                    >${msg(str`Posting logout request to SAML provider: ${providerName}`)}</span
+                    >${msg(
+                        str`Posting logout ${messageKey} to SAML provider: ${providerName}`,
+                    )}</span
                 >
                 <form
                     class="pf-c-form"
@@ -87,11 +90,20 @@ export class NativeLogoutStage extends BaseStage<
                     method="post"
                     ${ref(this.#formRef)}
                 >
-                    <input
-                        type="hidden"
-                        name="SAMLRequest"
-                        value="${ifDefined(this.challenge.samlRequest)}"
-                    />
+                    ${this.challenge.samlRequest
+                        ? html`<input
+                              type="hidden"
+                              name="SAMLRequest"
+                              value="${this.challenge.samlRequest}"
+                          />`
+                        : nothing}
+                    ${this.challenge.samlResponse
+                        ? html`<input
+                              type="hidden"
+                              name="SAMLResponse"
+                              value="${this.challenge.samlResponse}"
+                          />`
+                        : nothing}
                     ${this.challenge.relayState
                         ? html`<input
                               type="hidden"
