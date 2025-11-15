@@ -217,7 +217,6 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = [
-  "authentik.admin.*",
   "authentik.api.*",
   "authentik.blueprints.*",
   "authentik.brands.*",

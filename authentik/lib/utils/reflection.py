@@ -1,10 +1,12 @@
 """authentik lib reflection utilities"""
 
 import os
+from collections.abc import Generator
 from importlib import import_module
 from pathlib import Path
 from tempfile import gettempdir
 
+from django.apps.config import AppConfig
 from django.conf import settings
 from django.utils.module_loading import import_string
 
@@ -41,7 +43,7 @@ def path_to_class(path: str = "") -> type:
     return _class
 
 
-def get_apps():
+def get_apps() -> Generator[AppConfig]:
     """Get list of all authentik apps"""
     from django.apps.registry import apps
 
