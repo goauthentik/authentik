@@ -16,7 +16,9 @@
 }
 
 .pf-c-page {
-    background-color: transparent;
+    background-color: transparent !important;
+    --ak-user-interface--slant-m-light: var(--pf-global--BackgroundColor--100);
+    --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--200);
 }
 
 .display-none {
@@ -33,23 +35,24 @@
 }
 
 .background-wrapper {
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     position: fixed;
     z-index: -1;
     top: 0;
     left: 0;
-    background-color: var(--pf-c-page--BackgroundColor) !important;
+    background-color: var(--ak-user-interface--slant-m-dark);
 }
 
 .background-default-slant {
-    background-color: white; /*var(--ak-accent);*/
+    background-color: var(--ak-user-interface--slant-m-light);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
-    height: 50vh;
+    height: 50dvh;
 }
 
-:host([theme="dark"]) .background-default-slant {
-    background-color: black;
+:host([theme="dark"]) .pf-c-page {
+    --ak-user-interface--slant-m-light: var(--pf-global--BackgroundColor--200);
+    --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--100);
 }
 
 ak-locale-context {

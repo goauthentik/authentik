@@ -11,6 +11,6 @@
 
 {% block body %}
 <ak-rac token="{{ url_kwargs.token }}" endpointName="{{ token.endpoint.name }}">
-  <ak-loading></ak-loading>
+    {% include "base/placeholder.html" %}
 </ak-rac>
 {% endblock %}

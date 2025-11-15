@@ -73,8 +73,8 @@ export class FlowViewPage extends AKElement {
         if (!this.flow) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs exportparts="container:tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"

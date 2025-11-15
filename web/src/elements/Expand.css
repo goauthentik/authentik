@@ -1,6 +1,7 @@
 .pf-c-expandable-section {
     display: grid;
     grid-template-columns: 1fr;
+    box-shadow: none !important;
 }
 .pf-c-expandable-section__toggle {
     user-select: none;

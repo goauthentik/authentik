@@ -2,16 +2,14 @@ import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
-import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
@@ -19,28 +17,7 @@ export class Tabs extends AKElement {
         ...LitElement.shadowRootOptions,
         delegatesFocus: true,
     };
-    static styles: CSSResult[] = [
-        PFGlobal,
-        PFTabs,
-        css`
-            :host([vertical]) {
-                display: grid;
-                grid-template-columns: auto 1fr;
-
-                .pf-c-tabs {
-                    width: auto !important;
-                }
-
-                .pf-c-tabs__list {
-                    height: 100%;
-                }
-
-                .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [Styles];
 
     @property({ type: String })
     public pageIdentifier = "page";
@@ -187,7 +164,10 @@ export class Tabs extends AKElement {
             return html`<h1>${msg("no tabs defined")}</h1>`;
         }
 
-        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
+        return html`<div
+                class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}"
+                part="container ${this.vertical ? "column" : "row"}"
+            >
                 <ul
                     class="pf-c-tabs__list"
                     role="tablist"

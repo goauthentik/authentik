@@ -12,11 +12,11 @@
     ) !important;
 }
 
-.pf-c-notification-drawer__header {
+:host([theme="dark"]) .pf-c-notification-drawer__header {
     color: var(--ak-dark-foreground);
 }
 
-.pf-c-notification-drawer__list-item {
+:host([theme="dark"]) .pf-c-notification-drawer__list-item {
     color: var(--ak-dark-foreground);
     --pf-c-notification-drawer__list-item--BorderBottomColor: var(--pf-global--Color--dark-200);
 }

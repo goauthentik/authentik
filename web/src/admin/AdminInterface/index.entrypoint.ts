@@ -31,7 +31,7 @@ import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -150,7 +150,6 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
-            "pf-m-light": this.activeTheme === UiThemeEnum.Light,
             "pf-m-expanded": this.sidebarOpen,
             "pf-m-collapsed": !this.sidebarOpen,
         };

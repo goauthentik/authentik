@@ -1,0 +1,228 @@
+/**
+ * @see PatternFly's variables.css for reference:
+ *
+ * @remarks
+ * PF4 components have an assumption of a CSS order which doesn't align with
+ * how we structure our web component styles.
+ * Colors which have been adjusted are indicated in the comments.
+ *
+ */
+
+/* #region Palette */
+
+/* #region Monochrome */
+
+html[data-theme="dark"] {
+    --pf-global--palette--black-50: #e0e0e0;
+    --pf-global--palette--black-100: #c6c7c8;
+    --pf-global--palette--black-200: #aaabac;
+    --pf-global--palette--black-300: #868789;
+    --pf-global--palette--black-400: #57585a;
+    --pf-global--palette--black-500: #444548;
+    --pf-global--palette--black-600: #36373a;
+    --pf-global--palette--black-700: #26292d;
+    --pf-global--palette--black-800: #1b1d21;
+    --pf-global--palette--black-900: #0f1214;
+}
+
+/* #endregion */
+
+/* #region Red */
+
+html[data-theme="dark"] {
+    --pf-global--palette--red-9999: #fe5142;
+    --pf-global--palette--red-8888: #ff7468;
+}
+
+/* #endregion */
+
+/* #region Blue */
+
+html[data-theme="dark"] {
+    --pf-global--palette--blue-300: #1fa7f8;
+}
+
+/* #endregion */
+
+/* #region Background */
+
+html[data-theme="dark"] {
+    --pf-global--BackgroundColor--100: #1b1d21;
+    --pf-global--BackgroundColor--150: #212427;
+    --pf-global--BackgroundColor--200: #0f1214;
+    --pf-global--BackgroundColor--300: #26292d;
+    --pf-global--BackgroundColor--400: #36373a;
+    --pf-global--BackgroundColor--light-100: #1b1d21;
+    --pf-global--BackgroundColor--light-200: #0f1214;
+    --pf-global--BackgroundColor--light-300: #26292d;
+    --pf-global--BackgroundColor--dark-100: #1b1d21;
+    --pf-global--BackgroundColor--dark-200: #0f1214;
+    --pf-global--BackgroundColor--dark-300: #26292d;
+    --pf-global--BackgroundColor--dark-400: #36373a;
+}
+
+/* #endregion */
+
+/* #region Border */
+
+html[data-theme="dark"] {
+    --pf-global--BorderColor--100: #444548;
+    --pf-global--BorderColor--200: #444548;
+    --pf-global--BorderColor--300: #57585a;
+    --pf-global--BorderColor--400: #aaabac;
+}
+
+/* #endregion */
+
+/* #region Base */
+
+html[data-theme="dark"] {
+    --pf-global--Color--100: #e0e0e0;
+    --pf-global--Color--200: #aaabac;
+}
+
+/* #endregion */
+
+/* #region Active */
+
+html[data-theme="dark"] {
+    --pf-global--active-color--100: #1fa7f8;
+}
+
+/* #endregion */
+
+/* #region Primary */
+
+html[data-theme="dark"] {
+    --pf-global--primary-color--300: #06c;
+    /* --pf-global--primary-color--100: #1fa7f8; */
+    --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+}
+
+/* #endregion */
+
+/* #region Link */
+
+html[data-theme="dark"] {
+    --pf-global--link--Color: #1fa7f8;
+    --pf-global--link--Color--hover: #73bcf7;
+    --pf-global--link--Color--visited: #a18fff;
+}
+
+/* #endregion */
+
+/* #region Disabled */
+
+html[data-theme="dark"] {
+    --pf-global--disabled-color--100: #57585a;
+    --pf-global--disabled-color--200: #444548;
+    --pf-global--disabled-color--300: #aaabac;
+}
+
+/* #endregion */
+
+/* #region Icon */
+
+html[data-theme="dark"] {
+    --pf-global--icon--Color--light: #aaabac;
+    --pf-global--icon--Color--dark: #aaabac;
+}
+
+/* #endregion */
+
+/* #region Base */
+
+html[data-theme="dark"] {
+    --pf-global--Color--dark-100: #e0e0e0;
+    --pf-global--Color--dark-200: #aaabac;
+}
+
+/* #endregion */
+
+/* #region Light */
+
+html[data-theme="dark"] {
+    --pf-global--Color--light-100: #e0e0e0;
+    --pf-global--Color--light-200: #aaabac;
+    --pf-global--Color--light-300: #3c3f42;
+}
+
+/* #endregion */
+
+/* #region Border */
+
+html[data-theme="dark"] {
+    --pf-global--BorderColor--dark-100: #444548;
+    --pf-global--BorderColor--light-100: #444548;
+}
+
+/* #endregion */
+
+/* #region Primary */
+
+html[data-theme="dark"] {
+    --pf-global--primary-color--light-100: #1fa7f8;
+    --pf-global--primary-color--dark-100: #1fa7f8;
+}
+
+/* #endregion */
+
+/* #region Link */
+
+html[data-theme="dark"] {
+    --pf-global--link--Color--light: #1fa7f8;
+    --pf-global--link--Color--light--hover: #73bcf7;
+    --pf-global--link--Color--dark: #1fa7f8;
+    --pf-global--link--Color--dark--hover: #73bcf7;
+}
+
+/* #endregion */
+
+/* #region Dispositions */
+
+/* TODO: Revisit this after PF 5. */
+
+html[data-theme="dark"] {
+    --pf-global--default-color--100: var(--pf-global--palette--cyan-100);
+    --pf-global--default-color--300: var(--pf-global--palette--cyan-200);
+}
+
+/* #endregion */
+
+/* #region Info */
+
+html[data-theme="dark"] {
+    --pf-global--info-color--100: var(--pf-global--palette--blue-200);
+    --pf-global--info-color--200: var(--pf-global--palette--blue-50);
+}
+
+/* #endregion */
+
+/* #region Warning */
+
+html[data-theme="dark"] {
+    --pf-global--warning-color--100: #f0ab00;
+    /* --pf-global--warning-color--100: var(--pf-global--palette--gold-300); */
+    --pf-global--warning-color--200: #f4c145;
+    /* --pf-global--warning-color--200: var(--pf-global--palette--gold-50); */
+}
+
+/* #endregion */
+
+/* #region Danger */
+
+html[data-theme="dark"] {
+    --pf-global--danger-color--100: var(--pf-global--palette--red-100);
+    --pf-global--danger-color--200: var(--pf-global--palette--red-50);
+}
+
+/* #endregion */
+
+/* #region Success */
+
+html[data-theme="dark"] {
+    --pf-global--success-color--100: #5ba352;
+    --pf-global--success-color--200: var(--pf-global--palette--green-50);
+}
+
+/* #endregion */
