@@ -180,15 +180,6 @@ export function renderForm({
                     )}
                 ></ak-radio-input>
                 <ak-text-input
-                    label=${msg("Issuer")}
-                    input-hint="code"
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as Entity ID.")}
-                ></ak-text-input>
-                <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
                     placeholder="https://..."
@@ -412,6 +403,15 @@ export function renderForm({
                     .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
+                    )}
+                ></ak-text-input>
+                <ak-text-input
+                    label=${msg("EntityID/Issuer override")}
+                    name="issuer"
+                    value="${ifDefined(provider.issuer ?? undefined)}"
+                    .errorMessages=${errors.issuer}
+                    help=${msg(
+                        "Input a value to set a custom EntityID/Issuer. defaults is https://<your-domain>/application/saml/<application-slug>/",
                     )}
                 ></ak-text-input>
                 <ak-form-element-horizontal
