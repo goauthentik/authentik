@@ -17,17 +17,17 @@ export const LOCALES = RAW_LOCALES.map((locale) =>
     locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale,
 );
 
-export function getBestMatchLocale(locale: string): AkLocale | undefined {
-    return LOCALES.find((l) => l.match.test(locale));
+export function getBestMatchLocale(locale: string): AkLocale | null {
+    return LOCALES.find((l) => l.match.test(locale)) || null;
 }
 
 // This looks weird, but it's sensible: we have several candidates, and we want to find the first
 // one that has a supported locale. Then, from *that*, we have to extract that first supported
 // locale.
 
-export function findSupportedLocale(candidates: string[]) {
+export function findSupportedLocale(candidates: string[]): AkLocale | null {
     const candidate = candidates.find((candidate: string) => getBestMatchLocale(candidate));
-    return candidate ? getBestMatchLocale(candidate) : undefined;
+    return candidate ? getBestMatchLocale(candidate) : null;
 }
 
 export function localeCodeFromUrl(param = "locale") {
