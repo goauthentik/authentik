@@ -139,6 +139,42 @@
                 {
                     "type": "object",
                     "required": [
+                        "model"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_blueprints.metacleanblueprint"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_blueprints.metacleanblueprint_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_blueprints.metacleanblueprint"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
                         "model",
                         "identifiers"
                     ],
@@ -4502,6 +4538,43 @@
                             "change_metaapplyblueprint",
                             "delete_metaapplyblueprint",
                             "view_metaapplyblueprint"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_blueprints.metacleanblueprint": {
+            "type": "object",
+            "properties": {
+                "model_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Model name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_blueprints.metacleanblueprint_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_metacleanblueprint",
+                            "change_metacleanblueprint",
+                            "delete_metacleanblueprint",
+                            "view_metacleanblueprint"
                         ]
                     },
                     "user": {
