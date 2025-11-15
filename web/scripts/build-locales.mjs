@@ -20,13 +20,15 @@ import path, { resolve } from "node:path";
 
 import { generatePseudoLocaleModule } from "./pseudolocalize.mjs";
 
-// import localizeRules from "../lit-localize.json" with { type: "json" };
 import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
 
 import { readConfigFileAndWriteSchema } from "@lit/localize-tools/lib/config.js";
 import { RuntimeLitLocalizer } from "@lit/localize-tools/lib/modes/runtime.js";
 
+//#region Setup
+
+const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_-]+)\sis\smissing/;
 const logger = ConsoleLogger.child({ name: "Locales" });
 
 const localizeRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
@@ -43,6 +45,17 @@ const EmittedLocalesDirectory = resolve(
     /** @type {string} */ (localizeRules.output.outputDir),
 );
 
+const targetLocales = localizeRules.targetLocales.filter((localeCode) => {
+    return localeCode !== "pseudo-LOCALE";
+});
+
+//#endregion
+
+//#region Utilities
+
+/**
+ * Cleans the emitted locales directory.
+ */
 async function cleanEmittedLocales() {
     logger.info("♻️ Cleaning previously emitted locales...");
     logger.info(`♻️ ${EmittedLocalesDirectory}`);
@@ -113,10 +126,6 @@ async function checkIfEmittedFileCurrent(localeCode) {
 async function checkIfLocalesAreCurrent() {
     logger.info("Reading locale configuration...");
 
-    const targetLocales = localizeRules.targetLocales.filter((localeCode) => {
-        return localeCode !== "pseudo-LOCALE";
-    });
-
     logger.info(`Checking ${targetLocales.length} source files...`);
 
     let outOfDateCount = 0;
@@ -141,15 +150,55 @@ export async function generateLocaleModules() {
 
     logger.info("Generating locale modules...");
 
-    const localizer = new RuntimeLitLocalizer({
-        ...localizeRules,
-        output: /** @type {RuntimeOutputConfig} */ (localizeRules.output),
-    });
+    /**
+     * @type {Map<string, number>}
+     */
+    const localeWarnings = new Map();
+
+    const initialConsoleWarn = console.warn;
+
+    console.warn = (arg0, ...args) => {
+        if (typeof arg0 !== "string") {
+            initialConsoleWarn(arg0, ...args);
+            return;
+        }
+
+        const [, matchedLocale] = arg0.match(missingMessagePattern) || [];
+
+        if (matchedLocale) {
+            const count = localeWarnings.get(matchedLocale) || 0;
+
+            localeWarnings.set(matchedLocale, count + 1);
+
+            return;
+        }
+
+        initialConsoleWarn(arg0, ...args);
+    };
+
+    // @ts-expect-error: Type is too broad.
+    const localizer = new RuntimeLitLocalizer(localizeRules);
 
     await localizer.build();
 
+    const report = Array.from(localeWarnings)
+        .filter(([, count]) => count)
+        .sort(([, totalsA], [, totalsB]) => {
+            return totalsB - totalsA;
+        })
+        .map(([locale, count]) => `${locale}: ${count.toLocaleString()}`)
+        .join("\n");
+
+    logger.info(`Missing translations:\n${report}`);
+
+    localizer.assertTranslationsAreValid();
+
     logger.info("Complete.");
 }
+
+//#endregion
+
+//#region Commands
 
 async function delegateCommand() {
     const command = process.argv[2];
@@ -160,7 +209,7 @@ async function delegateCommand() {
         case "--check":
             return checkIfLocalesAreCurrent();
         case "--force":
-            return generateLocaleModules();
+            return cleanEmittedLocales().then(generateLocaleModules);
     }
 
     const upToDate = await checkIfLocalesAreCurrent();
@@ -184,3 +233,5 @@ await delegateCommand()
         logger.error(`Error during locale build: ${error}`);
         process.exit(1);
     });
+
+//#endregion

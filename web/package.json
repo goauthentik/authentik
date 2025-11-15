@@ -6,7 +6,7 @@
     "scripts": {
         "build": "wireit",
         "build-proxy": "wireit",
-        "build:locales": "wireit",
+        "build:locales": "node scripts/build-locales.mjs",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
         "bundler:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "lit-localize extract",
@@ -245,16 +245,6 @@
         },
         "locales:repair": {
             "command": "prettier --write ./src/locale-codes.ts"
-        },
-        "build:locales": {
-            "command": "node scripts/build-locales.mjs",
-            "files": [
-                "./xliff/*.xlf"
-            ],
-            "output": [
-                "./src/locales/*.ts",
-                "./src/locale-codes.ts"
-            ]
         },
         "lint:components": {
             "command": "lit-analyzer src"
