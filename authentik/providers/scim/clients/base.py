@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
@@ -27,6 +28,9 @@ from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMProvider
 if TYPE_CHECKING:
     from django.db.models import Model
     from pydantic import BaseModel
+
+# Cache timeout for ServiceProviderConfig (1 hour)
+SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT = 3600
 
 
 class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
@@ -88,16 +92,40 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
+        cache_key = f"scim_provider_config_{self.provider.pk}"
+
+        # Check cache first
+        cached_config = cache.get(cache_key)
+        if cached_config is not None:
+            return cached_config
+
+        # Attempt to fetch from remote
         path = "/ServiceProviderConfig"
         if self.provider.compatibility_mode == SCIMCompatibilityMode.SALESFORCE:
             path = "/ServiceProviderConfigs"
+
         try:
             config = ServiceProviderConfiguration.model_validate(self._request("GET", path))
             if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
                 config.patch.supported = False
             if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
                 config.filter.supported = True
+
+            # Cache the successfully fetched config
+            cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
             return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
-            self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
+            # Check if we've already logged this failure
+            log_cache_key = f"scim_provider_config_log_{self.provider.pk}"
+            if not cache.get(log_cache_key):
+                self.logger.warning(
+                    "failed to get ServiceProviderConfig, using default",
+                    exc=exc,
+                    provider=self.provider.name,
+                )
+                # Cache the fact that we logged this, so we don't spam logs
+                cache.set(log_cache_key, True, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
+
+            # Cache the default config so we don't keep retrying
+            cache.set(cache_key, default_config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
             return default_config
