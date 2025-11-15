@@ -21,6 +21,13 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, f
 		a.log.WithError(err).Warning("failed to create state")
 		return
 	}
+
+	// Add CORS headers if origin is allowed
+	if a.isOriginAllowed(r) {
+		a.addCORSHeaders(rw, r)
+		return
+	}
+
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
 
