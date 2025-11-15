@@ -1,5 +1,12 @@
 from django.db.models import TextChoices
-from rest_framework.serializers import BooleanField, CharField, ChoiceField, ListField, Serializer
+from rest_framework.serializers import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    FloatField,
+    ListField,
+    Serializer,
+)
 
 from authentik.core.api.utils import JSONDictField
 
@@ -16,19 +23,34 @@ class OSFamily(TextChoices):
 
 
 class DiskSerializer(Serializer):
-    encryption = BooleanField()
+    name = CharField(required=True)
+    label = CharField(required=False, allow_blank=True)
+    capacity_total = FloatField(required=False)
+    capacity_used = FloatField(required=False)
+    encryption = BooleanField(default=False, required=False)
 
 
 class OperatingSystemSerializer(Serializer):
-    firewall_enabled = BooleanField()
-    family = ChoiceField(OSFamily.choices)
-    name = CharField()
-    version = CharField()
+    family = ChoiceField(OSFamily.choices, required=True)
+    name = CharField(required=False)
+    version = CharField(required=False)
+    arch = CharField(required=True)
+
+
+class NetworkInterfaceSerializer(Serializer):
+    name = CharField(required=True)
+    hardware_address = CharField(required=True)
+    # TODO: allow multiple IPs per interface
+    ip_address = CharField(required=False)
+    netmask = CharField(required=False)
+    gateway = CharField(required=False)
+    dns_servers = ListField(child=CharField(), allow_empty=True)
 
 
 class NetworkSerializer(Serializer):
     hostname = CharField()
-    dns_servers = ListField(child=CharField(), allow_empty=True)
+    firewall_enabled = BooleanField()
+    interfaces = ListField(child=NetworkInterfaceSerializer(), allow_empty=True)
 
 
 class HardwareSerializer(Serializer):
@@ -38,8 +60,10 @@ class HardwareSerializer(Serializer):
 
 
 class SoftwareSerializer(Serializer):
-    name = CharField()
+    name = CharField(required=True)
     version = CharField()
+    # Package manager/source for this software installation
+    source = CharField(required=True)
 
 
 class DeviceFacts(Serializer):

@@ -5038,13 +5038,7 @@ paths:
         required: true
       responses:
         '204':
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: {}
-                description: Unspecified response body
-          description: ''
+          description: Successfully checked in
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -35638,17 +35632,40 @@ components:
     Disk:
       type: object
       properties:
+        name:
+          type: string
+        label:
+          type: string
+        capacity_total:
+          type: number
+          format: double
+        capacity_used:
+          type: number
+          format: double
         encryption:
           type: boolean
+          default: false
       required:
-      - encryption
+      - name
     DiskRequest:
       type: object
       properties:
+        name:
+          type: string
+          minLength: 1
+        label:
+          type: string
+        capacity_total:
+          type: number
+          format: double
+        capacity_used:
+          type: number
+          format: double
         encryption:
           type: boolean
+          default: false
       required:
-      - encryption
+      - name
     DockerServiceConnection:
       type: object
       description: DockerServiceConnection Serializer
@@ -40800,13 +40817,16 @@ components:
       properties:
         hostname:
           type: string
-        dns_servers:
+        firewall_enabled:
+          type: boolean
+        interfaces:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/NetworkInterface'
       required:
-      - dns_servers
+      - firewall_enabled
       - hostname
+      - interfaces
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -40814,10 +40834,43 @@ components:
       - bind_asn_network
       - bind_asn_network_ip
       type: string
-    NetworkRequest:
+    NetworkInterface:
       type: object
       properties:
-        hostname:
+        name:
+          type: string
+        hardware_address:
+          type: string
+        ip_address:
+          type: string
+        netmask:
+          type: string
+        gateway:
+          type: string
+        dns_servers:
+          type: array
+          items:
+            type: string
+      required:
+      - dns_servers
+      - hardware_address
+      - name
+    NetworkInterfaceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        hardware_address:
+          type: string
+          minLength: 1
+        ip_address:
+          type: string
+          minLength: 1
+        netmask:
+          type: string
+          minLength: 1
+        gateway:
           type: string
           minLength: 1
         dns_servers:
@@ -40827,7 +40880,24 @@ components:
             minLength: 1
       required:
       - dns_servers
+      - hardware_address
+      - name
+    NetworkRequest:
+      type: object
+      properties:
+        hostname:
+          type: string
+          minLength: 1
+        firewall_enabled:
+          type: boolean
+        interfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkInterfaceRequest'
+      required:
+      - firewall_enabled
       - hostname
+      - interfaces
     NotConfiguredActionEnum:
       enum:
       - skip
@@ -41789,24 +41859,20 @@ components:
     OperatingSystem:
       type: object
       properties:
-        firewall_enabled:
-          type: boolean
         family:
           $ref: '#/components/schemas/FamilyEnum'
         name:
           type: string
         version:
           type: string
+        arch:
+          type: string
       required:
+      - arch
       - family
-      - firewall_enabled
-      - name
-      - version
     OperatingSystemRequest:
       type: object
       properties:
-        firewall_enabled:
-          type: boolean
         family:
           $ref: '#/components/schemas/FamilyEnum'
         name:
@@ -41815,11 +41881,12 @@ components:
         version:
           type: string
           minLength: 1
+        arch:
+          type: string
+          minLength: 1
       required:
+      - arch
       - family
-      - firewall_enabled
-      - name
-      - version
     OutgoingSyncDeleteAction:
       enum:
       - do_nothing
@@ -52394,8 +52461,11 @@ components:
           type: string
         version:
           type: string
+        source:
+          type: string
       required:
       - name
+      - source
       - version
     SoftwareRequest:
       type: object
@@ -52406,8 +52476,12 @@ components:
         version:
           type: string
           minLength: 1
+        source:
+          type: string
+          minLength: 1
       required:
       - name
+      - source
       - version
     Source:
       type: object

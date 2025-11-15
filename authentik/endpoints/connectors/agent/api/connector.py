@@ -106,14 +106,14 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=DeviceFacts(),
         parameters=[OpenApiParameter("authorization", OpenApiTypes.STR, location="header")],
-        responses={204: OpenApiResponse("Successfully checked in")},
+        responses={204: OpenApiResponse(description="Successfully checked in")},
     )
     @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
     def check_in(self, request: Request):
         device = authenticate_device(request)
         data = DeviceFacts(data=request.data)
-        # data.is_valid(raise_exception=True)
+        data.is_valid(raise_exception=True)
         connection: DeviceConnection = device.device
-        connection.data = request.data
+        connection.data = data.validated_data
         connection.save()
         return Response(status=204)

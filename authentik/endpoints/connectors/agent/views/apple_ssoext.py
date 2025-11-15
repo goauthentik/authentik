@@ -4,11 +4,11 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from jwt import decode
 
-from authentik.endpoints.models import Device
 from authentik.endpoints.connectors.agent.stage import (
     PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE,
     QS_CHALLENGE_RESPONSE,
 )
+from authentik.endpoints.models import Device
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 

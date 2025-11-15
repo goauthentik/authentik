@@ -44,6 +44,7 @@ class DeviceConnection(SerializerModel):
     data = models.JSONField(default=dict)
     last_update = models.DateTimeField(auto_now=True)
 
+
 class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 

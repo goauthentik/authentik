@@ -17,6 +17,7 @@ def authenticate_enrollment(request: Request) -> AgentConnector:
     CTX_AUTH_VIA.set("endpoint_token_enrollment")
     return connector
 
+
 def authenticate_device(request: Request) -> DeviceToken:
     auth = get_authorization_header(request).decode()
     auth_type, _, key = auth.partition(" ")
