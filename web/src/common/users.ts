@@ -47,6 +47,7 @@ function createGuestSession(): SessionUser {
             isSuperuser: false,
             isActive: true,
             groups: [],
+            roles: [],
             avatar: "",
             uid: "",
             username: "",

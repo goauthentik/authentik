@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/roles/RelatedRoleList";
 import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/users/UserActiveForm";
@@ -43,7 +44,7 @@ import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/Us
 import {
     CapabilitiesEnum,
     CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SessionUser,
     User,
 } from "@goauthentik/api";
@@ -465,6 +466,20 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 <div
                     role="tabpanel"
                     tabindex="0"
+                    slot="page-roles"
+                    id="page-roles"
+                    aria-label="${msg("Roles")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${this.user}> </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-events"
                     id="page-events"
                     aria-label="${msg("User events")}"
@@ -501,7 +516,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser}
                     objectPk=${this.user.pk}
                 >
                 </ak-rbac-object-permission-page>

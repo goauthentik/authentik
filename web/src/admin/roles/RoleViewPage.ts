@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
@@ -14,7 +15,7 @@ import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
+import { RbacApi, RbacPermissionsAssignedByRolesListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -126,13 +127,27 @@ export class RoleViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-related-list .targetRole=${this._role}> </ak-user-related-list>
+                        </div>
+                    </div>
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this._role.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
