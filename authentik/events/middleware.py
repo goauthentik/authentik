@@ -17,6 +17,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
+from authentik.events.constants import PASSWORD_HASH_UPGRADE_REASON
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.lib.sentry import should_ignore_exception
@@ -202,8 +203,14 @@ class AuditMiddleware:
             return
         user = self.get_user(request)
 
+        context = {}
+        if isinstance(instance, User) and instance.tracker.has_changed("password"):
+            context["reason"] = PASSWORD_HASH_UPGRADE_REASON
+
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
-        thread = EventNewThread(action, request, user=user, model=model_to_dict(instance))
+        thread = EventNewThread(
+            action, request, user=user, model=model_to_dict(instance), **context
+        )
         thread.kwargs.update(thread_kwargs or {})
         thread.run()
 

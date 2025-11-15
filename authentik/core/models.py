@@ -22,6 +22,7 @@ from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
+from model_utils.tracker import FieldTracker
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -288,6 +289,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     last_updated = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
+
+    tracker = FieldTracker()
 
     class Meta:
         verbose_name = _("User")
