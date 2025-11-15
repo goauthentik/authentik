@@ -6,7 +6,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.generate_semver)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik crates packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = gen-ts-api
@@ -57,6 +57,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	uv run black $(PY_SOURCES)
 	uv run ruff check --fix $(PY_SOURCES)
+	cargo +nightly fmt
 
 lint-codespell:  ## Reports spelling errors.
 	uv run codespell -w
