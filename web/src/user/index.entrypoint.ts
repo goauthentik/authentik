@@ -286,7 +286,9 @@ export class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInte
             ?notificationDrawerOpen=${this.notificationDrawerOpen}
             ?apiDrawerOpen=${this.apiDrawerOpen}
             notificationsCount=${this.notificationsCount}
-        ></ak-interface-user-presentation>`;
+        >
+            <slot name="placeholder"></slot>
+        </ak-interface-user-presentation>`;
     }
 }
 

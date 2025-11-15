@@ -1,5 +1,5 @@
 .pf-c-drawer__body {
-    height: 100dvh;
+    max-height: 100dvh;
 }
 
 :host {
