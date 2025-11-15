@@ -3,7 +3,6 @@ from rest_framework.serializers import (
     BooleanField,
     CharField,
     ChoiceField,
-    FloatField,
     IntegerField,
     ListField,
     Serializer,
@@ -25,10 +24,11 @@ class OSFamily(TextChoices):
 
 class DiskSerializer(Serializer):
     name = CharField(required=True)
+    mountpoint = CharField(required=True)
     label = CharField(required=False, allow_blank=True)
-    capacity_total = FloatField(required=False)
-    capacity_used = FloatField(required=False)
-    encryption = BooleanField(default=False, required=False)
+    capacity_total_bytes = IntegerField(required=False)
+    capacity_used_bytes = IntegerField(required=False)
+    encryption_enabled = BooleanField(default=False, required=False)
 
 
 class OperatingSystemSerializer(Serializer):
@@ -41,10 +41,7 @@ class OperatingSystemSerializer(Serializer):
 class NetworkInterfaceSerializer(Serializer):
     name = CharField(required=True)
     hardware_address = CharField(required=True)
-    # TODO: allow multiple IPs per interface
-    ip_address = CharField(required=False)
-    netmask = CharField(required=False)
-    gateway = CharField(required=False)
+    ip_addresses = ListField(child=CharField(), required=False)
     dns_servers = ListField(child=CharField(), allow_empty=True)
 
 
@@ -52,6 +49,7 @@ class NetworkSerializer(Serializer):
     hostname = CharField()
     firewall_enabled = BooleanField()
     interfaces = ListField(child=NetworkInterfaceSerializer(), allow_empty=True)
+    gateway = CharField(required=False)
 
 
 class HardwareSerializer(Serializer):

@@ -35649,18 +35649,19 @@ components:
       properties:
         name:
           type: string
+        mountpoint:
+          type: string
         label:
           type: string
-        capacity_total:
-          type: number
-          format: double
-        capacity_used:
-          type: number
-          format: double
-        encryption:
+        capacity_total_bytes:
+          type: integer
+        capacity_used_bytes:
+          type: integer
+        encryption_enabled:
           type: boolean
           default: false
       required:
+      - mountpoint
       - name
     DiskRequest:
       type: object
@@ -35668,18 +35669,20 @@ components:
         name:
           type: string
           minLength: 1
+        mountpoint:
+          type: string
+          minLength: 1
         label:
           type: string
-        capacity_total:
-          type: number
-          format: double
-        capacity_used:
-          type: number
-          format: double
-        encryption:
+        capacity_total_bytes:
+          type: integer
+        capacity_used_bytes:
+          type: integer
+        encryption_enabled:
           type: boolean
           default: false
       required:
+      - mountpoint
       - name
     DockerServiceConnection:
       type: object
@@ -40838,6 +40841,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NetworkInterface'
+        gateway:
+          type: string
       required:
       - firewall_enabled
       - hostname
@@ -40856,12 +40861,10 @@ components:
           type: string
         hardware_address:
           type: string
-        ip_address:
-          type: string
-        netmask:
-          type: string
-        gateway:
-          type: string
+        ip_addresses:
+          type: array
+          items:
+            type: string
         dns_servers:
           type: array
           items:
@@ -40879,15 +40882,11 @@ components:
         hardware_address:
           type: string
           minLength: 1
-        ip_address:
-          type: string
-          minLength: 1
-        netmask:
-          type: string
-          minLength: 1
-        gateway:
-          type: string
-          minLength: 1
+        ip_addresses:
+          type: array
+          items:
+            type: string
+            minLength: 1
         dns_servers:
           type: array
           items:
@@ -40909,6 +40908,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NetworkInterfaceRequest'
+        gateway:
+          type: string
+          minLength: 1
       required:
       - firewall_enabled
       - hostname
