@@ -5,6 +5,7 @@ from rest_framework import pagination
 from rest_framework.response import Response
 
 from authentik.api.v3.schema.response import PAGINATION
+from authentik.lib.config import CONFIG
 
 
 class Pagination(pagination.PageNumberPagination):
@@ -12,6 +13,7 @@ class Pagination(pagination.PageNumberPagination):
 
     page_query_param = "page"
     page_size_query_param = "page_size"
+    max_page_size = CONFIG.get("pagination.max_page_size")
 
     def get_paginated_response(self, data):
         previous_page_number = 0
