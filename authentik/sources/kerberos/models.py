@@ -170,7 +170,7 @@ class KerberosSource(ScheduledModel, Source):
                 }
             ),
             name=self.name,
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url_with_request(request),
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

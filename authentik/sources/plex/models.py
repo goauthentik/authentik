@@ -116,7 +116,7 @@ class PlexSource(ScheduledModel, Source):
                     "slug": self.slug,
                 }
             ),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url_with_request(request),
             name=self.name,
         )
 
