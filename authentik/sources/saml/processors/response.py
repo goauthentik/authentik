@@ -94,20 +94,18 @@ class ResponseProcessor:
             if assert_error != "":
                 raise InvalidSignature(f"Assertion signature invalid: {assert_error}")
 
-        if (
-            self._source.verification_kp
-            and self._source.signed_response
-            and (self.response_signature_verified is not True)
-        ):
-            post_error = self._verify_signed("/samlp:Response")
-            if post_error == "":
-                self.response_signature_verified = True
-            else:
-                self.response_signature_verified = False
-                sig_errors.append(resp_error)
+        if self._source.verification_kp and self._source.signed_response:
+            if self.response_signature_verified is False:
+                post_error = self._verify_signed("/samlp:Response")
+                if post_error == "":
+                    self.response_signature_verified = True
+                else:
+                    self.response_signature_verified = False
+                    sig_errors.append(resp_error)
 
-        if self._source.signed_response and (self.response_signature_verified is False):
-            raise InvalidSignature(f"SAML Response signature invalid: {'; '.join(sig_errors)}")
+        if self._source.verification_kp and self._source.signed_response:
+            if self.response_signature_verified is False:
+                raise InvalidSignature(f"SAML Response signature invalid: {'; '.join(sig_errors)}")
 
         self._verify_request_id()
         self._verify_status()
