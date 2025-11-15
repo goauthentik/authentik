@@ -4,6 +4,7 @@ from rest_framework.serializers import (
     CharField,
     ChoiceField,
     FloatField,
+    IntegerField,
     ListField,
     Serializer,
 )
@@ -66,10 +67,17 @@ class SoftwareSerializer(Serializer):
     source = CharField(required=True)
 
 
+class ProcessSerializer(Serializer):
+    id = IntegerField(required=True)
+    name = CharField()
+    user = CharField(required=False)
+
+
 class DeviceFacts(Serializer):
     os = OperatingSystemSerializer(required=False, allow_null=True)
     disks = ListField(child=DiskSerializer(), required=False, allow_null=True)
     network = NetworkSerializer(required=False, allow_null=True)
     hardware = HardwareSerializer(required=False, allow_null=True)
     software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
+    processes = ListField(child=ProcessSerializer(), required=False, allow_null=True)
     vendor = JSONDictField()

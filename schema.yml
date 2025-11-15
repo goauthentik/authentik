@@ -35562,6 +35562,11 @@ components:
           items:
             $ref: '#/components/schemas/Software'
           nullable: true
+        processes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Process'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
@@ -35591,6 +35596,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SoftwareRequest'
+          nullable: true
+        processes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessRequest'
           nullable: true
         vendor:
           type: object
@@ -48911,6 +48921,32 @@ components:
       - log_messages
       - messages
       - passing
+    Process:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        user:
+          type: string
+      required:
+      - id
+      - name
+    ProcessRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        user:
+          type: string
+          minLength: 1
+      required:
+      - id
+      - name
     Prompt:
       type: object
       description: Prompt Serializer
