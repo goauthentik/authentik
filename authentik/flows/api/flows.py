@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -15,15 +15,13 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
     LinkSerializer,
     ModelSerializer,
-    PassiveSerializer,
 )
-from authentik.events.logs import LogEventSerializer
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
@@ -109,13 +107,6 @@ class FlowSetSerializer(FlowSerializer):
         ]
 
 
-class FlowImportResultSerializer(PassiveSerializer):
-    """Logs of an attempted flow import"""
-
-    logs = LogEventSerializer(many=True, read_only=True)
-    success = BooleanField(read_only=True)
-
-
 class FlowViewSet(UsedByMixin, ModelViewSet):
     """Flow Viewset"""
 
@@ -148,59 +139,6 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         cache.delete_many(keys)
         LOGGER.debug("Cleared flow cache", keys=len(keys))
         return Response(status=204)
-
-    @permission_required(
-        None,
-        [
-            "authentik_flows.add_flow",
-            "authentik_flows.change_flow",
-            "authentik_flows.add_flowstagebinding",
-            "authentik_flows.change_flowstagebinding",
-            "authentik_flows.add_stage",
-            "authentik_flows.change_stage",
-            "authentik_policies.add_policy",
-            "authentik_policies.change_policy",
-            "authentik_policies.add_policybinding",
-            "authentik_policies.change_policybinding",
-            "authentik_stages_prompt.add_prompt",
-            "authentik_stages_prompt.change_prompt",
-        ],
-    )
-    @extend_schema(
-        request={"multipart/form-data": FileUploadSerializer},
-        responses={
-            204: FlowImportResultSerializer,
-            400: FlowImportResultSerializer,
-        },
-    )
-    @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    def import_flow(self, request: Request) -> Response:
-        """Import flow from .yaml file"""
-        import_response = FlowImportResultSerializer(
-            data={
-                "logs": [],
-                "success": False,
-            }
-        )
-        import_response.is_valid()
-        file = request.FILES.get("file", None)
-        if not file:
-            return Response(data=import_response.initial_data, status=400)
-
-        importer = Importer.from_string(file.read().decode())
-        valid, logs = importer.validate()
-        import_response.initial_data["logs"] = [LogEventSerializer(log).data for log in logs]
-        import_response.initial_data["success"] = valid
-        import_response.is_valid()
-        if not valid:
-            return Response(data=import_response.initial_data, status=200)
-
-        successful = importer.apply()
-        import_response.initial_data["success"] = successful
-        import_response.is_valid()
-        if not successful:
-            return Response(data=import_response.initial_data, status=200)
-        return Response(data=import_response.initial_data, status=200)
 
     @permission_required(
         "authentik_flows.export_flow",
