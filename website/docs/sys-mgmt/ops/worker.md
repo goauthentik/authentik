@@ -3,7 +3,7 @@ title: Worker
 slug: /worker
 ---
 
-The authentik worker runs [background tasks](../background-tasks.md). The worker also watches for [blueprints](../../customize/blueprints/index.mdx#storage---file) and [certificates](../certificates.md#external-certificates) that are added to the file system. It runs in a separate container from the server to handle these tasks.
+The authentik worker runs [background tasks](../background-tasks.md). The worker also watches for [blueprints](../../customize/blueprints/index.mdx#as-a-local-file) and [certificates](../certificates.md#external-certificates) that are added to the file system. It runs in a separate container from the server to handle these tasks.
 
 ## How it works
 
