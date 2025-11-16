@@ -52504,6 +52504,8 @@ components:
           type: string
         source:
           type: string
+        path:
+          type: string
       required:
       - name
       - source
@@ -52518,6 +52520,9 @@ components:
           type: string
           minLength: 1
         source:
+          type: string
+          minLength: 1
+        path:
           type: string
           minLength: 1
       required:

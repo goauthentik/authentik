@@ -63,7 +63,7 @@ class SoftwareSerializer(Serializer):
     version = CharField()
     # Package manager/source for this software installation
     source = CharField(required=True)
-
+    path = CharField(required=False)
 
 class ProcessSerializer(Serializer):
     id = IntegerField(required=True)

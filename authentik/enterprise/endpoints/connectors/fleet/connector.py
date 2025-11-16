@@ -83,7 +83,14 @@ class FleetConnector(BaseConnector[DBC]):
                 "hostname": host["hostname"],
             },
             "hardware": {"model": host["hardware_model"], "manufacturer": host["hardware_vendor"]},
-            "software": [{"name": x["name"], "version": x["version"]} for x in host["software"]],
+            "software": [
+                {
+                    "name": x["name"],
+                    "version": x["version"],
+                    "source": x["source"],
+                }
+                for x in host["software"]
+            ],
             "vendor": {
                 "fleetdm.com": {
                     "policies": [
