@@ -40870,7 +40870,6 @@ components:
           items:
             type: string
       required:
-      - dns_servers
       - hardware_address
       - name
     NetworkInterfaceRequest:
@@ -40893,7 +40892,6 @@ components:
             type: string
             minLength: 1
       required:
-      - dns_servers
       - hardware_address
       - name
     NetworkRequest:

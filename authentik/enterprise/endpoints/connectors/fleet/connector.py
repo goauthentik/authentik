@@ -81,8 +81,15 @@ class FleetConnector(BaseConnector[DBC]):
             "disks": [],
             "network": {
                 "hostname": host["hostname"],
-                # "dns_servers":
             },
             "hardware": {"model": host["hardware_model"], "manufacturer": host["hardware_vendor"]},
             "software": [{"name": x["name"], "version": x["version"]} for x in host["software"]],
+            "vendor": {
+                "fleetdm.com": {
+                    "policies": [
+                        {"name": policy["name"], "status": policy["response"]}
+                        for policy in host.get("policies", [])
+                    ]
+                },
+            },
         }

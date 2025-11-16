@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
@@ -10,6 +11,8 @@ from authentik.endpoints.models import Connector, DeviceConnection
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 
+if TYPE_CHECKING:
+    from authentik.endpoints.connectors.agent.connector import AgentConnector
 
 class AgentConnector(Connector):
 
@@ -38,6 +41,12 @@ class AgentConnector(Connector):
         )
 
         return AuthenticatorEndpointStageView
+
+    @property
+    def controller(self) -> type["AgentConnector"]:
+        from authentik.endpoints.connectors.agent.connector import AgentConnector
+
+        return AgentConnector
 
     @property
     def component(self) -> str:

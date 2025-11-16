@@ -42,7 +42,7 @@ class NetworkInterfaceSerializer(Serializer):
     name = CharField(required=True)
     hardware_address = CharField(required=True)
     ip_addresses = ListField(child=CharField(), required=False)
-    dns_servers = ListField(child=CharField(), allow_empty=True)
+    dns_servers = ListField(child=CharField(), required=False, allow_empty=True)
 
 
 class NetworkSerializer(Serializer):
