@@ -62,10 +62,10 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         const lastUpdated = item.connectionsObj.map(c => c.latestSnapshot?.created).sort();
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
-                <div>${item.data.network?.hostname || item.name}</div>
+                <div>${item.facts.network?.hostname || item.name}</div>
             </a>`,
-            html`${item.data.os?.family} ${item.data.os?.version}`,
-            lastUpdated.length > 0 ? Timestamp( lastUpdated[0]) : html`-`,
+            html`${item.facts.os?.family} ${item.facts.os?.version}`,
+            lastUpdated.length > 0 ? Timestamp(lastUpdated[0]) : html`-`,
         ];
     }
 }
