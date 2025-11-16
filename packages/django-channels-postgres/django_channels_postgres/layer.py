@@ -473,7 +473,7 @@ class PostgresChannelLayerReceiver:
                     """
                     DELETE
                     FROM {table}
-                    WHERE {table}.{channel} IN (%s)
+                    WHERE {table}.{channel} = ANY(%s)
                       AND {table}.{expires} >= %s
                     RETURNING {table}.{id}, {table}.{channel}, {table}.{message}
                 """
@@ -484,7 +484,7 @@ class PostgresChannelLayerReceiver:
                     expires=sql.Identifier("expires"),
                     message=sql.Identifier("message"),
                 ),
-                (tuple(self._subscribed_to), now()),
+                (list(self._subscribed_to), now()),
             )
             async for row in cursor:
                 message_id, channel, message = row
