@@ -42,7 +42,7 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
-from authentik.endpoints.models import Connector, Device, DeviceConnection
+from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceFactSnapshot
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
 from authentik.enterprise.providers.google_workspace.models import (
@@ -143,6 +143,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceConnection,
         Device,
         DeviceConnection,
+        DeviceFactSnapshot,
         DeviceToken,
         StreamEvent,
         UserConsent,
