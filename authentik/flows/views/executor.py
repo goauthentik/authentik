@@ -161,28 +161,6 @@ class FlowExecutorView(APIView):
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
-    def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        try:
-            return super().dispatch(request)
-        except InvalidStageError as exc:
-            return self.stage_invalid(str(exc))
-        except FlowNonApplicableException as exc:
-            self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
-            return self.handle_invalid_flow(exc)
-        except EmptyFlowException as exc:
-            self._logger.warning("f(exec): Flow is empty", exc=exc)
-            # To match behaviour with loading an empty flow plan from cache,
-            # we don't show an error message here, but rather call _flow_done()
-            return self._flow_done()
-        except IncompatibleFlowPlanException as exc:
-            self._logger.warning("f(exec): found incompatible flow plan, invalidating run", exc=exc)
-            keys = cache.keys(f"{CACHE_PREFIX}*")
-            cache.delete_many(keys)
-            return self.stage_invalid()
-        except FlowDoneException:
-            self._logger.debug("f(exec): no more stages, flow is done.")
-            return self._flow_done()
-
     def perform_authentication(self, request: HttpRequest) -> None:
         _ = request.user  # accessing request.user forces authentication to happen
 
@@ -256,6 +234,26 @@ class FlowExecutorView(APIView):
 
     def handle_exception(self, exc: Exception) -> HttpResponse:
         """Handle exception in stage execution"""
+
+        if isinstance(exc, InvalidStageError):
+            return self.stage_invalid(str(exc))
+        elif isinstance(exc, FlowNonApplicableException):
+            self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
+        elif isinstance(exc, EmptyFlowException):
+            self._logger.warning("f(exec): Flow is empty", exc=exc)
+            # To match behaviour with loading an empty flow plan from cache,
+            # we don't show an error message here, but rather call _flow_done()
+            return self._flow_done()
+        elif isinstance(exc, IncompatibleFlowPlanException):
+            self._logger.warning("f(exec): found incompatible flow plan, invalidating run", exc=exc)
+            keys = cache.keys(f"{CACHE_PREFIX}*")
+            cache.delete_many(keys)
+            return self.stage_invalid()
+        elif isinstance(exc, FlowDoneException):
+            self._logger.debug("f(exec): no more stages, flow is done.")
+            return self._flow_done()
+
         if settings.DEBUG or settings.TEST:
             raise exc
         self._logger.warning(exc)
