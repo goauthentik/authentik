@@ -4811,6 +4811,11 @@ paths:
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -4866,7 +4871,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this agent connector.
+        description: A UUID string identifying this Agent Connector.
         required: true
       tags:
       - endpoints
@@ -4893,7 +4898,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this agent connector.
+        description: A UUID string identifying this Agent Connector.
         required: true
       tags:
       - endpoints
@@ -4926,7 +4931,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this agent connector.
+        description: A UUID string identifying this Agent Connector.
         required: true
       tags:
       - endpoints
@@ -4958,7 +4963,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this agent connector.
+        description: A UUID string identifying this Agent Connector.
         required: true
       tags:
       - endpoints
@@ -4981,7 +4986,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this agent connector.
+        description: A UUID string identifying this Agent Connector.
         required: true
       tags:
       - endpoints
@@ -5642,6 +5647,11 @@ paths:
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       parameters:
+      - in: query
+        name: identifier
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -5890,7 +5900,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this fleet connector.
+        description: A UUID string identifying this Fleet Connector.
         required: true
       tags:
       - endpoints
@@ -5916,7 +5926,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this fleet connector.
+        description: A UUID string identifying this Fleet Connector.
         required: true
       tags:
       - endpoints
@@ -5948,7 +5958,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this fleet connector.
+        description: A UUID string identifying this Fleet Connector.
         required: true
       tags:
       - endpoints
@@ -5979,7 +5989,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this fleet connector.
+        description: A UUID string identifying this Fleet Connector.
         required: true
       tags:
       - endpoints
@@ -6002,7 +6012,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this fleet connector.
+        description: A UUID string identifying this Fleet Connector.
         required: true
       tags:
       - endpoints
@@ -32495,7 +32505,6 @@ components:
             type: string
             format: uuid
       required:
-      - enabled
       - name
       - tokens
     AgentConnectorRequest:
@@ -32534,7 +32543,6 @@ components:
             type: string
             format: uuid
       required:
-      - enabled
       - name
       - tokens
     AlgEnum:
@@ -34841,7 +34849,6 @@ components:
           readOnly: true
       required:
       - component
-      - enabled
       - meta_model_name
       - name
       - verbose_name
@@ -36992,7 +36999,6 @@ components:
           maxLength: 200
       required:
       - component
-      - enabled
       - meta_model_name
       - name
       - url
@@ -37020,7 +37026,6 @@ components:
           writeOnly: true
           minLength: 1
       required:
-      - enabled
       - name
       - token
       - url

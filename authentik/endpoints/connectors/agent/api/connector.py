@@ -54,6 +54,9 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AgentConnector.objects.all()
     serializer_class = AgentConnectorSerializer
+    search_fields = ["name"]
+    ordering = ["name"]
+    filterset_fields = ["name", "enabled"]
 
     @extend_schema(
         request=DeviceFacts(),

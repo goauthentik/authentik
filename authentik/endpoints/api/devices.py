@@ -35,3 +35,9 @@ class DeviceViewSet(UsedByMixin, ModelViewSet):
 
     queryset = Device.objects.all().prefetch_related("policies", "connections")
     serializer_class = EndpointDeviceSerializer
+    search_fields = [
+        "name",
+        "identifier",
+    ]
+    ordering = ["identifier"]
+    filterset_fields = ["name", "identifier"]
