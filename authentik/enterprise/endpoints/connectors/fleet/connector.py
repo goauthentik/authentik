@@ -61,10 +61,7 @@ class FleetConnector(BaseConnector[DBC]):
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
-                identifier=serial,
-                defaults={
-                    "name": host["hostname"]
-                }
+                identifier=serial, defaults={"name": host["hostname"]}
             )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,
@@ -88,11 +85,16 @@ class FleetConnector(BaseConnector[DBC]):
                 user=user,
                 create_defaults={
                     "is_primary": True,
+                    "order": 0,
                 },
             )
 
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:
         """Convert host data from fleet to authentik"""
+        fleet_version = ""
+        for pkg in host["software"]:
+            if pkg["name"] in ["fleet-osquery", "fleet-desktop"]:
+                fleet_version = pkg["version"]
         data = {
             "os": {
                 "arch": host["cpu_type"],
@@ -124,7 +126,8 @@ class FleetConnector(BaseConnector[DBC]):
                     "policies": [
                         {"name": policy["name"], "status": policy["response"]}
                         for policy in host.get("policies", [])
-                    ]
+                    ],
+                    "agent_version": fleet_version,
                 },
             },
         }

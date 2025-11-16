@@ -59,7 +59,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     }
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
-        const lastUpdated = item.connectionsObj.map(c => c.latestSnapshot?.created).sort();
+        const lastUpdated = item.connectionsObj.map((c) => c.latestSnapshot?.created).sort();
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
                 <div>${item.facts.network?.hostname || item.name}</div>

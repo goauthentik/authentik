@@ -21,6 +21,7 @@ class EndpointDeviceSerializer(ModelSerializer):
         model = Device
         fields = [
             "device_uuid",
+            "pbm_uuid",
             "name",
             "group",
             "policies",

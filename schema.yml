@@ -36339,6 +36339,10 @@ components:
         device_uuid:
           type: string
           format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
         name:
           type: string
         group:
@@ -36370,6 +36374,7 @@ components:
       - connections_obj
       - facts
       - name
+      - pbm_uuid
       - policies
     EndpointDeviceRequest:
       type: object
