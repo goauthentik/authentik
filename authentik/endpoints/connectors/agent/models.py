@@ -7,9 +7,10 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.models import Connector, DeviceConnection
+from authentik.endpoints.models import Connector, DeviceConnection, DeviceGroup
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
+from authentik.lib.models import SerializerModel
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.connector import AgentConnector
@@ -65,9 +66,21 @@ class DeviceToken(ExpiringModel):
     key = models.TextField(default=generate_key)
 
 
-class EnrollmentToken(ExpiringModel):
+class EnrollmentToken(ExpiringModel, SerializerModel):
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     key = models.TextField(default=default_token_key)
+
+    device_group = models.ForeignKey(
+        DeviceGroup, on_delete=models.SET_DEFAULT, default=None, null=True
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.connectors.agent.api.enrollment_tokens import (
+            EnrollmentTokenSerializer,
+        )
+
+        return EnrollmentTokenSerializer
 
     class Meta:
         verbose_name = _("Enrollment Token")

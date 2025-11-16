@@ -464,6 +464,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_agent.enrollmenttoken"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints.deviceuserbinding"
                         },
                         "id": {
@@ -6034,6 +6074,57 @@
                 }
             }
         },
+        "model_authentik_endpoints_connectors_agent.enrollmenttoken": {
+            "type": "object",
+            "properties": {
+                "device_group": {
+                    "type": "integer",
+                    "title": "Device group"
+                },
+                "device_group_obj": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "title": "Name"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "title": "Device group obj"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_enrollmenttoken",
+                            "change_enrollmenttoken",
+                            "delete_enrollmenttoken",
+                            "view_enrollmenttoken",
+                            "view_token_key"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_endpoints.deviceuserbinding": {
             "type": "object",
             "properties": {
@@ -8245,6 +8336,7 @@
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
+                        "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",

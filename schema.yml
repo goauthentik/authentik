@@ -5099,6 +5099,206 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/enrollment_tokens/:
+    get:
+      operationId: endpoints_agents_enrollment_tokens_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnrollmentTokenList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_agents_enrollment_tokens_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentTokenRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentToken'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/enrollment_tokens/{token_uuid}/:
+    get:
+      operationId: endpoints_agents_enrollment_tokens_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentToken'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_agents_enrollment_tokens_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentTokenRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentToken'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_agents_enrollment_tokens_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollmentTokenRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrollmentToken'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_enrollment_tokens_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/enrollment_tokens/{token_uuid}/used_by/:
+    get:
+      operationId: endpoints_agents_enrollment_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/connectors/:
     get:
       operationId: endpoints_connectors_list
@@ -19424,6 +19624,7 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
@@ -19638,6 +19839,7 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
@@ -36476,6 +36678,33 @@ components:
           type: string
       required:
       - token
+    EnrollmentToken:
+      type: object
+      properties:
+        token_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        device_group:
+          type: string
+          format: uuid
+          nullable: true
+        device_group_obj:
+          $ref: '#/components/schemas/DeviceGroup'
+      required:
+      - device_group_obj
+      - token_uuid
+    EnrollmentTokenRequest:
+      type: object
+      properties:
+        device_group:
+          type: string
+          format: uuid
+          nullable: true
+        device_group_obj:
+          $ref: '#/components/schemas/DeviceGroupRequest'
+      required:
+      - device_group_obj
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -40675,6 +40904,7 @@ components:
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_agent.enrollmenttoken
       - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -42602,6 +42832,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEnrollmentTokenList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrollmentToken'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -45585,6 +45830,15 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    PatchedEnrollmentTokenRequest:
+      type: object
+      properties:
+        device_group:
+          type: string
+          format: uuid
+          nullable: true
+        device_group_obj:
+          $ref: '#/components/schemas/DeviceGroupRequest'
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer
