@@ -35655,8 +35655,10 @@ components:
           type: string
         capacity_total_bytes:
           type: integer
+          format: int64
         capacity_used_bytes:
           type: integer
+          format: int64
         encryption_enabled:
           type: boolean
           default: false
@@ -35676,8 +35678,10 @@ components:
           type: string
         capacity_total_bytes:
           type: integer
+          format: int64
         capacity_used_bytes:
           type: integer
+          format: int64
         encryption_enabled:
           type: boolean
           default: false

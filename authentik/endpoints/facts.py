@@ -1,4 +1,7 @@
 from django.db.models import TextChoices
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type
+from drf_spectacular.types import OpenApiTypes
 from rest_framework.serializers import (
     BooleanField,
     CharField,
@@ -9,6 +12,17 @@ from rest_framework.serializers import (
 )
 
 from authentik.core.api.utils import JSONDictField
+
+
+class BigIntegerFieldFix(OpenApiSerializerFieldExtension):
+
+    target_class = "authentik.endpoints.facts.BigIntegerField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        return build_basic_type(OpenApiTypes.INT64)
+
+
+class BigIntegerField(IntegerField): ...
 
 
 class OSFamily(TextChoices):
@@ -26,8 +40,8 @@ class DiskSerializer(Serializer):
     name = CharField(required=True)
     mountpoint = CharField(required=True)
     label = CharField(required=False, allow_blank=True)
-    capacity_total_bytes = IntegerField(required=False)
-    capacity_used_bytes = IntegerField(required=False)
+    capacity_total_bytes = BigIntegerField(required=False)
+    capacity_used_bytes = BigIntegerField(required=False)
     encryption_enabled = BooleanField(default=False, required=False)
 
 
@@ -64,6 +78,7 @@ class SoftwareSerializer(Serializer):
     # Package manager/source for this software installation
     source = CharField(required=True)
     path = CharField(required=False)
+
 
 class ProcessSerializer(Serializer):
     id = IntegerField(required=True)
