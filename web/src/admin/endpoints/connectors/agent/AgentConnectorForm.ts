@@ -9,15 +9,20 @@ import "#admin/common/ak-crypto-certificate-search";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { ifPresent } from "#elements/utils/attributes";
 
-import { AgentConnector, EndpointsApi, AgentConnectorRequest, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import {
+    AgentConnector,
+    AgentConnectorRequest,
+    EndpointsApi,
+    FlowsInstancesListDesignationEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { WithBrandConfig } from "#elements/mixins/branding";
-import { ifPresent } from "#elements/utils/attributes";
 
 @customElement("ak-endpoints-connector-agent")
 export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector, string>) {
@@ -80,14 +85,9 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     .brandFlow=${this.brand?.flowAuthentication}
                     required
                 ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used for users to authenticate.")}
-                </p>
+                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Certificate")}
-                name="challengeKey"
-            >
+            <ak-form-element-horizontal label=${msg("Certificate")} name="challengeKey">
                 <ak-crypto-certificate-search
                     label=${msg("Certificate")}
                     placeholder=${msg("Select a certificate...")}
@@ -95,7 +95,9 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     name="certificate"
                 >
                 </ak-crypto-certificate-search>
-                <p class="pf-c-form__helper-text">${msg("Certificate used for signing device compliance challenges.")}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Certificate used for signing device compliance challenges.")}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Unix settings")}">
                 <div class="pf-c-form">
@@ -104,14 +106,18 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         required
                         name="nssUidOffset"
                         value="${this.instance?.nssUidOffset ?? 1000}"
-                        help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
+                        help=${msg(
+                            "Reputation cannot decrease lower than this value. Zero or negative.",
+                        )}
                     ></ak-number-input>
                     <ak-number-input
                         label=${msg("NSS Group ID offset")}
                         required
                         name="nssGidOffset"
                         value="${this.instance?.nssGidOffset ?? 1000}"
-                        help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
+                        help=${msg(
+                            "Reputation cannot decrease lower than this value. Zero or negative.",
+                        )}
                     ></ak-number-input>
                 </div>
             </ak-form-group>`;
