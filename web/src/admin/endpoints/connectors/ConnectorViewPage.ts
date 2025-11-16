@@ -8,7 +8,7 @@ import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { Connector, EndpointsApi, Provider, ProvidersApi } from "@goauthentik/api";
+import { Connector, EndpointsApi } from "@goauthentik/api";
 
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";

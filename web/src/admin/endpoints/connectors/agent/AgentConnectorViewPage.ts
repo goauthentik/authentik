@@ -1,18 +1,21 @@
-import "#components/ak-status-label";
-import "#admin/endpoints/devices/BoundDeviceUsersList";
+import "#elements/Tabs";
+import "#components/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionsPage";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
-import { Timestamp } from "#elements/table/shared";
 
 import { setPageDetails } from "#components/ak-page-navbar";
-import renderDescriptionList from "#components/DescriptionList";
 
-import { AgentConnector, Disk, EndpointDevice, EndpointsApi } from "@goauthentik/api";
+import {
+    AgentConnector,
+    EndpointsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -62,10 +65,52 @@ export class AgentConnectorViewPage extends AKElement {
         });
     }
 
+    renderTabOverview() {
+        return html``;
+    }
+
     render() {
         if (!this.connector) {
             return nothing;
         }
+        return html`<ak-tabs>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
+                ${this.renderTabOverview()}
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-changelog"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-object-changelog
+                            targetModelPk=${this.connector?.connectorUuid || ""}
+                            targetModelName=${this.connector?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
+                    </div>
+                </div>
+            </div>
+            <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
+                slot="page-permissions"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                objectPk=${this.connector.connectorUuid!}
+            ></ak-rbac-object-permission-page>
+        </ak-tabs> `;
     }
 }
 
