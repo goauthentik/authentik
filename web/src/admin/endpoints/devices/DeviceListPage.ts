@@ -12,6 +12,7 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
@@ -23,6 +24,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
+        PFBanner,
         css`
             .pf-m-no-padding-bottom {
                 padding-bottom: 0;
@@ -40,6 +42,12 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     renderSectionBefore() {
         return html`
+            <div class="pf-c-banner pf-m-info">
+                ${msg("Endpoints are in preview.")}
+                <a href="mailto:hello+feature/platform@goauthentik.io"
+                    >${msg("Send us feedback!")}</a
+                >
+            </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
