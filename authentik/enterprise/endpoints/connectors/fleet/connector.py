@@ -1,7 +1,6 @@
 from typing import Any
 
 from django.db import transaction
-from django.db.models import Q
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
@@ -108,6 +107,9 @@ class FleetConnector(BaseConnector[DBC]):
                 "model": host["hardware_model"],
                 "manufacturer": host["hardware_vendor"],
                 "serial": host["hardware_serial"],
+                "cpu_name": host["cpu_brand"],
+                "cpu_count": host["cpu_logical_cores"],
+                "memory_bytes": host["memory"],
             },
             "software": [
                 {

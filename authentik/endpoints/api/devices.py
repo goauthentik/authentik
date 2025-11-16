@@ -12,20 +12,21 @@ class EndpointDeviceSerializer(ModelSerializer):
 
     connections_obj = DeviceConnectionSerializer(many=True, source="deviceconnection_set")
 
-    data = SerializerMethodField()
+    facts = SerializerMethodField()
 
-    def get_data(self, instance: Device) -> DeviceFacts:
-        return instance.data
+    def get_facts(self, instance: Device) -> DeviceFacts:
+        return instance.facts
 
     class Meta:
         model = Device
         fields = [
             "device_uuid",
+            "name",
             "group",
             "policies",
             "connections",
             "connections_obj",
-            "data",
+            "facts",
         ]
 
 

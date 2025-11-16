@@ -35526,6 +35526,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
       required:
       - connector
       - connector_obj
@@ -36338,6 +36339,8 @@ components:
         device_uuid:
           type: string
           format: uuid
+        name:
+          type: string
         group:
           type: string
           format: uuid
@@ -36358,14 +36361,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceConnection'
-        data:
+        facts:
           allOf:
           - $ref: '#/components/schemas/DeviceFacts'
           readOnly: true
       required:
       - connections
       - connections_obj
-      - data
+      - facts
+      - name
       - policies
     EndpointDeviceRequest:
       type: object
@@ -36373,6 +36377,9 @@ components:
         device_uuid:
           type: string
           format: uuid
+        name:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
@@ -36383,6 +36390,7 @@ components:
             $ref: '#/components/schemas/DeviceConnectionRequest'
       required:
       - connections_obj
+      - name
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -38572,6 +38580,13 @@ components:
           type: string
         serial:
           type: string
+        cpu_name:
+          type: string
+        cpu_count:
+          type: integer
+        memory_bytes:
+          type: integer
+          format: int64
       required:
       - manufacturer
       - model
@@ -38587,6 +38602,14 @@ components:
           minLength: 1
         serial:
           type: string
+        cpu_name:
+          type: string
+          minLength: 1
+        cpu_count:
+          type: integer
+        memory_bytes:
+          type: integer
+          format: int64
       required:
       - manufacturer
       - model
@@ -45496,6 +45519,9 @@ components:
         device_uuid:
           type: string
           format: uuid
+        name:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid

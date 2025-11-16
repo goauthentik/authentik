@@ -30,7 +30,7 @@ class Device(PolicyBindingModel):
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
     @cached_property
-    def data(self) -> DeviceFacts:
+    def facts(self) -> DeviceFacts:
         data = {}
         for snapshot in DeviceFactSnapshot.filter_not_expired(
             snapshot_id__in=Subquery(

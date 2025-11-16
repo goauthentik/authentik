@@ -6237,6 +6237,19 @@
                                 "serial": {
                                     "type": "string",
                                     "title": "Serial"
+                                },
+                                "cpu_name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Cpu name"
+                                },
+                                "cpu_count": {
+                                    "type": "integer",
+                                    "title": "Cpu count"
+                                },
+                                "memory_bytes": {
+                                    "type": "integer",
+                                    "title": "Memory bytes"
                                 }
                             },
                             "required": [

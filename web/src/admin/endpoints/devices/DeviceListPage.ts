@@ -2,7 +2,7 @@ import "#elements/cards/AggregateCard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -30,7 +30,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         `,
     ];
 
-    protected columns: TableColumn[] = [[msg("Name")], [msg("OS")]];
+    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("OS")], [msg("Last updated")]];
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
@@ -59,11 +59,13 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     }
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
+        const lastUpdated = item.connectionsObj.map(c => c.latestSnapshot?.created).sort();
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
-                <div>${item.data.network?.hostname}</div>
+                <div>${item.data.network?.hostname || item.name}</div>
             </a>`,
             html`${item.data.os?.family} ${item.data.os?.version}`,
+            lastUpdated.length > 0 ? Timestamp( lastUpdated[0]) : html`-`,
         ];
     }
 }

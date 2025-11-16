@@ -71,6 +71,11 @@ class HardwareSerializer(Serializer):
     manufacturer = CharField()
     serial = CharField(allow_blank=True)
 
+    cpu_name = CharField(required=False)
+    cpu_count = IntegerField(required=False)
+
+    memory_bytes = BigIntegerField(required=False)
+
 
 class SoftwareSerializer(Serializer):
     name = CharField(required=True)

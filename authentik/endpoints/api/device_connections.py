@@ -9,12 +9,13 @@ from authentik.endpoints.models import DeviceConnection
 class DeviceConnectionSerializer(ModelSerializer):
 
     connector_obj = ConnectorSerializer(source="connector", read_only=True)
-    latest_snapshot = SerializerMethodField()
+    latest_snapshot = SerializerMethodField(allow_null=True)
 
     def get_latest_snapshot(self, instance: DeviceConnection) -> DeviceFactSnapshotSerializer:
-        return DeviceFactSnapshotSerializer(
-            instance.devicefactsnapshot_set.order_by("-created").first()
-        ).data
+        snapshot = instance.devicefactsnapshot_set.order_by("-created").first()
+        if not snapshot:
+            return None
+        return DeviceFactSnapshotSerializer(snapshot).data
 
     class Meta:
         model = DeviceConnection
