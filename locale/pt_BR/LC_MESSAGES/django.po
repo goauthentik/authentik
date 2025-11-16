@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-15 00:10+0000\n"
+"POT-Creation-Date: 2025-10-20 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Wagner Santos, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/authentik/teams/119923/pt_BR/)\n"
@@ -2922,6 +2922,18 @@ msgid "Include the client ID and secret as request parameters"
 msgstr "Incluir ID do cliente e segredo como parâmetros da requisição"
 
 #: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "Sem PXCE"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "Plain"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "URL do token de solicitação"
 
@@ -2960,6 +2972,10 @@ msgstr "URL usado pelo authentik para obter informações do usuário."
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Escopos Adicionais"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
 
 #: authentik/sources/oauth/models.py
 msgid ""

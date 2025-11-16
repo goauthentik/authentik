@@ -60,7 +60,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
-    public sidebarLabel = () => msg("Select type");
+    public override label = msg("Select type");
 
     public reset = () => {
         super.reset();
@@ -107,6 +107,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         "pf-m-3-col": true,
                         "pf-c-card": true,
                         "pf-m-non-selectable-raised": disabled,
+                        "ak-m-enterprise-only": disabled,
                         "pf-m-selectable-raised": !disabled,
                         "pf-m-selected-raised": selected,
                     })}

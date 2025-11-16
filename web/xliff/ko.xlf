@@ -1299,11 +1299,6 @@
         <target>발급자</target>
         
       </trans-unit>
-      <trans-unit id="sf54c562d8a10ce77">
-        <source>Also known as EntityID.</source>
-        <target>EntityID로도 표현하기도 합니다.</target>
-        
-      </trans-unit>
       <trans-unit id="s991b750e2d5c4234">
         <source>Service Provider Binding</source>
         <target>서비스 공급자 바인딩</target>
@@ -5855,7 +5850,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
         
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
@@ -8295,9 +8290,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Encryption Key</source>
   <target>암호화 키</target>
 </trans-unit>
-<trans-unit id="s8a598f7aef81c3bc">
-  <source>Key used to encrypt the tokens.</source>
-</trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
 </trans-unit>
@@ -8553,9 +8545,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s317f3ab0da3d068a">
   <source>Not a valid slug</source>
-</trans-unit>
-<trans-unit id="s177577c23ed3ca7e">
-  <source>Configure The Application</source>
 </trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
@@ -9529,9 +9518,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
 </trans-unit>
-<trans-unit id="sa637fa23edcbd60b">
-  <source>Provider name...</source>
-</trans-unit>
 <trans-unit id="sdb16a3d366135cef">
   <source>Provider Name</source>
 </trans-unit>
@@ -10043,12 +10029,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
 </trans-unit>
-<trans-unit id="s1ff2128af96d843f">
-  <source>Available applications</source>
-</trans-unit>
-<trans-unit id="sda842e40ed1d9a2f">
-  <source>Application search</source>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
 </trans-unit>
@@ -10134,7 +10114,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>The user's display name.</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for "<x id="0" equiv-text="${application.name}"/>"</source>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -10160,6 +10140,84 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+</trans-unit>
+<trans-unit id="s498d08fb8f63727f">
+  <source>UNNAMED</source>
+</trans-unit>
+<trans-unit id="sbdab4eb1812adc78">
+  <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+</trans-unit>
+<trans-unit id="s998fea0fa7bb4188">
+  <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+</trans-unit>
+<trans-unit id="s25afe36fa73d2e5b">
+  <source>Sync settings</source>
+</trans-unit>
+<trans-unit id="s2c859e13e182be6b">
+  <source>Page size</source>
+</trans-unit>
+<trans-unit id="sb984354bb46c8bed">
+  <source>Controls the number of objects synced in a single task.</source>
+</trans-unit>
+<trans-unit id="sc24408fbc7ff26b5">
+  <source>Page timeout</source>
+</trans-unit>
+<trans-unit id="s7faa17601278029a">
+  <source>Timeout for synchronization of a single page.</source>
+</trans-unit>
+<trans-unit id="s96dc816b1d1c3be0">
+  <source>Type a provider name...</source>
+</trans-unit>
+<trans-unit id="s7ea73e0b3b45e385">
+  <source>application</source>
+</trans-unit>
+<trans-unit id="s45915ee0293ce5d4">
+  <source>Ungrouped</source>
+</trans-unit>
+<trans-unit id="sa4fb160e26323b02">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="s8a9abf934b0dc89d">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="sb1d445efd39638d4">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="sddbc2a3be190464b">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="s91cfe4fac0957ee7">
+  <source>Application list</source>
+</trans-unit>
+<trans-unit id="s0268ce9f2abb84de">
+  <source>Configure the Application</source>
+</trans-unit>
+<trans-unit id="sd4fd64791f73d37b">
+  <source>Also known as Entity ID.</source>
+</trans-unit>
+<trans-unit id="source-settings-list-item-label">
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+</trans-unit>
+<trans-unit id="s20b2b040b332bb55">
+  <source>Source Settings</source>
+</trans-unit>
+<trans-unit id="sdd35b688281b6dea">
+  <source>Japanese</source>
+</trans-unit>
+<trans-unit id="seb6ab868740e4e36">
+  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+</trans-unit>
+<trans-unit id="s05a941e4b4bfca9f">
+  <source>Additional actions</source>
+</trans-unit>
+<trans-unit id="s53dddf1733e26c98">
+  <source>Login sources</source>
+</trans-unit>
+<trans-unit id="sa00a53efc9c70de5">
+  <source>Please wait while the content is loading</source>
+</trans-unit>
+<trans-unit id="sf609e15e71559cd2">
+  <source>Failed to fetch applications.</source>
 </trans-unit>
     </body>
   </file>

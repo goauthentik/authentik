@@ -1,6 +1,6 @@
 """Proxy and Outpost e2e tests"""
 
-from json import loads
+from json import dumps
 from pathlib import Path
 from time import sleep
 from unittest import skip
@@ -101,10 +101,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -137,10 +141,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -171,10 +179,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -208,10 +220,14 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)

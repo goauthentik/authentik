@@ -35,8 +35,10 @@ jobs:
           echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
-          if [ "${{ inputs.release_reason }}" = "feature" ] || [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+          if [ "${{ inputs.release_reason }}" = "feature" ]; then
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
           else
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
           fi
@@ -87,7 +89,7 @@ jobs:
           git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
           git push --follow-tags
       - name: Create Release
-        uses: goauthentik/action-gh-release@84da137b91a625a58fe8a34f3bd6bdb034a49138
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ inputs.version }}"
