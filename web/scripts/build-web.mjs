@@ -205,6 +205,7 @@ async function doProxy() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
