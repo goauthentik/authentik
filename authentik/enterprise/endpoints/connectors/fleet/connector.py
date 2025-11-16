@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.db import transaction
+from django.db.models import Q
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
@@ -60,7 +61,12 @@ class FleetConnector(BaseConnector[DBC]):
     def sync_endpoints(self) -> None:
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
-            device, _ = Device.objects.get_or_create(identifier=serial)
+            device, _ = Device.objects.get_or_create(
+                identifier=serial,
+                defaults={
+                    "name": host["hostname"]
+                }
+            )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,
                 connector=self.connector,

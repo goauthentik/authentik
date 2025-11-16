@@ -52545,7 +52545,6 @@ components:
           minLength: 1
         version:
           type: string
-          minLength: 1
         source:
           type: string
           minLength: 1

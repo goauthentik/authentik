@@ -6258,7 +6258,6 @@
                                     },
                                     "version": {
                                         "type": "string",
-                                        "minLength": 1,
                                         "title": "Version"
                                     },
                                     "source": {

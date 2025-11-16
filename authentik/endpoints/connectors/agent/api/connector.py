@@ -92,9 +92,6 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         connection, _ = DeviceConnection.objects.update_or_create(
             device=device,
             connector=connector,
-            create_defaults={
-                "data": {},
-            },
         )
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(

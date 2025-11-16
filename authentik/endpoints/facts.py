@@ -74,7 +74,7 @@ class HardwareSerializer(Serializer):
 
 class SoftwareSerializer(Serializer):
     name = CharField(required=True)
-    version = CharField(required=False)
+    version = CharField(required=False, allow_blank=True)
     # Package manager/source for this software installation
     source = CharField(required=True)
     path = CharField(required=False)
