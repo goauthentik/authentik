@@ -47,7 +47,7 @@ class DeviceConnection(SerializerModel):
 
     def create_snapshot(self, data: dict[str, Any]):
         expires = now() + timedelta_from_string(self.connector.snapshot_expiry)
-        DeviceFactSnapshot.objects.create(
+        return DeviceFactSnapshot.objects.create(
             connection=self,
             data=data,
             expiring=True,
@@ -55,7 +55,7 @@ class DeviceConnection(SerializerModel):
         )
 
 
-class DeviceFactSnapshot(ExpiringModel):
+class DeviceFactSnapshot(SerializerModel, ExpiringModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
     connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
@@ -63,6 +63,12 @@ class DeviceFactSnapshot(ExpiringModel):
 
     def __str__(self):
         return f"Device fact snapshot {self.snapshot_id} from {self.created}"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
+
+        return DeviceFactSnapshotSerializer
 
 
 class Connector(SerializerModel):

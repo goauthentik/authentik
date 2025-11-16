@@ -19411,6 +19411,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.devicefactsnapshot
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
@@ -19625,6 +19626,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.devicefactsnapshot
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
@@ -32471,6 +32473,8 @@ components:
           type: string
         enabled:
           type: boolean
+        snapshot_expiry:
+          type: string
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32507,6 +32511,9 @@ components:
           minLength: 1
         enabled:
           type: boolean
+        snapshot_expiry:
+          type: string
+          minLength: 1
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -35515,18 +35522,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/Connector'
           readOnly: true
-        data:
-          type: object
-          additionalProperties: {}
-        last_update:
-          type: string
-          format: date-time
+        latest_snapshot:
+          allOf:
+          - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
       required:
       - connector
       - connector_obj
       - device
-      - last_update
+      - latest_snapshot
     DeviceConnectionRequest:
       type: object
       properties:
@@ -35536,12 +35540,31 @@ components:
         connector:
           type: string
           format: uuid
-        data:
-          type: object
-          additionalProperties: {}
       required:
       - connector
       - device
+    DeviceFactSnapshot:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DeviceFacts'
+        connection:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - connection
+      - created
+      - data
+      - expires
     DeviceFacts:
       type: object
       properties:
@@ -40600,6 +40623,7 @@ components:
       - authentik_core.token
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
+      - authentik_endpoints.devicefactsnapshot
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
       - authentik_enterprise.license
@@ -44766,6 +44790,9 @@ components:
           minLength: 1
         enabled:
           type: boolean
+        snapshot_expiry:
+          type: string
+          minLength: 1
         nss_uid_offset:
           type: integer
           maximum: 2147483647

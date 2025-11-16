@@ -464,6 +464,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints.devicefactsnapshot"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints.devicefactsnapshot_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints.devicefactsnapshot"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints.devicefactsnapshot"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints.deviceuserbinding"
                         },
                         "id": {
@@ -5281,24 +5321,28 @@
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_devicefactsnapshot",
                             "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuserbinding",
                             "authentik_endpoints.add_endpointstage",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_devicefactsnapshot",
                             "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuserbinding",
                             "authentik_endpoints.change_endpointstage",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_devicefactsnapshot",
                             "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuserbinding",
                             "authentik_endpoints.delete_endpointstage",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_devicefactsnapshot",
                             "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
@@ -5966,6 +6010,11 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "snapshot_expiry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Snapshot expiry"
+                },
                 "nss_uid_offset": {
                     "type": "integer",
                     "minimum": 0,
@@ -6014,6 +6063,286 @@
                             "change_agentconnector",
                             "delete_agentconnector",
                             "view_agentconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints.devicefactsnapshot": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "os": {
+                            "type": "object",
+                            "properties": {
+                                "family": {
+                                    "type": "string",
+                                    "enum": [
+                                        "linux",
+                                        "unix",
+                                        "bsd",
+                                        "windows",
+                                        "mac_os",
+                                        "android",
+                                        "i_os",
+                                        "other"
+                                    ],
+                                    "title": "Family"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Name"
+                                },
+                                "version": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Version"
+                                },
+                                "arch": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Arch"
+                                }
+                            },
+                            "required": [
+                                "family",
+                                "arch"
+                            ],
+                            "title": "Os"
+                        },
+                        "disks": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Name"
+                                    },
+                                    "mountpoint": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Mountpoint"
+                                    },
+                                    "label": {
+                                        "type": "string",
+                                        "title": "Label"
+                                    },
+                                    "capacity_total_bytes": {
+                                        "type": "integer",
+                                        "title": "Capacity total bytes"
+                                    },
+                                    "capacity_used_bytes": {
+                                        "type": "integer",
+                                        "title": "Capacity used bytes"
+                                    },
+                                    "encryption_enabled": {
+                                        "type": "boolean",
+                                        "title": "Encryption enabled"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "mountpoint"
+                                ]
+                            },
+                            "title": "Disks"
+                        },
+                        "network": {
+                            "type": "object",
+                            "properties": {
+                                "hostname": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Hostname"
+                                },
+                                "firewall_enabled": {
+                                    "type": "boolean",
+                                    "title": "Firewall enabled"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "title": "Name"
+                                            },
+                                            "hardware_address": {
+                                                "type": "string",
+                                                "minLength": 1,
+                                                "title": "Hardware address"
+                                            },
+                                            "ip_addresses": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "title": "Ip addresses"
+                                            },
+                                            "dns_servers": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "title": "Dns servers"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "hardware_address"
+                                        ]
+                                    },
+                                    "title": "Interfaces"
+                                },
+                                "gateway": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Gateway"
+                                }
+                            },
+                            "required": [
+                                "hostname",
+                                "firewall_enabled",
+                                "interfaces"
+                            ],
+                            "title": "Network"
+                        },
+                        "hardware": {
+                            "type": "object",
+                            "properties": {
+                                "model": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Model"
+                                },
+                                "manufacturer": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Manufacturer"
+                                },
+                                "serial": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "title": "Serial"
+                                }
+                            },
+                            "required": [
+                                "model",
+                                "manufacturer",
+                                "serial"
+                            ],
+                            "title": "Hardware"
+                        },
+                        "software": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Name"
+                                    },
+                                    "version": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Version"
+                                    },
+                                    "source": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Source"
+                                    },
+                                    "path": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Path"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "version",
+                                    "source"
+                                ]
+                            },
+                            "title": "Software"
+                        },
+                        "processes": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "title": "Id"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "Name"
+                                    },
+                                    "user": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "title": "User"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name"
+                                ]
+                            },
+                            "title": "Processes"
+                        },
+                        "vendor": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "title": "Vendor"
+                        }
+                    },
+                    "required": [
+                        "vendor"
+                    ],
+                    "title": "Data"
+                },
+                "connection": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connection"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints.devicefactsnapshot_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_devicefactsnapshot",
+                            "change_devicefactsnapshot",
+                            "delete_devicefactsnapshot",
+                            "view_devicefactsnapshot"
                         ]
                     },
                     "user": {
@@ -8234,6 +8563,7 @@
                         "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
                         "authentik_endpoints.deviceuserbinding",
+                        "authentik_endpoints.devicefactsnapshot",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
                         "authentik_enterprise.license",
@@ -10528,24 +10858,28 @@
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_devicefactsnapshot",
                             "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuserbinding",
                             "authentik_endpoints.add_endpointstage",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_devicefactsnapshot",
                             "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuserbinding",
                             "authentik_endpoints.change_endpointstage",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_devicefactsnapshot",
                             "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuserbinding",
                             "authentik_endpoints.delete_endpointstage",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_devicefactsnapshot",
                             "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
