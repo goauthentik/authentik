@@ -35,8 +35,7 @@ class Device(PolicyBindingModel):
         for snapshot in DeviceFactSnapshot.filter_not_expired(
             snapshot_id__in=Subquery(
                 DeviceFactSnapshot.objects.filter(
-                    connection__connector=OuterRef("connection__connector"),
-                    connection__device=self
+                    connection__connector=OuterRef("connection__connector"), connection__device=self
                 )
                 .order_by("-created")
                 .values("snapshot_id")[:1]

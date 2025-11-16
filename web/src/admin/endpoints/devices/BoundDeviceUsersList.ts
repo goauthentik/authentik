@@ -12,10 +12,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
-import {
-    PoliciesApi,
-    PolicyBinding,
-} from "@goauthentik/api";
+import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -49,7 +46,11 @@ export class BoundDeviceUsersList extends Table<PolicyBinding> {
     }
 
     protected columns: TableColumn[] = [
-        [[PolicyBindingCheckTarget.user, PolicyBindingCheckTarget.group].map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ")],
+        [
+            [PolicyBindingCheckTarget.user, PolicyBindingCheckTarget.group]
+                .map((ct) => PolicyBindingCheckTargetToLabel(ct))
+                .join(" / "),
+        ],
     ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {
@@ -75,16 +76,13 @@ export class BoundDeviceUsersList extends Table<PolicyBinding> {
     }
 
     row(item: PolicyBinding): SlottedTemplateResult[] {
-        return [
-            html`${this.getPolicyUserGroupRow(item)}`,
-        ];
+        return [html`${this.getPolicyUserGroupRow(item)}`];
     }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Users bound.")}</span>
-
             </ak-empty-state>`,
         );
     }

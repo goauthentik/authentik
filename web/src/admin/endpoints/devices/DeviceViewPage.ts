@@ -133,6 +133,12 @@ export class DeviceViewPage extends AKElement {
                                         : "-",
                                 ],
                                 [
+                                    msg("Disk size"),
+                                    this.device.facts.hardware?.memoryBytes
+                                        ? getSize(rootDisk.capacityTotalBytes)
+                                        : "-",
+                                ],
+                                [
                                     msg("Disk usage"),
                                     rootDisk?.capacityTotalBytes && rootDisk.capacityUsedBytes
                                         ? html`<progress
