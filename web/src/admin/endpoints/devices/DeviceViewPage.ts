@@ -144,7 +144,7 @@ export class DeviceViewPage extends AKElement {
                                         ? html`<progress
                                               value="${rootDisk.capacityUsedBytes}"
                                               max="${rootDisk.capacityTotalBytes}"
-                                          ></progress>`
+                                          ></progress> ${Math.round((rootDisk.capacityUsedBytes *100) / rootDisk.capacityTotalBytes)}%`
                                         : "-",
                                 ],
                             ],
