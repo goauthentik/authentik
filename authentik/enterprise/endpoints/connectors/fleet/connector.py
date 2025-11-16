@@ -8,7 +8,6 @@ from authentik.endpoints.connector import BaseConnector, ConnectorSyncException,
 from authentik.endpoints.models import (
     Device,
     DeviceConnection,
-    DeviceFactSnapshot,
     DeviceUserBinding,
 )
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector as DBC
@@ -62,9 +61,7 @@ class FleetConnector(BaseConnector[DBC]):
                 connector=self.connector,
             )
             self.map_users(host, device)
-            DeviceFactSnapshot.objects.create(
-                connection=connection, data=self.convert_host_data(host)
-            )
+            connection.create_snapshot(self.convert_host_data(host))
 
     def map_users(self, host: dict[str, Any], device: Device):
         for raw_user in host.get("device_mapping", []) or []:

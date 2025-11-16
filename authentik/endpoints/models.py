@@ -1,16 +1,19 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 
+from authentik.core.models import ExpiringModel
 from authentik.endpoints.facts import DeviceFacts
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 if TYPE_CHECKING:
@@ -42,8 +45,17 @@ class DeviceConnection(SerializerModel):
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
 
+    def create_snapshot(self, data: dict[str, Any]):
+        expires = now() + timedelta_from_string(self.connector.snapshot_expiry)
+        DeviceFactSnapshot.objects.create(
+            connection=self,
+            data=data,
+            expiring=True,
+            expires=expires,
+        )
 
-class DeviceFactSnapshot(models.Model):
+
+class DeviceFactSnapshot(ExpiringModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
     connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
@@ -52,12 +64,18 @@ class DeviceFactSnapshot(models.Model):
     def __str__(self):
         return f"Device fact snapshot {self.snapshot_id} from {self.created}"
 
+
 class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
     enabled = models.BooleanField()
     objects = InheritanceManager()
+
+    snapshot_expiry = models.TextField(
+        default="hours=24",
+        validators=[timedelta_string_validator],
+    )
 
     @property
     def stage(self) -> type[StageView] | None:
