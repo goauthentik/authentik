@@ -16,6 +16,8 @@ from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 if TYPE_CHECKING:
     from authentik.endpoints.connector import BaseConnector
@@ -80,7 +82,7 @@ class DeviceFactSnapshot(ExpiringModel, SerializerModel):
         return DeviceFactSnapshotSerializer
 
 
-class Connector(SerializerModel):
+class Connector(ScheduledModel, SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
@@ -103,6 +105,20 @@ class Connector(SerializerModel):
     @property
     def controller(self) -> type["BaseConnector[Connector]"]:
         raise NotImplementedError
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.endpoints.tasks import endpoints_sync
+
+        return [
+            ScheduleSpec(
+                actor=endpoints_sync,
+                uid=self.name,
+                args=(self.pk,),
+                crontab="3-59/15 * * * *",
+                send_on_save=True,
+            ),
+        ]
 
 
 class DeviceGroup(PolicyBindingModel):
