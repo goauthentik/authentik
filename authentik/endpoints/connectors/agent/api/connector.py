@@ -14,7 +14,7 @@ from authentik.endpoints.connectors.agent.api._auth import (
 )
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken
 from authentik.endpoints.facts import DeviceFacts
-from authentik.endpoints.models import Device, DeviceConnection
+from authentik.endpoints.models import Device, DeviceConnection, DeviceFactSnapshot
 
 
 class AgentConnectorSerializer(ModelSerializer):
@@ -114,6 +114,8 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         data = DeviceFacts(data=request.data)
         data.is_valid(raise_exception=True)
         connection: DeviceConnection = device.device
-        connection.data = data.validated_data
-        connection.save()
+        DeviceFactSnapshot.objects.create(
+            connection=connection,
+            data=data.validated_data
+        )
         return Response(status=204)

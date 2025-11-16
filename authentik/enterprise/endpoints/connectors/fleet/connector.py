@@ -5,7 +5,12 @@ from requests import RequestException
 
 from authentik.core.models import User
 from authentik.endpoints.connector import BaseConnector, ConnectorSyncException, EnrollmentMethods
-from authentik.endpoints.models import Device, DeviceConnection, DeviceUserBinding
+from authentik.endpoints.models import (
+    Device,
+    DeviceConnection,
+    DeviceFactSnapshot,
+    DeviceUserBinding,
+)
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector as DBC
 from authentik.lib.utils.http import get_http_session
 
@@ -52,22 +57,27 @@ class FleetConnector(BaseConnector[DBC]):
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(identifier=serial)
-            DeviceConnection.objects.update_or_create(
+            connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,
                 connector=self.connector,
-                defaults={"data": self.convert_host_data(host)},
             )
-            for raw_user in host.get("device_mapping", []) or []:
-                user = User.objects.filter(email=raw_user["email"]).first()
-                if not user:
-                    continue
-                DeviceUserBinding.objects.update_or_create(
-                    target=device,
-                    user=user,
-                    create_defaults={
-                        "is_primary": True,
-                    },
-                )
+            self.map_users(host, device)
+            DeviceFactSnapshot.objects.create(
+                connection=connection, data=self.convert_host_data(host)
+            )
+
+    def map_users(self, host: dict[str, Any], device: Device):
+        for raw_user in host.get("device_mapping", []) or []:
+            user = User.objects.filter(email=raw_user["email"]).first()
+            if not user:
+                continue
+            DeviceUserBinding.objects.update_or_create(
+                target=device,
+                user=user,
+                create_defaults={
+                    "is_primary": True,
+                },
+            )
 
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:
         """Convert host data from fleet to authentik"""

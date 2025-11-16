@@ -41,9 +41,16 @@ class DeviceConnection(SerializerModel):
     device_connection_uuid = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
-    data = models.JSONField(default=dict)
-    last_update = models.DateTimeField(auto_now=True)
 
+
+class DeviceFactSnapshot(models.Model):
+    snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
+    connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
+    data = models.JSONField(default=dict)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Device fact snapshot {self.snapshot_id} from {self.created}"
 
 class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
