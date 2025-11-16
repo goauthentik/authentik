@@ -86,7 +86,7 @@ class Connector(ScheduledModel, SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
-    enabled = models.BooleanField()
+    enabled = models.BooleanField(default=True)
     objects = InheritanceManager()
 
     snapshot_expiry = models.TextField(

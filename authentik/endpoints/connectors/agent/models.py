@@ -53,6 +53,10 @@ class AgentConnector(Connector):
     def component(self) -> str:
         return "ak-endpoints-connector-agent"
 
+    class Meta:
+        verbose_name = _("Agent Connector")
+        verbose_name_plural = _("Agent Connectors")
+
 
 class DeviceToken(ExpiringModel):
 

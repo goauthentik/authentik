@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.endpoints.models import Connector
@@ -28,3 +29,7 @@ class FleetConnector(Connector):
     @property
     def component(self) -> str:
         return "ak-endpoints-connector-fleet"
+
+    class Meta:
+        verbose_name = _("Fleet Connector")
+        verbose_name_plural = _("Fleet Connectors")

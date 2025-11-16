@@ -1,4 +1,5 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
+import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
