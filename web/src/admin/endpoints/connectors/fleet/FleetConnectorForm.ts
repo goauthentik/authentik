@@ -13,7 +13,7 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-@customElement("ak-endpoints-connector-fleet")
+@customElement("ak-endpoints-connector-fleet-form")
 export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
     loadInstance(pk: string): Promise<FleetConnector> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsFleetConnectorsRetrieve({
@@ -80,6 +80,6 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-connector-fleet": FleetConnectorForm;
+        "ak-endpoints-connector-fleet-form": FleetConnectorForm;
     }
 }

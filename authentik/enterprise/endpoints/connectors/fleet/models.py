@@ -28,7 +28,7 @@ class FleetConnector(Connector):
 
     @property
     def component(self) -> str:
-        return "ak-endpoints-connector-fleet"
+        return "ak-endpoints-connector-fleet-form"
 
     class Meta:
         verbose_name = _("Fleet Connector")

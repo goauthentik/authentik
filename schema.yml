@@ -32477,6 +32477,22 @@ components:
         connector_uuid:
           type: string
           format: uuid
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
         name:
           type: string
         enabled:
@@ -32505,8 +32521,12 @@ components:
             type: string
             format: uuid
       required:
+      - component
+      - meta_model_name
       - name
       - tokens
+      - verbose_name
+      - verbose_name_plural
     AgentConnectorRequest:
       type: object
       properties:

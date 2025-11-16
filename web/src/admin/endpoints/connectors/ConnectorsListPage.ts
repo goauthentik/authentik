@@ -1,6 +1,5 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ProxyForm";
 import "#elements/forms/ModalForm";
@@ -44,12 +43,11 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     row(item: Connector): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
             html`${item.verboseName}`,
-            html`<div>
-                <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Brand")}</span>
+                    <span slot="header">${msg("Update Connector")}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -63,14 +61,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
-                </ak-forms-modal>
-
-                <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
-                    objectPk=${item.connectorUuid!}
-                >
-                </ak-rbac-object-permission-modal>
-            </div>`,
+                </ak-forms-modal>`,
         ];
     }
 

@@ -51,7 +51,7 @@ class AgentConnector(Connector):
 
     @property
     def component(self) -> str:
-        return "ak-endpoints-connector-agent"
+        return "ak-endpoints-connector-agent-form"
 
     class Meta:
         verbose_name = _("Agent Connector")

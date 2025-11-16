@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer
+from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.endpoints.connectors.agent.api._auth import (
     authenticate_device,
     authenticate_enrollment,
@@ -17,9 +18,9 @@ from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device, DeviceConnection
 
 
-class AgentConnectorSerializer(ModelSerializer):
+class AgentConnectorSerializer(ConnectorSerializer):
 
-    class Meta:
+    class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = "__all__"
 

@@ -51,6 +51,10 @@ export const ROUTES: Route[] = [
         await import("#admin/endpoints/connectors/ConnectorsListPage");
         return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
     }),
+    new Route(new RegExp(`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/connectors/ConnectorViewPage");
+        return html`<ak-endpoints-connector-view .connectorID=${args.uuid}></ak-endpoints-connector-view>`;
+    }),
     new Route(new RegExp("^/endpoints/groups$"), async () => {
         await import("#admin/endpoints/DeviceGroupsListPage");
         return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
