@@ -14,6 +14,7 @@ from authentik.lib.generators import generate_key
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.connector import AgentConnector
 
+
 class AgentConnector(Connector):
 
     tokens = models.ManyToManyField("EnrollmentToken")

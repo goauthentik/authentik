@@ -61,7 +61,7 @@ class NetworkInterfaceSerializer(Serializer):
 
 class NetworkSerializer(Serializer):
     hostname = CharField()
-    firewall_enabled = BooleanField()
+    firewall_enabled = BooleanField(required=False)
     interfaces = ListField(child=NetworkInterfaceSerializer(), allow_empty=True)
     gateway = CharField(required=False)
 
@@ -69,12 +69,12 @@ class NetworkSerializer(Serializer):
 class HardwareSerializer(Serializer):
     model = CharField()
     manufacturer = CharField()
-    serial = CharField()
+    serial = CharField(allow_blank=True)
 
 
 class SoftwareSerializer(Serializer):
     name = CharField(required=True)
-    version = CharField()
+    version = CharField(required=False)
     # Package manager/source for this software installation
     source = CharField(required=True)
     path = CharField(required=False)

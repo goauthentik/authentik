@@ -9,6 +9,7 @@ from authentik.endpoints.models import Connector
 
 LOGGER = get_logger()
 
+
 @actor(description=_("Sync endpoints."))
 def endpoints_sync():
     for connector in Connector.objects.filter(enabled=True).order_by("name").select_subclasses():

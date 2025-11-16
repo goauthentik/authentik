@@ -6217,7 +6217,6 @@
                             },
                             "required": [
                                 "hostname",
-                                "firewall_enabled",
                                 "interfaces"
                             ],
                             "title": "Network"
@@ -6237,7 +6236,6 @@
                                 },
                                 "serial": {
                                     "type": "string",
-                                    "minLength": 1,
                                     "title": "Serial"
                                 }
                             },
@@ -6276,7 +6274,6 @@
                                 },
                                 "required": [
                                     "name",
-                                    "version",
                                     "source"
                                 ]
                             },

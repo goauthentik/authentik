@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from deepmerge import always_merger
 from django.db import models
+from django.db.models import OuterRef, Subquery
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
@@ -31,8 +32,16 @@ class Device(PolicyBindingModel):
     @cached_property
     def data(self) -> DeviceFacts:
         data = {}
-        for _data in self.deviceconnection_set.all().values_list("data", flat=True):
-            always_merger.merge(data, _data)
+        for snapshot in DeviceFactSnapshot.filter_not_expired(
+            snapshot_id__in=Subquery(
+                DeviceFactSnapshot.objects.filter(
+                    connection__connector=OuterRef("connection__connector")
+                )
+                .order_by("-created")
+                .values("snapshot_id")[:1]
+            )
+        ).values_list("data", flat=True):
+            always_merger.merge(data, snapshot)
         return data
 
 
@@ -55,7 +64,7 @@ class DeviceConnection(SerializerModel):
         )
 
 
-class DeviceFactSnapshot(SerializerModel, ExpiringModel):
+class DeviceFactSnapshot(ExpiringModel, SerializerModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
     connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
     data = models.JSONField(default=dict)

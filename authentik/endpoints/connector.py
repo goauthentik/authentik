@@ -1,4 +1,5 @@
 from django.db import models
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
@@ -21,9 +22,11 @@ class ConnectorSyncException(SentryIgnoredException):
 class BaseConnector[T: "Connector"]:
 
     connector: T
+    logger: BoundLogger
 
     def __init__(self, connector: T) -> None:
         self.connector = connector
+        self.logger = get_logger().bind(connector=connector.name)
 
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return []

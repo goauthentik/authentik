@@ -2,9 +2,14 @@ from typing import Any
 
 from django.db import transaction
 from requests import RequestException
+from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
 from authentik.endpoints.connector import BaseConnector, ConnectorSyncException, EnrollmentMethods
+from authentik.endpoints.facts import (
+    DeviceFacts,
+    OSFamily,
+)
 from authentik.endpoints.models import (
     Device,
     DeviceConnection,
@@ -61,7 +66,12 @@ class FleetConnector(BaseConnector[DBC]):
                 connector=self.connector,
             )
             self.map_users(host, device)
-            connection.create_snapshot(self.convert_host_data(host))
+            try:
+                connection.create_snapshot(self.convert_host_data(host))
+            except ValidationError as exc:
+                self.logger.warning(
+                    "failed to create snapshot for host", host=host["hostname"], exc=exc
+                )
 
     def map_users(self, host: dict[str, Any], device: Device):
         for raw_user in host.get("device_mapping", []) or []:
@@ -78,18 +88,21 @@ class FleetConnector(BaseConnector[DBC]):
 
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:
         """Convert host data from fleet to authentik"""
-        return {
+        data = {
             "os": {
-                "firewall_enabled": "",
-                "family": "",
+                "arch": host["cpu_type"],
+                # TODO: mapping from fleet
+                "family": OSFamily.linux,
                 "name": host["platform_like"],
                 "version": host["os_version"],
             },
             "disks": [],
-            "network": {
-                "hostname": host["hostname"],
+            "network": {"hostname": host["hostname"], "interfaces": []},
+            "hardware": {
+                "model": host["hardware_model"],
+                "manufacturer": host["hardware_vendor"],
+                "serial": host["hardware_serial"],
             },
-            "hardware": {"model": host["hardware_model"], "manufacturer": host["hardware_vendor"]},
             "software": [
                 {
                     "name": x["name"],
@@ -107,3 +120,6 @@ class FleetConnector(BaseConnector[DBC]):
                 },
             },
         }
+        facts = DeviceFacts(data=data)
+        facts.is_valid(raise_exception=True)
+        return facts.validated_data

@@ -38587,7 +38587,6 @@ components:
           minLength: 1
         serial:
           type: string
-          minLength: 1
       required:
       - manufacturer
       - model
@@ -40872,7 +40871,6 @@ components:
         gateway:
           type: string
       required:
-      - firewall_enabled
       - hostname
       - interfaces
     NetworkBindingEnum:
@@ -40938,7 +40936,6 @@ components:
           type: string
           minLength: 1
       required:
-      - firewall_enabled
       - hostname
       - interfaces
     NotConfiguredActionEnum:
@@ -52540,7 +52537,6 @@ components:
       required:
       - name
       - source
-      - version
     SoftwareRequest:
       type: object
       properties:
@@ -52559,7 +52555,6 @@ components:
       required:
       - name
       - source
-      - version
     Source:
       type: object
       description: Source Serializer
