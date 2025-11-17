@@ -18,8 +18,6 @@ if TYPE_CHECKING:
 
 class AgentConnector(Connector):
 
-    tokens = models.ManyToManyField("EnrollmentToken")
-
     nss_uid_offset = models.PositiveIntegerField(default=1000)
     nss_gid_offset = models.PositiveIntegerField(default=1000)
     authentication_flow = models.ForeignKey(
@@ -68,8 +66,9 @@ class DeviceToken(ExpiringModel):
 
 class EnrollmentToken(ExpiringModel, SerializerModel):
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    name = models.TextField()
     key = models.TextField(default=default_token_key)
-
+    connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
     device_group = models.ForeignKey(
         DeviceGroup, on_delete=models.SET_DEFAULT, default=None, null=True
     )

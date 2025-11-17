@@ -8,7 +8,7 @@ from authentik.endpoints.connectors.agent.models import EnrollmentToken
 
 class EnrollmentTokenSerializer(ModelSerializer):
 
-    device_group_obj = DeviceGroupSerializer()
+    device_group_obj = DeviceGroupSerializer(required=False)
 
     class Meta:
         model = EnrollmentToken
@@ -16,6 +16,8 @@ class EnrollmentTokenSerializer(ModelSerializer):
             "token_uuid",
             "device_group",
             "device_group_obj",
+            "connector",
+            "name",
         ]
 
 
@@ -24,7 +26,8 @@ class EnrollmentTokenViewSet(UsedByMixin, ModelViewSet):
     queryset = EnrollmentToken.objects.all().prefetch_related("device_group")
     serializer_class = EnrollmentTokenSerializer
     search_fields = [
-        "agentconnector_set__name",
+        "name",
+        "connector__name",
     ]
     ordering = ["token_uuid"]
-    filterset_fields = ["token_uuid"]
+    filterset_fields = ["token_uuid", "connector"]

@@ -6036,14 +6036,6 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Challenge key"
-                },
-                "tokens": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Tokens"
                 }
             },
             "required": []
@@ -6094,6 +6086,15 @@
                         "name"
                     ],
                     "title": "Device group obj"
+                },
+                "connector": {
+                    "type": "integer",
+                    "title": "Connector"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
                 }
             },
             "required": []

@@ -5105,6 +5105,11 @@ paths:
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       parameters:
+      - in: query
+        name: connector
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -32717,16 +32722,10 @@ components:
           type: string
           format: uuid
           nullable: true
-        tokens:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
       - component
       - meta_model_name
       - name
-      - tokens
       - verbose_name
       - verbose_name_plural
     AgentConnectorRequest:
@@ -32759,14 +32758,8 @@ components:
           type: string
           format: uuid
           nullable: true
-        tokens:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
       - name
-      - tokens
     AlgEnum:
       enum:
       - rsa
@@ -36691,8 +36684,14 @@ components:
           nullable: true
         device_group_obj:
           $ref: '#/components/schemas/DeviceGroup'
+        connector:
+          type: string
+          format: uuid
+        name:
+          type: string
       required:
-      - device_group_obj
+      - connector
+      - name
       - token_uuid
     EnrollmentTokenRequest:
       type: object
@@ -36703,8 +36702,15 @@ components:
           nullable: true
         device_group_obj:
           $ref: '#/components/schemas/DeviceGroupRequest'
+        connector:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
       required:
-      - device_group_obj
+      - connector
+      - name
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -45101,11 +45107,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        tokens:
-          type: array
-          items:
-            type: string
-            format: uuid
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -45839,6 +45840,12 @@ components:
           nullable: true
         device_group_obj:
           $ref: '#/components/schemas/DeviceGroupRequest'
+        connector:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer

@@ -34,6 +34,8 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("OS")], [msg("Last updated")]];
 
+    ordering = "name";
+
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
             await this.defaultEndpointConfig(),

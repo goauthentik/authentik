@@ -1,6 +1,7 @@
 import "#elements/Tabs";
 import "#components/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -66,7 +67,14 @@ export class AgentConnectorViewPage extends AKElement {
     }
 
     renderTabOverview() {
-        return html``;
+        return html`
+            <div class="pf-c-card">
+                <div class="pf-c-card__title">${msg("Enrollment Tokens")}</div>
+                <ak-endpoints-agent-enrollment-token-list
+                    .connector=${this.connector}
+                ></ak-endpoints-agent-enrollment-token-list>
+            </div>
+        `;
     }
 
     render() {
@@ -80,6 +88,7 @@ export class AgentConnectorViewPage extends AKElement {
                 slot="page-overview"
                 id="page-overview"
                 aria-label="${msg("Overview")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 ${this.renderTabOverview()}
             </div>
