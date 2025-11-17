@@ -55,7 +55,7 @@ def extract_certificate_metadata(certificate: Certificate) -> dict[str, Any | st
 
 
 @receiver(pre_save, sender="authentik_crypto.CertificateKeyPair")
-def certificate_key_pair_pre_save(sender: type[Model], instance, **_):  # noqa: ARG001
+def certificate_key_pair_pre_save(sender: type[CertificateKeyPair], instance: CertificateKeyPair, **_):  # noqa: ARG001
     """Automatically populate certificate metadata fields before saving"""
     from authentik.crypto.models import CertificateKeyPair
 
