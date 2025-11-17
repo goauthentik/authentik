@@ -65,6 +65,12 @@ class DeviceConnection(SerializerModel):
             expires=expires,
         )
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
+
+        return DeviceConnectionSerializer
+
 
 class DeviceFactSnapshot(ExpiringModel, SerializerModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)

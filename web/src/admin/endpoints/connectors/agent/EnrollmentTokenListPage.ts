@@ -56,7 +56,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
             .metadata=${(item: EnrollmentToken) => {
                 return [
                     { key: msg("Name"), value: item.name },
-                    { key: msg("Group"), value: item.deviceGroupObj.name },
+                    { key: msg("Group"), value: item.deviceGroupObj?.name },
                 ];
             }}
             .usedBy=${(item: EnrollmentToken) => {
@@ -79,7 +79,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
     row(item: EnrollmentToken): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.deviceGroupObj.name}`,
+            html`${item.deviceGroupObj?.name || "-"}`,
             html`<div>
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
