@@ -85,14 +85,6 @@ class SAMLProvider(Provider):
             "Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/"
         ),
     )
-    sp_binding = models.TextField(
-        choices=SAMLBindings.choices,
-        default=SAMLBindings.REDIRECT,
-        verbose_name=_("Service Provider Binding"),
-        help_text=_(
-            "This determines how authentik sends the response back to the Service Provider."
-        ),
-    )
     sls_url = models.TextField(
         blank=True,
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
