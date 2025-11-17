@@ -2,7 +2,7 @@
  * @file String utilities.
  */
 
-import { truncationEllipsis } from "#common/i18n/punctuation";
+import { msg, str } from "@lit/localize";
 
 /**
  * Truncate a string based on character count.
@@ -16,7 +16,12 @@ export function truncate(input?: string | null, maxLength = 10): string {
         return trimmed;
     }
 
-    return trimmed.substring(0, maxLength) + truncationEllipsis;
+    const truncated = trimmed.substring(0, maxLength);
+
+    return msg(str`${truncated}...`, {
+        id: "truncated-content",
+        desc: "A string that has been truncated to fit a certain length, ending with an ellipsis",
+    });
 }
 
 /**
@@ -34,7 +39,14 @@ export function truncateWords(input?: string | null, maxLength = 10): string {
 
     const array = trimmed.split(" ");
 
-    const ellipsis = array.length > maxLength ? truncationEllipsis : "";
+    const truncated = array.slice(0, maxLength).join(" ");
 
-    return array.slice(0, maxLength).join(" ") + ellipsis;
+    if (array.length > maxLength) {
+        return msg(str`${truncated}...`, {
+            id: "truncated-content",
+            desc: "A string that has been truncated to fit a certain length, ending with an ellipsis",
+        });
+    }
+
+    return truncated;
 }

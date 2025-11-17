@@ -11,7 +11,6 @@ import {
     formatNewMessage,
     formatSuccessActionMessage,
 } from "#common/i18n/actions";
-import { DefaultEntityLabel } from "#common/i18n/nouns";
 import { ActionName, ActionTenseRecord } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
@@ -276,7 +275,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * The label for the type of entity being listed.
      */
-    protected entityLabel: string = DefaultEntityLabel.singular;
+    protected entityLabel: string = msg("object", {
+        id: "form-entity-singular",
+        desc: "Singular form of 'object', used as a generic placeholder for an entity label",
+    });
 
     /**
      * The label for the action performed when submitting the form.

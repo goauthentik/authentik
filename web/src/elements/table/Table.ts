@@ -12,8 +12,7 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { formatCreateMessage, formatEditMessage, formatNewMessage } from "#common/i18n/actions";
-import { DefaultEntityLabel, EntityLabel } from "#common/i18n/nouns";
-import { truncationEllipsis } from "#common/i18n/punctuation";
+import { EntityLabel } from "#common/i18n/nouns";
 import { ActionTenseRecord } from "#common/i18n/verbs";
 import { GroupResult } from "#common/utils";
 
@@ -140,7 +139,16 @@ export abstract class Table<T extends object>
      *
      * Typically used in the empty state.
      */
-    protected abstract entityLabel: EntityLabel;
+    protected entityLabel: EntityLabel = {
+        singular: msg("object", {
+            id: "table-entity-singular",
+            desc: "Singular form of 'object', used as a generic placeholder for an entity label",
+        }),
+        plural: msg("objects", {
+            id: "table-entity-plural",
+            desc: "Plural form of 'object', used as a generic placeholder for an entity label",
+        }),
+    };
 
     protected get qlAvailable(): boolean {
         return this.supportsQL && this.hasEnterpriseLicense;
@@ -148,12 +156,21 @@ export abstract class Table<T extends object>
 
     protected get searchPlaceholder(): string {
         if (this.qlAvailable) {
-            return msg("Search by <field>") + truncationEllipsis;
-        } else if (this.entityLabel !== DefaultEntityLabel) {
-            return msg(str`Search ${this.entityLabel.plural.toLowerCase()}`) + truncationEllipsis;
+            return msg("Search by <field>...", {
+                desc: "Search input placeholder indicating that the user can search by specific fields",
+                id: "search-placeholder-by-field",
+            });
+        } else if (this.entityLabel.plural) {
+            return msg(str`Search ${this.entityLabel.plural.toLowerCase()}...`, {
+                id: "search-placeholder-by-entity",
+                desc: "Search input placeholder indicating the user can search for the listed entities.",
+            });
         }
 
-        return msg("Search") + truncationEllipsis;
+        return msg("Search", {
+            desc: "Generic search input placeholder",
+            id: "search-placeholder-generic",
+        });
     }
 
     /**

@@ -1,5 +1,3 @@
-import { msg } from "@lit/localize";
-
 /**
  * Labels for entities shown in tables.
  *
@@ -20,8 +18,3 @@ export interface EntityLabel {
      */
     plural: string;
 }
-
-export const DefaultEntityLabel = {
-    singular: msg("object", { id: "table-entity-singular" }),
-    plural: msg("objects", { id: "table-entity-plural" }),
-} as const satisfies EntityLabel;
