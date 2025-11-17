@@ -31,6 +31,30 @@ The components of an active-standby authentik deployment:
     - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because only one authentik instance is active at a time, there are no data conflicts as seen in active-active setups.
     - **Loadbalancer**: A loadbalancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
 
+```mermaid
+graph TD
+    subgraph authentikInstances["authentik instances"]
+        A[Active authentik instance]@{stroke: #fd4b2d}
+        S[Standby authentik instance]@{stroke: #fd4b2d}
+    end
+
+    U[Users]@{ shape: processes}
+    L[Load Balancer]
+    PG[(PostgreSQL Cluster)]
+
+    U <-->|Traffic| L
+
+    L <-->|Traffic + Health monitoring| A
+    L ---|Health monitoring| S
+
+    A <-->|Database traffic - Read & Write| PG
+    S ---|Database traffic - Read only| PG
+
+    style A stroke: #fd4b2d,stroke-width:2px
+    style S stroke: #fd4b2d,stroke-width:2px
+    style authentikInstances stroke:#fd4b2d,stroke-width:2px
+```
+
 This setup provides several advantages:
 
     - **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacentres or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
