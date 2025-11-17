@@ -67,7 +67,9 @@ export class DeviceViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             header: this.device?.facts.network?.hostname ?? msg("Loading device..."),
-            description: this.device ? this.device?.facts.os?.name + " " + this.device?.facts.os?.version : undefined,
+            description: this.device
+                ? this.device?.facts.os?.name + " " + this.device?.facts.os?.version
+                : undefined,
         });
     }
 

@@ -112,7 +112,7 @@ class FleetConnector(BaseConnector[DBC]):
         data = {
             "os": {
                 "arch": host["cpu_type"],
-                "family": FleetConnector.os_family(host["platform_like"]),
+                "family": FleetConnector.os_family(host),
                 "name": host["platform_like"],
                 "version": host["os_version"],
             },

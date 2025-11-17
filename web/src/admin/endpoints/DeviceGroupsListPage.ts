@@ -53,10 +53,10 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
     }
 
     renderExpanded(item: DeviceGroup) {
-            return html`<div class="pf-c-content">
-                <ak-bound-policies-list .target=${item.pbmUuid}></ak-bound-policies-list>
-            </div>`;
-        }
+        return html`<div class="pf-c-content">
+            <ak-bound-policies-list .target=${item.pbmUuid}></ak-bound-policies-list>
+        </div>`;
+    }
 
     renderObjectCreate() {
         return html`<ak-forms-modal>

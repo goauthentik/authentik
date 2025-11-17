@@ -1,7 +1,8 @@
 import { FamilyEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 
-export function osFamilyToLabel(family: FamilyEnum | undefined) : string {
+export function osFamilyToLabel(family: FamilyEnum | undefined): string {
     switch (family) {
         case FamilyEnum.Linux:
             return msg("Linux");

@@ -6,6 +6,8 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
+
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -14,7 +16,6 @@ import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
@@ -33,7 +34,12 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         `,
     ];
 
-    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("OS")], [msg("Group")], [msg("Last updated")]];
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("OS")],
+        [msg("Group")],
+        [msg("Last updated")],
+    ];
 
     ordering = "name";
 
