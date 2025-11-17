@@ -19599,7 +19599,6 @@ paths:
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_endpoints_connectors_fleet.fleetconnector
-          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -19814,7 +19813,6 @@ paths:
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_endpoints_connectors_fleet.fleetconnector
-          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -32819,7 +32817,6 @@ components:
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
-      - authentik.enterprise.endpoints.connectors.google_chrome
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -40999,7 +40996,6 @@ components:
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_endpoints_connectors_fleet.fleetconnector
-      - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
