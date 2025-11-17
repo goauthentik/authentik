@@ -38,7 +38,6 @@ const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Post"),
         value: SAMLBindingsEnum.Post,
-        default: true,
     },
 ];
 
@@ -95,7 +94,7 @@ function renderHasSlsUrl(
             label=${msg("SLS Binding")}
             name="slsBinding"
             .options=${serviceProviderBindingOptions}
-            .value=${provider?.slsBinding}
+            .value=${provider?.slsBinding ?? SAMLBindingsEnum.Redirect}
             help=${msg(
                 "Determines how authentik sends the logout response back to the Service Provider.",
             )}
@@ -177,7 +176,7 @@ export function renderForm({
                     name="spBinding"
                     required
                     .options=${serviceProviderBindingOptions}
-                    .value=${provider.spBinding}
+                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
                     help=${msg(
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
