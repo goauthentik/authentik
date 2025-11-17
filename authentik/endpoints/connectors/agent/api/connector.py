@@ -1,5 +1,5 @@
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
@@ -60,14 +60,6 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "enabled"]
 
     @extend_schema(
-        request=DeviceFacts(),
-        responses={201: OpenApiResponse(description="Report created.")},
-    )
-    @action(methods=["POST"], detail=False)
-    def report(self, request: Request):
-        Device.objects.get_or_create()
-
-    @extend_schema(
         responses=AgentConfigSerializer(),
         request=OpenApiTypes.NONE,
     )
@@ -79,7 +71,6 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request=EnrollSerializer(),
-        parameters=[OpenApiParameter("authorization", OpenApiTypes.STR, location="header")],
         responses={200: EnrollResponseSerializer},
     )
     @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
@@ -91,6 +82,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
             identifier=data.validated_data["device_serial"],
             defaults={
                 "name": data.validated_data["device_name"],
+                "expiring": False,
             },
         )
         connection, _ = DeviceConnection.objects.update_or_create(
@@ -106,7 +98,6 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request=DeviceFacts(),
-        parameters=[OpenApiParameter("authorization", OpenApiTypes.STR, location="header")],
         responses={204: OpenApiResponse(description="Successfully checked in")},
     )
     @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])

@@ -26,5 +26,7 @@ def authenticate_device(request: Request) -> DeviceToken:
     connection = DeviceToken.filter_not_expired(key=key).first()
     if not connection:
         raise PermissionDenied()
+    if connection.device.is_expired:
+        raise PermissionDenied()
     CTX_AUTH_VIA.set("endpoint_token")
     return connection

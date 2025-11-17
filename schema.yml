@@ -5028,11 +5028,6 @@ paths:
       operationId: endpoints_agents_connectors_check_in_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
-      parameters:
-      - in: header
-        name: authorization
-        schema:
-          type: string
       tags:
       - endpoints
       requestBody:
@@ -5053,11 +5048,6 @@ paths:
       operationId: endpoints_agents_connectors_enroll_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
-      parameters:
-      - in: header
-        name: authorization
-        schema:
-          type: string
       tags:
       - endpoints
       requestBody:
@@ -5073,28 +5063,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/EnrollResponse'
           description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/connectors/report/:
-    post:
-      operationId: endpoints_agents_connectors_report_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceFactsRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          description: Report created.
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -36589,6 +36557,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFacts'
           readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - connections
       - connections_obj
@@ -36613,6 +36587,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceConnectionRequest'
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - connections_obj
       - name
@@ -45803,6 +45783,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceConnectionRequest'
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
     PatchedEndpointRequest:
       type: object
       description: Endpoint Serializer

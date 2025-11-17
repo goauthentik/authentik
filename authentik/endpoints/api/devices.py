@@ -28,6 +28,8 @@ class EndpointDeviceSerializer(ModelSerializer):
             "connections",
             "connections_obj",
             "facts",
+            "expiring",
+            "expires",
         ]
 
 

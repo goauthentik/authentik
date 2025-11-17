@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from authentik.endpoints.connector import BaseConnector
 
 
-class Device(PolicyBindingModel):
+class Device(ExpiringModel, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
