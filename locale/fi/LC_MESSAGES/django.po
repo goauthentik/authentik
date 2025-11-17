@@ -4,20 +4,20 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Skyler Mäntysaari, 2024
 # Marc Schmitt, 2025
 # Ville Ranki, 2025
 # Jani Hast, 2025
 # MarkoTukiainen, 2025
+# Skyler Mäntysaari, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-10 00:11+0000\n"
+"POT-Creation-Date: 2025-11-13 03:19+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: MarkoTukiainen, 2025\n"
+"Last-Translator: Skyler Mäntysaari, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -132,7 +132,7 @@ msgid ""
 "authenticating."
 msgstr ""
 "Kun tämä asetus on käytössä, ulkoiset käyttäjät ohjataan tähän sovellukseen "
-"tunnistautumisen jälkeen."
+"todentamisen jälkeen."
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
@@ -278,8 +278,8 @@ msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
-"Prosessi, jota käytetään tunnistautumiseen, kun tunnistautumaton käyttäjä "
-"yrittää käyttää siihen kytkettyä sovellusta."
+"Prosessi, jota käytetään todentamiseen, kun todentamaton käyttäjä yrittää "
+"käyttää siihen kytkettyä sovellusta."
 
 #: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
@@ -384,7 +384,7 @@ msgstr "Lähteen sisäinen nimi, käytetään URLeissa."
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
-msgstr "Prosessi, jota käytetään kun tunnistetaan olemassa olevia käyttäjiä."
+msgstr "Prosessi, jota käytetään kun todennetaan olemassa olevia käyttäjiä."
 
 #: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
@@ -395,7 +395,7 @@ msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
-"Kuinka lähde määrittää, tunnistetaanko olemassa oleva käyttäjä vai "
+"Kuinka lähde määrittää, todennetaanko olemassa oleva käyttäjä vai "
 "rekisteröidäänkö uusi."
 
 #: authentik/core/models.py
@@ -444,11 +444,11 @@ msgstr "Istunnot"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
-msgstr "Autentikoitu istunto"
+msgstr "Todennettu istunto"
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
-msgstr "Autentikoidut istunnot"
+msgstr "Todennetut istunnot"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -456,7 +456,7 @@ msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
 "with the source you've previously signed up with."
 msgstr ""
-"Tunnistautumispyyntö lähteen {source} kanssa on estetty. Tunnistaudu "
+"Todentamispyyntö lähteen {source} kautta on estetty. Tee todennus "
 "käyttämällä lähdettä, jota olet käyttänyt rekisteröityessäsi."
 
 #: authentik/core/sources/flow_manager.py
@@ -466,7 +466,7 @@ msgstr "Määritettyä prosessia ei löytynyt."
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully authenticated with {source}!"
-msgstr "Tunnistautuminen lähteen {source} kanssa onnistui!"
+msgstr "Todennus lähteen {source} kanssa onnistui!"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -486,6 +486,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr "Poista SAML-lähteiden luomat tilapäiset käyttäjät."
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "Siirry etusivulle"
 
@@ -1091,7 +1092,7 @@ msgstr "Vaatimusta ei täytetty"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Flow authentication requirement"
-msgstr "Prosessin tunnistautumisvaatimus"
+msgstr "Prosessin todennusvaatimus"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Requirement fulfilled"
@@ -1127,9 +1128,8 @@ msgid ""
 "Decides what this Flow is used for. For example, the Authentication flow is "
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
-"Määrittää, mihin tätä prosessia käytetään. Esimerkiksi "
-"tunnistautumisprosessi ohjaa edelleen kun tunnustautumaton käyttäjä avaa "
-"authentikin."
+"Määrittää, mihin tätä prosessia käytetään. Esimerkiksi todennusprosessi "
+"ohjaa edelleen kun todentamaton käyttäjä avaa authentikin."
 
 #: authentik/flows/models.py
 msgid "Background shown during execution"
@@ -1149,8 +1149,7 @@ msgstr "Määritä, mitä tapahtuu kun prosessi estää käyttäjän pääsyn."
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
-msgstr ""
-"Tarvittava tunnistautumisen ja valtuutuksen taso prosessiin pääsemiseksi."
+msgstr "Tarvittava todennuksen ja valtuutuksen taso prosessiin pääsemiseksi."
 
 #: authentik/flows/models.py
 msgid "Flows"
@@ -1205,9 +1204,8 @@ msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
 msgstr ""
-"Prosessi, jota tunnistautunut käyttäjä käyttää tämän vaiheen "
-"määrittämiseksi. Jos tämä jätetään tyhjäksi, käyttäjä ei pysty määrittämään "
-"tätä vaihetta."
+"Prosessi, jota todennettu käyttäjä käyttää tämän vaiheen määrittämiseksi. "
+"Jos tämä jätetään tyhjäksi, käyttäjä ei pysty määrittämään tätä vaihetta."
 
 #: authentik/flows/models.py
 msgid "Flow Token"
@@ -1294,7 +1292,7 @@ msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
-"Tunnistautumisessa käytettävä Sertifikaatti/Avain. Voidaan jättää tyhjäksi, "
+"Todennuksessa käytettävä Sertifikaatti/Avain. Voidaan jättää tyhjäksi, "
 "jolloin tunnistautumista ei tehdä."
 
 #: authentik/outposts/models.py
@@ -1469,7 +1467,7 @@ msgstr "Asiakkaan IP-osoite ei sijaitse sallitussa maassa."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance from previous authentication is larger than threshold."
-msgstr "Etäisyys edellisestä tunnistautumisesta on raja-arvoa pidempi."
+msgstr "Etäisyys edellisestä todennuksesta on raja-arvoa pidempi."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
@@ -1599,19 +1597,19 @@ msgstr "Mainepistemäärät"
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Waiting for authentication..."
-msgstr "Odotetaan tunnistautumista..."
+msgstr "Odotetaan todennusta..."
 
 #: authentik/policies/templates/policies/buffer.html
 msgid ""
 "You're already authenticating in another tab. This page will refresh once "
 "authentication is completed."
 msgstr ""
-"Tunnistaudut jo toisella välilehdellä. Tämä sivu päivittyy kun "
-"tunnistautuminen on valmis."
+"Kirjaudut jo toisella välilehdellä. Tämä sivu päivittyy kun todennus on "
+"valmis."
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Authenticate in this tab"
-msgstr "Tunnistaudu tällä välilehdellä"
+msgstr "Kirjaudu tällä välilehdellä"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -1624,6 +1622,10 @@ msgstr "Käyttäjän avatar"
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr "Et sinä?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "Virhe"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
@@ -1688,7 +1690,7 @@ msgid ""
 "configured, as otherwise a password may incorrectly be rejected if it "
 "contains a semicolon."
 msgstr ""
-"Kun tämä asetus on käytössä, koodipohjaista monivaiheista tunnistautumista "
+"Kun tämä asetus on käytössä, koodipohjaista monivaiheista todentamista "
 "voidaan käyttää lisäämällä puolipiste ja TOTP-koodi salasanan loppuun. Tätä "
 "tulisi käyttää vain, jos kaikilla tähän palveluntarjoajaan kytketyillä "
 "käyttäjillä on käytössä TOTP-laite, muussa tapauksessa salasana saatetaan "
@@ -1914,9 +1916,9 @@ msgid ""
 "duration, it will be renewed. When set to seconds=0, token will always be "
 "renewed. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Tunnistetta päivitettäessä, jos päivitystunniste on voimassa vähemmän kuin "
-"tämän ajan, se uusitaan. Jos asetetaan seconds=0, tunniste päivitetään aina."
-" (Muoto: hours=1;minutes=2;seconds=3)."
+"Tunnusta päivitettäessä, jos päivitystunnus on voimassa vähemmän kuin tämän "
+"ajan, se uusitaan. Jos asetetaan seconds=0, tunnus uusitaan aina. (Muoto: "
+"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -1952,7 +1954,7 @@ msgid ""
 "authenticate."
 msgstr ""
 "Mitä tahansa JWT:tä, joka on salattu valitun lähteen JWK:lla, voidaan "
-"käyttää tunnistautumiseen."
+"käyttää todentamiseen."
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Provider"
@@ -2004,11 +2006,11 @@ msgstr "ID-tunniste"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Token"
-msgstr "OAuth2-päivitystunniste"
+msgstr "OAuth2-päivitystunnus"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
-msgstr "OAuth2-päivitystunnisteet"
+msgstr "OAuth2-päivitystunnukset"
 
 #: authentik/providers/oauth2/models.py
 msgid "Device Token"
@@ -2091,7 +2093,7 @@ msgid ""
 "Regular expressions for which authentication is not required. Each new line "
 "is interpreted as a new Regular Expression."
 msgstr ""
-"Regular expressionit, joihin tunnistautumista ei tarvita. Jokainen rivi "
+"Regular expressionit, joihin todentamista ei tarvita. Jokainen rivi "
 "tulkitaan uutena regular expressionina."
 
 #: authentik/providers/proxy/models.py
@@ -2341,8 +2343,8 @@ msgid ""
 "methods the user used to authenticate."
 msgstr ""
 "Määritä, kuinka AuthnContextClassRef-arvo luodaan. Kun tämä jätetään "
-"tyhjäksi, AuthnContextClassRef asetetaan käyttäjän tunnistautumisessa "
-"käyttämien tunnistautumismenetelmien mukaan."
+"tyhjäksi, AuthnContextClassRef asetetaan käyttäjän todentamisessa käyttämien"
+" todentamismenetelmien mukaan."
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2488,7 +2490,7 @@ msgstr "SAML-palveluntarjoajat metatiedoista"
 
 #: authentik/providers/saml/models.py
 msgid "Link to the user's authenticated session"
-msgstr "Linkki käyttäjän autentikoituun istuntoon"
+msgstr "Linkki käyttäjän todennettuun istuntoon"
 
 #: authentik/providers/saml/models.py
 msgid "SAML SessionIndex for this session"
@@ -2540,7 +2542,7 @@ msgstr "Todennustunniste"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
-msgstr "OAuth-lähde, jota käytetään tunnistautumiseen"
+msgstr "OAuth-lähde, jota käytetään todentamiseen"
 
 #: authentik/providers/scim/models.py
 msgid "Additional OAuth parameters, such as grant_type"
@@ -2655,7 +2657,7 @@ msgstr "Luo avain, jolla voidaan palauttaa pääsy authentikiin."
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Käytti palautuslinkkiä tunnistautumiseen."
+msgstr "Käytti palautuslinkkiä todentamiseen."
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos realm"
@@ -2681,27 +2683,29 @@ msgstr "Kun käyttäjä muuttaa salasanansa, synkronoi se Kerberosiin"
 
 #: authentik/sources/kerberos/models.py
 msgid "Principal to authenticate to kadmin for sync."
-msgstr "Käyttäjä, jolla tunnistaudutaan kadminiin synkronointia varten."
+msgstr ""
+"Käyttäjä, jota käytetään kadminiin todentamisessa synkronointia varten."
 
 #: authentik/sources/kerberos/models.py
 msgid "Password to authenticate to kadmin for sync"
-msgstr "Salasana, jolla tunnistaudutaan kdaminiin synkronointia varten."
+msgstr ""
+"Salasana, jota käytetään kdaminiin todentamisessa synkronointia varten."
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
 "form TYPE:residual"
 msgstr ""
-"Keytab-tiedosto, jolla tunnistaudutaan kadminiin synkronointia varten. "
-"Täytyy olla base64-koodattu tai muodossa TYPE:residual"
+"Keytab-tiedosto, jota käytetään kadminiin todentamisessa synkronointia "
+"varten. Täytyy olla base64-koodattu tai muodossa TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Credentials cache to authenticate to kadmin for sync. Must be in the form "
 "TYPE:residual"
 msgstr ""
-"Tunnistetietojen välimuistitiedosto, jolla tunnistaudutaan kadminiin "
-"synkronointia varten. Täytyy olla muodossa TYPE:residual"
+"Tunnistetietojen välimuistitiedosto, jota käytetään kadminiin todentamisessa"
+" synkronointia varten. Täytyy olla muodossa TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
@@ -2771,7 +2775,7 @@ msgstr "Synkronoi Kerberos-lähde."
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
-msgstr "SPNEGO-tunnistautuminen vaaditaan"
+msgstr "SPNEGO-todentaminen vaaditaan"
 
 #: authentik/sources/kerberos/views.py
 msgid ""
@@ -2807,7 +2811,7 @@ msgstr ""
 msgid ""
 "Client certificate to authenticate against the LDAP Server's Certificate."
 msgstr ""
-"Asiakkaan sertifikaatti, joka varmennetaan LDAP-palvelimen sertifikaatilla"
+"Asiakkaan sertifikaatti, joka todennetaan LDAP-palvelimen sertifikaatilla"
 
 #: authentik/sources/ldap/models.py
 msgid "Bind CN"
@@ -3021,8 +3025,7 @@ msgid ""
 "How to perform authentication during an authorization_code token request "
 "flow"
 msgstr ""
-"Kuinka tunnistautuminen tehdään authorization_code-avainpyyntöprosessin "
-"aikana"
+"Kuinka todentaminen tehdään authorization_code-avainpyyntöprosessin aikana"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3187,7 +3190,7 @@ msgstr ""
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
 msgid "Authentication failed: {reason}"
-msgstr "Tunnistautuminen epäonnistui: {reason}"
+msgstr "Todentaminen epäonnistui: {reason}"
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
@@ -3204,8 +3207,7 @@ msgstr ""
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
 msgstr ""
-"Salli ystävien tunnistautua, vaikkei heillä olisi käytössä samoja "
-"palvelimia."
+"Salli ystävien todentaa, vaikkei heillä olisi käytössä samoja palvelimia."
 
 #: authentik/sources/plex/models.py
 msgid "Plex token used to check friends"
@@ -3270,7 +3272,7 @@ msgstr "POST-liitos automaattisella vahvistuksella"
 
 #: authentik/sources/saml/models.py authentik/sources/telegram/models.py
 msgid "Flow used before authentication."
-msgstr "Prosessi, jota käytetään ennen tunnistautumista."
+msgstr "Prosessi, jota käytetään ennen todentamista."
 
 #: authentik/sources/saml/models.py
 msgid "Issuer"
@@ -3303,8 +3305,8 @@ msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
 msgstr ""
-"Sallii IdP-lähtöiset tunnistautumisprosessit. Tämä voi olla tietoturvariski,"
-" koska pyynnön ID:tä ei validoida."
+"Sallii IdP-lähtöiset todentamisprosessit. Tämä voi olla tietoturvariski, "
+"koska pyynnön ID:tä ei validoida."
 
 #: authentik/sources/saml/models.py
 msgid ""
@@ -3434,7 +3436,7 @@ msgstr "Ryhmän Telegram-lähteen yhteydet"
 
 #: authentik/sources/telegram/stage.py
 msgid "Authentication date is too old"
-msgstr "Tunnistautumispäivämäärä on liian vanha"
+msgstr "Todennuspäivämäärä on liian vanha"
 
 #: authentik/sources/telegram/stage.py
 msgid "Invalid hash"
@@ -3583,7 +3585,7 @@ msgstr ""
 #: authentik/stages/authenticator_sms/models.py
 #, python-brace-format
 msgid "Use this code to authenticate in authentik: {token}"
-msgstr "Käytä tätä koodia tunnistautuaksesi authentikiin: {token}"
+msgstr "Käytä tätä koodia authentik-todentamisessa: {token}"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"
@@ -3701,7 +3703,7 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Device classes which can be used to authenticate"
-msgstr "Laitetyypit, joita voi käyttää tunnistautumiseen"
+msgstr "Laitetyypit, joita voi käyttää todentamiseen"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid ""
@@ -4118,7 +4120,7 @@ msgstr "Tunnistautumisvaiheet"
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
-msgstr "Tunnistautuminen epäonnistui."
+msgstr "Todentaminen epäonnistui."
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"

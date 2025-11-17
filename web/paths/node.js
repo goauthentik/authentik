@@ -9,8 +9,6 @@ import { fileURLToPath } from "node:url";
 
 import { DistDirectoryName } from "#paths";
 
-import { resolvePackage } from "@goauthentik/core/paths/node";
-
 const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
 //#region Base paths
@@ -47,8 +45,6 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  * ESBuild entrypoint target.
  * Matches the type defined in the ESBuild context.
  */
-
-const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
 /**
  * Entry points available for building.

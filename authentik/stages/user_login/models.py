@@ -30,7 +30,7 @@ class GeoIPBinding(models.TextChoices):
 
 
 class UserLoginStage(Stage):
-    """Attaches the currently pending user to the current session."""
+    """Attach the pending user to the current session."""
 
     session_duration = models.TextField(
         default="seconds=0",
