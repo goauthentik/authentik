@@ -17,10 +17,10 @@
 
 postgresql:
   host: localhost
-  name: authentik
-  user: authentik
   port: 5432
+  user: authentik
   password: "env://POSTGRES_PASSWORD"
+  name: authentik
   sslmode: disable
   use_pool: False
   test:
