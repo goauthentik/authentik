@@ -1,6 +1,5 @@
 import "#admin/common/ak-license-notice";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
-import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
