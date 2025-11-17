@@ -12,7 +12,7 @@ authentik supports highly available setups in various ways:
 
 authentik server and worker containers are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker containers, ensuring resilience and fault tolerance.
 
-If a server or worker container goes offline, another container continues to provide service availability. If these containers are distributed among multiple docker or kubernetes hosts, it can provide even higher levels of resilience and fault tolerance.
+If a server or worker container goes offline, another container can continue to provide service availability. If these containers are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
 
 ## PostgreSQL high availability
 
