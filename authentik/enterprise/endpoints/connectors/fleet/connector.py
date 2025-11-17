@@ -61,7 +61,7 @@ class FleetConnector(BaseConnector[DBC]):
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
-                identifier=serial, defaults={"name": host["hostname"]}
+                identifier=serial, defaults={"name": host["hostname"], "expiring": False}
             )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,

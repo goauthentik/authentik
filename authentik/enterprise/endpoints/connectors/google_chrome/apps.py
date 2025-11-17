@@ -1,9 +1,9 @@
 """authentik endpoints app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from authentik.enterprise.apps import EnterpriseConfig
 
 
-class AuthentikEnterpriseEndpointsConnectorGoogleChromeAppConfig(ManagedAppConfig):
+class AuthentikEnterpriseEndpointsConnectorGoogleChromeAppConfig(EnterpriseConfig):
     """authentik endpoints app config"""
 
     name = "authentik.enterprise.endpoints.connectors.google_chrome"
