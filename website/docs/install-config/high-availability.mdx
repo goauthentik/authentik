@@ -1,5 +1,39 @@
 ---
-title: High availability
+title: High availability (HA)
 ---
 
-authentik supports various highly available deployment setups. Multiple instances of the server and worker containers can be run in parallel, allowing for failover and redundancy and the authentik database utilizes PostgreSQL which has extensive support for different highly available setups.
+authentik supports highly available setups in various ways:
+
+- Multiple instances of the server and worker containers can be run in parallel, allowing for resilience and redundancy.
+- The authentik database utilizes PostgreSQL which has extensive support for different highly available setups.
+- It's possible to have multiple authentik deployments in an active-standy setup using the same PostgreSQL database.
+
+## Server and worker instances
+
+authentik server and worker containers are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker containers, ensuring resilience and fault tolerance.
+
+If a server or worker container goes offline, another container continues to provide service availability. If these containers are distributed among multiple docker or kubernetes hosts, it can provide even higher levels of resilience and fault tolerance.
+
+## PostgreSQL high availability
+
+PostgreSQL supports high availability through replication and clustering.
+
+Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more information.
+
+## Active-Standy authentik deployment
+
+In an active-standby deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
+
+The components of an active-standby authentik deployment:
+
+    - **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
+    - **Standby Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
+    - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because only one authentik instance is active at a time, there are no data conflicts as seen in active-active setups.
+    - **Loadbalancer**: A loadbalancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
+
+This setup provides several advantages:
+
+    - **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacentres or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
+    - **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and standby instances.
+    - **Automatic failover**: A loadbalancer allows for automatic failover based on health monitoring, rather than waiting for administrators to detect an issue and manualy failover.
+    - **Possibility of blue-green deployment**: The use of a loadbalancer also allows for blue-green methodology, assuming that appropriate changes are made to the database.
