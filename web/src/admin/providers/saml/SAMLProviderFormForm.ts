@@ -165,6 +165,9 @@ export function renderForm({
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
@@ -200,6 +203,9 @@ export function renderForm({
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(

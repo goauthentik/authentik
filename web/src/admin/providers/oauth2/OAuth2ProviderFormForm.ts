@@ -233,7 +233,7 @@ export function renderForm({
                     value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
                     inputmode="url"
-                    placeholder="https://..."
+                    placeholder=${msg("https://...")}
                     .help=${msg(
                         "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
                     )}
