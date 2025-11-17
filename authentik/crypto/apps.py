@@ -18,11 +18,6 @@ class AuthentikCryptoConfig(ManagedAppConfig):
     verbose_name = "authentik Crypto"
     default = True
 
-    def ready(self) -> None:
-        """Import signals"""
-        super().ready()
-        import authentik.crypto.signals  # noqa: F401
-
     def _create_update_cert(self):
         from authentik.crypto.builder import CertificateBuilder
         from authentik.crypto.models import CertificateKeyPair
