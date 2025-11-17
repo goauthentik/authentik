@@ -5,12 +5,15 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
+import "#elements/utils/TimeDeltaHelp";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { gidStartNumberHelp, uidStartNumberHelp } from "#admin/providers/ldap/LDAPOptionsAndHelp";
 
 import {
     AgentConnector,
@@ -99,6 +102,35 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     ${msg("Certificate used for signing device compliance challenges.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="authTerminateSessionOnExpiry">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${msg("Terminate authenticated sessions on token expiry")}</span
+                    >
+                </label>
+            </ak-form-element-horizontal>
+            <ak-text-input
+                name="refreshInterval"
+                label=${msg("Refresh interval")}
+                input-hint="code"
+                required
+                value="${ifDefined(this.instance?.refreshInterval ?? "minutes=30")}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Interval how frequently the agent tries to update its config.")}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
             <ak-form-group open label="${msg("Unix settings")}">
                 <div class="pf-c-form">
                     <ak-number-input
@@ -106,18 +138,14 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         required
                         name="nssUidOffset"
                         value="${this.instance?.nssUidOffset ?? 1000}"
-                        help=${msg(
-                            "Reputation cannot decrease lower than this value. Zero or negative.",
-                        )}
+                        help=${uidStartNumberHelp}
                     ></ak-number-input>
                     <ak-number-input
                         label=${msg("NSS Group ID offset")}
                         required
                         name="nssGidOffset"
                         value="${this.instance?.nssGidOffset ?? 1000}"
-                        help=${msg(
-                            "Reputation cannot decrease lower than this value. Zero or negative.",
-                        )}
+                        help=${gidStartNumberHelp}
                     ></ak-number-input>
                 </div>
             </ak-form-group>`;

@@ -26,7 +26,7 @@ class AgentConnector(Connector):
     )
     auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
-        default="seconds=30",
+        default="minutes=30",
         validators=[timedelta_string_validator],
     )
 
