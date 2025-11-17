@@ -1,6 +1,6 @@
 from django.urls import path
 
-from authentik.endpoints.connectors.agent.views.apple_site_association import (
+from authentik.enterprise.endpoints.connectors.agent.views.apple_site_association import (
     AppleAppSiteAssociation,
 )
 
