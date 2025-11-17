@@ -98,4 +98,4 @@ class DeviceFacts(Serializer):
     hardware = HardwareSerializer(required=False, allow_null=True)
     software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
     processes = ListField(child=ProcessSerializer(), required=False, allow_null=True)
-    vendor = JSONDictField()
+    vendor = JSONDictField(required=False)

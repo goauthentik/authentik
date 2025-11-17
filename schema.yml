@@ -5035,7 +5035,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
-        required: true
       responses:
         '204':
           description: Successfully checked in
@@ -5844,31 +5843,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: endpoints_devices_create
-      description: Mixin to add a used_by endpoint to return a list of all objects
-        using this object
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EndpointDevice'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
@@ -5891,7 +5865,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EndpointDevice'
+                $ref: '#/components/schemas/EndpointDeviceDetails'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -35533,18 +35507,6 @@ components:
       - connector_obj
       - device
       - latest_snapshot
-    DeviceConnectionRequest:
-      type: object
-      properties:
-        device:
-          type: string
-          format: uuid
-        connector:
-          type: string
-          format: uuid
-      required:
-      - connector
-      - device
     DeviceFactSnapshot:
       type: object
       properties:
@@ -35600,8 +35562,6 @@ components:
         vendor:
           type: object
           additionalProperties: {}
-      required:
-      - vendor
     DeviceFactsRequest:
       type: object
       properties:
@@ -35635,8 +35595,6 @@ components:
         vendor:
           type: object
           additionalProperties: {}
-      required:
-      - vendor
     DeviceGroup:
       type: object
       properties:
@@ -36352,6 +36310,53 @@ components:
           nullable: true
         group_obj:
           $ref: '#/components/schemas/DeviceGroup'
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        facts:
+          allOf:
+          - $ref: '#/components/schemas/DeviceFactSnapshot'
+          readOnly: true
+      required:
+      - facts
+      - group_obj
+      - name
+      - pbm_uuid
+    EndpointDeviceDetails:
+      type: object
+      properties:
+        device_uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        group_obj:
+          $ref: '#/components/schemas/DeviceGroup'
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        facts:
+          allOf:
+          - $ref: '#/components/schemas/DeviceFactSnapshot'
+          readOnly: true
+        connections_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceConnection'
         policies:
           type: array
           items:
@@ -36364,20 +36369,6 @@ components:
             type: string
             format: uuid
           readOnly: true
-        connections_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceConnection'
-        facts:
-          allOf:
-          - $ref: '#/components/schemas/DeviceFacts'
-          readOnly: true
-        expiring:
-          type: boolean
-        expires:
-          type: string
-          format: date-time
-          nullable: true
       required:
       - connections
       - connections_obj
@@ -36401,10 +36392,6 @@ components:
           nullable: true
         group_obj:
           $ref: '#/components/schemas/DeviceGroupRequest'
-        connections_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceConnectionRequest'
         expiring:
           type: boolean
         expires:
@@ -36412,7 +36399,6 @@ components:
           format: date-time
           nullable: true
       required:
-      - connections_obj
       - group_obj
       - name
     EndpointRequest:
@@ -45525,10 +45511,6 @@ components:
           nullable: true
         group_obj:
           $ref: '#/components/schemas/DeviceGroupRequest'
-        connections_obj:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceConnectionRequest'
         expiring:
           type: boolean
         expires:

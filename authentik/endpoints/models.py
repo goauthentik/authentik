@@ -1,16 +1,16 @@
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from deepmerge import always_merger
+from django.core.cache import cache
 from django.db import models
 from django.db.models import OuterRef, Subquery
-from django.utils.functional import cached_property
 from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel
-from authentik.endpoints.facts import DeviceFacts
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
@@ -22,6 +22,8 @@ from authentik.tasks.schedules.models import ScheduledModel
 if TYPE_CHECKING:
     from authentik.endpoints.connector import BaseConnector
 
+DEVICE_FACTS_CACHE_TIMEOUT = 3600
+
 
 class Device(ExpiringModel, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
@@ -31,10 +33,20 @@ class Device(ExpiringModel, PolicyBindingModel):
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
-    @cached_property
-    def facts(self) -> DeviceFacts:
+    @property
+    def cached_facts(self) -> "DeviceFactSnapshot":
+        cache_key = f"goauthentik.io/endpoints/devices/{self.device_uuid}/facts"
+        if cached := cache.get(cache_key):
+            return cached
+        facts = self.facts
+        cache.set(cache_key, facts, timeout=DEVICE_FACTS_CACHE_TIMEOUT)
+        return facts
+
+    @property
+    def facts(self) -> "DeviceFactSnapshot":
         data = {}
-        for snapshot in DeviceFactSnapshot.filter_not_expired(
+        last_updated = datetime.fromtimestamp(0, UTC)
+        for snapshot_data, snapshort_created in DeviceFactSnapshot.filter_not_expired(
             snapshot_id__in=Subquery(
                 DeviceFactSnapshot.objects.filter(
                     connection__connector=OuterRef("connection__connector"), connection__device=self
@@ -42,9 +54,10 @@ class Device(ExpiringModel, PolicyBindingModel):
                 .order_by("-created")
                 .values("snapshot_id")[:1]
             )
-        ).values_list("data", flat=True):
-            always_merger.merge(data, snapshot)
-        return data
+        ).values_list("data", "created"):
+            always_merger.merge(data, snapshot_data)
+            last_updated = max(last_updated, snapshort_created)
+        return DeviceFactSnapshot(data=data, created=last_updated)
 
 
 class DeviceUserBinding(PolicyBinding):

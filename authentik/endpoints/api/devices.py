@@ -1,23 +1,23 @@
+from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
+from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
 from authentik.endpoints.api.device_group import DeviceGroupSerializer
-from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device
 
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    connections_obj = DeviceConnectionSerializer(many=True, source="deviceconnection_set")
     group_obj = DeviceGroupSerializer(source="group")
 
     facts = SerializerMethodField()
 
-    def get_facts(self, instance: Device) -> DeviceFacts:
-        return instance.facts
+    def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
+        return DeviceFactSnapshotSerializer(instance.cached_facts).data
 
     class Meta:
         model = Device
@@ -27,18 +27,37 @@ class EndpointDeviceSerializer(ModelSerializer):
             "name",
             "group",
             "group_obj",
-            "policies",
-            "connections",
-            "connections_obj",
-            "facts",
             "expiring",
             "expires",
+            "facts",
         ]
 
 
-class DeviceViewSet(UsedByMixin, ModelViewSet):
+class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
 
-    queryset = Device.objects.all().prefetch_related("policies", "connections")
+    connections_obj = DeviceConnectionSerializer(many=True, source="deviceconnection_set")
+
+    def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
+        return DeviceFactSnapshotSerializer(instance.facts).data
+
+    class Meta(EndpointDeviceSerializer.Meta):
+        fields = EndpointDeviceSerializer.Meta.fields + [
+            "connections_obj",
+            "policies",
+            "connections",
+        ]
+
+
+class DeviceViewSet(
+    UsedByMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+
+    queryset = Device.objects.all().select_related("group")
     serializer_class = EndpointDeviceSerializer
     search_fields = [
         "name",
@@ -46,3 +65,13 @@ class DeviceViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["identifier"]
     filterset_fields = ["name", "identifier"]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return EndpointDeviceDetailsSerializer
+        return super().get_serializer_class()
+
+    def get_queryset(self):
+        if self.action == "retrieve":
+            return super().get_queryset().prefetch_related("connections")
+        return super().get_queryset()

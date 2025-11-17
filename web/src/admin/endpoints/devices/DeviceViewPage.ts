@@ -10,7 +10,9 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
-import { Disk, EndpointDevice, EndpointsApi } from "@goauthentik/api";
+import { getSize } from "#admin/endpoints/devices/utils";
+
+import { Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -23,23 +25,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-function getSize(size: number) {
-    const sizes = [" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB"];
-
-    for (let i = 1; i < sizes.length; i++) {
-        if (size < Math.pow(1024, i))
-            return Math.round((size / Math.pow(1024, i - 1)) * 100) / 100 + sizes[i - 1];
-    }
-    return size.toString();
-}
-
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
     @property({ type: String })
     public deviceId?: string;
 
     @state()
-    protected device?: EndpointDevice;
+    protected device?: EndpointDeviceDetails;
 
     @state()
     protected error?: APIError;
@@ -66,9 +58,9 @@ export class DeviceViewPage extends AKElement {
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            header: this.device?.facts.network?.hostname ?? msg("Loading device..."),
+            header: this.device?.facts.data.network?.hostname ?? msg("Loading device..."),
             description: this.device
-                ? this.device?.facts.os?.name + " " + this.device?.facts.os?.version
+                ? this.device?.facts.data.os?.name + " " + this.device?.facts.data.os?.version
                 : undefined,
         });
     }
@@ -77,7 +69,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
-        const _rootDisk = this.device.facts.disks?.filter((d) => d.mountpoint === "/") || [];
+        const _rootDisk = this.device.facts.data.disks?.filter((d) => d.mountpoint === "/") || [];
         let rootDisk: Disk | undefined = undefined;
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
@@ -89,13 +81,13 @@ export class DeviceViewPage extends AKElement {
                     <div class="pf-c-card__body">
                         ${renderDescriptionList(
                             [
-                                [msg("Name"), this.device.facts.network?.hostname],
-                                [msg("Serial number"), this.device.facts.hardware?.serial],
+                                [msg("Name"), this.device.facts.data.network?.hostname],
+                                [msg("Serial number"), this.device.facts.data.hardware?.serial],
                                 [
                                     msg("Operating system"),
                                     [
-                                        this.device.facts.os?.name,
-                                        this.device.facts.os?.version,
+                                        this.device.facts.data.os?.name,
+                                        this.device.facts.data.os?.version,
                                     ].join(" "),
                                 ],
                                 [
@@ -107,7 +99,7 @@ export class DeviceViewPage extends AKElement {
                                 [
                                     msg("Firewall enabled"),
                                     html`<ak-status-label
-                                        ?good=${this.device.facts.network?.firewallEnabled}
+                                        ?good=${this.device.facts.data.network?.firewallEnabled}
                                     ></ak-status-label>`,
                                 ],
                             ],
@@ -120,18 +112,21 @@ export class DeviceViewPage extends AKElement {
                     <div class="pf-c-card__body">
                         ${renderDescriptionList(
                             [
-                                [msg("Manufacturer"), this.device.facts.hardware?.manufacturer],
-                                [msg("Model"), this.device.facts.hardware?.model],
+                                [
+                                    msg("Manufacturer"),
+                                    this.device.facts.data.hardware?.manufacturer,
+                                ],
+                                [msg("Model"), this.device.facts.data.hardware?.model],
                                 [
                                     msg("CPU"),
                                     msg(
-                                        str`${this.device.facts.hardware?.cpuCount} x ${this.device.facts.hardware?.cpuName}`,
+                                        str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
                                     ),
                                 ],
                                 [
                                     msg("Memory"),
-                                    this.device.facts.hardware?.memoryBytes
-                                        ? getSize(this.device.facts.hardware?.memoryBytes)
+                                    this.device.facts.data.hardware?.memoryBytes
+                                        ? getSize(this.device.facts.data.hardware?.memoryBytes)
                                         : "-",
                                 ],
                                 [

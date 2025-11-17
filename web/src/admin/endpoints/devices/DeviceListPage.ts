@@ -76,14 +76,13 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     }
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
-        const lastUpdated = item.connectionsObj.map((c) => c.latestSnapshot?.created).sort();
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
-                <div>${item.facts.network?.hostname || item.name}</div>
+                <div>${item.facts.data.network?.hostname || item.name}</div>
             </a>`,
-            html`${osFamilyToLabel(item.facts.os?.family)} ${item.facts.os?.version}`,
+            html`${osFamilyToLabel(item.facts.data.os?.family)} ${item.facts.data.os?.version}`,
             html`${item.group || "-"}`,
-            lastUpdated.length > 0 ? Timestamp(lastUpdated[0]) : html`-`,
+            item.facts.created ? Timestamp(item.facts.created) : html`-`,
         ];
     }
 }
