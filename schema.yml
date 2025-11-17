@@ -32636,7 +32636,6 @@ components:
           type: string
         auth_terminate_session_on_expiry:
           type: boolean
-          readOnly: true
         refresh_interval:
           type: integer
           readOnly: true
@@ -32682,6 +32681,10 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
         authentication_flow:
           type: string
           format: uuid
@@ -32718,6 +32721,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
         authentication_flow:
           type: string
           format: uuid
@@ -45079,6 +45087,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
         authentication_flow:
           type: string
           format: uuid

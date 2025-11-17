@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -16,6 +16,7 @@ from authentik.endpoints.connectors.agent.api._auth import (
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken
 from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device, DeviceConnection
+from authentik.lib.utils.time import timedelta_from_string
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
@@ -30,14 +31,11 @@ class AgentConfigSerializer(PassiveSerializer):
     nss_uid_offset = IntegerField()
     nss_gid_offset = IntegerField()
     authentication_flow = CharField()
-    auth_terminate_session_on_expiry = SerializerMethodField()
+    auth_terminate_session_on_expiry = BooleanField()
     refresh_interval = SerializerMethodField()
 
-    def get_auth_terminate_session_on_expiry(*args) -> bool:
-        return False
-
-    def get_refresh_interval(*args) -> int:
-        return 30
+    def get_refresh_interval(self, instance: AgentConnector) -> int:
+        return int(timedelta_from_string(instance.refresh_interval).total_seconds())
 
 
 class EnrollSerializer(PassiveSerializer):

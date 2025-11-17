@@ -6027,6 +6027,15 @@
                     "maximum": 2147483647,
                     "title": "Nss gid offset"
                 },
+                "auth_terminate_session_on_expiry": {
+                    "type": "boolean",
+                    "title": "Auth terminate session on expiry"
+                },
+                "refresh_interval": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh interval"
+                },
                 "authentication_flow": {
                     "type": "string",
                     "format": "uuid",

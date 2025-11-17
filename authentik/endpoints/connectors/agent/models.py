@@ -11,6 +11,7 @@ from authentik.endpoints.models import Connector, DeviceConnection, DeviceGroup
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.connector import AgentConnector
@@ -22,6 +23,11 @@ class AgentConnector(Connector):
     nss_gid_offset = models.PositiveIntegerField(default=1000)
     authentication_flow = models.ForeignKey(
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
+    auth_terminate_session_on_expiry = models.BooleanField(default=False)
+    refresh_interval = models.TextField(
+        default="seconds=30",
+        validators=[timedelta_string_validator],
     )
 
     challenge_key = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE, null=True)
