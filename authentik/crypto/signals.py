@@ -11,7 +11,7 @@ from django.dispatch import receiver
 from authentik.crypto.models import detect_key_type, fingerprint_sha256
 
 
-def extract_certificate_metadata(certificate: Certificate) -> dict:
+def extract_certificate_metadata(certificate: Certificate) -> dict[str, Any | str]:
     """Extract all metadata fields from a certificate.
 
     Returns a dict with keys: key_type, cert_expiry, cert_subject,
