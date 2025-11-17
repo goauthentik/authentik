@@ -14,6 +14,7 @@ import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
@@ -32,7 +33,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         `,
     ];
 
-    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("OS")], [msg("Last updated")]];
+    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("OS")], [msg("Group")], [msg("Last updated")]];
 
     ordering = "name";
 
@@ -74,7 +75,8 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
                 <div>${item.facts.network?.hostname || item.name}</div>
             </a>`,
-            html`${item.facts.os?.family} ${item.facts.os?.version}`,
+            html`${osFamilyToLabel(item.facts.os?.family)} ${item.facts.os?.version}`,
+            html`${item.group || "-"}`,
             lastUpdated.length > 0 ? Timestamp(lastUpdated[0]) : html`-`,
         ];
     }

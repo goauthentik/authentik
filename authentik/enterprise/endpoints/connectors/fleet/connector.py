@@ -89,6 +89,20 @@ class FleetConnector(BaseConnector[DBC]):
                 },
             )
 
+    @staticmethod
+    def os_family(host: dict[str, Any]) -> OSFamily:
+        if host["platform_like"] == "debian":
+            return OSFamily.linux
+        if host["platform_like"] == "windows":
+            return OSFamily.windows
+        if host["platform_like"] == "darwin":
+            return OSFamily.macOS
+        if host["platform"] == "android":
+            return OSFamily.android
+        if host["platform"] == "ipados" or host["platform"] == "ios":
+            return OSFamily.iOS
+        return OSFamily.other
+
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:
         """Convert host data from fleet to authentik"""
         fleet_version = ""
@@ -98,8 +112,7 @@ class FleetConnector(BaseConnector[DBC]):
         data = {
             "os": {
                 "arch": host["cpu_type"],
-                # TODO: mapping from fleet
-                "family": OSFamily.linux,
+                "family": FleetConnector.os_family(host["platform_like"]),
                 "name": host["platform_like"],
                 "version": host["os_version"],
             },

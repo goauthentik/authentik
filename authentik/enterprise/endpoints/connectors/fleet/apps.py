@@ -1,9 +1,9 @@
 """authentik endpoints app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from authentik.enterprise.apps import EnterpriseConfig
 
 
-class AuthentikEnterpriseEndpointsConnectorFleetAppConfig(ManagedAppConfig):
+class AuthentikEnterpriseEndpointsConnectorFleetAppConfig(EnterpriseConfig):
     """authentik endpoints app config"""
 
     name = "authentik.enterprise.endpoints.connectors.fleet"

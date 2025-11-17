@@ -4,12 +4,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.endpoints.api.connectors import ConnectorSerializer
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.endpoints.connectors.fleet.models import (
     FleetConnector,
 )
 
 
-class FleetConnectorSerializer(ConnectorSerializer):
+class FleetConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializer):
     """FleetConnector Serializer"""
 
     class Meta(ConnectorSerializer.Meta):

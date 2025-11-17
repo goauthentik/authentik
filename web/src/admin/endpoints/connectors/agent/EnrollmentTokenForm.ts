@@ -2,8 +2,6 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
-import "#admin/common/ak-flow-search/ak-branded-flow-search";
-import "#admin/common/ak-crypto-certificate-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

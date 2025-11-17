@@ -36545,6 +36545,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        group_obj:
+          $ref: '#/components/schemas/DeviceGroup'
         policies:
           type: array
           items:
@@ -36575,6 +36577,7 @@ components:
       - connections
       - connections_obj
       - facts
+      - group_obj
       - name
       - pbm_uuid
       - policies
@@ -36591,6 +36594,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        group_obj:
+          $ref: '#/components/schemas/DeviceGroupRequest'
         connections_obj:
           type: array
           items:
@@ -36603,6 +36608,7 @@ components:
           nullable: true
       required:
       - connections_obj
+      - group_obj
       - name
     EndpointRequest:
       type: object
@@ -45792,6 +45798,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        group_obj:
+          $ref: '#/components/schemas/DeviceGroupRequest'
         connections_obj:
           type: array
           items:
