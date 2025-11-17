@@ -4,8 +4,8 @@ title: High availability (HA)
 
 authentik supports highly available setups in various ways:
 
-- Multiple instances of the server and worker containers can be run in parallel, allowing for resilience and redundancy.
-- The authentik database utilizes PostgreSQL which has extensive support for different highly available setups.
+- Multiple instances of the server and worker containers can be run in parallel, allowing for redundancy.
+- The authentik database is PostgreSQL which has extensive support for different highly available setups.
 - It's possible to have multiple authentik deployments in an active-standby setup using the same PostgreSQL database.
 
 ## Parallel server and worker instances
@@ -20,16 +20,18 @@ PostgreSQL supports high availability through replication and clustering.
 
 Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more information.
 
+authentik also has built-in support for [PostgreSQL Read Replicas] and using [PostgreSQL Connection Poolers](https://docs.goauthentik.io/install-config/configuration/#using-a-postgresql-connection-pooler) like PgBouncer or PgPool.
+
 ## Active-Standy authentik deployment
 
 In an active-standby deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
 
 The components of an active-standby authentik deployment:
 
-    - **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
-    - **Standby Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
-    - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because only one authentik instance is active at a time, there are no data conflicts as seen in active-active setups.
-    - **Loadbalancer**: A loadbalancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
+- **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
+- **Standby Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
+- **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because only one authentik instance is active at a time, there are no data conflicts as seen in active-active setups.
+- **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
 
 ```mermaid
 graph TD
@@ -57,7 +59,7 @@ graph TD
 
 This setup provides several advantages:
 
-    - **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacentres or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
-    - **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and standby instances.
-    - **Automatic failover**: A loadbalancer allows for automatic failover based on health monitoring, rather than waiting for administrators to detect an issue and manually failover.
-    - **Possibility of blue-green deployment**: The use of a loadbalancer also allows for blue-green methodology, assuming that appropriate changes are made to the database.
+- **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacentres or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
+- **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and standby instances.
+- **Automatic failover**: A load balancer allows for automatic failover based on health monitoring, rather than waiting for administrators to detect an issue and manually failover.
+- **Possibility of blue-green deployment**: The use of a load balancer also allows for blue-green methodology, assuming that appropriate changes are made to the database.
