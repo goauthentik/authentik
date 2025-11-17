@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
@@ -31,7 +34,20 @@ class TestAgentConnector(APITestCase):
             data={"device_serial": generate_id(), "device_name": "bar"},
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
-        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.status_code, 200)
+
+    def test_enroll_expired(self):
+        dev_id = generate_id()
+        self.token.expiring = True
+        self.token.expires = now() - timedelta(hours=1)
+        self.token.save()
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": dev_id, "device_name": "bar"},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Device.objects.filter(identifier=dev_id).exists())
 
     def test_config(self):
         response = self.client.get(

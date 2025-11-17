@@ -9,11 +9,11 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.api.connectors import ConnectorSerializer
-from authentik.endpoints.connectors.agent.api._auth import (
-    authenticate_device,
-    authenticate_enrollment,
+from authentik.endpoints.connectors.agent.auth import (
+    AgentAuth,
+    AgentEnrollmentAuth,
 )
-from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken
+from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.facts import DeviceFacts
 from authentik.endpoints.models import Device, DeviceConnection
 from authentik.lib.utils.time import timedelta_from_string
@@ -58,22 +58,16 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "enabled"]
 
     @extend_schema(
-        responses=AgentConfigSerializer(),
-        request=OpenApiTypes.NONE,
-    )
-    @action(methods=["GET"], detail=False, authentication_classes=[], permission_classes=[])
-    def agent_config(self, request: Request):
-        token = authenticate_device(request)
-        connector: AgentConnector = token.device.connector.agentconnector
-        return Response(AgentConfigSerializer(connector).data)
-
-    @extend_schema(
         request=EnrollSerializer(),
         responses={200: EnrollResponseSerializer},
     )
-    @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
+    @action(
+        methods=["POST"],
+        detail=False,
+        authentication_classes=[AgentEnrollmentAuth],
+    )
     def enroll(self, request: Request):
-        connector = authenticate_enrollment(request)
+        token: EnrollmentToken = request.auth
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device, _ = Device.objects.get_or_create(
@@ -85,7 +79,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         )
         connection, _ = DeviceConnection.objects.update_or_create(
             device=device,
-            connector=connector,
+            connector=token.connector,
         )
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
@@ -95,14 +89,24 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         )
 
     @extend_schema(
+        responses=AgentConfigSerializer(),
+        request=OpenApiTypes.NONE,
+    )
+    @action(methods=["GET"], detail=False, authentication_classes=[AgentAuth])
+    def agent_config(self, request: Request):
+        token: DeviceToken = request.auth
+        connector: AgentConnector = token.device.connector.agentconnector
+        return Response(AgentConfigSerializer(connector).data)
+
+    @extend_schema(
         request=DeviceFacts(),
         responses={204: OpenApiResponse(description="Successfully checked in")},
     )
-    @action(methods=["POST"], detail=False, authentication_classes=[], permission_classes=[])
+    @action(methods=["POST"], detail=False, authentication_classes=[AgentAuth])
     def check_in(self, request: Request):
-        device = authenticate_device(request)
+        token: DeviceToken = request.auth
         data = DeviceFacts(data=request.data)
         data.is_valid(raise_exception=True)
-        connection: DeviceConnection = device.device
+        connection: DeviceConnection = token.device
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
