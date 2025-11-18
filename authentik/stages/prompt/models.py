@@ -306,8 +306,8 @@ class Prompt(SerializerModel):
 
         if self.type in CHOICE_FIELDS:
             field_class = ChoiceField
+            kwargs["choices"] = []
             if choices:
-                kwargs["choices"] = []
                 for choice in choices:
                     label, value = choice, choice
                     if isinstance(choice, dict):
