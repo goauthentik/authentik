@@ -19,7 +19,7 @@
 }
 
 ak-tabs::part(row) {
-    background-color: var(--pf-global--BackgroundColor--100);
+    background-color: transparent;
     margin-block-start: 0;
     padding-block-start: var(--pf-global--spacer--sm);
 }

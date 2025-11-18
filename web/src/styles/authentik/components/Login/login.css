@@ -172,6 +172,7 @@
     padding-block-start: calc(
         var(--ak-login__main-padding-block-start) - var(--ak-login__footer--PaddingBlock)
     );
+    padding-bottom: var(--pf-global--spacer--xs);
 
     padding-block-end: calc(var(--ak-login--padding) / 2);
 
