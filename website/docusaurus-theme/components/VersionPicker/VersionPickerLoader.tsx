@@ -1,10 +1,13 @@
 import { useHostname } from "#components/VersionPicker/utils.ts";
 import { VersionDropdown } from "#components/VersionPicker/VersionDropdown.tsx";
 
-import { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/plugin";
+import type {
+    AKReleaseFrontMatter,
+    AKReleasesPluginData,
+} from "@goauthentik/docusaurus-theme/releases/common";
 
 import useIsBrowser from "@docusaurus/useIsBrowser";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export interface VersionPickerLoaderProps {
     pluginData: AKReleasesPluginData;
@@ -20,7 +23,23 @@ export interface VersionPickerLoaderProps {
 export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ pluginData }) => {
     const { preReleaseOrigin } = pluginData.env;
 
-    const [releases, setReleases] = useState(pluginData.releases);
+    const [releases, setReleases] = useState(() =>
+        pluginData.releases.map((release) => release.name),
+    );
+
+    const frontMatterRecord = useMemo(() => {
+        const record: Record<string, AKReleaseFrontMatter> = {};
+
+        for (const release of pluginData.releases) {
+            if (!release.frontMatter) {
+                continue;
+            }
+
+            record[release.name] = release.frontMatter;
+        }
+
+        return record;
+    }, [pluginData.releases]);
 
     const browser = useIsBrowser();
     const hostname = useHostname();
@@ -60,5 +79,12 @@ export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ plugin
         return () => controller.abort("unmount");
     }, [browser, pluginData.publicPath, preReleaseOrigin]);
 
-    return <VersionDropdown hostname={hostname} releases={releases} environment={pluginData.env} />;
+    return (
+        <VersionDropdown
+            hostname={hostname}
+            releases={releases}
+            frontMatterRecord={frontMatterRecord}
+            environment={pluginData.env}
+        />
+    );
 };
