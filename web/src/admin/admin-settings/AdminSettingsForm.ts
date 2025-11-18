@@ -47,7 +47,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     public settings!: Settings;
 
     protected override readonly actionName = "save";
-    protected override entityLabel = msg("settings");
+    protected override entityLabel = msg("Settings");
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
         const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({

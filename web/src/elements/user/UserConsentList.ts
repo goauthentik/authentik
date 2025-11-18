@@ -31,8 +31,8 @@ export class UserConsentList extends Table<UserConsent> {
     order = "-expires";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("consent"),
-        plural: msg("consents"),
+        singular: msg("Consent", { id: "entity.consent.singular" }),
+        plural: msg("Consents", { id: "entity.consent.plural" }),
     };
 
     protected override rowLabel(item: UserConsent): string | null {

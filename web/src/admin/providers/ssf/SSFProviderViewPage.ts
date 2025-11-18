@@ -44,8 +44,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("SSF Provider"),
-        plural: msg("SSF Providers"),
+        singular: msg("Ssf Provider", { id: "entity.ssf-provider.singular" }),
+        plural: msg("Ssf Providers", { id: "entity.ssf-provider.plural" }),
     };
 
     @property({ type: Number })

@@ -22,11 +22,13 @@ import { customElement, property } from "lit/decorators.js";
 export class BrandListPage extends TablePage<Brand> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Brand"),
-        plural: msg("Brands"),
+        singular: msg("Brand", { id: "entity.brand.singular" }),
+        plural: msg("Brands", { id: "entity.brand.plural" }),
     };
     protected get searchPlaceholder() {
-        return msg("Search by domain or brand name...");
+        return msg("Search by domain or brand name...", {
+            id: "search.placeholder.",
+        });
     }
 
     public pageDescription = msg("Configure visual settings and defaults for different domains.");

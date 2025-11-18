@@ -68,8 +68,8 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("OAuth2 Provider"),
-        plural: msg("OAuth2 Providers"),
+        singular: msg("O Auth2 Provider", { id: "entity.o-auth2-provider.singular" }),
+        plural: msg("O Auth2 Providers", { id: "entity.o-auth2-provider.plural" }),
     };
 
     @property({ type: Number })

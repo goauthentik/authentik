@@ -93,11 +93,6 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    protected entityLabel = {
-        singular: msg("My Application"),
-        plural: msg("My Applications"),
-    };
-
     render() {
         if (this.apps.loading) {
             return html`<ak-empty-state default-label></ak-empty-state>`;

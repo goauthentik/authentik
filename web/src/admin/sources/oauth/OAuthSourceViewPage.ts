@@ -80,8 +80,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("OAuth Source"),
-        plural: msg("OAuth Sources"),
+        singular: msg("O Auth Source", { id: "entity.o-auth-source.singular" }),
+        plural: msg("O Auth Sources", { id: "entity.o-auth-source.plural" }),
     };
 
     @property({ type: String })

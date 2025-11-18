@@ -45,8 +45,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("RAC Provider"),
-        plural: msg("RAC Providers"),
+        singular: msg("Rac Provider", { id: "entity.rac-provider.singular" }),
+        plural: msg("Rac Providers", { id: "entity.rac-provider.plural" }),
     };
 
     @property({ type: Number })

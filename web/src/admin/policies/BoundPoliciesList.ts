@@ -59,8 +59,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     order = "order";
 
     protected entityLabel: EntityLabel = {
-        singular: msg("Policy Binding"),
-        plural: msg("Policy Bindings"),
+        singular: msg("Policy Binding", { id: "entity.policy-binding.singular" }),
+        plural: msg("Policy Bindings", { id: "entity.policy-binding.plural" }),
     };
 
     static get styles(): CSSResult[] {

@@ -63,8 +63,8 @@ interface SAMLPreviewAttribute {
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("SAML Provider"),
-        plural: msg("SAML Providers"),
+        singular: msg("Saml Provider", { id: "entity.saml-provider.singular" }),
+        plural: msg("Saml Providers", { id: "entity.saml-provider.plural" }),
     };
 
     @property({ type: Number })

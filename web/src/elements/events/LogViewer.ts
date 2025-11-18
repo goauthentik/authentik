@@ -24,8 +24,8 @@ export class LogViewer extends Table<LogEvent> {
     paginated = false;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("log message"),
-        plural: msg("log messages"),
+        singular: msg("Log Message", { id: "entity.log-message.singular" }),
+        plural: msg("Log Messages", { id: "entity.log-message.plural" }),
     };
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];

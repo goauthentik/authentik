@@ -39,8 +39,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Plex Source"),
-        plural: msg("Plex Sources"),
+        singular: msg("Plex Source", { id: "entity.plex-source.singular" }),
+        plural: msg("Plex Sources", { id: "entity.plex-source.plural" }),
     };
 
     @property({ type: String })

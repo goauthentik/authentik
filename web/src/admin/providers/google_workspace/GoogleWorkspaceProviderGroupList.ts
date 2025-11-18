@@ -27,8 +27,8 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Google Workspace group"),
-        plural: msg("Google Workspace groups"),
+        singular: msg("Google Workspace Group", { id: "entity.google-workspace-group.singular" }),
+        plural: msg("Google Workspace Groups", { id: "entity.google-workspace-group.plural" }),
     };
 
     protected override searchEnabled = true;

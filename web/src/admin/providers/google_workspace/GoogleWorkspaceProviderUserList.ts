@@ -25,8 +25,8 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     providerId?: number;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Google Workspace user"),
-        plural: msg("Google Workspace users"),
+        singular: msg("Google Workspace User", { id: "entity.google-workspace-user.singular" }),
+        plural: msg("Google Workspace Users", { id: "entity.google-workspace-user.plural" }),
     };
 
     protected override searchEnabled = true;

@@ -55,11 +55,14 @@ export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
     protected override entityLabel = {
-        singular: msg("Outpost"),
-        plural: msg("Outposts"),
+        singular: msg("Outpost", { id: "entity.outpost.singular" }),
+        plural: msg("Outposts", { id: "entity.outpost.plural" }),
     };
     public pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+        {
+            id: "page.description.outpost-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-zone";

@@ -70,8 +70,8 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     protected entityLabel: EntityLabel = {
-        singular: msg("User"),
-        plural: msg("Users"),
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
     };
 
     @property({ type: Number })

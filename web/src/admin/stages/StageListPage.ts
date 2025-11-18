@@ -46,11 +46,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
     protected override entityLabel = {
-        singular: msg("Stages"),
-        plural: msg("Stages"),
+        singular: msg("Stages", { id: "entity.stages.singular" }),
+        plural: msg("Stages", { id: "entity.stage.plural" }),
     };
     public pageDescription = msg(
         "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+        {
+            id: "page.description.stage-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-plugged";
     protected override searchEnabled = true;

@@ -51,8 +51,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("SCIM Provider"),
-        plural: msg("SCIM Providers"),
+        singular: msg("Scim Provider", { id: "entity.scim-provider.singular" }),
+        plural: msg("Scim Providers", { id: "entity.scim-provider.plural" }),
     };
 
     @property({ type: Number })

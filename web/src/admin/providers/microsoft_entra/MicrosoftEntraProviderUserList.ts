@@ -27,8 +27,8 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Microsoft Entra user"),
-        plural: msg("Microsoft Entra users"),
+        singular: msg("Microsoft Entra User", { id: "entity.microsoft-entra-user.singular" }),
+        plural: msg("Microsoft Entra Users", { id: "entity.microsoft-entra-user.plural" }),
     };
 
     protected override searchEnabled = true;

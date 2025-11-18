@@ -23,7 +23,7 @@ export class RoleForm extends ModelForm<Role, string> {
         });
     }
 
-    protected override entityLabel = msg("role");
+    protected override entityLabel = msg("Role", { id: "entity.role.singular" });
 
     async send(data: Role): Promise<Role> {
         if (this.instance?.pk) {

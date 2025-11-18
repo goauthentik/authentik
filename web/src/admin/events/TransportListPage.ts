@@ -28,11 +28,14 @@ import { customElement, property } from "lit/decorators.js";
 export class TransportListPage extends TablePage<NotificationTransport> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Notification Transport"),
-        plural: msg("Notification Transports"),
+        singular: msg("Notification Transport", { id: "entity.notification-transport.singular" }),
+        plural: msg("Notification Transports", { id: "entity.notification-transport.plural" }),
     };
     public pageDescription = msg(
         "Define how notifications are sent to users, like Email or Webhook.",
+        {
+            id: "page.description.event-transport-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-export";
 

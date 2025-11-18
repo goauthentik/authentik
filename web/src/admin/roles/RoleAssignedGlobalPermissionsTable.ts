@@ -21,8 +21,8 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     roleUuid?: string;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("permission"),
-        plural: msg("permissions"),
+        singular: msg("Permission", { id: "entity.permission.singular" }),
+        plural: msg("Permissions", { id: "entity.permission.plural" }),
     };
 
     protected override searchEnabled = true;

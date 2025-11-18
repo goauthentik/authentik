@@ -35,8 +35,8 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Role"),
-        plural: msg("Roles"),
+        singular: msg("Role", { id: "entity.role.singular" }),
+        plural: msg("Roles", { id: "entity.role.plural" }),
     };
 
     @property({ type: String })

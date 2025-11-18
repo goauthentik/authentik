@@ -45,8 +45,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Kerberos Source"),
-        plural: msg("Kerberos Sources"),
+        singular: msg("Kerberos Source", { id: "entity.kerberos-source.singular" }),
+        plural: msg("Kerberos Sources", { id: "entity.kerberos-source.plural" }),
     };
 
     @property({ type: String })

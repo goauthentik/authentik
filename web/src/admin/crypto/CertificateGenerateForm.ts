@@ -18,7 +18,9 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
     protected override readonly actionName = "generate";
-    protected override entityLabel = msg("certificate-key pair");
+    protected override entityLabel = msg("Certificate Key Pair", {
+        id: "entity.certificate-key-pair.singular",
+    });
 
     async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({

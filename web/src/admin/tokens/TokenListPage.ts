@@ -29,11 +29,14 @@ import { customElement, property } from "lit/decorators.js";
 export class TokenListPage extends TablePage<Token> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Token"),
-        plural: msg("Tokens"),
+        singular: msg("Token", { id: "entity.token.singular" }),
+        plural: msg("Tokens", { id: "entity.token.plural" }),
     };
     public pageDescription = msg(
         "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
+        {
+            id: "page.description.token-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-security";
 

@@ -37,7 +37,9 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    protected override entityLabel = msg("initial permissions");
+    protected override entityLabel = msg("Initial Permissions", {
+        id: "entity.initial.permissions.singular",
+    });
 
     async send(data: InitialPermissions): Promise<InitialPermissions> {
         if (this.instance?.pk) {

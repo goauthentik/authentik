@@ -17,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
     protected override readonly actionName = "import";
 
-    protected override entityLabel = msg("provider");
+    protected override entityLabel = msg("Provider", { id: "entity.provider.singular" });
 
     async send(data: SAMLProvider): Promise<void> {
         const file = this.files().get("metadata");

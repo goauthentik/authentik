@@ -27,12 +27,12 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     public override role = "region";
-    public override ariaLabel = msg("Recent events");
-    public override label = msg("Events");
+    public override ariaLabel = msg("Recent events", { id: "aria.label.recent-events" });
+    public override label = msg("Events", { id: "card.label.recent-events" });
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("event"),
-        plural: msg("events"),
+        singular: msg("Event", { id: "entity.event.singular" }),
+        plural: msg("Events", { id: "entity.event.plural" }),
     };
 
     @property()

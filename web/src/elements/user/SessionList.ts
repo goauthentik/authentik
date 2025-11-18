@@ -31,8 +31,8 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     order = "-expires";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("session"),
-        plural: msg("sessions"),
+        singular: msg("Session", { id: "entity.session.singular" }),
+        plural: msg("Sessions", { id: "entity.session.plural" }),
     };
 
     protected override rowLabel(item: AuthenticatedSession): string | null {

@@ -25,7 +25,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    protected override entityLabel = msg("invitation");
+    protected override entityLabel = msg("Invitation", { id: "entity.invitation.singular" });
 
     async send(data: Invitation): Promise<Invitation> {
         if (this.instance) {

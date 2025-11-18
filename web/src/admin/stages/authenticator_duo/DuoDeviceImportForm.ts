@@ -36,7 +36,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         return "import";
     }
 
-    protected override entityLabel = msg("device");
+    protected override entityLabel = msg("Device", { id: "entity.device.singular" });
 
     async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;

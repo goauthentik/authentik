@@ -64,8 +64,8 @@ export class ApplicationViewPage extends AKElement {
     //#region State
 
     protected entityLabel: EntityLabel = {
-        singular: msg("Application"),
-        plural: msg("Applications"),
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
     };
 
     @state()

@@ -42,8 +42,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("LDAP Source"),
-        plural: msg("LDAP Sources"),
+        singular: msg("Ldap Source", { id: "entity.ldap-source.singular" }),
+        plural: msg("Ldap Sources", { id: "entity.ldap-source.plural" }),
     };
 
     @property({ type: String })

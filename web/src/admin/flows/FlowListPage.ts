@@ -25,11 +25,14 @@ import { customElement, property } from "lit/decorators.js";
 export class FlowListPage extends TablePage<Flow> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Flow"),
-        plural: msg("Flows"),
+        singular: msg("Flow", { id: "entity.flow.singular" }),
+        plural: msg("Flows", { id: "entity.flow.plural" }),
     };
     public pageDescription = msg(
         "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
+        {
+            id: "page.description.flow-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-process-automation";
 

@@ -46,12 +46,14 @@ export const applicationListStyle = css`
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Application"),
-        plural: msg("Applications"),
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
     };
 
     protected override get searchPlaceholder() {
-        return msg("Search for an application by name or group...");
+        return msg("Search for an application by name or group...", {
+            id: "search.placeholder.",
+        });
     }
 
     public get pageDescription() {

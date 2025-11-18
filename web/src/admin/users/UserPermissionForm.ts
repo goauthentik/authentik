@@ -39,7 +39,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
         return "assign";
     }
 
-    protected override entityLabel = msg("permission");
+    protected override entityLabel = msg("Permission", { id: "entity.permission.singular" });
 
     async send(data: UserPermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({

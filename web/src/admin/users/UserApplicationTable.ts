@@ -19,8 +19,8 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
     protected override entityLabel: EntityLabel = {
-        singular: msg("Application"),
-        plural: msg("Applications"),
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
     };
 
     @property({ attribute: false })

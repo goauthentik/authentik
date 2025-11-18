@@ -21,7 +21,9 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    protected override entityLabel = msg("certificate-key pair");
+    protected override entityLabel = msg("Certificate Key Pair", {
+        id: "entity.certificate-key-pair.singular",
+    });
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {

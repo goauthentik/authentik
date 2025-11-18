@@ -17,8 +17,8 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("RAC endpoint"),
-        plural: msg("RAC endpoints"),
+        singular: msg("Rac Endpoint", { id: "entity.rac-endpoint.singular" }),
+        plural: msg("Rac Endpoints", { id: "entity.rac-endpoint.plural" }),
     };
 
     protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {

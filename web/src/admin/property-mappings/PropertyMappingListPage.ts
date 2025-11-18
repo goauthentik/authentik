@@ -46,8 +46,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Property Mapping"),
-        plural: msg("Property Mappings"),
+        singular: msg("Property Mapping", { id: "entity.property-mapping.singular" }),
+        plural: msg("Property Mappings", { id: "entity.property-mapping.plural" }),
     };
 
     @property()

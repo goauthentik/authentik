@@ -35,11 +35,14 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Invitation"),
-        plural: msg("Invitations"),
+        singular: msg("Invitation", { id: "entity.invitation.singular" }),
+        plural: msg("Invitations", { id: "entity.invitation.plural" }),
     };
     public pageDescription = msg(
         "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
+        {
+            id: "page.description.invitation-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-migration";
 

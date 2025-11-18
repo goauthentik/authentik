@@ -34,16 +34,21 @@ export class ProviderListPage extends TablePage<Provider> {
     protected override searchEnabled = true;
 
     protected override entityLabel = {
-        singular: msg("Provider"),
-        plural: msg("Providers"),
+        singular: msg("Provider", { id: "entity.provider.singular" }),
+        plural: msg("Providers", { id: "entity.provider.plural" }),
     };
 
     protected override get searchPlaceholder() {
-        return msg("Search for a provider by name or application...");
+        return msg("Search for a provider by name or application...", {
+            id: "search.placeholder.",
+        });
     }
 
     public pageDescription = msg(
         "Provide support for protocols like SAML and OAuth to assigned applications.",
+        {
+            id: "page.description.provider-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-integration";

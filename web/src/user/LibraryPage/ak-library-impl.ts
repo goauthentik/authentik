@@ -7,7 +7,6 @@ import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 
-import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -178,11 +177,6 @@ export class LibraryPage extends WithSession(AKElement) {
         useExtendedSearch: true,
         threshold: 0.3,
     });
-
-    protected entityLabel: EntityLabel = {
-        singular: msg("My Application"),
-        plural: msg("My Applications"),
-    };
 
     //#region Lifecycle
 

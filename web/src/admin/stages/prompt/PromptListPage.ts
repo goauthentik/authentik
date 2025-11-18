@@ -23,8 +23,8 @@ import { customElement, property } from "lit/decorators.js";
 export class PromptListPage extends TablePage<Prompt> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Prompt"),
-        plural: msg("Prompts"),
+        singular: msg("Prompt", { id: "entity.prompt.singular" }),
+        plural: msg("Prompts", { id: "entity.prompt.plural" }),
     };
     public pageDescription = msg("Single Prompts that can be used for Prompt Stages.");
     public pageIcon = "pf-icon pf-icon-plugged";

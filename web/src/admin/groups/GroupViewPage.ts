@@ -41,8 +41,8 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Group"),
-        plural: msg("Groups"),
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
     };
 
     @property({ type: String })

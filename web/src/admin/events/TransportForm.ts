@@ -47,7 +47,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     @property({ type: Boolean })
     showEmail = false;
 
-    protected override entityLabel = msg("transport");
+    protected override entityLabel = msg("Transport");
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {

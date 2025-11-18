@@ -42,8 +42,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("License"),
-        plural: msg("Licenses"),
+        singular: msg("License", { id: "entity.license.singular" }),
+        plural: msg("Licenses", { id: "entity.license.plural" }),
     };
     public pageDescription = msg("Manage enterprise licenses");
     public pageIcon = "pf-icon pf-icon-key";

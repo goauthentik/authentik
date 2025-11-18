@@ -28,8 +28,8 @@ export class ScheduleList extends Table<Schedule> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("schedule"),
-        plural: msg("schedules"),
+        singular: msg("Schedule", { id: "entity.schedule.singular" }),
+        plural: msg("Schedules", { id: "entity.schedule.plural" }),
     };
 
     protected override searchEnabled = true;

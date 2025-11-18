@@ -24,8 +24,8 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Source"),
-        plural: msg("Sources"),
+        singular: msg("Source", { id: "entity.source.singular" }),
+        plural: msg("Sources", { id: "entity.source.plural" }),
     };
 
     @property({ type: String })

@@ -30,8 +30,8 @@ export class UserTokenList extends Table<Token> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Token"),
-        plural: msg("Tokens"),
+        singular: msg("Token", { id: "entity.token.singular" }),
+        plural: msg("Tokens", { id: "entity.token.plural" }),
     };
 
     expandable = true;

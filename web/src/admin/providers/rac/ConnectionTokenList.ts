@@ -25,8 +25,8 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("connection token"),
-        plural: msg("connection tokens"),
+        singular: msg("Connection Token", { id: "entity.connection-token.singular" }),
+        plural: msg("Connection Tokens", { id: "entity.connection-token.plural" }),
     };
 
     @property()

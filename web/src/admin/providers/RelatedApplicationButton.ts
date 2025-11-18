@@ -21,8 +21,8 @@ export class RelatedApplicationButton extends AKElement {
     static styles: CSSResult[] = [PFBase, PFButton];
 
     protected entityLabel: EntityLabel = {
-        singular: msg("Application"),
-        plural: msg("Applications"),
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
     };
 
     @property({ attribute: false })

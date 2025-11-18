@@ -35,7 +35,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    protected override entityLabel = msg("flow");
+    protected override entityLabel = msg("Flow");
 
     @property({ type: Boolean })
     clearBackground = false;

@@ -39,8 +39,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     order = "order";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Entitlement"),
-        plural: msg("Entitlements"),
+        singular: msg("Entitlement", { id: "entity.entitlement.singular" }),
+        plural: msg("Entitlements", { id: "entity.entitlement.plural" }),
     };
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {

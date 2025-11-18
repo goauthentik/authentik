@@ -26,7 +26,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    protected override entityLabel = msg("integration");
+    protected override entityLabel = msg("Integration", { id: "entity.integration.singular" });
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {

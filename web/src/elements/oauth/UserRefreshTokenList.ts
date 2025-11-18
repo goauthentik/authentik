@@ -22,8 +22,8 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("refresh token"),
-        plural: msg("refresh tokens"),
+        singular: msg("Refresh Token", { id: "entity.refresh-token.singular" }),
+        plural: msg("Refresh Tokens", { id: "entity.refresh-token.plural" }),
     };
 
     @property({ type: Number })

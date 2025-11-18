@@ -26,8 +26,8 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     paginated = false;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("object"),
-        plural: msg("objects"),
+        singular: msg("Object", { id: "entity.object.singular" }),
+        plural: msg("Objects", { id: "entity.object.plural" }),
     };
 
     @property({ attribute: false })

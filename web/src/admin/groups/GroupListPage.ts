@@ -24,16 +24,21 @@ export class GroupListPage extends TablePage<Group> {
     clearOnRefresh = true;
     protected override searchEnabled = true;
     protected override entityLabel: EntityLabel = {
-        singular: msg("Group"),
-        plural: msg("Groups"),
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
     };
 
     protected override get searchPlaceholder() {
-        return msg("Search for a group by name...");
+        return msg("Search for a group by name...", {
+            id: "search.placeholder.",
+        });
     }
 
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",
+        {
+            id: "page.description.groups-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-users";
     public supportsQL = true;

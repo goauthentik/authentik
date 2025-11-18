@@ -29,11 +29,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
     protected override entityLabel = {
-        singular: msg("Outpost integration"),
-        plural: msg("Outpost integrations"),
+        singular: msg("Outpost Integration", { id: "entity.outpost-integration.singular" }),
+        plural: msg("Outpost Integrations", { id: "entity.outpost-integration.plural" }),
     };
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+        {
+            id: "page.description.outpost-service-connection-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-integration";

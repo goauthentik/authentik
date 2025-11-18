@@ -22,8 +22,8 @@ export class PermissionSelectModal extends TableModal<Permission> {
     checkboxChip = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("permission"),
-        plural: msg("permissions"),
+        singular: msg("Permission", { id: "entity.permission.singular" }),
+        plural: msg("Permissions", { id: "entity.permission.plural" }),
     };
 
     protected override searchEnabled = true;

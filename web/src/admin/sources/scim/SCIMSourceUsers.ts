@@ -18,8 +18,8 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("user"),
-        plural: msg("users"),
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
     };
 
     protected override searchEnabled = true;

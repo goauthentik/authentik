@@ -29,7 +29,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     @property()
     targetPk?: string;
 
-    protected override entityLabel = msg("entitlement");
+    protected override entityLabel = msg("Entitlement");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 

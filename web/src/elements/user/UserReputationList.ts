@@ -38,8 +38,8 @@ export class UserReputationList extends Table<Reputation> {
     order = "identifier";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("reputation score"),
-        plural: msg("reputation scores"),
+        singular: msg("Reputation Score", { id: "entity.reputation-score.singular" }),
+        plural: msg("Reputation Scores", { id: "entity.reputation-score.plural" }),
     };
 
     protected override rowLabel(item: Reputation): string | null {

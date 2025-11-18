@@ -46,8 +46,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Microsoft Entra Provider"),
-        plural: msg("Microsoft Entra Providers"),
+        singular: msg("Microsoft Entra Provider", {
+            id: "entity.microsoft-entra-provider.singular",
+        }),
+        plural: msg("Microsoft Entra Providers", { id: "entity.microsoft-entra-provider.plural" }),
     };
 
     @property({ type: Number })

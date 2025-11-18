@@ -25,8 +25,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
     user!: User;
 
     protected override readonly actionName = "send";
-
-    protected override entityLabel = msg("email");
+    protected override entityLabel = msg("Email", { id: "entity.email.singular" });
 
     async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;

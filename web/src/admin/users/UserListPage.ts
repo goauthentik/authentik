@@ -91,12 +91,14 @@ export class UserListPage extends WithBrandConfig(
 
     protected override searchEnabled = true;
     public override get searchPlaceholder() {
-        return msg("Search by username, email, etc...");
+        return msg("Search by username, email, etc...", {
+            id: "search.placeholder.",
+        });
     }
 
     protected override entityLabel = {
-        singular: msg("User"),
-        plural: msg("Users"),
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
     };
     public pageDescription = "";
     public pageIcon = "pf-icon pf-icon-user";

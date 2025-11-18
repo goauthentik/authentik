@@ -31,8 +31,8 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Provider"),
-        plural: msg("Providers"),
+        singular: msg("Provider", { id: "entity.provider.singular" }),
+        plural: msg("Providers", { id: "entity.provider.plural" }),
     };
 
     @property({ type: Number })

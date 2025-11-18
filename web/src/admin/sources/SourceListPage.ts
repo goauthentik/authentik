@@ -27,11 +27,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     protected override entityLabel = {
-        singular: msg("Federation and Social login"),
-        plural: msg("Federation and Social login"),
+        singular: msg("Federation And Social Login", {
+            id: "entity.federation-and-social-login.singular",
+        }),
+        plural: msg("Federation And Social Login", {
+            id: "entity.plural.federation-and-social-login",
+        }),
     };
     public pageDescription = msg(
         "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
+        {
+            id: "page.description.source-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-middleware";
     protected override searchEnabled = true;

@@ -44,7 +44,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     //#endregion
 
     protected override readonly actionName = "save";
-    protected override entityLabel = msg("password");
+    protected override entityLabel = msg("Password", { id: "entity.password.singular" });
 
     public override async send(data: UserPasswordSetRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersSetPasswordCreate({

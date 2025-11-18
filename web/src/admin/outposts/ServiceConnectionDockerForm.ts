@@ -21,7 +21,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    protected override entityLabel = msg("integration");
+    protected override entityLabel = msg("Integration", { id: "entity.integration.singular" });
 
     async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
         if (this.instance) {

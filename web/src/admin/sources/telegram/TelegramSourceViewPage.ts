@@ -30,8 +30,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-telegram-view")
 export class TelegramSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Telegram Source"),
-        plural: msg("Telegram Sources"),
+        singular: msg("Telegram Source", { id: "entity.telegram-source.singular" }),
+        plural: msg("Telegram Sources", { id: "entity.telegram-source.plural" }),
     };
 
     @property({ type: String })

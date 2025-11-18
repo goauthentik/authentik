@@ -56,7 +56,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         return "assign";
     }
 
-    protected override entityLabel = msg("permission");
+    protected override entityLabel = msg("Permission", { id: "entity.permission.singular" });
 
     send(data: RoleAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({

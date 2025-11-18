@@ -26,11 +26,14 @@ import { customElement, property } from "lit/decorators.js";
 export class ReputationListPage extends TablePage<Reputation> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Reputation score"),
-        plural: msg("Reputation scores"),
+        singular: msg("Reputation Score", { id: "entity.reputation-score.singular" }),
+        plural: msg("Reputation Scores", { id: "entity.reputation-score.plural" }),
     };
     public pageDescription = msg(
         "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
+        {
+            id: "page.description.policy-reputation-list",
+        },
     );
     public pageIcon = "fa fa-ban";
 

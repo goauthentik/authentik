@@ -41,7 +41,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         });
     }
 
-    protected override entityLabel = msg("rule");
+    protected override entityLabel = msg("Rule");
 
     async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {

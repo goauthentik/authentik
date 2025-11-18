@@ -39,8 +39,8 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("RADIUS Provider"),
-        plural: msg("RADIUS Providers"),
+        singular: msg("Radius Provider", { id: "entity.radius-provider.singular" }),
+        plural: msg("Radius Providers", { id: "entity.radius-provider.plural" }),
     };
 
     @property({ type: Number })

@@ -37,8 +37,8 @@ export class TaskList extends Table<Task> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("task"),
-        plural: msg("tasks"),
+        singular: msg("Task", { id: "entity.task.singular" }),
+        plural: msg("Tasks", { id: "entity.task.plural" }),
     };
 
     @property()

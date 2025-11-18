@@ -23,8 +23,8 @@ export class UserDeviceTable extends Table<Device> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("device"),
-        plural: msg("devices"),
+        singular: msg("Device", { id: "entity.device.singular" }),
+        plural: msg("Devices", { id: "entity.device.plural" }),
     };
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {

@@ -23,7 +23,7 @@ export class FlowImportForm extends Form<Flow> {
 
     protected override readonly actionName = "import";
 
-    protected override entityLabel = msg("flow");
+    protected override entityLabel = msg("Flow");
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

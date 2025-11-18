@@ -59,8 +59,8 @@ export function formatBlueprintDescription(item: BlueprintInstance): string | nu
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Blueprint Instance"),
-        plural: msg("Blueprint Instances"),
+        singular: msg("Blueprint Instance", { id: "entity.blueprint-instance.singular" }),
+        plural: msg("Blueprint Instances", { id: "entity.blueprint-instance.plural" }),
     };
     public pageDescription = msg("Automate and template configuration within authentik.");
     public pageIcon = "pf-icon pf-icon-blueprint";

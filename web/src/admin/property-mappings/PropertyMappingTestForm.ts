@@ -40,7 +40,9 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
 
     protected override readonly actionName = "send";
 
-    protected override entityLabel = msg("test-request");
+    protected override entityLabel = msg("Test Request", {
+        id: "entity.policy.test.request.singular",
+    });
 
     async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;

@@ -29,8 +29,8 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Microsoft Entra group"),
-        plural: msg("Microsoft Entra groups"),
+        singular: msg("Microsoft Entra Group", { id: "entity.microsoft-entra-group.singular" }),
+        plural: msg("Microsoft Entra Groups", { id: "entity.microsoft-entra-group.plural" }),
     };
 
     renderToolbar(): TemplateResult {

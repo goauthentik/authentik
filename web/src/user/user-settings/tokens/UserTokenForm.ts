@@ -23,7 +23,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    protected override entityLabel = msg("token");
+    protected override entityLabel = msg("Token", { id: "entity.token.singular" });
 
     async send(data: Token): Promise<Token> {
         if (this.instance) {

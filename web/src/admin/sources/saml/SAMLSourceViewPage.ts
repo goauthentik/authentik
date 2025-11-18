@@ -42,8 +42,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("SAML Source"),
-        plural: msg("SAML Sources"),
+        singular: msg("Saml Source", { id: "entity.saml-source.singular" }),
+        plural: msg("Saml Sources", { id: "entity.saml-source.plural" }),
     };
 
     @property({ type: String })

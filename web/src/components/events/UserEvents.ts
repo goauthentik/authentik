@@ -25,8 +25,8 @@ export class UserEvents extends Table<Event> {
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("event"),
-        plural: msg("events"),
+        singular: msg("Event", { id: "entity.event.singular" }),
+        plural: msg("Events", { id: "entity.event.plural" }),
     };
 
     @property()

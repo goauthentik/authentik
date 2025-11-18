@@ -25,8 +25,8 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     providerId?: number;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("SCIM group"),
-        plural: msg("SCIM groups"),
+        singular: msg("Scim Group", { id: "entity.scim-group.singular" }),
+        plural: msg("Scim Groups", { id: "entity.scim-group.plural" }),
     };
 
     protected override searchEnabled = true;

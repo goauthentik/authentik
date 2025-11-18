@@ -82,8 +82,8 @@ export function isForward(mode: ProxyMode): boolean {
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Proxy Provider"),
-        plural: msg("Proxy Providers"),
+        singular: msg("Proxy Provider", { id: "entity.proxy-provider.singular" }),
+        plural: msg("Proxy Providers", { id: "entity.proxy-provider.plural" }),
     };
 
     @property({ type: Number })

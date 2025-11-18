@@ -25,12 +25,15 @@ export class RoleListPage extends TablePage<Role> {
     clearOnRefresh = true;
     protected override searchEnabled = true;
     protected override entityLabel: EntityLabel = {
-        singular: msg("Role"),
-        plural: msg("Roles"),
+        singular: msg("Role", { id: "entity.role.singular" }),
+        plural: msg("Roles", { id: "entity.role.plural" }),
     };
 
     public pageDescription = msg(
         "Manage roles which grant permissions to objects within authentik.",
+        {
+            id: "page.description.role-list",
+        },
     );
     public pageIcon = "fa fa-lock";
 

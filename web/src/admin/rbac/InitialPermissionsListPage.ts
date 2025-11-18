@@ -26,8 +26,8 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Initial Permission"),
-        plural: msg("Initial Permissions"),
+        singular: msg("Initial Permission", { id: "entity.initial-permission.singular" }),
+        plural: msg("Initial Permissions", { id: "entity.initial-permission.plural" }),
     };
 
     public pageDescription = msg("Set initial permissions for newly created objects.");

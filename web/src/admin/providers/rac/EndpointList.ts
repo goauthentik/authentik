@@ -34,8 +34,8 @@ export class EndpointListPage extends Table<Endpoint> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Endpoint"),
-        plural: msg("Endpoints"),
+        singular: msg("Endpoint", { id: "entity.endpoint.singular" }),
+        plural: msg("Endpoints", { id: "entity.endpoint.plural" }),
     };
 
     protected override searchEnabled = true;

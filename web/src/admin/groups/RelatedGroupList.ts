@@ -31,7 +31,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 
     protected override readonly actionName = "add";
 
-    protected override entityLabel = msg("user to group(s)");
+    protected override entityLabel = msg("User To Group", { id: "entity.user-to-group.singular" });
 
     async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
@@ -92,8 +92,8 @@ export class RelatedGroupList extends Table<Group> {
     protected override searchEnabled = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Group"),
-        plural: msg("Groups"),
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
     };
 
     @property()

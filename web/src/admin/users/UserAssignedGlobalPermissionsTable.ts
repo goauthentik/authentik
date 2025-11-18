@@ -26,8 +26,8 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     clearOnRefresh = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("permission"),
-        plural: msg("permissions"),
+        singular: msg("Permission", { id: "entity.permission.singular" }),
+        plural: msg("Permissions", { id: "entity.permission.plural" }),
     };
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {

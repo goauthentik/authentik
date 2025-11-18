@@ -22,8 +22,8 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("access token"),
-        plural: msg("access tokens"),
+        singular: msg("Access Token", { id: "entity.access-token.singular" }),
+        plural: msg("Access Tokens", { id: "entity.access-token.plural" }),
     };
 
     @property({ type: Number })

@@ -140,11 +140,11 @@ export abstract class Table<T extends object>
      * Typically used in the empty state.
      */
     protected entityLabel: EntityLabel = {
-        singular: msg("object", {
+        singular: msg("Object", {
             id: "table-entity-singular",
             desc: "Singular form of 'object', used as a generic placeholder for an entity label",
         }),
-        plural: msg("objects", {
+        plural: msg("Objects", {
             id: "table-entity-plural",
             desc: "Plural form of 'object', used as a generic placeholder for an entity label",
         }),

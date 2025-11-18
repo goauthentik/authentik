@@ -34,11 +34,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Certificate-Key Pair"),
-        plural: msg("Certificate-Key Pairs"),
+        singular: msg("Certificate Key Pair", { id: "entity.certificate-key-pair.singular" }),
+        plural: msg("Certificate Key Pairs", { id: "entity.certificate-key-pair.plural" }),
     };
     public pageDescription = msg(
         "Import certificates of external providers or create certificates to sign requests with.",
+        {
+            id: "page.description.certificate-key-pair-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-key";
 

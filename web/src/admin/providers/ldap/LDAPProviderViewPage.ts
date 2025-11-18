@@ -43,8 +43,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends WithSession(AKElement) {
     protected entityLabel: EntityLabel = {
-        singular: msg("LDAP Provider"),
-        plural: msg("LDAP Providers"),
+        singular: msg("Ldap Provider", { id: "entity.ldap-provider.singular" }),
+        plural: msg("Ldap Providers", { id: "entity.ldap-provider.plural" }),
     };
 
     @property({ type: Number })

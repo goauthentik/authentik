@@ -46,7 +46,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         return inst;
     }
 
-    protected override entityLabel = msg("instance");
+    protected override entityLabel = msg("Instance");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 

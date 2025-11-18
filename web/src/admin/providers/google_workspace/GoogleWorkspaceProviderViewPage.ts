@@ -46,8 +46,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("Google Workspace Provider"),
-        plural: msg("Google Workspace Providers"),
+        singular: msg("Google Workspace Provider", {
+            id: "entity.google-workspace-provider.singular",
+        }),
+        plural: msg("Google Workspace Providers", {
+            id: "entity.google-workspace-provider.plural",
+        }),
     };
 
     @property({ type: Number })

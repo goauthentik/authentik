@@ -19,8 +19,8 @@ export class ProviderSelectModal extends TableModal<Provider> {
     checkboxChip = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("provider"),
-        plural: msg("providers"),
+        singular: msg("Provider", { id: "entity.provider.singular" }),
+        plural: msg("Providers", { id: "entity.provider.plural" }),
     };
 
     protected override searchEnabled = true;

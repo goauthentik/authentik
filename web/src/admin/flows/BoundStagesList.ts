@@ -33,8 +33,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     order = "order";
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("Stage Binding"),
-        plural: msg("Stage Bindings"),
+        singular: msg("Stage Binding", { id: "entity.stage-binding.singular" }),
+        plural: msg("Stage Bindings", { id: "entity.stage-binding.plural" }),
     };
 
     @property()

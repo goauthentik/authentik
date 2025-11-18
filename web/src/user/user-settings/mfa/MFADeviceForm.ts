@@ -24,7 +24,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
         })[0];
     }
 
-    protected override entityLabel = msg("device");
+    protected override entityLabel = msg("Device", { id: "entity.device.singular" });
 
     async send(device: Device): Promise<Device> {
         switch (this.instance?.type) {

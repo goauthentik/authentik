@@ -41,8 +41,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
     protected entityLabel: EntityLabel = {
-        singular: msg("SCIM Source"),
-        plural: msg("SCIM Sources"),
+        singular: msg("Scim Source", { id: "entity.scim-source.singular" }),
+        plural: msg("Scim Sources", { id: "entity.scim-source.plural" }),
     };
 
     @property({ type: String })

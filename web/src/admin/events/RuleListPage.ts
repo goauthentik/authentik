@@ -34,11 +34,14 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override searchEnabled = true;
     protected override entityLabel = {
-        singular: msg("Notification Rule"),
-        plural: msg("Notification Rules"),
+        singular: msg("Notification Rule", { id: "entity.notification-rule.singular" }),
+        plural: msg("Notification Rules", { id: "entity.notification-rule.plural" }),
     };
     public pageDescription = msg(
         "Send notifications whenever a specific Event is created and matched by policies.",
+        {
+            id: "page.description.event-rule-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-attention-bell";
 

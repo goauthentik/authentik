@@ -19,7 +19,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
 > {
     protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
 
-    protected override entityLabel = msg("mapping");
+    protected override entityLabel = msg("Mapping", { id: "entity.mapping.singular" });
 
     renderExtraFields(): SlottedTemplateResult {
         return nothing;

@@ -97,7 +97,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             });
     }
 
-    protected override entityLabel = msg("prompt");
+    protected override entityLabel = msg("Prompt", { id: "entity.prompt.singular" });
 
     static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 

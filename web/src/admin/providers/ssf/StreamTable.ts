@@ -19,8 +19,8 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
     protected override entityLabel: EntityLabel = {
-        singular: msg("SSF stream"),
-        plural: msg("SSF streams"),
+        singular: msg("Ssf Stream", { id: "entity.ssf-stream.singular" }),
+        plural: msg("Ssf Streams", { id: "entity.ssf-stream.plural" }),
     };
 
     protected override searchEnabled = true;

@@ -29,12 +29,14 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     supportsQL = true;
 
     protected override entityLabel = {
-        singular: msg("Event Log"),
-        plural: msg("Event Log"),
+        singular: msg("Event Log", { id: "entity.event-log.singular" }),
+        plural: msg("Event Log", { id: "entity.plural.event-log" }),
     };
 
     protected override get searchPlaceholder() {
-        return msg("Search for an event by action or user...");
+        return msg("Search for an event by action or user...", {
+            id: "search.placeholder.",
+        });
     }
 
     public pageDescription = "";

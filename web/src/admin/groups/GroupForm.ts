@@ -48,7 +48,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    protected override entityLabel = msg("group");
+    protected override entityLabel = msg("Group");
 
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};

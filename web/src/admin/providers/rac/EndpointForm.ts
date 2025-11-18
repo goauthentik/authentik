@@ -30,7 +30,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    protected override entityLabel = msg("endpoint");
+    protected override entityLabel = msg("Endpoint");
 
     async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = EndpointAuthModeEnum.Prompt;

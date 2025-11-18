@@ -18,8 +18,8 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     expandable = true;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("group"),
-        plural: msg("groups"),
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
     };
 
     protected override searchEnabled = true;

@@ -40,7 +40,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     @state()
     defaultOrder = 0;
 
-    protected override entityLabel = msg("binding");
+    protected override entityLabel = msg("Binding");
 
     send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {

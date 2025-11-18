@@ -51,7 +51,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
     protected override readonly actionName = "add";
 
-    protected override entityLabel = msg("user(s)");
+    protected override entityLabel = msg("Users", { id: "entity.user.plural" });
 
     async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
@@ -125,14 +125,16 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     protected override get searchPlaceholder() {
-        return msg("Search for users by username or display name...");
+        return msg("Search for users by username or display name...", {
+            id: "search.placeholder.",
+        });
     }
 
     public override label = msg("Group Users");
 
     public override entityLabel: EntityLabel = {
-        singular: msg("User"),
-        plural: msg("Users"),
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
     };
 
     expandable = true;

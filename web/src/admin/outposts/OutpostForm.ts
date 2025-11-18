@@ -120,7 +120,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.providers = providerProvider(this.type);
     }
 
-    protected override entityLabel = msg("outpost");
+    protected override entityLabel = msg("Outpost", { id: "entity.outpost.singular" });
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {

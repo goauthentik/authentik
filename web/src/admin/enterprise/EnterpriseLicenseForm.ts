@@ -25,7 +25,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    protected override entityLabel = msg("license");
+    protected override entityLabel = msg("License");
 
     async load(): Promise<void> {
         this.installID = (

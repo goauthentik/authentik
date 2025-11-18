@@ -24,12 +24,14 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
     protected override entityLabel: EntityLabel = {
-        singular: msg("user"),
-        plural: msg("users"),
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
     };
 
     protected override get searchPlaceholder() {
-        return msg("Search for users by username or display name...");
+        return msg("Search for users by username or display name...", {
+            id: "search.placeholder.",
+        });
     }
 
     public override label = msg("Select Users");

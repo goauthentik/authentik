@@ -46,7 +46,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
 
     protected override readonly actionName = "trigger";
 
-    protected override entityLabel = msg("sync");
+    protected override entityLabel = msg("Sync");
 
     async send(data: SyncObjectRequest): Promise<void> {
         data.syncObjectModel = this.model;

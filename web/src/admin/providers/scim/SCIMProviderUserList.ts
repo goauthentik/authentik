@@ -25,8 +25,8 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     providerId?: number;
 
     protected override entityLabel: EntityLabel = {
-        singular: msg("SCIM user"),
-        plural: msg("SCIM users"),
+        singular: msg("Scim User", { id: "entity.scim-user.singular" }),
+        plural: msg("Scim Users", { id: "entity.scim-user.plural" }),
     };
 
     protected override searchEnabled = true;
