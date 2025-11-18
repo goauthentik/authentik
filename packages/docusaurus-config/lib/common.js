@@ -67,19 +67,23 @@ export function createDefaultDocusaurusConfig() {
                 rspackPersistentCache: production,
             },
         },
+
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
         url: "https://docs.goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
         onBrokenAnchors: "throw",
-        onBrokenMarkdownLinks: "throw",
         onDuplicateRoutes: "throw",
         favicon: "img/icon.png",
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         markdown: {
             mermaid: true,
+            hooks: {
+                onBrokenMarkdownLinks: "throw",
+                onBrokenMarkdownImages: "throw",
+            },
         },
     });
 
