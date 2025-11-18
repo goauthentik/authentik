@@ -74,7 +74,13 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             return nothing;
         }
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Role")} name="role">
+            <ak-form-element-horizontal
+                label=${msg("Role", {
+                    id: "label.role.object.permission.role",
+                    desc: "Label for role object permission role select",
+                })}
+                name="role"
+            >
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {

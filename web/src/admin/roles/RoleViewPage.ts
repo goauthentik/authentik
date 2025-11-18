@@ -153,7 +153,15 @@ export class RoleViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "fa fa-lock",
-            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
+            header: this._role?.name
+                ? msg(str`Role ${this._role.name}`, {
+                      id: "header.role.view",
+                      desc: "Header for role view page",
+                  })
+                : msg("Role", {
+                      id: "header.role.view.fallback",
+                      desc: "Fallback header for nameless role view page",
+                  }),
         });
     }
 }
