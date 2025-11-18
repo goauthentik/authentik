@@ -115,17 +115,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
             return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
-            # Check if we've already logged this failure
-            log_cache_key = f"scim_provider_config_log_{self.provider.pk}"
-            if not cache.get(log_cache_key):
-                self.logger.warning(
-                    "failed to get ServiceProviderConfig, using default",
-                    exc=exc,
-                    provider=self.provider.name,
-                )
-                # Cache the fact that we logged this, so we don't spam logs
-                cache.set(log_cache_key, True, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
-
+            self.logger.warning(
+                "failed to get ServiceProviderConfig, using default",
+                exc=exc,
+                provider=self.provider.name,
+            )
             # Cache the default config so we don't keep retrying
             cache.set(cache_key, default_config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
             return default_config
