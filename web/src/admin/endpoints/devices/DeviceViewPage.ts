@@ -58,10 +58,11 @@ export class DeviceViewPage extends AKElement {
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            header: this.device?.facts.data.network?.hostname ?? msg("Loading device..."),
+            header: this.device?.facts.data.network?.hostname ? msg(str`Device ${this.device?.facts.data.network?.hostname}`) : msg("Loading device..."),
             description: this.device
                 ? this.device?.facts.data.os?.name + " " + this.device?.facts.data.os?.version
                 : undefined,
+            icon: "fa fa-laptop",
         });
     }
 

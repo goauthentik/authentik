@@ -19,7 +19,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
-    public pageTitle = msg("Device");
+    public pageTitle = msg("Devices");
     public pageDescription = "";
     public pageIcon = "fa fa-laptop";
 
@@ -52,7 +52,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     renderSectionBefore() {
         return html`
             <div class="pf-c-banner pf-m-info">
-                ${msg("Endpoints are in preview.")}
+                ${msg("Endpoint Devices are in preview.")}
                 <a href="mailto:hello+feature/platform@goauthentik.io"
                     >${msg("Send us feedback!")}</a
                 >
