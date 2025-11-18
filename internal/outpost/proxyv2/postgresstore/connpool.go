@@ -21,7 +21,6 @@ import (
 type RefreshableConnPool struct {
 	mu         sync.RWMutex
 	db         *sql.DB
-	dsnBuilder func(config.PostgreSQLConfig) (string, error)
 	log        *log.Entry
 	currentDSN string
 	gormConfig *gorm.Config
@@ -49,7 +48,6 @@ func NewRefreshableConnPool(initialDSN string, gormConfig *gorm.Config, maxIdleC
 
 	pool := &RefreshableConnPool{
 		db:              db,
-		dsnBuilder:      BuildDSN,
 		log:             log.WithField("logger", "authentik.outpost.proxyv2.postgresstore.connpool"),
 		currentDSN:      initialDSN,
 		gormConfig:      gormConfig,
@@ -86,7 +84,7 @@ func (p *RefreshableConnPool) refreshCredentials(ctx context.Context) error {
 
 	// Get fresh config
 	cfg := config.Get().RefreshPostgreSQLConfig()
-	newDSN, err := p.dsnBuilder(cfg)
+	newDSN, err := BuildDSN(cfg)
 	if err != nil {
 		p.log.WithError(err).Warn("Failed to build DSN with refreshed credentials")
 		return err
