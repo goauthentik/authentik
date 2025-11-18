@@ -52,10 +52,10 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
     return html`
         <ak-text-input
             name="name"
-            placeholder=${msg("Type a provider name...")}
-            autocomplete="off"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
