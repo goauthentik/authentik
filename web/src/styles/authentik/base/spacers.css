@@ -1,0 +1,13 @@
+:root {
+    --pf-global--spacer--xs: 0.25rem;
+    --pf-global--spacer--sm: 0.5rem;
+    --pf-global--spacer--md: 1rem;
+    --pf-global--spacer--lg: 1.5rem;
+    --pf-global--spacer--xl: 2rem;
+    --pf-global--spacer--2xl: 3rem;
+    --pf-global--spacer--3xl: 4rem;
+    --pf-global--spacer--4xl: 5rem;
+    --pf-global--spacer--form-element: 0.375rem;
+    --pf-global--gutter: 1rem;
+    --pf-global--gutter--md: 1.5rem;
+}

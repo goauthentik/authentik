@@ -1,3 +1,22 @@
+@import "@patternfly/patternfly/components/Tabs/tabs.css";
+
+:host([vertical]) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+
+    .pf-c-tabs {
+        width: auto !important;
+    }
+
+    .pf-c-tabs__list {
+        height: 100%;
+    }
+
+    .pf-c-tabs .pf-c-tabs__list::before {
+        border-color: transparent;
+    }
+}
+
 .pf-c-tabs {
     --pf-c-tabs--inset: var(--pf-global--spacer--lg);
     --pf-c-tabs--m-vertical--m-box--inset: var(--pf-global--spacer--lg);

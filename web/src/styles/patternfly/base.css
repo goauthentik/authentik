@@ -7,6 +7,10 @@ a {
     font-weight: var(--pf-global--link--FontWeight);
     color: var(--pf-global--link--Color);
     text-decoration: var(--pf-global--link--TextDecoration);
+
+    &.pf-m-block {
+        display: block;
+    }
 }
 
 a:hover {

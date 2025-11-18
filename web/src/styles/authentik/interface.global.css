@@ -1,11 +1,12 @@
-@import "@patternfly/patternfly/base/patternfly-variables.css";
 @import "@patternfly/patternfly/base/patternfly-fonts.css";
-@import "@patternfly/patternfly/base/patternfly-common.css";
 @import "@patternfly/patternfly/base/patternfly-globals.css";
 @import "@patternfly/patternfly/base/patternfly-themes.css";
 @import "@patternfly/patternfly/base/patternfly-fa-icons.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
+@import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "./base/fonts.css";
 @import "./base/variables.css";
 @import "./base/scrollbars.css";
 @import "./base/globals.css";
 @import "./base/common.css";
+@import "./base/placeholder.css";

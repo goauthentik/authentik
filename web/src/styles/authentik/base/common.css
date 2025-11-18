@@ -9,6 +9,16 @@
     overflow: hidden;
 }
 
+@media (prefers-contrast: more) {
+    .more-contrast-only {
+        position: static;
+        left: auto;
+        width: auto;
+        height: auto;
+        overflow: visible;
+    }
+}
+
 /* #endregion */
 
 /* #region Modifiers */
