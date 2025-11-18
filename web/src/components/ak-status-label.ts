@@ -2,7 +2,7 @@ import { AKElement } from "#elements/Base";
 
 import Styles from "#components/ak-status-label.css";
 
-import { P4Disposition } from "src/styles/patternfly/constants";
+import { P4Disposition } from "#styles/patternfly/constants";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

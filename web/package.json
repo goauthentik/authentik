@@ -54,6 +54,7 @@
     },
     "imports": {
         "#styles/*.css": "./src/styles/*.css",
+        "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
         "#elements/*.css": "./src/elements/*.css",
         "#elements/*": "./src/elements/*.js",
