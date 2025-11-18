@@ -171,7 +171,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
-                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                 <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">

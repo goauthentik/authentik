@@ -244,7 +244,7 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                             <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-scim-form>

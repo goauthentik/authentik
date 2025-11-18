@@ -131,7 +131,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${formatEditMessage(msg("Group"))}</span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -140,7 +140,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
-                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${formatEditMessage(msg("User"))}</span>
                 <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">

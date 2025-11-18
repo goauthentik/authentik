@@ -21,7 +21,7 @@ export class FlowImportForm extends Form<Flow> {
     @state()
     result?: FlowImportResult;
 
-    protected override readonly actionName = "$import";
+    protected override readonly actionName = "import";
 
     protected override entityLabel = msg("flow");
 

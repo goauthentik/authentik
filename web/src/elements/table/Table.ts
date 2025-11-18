@@ -198,7 +198,7 @@ export abstract class Table<T extends object>
      * Label for an "Apply" button.
      */
     protected get updateEntityLabel(): string {
-        return ActionTenseRecord.apply.present;
+        return ActionTenseRecord.apply.present();
     }
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;

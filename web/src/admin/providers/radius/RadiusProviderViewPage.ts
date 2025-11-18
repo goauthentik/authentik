@@ -148,7 +148,7 @@ export class RadiusProviderViewPage extends AKElement {
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
                                         <span slot="submit"
-                                            >${ActionTenseRecord.apply.present}</span
+                                            >${ActionTenseRecord.apply.present()}</span
                                         >
                                         <span slot="header">
                                             ${msg("Update Radius Provider")}

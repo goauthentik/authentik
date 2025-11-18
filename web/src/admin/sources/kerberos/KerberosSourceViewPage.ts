@@ -138,7 +138,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                                     <span slot="header">${formatNewMessage(this.entityLabel)}</span>
                                     <ak-source-kerberos-form
                                         slot="form"

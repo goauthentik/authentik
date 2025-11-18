@@ -96,7 +96,7 @@ export class EndpointListPage extends Table<Endpoint> {
             html`${item.host}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                     <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
                     </ak-rac-endpoint-form>

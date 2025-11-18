@@ -126,7 +126,7 @@ export class SCIMSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                                    <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                                     <span slot="header"
                                         >${formatEditMessage(this.entityLabel)}</span
                                     >

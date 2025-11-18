@@ -118,7 +118,7 @@ export class ProviderListPage extends TablePage<Provider> {
             html`${item.verboseName}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

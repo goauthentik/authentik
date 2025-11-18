@@ -15,7 +15,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-    protected override readonly actionName = "$import";
+    protected override readonly actionName = "import";
 
     protected override entityLabel = msg("provider");
 

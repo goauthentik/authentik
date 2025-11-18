@@ -228,7 +228,7 @@ export class ApplicationViewPage extends AKElement {
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
                                                     <span slot="submit"
-                                                        >${ActionTenseRecord.apply.present}</span
+                                                        >${ActionTenseRecord.apply.present()}</span
                                                     >
                                                     <span slot="header">
                                                         ${formatEditMessage(this.entityLabel)}

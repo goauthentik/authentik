@@ -84,7 +84,7 @@ export class RoleViewPage extends AKElement {
     renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
-                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                 <ak-role-form slot="form" .instancePk=${role.pk}></ak-role-form>
                 <button slot="trigger" class="pf-m-primary pf-c-button">

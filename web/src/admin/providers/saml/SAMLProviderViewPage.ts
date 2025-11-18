@@ -371,7 +371,7 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                             <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>

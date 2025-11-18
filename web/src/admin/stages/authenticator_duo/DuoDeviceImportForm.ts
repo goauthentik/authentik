@@ -33,7 +33,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     protected override get actionName(): ActionName {
-        return "$import";
+        return "import";
     }
 
     protected override entityLabel = msg("device");

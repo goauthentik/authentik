@@ -311,7 +311,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * Label for an "Apply" button.
      */
     protected get updateEntityLabel(): string {
-        return ActionTenseRecord.apply.present;
+        return ActionTenseRecord.apply.present();
     }
 
     /**
@@ -321,7 +321,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         const actionName: ActionName = this.actionName || "create";
         const action = ActionTenseRecord[actionName].past;
 
-        const message = formatSuccessActionMessage(action, this.entityLabel);
+        const message = formatSuccessActionMessage(action(), this.entityLabel);
 
         if (!message) return null;
 
@@ -336,7 +336,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      */
     protected formatAPIErrorMessage(error: APIError): APIMessage | null {
         return {
-            message: msg("There was an error submitting the form."),
+            message: msg("There was an error submitting the form.", {
+                id: "form-submission-error-message",
+                desc: "A generic error message indicating that a form submission has failed",
+            }),
             description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
             level: MessageLevel.error,
         };

@@ -93,7 +93,7 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                <span slot="submit">${ActionTenseRecord.apply.present}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                 <ak-proxy-form
                     slot="form"
