@@ -56,12 +56,14 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} name="name" required>
+            <ak-form-element-horizontal label=${msg("Provider Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Protocol")} required name="protocol">

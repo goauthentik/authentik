@@ -38,23 +38,6 @@ export class TablePagination extends AKElement {
                     opacity: 0.5;
                 }
             }
-
-            :host([theme="dark"]) {
-                .pf-c-pagination__nav-control {
-                    .pf-c-button {
-                        color: var(--pf-c-button--m-plain--disabled--Color);
-                        --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-
-                        &:disabled {
-                            color: var(--pf-c-button--disabled--Color);
-                        }
-                    }
-                }
-
-                .pf-c-options-menu__toggle {
-                    color: var(--ak-dark-foreground);
-                }
-            }
         `,
     ];
 

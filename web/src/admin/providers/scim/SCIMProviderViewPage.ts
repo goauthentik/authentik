@@ -92,8 +92,8 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
