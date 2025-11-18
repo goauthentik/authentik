@@ -5,8 +5,8 @@
     "private": true,
     "scripts": {
         "build": "wireit",
+        "build-locales": "node scripts/build-locales.mjs",
         "build-proxy": "wireit",
-        "build:locales": "node scripts/build-locales.mjs",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
         "bundler:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "lit-localize extract",
@@ -26,7 +26,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "tsc": "wireit",
-        "watch": "run-s build:locales bundler:watch"
+        "watch": "run-s build-locales bundler:watch"
     },
     "type": "module",
     "exports": {
@@ -227,7 +227,7 @@
                 "./dist/styles/**"
             ],
             "dependencies": [
-                "build:locales",
+                "build-locales",
                 "build:sfe"
             ],
             "env": {
@@ -240,7 +240,7 @@
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
             "dependencies": [
-                "build:locales"
+                "build-locales"
             ]
         },
         "locales:repair": {
@@ -255,7 +255,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "build:locales"
+                "build-locales"
             ]
         },
         "lint:lockfile": {
@@ -287,7 +287,7 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "build:locales"
+                "build-locales"
             ]
         }
     },
