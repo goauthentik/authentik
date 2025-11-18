@@ -10,7 +10,7 @@ authentik supports highly available setups in various ways:
 
 ## Parallel server and worker instances
 
-authentik server and worker containers are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker containers, ensuring resilience and fault tolerance.
+authentik server and worker containers are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker instances, ensuring resilience and fault tolerance.
 
 If a server or worker instance goes offline, another instance can continue to provide service availability. If these instances are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
 
