@@ -33,6 +33,8 @@ The components of an active-standby authentik deployment:
 - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because authentik is stateless, there are no data conflicts.
 - **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
 
+For more informationg on monitoring the health of an authentik instance, refer to the [Monitoring documentation](../sys-mgmt/ops/monitoring.md).
+
 ```mermaid
 graph TD
     subgraph authentikInstances["authentik instances"]
