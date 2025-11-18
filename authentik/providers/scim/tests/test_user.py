@@ -276,11 +276,10 @@ class SCIMUserTests(TestCase):
         # Update user
         user.name = "foo bar"
         user.save()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[2].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "PUT")
+        self.assertEqual(mock.request_history[2].method, "PUT")
 
     @Mocker()
     def test_user_create_delete(self, mock: Mocker):
@@ -329,10 +328,11 @@ class SCIMUserTests(TestCase):
             },
         )
         user.delete()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "DELETE")
-        self.assertEqual(mock.request_history[3].url, f"https://localhost/Users/{scim_id}")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "DELETE")
+        self.assertEqual(mock.request_history[2].url, f"https://localhost/Users/{scim_id}")
 
     @Mocker()
     def test_sync_task(self, mock: Mocker):
@@ -370,10 +370,10 @@ class SCIMUserTests(TestCase):
 
         scim_sync.send(self.provider.pk)
 
-        self.assertEqual(mock.call_count, 5)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[-2].method, "PUT")
+        self.assertEqual(mock.request_history[2].method, "PUT")
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
@@ -442,7 +442,7 @@ class SCIMUserTests(TestCase):
 
             scim_sync.send(self.provider.pk)
 
-            self.assertEqual(mock.call_count, 3)
+            self.assertEqual(mock.call_count, 1)
             for request in mock.request_history:
                 self.assertIn(request.method, SAFE_METHODS)
         task = list(

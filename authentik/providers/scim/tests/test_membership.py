@@ -116,11 +116,10 @@ class SCIMMembershipTests(TestCase):
                 json={},
             )
             group.users.add(user)
-            self.assertEqual(mocker.call_count, 2)
-            self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "PATCH")
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(mocker.request_history[0].method, "PATCH")
             self.assertJSONEqual(
-                mocker.request_history[1].body,
+                mocker.request_history[0].body,
                 {
                     "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
@@ -203,11 +202,10 @@ class SCIMMembershipTests(TestCase):
                 json={},
             )
             group.users.add(user)
-            self.assertEqual(mocker.call_count, 2)
-            self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "PATCH")
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(mocker.request_history[0].method, "PATCH")
             self.assertJSONEqual(
-                mocker.request_history[1].body,
+                mocker.request_history[0].body,
                 {
                     "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
@@ -230,11 +228,10 @@ class SCIMMembershipTests(TestCase):
                 json={},
             )
             group.users.remove(user)
-            self.assertEqual(mocker.call_count, 2)
-            self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "PATCH")
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(mocker.request_history[0].method, "PATCH")
             self.assertJSONEqual(
-                mocker.request_history[1].body,
+                mocker.request_history[0].body,
                 {
                     "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
@@ -323,13 +320,12 @@ class SCIMMembershipTests(TestCase):
             )
             group.users.add(user)
             group.save()
-            self.assertEqual(mocker.call_count, 4)
-            self.assertEqual(mocker.request_history[0].method, "GET")
+            self.assertEqual(mocker.call_count, 3)
+            self.assertEqual(mocker.request_history[0].method, "PATCH")
             self.assertEqual(mocker.request_history[1].method, "PATCH")
-            self.assertEqual(mocker.request_history[2].method, "PATCH")
-            self.assertEqual(mocker.request_history[3].method, "GET")
+            self.assertEqual(mocker.request_history[2].method, "GET")
             self.assertJSONEqual(
-                mocker.request_history[1].body,
+                mocker.request_history[0].body,
                 {
                     "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
@@ -342,7 +338,7 @@ class SCIMMembershipTests(TestCase):
                 },
             )
             self.assertJSONEqual(
-                mocker.request_history[2].body,
+                mocker.request_history[1].body,
                 {
                     "Operations": [
                         {
