@@ -17,6 +17,7 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
 import { isInteractiveElement } from "#elements/utils/interactivity";
+import { isFirefox } from "#elements/utils/useragent";
 
 import type { Application } from "@goauthentik/api";
 
@@ -26,7 +27,6 @@ import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef } from "lit/directives/ref.js";
-import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -54,6 +54,18 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
+    /**
+     * Maximum number of items to show in the datalist for search suggestions.
+     */
+    static readonly MAX_DATA_LIST_ITEMS = 5;
+    /**
+     * Whether to enable the datalist for search suggestions.
+     *
+     * @remarks
+     * Disabled on Firefox due to performance issues between renders.
+     */
+    static DataListEnabled = !isFirefox();
+
     static styles = [
         // ---
         PFBase,
@@ -317,19 +329,23 @@ export class LibraryPage extends AKElement {
                     autofocus
                     placeholder=${msg("Search for an application by name...")}
                     value=${ifPresent(this.query)}
-                    list="application-search-options"
+                    list=${ifPresent(LibraryPage.DataListEnabled, "application-search-options")}
                 />
-                <datalist id="application-search-options">
-                    ${repeat(
-                        this.visibleApplications,
-                        (application) => application.pk,
-                        (app) => {
-                            return html`<option value=${app.name}></option>`;
-                        },
-                    )}
-                </datalist>
+                ${this.renderDataList()}
             </form>
         </search>`;
+    }
+
+    protected renderDataList() {
+        if (!LibraryPage.DataListEnabled) {
+            return nothing;
+        }
+
+        return html`<datalist id="application-search-options">
+            ${this.visibleApplications.slice(0, LibraryPage.MAX_DATA_LIST_ITEMS).map((app) => {
+                return html`<option value=${app.name}></option>`;
+            })}
+        </datalist>`;
     }
 
     protected renderNoAppsFound() {
