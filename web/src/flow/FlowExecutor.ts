@@ -114,7 +114,7 @@ export class FlowExecutor
     public inspectorAvailable?: boolean;
 
     @property({ type: String, attribute: "data-layout", useDefault: true })
-    protected layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
+    public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
     public flowInfo?: ContextualFlowInfo;
