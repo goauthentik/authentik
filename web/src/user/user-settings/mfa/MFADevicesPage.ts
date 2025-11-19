@@ -55,11 +55,15 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name")],
-        [msg("Type")],
-        [msg("Created at")],
-        [msg("Last used at")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" })],
+        [msg("Type", { id: "column.type" })],
+        [msg("Created at", { id: "column.created-at" })],
+        [msg("Last used at", { id: "column.last-used-at" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbar(): TemplateResult {

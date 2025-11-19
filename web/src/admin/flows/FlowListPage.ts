@@ -58,10 +58,14 @@ export class FlowListPage extends TablePage<Flow> {
 
     protected columns: TableColumn[] = [
         [msg("Identifier"), "slug"],
-        [msg("Name"), "name"],
-        [msg("Stages")],
-        [msg("Policies")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Stages", { id: "column.stages" })],
+        [msg("Policies", { id: "column.policies" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

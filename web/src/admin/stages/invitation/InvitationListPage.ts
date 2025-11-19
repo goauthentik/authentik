@@ -85,10 +85,14 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Created by"), "created_by"],
-        [msg("Expiry")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Created by", { id: "column.created-by" }), "created_by"],
+        [msg("Expiry", { id: "column.expiry" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

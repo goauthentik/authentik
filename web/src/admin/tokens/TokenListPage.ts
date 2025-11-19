@@ -55,12 +55,16 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Identifier"), "identifier"],
-        [msg("User"), "user"],
-        [msg("Expires?"), "expiring"],
-        [msg("Expiry date"), "expires"],
-        [msg("Intent"), "intent"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Identifier", { id: "column.identifier" }), "identifier"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Expires?", { id: "column.expires-question-mark" }), "expiring"],
+        [msg("Expiry date", { id: "column.expiry-date" }), "expires"],
+        [msg("Intent", { id: "column.intent" }), "intent"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

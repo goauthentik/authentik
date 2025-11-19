@@ -45,9 +45,9 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Model"), "model"],
-        [msg("Permission"), ""],
-        ["", null, msg("Assigned to user")],
+        [msg("Model", { id: "column.model" }), "model"],
+        [msg("Permission", { id: "column.permission" }), ""],
+        ["", null, msg("Assigned to user", { id: "column.assigned-to-user" })],
     ];
 
     renderObjectCreate(): TemplateResult {

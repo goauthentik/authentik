@@ -43,9 +43,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     }
 
     protected columns: TableColumn[] = [
-        [msg("Model"), "model"],
-        [msg("Permission"), ""],
-        [msg("Object"), ""],
+        [msg("Model", { id: "column.model" }), "model"],
+        [msg("Permission", { id: "column.permission" }), ""],
+        [msg("Object", { id: "column.object" }), ""],
         [""],
     ];
 

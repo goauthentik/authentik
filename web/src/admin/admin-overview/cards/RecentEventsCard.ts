@@ -60,10 +60,10 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Action"), "action"],
-        [msg("User"), "user"],
-        [msg("Creation Date"), "created"],
-        [msg("Client IP"), "client_ip"],
+        [msg("Action", { id: "column.action" }), "action"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Creation Date", { id: "column.creation-date" }), "created"],
+        [msg("Client IP", { id: "column.client-ip" }), "client_ip"],
     ];
 
     renderToolbar(): TemplateResult {

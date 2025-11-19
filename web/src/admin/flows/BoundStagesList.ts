@@ -52,10 +52,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Order"), "order"],
-        [msg("Name"), "stage__name"],
-        [msg("Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Order", { id: "column.order" }), "order"],
+        [msg("Name", { id: "column.name" }), "stage__name"],
+        [msg("Type", { id: "column.type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

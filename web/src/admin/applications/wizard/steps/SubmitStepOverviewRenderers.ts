@@ -134,7 +134,7 @@ function renderProxyOverview(rawProvider: OneOfProvider) {
     const modeLabel = proxyModeToLabel[mode];
 
     return renderSummary("Proxy", provider.name, [
-        [msg("Mode"), modeLabel],
+        [msg("Mode", { id: "label.proxy-mode" }), modeLabel],
         ...match(provider.mode)
             .with(
                 ProxyMode.Proxy,

@@ -54,11 +54,15 @@ export class ReputationListPage extends TablePage<Reputation> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Identifier"), "identifier"],
-        [msg("IP"), "ip"],
-        [msg("Score"), "score"],
-        [msg("Updated"), "updated"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Identifier", { id: "column.identifier" }), "identifier"],
+        [msg("IP", { id: "column.ip" }), "ip"],
+        [msg("Score", { id: "column.score" }), "score"],
+        [msg("Updated", { id: "column.updated" }), "updated"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

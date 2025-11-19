@@ -36,9 +36,8 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
+        [msg("Name", { id: "column.name" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     renderExpanded(item: SCIMSourceGroup): TemplateResult {

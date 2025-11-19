@@ -53,11 +53,15 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Enabled")],
-        [msg("Name"), "name"],
-        [msg("Severity"), "severity"],
-        [msg("Sent to group"), "group"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Enabled", { id: "column.enabled" })],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Severity", { id: "column.severity" }), "severity"],
+        [msg("Sent to group", { id: "column.send-to-group" }), "group"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

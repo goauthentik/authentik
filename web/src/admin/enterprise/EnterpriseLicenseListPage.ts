@@ -91,10 +91,14 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Users")],
-        [msg("Expiry date")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Users", { id: "column.users" })],
+        [msg("Expiry date", { id: "column.expiry-date" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     // TODO: Make this more generic, maybe automatically get the plural name

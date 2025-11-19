@@ -49,12 +49,12 @@ export class UserDeviceTable extends Table<Device> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name")],
-        [msg("Type")],
-        [msg("Confirmed")],
-        [msg("Created at")],
-        [msg("Last updated at")],
-        [msg("Last used at")],
+        [msg("Name", { id: "column.name" })],
+        [msg("Type", { id: "column.type" })],
+        [msg("Confirmed", { id: "column.confirmed" })],
+        [msg("Created at", { id: "column.created-at" })],
+        [msg("Last updated at", { id: "column.last-updated-at" })],
+        [msg("Last used at", { id: "column.last-used-at" })],
     ];
 
     async deleteWrapper(device: Device) {

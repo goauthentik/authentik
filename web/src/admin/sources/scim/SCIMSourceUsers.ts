@@ -37,8 +37,8 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Username")],
-        [msg("ID")],
+        [msg("Username", { id: "column.username" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     renderExpanded(item: SCIMSourceUser): TemplateResult {

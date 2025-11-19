@@ -57,10 +57,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Private key available?")],
-        [msg("Expiry date")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Private key available?", { id: "column.private-key-available-question-mark" })],
+        [msg("Expiry date", { id: "column.expiry-date" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

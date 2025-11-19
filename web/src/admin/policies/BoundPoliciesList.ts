@@ -83,11 +83,15 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Order"), "order"],
+        [msg("Order", { id: "column.order" }), "order"],
         [this.allowedTypesLabel],
-        [msg("Enabled"), "enabled"],
-        [msg("Timeout"), "timeout"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Enabled", { id: "column.enabled" }), "enabled"],
+        [msg("Timeout", { id: "column.timeout" }), "timeout"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {

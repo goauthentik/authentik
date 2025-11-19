@@ -90,12 +90,16 @@ export class OutpostListPage extends TablePage<Outpost> {
     health: { [key: string]: OutpostHealth[] } = {};
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Type"), "type"],
-        [msg("Providers")],
-        [msg("Integration"), "service_connection__name"],
-        [msg("Health and Version")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [msg("Providers", { id: "column.providers" })],
+        [msg("Integration", { id: "column.integration" }), "service_connection__name"],
+        [msg("Health and Version", { id: "column.health-and-version" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];

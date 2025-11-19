@@ -154,11 +154,15 @@ export class UserListPage extends WithBrandConfig(
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Active"), "is_active"],
-        [msg("Last login"), "last_login"],
-        [msg("Type"), "type"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Active", { id: "column.active" }), "is_active"],
+        [msg("Last login", { id: "column.last-login" }), "last_login"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

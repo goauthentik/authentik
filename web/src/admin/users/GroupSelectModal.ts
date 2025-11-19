@@ -44,9 +44,9 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Superuser"), "is_superuser"],
-        [msg("Members"), ""],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Superuser", { id: "column.superuser" }), "is_superuser"],
+        [msg("Members", { id: "column.members" }), ""],
     ];
 
     row(item: Group): SlottedTemplateResult[] {

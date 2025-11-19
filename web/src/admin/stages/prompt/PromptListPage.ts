@@ -42,12 +42,16 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Field"), "field_key"],
-        [msg("Type"), "type"],
-        [msg("Order"), "order"],
-        [msg("Stages")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Field", { id: "column.field" }), "field_key"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [msg("Order", { id: "column.order" }), "order"],
+        [msg("Stages", { id: "column.stages" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

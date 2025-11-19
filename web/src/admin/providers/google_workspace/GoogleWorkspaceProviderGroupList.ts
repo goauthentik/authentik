@@ -85,9 +85,8 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
+        [msg("Name", { id: "column.name" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {

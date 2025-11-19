@@ -42,8 +42,8 @@ export class ProviderSelectModal extends TableModal<Provider> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "username"],
-        [msg("Type")],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Type", { id: "column.type" })],
     ];
 
     row(item: Provider): SlottedTemplateResult[] {

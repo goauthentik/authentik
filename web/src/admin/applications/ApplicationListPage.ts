@@ -79,12 +79,16 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
     protected columns: TableColumn[] = [
-        ["", undefined, msg("Application Icon")],
-        [msg("Name"), "name"],
-        [msg("Group"), "group"],
-        [msg("Provider")],
-        [msg("Provider Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        ["", undefined, msg("Application Icon", { id: "column.application-icon" })],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Group", { id: "column.group" }), "group"],
+        [msg("Provider", { id: "column.provider" })],
+        [msg("Provider Type", { id: "column.provider-type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     protected renderSidebarAfter(): TemplateResult {

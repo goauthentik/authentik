@@ -48,7 +48,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name")],
+        [msg("Name", { id: "column.name" })],
     ];
 
     row(item: Endpoint): SlottedTemplateResult[] {

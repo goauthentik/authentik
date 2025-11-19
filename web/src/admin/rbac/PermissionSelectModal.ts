@@ -46,8 +46,8 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "codename"],
-        [msg("Model"), ""],
+        [msg("Name", { id: "column.name" }), "codename"],
+        [msg("Model", { id: "column.model" }), ""],
     ];
 
     row(item: Permission): SlottedTemplateResult[] {

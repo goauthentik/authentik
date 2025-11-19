@@ -62,12 +62,16 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Action"), "action"],
-        [msg("User"), "user"],
-        [msg("Creation Date"), "created"],
-        [msg("Client IP"), "client_ip"],
-        [msg("Brand"), "brand_name"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Action", { id: "column.action" }), "action"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Creation Date", { id: "column.creation-date" }), "created"],
+        [msg("Client IP", { id: "column.client-ip" }), "client_ip"],
+        [msg("Brand", { id: "column.brand" }), "brand_name"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     protected override rowLabel(item: Event): string | null {

@@ -81,11 +81,15 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Status"), "status"],
-        [msg("Last applied"), "last_applied"],
-        [msg("Enabled"), "enabled"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Status", { id: "column.status" }), "status"],
+        [msg("Last applied", { id: "column.last-applied" }), "last_applied"],
+        [msg("Enabled", { id: "column.enabled" }), "enabled"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

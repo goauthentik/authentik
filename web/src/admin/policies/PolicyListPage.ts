@@ -55,9 +55,9 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Type")],
-        [msg("Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" })],
+        [msg("Actions", { id: "column.actions" })],
     ];
 
     row(item: Policy): SlottedTemplateResult[] {

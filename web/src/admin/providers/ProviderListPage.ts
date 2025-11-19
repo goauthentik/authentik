@@ -66,10 +66,14 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     protected override columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Application")],
-        [msg("Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Application", { id: "column.application" })],
+        [msg("Type", { id: "column.type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     override renderToolbarSelected(): TemplateResult {

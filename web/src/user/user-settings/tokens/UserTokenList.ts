@@ -52,9 +52,17 @@ export class UserTokenList extends Table<Token> {
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Identifier"), "identifier"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [
+            msg("Identifier", {
+                id: "column.identifier",
+            }),
+            "identifier",
+        ],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];

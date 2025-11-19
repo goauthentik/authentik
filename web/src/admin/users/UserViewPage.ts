@@ -145,16 +145,16 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         // prettier-ignore
         const userInfo: DescriptionPair[] = [
-            [msg("Username"), user.username],
-            [msg("Name"), user.name],
-            [msg("Email"), user.email || "-"],
-            [msg("Last login"), Timestamp(user.lastLogin)],
-            [msg("Last password change"), Timestamp(user.passwordChangeDate)],
-            [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
-            [msg("Type"), userTypeToLabel(user.type)],
-            [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
-            [msg("Actions"), this.renderActionButtons(user)],
-            [msg("Recovery"), this.renderRecoveryButtons(user)],
+            [msg("Username", { id: "column.username" }), user.username],
+            [msg("Name", { id: "column.name" }), user.name],
+            [msg("Email", { id: "column.email" }), user.email || "-"],
+            [msg("Last login", { id: "column.last-login" }), Timestamp(user.lastLogin)],
+            [msg("Last password change", { id: "column.last-password-change" }), Timestamp(user.passwordChangeDate)],
+            [msg("Active", { id: "column.active" }), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
+            [msg("Type", { id: "column.type" }), userTypeToLabel(user.type)],
+            [msg("Superuser", { id: "column.superuser" }), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
+            [msg("Actions", { id: "column.actions" }), this.renderActionButtons(user)],
+            [msg("Recovery", { id: "column.recovery" }), this.renderRecoveryButtons(user)],
         ];
 
         return html`

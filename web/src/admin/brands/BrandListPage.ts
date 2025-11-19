@@ -49,10 +49,14 @@ export class BrandListPage extends TablePage<Brand> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Domain"), "domain"],
-        [msg("Brand name"), "branding_title"],
-        [msg("Default?"), "default"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Domain", { id: "column.domain" }), "domain"],
+        [msg("Brand name", { id: "column.brand-name" }), "branding_title"],
+        [msg("Default?", { id: "column.default-question-mark" }), "default"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

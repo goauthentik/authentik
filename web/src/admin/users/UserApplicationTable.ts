@@ -37,11 +37,15 @@ export class UserApplicationTable extends Table<Application> {
 
     protected columns: TableColumn[] = [
         [""],
-        [msg("Name"), "name"],
-        [msg("Group"), "group"],
-        [msg("Provider")],
-        [msg("Provider Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Group", { id: "column.group" }), "group"],
+        [msg("Provider", { id: "column.provider" })],
+        [msg("Provider Type", { id: "column.provider-type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     row(item: Application): SlottedTemplateResult[] {

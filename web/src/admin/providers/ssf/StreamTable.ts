@@ -46,7 +46,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Audience"), "aud"],
+        [msg("Audience", { id: "column.audience" }), "aud"],
     ];
 
     row(item: SSFStream): SlottedTemplateResult[] {

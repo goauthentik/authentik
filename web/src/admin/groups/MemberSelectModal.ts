@@ -82,9 +82,9 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Active"), "is_active"],
-        [msg("Last login"), "last_login"],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Active", { id: "column.active" }), "is_active"],
+        [msg("Last login", { id: "column.last-login" }), "last_login"],
     ];
 
     renderToolbarAfter() {

@@ -111,10 +111,14 @@ export class RelatedGroupList extends Table<Group> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
-        [msg("Superuser privileges?")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Parent", { id: "column.parent" }), "parent"],
+        [msg("Superuser privileges?", { id: "column.superuser-privileges-question-mark" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {

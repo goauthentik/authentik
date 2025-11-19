@@ -82,9 +82,8 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
+        [msg("Name", { id: "column.name" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: SCIMProviderGroup): SlottedTemplateResult[] {

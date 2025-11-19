@@ -116,8 +116,13 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Role Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList([
-                                    [msg("Name"), this._role.name],
-                                    [msg("Actions"), this.renderUpdateControl(this._role)],
+                                    [msg("Name", { id: "column.name" }), this._role.name],
+                                    [
+                                        msg("Actions", {
+                                            id: "column.actions",
+                                        }),
+                                        this.renderUpdateControl(this._role),
+                                    ],
                                 ])}
                             </div>
                         </div>

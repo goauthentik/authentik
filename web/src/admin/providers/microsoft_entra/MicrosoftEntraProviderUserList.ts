@@ -86,8 +86,8 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Username")],
-        [msg("ID")],
+        [msg("Username", { id: "column.username" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: MicrosoftEntraProviderUser): SlottedTemplateResult[] {

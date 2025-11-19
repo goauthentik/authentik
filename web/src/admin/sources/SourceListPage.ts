@@ -55,9 +55,9 @@ export class SourceListPage extends TablePage<Source> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Type")],
-        ["", null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" })],
+        ["", null, msg("Row Actions", { id: "column.row-actions" })],
     ];
 
     renderToolbarSelected(): TemplateResult {
