@@ -34,28 +34,7 @@
 }
 
 :host([theme="dark"]) .pf-c-table {
-    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-300);
-    --pf-global--Color--100: var(--ak-dark-foreground);
-    --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
-    --pf-c-table--cell--Color: var(--ak-dark-foreground);
-    --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
-    --pf-global--link--Color: var(--pf-global--link--Color--light);
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-
-    .pf-c-table__text {
-        color: var(--ak-dark-foreground);
-    }
-
-    .pf-c-table__sort-indicator i {
-        color: var(--ak-dark-foreground) !important;
-    }
-
-    .pf-c-table__expandable-row.pf-m-expanded {
-        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(
-            --ak-dark-background-lighter
-        );
-    }
+    --pf-c-table--m-striped__tr--BackgroundColor: var(--pf-global--BackgroundColor--150);
 
     .pf-c-button:has(.pf-c-table__toggle-icon) {
         background-color: transparent !important;
@@ -64,6 +43,11 @@
             color: var(--pf-c-button--m-plain--hover--Color) !important;
         }
     }
+}
+
+:host([theme="dark"]) .pf-c-table__favorite .pf-c-button:hover,
+:host([theme="dark"]) .pf-c-table__favorite .pf-c-button:focus {
+    --pf-c-button--m-plain--Color: var(--pf-global--palette--gold-100);
 }
 
 /* #endregion  */

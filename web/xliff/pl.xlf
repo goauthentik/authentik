@@ -9417,9 +9417,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s0c48c5f754275796">
   <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
 </trans-unit>
-<trans-unit id="s6c973fe9014080fc">
-  <source>Application name</source>
-</trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
 </trans-unit>
@@ -10033,9 +10030,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
 </trans-unit>
-<trans-unit id="sdd2ea73c24b40d5d">
-  <source>Site footer</source>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
 </trans-unit>
@@ -10261,6 +10255,21 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+</trans-unit>
+<trans-unit id="s07b0bf005510fe29">
+  <source>Type an application name...</source>
+</trans-unit>
+<trans-unit id="s972540f502b0f4dc">
+  <source>Application Name</source>
+</trans-unit>
+<trans-unit id="s71e967b36e080e3c">
+  <source>https://...</source>
+</trans-unit>
+<trans-unit id="sd144a9315e8f87c1">
+  <source>http(s)://...</source>
+</trans-unit>
+<trans-unit id="sf8633bb541bfb123">
+  <source>domain.tld</source>
 </trans-unit>
     </body>
   </file>

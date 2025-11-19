@@ -126,6 +126,30 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
             },
         )
 
+    def test_deactivate(self):
+        """test deactivated user"""
+        self.user.is_active = False
+        self.user.save()
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": SCOPE_OPENID,
+                "client_id": self.provider.client_id,
+                "username": "sa",
+                "password": self.token.key,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
+        )
+
     def test_permission_denied(self):
         """test permission denied"""
         group = Group.objects.create(name="foo")

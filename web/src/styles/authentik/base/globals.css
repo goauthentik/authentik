@@ -9,7 +9,7 @@ body {
 body {
     background-color: var(
         --ak-global--background-color,
-        var(--pf-global--BackgroundColor--150, Canvas)
+        var(--pf-global--BackgroundColor--200, Canvas)
     );
     color: var(--pf-global--Color--100, CanvasText);
     &::before {
