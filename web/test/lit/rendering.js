@@ -1,12 +1,11 @@
 /**
  * @file Vitest browser utilities for Lit.
  *
- * @import { LocatorSelectors } from '@vitest/browser/context'
- * @import { PrettyDOMOptions } from '@vitest/browser/utils'
+ * @import { LocatorSelectors, PrettyDOMOptions } from '@vitest/browser/context'
  * @import { RenderOptions as LitRenderOptions } from 'lit'
  */
 
-import { debug, getElementLocatorSelectors } from "@vitest/browser/utils";
+import { utils } from "@vitest/browser/context";
 
 import { render as renderLit } from "lit";
 
@@ -65,7 +64,7 @@ export class LitViteContext {
      */
     constructor(container) {
         this.container = container;
-        this.$ = getElementLocatorSelectors(container);
+        this.$ = utils.getElementLocatorSelectors(container);
     }
 
     toFragment() {
@@ -77,7 +76,7 @@ export class LitViteContext {
      * @param {PrettyDOMOptions} [options]
      */
     debug(maxLength, options) {
-        return debug(this.container, maxLength, options);
+        return utils.debug(this.container, maxLength, options);
     }
 
     [Symbol.dispose] = () => {

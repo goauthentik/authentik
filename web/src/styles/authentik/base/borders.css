@@ -1,0 +1,16 @@
+:root {
+    --pf-global--BorderRadius--sm: 3px;
+    --pf-global--BorderRadius--lg: 30em;
+    --pf-global--BorderWidth--sm: 1px;
+    --pf-global--BorderWidth--md: 2px;
+    --pf-global--BorderWidth--lg: 3px;
+    --pf-global--BorderWidth--xl: 4px;
+}
+
+:root {
+    --pf-global--BorderColor--100: #d2d2d2;
+    --pf-global--BorderColor--200: #8a8d90;
+    --pf-global--BorderColor--300: #f0f0f0;
+    --pf-global--BorderColor--dark-100: #d2d2d2;
+    --pf-global--BorderColor--light-100: #b8bbbe;
+}

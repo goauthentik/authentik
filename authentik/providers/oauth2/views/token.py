@@ -336,7 +336,7 @@ class TokenParams:
         self, request: HttpRequest, username: str, password: str
     ):
         # Authenticate user based on credentials
-        user = User.objects.filter(username=username).first()
+        user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
