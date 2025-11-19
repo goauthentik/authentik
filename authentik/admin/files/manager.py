@@ -56,11 +56,13 @@ class FileManager:
         """
         return self.management_backend is not None
 
-    def list_files(self) -> Generator[str]:
+    def list_files(self, manageable_only: bool = False) -> Generator[str]:
         """
         List available files.
         """
         for backend in self.backends:
+            if manageable_only and not isinstance(backend, ManageableBackend):
+                continue
             yield from backend.list_files()
 
     def file_url(

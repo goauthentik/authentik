@@ -1,17 +1,19 @@
-"""File validation utilities"""
-
 import re
 from pathlib import PurePosixPath
 
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
-from authentik.admin.files.constants import (
-    ALLOWED_MIME_TYPES,
-    MAX_FILE_PATH_LENGTH,
-    MAX_FILE_SIZE_BYTES,
-    MAX_PATH_COMPONENT_LENGTH,
-)
+# File upload limits
+MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024  # 25MB
+MAX_FILE_PATH_LENGTH = 1024
+MAX_PATH_COMPONENT_LENGTH = 255
+
+# Allowed MIME types per usage
+ALLOWED_MIME_TYPES = {
+    "media": ["image/"],
+    "reports": None,
+}
 
 
 def sanitize_file_path(file_path: str) -> str:

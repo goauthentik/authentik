@@ -6,3 +6,6 @@ class FileUsage(StrEnum):
 
     MEDIA = "media"
     REPORTS = "reports"
+
+
+MANAGE_API_USAGES = [FileUsage.MEDIA]
