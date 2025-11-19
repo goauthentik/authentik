@@ -144,11 +144,11 @@ export class DeviceViewPage extends AKElement {
                                 [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
                                 [
                                     msg("CPU"),
-                                    msg(
-                                        this.device.facts.data.hardware
-                                            ? str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`
-                                            : "-",
-                                    ),
+                                    this.device.facts.data.hardware
+                                        ? msg(
+                                              str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
+                                          )
+                                        : "-",
                                 ],
                                 [
                                     msg("Memory"),
