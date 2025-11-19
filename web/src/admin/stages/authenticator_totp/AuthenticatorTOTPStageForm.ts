@@ -47,7 +47,13 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Authenticator TOTP Stage Name", {
+                    id: "label.authenticator-totp-stage-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

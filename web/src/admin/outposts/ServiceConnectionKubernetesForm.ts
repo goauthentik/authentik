@@ -41,7 +41,13 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Service Connection Kubernetes Name", {
+                    id: "label.service-connection-kubernetes-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

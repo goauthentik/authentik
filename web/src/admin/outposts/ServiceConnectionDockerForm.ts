@@ -36,7 +36,13 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Service Connection Docker Name", {
+                    id: "label.service-connection-docker-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

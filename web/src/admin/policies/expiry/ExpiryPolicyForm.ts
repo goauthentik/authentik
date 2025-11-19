@@ -38,7 +38,11 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Expiry Policy Name", { id: "label.expiry-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

@@ -49,7 +49,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("LDAP Source Name", { id: "label.ldap-source-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

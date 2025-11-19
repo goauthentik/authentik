@@ -76,7 +76,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Identification Stage Name", { id: "label.identification-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

@@ -84,7 +84,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
     renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Kerberos Source Name", { id: "label.kerberos-source-name" })}
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>

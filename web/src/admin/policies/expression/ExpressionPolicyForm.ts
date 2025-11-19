@@ -42,7 +42,11 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Expression Policy Name", { id: "label.expression-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

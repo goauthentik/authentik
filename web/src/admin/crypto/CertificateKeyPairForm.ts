@@ -38,7 +38,11 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
+        return html` <ak-form-element-horizontal
+                label=${msg("Certificate Key Pair Name", { id: "label.certificate-key-pair-name" })}
+                name="name"
+                required
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

@@ -83,7 +83,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Transport Name", { id: "label.transport-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

@@ -142,7 +142,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             [OutpostTypeEnum.Rac, msg("RAC")],
         ];
 
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Outpost Name", { id: "label.outpost-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

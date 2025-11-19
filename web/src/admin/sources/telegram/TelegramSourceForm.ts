@@ -47,7 +47,11 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Telegram Source Name", { id: "label.telegram-source-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

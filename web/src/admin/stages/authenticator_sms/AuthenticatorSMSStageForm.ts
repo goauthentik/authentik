@@ -168,7 +168,13 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Authenticator SMS Stage Name", {
+                    id: "label.authenticator-sms-stage-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

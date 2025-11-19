@@ -37,7 +37,11 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Dummy Stage Name", { id: "label.dummy-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

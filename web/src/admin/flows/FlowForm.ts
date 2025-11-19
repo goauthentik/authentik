@@ -74,7 +74,11 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Flow Name", { id: "label.flow-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

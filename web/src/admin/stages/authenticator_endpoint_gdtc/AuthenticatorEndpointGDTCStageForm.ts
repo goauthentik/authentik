@@ -48,7 +48,13 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     "Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Authenticator Endpoint GDTC Stage Name", {
+                    id: "label.authenticator-endpoint-gdtc-stage-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

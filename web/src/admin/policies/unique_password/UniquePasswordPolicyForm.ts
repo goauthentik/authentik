@@ -38,7 +38,13 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Unique Password Policy Name", {
+                    id: "label.unique-password-policy-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

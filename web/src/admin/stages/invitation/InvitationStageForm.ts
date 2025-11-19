@@ -35,7 +35,11 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
         return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Invitation Stage Name", { id: "label.invitation-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name || ""}"

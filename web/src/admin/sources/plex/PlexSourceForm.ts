@@ -175,7 +175,11 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Plex Source Name", { id: "label.plex-source-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

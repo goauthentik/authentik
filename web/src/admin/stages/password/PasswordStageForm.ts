@@ -76,7 +76,11 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Password Stage Name", { id: "label.password-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name || ""}"

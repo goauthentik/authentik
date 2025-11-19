@@ -152,7 +152,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Authenticator Email Stage Name", {
+                    id: "label.authenticator-email-stage-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

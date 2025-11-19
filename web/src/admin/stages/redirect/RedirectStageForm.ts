@@ -50,7 +50,11 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
         return html`<span>
                 ${msg("Redirect the user to another flow, potentially with all gathered context")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Redirect Stage Name", { id: "label.redirect-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

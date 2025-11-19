@@ -35,7 +35,11 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
 
     renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("User Login Stage Name", { id: "label.user-login-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

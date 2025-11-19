@@ -201,7 +201,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderEditForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Prompt Name", { id: "label.prompt-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

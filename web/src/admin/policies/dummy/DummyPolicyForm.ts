@@ -38,7 +38,11 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Dummy Policy Name", { id: "label.dummy-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

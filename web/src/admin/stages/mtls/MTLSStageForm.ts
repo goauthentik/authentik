@@ -47,7 +47,11 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
     renderForm(): TemplateResult {
         return html`
             <span> ${msg("Client-certificate/mTLS authentication/enrollment.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("MTLS Stage Name", { id: "label.mtls-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

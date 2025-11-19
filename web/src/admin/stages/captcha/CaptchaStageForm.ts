@@ -41,7 +41,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Captcha Stage Name", { id: "label.captcha-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

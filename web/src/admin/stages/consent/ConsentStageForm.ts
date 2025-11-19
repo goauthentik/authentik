@@ -47,7 +47,11 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Consent Stage Name", { id: "label.consent-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
