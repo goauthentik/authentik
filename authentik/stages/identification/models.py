@@ -21,7 +21,7 @@ class UserFields(models.TextChoices):
 
 
 class IdentificationStage(Stage):
-    """Allows the user to identify themselves for authentication."""
+    """Identify the user for authentication."""
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),

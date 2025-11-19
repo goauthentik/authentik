@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func TestLogout(t *testing.T) {
@@ -23,7 +24,7 @@ func TestLogout(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
-	s.Values[constants.SessionClaims] = Claims{
+	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
 	}
 	err := a.sessions.Save(req, rr, s)
@@ -39,7 +40,7 @@ func TestLogout(t *testing.T) {
 	s2, _ := a.sessions.Get(req, a.SessionName())
 	s2.ID = uuid.New().String()
 	s2.Options.MaxAge = 86400
-	s2.Values[constants.SessionClaims] = Claims{
+	s2.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
 	}
 	err = a.sessions.Save(req, rr, s2)
@@ -56,7 +57,7 @@ func TestLogout(t *testing.T) {
 	s3, _ := a.sessions.Get(req, a.SessionName())
 	s3.ID = uuid.New().String()
 	s3.Options.MaxAge = 86400
-	s3.Values[constants.SessionClaims] = Claims{
+	s3.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
 	}
 	err = a.sessions.Save(req, rr, s3)

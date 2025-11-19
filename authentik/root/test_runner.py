@@ -16,6 +16,7 @@ from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
+from authentik.tasks.test import use_test_broker
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
@@ -60,7 +61,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def _setup_test_environment(self):
         """Configure test environment settings"""
         settings.TEST = True
-        settings.CELERY["task_always_eager"] = True
+        settings.DRAMATIQ["test"] = True
 
         # Test-specific configuration
         test_config = {
@@ -83,6 +84,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         sentry_init()
         self.logger.debug("Test environment configured")
+
+        use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -174,6 +177,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
                 return pytest.main(self.args)
-            except Exception as e:
+            except Exception as e:  # noqa
                 self.logger.error("Error running tests", error=str(e), test_files=self.args)
                 return 1

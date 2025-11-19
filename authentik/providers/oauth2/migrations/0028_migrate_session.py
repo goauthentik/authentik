@@ -11,7 +11,8 @@ def migrate_sessions(apps, schema_editor, model):
     AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
     db_alias = schema_editor.connection.alias
 
-    for obj in Model.objects.using(db_alias).all():
+    objs = list(Model.objects.using(db_alias).select_related("old_session").all())
+    for obj in objs:
         if not obj.old_session:
             continue
         obj.session = (

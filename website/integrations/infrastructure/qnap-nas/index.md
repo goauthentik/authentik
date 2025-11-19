@@ -26,7 +26,7 @@ The following placeholders are used in this guide:
 - `qnap.serviceAccountToken` is the service account token generated
   by authentik.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -58,7 +58,7 @@ The procedure is a two step setup:
 1. QNAP Web UI: Used to setup and store initial data. Especially to store the encrypted bind password.
 2. SSH config Edit: In order to adapt settings to be able to communicate with authentik LDAP Outpost.
 
-:::note
+:::info
 The config edit is essential, as QNAP relies on certain not configurable things.
 The search for users and groups relies on a fix filter for
 `objectClass` in `posixAccount` or `posixGroup` classes.
@@ -117,7 +117,7 @@ Configure the following values and "Apply"
 With each save (Apply) in the UI the `/etc/config/nss_ldap.conf` will be overwritten with default values.
 :::
 
-:::note
+:::info
 The UI Configuration is necessary, as it will save the Password encrypted
 in `/etc/config/nss_ldap.ensecret`.
 :::

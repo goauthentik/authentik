@@ -26,7 +26,7 @@ or, for CLI, run
 uv run ak create_recovery_key 10 akadmin
 ```
 
-This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.
+This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of minutes specified above, in this case, 10 minutes.
 
 ## Can't access initial setup flow during installation steps
 
@@ -50,6 +50,6 @@ After following the prompts to set a new password, you can then login via: `http
 
 After logging in, you can set the email address and other settings for the account by navigating to **Directory** > **Users** and editing the user account.
 
-:::note
+:::info
 This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the administrator user.
 :::

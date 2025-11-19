@@ -57,9 +57,8 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Fields")} required name="fields">
                         <ak-dual-select-dynamic-selected
                             .provider=${promptFieldsProvider}
@@ -69,8 +68,8 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         ></ak-dual-select-dynamic-selected>
                         ${this.instance
                             ? html`<ak-forms-modal size=${PFSize.XLarge}>
-                                  <span slot="submit"> ${msg("Create")} </span>
-                                  <span slot="header"> ${msg("Create Prompt")} </span>
+                                  <span slot="submit">${msg("Create")}</span>
+                                  <span slot="header">${msg("Create Prompt")}</span>
                                   <ak-prompt-form slot="form"> </ak-prompt-form>
                                   <button
                                       type="button"

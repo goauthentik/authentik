@@ -9,9 +9,42 @@ import { html, TemplateResult } from "lit";
 const metadata: Meta<Divider> = {
     title: "Elements/<ak-divider>",
     component: "ak-divider",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "our most simple divider",
+            description: {
+                component: /* md */ `
+# Divider
+
+Divider is a horizontal rule, an in-page element to separate displayed items.
+
+It has no configurable attributes. It does have a single unnamed slot, which is displayed in-line in
+the center of the rule. If the CSS Base in loaded into the parent context, icons defined in the base
+can be used here.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/Divider";
+\`\`\`
+
+\`\`\`html
+<ak-divider></ak-divider>
+\`\`\`
+
+With content:
+
+\`\`\`html
+<ak-divider><p>Time for bed!</p></ak-divider>
+\`\`\`
+
+With an icon:
+
+\`\`\`html
+<ak-divider><i class="fa fa-bed"></i></ak-divider>
+\`\`\`
+`,
+            },
         },
     },
 };

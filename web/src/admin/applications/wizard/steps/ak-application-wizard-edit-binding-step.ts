@@ -48,8 +48,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     hide = true;
 
-    @query("form#bindingform")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form#bindingform");
+    }
 
     @query(".policy-search-select")
     searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
@@ -71,7 +72,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
-            if (!this.form.checkValidity()) {
+            if (!this.form?.checkValidity()) {
                 return;
             }
             const policyObject = this.searchSelect.selectedObject;

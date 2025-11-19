@@ -1,4 +1,4 @@
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import type { TemplateResult } from "lit";
 
@@ -343,7 +343,7 @@ const reseason = (acc: Seasoned[], { produce, seasons, desc }: ViewSample): Seas
 export const groupedSampleData = (() => {
     const seasoned: Seasoned[] = sampleData.reduce(reseason, [] as Seasoned[]);
     const grouped = Object.groupBy(seasoned, ([season]) => season);
-    const ungrouped = ([_season, label, desc]: Seasoned) => [slug(label), label, desc];
+    const ungrouped = ([_season, label, desc]: Seasoned) => [kebabCase(label), label, desc];
 
     if (grouped === undefined) {
         throw new Error("Not possible with existing data.");

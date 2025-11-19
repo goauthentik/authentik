@@ -1,8 +1,39 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
+import { UIConfig, UserDisplay } from "#common/ui/config";
 
-import { CoreApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, SessionUser, UserSelf } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
+
+export interface ClientSessionPermissions {
+    editApplications: boolean;
+    accessAdmin: boolean;
+}
+
+/**
+ * The display name of the current user, according to their UI config settings.
+ */
+export function formatUserDisplayName(user: UserSelf | null, uiConfig: UIConfig): string {
+    if (!user) return "";
+
+    const label = match(uiConfig.navbar.userDisplay)
+        .with(UserDisplay.username, () => user.username)
+        .with(UserDisplay.name, () => user.name)
+        .with(UserDisplay.email, () => user.email)
+        .with(UserDisplay.none, () => null)
+        .otherwise(() => user.username);
+
+    return label || "";
+}
+
+/**
+ * Whether the current session is an unauthenticated guest session.
+ */
+export function isGuest(user: UserSelf | null): boolean {
+    return user?.pk === -1;
+}
 
 /**
  * Create a guest session for unauthenticated users.
@@ -45,11 +76,11 @@ export function refreshMe(): Promise<SessionUser> {
  *
  * @see {@linkcode refreshMe} to force a refresh.
  */
-export async function me(): Promise<SessionUser> {
+export async function me(requestInit?: RequestInit): Promise<SessionUser> {
     if (memoizedSession) return memoizedSession;
 
     return new CoreApi(DEFAULT_CONFIG)
-        .coreUsersMeRetrieve()
+        .coreUsersMeRetrieve(requestInit)
         .then((nextSession) => {
             const locale: string | undefined = nextSession.user.settings.locale;
 

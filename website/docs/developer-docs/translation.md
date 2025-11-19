@@ -22,6 +22,8 @@ To simplify translation you can use https://www.transifex.com/authentik/authenti
 - Make (again, any recent version should work)
 - Docker
 
+### Frontend
+
 Run `npm i` in the `/web` folder to install all dependencies.
 
 Ensure the language code is in the `lit-localize.json` file in `web/`:
@@ -42,3 +44,17 @@ Afterwards, run `make web-i18n-extract` to generate a base .xlf file.
 The .xlf files can be edited by any text editor, or using a tool such as [POEdit](https://poedit.net/).
 
 To see the change, run `make web-watch` in the root directory of the repository.
+
+### Backend
+
+Backend translations are handled by `core-i18n-extract`.
+
+Use Django's translation utility to declare the string, e.g.:
+
+```python
+from django.utils.translation import gettext as _
+
+_("New text to be translated.")
+```
+
+Afterwards, run `make core-i18n-extract` to generate the updated translation files.

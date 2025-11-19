@@ -9,7 +9,7 @@ from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import ERROR_CANNOT_DECODE_REQUEST
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-from authentik.sources.saml.processors.constants import NS_SAML_PROTOCOL
+from authentik.sources.saml.processors.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL
 
 
 @dataclass(slots=True)
@@ -19,6 +19,12 @@ class LogoutRequest:
     id: str | None = None
 
     issuer: str | None = None
+
+    name_id: str | None = None
+
+    name_id_format: str | None = None
+
+    session_index: str | None = None
 
     relay_state: str | None = None
 
@@ -36,9 +42,30 @@ class LogoutRequestParser:
         request = LogoutRequest(
             id=root.attrib["ID"],
         )
+        # Try both namespaces for Issuer
         issuers = root.findall(f"{{{NS_SAML_PROTOCOL}}}Issuer")
+        if not issuers:
+            issuers = root.findall(f"{{{NS_SAML_ASSERTION}}}Issuer")
         if len(issuers) > 0:
             request.issuer = issuers[0].text
+
+        # Extract NameID
+        name_ids = root.findall(f"{{{NS_SAML_ASSERTION}}}NameID")
+        if not name_ids:
+            name_ids = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameID")
+        if len(name_ids) > 0:
+            request.name_id = name_ids[0].text
+            # Extract NameID Format if present
+            if "Format" in name_ids[0].attrib:
+                request.name_id_format = name_ids[0].attrib["Format"]
+
+        # Extract SessionIndex
+        session_indexes = root.findall(f"{{{NS_SAML_PROTOCOL}}}SessionIndex")
+        if not session_indexes:
+            session_indexes = root.findall(f"{{{NS_SAML_ASSERTION}}}SessionIndex")
+        if len(session_indexes) > 0:
+            request.session_index = session_indexes[0].text
+
         request.relay_state = relay_state
         return request
 

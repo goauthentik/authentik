@@ -30,7 +30,7 @@ const COLUMNS = [
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
     [msg("Timeout"), "timeout"],
-    [msg("Actions")],
+    [msg("Actions"), null, msg("Row Actions")],
 ];
 
 @customElement("ak-application-wizard-bindings-step")

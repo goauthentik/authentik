@@ -13,6 +13,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -25,9 +26,11 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -52,6 +55,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     order = "order";
 
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFSpacing);
+    }
+
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
     }
@@ -63,15 +70,17 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(this.allowedTypesLabel),
-            new TableColumn(msg("Enabled"), "enabled"),
-            new TableColumn(msg("Timeout"), "timeout"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: PolicyBinding): string | null {
+        return item.order?.toString() ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [this.allowedTypesLabel],
+        [msg("Enabled"), "enabled"],
+        [msg("Timeout"), "timeout"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
@@ -95,11 +104,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${label}`;
     }
 
-    getObjectEditButton(item: PolicyBinding): TemplateResult {
+    getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg(str`Update ${item.policyObj?.name}`)} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg(str`Update ${item.policyObj?.name}`)}</span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
@@ -114,8 +123,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal>`;
         } else if (item.group) {
             return html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit Group")}
@@ -123,15 +132,15 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal>`;
         } else if (item.user) {
             return html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update User")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update User")}</span>
                 <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit User")}
                 </button>
             </ak-forms-modal>`;
         }
-        return html``;
+        return nothing;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -165,7 +174,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PolicyBinding): TemplateResult[] {
+    row(item: PolicyBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
@@ -173,8 +182,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.timeout}`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Binding")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Binding")}</span>
                     <ak-policy-binding-form
                         slot="form"
                         .instancePk=${item.pk}
@@ -200,15 +209,16 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-                <div slot="primary">
+                <fieldset class="pf-c-form__group pf-m-action" slot="primary">
+                    <legend class="sr-only">${msg("Policy actions")}</legend>
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
                         showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
-                        <span slot="submit"> ${msg("Create")} </span>
-                        <span slot="header"> ${msg("Create Binding")} </span>
+                        <span slot="submit">${msg("Create")}</span>
+                        <span slot="header">${msg("Create Binding")}</span>
                         <ak-policy-binding-form
                             slot="form"
                             targetPk=${ifDefined(this.target)}
@@ -220,7 +230,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                             ${msg("Bind existing policy/group/user")}
                         </button>
                     </ak-forms-modal>
-                </div>
+                </fieldset>
             </ak-empty-state>`,
         );
     }
@@ -234,8 +244,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                   ></ak-policy-wizard>`
                 : nothing}
             <ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Binding")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Binding")}</span>
                 <ak-policy-binding-form
                     slot="form"
                     targetPk=${ifDefined(this.target)}
@@ -256,13 +266,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p>
+        return html`<p class="pf-u-ml-md">
             ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
         </p>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    renderToolbarContainer(): SlottedTemplateResult {
         return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }

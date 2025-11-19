@@ -40,8 +40,8 @@ stage_3 --> done[["End of the flow"]]
 To create a stage, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Stages**.
-3. Click **Create**, define the flow using the configuration settings, and then click **Finish**.
+2. In the Admin interface, navigate to **Flows and Stages > Stages**.
+3. Click **Create**, define the stage using the configuration settings, and then click **Finish**.
 
 After creating the stage, you can then [bind the stage to a flow](#bind-a-stage-to-a-flow) or [bind a policy to the stage](../../../customize/policies/working_with_policies.md) (the policy determines whether or not the stage will be implemented in the flow).
 
@@ -50,7 +50,7 @@ After creating the stage, you can then [bind the stage to a flow](#bind-a-stage-
 To bind a stage to a flow, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Here, you can decide if you want to create a new stage and bind it to the flow (**Create and bind Stage**), or if you want to select an existing stage and bind it to the flow (**Bind existing stage**).
@@ -62,7 +62,7 @@ You can use bindings to determine whether or not a stage is presented to a singl
 To bind a user or a group to a stage binding for a specific flow, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Locate the stage binding to which you want to bind a user or group, and then **click the caret (>) to expand the stage binding details.**

@@ -47,7 +47,9 @@ class PromptStageViewSet(UsedByMixin, ModelViewSet):
 class PromptSerializer(ModelSerializer):
     """Prompt Serializer"""
 
-    promptstage_set = StageSerializer(many=True, required=False)
+    prompt_stages_obj = PromptStageSerializer(
+        source="promptstage_set", many=True, required=False, read_only=True
+    )
 
     class Meta:
         model = Prompt
@@ -61,7 +63,7 @@ class PromptSerializer(ModelSerializer):
             "placeholder",
             "initial_value",
             "order",
-            "promptstage_set",
+            "prompt_stages_obj",
             "sub_text",
             "placeholder_expression",
             "initial_value_expression",

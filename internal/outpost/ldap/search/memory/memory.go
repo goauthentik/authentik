@@ -57,7 +57,7 @@ func (ms *MemorySearcher) fetch() {
 		Logger:   ms.log,
 	})
 	ms.users = users
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true), ak.PaginatorOptions{
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
@@ -165,7 +165,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
 						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.PartialUser{u}, []api.Role{}, []api.GroupChild{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
 							if p := g.Parent.Get(); p != nil {

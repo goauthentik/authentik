@@ -36,7 +36,7 @@ def default_device_classes() -> list:
 
 
 class AuthenticatorValidateStage(Stage):
-    """Validate user's configured OTP Device."""
+    """Validate user's configured Multi Factor Authentication."""
 
     not_configured_action = models.TextField(
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP

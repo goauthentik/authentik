@@ -292,7 +292,7 @@ class GoogleWorkspaceGroupTests(TestCase):
                 ).exists()
             )
 
-    def test_sync_task(self):
+    def test_sync_discover(self):
         """Test group discovery"""
         uid = generate_id()
         http = MockHTTP()
@@ -324,7 +324,7 @@ class GoogleWorkspaceGroupTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            google_workspace_sync.delay(self.provider.pk).get()
+            google_workspace_sync.send(self.provider.pk).get_result()
             self.assertTrue(
                 GoogleWorkspaceProviderGroup.objects.filter(
                     group=different_group, provider=self.provider
@@ -332,3 +332,57 @@ class GoogleWorkspaceGroupTests(TestCase):
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 5)
+
+    def test_sync_discover_multiple(self):
+        """Test group discovery"""
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"users": []},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+            method="GET",
+            body={"groups": [{"id": uid, "name": uid}]},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/groups/{uid}?key={self.api_key}&alt=json",
+            method="PUT",
+            body={"id": uid},
+        )
+        self.app.backchannel_providers.remove(self.provider)
+        different_group = Group.objects.create(
+            name=uid,
+        )
+        self.app.backchannel_providers.add(self.provider)
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.send(self.provider.pk).get_result()
+            self.assertTrue(
+                GoogleWorkspaceProviderGroup.objects.filter(
+                    group=different_group, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 5)
+            # Change response to trigger update
+            http.add_response(
+                f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",
+                method="GET",
+                body={"groups": [{"id": uid, "name": uid, "bar": "baz"}]},
+            )
+            google_workspace_sync.send(self.provider.pk).get_result()
+            self.assertTrue(
+                GoogleWorkspaceProviderGroup.objects.filter(
+                    group=different_group, provider=self.provider
+                ).exists()
+            )
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())

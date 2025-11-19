@@ -82,6 +82,66 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
         self.assertEqual(self.allowed.meta_icon.read(), b"text")
 
+    def test_set_icon_relative(self):
+        """Test set_icon (relative path)"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={"url": "relative/path"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, "/media/public/relative/path")
+
+    def test_set_icon_absolute(self):
+        """Test set_icon (absolute path)"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={"url": "/relative/path"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, "/relative/path")
+
+    def test_set_icon_url(self):
+        """Test set_icon (url)"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={"url": "https://authentik.company/img.png"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, "https://authentik.company/img.png")
+
+    def test_set_icon_fa(self):
+        """Test set_icon (url)"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={"url": "fa://fa-check-circle"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, "fa://fa-check-circle")
+
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
@@ -257,3 +317,35 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(
             Application.objects.with_provider().get(slug=slug).get_provider(), provider
         )
+
+    def test_create_application_with_reserved_slug(self):
+        """Test creating an application with a reserved slug"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:application-list"),
+            {
+                "name": "Test Application",
+                "slug": Application.reserved_slugs[0],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("slug", response.data)
+        self.assertIn("reserved", response.data["slug"][0])
+
+    def test_update_application_with_reserved_slug(self):
+        """Test updating an application to use a reserved slug"""
+        self.client.force_login(self.user)
+        app = Application.objects.create(
+            name="Test Application",
+            slug="valid-slug",
+        )
+
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": app.slug}),
+            {
+                "slug": Application.reserved_slugs[0],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("slug", response.data)
+        self.assertIn("reserved", response.data["slug"][0])

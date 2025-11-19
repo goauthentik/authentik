@@ -50,6 +50,7 @@ kubernetes_namespace: authentik
 kubernetes_ingress_annotations: {}
 # Name of the secret that is used for TLS connections, leave empty to disable TLS
 kubernetes_ingress_secret_name: authentik-outpost-tls
+# pathType to use on routes. Defaults to `Prefix`. Some ingress-nginx deployments need this to be set to `ImplementationSpecific`.
 # Service kind created, can be set to LoadBalancer for LDAP outposts for example
 kubernetes_service_type: ClusterIP
 # Disable any components of the kubernetes integration, can be any of

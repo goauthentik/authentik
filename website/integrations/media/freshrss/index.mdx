@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `freshrss.company` is the FQDN of the FreshRSS installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
@@ -33,7 +33,7 @@ To support the integration of FreshRss with authentik, you need to create an app
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add two `Strict` redirect URI and set them to `https://freshrss.company/i/oidc/` and `https://freshrss.company:443/i/oidc/`. If FreshRSS is exposed on a port other than `443`, update the second redirect URI accordingly.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -61,7 +61,7 @@ To enable OIDC login with FreshRSS, update your `.env` file to include the follo
     OIDC_SCOPES=openid email profile
     ```
 
-Once your container or pod is restarted, attempt to login as a user that exists in both FreshRSS and authentik. Go to **Settings** -> **Authentication** and set the authentication method to **HTTP**.
+Once your container or pod is restarted, attempt to login as a user that exists in both FreshRSS and authentik. Go to **Settings** > **Authentication** and set the authentication method to **HTTP**.
 
 ## Configuration verification
 

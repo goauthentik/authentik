@@ -1,0 +1,44 @@
+:host {
+    --icon-border: 0;
+
+    --app-icon-shadow-blend-color: color-mix(
+        in srgb,
+        var(--app-icon--shadow-background-color, var(--pf-global--BackgroundColor--150)) 100%,
+        black 100%
+    );
+
+    display: flex;
+    place-content: center;
+
+    height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+    width: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+}
+
+:host([size="pf-m-lg"]) {
+    --icon-height: 4rem;
+    --icon-border: 0.25rem;
+}
+
+:host([size="pf-m-md"]) {
+    --icon-height: 2rem;
+    --icon-border: 0.125rem;
+}
+
+:host([size="pf-m-sm"]) {
+    --icon-height: 1rem;
+    --icon-border: 0.125rem;
+}
+
+:host([size="pf-m-xl"]) {
+    --icon-height: 6rem;
+    --icon-border: 0.25rem;
+}
+
+.icon {
+    font-size: var(--icon-font-size, var(--icon-height));
+    padding: var(--icon-border);
+    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+    line-height: 1;
+    filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));
+    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+}

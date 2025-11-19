@@ -19,7 +19,7 @@ support_level: community
 >
 > -- https://support.microsoft.com/en-us/office/what-is-sharepoint-97b915e6-651b-43b2-827d-fb25777f446f
 
-:::note
+:::info
 There are many ways to implement SSO mechanism within Microsoft SharePoint Server Subscription Edition.
 
 These guidelines provides the procedure to integrate authentik with an OIDC provider based on Microsoft documentation.
@@ -134,20 +134,20 @@ From the authentik Admin Dashboard:
     - **Name**: `auth.providerName`
     - **Authentication flow**: default-authentication-flow
     - **Authorization flow**: default-provider-authorization-implicit-consent
-      :::note
+      :::info
       use the explicit flow if user consents are required
       :::
     - **Redirect URIs / Origins**: `auth.providerRedirectURI`
     - **Signing Key**: authentik Self-signed Certificate
-      :::note
+      :::info
       The certificate is used for signing JWT tokens;, if you change it after the integration do not forget to update your SharePoint Trusted Certificate.
       :::
     - **Access code validity**: minutes=5
-      :::note
+      :::info
       The minimum is 5 minutes, otherwise SharePoint backend might consider the access code expired.
       :::
     - **Access Token validity**: minutes=15
-      :::note
+      :::info
       The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired.
       :::
     - **Scopes**: select default email, SPopenid and SPprofile
@@ -337,10 +337,10 @@ From the SharePoint Central Administration opened as a Farm Administrator:
 
 From the authentik Admin Dashboard:
 
-:::note
+:::info
 The following procedure apply to an authentik deployment within Kubernetes.
 
-For other kinds of deployment, please refer to the [authentik documentation](https://goauthentik.io/docs/).
+For other kinds of deployment, please refer to the [authentik documentation](https://docs.goauthentik.io/).
 :::
 
 1. Follow authentik [LDAP Provider Generic Setup](https://version-2023-10.goauthentik.io/docs/providers/ldap/generic_setup) with the following steps :

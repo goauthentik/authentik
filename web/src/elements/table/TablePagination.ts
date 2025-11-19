@@ -3,60 +3,79 @@ import { AKElement } from "#elements/Base";
 import { Pagination } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export type TablePageChangeListener = (page: number) => void;
+
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
-    @property({ attribute: false })
-    pages?: Pagination;
+    @property({ type: String })
+    public label: string | null = null;
 
     @property({ attribute: false })
-    pageChangeHandler: (page: number) => void = () => {
-        return;
-    };
+    public pages?: Pagination;
+
+    @property({ type: Boolean })
+    public loading = false;
+
+    @property({ attribute: false })
+    public onPageChange?: TablePageChangeListener;
 
     static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPagination,
         css`
-            :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
-                color: var(--pf-c-button--m-plain--disabled--Color);
-                --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-            }
-            :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
-                color: var(--pf-c-button--disabled--Color);
+            .pf-c-pagination {
+                min-width: 8rem;
+
+                &[inert] {
+                    opacity: 0.5;
+                }
             }
         `,
     ];
 
-    render(): TemplateResult {
-        if (!this.pages) {
-            return html``;
+    #navigatePrevious = () => {
+        this.onPageChange?.(this.pages?.previous || 0);
+    };
+
+    #navigateNext = () => {
+        this.onPageChange?.(this.pages?.next || 0);
+    };
+
+    render() {
+        if (!this.pages && !this.loading) {
+            return nothing;
         }
-        return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
+
+        const startIndex = this.pages?.startIndex || 1;
+        const endIndex = this.pages?.endIndex || 1;
+        const pageCount = this.pages?.count || 1;
+
+        return html` <nav
+            aria-label=${msg(str`${this.label || ""} table pagination`)}
+            class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md"
+            ?inert=${this.loading}
+        >
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
-                        <span class="pf-c-options-menu__toggle-text">
-                            ${msg(
-                                str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
-                            )}
+                        <span role="heading" aria-level="4" class="pf-c-options-menu__toggle-text">
+                            ${msg(str`${startIndex} - ${endIndex} of ${pageCount}`)}
                         </span>
                     </div>
                 </div>
-                <nav class="pf-c-pagination__nav" aria-label=${msg("Pagination")}>
+                <div class="pf-c-pagination__nav">
                     <div class="pf-c-pagination__nav-control pf-m-prev">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {
-                                this.pageChangeHandler(this.pages?.previous || 0);
-                            }}
+                            @click=${this.#navigatePrevious}
                             ?disabled="${(this.pages?.previous || 0) < 1}"
                             aria-label="${msg("Go to previous page")}"
                         >
@@ -66,18 +85,16 @@ export class TablePagination extends AKElement {
                     <div class="pf-c-pagination__nav-control pf-m-next">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {
-                                this.pageChangeHandler(this.pages?.next || 0);
-                            }}
+                            @click=${this.#navigateNext}
                             ?disabled="${(this.pages?.next || 0) <= 0}"
                             aria-label="${msg("Go to next page")}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>
                         </button>
                     </div>
-                </nav>
+                </div>
             </div>
-        </div>`;
+        </nav>`;
     }
 }
 

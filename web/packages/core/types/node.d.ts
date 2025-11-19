@@ -41,6 +41,16 @@ declare module "process" {
                  * @runtime node
                  */
                 readonly NODE_ENV?: "development" | "production";
+
+                /**
+                 * The SHA hash of the current git commit.
+                 *
+                 * If you're developing locally and using a Dockerized development environment,
+                 * Set this environment variable to `dev` to hint that the container
+                 * should prefer pre-release versioning over its own.
+                 */
+                readonly GIT_BUILD_HASH?: string;
+
                 /**
                  * @todo Determine where this is used and if it is needed,
                  * give it a better name.

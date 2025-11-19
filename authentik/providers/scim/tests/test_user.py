@@ -3,17 +3,16 @@
 from json import loads
 
 from django.test import TestCase
-from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync, sync_tasks
+from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
 
@@ -96,7 +95,12 @@ class SCIMUserTests(TestCase):
         """Test user creation with custom schema"""
         schema = SCIMMapping.objects.create(
             name="custom_schema",
-            expression="""return {"schemas": ["foo"]}""",
+            expression="""return {
+                "schemas": ["urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User"],
+                "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User": {
+                    "startDate": "2024-04-10T00:00:00+0000",
+                },
+            }""",
         )
         self.provider.property_mappings.add(schema)
         scim_id = generate_id()
@@ -122,7 +126,10 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
-                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User", "foo"],
+                "schemas": [
+                    "urn:ietf:params:scim:schemas:core:2.0:User",
+                    "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User",
+                ],
                 "active": True,
                 "emails": [
                     {
@@ -139,6 +146,9 @@ class SCIMUserTests(TestCase):
                 },
                 "displayName": f"{uid} {uid}",
                 "userName": uid,
+                "urn:ietf:params:scim:schemas:extension:slack:profile:2.0:User": {
+                    "startDate": "2024-04-10T00:00:00+0000",
+                },
             },
         )
 
@@ -356,7 +366,7 @@ class SCIMUserTests(TestCase):
             email=f"{uid}@goauthentik.io",
         )
 
-        sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+        scim_sync.send(self.provider.pk)
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -428,15 +438,20 @@ class SCIMUserTests(TestCase):
                 email=f"{uid}@goauthentik.io",
             )
 
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+            scim_sync.send(self.provider.pk)
 
             self.assertEqual(mock.call_count, 3)
             for request in mock.request_history:
                 self.assertIn(request.method, SAFE_METHODS)
-        task = SystemTask.objects.filter(uid=slugify(self.provider.name)).first()
+        task = list(
+            Task.objects.filter(
+                actor_name=scim_sync_objects.actor_name,
+                _uid__startswith=self.provider.name,
+            ).order_by("-mtime")
+        )[1]
         self.assertIsNotNone(task)
-        drop_msg = task.messages[3]
-        self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
-        self.assertIsNotNone(drop_msg["attributes"]["url"])
-        self.assertIsNotNone(drop_msg["attributes"]["body"])
-        self.assertIsNotNone(drop_msg["attributes"]["method"])
+        log = task.tasklogs.filter(event="Dropping mutating request due to dry run").first()
+        self.assertIsNotNone(log)
+        self.assertIsNotNone(log.attributes["url"])
+        self.assertIsNotNone(log.attributes["body"])
+        self.assertIsNotNone(log.attributes["method"])

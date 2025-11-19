@@ -14,7 +14,6 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 - [Component-Based Formatting](#component-based-formatting)
 - [Error Message Formatting and Troubleshooting](#error-message-formatting-and-troubleshooting)
 - [Accessibility Best Practices](#accessibility-best-practices)
-- [Notes and Warnings](#notes-and-warnings)
 - [Inclusive Language](#inclusive-language)
 - [Images and Media](#images-and-media)
 - [Document Structure and Metadata](#document-structure-and-metadata)
@@ -188,6 +187,36 @@ Add a period at the end of a bulleted item if it is a complete sentence. Try not
 
 If there is a [colon](#following-a-colon) used in a bulleted list item, follow the capitalization rules.
 
+### Notes and warnings
+
+We use Info, Warning, and Danger boxes, to provide supplemental information. Info boxes can optionally have a title, but do not use a title with Warning or Danger boxes.
+
+Use the following syntax for these components:
+
+**Info**:
+
+```md
+::: info add-title-here
+This is a tip or general note.
+:::
+```
+
+**Warnings**:
+
+```md
+:::warning
+This level is for more serious situations: an action cannot be undone, a process might be canceled, etc.
+:::
+```
+
+**Critical warnings** (for irreversible actions):
+
+```md
+:::danger
+This level is for extremely serious situations, such as an action permanently removing data.
+:::
+```
+
 ### URLs
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
@@ -345,36 +374,6 @@ When documenting errors, follow this structure:
 - **Descriptive link text**: Provide descriptive link text. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
     - **DON'T:** "Click here."
     - **DO:** "See the [Authentication Settings](/) for more details."
-
----
-
-## Notes and warnings
-
-Use the following components to highlight important information:
-
-**Info notes**:
-
-```md
-:::info
-This is a tip or general note.
-:::
-```
-
-**Warnings**:
-
-```md
-:::warning
-This level is for more serious situations: an action cannot be undone, a process might be canceled, etc..
-:::
-```
-
-**Critical warnings** (for irreversible actions):
-
-```md
-:::danger
-This level is for extremely serious situations, such as an action permanently removing data.
-:::
-```
 
 ---
 

@@ -36,7 +36,7 @@ Use this JSON template for your WebFinger response:
 **Important:** Replace `your@email.com` with the administrator email that you will use when creating your Tailnet. The domain in the email address must match; the domain where the WebFinger endpoint is served, and the domain you will use for Tailscale.
 :::
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

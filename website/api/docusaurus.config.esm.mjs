@@ -1,9 +1,12 @@
 /**
  * @file Docusaurus config.
  *
- * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
+ * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
+ * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
+ * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
  */
 
 import { cp } from "node:fs/promises";
@@ -12,13 +15,22 @@ import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
+import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
+const releaseEnvironment = prepareReleaseEnvironment();
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const authentikModulePath = resolve(__dirname, "..", "..");
+const packageStaticDirectory = resolve(__dirname, "static");
+
+const redirectsFile = resolve(packageStaticDirectory, "_redirects");
+const redirects = await parse(redirectsFile);
+const redirectsIndex = new RewriteIndex(redirects);
 
 //#region Copy static files
 
@@ -47,8 +59,6 @@ await Promise.all(
 export default createDocusaurusConfig({
     url: "https://api.goauthentik.io",
 
-    baseUrl: "/api",
-
     staticDirectories: [
         // ---
         "static",
@@ -69,6 +79,7 @@ export default createDocusaurusConfig({
                 theme: {
                     customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
                 },
+                pages: false,
                 docs: {
                     routeBasePath: "/",
                     path: ".",
@@ -106,6 +117,13 @@ export default createDocusaurusConfig({
 
     plugins: [
         [
+            "@goauthentik/docusaurus-theme/releases/plugin",
+            /** @type {AKReleasesPluginOptions} */ ({
+                docsDirectory: __dirname,
+                environment: releaseEnvironment,
+            }),
+        ],
+        [
             "docusaurus-plugin-openapi-docs",
             {
                 id: "open-api-docs",
@@ -123,6 +141,34 @@ export default createDocusaurusConfig({
                 },
             },
         ],
+
+        // Inject redirects for later use during runtime,
+        // such as navigating to non-existent page with the client-side router.
+
+        [
+            "@goauthentik/docusaurus-theme/redirects/plugin",
+            /** @type {AKRedirectsPluginOptions} */ ({
+                redirects,
+            }),
+        ],
+
+        // Create build-time redirects for later use in HTTP responses,
+        // such as when navigating to a page for the first time.
+        //
+        // The existence of the _redirects file is also picked up by
+        // Netlify's deployment, which will redirect to the correct URL, even
+        // if the source is no longer present within the build output,
+        // such as when a page is removed, renamed, or moved.
+        [
+            "@docusaurus/plugin-client-redirects",
+            /** @type {RedirectsPluginOptions} */ ({
+                createRedirects(existingPath) {
+                    const redirects = redirectsIndex.findAliases(existingPath);
+
+                    return redirects;
+                },
+            }),
+        ],
     ],
 
     //#endregion
@@ -131,7 +177,7 @@ export default createDocusaurusConfig({
 
     themes: ["docusaurus-theme-openapi-docs"],
 
-    themeConfig: /** @type {UserThemeConfig} */ ({
+    themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
         footer: {
             copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
         },
@@ -143,49 +189,6 @@ export default createDocusaurusConfig({
                 href: "https://goauthentik.io/",
                 target: "_self",
             },
-            items: [
-                {
-                    to: "https://goauthentik.io/features",
-                    label: "Features",
-                    position: "left",
-                    target: "_self",
-                },
-                {
-                    to: "https://integrations.goauthentik.io",
-                    label: "Integrations",
-                    position: "left",
-                    target: "_self",
-                },
-                {
-                    to: "https://docs.goauthentik.io",
-                    label: "Documentation",
-                    position: "left",
-                },
-                {
-                    to: "https://goauthentik.io/pricing/",
-                    label: "Pricing",
-                    position: "left",
-                    target: "_self",
-                },
-                {
-                    to: "https://goauthentik.io/blog",
-                    label: "Blog",
-                    position: "left",
-                    target: "_self",
-                },
-                {
-                    "href": "https://github.com/goauthentik/authentik",
-                    "data-icon": "github",
-                    "aria-label": "GitHub",
-                    "position": "right",
-                },
-                {
-                    "href": "https://goauthentik.io/discord",
-                    "data-icon": "discord",
-                    "aria-label": "Discord",
-                    "position": "right",
-                },
-            ],
         },
 
         algolia: {

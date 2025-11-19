@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://en.wikipedia.org/wiki/Wiki.js
 
-:::note
+:::info
 This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ between versions.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `wiki.company` is the FQDN of Wiki.js installation.
 - `authentik.company` is the FQDN of authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -43,7 +43,7 @@ To support the integration of Wiki.js with authentik, you need to create an appl
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://wiki.company/login/id-from-wiki/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -66,10 +66,10 @@ In Wiki.js, configure the authentication strategy with these settings:
 
 ![](./wiki-js_strategy.png)
 
-:::note
+:::info
 You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
 :::
 
-:::note
+:::info
 If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::

@@ -33,7 +33,24 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     label = msg("Configure Provider");
 
     @query("#providerform")
-    element!: ApplicationWizardProviderForm<OneOfProvider>;
+    protected element!: ApplicationWizardProviderForm<OneOfProvider>;
+
+    get form(): HTMLFormElement | null {
+        const providerForm = this.element.form;
+
+        if (!providerForm) {
+            // TODO: This needs to be removed once all steps can report their validity.
+            console.debug(
+                "authentik/wizard: Form not found within provider step",
+                this,
+                this.element,
+            );
+
+            return null;
+        }
+
+        return providerForm;
+    }
 
     get valid() {
         return this.element.valid;
@@ -100,6 +117,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     updated(changed: PropertyValues<this>) {
         if (changed.has("wizard")) {
             const label = this.element?.label ?? this.label;
+
             if (label !== this.label) {
                 this.label = label;
             }

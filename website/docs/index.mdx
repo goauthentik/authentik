@@ -10,19 +10,19 @@ With authentik, site administrators, application developers, and security engine
 
 You can use authentik in an existing environment to add support for new protocols, so introducing authentik to your current tech stack doesn't present re-architecting challenges. We support all of the major providers, such as OAuth2, SAML, LDAP, and SCIM, so you can pick the protocol that you need for each application.
 
-We offer two versions of authentik: the forever-free open source project upon which everything is built, and our open core, source available Enterprise version, with a Support center and additional features.
+We offer two versions of authentik: the forever-free open source project upon which everything is built, and our source available Enterprise version, with a Support center and additional features.
 
 ## User-focused & task-oriented dashboards
 
 The authentik product provides the following consoles:
 
-- **Admin interface**: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
+- **Flow interface**: [_Flows_](./add-secure-apps/flows-stages/flow/index.md) are the steps by which the various _Stages_ of a login and authentication process occurs. A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
 
 - **User interface**: this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to access to open it, or drill down to edit its configuration in the admin interface.
 
-- **Flows**: [_Flows_](./add-secure-apps/flows-stages/flow/index.md) are the steps by which the various _Stages_ of a login and authentication process occurs. A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
+- **Admin interface**: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
 
-In authentik, you can use Light or Dark mode for the Admin interface, User interface, and the Flow interface.
+In authentik, you can use Light or Dark mode for the Flow interface, User interface, and the Admin interface.
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import ReactBeforeSliderComponent from "react-before-after-slider-component";
@@ -62,10 +62,10 @@ Our tech docs cover the typical topics, from installation to configuration, addi
 
 - For information about integrating a specific application or software into authentik, refer to our **Integrations** section, accessible from the top menu bar.
 
-- For developer-focused documentation, such as using our APIs and blueprints, setting up your development environment, translations, or how to contribute, refer to the [**Developer**](./developer-docs/index.md) area, accessible from the top menu bar.
+- For developer-focused documentation, such as using our APIs and blueprints, setting up your development environment, translations, or how to contribute, refer to the [**Developer**](./developer-docs/index.mdx) area, accessible from the top menu bar.
 
 ## Installation
 
-Refer to the installation steps in either [Docker-compose](./install-config/install/docker-compose.mdx) or [Kubernetes](./install-config/install/kubernetes.md).
+Refer to the installation steps for either [Docker Compose](./install-config/install/docker-compose.mdx) or [Kubernetes](./install-config/install/kubernetes.md).
 
 For more information about configuration, beta versions, and additional installation options, see our main [Installation](./install-config/index.mdx) section.

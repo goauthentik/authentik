@@ -12,7 +12,7 @@ Bindings are an important part of authentik; the majority of configuration optio
 
 Bindings are analyzed by authentik's Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
 
-The two most common types of bindings in authentik are:
+The three most common types of bindings in authentik are:
 
 - stage bindings
 - policy bindings

@@ -3,14 +3,15 @@ import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AggregateCard } from "#elements/cards/AggregateCard";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { state } from "lit/decorators.js";
 
 export interface AdminStatus {
     icon: string;
-    message?: TemplateResult;
+    message?: SlottedTemplateResult;
 }
 
 /**
@@ -95,8 +96,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult displaying the value
      */
-    protected renderValue(): TemplateResult {
-        return html`${this.value}`;
+    protected renderValue(): SlottedTemplateResult {
+        return this.value ? html`${this.value}` : nothing;
     }
 
     /**
@@ -105,11 +106,13 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param status - AdminStatus object containing icon and message
      * @returns TemplateResult for status display
      */
-    private renderStatus(status: AdminStatus): TemplateResult {
-        return html`
-            <p><i class="${status.icon}"></i>&nbsp;${this.renderValue()}</p>
+    private renderStatus(status: AdminStatus): SlottedTemplateResult {
+        return html`<div class="status-container">
+            <h2 class="status-heading">
+                <i class="${status.icon}" aria-hidden="true"></i>${this.renderValue()}
+            </h2>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
-        `;
+        </div>`;
     }
 
     /**
@@ -118,9 +121,11 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param error - Error message to display
      * @returns TemplateResult for error display
      */
-    private renderError(error: string): TemplateResult {
+    private renderError(error: string): SlottedTemplateResult {
         return html`
-            <p><i class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
+            <h2 role="alert" aria-live="assertive">
+                <i aria-hidden="true" class="fa fa-times"></i>${msg("Failed to fetch")}
+            </h2>
             <p class="subtext">${error}</p>
         `;
     }
@@ -130,7 +135,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for loading spinner
      */
-    private renderLoading(): TemplateResult {
+    private renderLoading(): SlottedTemplateResult {
         return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
     }
 
@@ -139,17 +144,11 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for current component state
      */
-    renderInner(): TemplateResult {
-        return html`
-            <p class="center-value">
-                ${
-                    this.status
-                        ? this.renderStatus(this.status) // Status available
-                        : this.error
-                          ? this.renderError(pluckErrorDetail(this.error)) // Error state
-                          : this.renderLoading() // Loading state
-                }
-            </p>
-        `;
+    renderInner(): SlottedTemplateResult {
+        return this.status
+            ? this.renderStatus(this.status) // Status available
+            : this.error
+              ? this.renderError(pluckErrorDetail(this.error)) // Error state
+              : this.renderLoading(); // Loading state
     }
 }

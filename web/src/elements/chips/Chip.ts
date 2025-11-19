@@ -3,7 +3,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -43,7 +43,7 @@ export class Chip extends AKElement {
                               <i class="fas fa-times" aria-hidden="true"></i>
                           </pf-tooltip>
                       </button>`
-                    : html``}
+                    : nothing}
             </div>
         </li>`;
     }

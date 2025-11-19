@@ -1,9 +1,12 @@
 ---
-title: Twitter
-support_level: authentik
+title: X (Twitter)
+tags:
+    - source
+    - x
+    - twitter
 ---
 
-Allows users to authenticate using their twitter credentials
+Allows users to authenticate using their X credentials by configuring X as a federated identity provider via OAuth2.
 
 ## Preparation
 
@@ -11,37 +14,46 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## Twitter
+## X configuration
 
-You will need to create a new project, and OAuth credentials in the Twitter Developer console.
+To integrate X with authentik you will need to create an OAuth application in the X Developer Portal.
 
-1. Visit https://developer.twitter.com/ to create a new App
-2. Select an environment fitting to your use-case
-3. Give the app a name, for example _authentik_
-4. Finish setting up the app by clicking **App settings**. Any of the API keys on this screen are not used by authentik.
-5. Click the **Set up** button
+1. Log in to the [X Developer Portal](https://developer.twitter.com/).
+2. Navigate to **Projects & Apps** > **Overview**.
+3. Click the **App Settings** icon (cogwheel) next to the Project App that you want to use. For information on creating a new Project App, refer to the [X Developer Documentation](https://docs.x.com/fundamentals/developer-apps#app-management).
+4. Under **User authentication settings**, click **Set up** and set the following required fields:
+    - **App permissions**: `Read`
+    - **Type of App**: `Web App, Automated App or Bot`
+    - **Callback URI / Redirect URL**: `https://authentik.company/source/oauth/callback/x/`
+    - **Website URL**: `https://authentik.company`
 
-![](./twitter1.png)
+5. Click **Save**.
+6. Take note of the **Client ID** and **Client Secret**. These values will be required in the next section.
+7. Click **Done**.
 
-6. Enable **OAuth 2.0**
-7. Set **Type of App** to _Web_
-8. Set **Callback URI / Redirect URL** to `https://authentik.company/source/oauth/callback/twitter/`
-9. Set **Website URL** to `https://authentik.company`
+## authentik configuration
 
-![](./twitter2.png)
+To support the integration of X with authentik, you need to create a Twitter OAuth source in authentik.
 
-10. Confirm with **Save**
-11. Copy and store **Client ID** and **Client Secret** for later
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Twitter OAuth Source** as the source type.
+    - **Create OAuth Source**: provide a name, a slug which must match the slug used in the X `Callback URI / Redirect URL` field (e.g. `x`), and set the following required configurations:
+        - **Protocol settings**
+            - **Consumer Key**: Enter the Client ID from the X Developer Portal.
+            - **Consumer Secret**: Enter the Client Secret from the X Developer Portal.
+            - **Scopes** _(optional)_: define any further access scopes.
+3. Click **Finish**.
 
-## authentik
-
-1. Under _Directory -> Federation & Social login_ Click **Create Twitter OAuth Source**
-
-2. **Name**: Choose a name (For the example I use Google)
-3. **Slug**: twitter (If you choose a different slug the URLs will need to be updated to reflect the change)
-4. **Consumer Key:** Your Client ID from step 25
-5. **Consumer Secret:** Your Client Secret from step 25
-
-:::note
+:::info
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
+:::
+
+## Resources
+
+- [X Developer Portal Documentation](https://docs.x.com/fundamentals/developer-portal)
+- [X Developer Documentation - App Management](https://docs.x.com/fundamentals/developer-apps#app-management)

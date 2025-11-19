@@ -1,14 +1,13 @@
-import { WithBrandConfig } from "../mixins/branding.js";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale.js";
 import { initializeLocalization } from "./configureLocale.js";
 import { autoDetectLanguage, DEFAULT_LOCALE, getBestMatchLocale } from "./helpers.js";
 
 import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "#common/constants";
+import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { customEvent } from "#elements/utils/customEvents";
 
-import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
@@ -25,14 +24,18 @@ import { customElement, property } from "lit/decorators.js";
  * @fires ak-locale-change - When a valid locale has been swapped in
  */
 @customElement("ak-locale-context")
-export class LocaleContext extends WithBrandConfig(AKElement) {
+export class LocaleContext extends AKElement {
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
+
     /// @attribute The text representation of the current locale */
-    @property({ attribute: true, type: String })
-    locale = DEFAULT_LOCALE;
+    @property({ attribute: true, type: String, useDefault: true })
+    public locale = globalAK().locale || DEFAULT_LOCALE;
 
     /// @attribute The URL parameter to look for (if any)
-    @property({ attribute: true, type: String })
-    param = "locale";
+    @property({ attribute: true, type: String, useDefault: true })
+    public param = "locale";
 
     getLocale: LocaleGetter;
 
@@ -71,7 +74,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
     }
 
     updateLocale(requestedLocale: string | undefined = undefined) {
-        const localeRequest = autoDetectLanguage(requestedLocale, this.brand.defaultLocale);
+        const localeRequest = autoDetectLanguage(requestedLocale, this.locale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
             console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);
@@ -89,10 +92,6 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         // You will almost never have cause to catch this event. Lit's own `@localized()` decorator
         // works just fine for almost every use case.
         this.dispatchEvent(customEvent(EVENT_LOCALE_CHANGE));
-    }
-
-    render() {
-        return html`<slot></slot>`;
     }
 }
 

@@ -18,11 +18,11 @@ The following placeholders are used in this guide:
 - `rancher.company` is the FQDN of the Rancher installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Under _Customization_ -> _Property Mappings_, create a _SAML Property Mapping_. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
+Under **Customization > Property Mappings**, create a **SAML Property Mapping**. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
 
 ```python
 return f"{user.pk}-{user.username}"
@@ -43,7 +43,7 @@ You can of course use a custom signing certificate, and adjust durations.
 
 ## Rancher
 
-In Rancher, navigate to _Global_ -> _Security_ -> _Authentication_, and select ADFS.
+In Rancher, navigate to _Global_ > _Security_ > _Authentication_, and select ADFS.
 
 Fill in the fields
 
@@ -52,7 +52,7 @@ Fill in the fields
 - UID Field: `rancherUidUsername`
 - Groups Field: `http://schemas.xmlsoap.org/claims/Group`
 
-For the private key and certificate, you can either generate a new pair (in authentik, navigate to _Identity & Cryptography_ -> _Certificates_ and select Generate), or use an existing pair.
+For the private key and certificate, you can either generate a new pair (in authentik, navigate to _Identity & Cryptography_ > _Certificates_ and select Generate), or use an existing pair.
 
 Copy the metadata from authentik, and paste it in the metadata field.
 

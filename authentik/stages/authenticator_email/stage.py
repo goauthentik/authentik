@@ -142,6 +142,11 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         user = self.get_pending_user()
 
         stage: AuthenticatorEmailStage = self.executor.current_stage
+        # For the moment we only allow one email device per user
+        if EmailDevice.objects.filter(Q(user=user), stage=stage.pk).exists():
+            return self.executor.stage_invalid(
+                _("The user already has an email address registered for MFA.")
+            )
         if SESSION_KEY_EMAIL_DEVICE not in self.request.session:
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
             valid_secs: int = timedelta_from_string(stage.token_expiry).total_seconds()

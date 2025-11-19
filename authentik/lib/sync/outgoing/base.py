@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 class Direction(StrEnum):
+
     add = "add"
     remove = "remove"
 
@@ -35,16 +36,13 @@ SAFE_METHODS = [
 
 
 class BaseOutgoingSyncClient[
-    TModel: "Model",
-    TConnection: "Model",
-    TSchema: dict,
-    TProvider: "OutgoingSyncProvider",
+    TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
 ]:
     """Basic Outgoing sync client Client"""
 
     provider: TProvider
     connection_type: type[TConnection]
-    connection_attr: str
+    connection_type_query: str
     mapper: PropertyMappingManager
 
     can_discover = False
@@ -64,7 +62,9 @@ class BaseOutgoingSyncClient[
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        connection = getattr(obj, self.connection_attr).filter(provider=self.provider).first()
+        connection = self.connection_type.objects.filter(
+            provider=self.provider, **{self.connection_type_query: obj}
+        ).first()
         try:
             if not connection:
                 connection = self.create(obj)

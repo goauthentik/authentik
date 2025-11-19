@@ -20,7 +20,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     """Sync authentik users into google workspace"""
 
     connection_type = GoogleWorkspaceProviderUser
-    connection_attr = "googleworkspaceprovideruser_set"
+    connection_type_query = "user"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
@@ -113,11 +113,11 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         matching_authentik_user = self.provider.get_object_qs(User).filter(email=email).first()
         if not matching_authentik_user:
             return
-        GoogleWorkspaceProviderUser.objects.get_or_create(
+        GoogleWorkspaceProviderUser.objects.update_or_create(
             provider=self.provider,
             user=matching_authentik_user,
             google_id=email,
-            attributes=user,
+            defaults={"attributes": user},
         )
 
     def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):

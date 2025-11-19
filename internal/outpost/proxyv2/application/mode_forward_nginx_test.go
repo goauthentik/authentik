@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 func TestForwardHandleNginx_Single_Blank(t *testing.T) {
@@ -71,9 +72,9 @@ func TestForwardHandleNginx_Single_Claims(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
-	s.Values[constants.SessionClaims] = Claims{
+	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
-		Proxy: &ProxyClaims{
+		Proxy: &types.ProxyClaims{
 			UserAttributes: map[string]interface{}{
 				"username": "foo",
 				"password": "bar",

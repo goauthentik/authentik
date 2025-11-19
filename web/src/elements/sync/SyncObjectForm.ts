@@ -142,7 +142,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

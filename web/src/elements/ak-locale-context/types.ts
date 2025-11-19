@@ -1,6 +1,11 @@
 import type { LocaleModule } from "@lit/localize";
 
-export type LocaleRow = [string, RegExp, () => string, () => Promise<LocaleModule>];
+export type LocaleRow = [
+    code: string,
+    pattern: RegExp,
+    label: () => string,
+    loader: () => Promise<LocaleModule>,
+];
 
 export type AkLocale = {
     code: string;

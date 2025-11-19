@@ -42,7 +42,7 @@ class TestBindingsAPI(APITestCase):
         )
 
     def test_invalid_too_little(self):
-        """Test invvalid binding (too little)"""
+        """Test invalid binding (too little)"""
         response = self.client.post(
             reverse("authentik_api:policybinding-list"),
             data={"target": self.pbm.pk, "order": 0},

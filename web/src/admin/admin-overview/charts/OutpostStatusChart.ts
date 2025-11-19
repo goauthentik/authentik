@@ -16,6 +16,8 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
+    public override ariaLabel = msg("Outpost status chart");
+
     getChartType(): string {
         return "doughnut";
     }

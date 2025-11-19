@@ -113,7 +113,7 @@ class Brand(SerializerModel):
         try:
             return self.attributes.get("settings", {}).get("locale", "")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
             return ""
 

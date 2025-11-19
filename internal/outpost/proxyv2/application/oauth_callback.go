@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 	"golang.org/x/oauth2"
 )
 
@@ -29,7 +30,7 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 		a.log.WithError(err).Trace("failed to get session")
 	}
 	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
-	s.Values[constants.SessionClaims] = &claims
+	s.Values[constants.SessionClaims] = claims
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
@@ -39,7 +40,7 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 	a.redirect(rw, r)
 }
 
-func (a *Application) redeemCallback(u *url.URL, c context.Context) (*Claims, error) {
+func (a *Application) redeemCallback(u *url.URL, c context.Context) (*types.Claims, error) {
 	code := u.Query().Get("code")
 	if code == "" {
 		return nil, fmt.Errorf("blank code")
@@ -62,12 +63,12 @@ func (a *Application) redeemCallback(u *url.URL, c context.Context) (*Claims, er
 	}
 
 	// Extract custom claims
-	var claims *Claims
+	var claims *types.Claims
 	if err := idToken.Claims(&claims); err != nil {
 		return nil, err
 	}
 	if claims.Proxy == nil {
-		claims.Proxy = &ProxyClaims{}
+		claims.Proxy = &types.ProxyClaims{}
 	}
 	claims.RawToken = jwt
 	return claims, nil

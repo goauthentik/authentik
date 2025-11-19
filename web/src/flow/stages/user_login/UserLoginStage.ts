@@ -1,4 +1,3 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
@@ -41,10 +40,11 @@ export class PasswordStage extends BaseStage<
                 @submit=${(event: SubmitEvent) => {
                     event.preventDefault();
 
-                    const rememberMe = typeof event.submitter?.dataset.rememberMe === "string";
+                    const submitter =
+                        event.submitter instanceof HTMLButtonElement ? event.submitter : null;
 
                     this.submitForm(event, {
-                        rememberMe,
+                        rememberMe: submitter?.name === "remember-me",
                     });
                 }}
             >
@@ -60,7 +60,7 @@ export class PasswordStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 <div class="pf-c-form__group">
-                    <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-xl">
                         ${msg("Stay signed in?")}
                     </h3>
                     <p class="pf-u-mb-sm">
@@ -68,12 +68,15 @@ export class PasswordStage extends BaseStage<
                     </p>
                 </div>
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" data-remember-me class="pf-c-button pf-m-primary">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button name="remember-me" type="submit" class="pf-c-button pf-m-primary">
                         ${msg("Yes")}
                     </button>
-                    <button type="submit" class="pf-c-button pf-m-secondary">${msg("No")}</button>
-                </div>
+                    <button name="forget-me" type="submit" class="pf-c-button pf-m-secondary">
+                        ${msg("No")}
+                    </button>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

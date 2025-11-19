@@ -2,22 +2,19 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
-import { AdminApi, Worker } from "@goauthentik/api";
+import { TasksApi, Worker } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
+    public override label = msg("Workers");
 
     getPrimaryValue(): Promise<Worker[]> {
-        return new AdminApi(DEFAULT_CONFIG).adminWorkersList();
-    }
-
-    renderHeader(): TemplateResult {
-        return html`${msg("Workers")}`;
+        return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
     }
 
     getStatus(value: Worker[]): Promise<AdminStatus> {

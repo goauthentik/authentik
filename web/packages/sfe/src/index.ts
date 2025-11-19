@@ -311,53 +311,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         return false;
     }
 
-    /**
-     * Transforms items in the credentialCreateOptions generated on the server
-     * into byte arrays expected by the navigator.credentials.create() call
-     */
-    transformCredentialCreateOptions(
-        credentialCreateOptions: PublicKeyCredentialCreationOptions,
-        userId: string,
-    ): PublicKeyCredentialCreationOptions {
-        const user = credentialCreateOptions.user;
-        // Because json can't contain raw bytes, the server base64-encodes the User ID
-        // So to get the base64 encoded byte array, we first need to convert it to a regular
-        // string, then a byte array, re-encode it and wrap that in an array.
-        const stringId = decodeURIComponent(window.atob(userId));
-        user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
-        const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
-
-        return Object.assign({}, credentialCreateOptions, {
-            challenge,
-            user,
-        });
-    }
-
-    /**
-     * Transforms the binary data in the credential into base64 strings
-     * for posting to the server.
-     * @param {PublicKeyCredential} newAssertion
-     */
-    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
-        const attObj = new Uint8Array(
-            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
-        );
-        const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
-        const rawId = new Uint8Array(newAssertion.rawId);
-
-        const registrationClientExtensions = newAssertion.getClientExtensionResults();
-        return {
-            id: newAssertion.id,
-            rawId: this.b64enc(rawId),
-            type: newAssertion.type,
-            registrationClientExtensions: JSON.stringify(registrationClientExtensions),
-            response: {
-                clientDataJSON: this.b64enc(clientDataJSON),
-                attestationObject: this.b64enc(attObj),
-            },
-        };
-    }
-
     transformCredentialRequestOptions(
         credentialRequestOptions: PublicKeyCredentialRequestOptions,
     ): PublicKeyCredentialRequestOptions {

@@ -27,7 +27,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -97,9 +97,8 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Device classes")}
                         required
@@ -207,12 +206,11 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   </p>
                               </ak-form-element-horizontal>
                           `
-                        : html``}
+                        : nothing}
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("WebAuthn-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("WebAuthn-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn User verification")}
                         required

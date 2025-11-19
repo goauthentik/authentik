@@ -1,4 +1,9 @@
-import { CSRFMiddleware, EventMiddleware, LoggingMiddleware } from "#common/api/middleware";
+import {
+    CSRFMiddleware,
+    EventMiddleware,
+    LocaleMiddleware,
+    LoggingMiddleware,
+} from "#common/api/middleware";
 import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
@@ -65,6 +70,7 @@ export const DEFAULT_CONFIG = new Configuration({
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),
         new SentryMiddleware(),
+        new LocaleMiddleware(),
     ],
 });
 

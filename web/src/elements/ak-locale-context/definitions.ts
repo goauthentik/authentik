@@ -1,15 +1,13 @@
 import { AkLocale, LocaleRow } from "./types.js";
 
-import * as _enLocale from "#locales/en";
-
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
 export const DEFAULT_FALLBACK = "en";
 
-const enLocale: LocaleModule = _enLocale;
-
-export { enLocale };
+export const enLocale: LocaleModule = {
+    templates: {},
+};
 
 // NOTE: This table cannot be made any shorter, despite all the repetition of syntax. Bundlers look
 // for the `import` #a *string target* for doing alias substitution, so putting
@@ -43,10 +41,11 @@ const debug: LocaleRow = [
 // prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
     ["de",      /^de([_-]|$)/i,      () => msg("German"),                () => import("#locales/de")],
-    ["en",      /^en([_-]|$)/i,      () => msg("English"),               () => import("#locales/en")],
+    ["en",      /^en([_-]|$)/i,      () => msg("English"),               () => Promise.resolve(enLocale)],
     ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               () => import("#locales/es")],
     ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                () => import("#locales/fr")],
     ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               () => import("#locales/it")],
+    ["ja",      /^ja([_-]|$)/i,      () => msg("Japanese"),              () => import("#locales/ja")],
     ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                () => import("#locales/ko")],
     ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 () => import("#locales/nl")],
     ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                () => import("#locales/pl")],

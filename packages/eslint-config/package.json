@@ -31,11 +31,11 @@
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-react": "^7.37.5",
-        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-react-hooks": "^7.0.0",
         "eslint-plugin-wc": "^3.0.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.1",
+        "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.1",
         "@types/eslint": "^9.6.1",
         "typescript": "^5.8.3",

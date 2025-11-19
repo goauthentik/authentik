@@ -3,7 +3,7 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.providers.rac.api.endpoints import EndpointSerializer
@@ -16,7 +16,7 @@ class ConnectionTokenSerializer(ModelSerializer):
 
     provider_obj = RACProviderSerializer(source="provider", read_only=True)
     endpoint_obj = EndpointSerializer(source="endpoint", read_only=True)
-    user = GroupMemberSerializer(source="session.user", read_only=True)
+    user = PartialUserSerializer(source="session.user", read_only=True)
 
     class Meta:
         model = ConnectionToken

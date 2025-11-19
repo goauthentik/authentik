@@ -21,7 +21,7 @@ The following placeholder will be used throughout this document.
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 ### Configure Skyhigh Security
 
-While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to `User Management` -> `SAML Configuration` -> `Skyhigh Cloud Users` tab
+While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to **User Management > SAML Configuration > Skyhigh Cloud Users** tab
 
 Under the `Identity Provider` section enter the following values:
 
@@ -39,13 +39,13 @@ Under the `Identity Provider` section enter the following values:
 - SP-Initiated Request Binding: HTTP-POST
 - User exclusions: Select at least one administrator account to login directly (in case something goes wrong with SAML)
 
-Press `Save`
+Click **Save**.
 
-Note the Audience and ACS URLs that appear. You will use these to configure Authentik below
+Note the Audience and ACS URLs that appear. You will use these to configure Authentik below.
 
 ### Configure Authentik
 
-In the Authentik admin Interface, navigate to `Applications` -> `Providers`. Create a SAML provider with the following parameters:
+In the Authentik admin Interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: Enter the ACS URL provided by the Skyhigh Dashboard above
 - Issuer: `https://authentik.company/skyhigh-dashboard`
@@ -61,7 +61,7 @@ Create an application linked to this new provider and use the slug name you used
 
 ### Configure Authentik
 
-In the Authentik admin Interface, navigate to `Applications` -> `Providers`. Create a SAML provider with the following parameters:
+In the Authentik admin Interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://login.auth.ui.trellix.com/sso/saml2`
 - Issuer: `https://authentik.company/skyhigh-swg`
@@ -74,7 +74,7 @@ Create an application linked to this new provider and note the name of its slug.
 
 ### Configure Skyhigh Security
 
-While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to `Infrastructure` -> `Web Gateway Setup`.
+While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to **Infrastructure > Web Gateway Setup**.
 
 Under the `Setup SAML` section click the `New SAML` button.
 
@@ -91,6 +91,6 @@ Configure your SAML provider as follows:
 
 Save your changes and publish the web policy.
 
-:::note
+:::info
 You must also ensure that your web and/or private access policies grant access to users who will be authenticated. This configuration is out of scope for this document.
 :::

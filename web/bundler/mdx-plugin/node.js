@@ -1,6 +1,3 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
-
 /**
  * @file MDX plugin for ESBuild.
  *
@@ -13,6 +10,10 @@ import * as path from "node:path";
  *   PluginBuild
  * } from "esbuild"
  */
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
 /**
@@ -40,6 +41,8 @@ const pluginName = "mdx-plugin";
  * @returns {Plugin}
  */
 export function mdxPlugin({ root }) {
+    const prefix = "~docs";
+
     // TODO: Replace with `resolvePackage` after NPM Workspaces support is added.
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
@@ -55,7 +58,8 @@ export function mdxPlugin({ root }) {
             if (!args.path.startsWith("~")) return args;
 
             return {
-                path: path.resolve(docsPackageRoot, args.path.slice(1)),
+                path: path.join(docsPackageRoot, "docs", args.path.slice(prefix.length)),
+
                 pluginName,
             };
         }
@@ -75,7 +79,7 @@ export function mdxPlugin({ root }) {
 
             const publicPath = path.resolve(
                 "/",
-                path.relative(path.join(root, "website"), data.path),
+                path.relative(path.join(root, "website", "docs"), data.path),
             );
             const publicDirectory = path.dirname(publicPath);
 

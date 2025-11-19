@@ -1,5 +1,7 @@
 import "./styles.css";
 
+import { useCachedVersionPluginData } from "@goauthentik/docusaurus-theme/components/VersionPicker/utils.ts";
+
 import isInternalUrl from "@docusaurus/isInternalUrl";
 import Link from "@docusaurus/Link";
 import { isActiveSidebarItem } from "@docusaurus/plugin-content-docs/client";
@@ -7,16 +9,7 @@ import { ThemeClassNames } from "@docusaurus/theme-common";
 import type { Props } from "@theme/DocSidebarItem/Link";
 import IconExternalLink from "@theme/Icon/ExternalLink";
 import clsx from "clsx";
-import React from "react";
-
-const docsURL = new URL(process.env.DOCS_URL || "https://docs.goauthentik.io");
-function isInternalUrlOrDocsUrl(url: string) {
-    if (isInternalUrl(url)) return true;
-
-    const inputURL = new URL(url);
-
-    return inputURL.origin === docsURL.origin;
-}
+import React, { useMemo } from "react";
 
 const DocSidebarItemLink: React.FC<Props> = ({
     item,
@@ -29,7 +22,18 @@ const DocSidebarItemLink: React.FC<Props> = ({
 }) => {
     const { href, label, className, autoAddBaseUrl } = item;
     const isActive = isActiveSidebarItem(item, activePath);
-    const internalLink = isInternalUrlOrDocsUrl(href);
+    const versionPluginData = useCachedVersionPluginData();
+    const apiReferenceOrigin = versionPluginData?.env.apiReferenceOrigin;
+
+    const internalLink = useMemo(() => {
+        if (isInternalUrl(href)) return true;
+
+        if (!apiReferenceOrigin) return false;
+
+        const inputURL = new URL(href);
+
+        return inputURL.origin === apiReferenceOrigin;
+    }, [href, apiReferenceOrigin]);
 
     return (
         <li

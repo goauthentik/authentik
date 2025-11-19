@@ -10,8 +10,8 @@ support_level: community
 >
 > -- https://github.com/RocketChat/Rocket.Chat
 
-:::note
-This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
+:::info
+This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
 :::
 
 ## Preparation
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `rocket.company` is the FQDN of Rocket.chat installation.
 - `authentik.company` is the FQDN of authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,7 +37,7 @@ To support the integration of Rocket.chat with authentik, you need to create an 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://rocket.company/\_oauth/authentik`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -46,7 +46,7 @@ To support the integration of Rocket.chat with authentik, you need to create an 
 
 ## Rocket.chat configuration
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 
 You may have different settings for some of the group and role mapping for advanced configurations. The settings below are the base settings to connect authentik and Rocket.chat.
@@ -102,7 +102,7 @@ In Rocket.chat, follow the procedure below:
 
 ### Step 4 (Optional)
 
-:::note
+:::info
 By default, Rocket.chat will attempt to use two-factor authentication with any new user coming in to the system and allows users to change their information
 :::
 

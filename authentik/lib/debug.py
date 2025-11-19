@@ -19,8 +19,12 @@ def start_debug_server(**kwargs) -> bool:
         )
         return False
 
-    listen: str = CONFIG.get("listen.listen_debug_py", "127.0.0.1:9901")
+    listen: str = CONFIG.get("listen.debug_py", "127.0.0.1:9901")
     host, _, port = listen.rpartition(":")
-    debugpy.listen((host, int(port)), **kwargs)  # nosec
+    try:
+        debugpy.listen((host, int(port)), **kwargs)  # nosec
+    except RuntimeError:
+        LOGGER.warning("Could not start debug server. Continuing without")
+        return False
     LOGGER.debug("Starting debug server", host=host, port=port)
     return True

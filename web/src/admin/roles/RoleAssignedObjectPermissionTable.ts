@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ExtraRoleObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
@@ -17,9 +18,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     @property()
     roleUuid?: string;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -37,14 +36,12 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(msg("Object"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        [msg("Object"), ""],
+        [""],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -76,7 +73,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraRoleObjectPermission): TemplateResult[] {
+    row(item: ExtraRoleObjectPermission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
@@ -90,7 +87,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

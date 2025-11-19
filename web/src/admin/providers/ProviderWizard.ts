@@ -36,9 +36,7 @@ export class ProviderWizard extends AKElement {
     providerTypes: TypeCreate[] = [];
 
     @property({ attribute: false })
-    finalHandler: () => Promise<void> = () => {
-        return Promise.resolve();
-    };
+    public finalHandler?: () => Promise<void>;
 
     @query("ak-wizard")
     wizard?: Wizard;
@@ -56,9 +54,7 @@ export class ProviderWizard extends AKElement {
                 .steps=${["initial"]}
                 header=${msg("New provider")}
                 description=${msg("Create a new provider.")}
-                .finalHandler=${() => {
-                    return this.finalHandler();
-                }}
+                .finalHandler=${this.finalHandler}
             >
                 <ak-wizard-page-type-create
                     name="selectProviderType"
@@ -76,13 +72,22 @@ export class ProviderWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
+                <button
+                    aria-label=${msg("New Provider")}
+                    aria-description="${msg("Open the wizard to create a new provider.")}"
+                    type="button"
+                    part="button trigger"
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                >
+                    ${msg("Create")}
+                </button>
             </ak-wizard>
         `;
     }

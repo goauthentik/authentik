@@ -184,6 +184,13 @@ class FlowExecutorView(APIView):
                 try:
                     self.plan = self._initiate_plan()
                 except FlowNonApplicableException as exc:
+                    # If we're this flow is for authentication and the user is already authenticated
+                    # continue to the next URL
+                    if (
+                        self.flow.designation == FlowDesignation.AUTHENTICATION
+                        and self.request.user.is_authenticated
+                    ):
+                        return self._flow_done()
                     self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
@@ -198,7 +205,7 @@ class FlowExecutorView(APIView):
                 # if the cached plan is from an older version, it might have different attributes
                 # in which case we just delete the plan and invalidate everything
                 next_binding = self.plan.next(self.request)
-            except Exception as exc:
+            except Exception as exc:  # noqa
                 self._logger.warning(
                     "f(exec): found incompatible flow plan, invalidating run", exc=exc
                 )
@@ -288,7 +295,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     @extend_schema(
@@ -339,7 +346,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     def _initiate_plan(self) -> FlowPlan:
@@ -351,7 +358,7 @@ class FlowExecutorView(APIView):
             # there are no issues with the class we might've gotten
             # from the cache. If there are errors, just delete all cached flows
             _ = plan.has_stages
-        except Exception:
+        except Exception:  # noqa
             keys = cache.keys(f"{CACHE_PREFIX}*")
             cache.delete_many(keys)
             return self._initiate_plan()

@@ -1,0 +1,40 @@
+@import "./colors.css";
+@import "./colors-dark.css";
+@import "./spacers.css";
+@import "./icons.css";
+@import "./shadows.css";
+@import "./z-indexes.css";
+@import "./borders.css";
+
+/* #region Miscellaneous */
+
+:root {
+    --pf-global--ListStyle: disc outside;
+    --pf-global--Transition: all 250ms cubic-bezier(0.42, 0, 0.58, 1);
+    --pf-global--TimingFunction: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --pf-global--TransitionDuration: 250ms;
+    --pf-global--arrow--width: 0.9375rem;
+    --pf-global--arrow--width-lg: 1.5625rem;
+    --pf-global--target-size--MinWidth: 44px;
+    --pf-global--target-size--MinHeight: 44px;
+}
+
+/* #endregion */
+
+/* #region authentik extensions */
+
+:root {
+    --ak-accent: #fd4b2d;
+
+    --ak-dark-foreground: #fafafa;
+    --ak-dark-background: #18191a;
+    --ak-dark-background-light: #1c1e21;
+    --ak-dark-background-lighter: #2b2e33;
+
+    --ak-global--background-contrast: var(--pf-global--Color--100);
+
+    /* Minimum width after which the sidebar becomes automatic */
+    --ak-sidebar--minimum-auto-width: 80rem;
+}
+
+/* #endregion */

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `harbor.company` is the FQDN of the Harbor installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -60,7 +60,7 @@ To support the integration of authentik with Harbor, you need to configure OIDC 
 
 4. Click **Save**.
 
-:::note
+:::info
 If you are experiencing redirect errors, ensure that you have set the `hostname` and `external_url` fields in your `harbor.yml` file and run the `setup.sh` script.
 :::
 

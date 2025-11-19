@@ -41,6 +41,10 @@ func (ts *testServer) Apps() []*Application {
 	return ts.apps
 }
 
+func (ts *testServer) SessionBackend() string {
+	return "filesystem"
+}
+
 func newTestApplication() *Application {
 	ts := newTestServer()
 	a, _ := NewApplication(

@@ -1,0 +1,22 @@
+.pf-c-switch {
+    --pf-c-switch__input--focus__toggle--OutlineWidth: 0;
+
+    &:hover {
+        --pf-c-switch__toggle--before--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    }
+}
+
+.pf-c-switch__label {
+    --pf-c-switch__input--not-checked__label--Color: var(--pf-global--Color--100);
+    user-select: none;
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-switch__label,
+:host([theme="dark"]) .pf-c-switch__label {
+    --pf-c-switch__input--not-checked__label--Color: var(--ak-dark-foreground);
+    --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
+}
+
+/* #endregion */

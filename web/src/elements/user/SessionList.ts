@@ -1,16 +1,16 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-session-list")
@@ -29,13 +29,15 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Last IP"), "last_ip"),
-            new TableColumn(msg("Last used"), "last_used"),
-            new TableColumn(msg("Expires"), "expires"),
-        ];
+    protected override rowLabel(item: AuthenticatedSession): string | null {
+        return item.lastIp ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Last IP"), "last_ip"],
+        [msg("Last used"), "last_used"],
+        [msg("Expires"), "expires"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -65,20 +67,18 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: AuthenticatedSession): TemplateResult[] {
+    row(item: AuthenticatedSession): SlottedTemplateResult[] {
         return [
             html`<div>
                     ${item.geoIp?.country
                         ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
-                        : html``}
-                    ${item.current ? html`${msg("(Current session)")}&nbsp;` : html``}
+                        : nothing}
+                    ${item.current ? html`${msg("(Current session)")}&nbsp;` : nothing}
                     ${item.lastIp}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
-            html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                <small>${item.lastUsed?.toLocaleString()}</small>`,
-            html`<div>${formatElapsedTime(item.expires || new Date())}</div>
-                <small>${item.expires?.toLocaleString()}</small>`,
+            Timestamp(item.lastUsed),
+            Timestamp(item.expires ?? new Date()),
         ];
     }
 }

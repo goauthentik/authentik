@@ -1,6 +1,6 @@
 """custom runserver command"""
 
-from typing import TextIO
+from io import StringIO
 
 from daphne.management.commands.runserver import Command as RunServer
 from daphne.server import Server
@@ -33,4 +33,4 @@ class Command(RunServer):
         super().__init__(*args, **kwargs)
         # Redirect standard stdout banner from Daphne into the void
         # as there are a couple more steps that happen before startup is fully done
-        self.stdout = TextIO()
+        self.stdout = StringIO()

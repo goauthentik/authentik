@@ -5,6 +5,7 @@ import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -19,9 +20,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: Permission[]) => Promise<unknown>;
@@ -40,11 +39,12 @@ export class PermissionSelectModal extends TableModal<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "codename"],
+        [msg("Model"), ""],
+    ];
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

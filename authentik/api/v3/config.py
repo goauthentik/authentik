@@ -56,7 +56,6 @@ class ConfigSerializer(PassiveSerializer):
     cache_timeout = IntegerField(required=True)
     cache_timeout_flows = IntegerField(required=True)
     cache_timeout_policies = IntegerField(required=True)
-    cache_timeout_reputation = IntegerField(required=True)
 
 
 class ConfigView(APIView):
@@ -103,7 +102,6 @@ class ConfigView(APIView):
                 "cache_timeout": CONFIG.get_int("cache.timeout"),
                 "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
                 "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
-                "cache_timeout_reputation": CONFIG.get_int("cache.timeout_reputation"),
             }
         )
 

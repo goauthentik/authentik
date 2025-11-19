@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `gitea.company` is the FQDN of the Gitea installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,7 +33,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://<gitea.company>/user/oauth2/authentik/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -59,7 +59,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ### Claims for authorization management (optional)
 
-:::note
+:::info
 This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
 :::
 
@@ -71,11 +71,11 @@ The following groups will be created:
 - `gitadmin`: Gitea users with administrative permissions.
 - `gitrestricted`: restricted Gitea users.
 
-:::note
+:::info
 Users who are in none of these groups will not be able to log in to gitea.
 :::
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set the group name to `gituser` and click **Create**.
 4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
@@ -83,7 +83,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
 7. Repeat steps 5 and 6 for the two additional groups.
 
-:::note
+:::info
 You can add users to the groups at any point.
 :::
 
@@ -124,7 +124,7 @@ You can add users to the groups at any point.
 
 #### Configure Gitea to use the new claims
 
-:::note
+:::info
 For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configurations variables in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
@@ -138,7 +138,7 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
     - **Group Claim value for restricted users.** (Optional - requires claim name to be set): `restricted`
 4. Click **Update Authentication Source**.
 
-:::note
+:::info
 Users who are not part of any defined group will be denied login access.
 In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
 :::

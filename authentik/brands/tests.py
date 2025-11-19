@@ -1,8 +1,11 @@
 """Test brands"""
 
+from json import loads
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.models import Application
@@ -10,10 +13,20 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
+from authentik.tenants.flags import Flag
 
 
 class TestBrands(APITestCase):
     """Test brands"""
+
+    def setUp(self):
+        super().setUp()
+        self.default_flags = {}
+        for flag in Flag.available():
+            _flag = flag()
+            if _flag.visibility == "public":
+                self.default_flags[_flag.key] = _flag.get()
+        Brand.objects.all().delete()
 
     def test_current_brand(self):
         """Test Current brand API"""
@@ -29,12 +42,12 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
     def test_brand_subdomain(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
         Brand.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
             self.client.get(
@@ -49,33 +62,12 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
-            },
-        )
-
-    def test_brand_subdomain_same_suffix(self):
-        """Test Current brand API"""
-        Brand.objects.all().delete()
-        Brand.objects.create(domain="bar.baz", branding_title="custom")
-        Brand.objects.create(domain="foo.bar.baz", branding_title="custom")
-        self.assertJSONEqual(
-            self.client.get(
-                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
-            ).content.decode(),
-            {
-                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
-                "branding_favicon": "/static/dist/assets/icons/icon.png",
-                "branding_title": "custom",
-                "branding_custom_css": "",
-                "matched_domain": "foo.bar.baz",
-                "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
-                "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
     def test_fallback(self):
         """Test fallback brand"""
-        Brand.objects.all().delete()
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
@@ -87,6 +79,110 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    @apply_blueprint("default/default-brand.yaml")
+    def test_blueprint(self):
+        """Test Current brand API"""
+        response = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        response.pop("flow_authentication", None)
+        response.pop("flow_invalidation", None)
+        response.pop("flow_user_settings", None)
+        self.assertEqual(
+            response,
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "authentik",
+                "branding_custom_css": "",
+                "matched_domain": "authentik-default",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    @apply_blueprint("default/default-brand.yaml")
+    def test_blueprint_with_other_brand(self):
+        """Test Current brand API"""
+        Brand.objects.create(domain="bar.baz", branding_title="custom")
+        response = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        response.pop("flow_authentication", None)
+        response.pop("flow_invalidation", None)
+        response.pop("flow_user_settings", None)
+        self.assertEqual(
+            response,
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "authentik",
+                "branding_custom_css": "",
+                "matched_domain": "authentik-default",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom",
+                "branding_custom_css": "",
+                "matched_domain": "bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    def test_brand_subdomain_same_suffix(self):
+        """Test Current brand API"""
+        Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
+        Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom-strong",
+                "branding_custom_css": "",
+                "matched_domain": "foo.bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    def test_brand_subdomain_other_suffix(self):
+        """Test Current brand API"""
+        Brand.objects.create(domain="bar.baz", branding_title="custom-weak")
+        Brand.objects.create(domain="foo.bar.baz", branding_title="custom-strong")
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="other.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom-weak",
+                "branding_custom_css": "",
+                "matched_domain": "bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
@@ -167,6 +263,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 

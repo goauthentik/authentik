@@ -71,8 +71,8 @@ class Role(SerializerModel):
         verbose_name = _("Role")
         verbose_name_plural = _("Roles")
         permissions = [
-            ("assign_role_permissions", _("Can assign permissions to users")),
-            ("unassign_role_permissions", _("Can unassign permissions from users")),
+            ("assign_role_permissions", _("Can assign permissions to roles")),
+            ("unassign_role_permissions", _("Can unassign permissions from roles")),
         ]
 
 

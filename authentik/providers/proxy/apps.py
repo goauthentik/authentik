@@ -15,6 +15,7 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
     def proxy_set_defaults(self):
         from authentik.providers.proxy.models import ProxyProvider
 
+        # TODO: figure out if this can be in pre_save + post_save signals
         for provider in ProxyProvider.objects.all():
             provider.set_oauth_defaults()
             provider.save()

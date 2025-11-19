@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `openproject.company` is the FQDN of the OpenProject installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -59,7 +59,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol settings**:
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
             - Strict: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
@@ -75,7 +75,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 To support the integration of authentik with OpenProject, you need to configure authentication in the OpenProject administration interface.
 
-1. Login to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
+1. Log in to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:

@@ -1,8 +1,8 @@
 import { AKElement } from "#elements/Base";
 import { Wizard } from "#elements/wizard/Wizard";
 
-import { CSSResult, html, PropertyDeclaration, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
+import { property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -18,22 +18,17 @@ export type WizardPageActiveCallback = () => void | Promise<void>;
  */
 export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
-@customElement("ak-wizard-page")
-export class WizardPage extends AKElement {
+export abstract class WizardPage extends AKElement {
     static styles: CSSResult[] = [PFBase];
 
     /**
      * The label to display in the sidebar for this page.
      *
-     * Override this to provide a custom label.
-     * @todo: Should this be a getter or static property?
      */
-    @property()
-    sidebarLabel = (): string => {
-        return "UNNAMED";
-    };
+    @property({ type: String })
+    public label: string | null = null;
 
-    get host(): Wizard {
+    public get host(): Wizard {
         return this.parentElement as Wizard;
     }
 
@@ -49,7 +44,7 @@ export class WizardPage extends AKElement {
     /**
      * Called when this is the page brought into view.
      */
-    activeCallback: WizardPageActiveCallback = () => {
+    public activeCallback: WizardPageActiveCallback = () => {
         this.host.isValid = false;
     };
 
@@ -60,20 +55,21 @@ export class WizardPage extends AKElement {
      *
      * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
      */
-    nextCallback: WizardPageNextCallback = () => {
+    public nextCallback: WizardPageNextCallback = () => {
         return Promise.resolve(true);
     };
 
-    requestUpdate(
+    public override requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
         options?: PropertyDeclaration<unknown, unknown>,
     ): void {
-        this.querySelectorAll("*").forEach((el) => {
-            if ("requestUpdate" in el) {
-                (el as AKElement).requestUpdate();
+        for (const element of this.querySelectorAll("*")) {
+            if (element instanceof LitElement) {
+                element.requestUpdate();
             }
-        });
+        }
+
         return super.requestUpdate(name, oldValue, options);
     }
 

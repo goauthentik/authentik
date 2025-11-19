@@ -5,10 +5,11 @@ import {
     type AkHiddenTextAreaInputProps,
 } from "../ak-hidden-textarea-input.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AkHiddenTextAreaInputProps> = {
     title: "Components / <ak-hidden-textarea-input>",
@@ -17,7 +18,7 @@ const metadata: Meta<AkHiddenTextAreaInputProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Hidden Textarea Input Component
 
 A textarea input field with a visibility control, so you can show/hide sensitive fields.
@@ -94,18 +95,18 @@ const Template: Story = {
     },
     render: (args) => html`
         <ak-hidden-textarea-input
-            label=${ifDefined(args.label)}
-            value=${ifDefined(args.value)}
+            label=${ifPresent(args.label)}
+            value=${ifPresent(args.value)}
             ?revealed=${args.revealed}
-            placeholder=${ifDefined(args.placeholder)}
-            rows=${ifDefined(args.rows)}
-            cols=${ifDefined(args.cols)}
-            resize=${ifDefined(args.resize)}
-            wrap=${ifDefined(args.wrap)}
+            placeholder=${ifPresent(args.placeholder)}
+            rows=${ifPresent(args.rows)}
+            cols=${ifPresent(args.cols)}
+            resize=${ifPresent(args.resize)}
+            wrap=${ifPresent(args.wrap)}
             ?required=${args.required}
-            input-hint=${ifDefined(args.inputHint)}
-            show-message=${ifDefined(args.showMessage)}
-            hide-message=${ifDefined(args.hideMessage)}
+            input-hint=${ifPresent(args.inputHint)}
+            show-message=${ifPresent(args.showMessage)}
+            hide-message=${ifPresent(args.hideMessage)}
         ></ak-hidden-textarea-input>
     `,
 };

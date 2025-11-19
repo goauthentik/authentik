@@ -15,16 +15,16 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import BufferedPolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_AUTH_N_REQUEST,
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
     REQUEST_KEY_SAML_SIG_ALG,
     REQUEST_KEY_SAML_SIGNATURE,
-    SESSION_KEY_AUTH_N_REQUEST,
     SAMLFlowFinalView,
 )
 from authentik.stages.consent.stage import (
@@ -35,9 +35,13 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 
-class SAMLSSOView(PolicyAccessView):
+class SAMLSSOView(BufferedPolicyAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.plan_context = {}
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
@@ -68,6 +72,7 @@ class SAMLSSOView(PolicyAccessView):
                     PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                     % {"application": self.application.name},
                     PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+                    **self.plan_context,
                 },
             )
         except FlowNonApplicableException:
@@ -83,7 +88,7 @@ class SAMLSSOView(PolicyAccessView):
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """GET and POST use the same handler, but we can't
-        override .dispatch easily because PolicyAccessView's dispatch"""
+        override .dispatch easily because BufferedPolicyAccessView's dispatch"""
         return self.get(request, application_slug)
 
 
@@ -103,7 +108,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
                 self.request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
                 self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -137,7 +142,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
                 payload[REQUEST_KEY_SAML_REQUEST],
                 payload.get(REQUEST_KEY_RELAY_STATE),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))
@@ -151,4 +156,4 @@ class SAMLSSOBindingInitView(SAMLSSOView):
         """Create SAML Response from scratch"""
         LOGGER.debug("No SAML Request, using IdP-initiated flow.")
         auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
-        self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+        self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request

@@ -3,19 +3,19 @@ import "#elements/buttons/ActionButton/ak-action-button";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { uiConfig, UIConfig, UserDisplay } from "#common/ui/config";
-import { me } from "#common/users";
+import { formatUserDisplayName, isGuest } from "#common/users";
 
 import { AKElement } from "#elements/Base";
+import { WithSession } from "#elements/mixins/session";
+import { isDefaultAvatar } from "#elements/utils/images";
 
-import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
+import Styles from "#components/ak-nav-button.css";
 
-import { match } from "ts-pattern";
+import { CoreApi, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -28,13 +28,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-nav-buttons")
-export class NavigationButtons extends AKElement {
-    @property({ type: Object })
-    uiConfig?: UIConfig;
-
-    @property({ type: Object })
-    me?: SessionUser;
-
+export class NavigationButtons extends WithSession(AKElement) {
     @property({ type: Boolean, reflect: true })
     notificationDrawerOpen = false;
 
@@ -54,31 +48,24 @@ export class NavigationButtons extends AKElement {
         PFDrawer,
         PFDropdown,
         PFNotificationBadge,
-        css`
-            .pf-c-page__header-tools {
-                display: flex;
-            }
-            :host([theme="dark"]) .pf-c-page__header-tools {
-                color: var(--ak-dark-foreground) !important;
-            }
-            :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-            :host([theme="light"]) .pf-c-notification-badge__count,
-            :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
-                color: var(--ak-global--Color--100) !important;
-            }
-        `,
+        Styles,
     ];
 
-    async firstUpdated() {
-        this.me = await me();
+    protected async refreshNotifications(): Promise<void> {
+        const { currentUser } = this;
+
+        if (!currentUser || isGuest(currentUser)) {
+            return;
+        }
+
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
             ordering: "-created",
             pageSize: 1,
-            user: this.me.user.pk,
+            user: currentUser.pk,
         });
+
         this.notificationsCount = notifications.pagination.count;
-        this.uiConfig = await uiConfig();
     }
 
     renderApiDrawerTrigger() {
@@ -154,7 +141,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderImpersonation() {
-        if (!this.me?.original) return nothing;
+        if (!this.impersonating) return nothing;
 
         const onClick = async () => {
             await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
@@ -172,24 +159,30 @@ export class NavigationButtons extends AKElement {
     }
 
     renderAvatar() {
-        return html`<img
-            class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
-            src=${ifDefined(this.me?.user.avatar)}
-            alt="${msg("Avatar image")}"
-        />`;
-    }
+        const { currentUser } = this;
 
-    get userDisplayName() {
-        return match<UserDisplay | undefined, string | undefined>(this.uiConfig?.navbar.userDisplay)
-            .with(UserDisplay.username, () => this.me?.user.username)
-            .with(UserDisplay.name, () => this.me?.user.name)
-            .with(UserDisplay.email, () => this.me?.user.email || "")
-            .with(UserDisplay.none, () => "")
-            .otherwise(() => this.me?.user.username);
+        if (!currentUser) {
+            return nothing;
+        }
+
+        const { avatar } = currentUser;
+
+        if (!avatar || isDefaultAvatar(avatar)) {
+            return nothing;
+        }
+
+        return html`<div
+            class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
+            aria-hidden="true"
+        >
+            <img src=${avatar} alt=${msg("Avatar image")} />
+        </div>`;
     }
 
     render() {
-        return html`<div class="pf-c-page__header-tools">
+        const displayName = formatUserDisplayName(this.currentUser, this.uiConfig);
+
+        return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderApiDrawerTrigger()}
                 <!-- -->
@@ -209,10 +202,10 @@ export class NavigationButtons extends AKElement {
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            ${this.userDisplayName
+            ${displayName
                 ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
                       <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
-                          ${this.userDisplayName}
+                          ${displayName}
                       </div>
                   </div>`
                 : nothing}

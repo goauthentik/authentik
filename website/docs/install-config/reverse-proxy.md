@@ -54,7 +54,7 @@ server {
 
     # Proxy site
     # Location can be set to a subpath if desired, see documentation linked below:
-    # https://goauthentik.io/docs/installation/configuration#authentik_web__path
+    # https://docs.goauthentik.io/docs/install-config/configuration/#authentik_web__path
     location / {
         proxy_pass https://authentik;
         proxy_http_version 1.1;

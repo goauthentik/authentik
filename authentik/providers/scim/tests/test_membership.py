@@ -8,7 +8,7 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync, sync_tasks
+from authentik.providers.scim.tasks import scim_sync
 from authentik.tenants.models import Tenant
 
 
@@ -79,17 +79,15 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+            scim_sync.send(self.provider.pk)
 
-            self.assertEqual(mocker.call_count, 6)
+            self.assertEqual(mocker.call_count, 4)
             self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "GET")
+            self.assertEqual(mocker.request_history[1].method, "POST")
             self.assertEqual(mocker.request_history[2].method, "GET")
             self.assertEqual(mocker.request_history[3].method, "POST")
-            self.assertEqual(mocker.request_history[4].method, "GET")
-            self.assertEqual(mocker.request_history[5].method, "POST")
             self.assertJSONEqual(
-                mocker.request_history[3].body,
+                mocker.request_history[1].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                     "emails": [],
@@ -101,7 +99,7 @@ class SCIMMembershipTests(TestCase):
                 },
             )
             self.assertJSONEqual(
-                mocker.request_history[5].body,
+                mocker.request_history[3].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                     "externalId": str(group.pk),
@@ -169,17 +167,15 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+            scim_sync.send(self.provider.pk)
 
-            self.assertEqual(mocker.call_count, 6)
+            self.assertEqual(mocker.call_count, 4)
             self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "GET")
+            self.assertEqual(mocker.request_history[1].method, "POST")
             self.assertEqual(mocker.request_history[2].method, "GET")
             self.assertEqual(mocker.request_history[3].method, "POST")
-            self.assertEqual(mocker.request_history[4].method, "GET")
-            self.assertEqual(mocker.request_history[5].method, "POST")
             self.assertJSONEqual(
-                mocker.request_history[3].body,
+                mocker.request_history[1].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                     "active": True,
@@ -191,7 +187,7 @@ class SCIMMembershipTests(TestCase):
                 },
             )
             self.assertJSONEqual(
-                mocker.request_history[5].body,
+                mocker.request_history[3].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                     "externalId": str(group.pk),
@@ -287,17 +283,15 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+            scim_sync.send(self.provider.pk)
 
-            self.assertEqual(mocker.call_count, 6)
+            self.assertEqual(mocker.call_count, 4)
             self.assertEqual(mocker.request_history[0].method, "GET")
-            self.assertEqual(mocker.request_history[1].method, "GET")
+            self.assertEqual(mocker.request_history[1].method, "POST")
             self.assertEqual(mocker.request_history[2].method, "GET")
             self.assertEqual(mocker.request_history[3].method, "POST")
-            self.assertEqual(mocker.request_history[4].method, "GET")
-            self.assertEqual(mocker.request_history[5].method, "POST")
             self.assertJSONEqual(
-                mocker.request_history[3].body,
+                mocker.request_history[1].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
                     "emails": [],
@@ -309,7 +303,7 @@ class SCIMMembershipTests(TestCase):
                 },
             )
             self.assertJSONEqual(
-                mocker.request_history[5].body,
+                mocker.request_history[3].body,
                 {
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                     "externalId": str(group.pk),

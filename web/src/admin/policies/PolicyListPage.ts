@@ -19,6 +19,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
 
@@ -29,20 +30,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Policies");
-    }
-    pageDescription(): string {
-        return msg(
-            "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-infrastructure";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Policies");
+    public pageDescription = msg(
+        "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
+    );
+    public pageIcon = "pf-icon pf-icon-infrastructure";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -54,15 +47,14 @@ export class PolicyListPage extends TablePage<Policy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Type")],
+        [msg("Actions")],
+    ];
 
-    row(item: Policy): TemplateResult[] {
+    row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
@@ -74,8 +66,8 @@ export class PolicyListPage extends TablePage<Policy> {
                       </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -86,7 +78,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -94,8 +86,8 @@ export class PolicyListPage extends TablePage<Policy> {
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit"> ${msg("Test")} </span>
-                    <span slot="header"> ${msg("Test Policy")} </span>
+                    <span slot="submit">${msg("Test")}</span>
+                    <span slot="header">${msg("Test Policy")}</span>
                     <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Test")}>
@@ -142,7 +134,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Policy cache")} </span>
+                <span slot="header">${msg("Clear Policy cache")}</span>
                 <p slot="body">
                     ${msg(
                         "Are you sure you want to clear the policy cache? This will cause all policies to be re-evaluated on their next usage.",

@@ -5,6 +5,7 @@ import {
 } from "./types.js";
 
 import { serializeForm } from "#elements/forms/Form";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
 
 import {
     NavigationEventInit,
@@ -15,12 +16,12 @@ import { WizardStep } from "#components/ak-wizard/WizardStep";
 
 import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 
-import { ValidationError } from "@goauthentik/api";
+import { ApplicationRequest, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { property, query } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
-export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardStep {
+export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
     static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
@@ -28,15 +29,44 @@ export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardSt
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application and configure a provider for it.");
-    canCancel = true;
+    protected wizardTitle = msg("New application");
+    protected wizardDescription = msg("Create a new application and configure a provider for it.");
+    public canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
-    @query("form")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form");
+    }
 
-    get formValues(): T {
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public reportValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return reportValidityDeep(form);
+    }
+
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public checkValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return form.checkValidity();
+    }
+
+    protected get formValues(): T {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
         return serializeForm<T>([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),

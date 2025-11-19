@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://opnsense.org/
 
-:::note
+:::info
 This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
 :::
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 - `opnsense` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -31,7 +31,7 @@ This documentation lists only the settings that you need to change from their de
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
 In this example, we'll use `opnsense-user` as the Service account's username
 
-:::note
+:::info
 Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
 :::
 
@@ -39,7 +39,7 @@ Take note of the password for this user as you'll need to give it to OPNsense in
 
 In authentik, create an _LDAP Provider_ (under _Applications/Providers_) with these settings:
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 :::
 
@@ -53,7 +53,7 @@ Only settings that have been modified from default have been listed.
 
 In authentik, create an application (under _Applications/Applications_) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 :::
 
@@ -65,7 +65,7 @@ Only settings that have been modified from default have been listed.
 
 In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 2_.
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 :::
 
@@ -102,6 +102,6 @@ You can now either import users, or synchronize from Authentik LDAP. See https:/
 
 ## Notes
 
-:::note
+:::info
 Secure LDAP more by creating a group for your `DN Bind` users and restricting the `Search group` of the LDAP Provider to them.
 :::

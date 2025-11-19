@@ -171,7 +171,7 @@ class PropertyMappingViewSet(
         except PropertyMappingExpressionException as exc:
             response_data["result"] = exception_to_string(exc.exc)
             response_data["successful"] = False
-        except Exception as exc:
+        except Exception as exc:  # noqa
             response_data["result"] = exception_to_string(exc)
             response_data["successful"] = False
         response = PropertyMappingTestResultSerializer(response_data)

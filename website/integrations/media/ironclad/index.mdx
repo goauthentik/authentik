@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -28,7 +28,7 @@ To support the integration of Ironclad with authentik, you need to create three 
 
 Ironclad requires both a first and last name for each user, but by default, authentik only provides a full name as a single string. Ironclad also requires the email attribute in a specific format. Therefore, property mappings must be created to provide the email, first name, and last name to Ironclad.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and then click **Next**.
 3. Configure the first mapping for the user's first name:
     - **Name**: `firstName`
@@ -61,7 +61,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -69,7 +69,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
         - Temporarily set the **ACS URL** to `https://temp.temp`
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
+            - Set an available **Signing certificate**.
             - Toggle off **Sign assertions**.
             - Toggle on **Sign responses**.
             - **Property mappings**:
@@ -91,7 +91,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
 3. Under **Protocol settings**, set the following required configurations:
     - **ACS URL**: Set to the **Callback** URL provided by Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
@@ -110,7 +110,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
 2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
 3. Click **Save**.
 
-:::note
+:::info
 SSO login must be specifically enabled on Ironclad user accounts. SSO login on the original Ironclad administrator account can only be enabled by Ironclad support. To request this, contact them at `support@ironcladapp.com`.
 
 For new user accounts, SSO login can be selected when creating the account.

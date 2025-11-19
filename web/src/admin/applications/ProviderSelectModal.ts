@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -16,9 +17,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property({ type: Boolean })
     backchannel = false;
@@ -35,11 +34,13 @@ export class ProviderSelectModal extends TableModal<Provider> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "username"), new TableColumn(msg("Type"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "username"],
+        [msg("Type")],
+    ];
 
-    row(item: Provider): TemplateResult[] {
+    row(item: Provider): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

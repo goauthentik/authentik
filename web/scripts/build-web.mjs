@@ -1,3 +1,9 @@
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -7,29 +13,35 @@ import * as path from "node:path";
  * @import { BuildOptions } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
+import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
-import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
-import { readBuildIdentifier } from "@goauthentik/core/version/node";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
+import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { copy } from "esbuild-plugin-copy";
-import { polyfillNode } from "esbuild-plugin-polyfill-node";
 
 /// <reference types="../types/esbuild.js" />
 
-const logPrefix = "[Build]";
+const logger = ConsoleLogger.child({ name: "Build" });
 
-const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
+const bundleDefinitions = createBundleDefinitions();
+
+const publicBundledDefinitions = Object.fromEntries(
+    Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
+);
+logger.info(publicBundledDefinitions, "Bundle definitions");
 
 /**
  * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
-    entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
+    entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     outdir: DistDirectory,
@@ -39,26 +51,23 @@ const BASE_ESBUILD_OPTIONS = {
     minify: NodeEnvironment === "production",
     legalComments: "external",
     splitting: true,
+    color: !process.env.NO_COLOR,
     treeShaking: true,
-    external: ["*.woff", "*.woff2"],
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".woff": "file",
+        ".woff2": "file",
+        ".jpg": "file",
+        ".png": "file",
+        ".svg": "file",
     },
     plugins: [
         copy({
             assets: [
                 {
-                    from: path.join(patternflyPath, "patternfly.min.css"),
-                    to: ".",
-                },
-                {
-                    from: path.join(patternflyPath, "assets", "**"),
-                    to: "./assets",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "common", "styles", "**"),
-                    to: ".",
+                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
+                    to: path.dirname(EntryPoint.StandaloneLoading.out),
                 },
                 {
                     from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
@@ -70,16 +79,11 @@ const BASE_ESBUILD_OPTIONS = {
                 },
             ],
         }),
-        polyfillNode({
-            polyfills: {
-                path: true,
-            },
-        }),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
     ],
-    define: createBundleDefinitions(),
+    define: bundleDefinitions,
     format: "esm",
     logOverride: {
         /**
@@ -93,9 +97,7 @@ const BASE_ESBUILD_OPTIONS = {
 };
 
 async function cleanDistDirectory() {
-    const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
-
-    console.time(timerLabel);
+    logger.info(`♻️ Cleaning previous builds...`);
 
     await fs.rm(DistDirectory, {
         recursive: true,
@@ -106,7 +108,7 @@ async function cleanDistDirectory() {
         recursive: true,
     });
 
-    console.timeEnd(timerLabel);
+    logger.info(`♻️ Done!`);
 }
 
 /**
@@ -125,7 +127,7 @@ export function createESBuildOptions(overrides) {
 }
 
 function doHelp() {
-    console.log(`Build the authentik UI
+    logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
@@ -136,33 +138,31 @@ function doHelp() {
     process.exit(0);
 }
 
+/**
+ *
+ * @returns {Promise<() => Promise<void>>} dispose
+ */
 async function doWatch() {
-    console.group(`${logPrefix} 🤖 Watching entry points`);
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
-
-        return target;
-    });
-
-    console.groupEnd();
+    const entryPoints = Object.values(EntryPoint);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
+                logger: logger.child({ name: "Live Reload" }),
             }),
         ])
         .catch(() => []);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
-        plugins: developmentPlugins,
+        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
     });
 
     const buildContext = await esbuild.context(buildOptions);
 
-    await buildContext.rebuild();
     await buildContext.watch();
 
     const httpURL = new URL("http://localhost");
@@ -171,51 +171,45 @@ async function doWatch() {
     const httpsURL = new URL("https://localhost");
     httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
 
-    console.log(`\n${logPrefix} 🚀 Server running\n\n`);
+    logger.info(`🚀 Server running`);
 
-    console.log(`  🔓 ${httpURL.href}`);
-    console.log(`  🔒 ${httpsURL.href}`);
+    logger.info(`🔓 ${httpURL.href}`);
+    logger.info(`🔒 ${httpsURL.href}`);
 
-    console.log(`\n---`);
+    return () => {
+        logger.flush();
+        console.info("");
+        console.info("🛑 Stopping file watcher...");
 
-    return /** @type {Promise<void>} */ (
-        new Promise((resolve) => {
-            process.on("SIGINT", () => {
-                resolve();
-            });
-        })
-    );
+        return buildContext.dispose();
+    };
 }
 
 async function doBuild() {
-    console.group(`${logPrefix} 🚀 Building entry points:`);
+    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
-
-        return target;
-    });
-
-    console.groupEnd();
+    const entryPoints = Object.values(EntryPoint);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
 
-    console.log("Build complete");
+    logger.info("Build complete");
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.StandaloneLoading];
+    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
-    console.log("Proxy build complete");
+    logger.info("Proxy build complete");
 }
 
 async function delegateCommand() {
@@ -241,11 +235,43 @@ await cleanDistDirectory()
     // ---
     .then(() =>
         delegateCommand()
-            .then(() => {
-                process.exit(0);
+            .then((dispose) => {
+                if (!dispose) {
+                    process.exit(0);
+                }
+
+                /**
+                 * @type {Promise<void>}
+                 */
+                const signalListener = new Promise((resolve) => {
+                    // We prevent multiple attempts to dispose the context
+                    // because ESBuild will repeatedly restart its internal clean-up logic.
+                    // However, sending a second SIGINT will still exit the process immediately.
+                    let signalCount = 0;
+
+                    process.on("SIGINT", () => {
+                        if (signalCount > 3) {
+                            // Something is taking too long and the user wants to exit now.
+                            console.log("🛑 Forcing exit...");
+                            process.exit(0);
+                        }
+                    });
+
+                    process.once("SIGINT", () => {
+                        signalCount++;
+
+                        dispose().finally(() => {
+                            console.log("✅ Done!");
+
+                            resolve();
+                        });
+                    });
+
+                    logger.info("🚪 Press Ctrl+C to exit.");
+                });
+
+                return signalListener;
             })
-            .catch((error) => {
-                console.error(error);
-                process.exit(1);
-            }),
+            .then(() => process.exit(0))
+            .catch(() => process.exit(1)),
     );

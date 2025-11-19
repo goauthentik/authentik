@@ -17,11 +17,11 @@ The following placeholders are used in this guide:
 - `gravity.company` is the FQDN of the Gravity installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::note
+:::info
 Gravity automatically triggers SSO authentication when configured. To prevent this behavior, log in using the following URL: `https://gravity.company/ui/?local`.
 :::
 

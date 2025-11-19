@@ -5,6 +5,7 @@ import uuid
 import django.db.models.deletion
 import django_tenants.postgresql_backend.base
 from django.db import migrations, models
+from django_tenants.utils import get_tenant_base_schema
 
 import authentik.lib.utils.time
 import authentik.tenants.models
@@ -144,7 +145,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(code=create_default_tenant, reverse_code=migrations.RunPython.noop),
         migrations.RunSQL(
-            sql="CREATE SCHEMA IF NOT EXISTS template;",
-            reverse_sql="DROP SCHEMA IF EXISTS template;",
+            sql=f"CREATE SCHEMA IF NOT EXISTS {get_tenant_base_schema()};",
+            reverse_sql=f"DROP SCHEMA IF EXISTS {get_tenant_base_schema()};",
         ),
     ]

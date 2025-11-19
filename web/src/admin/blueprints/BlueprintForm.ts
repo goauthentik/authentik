@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#components/ak-toggle-group";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
@@ -15,7 +16,7 @@ import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -138,48 +139,53 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                     ${this.source === blueprintSource.oci
-                        ? html`<ak-form-element-horizontal label=${msg("URL")} name="path">
-                              <input
-                                  type="text"
-                                  value="${ifDefined(this.instance?.path)}"
-                                  class="pf-c-form-control"
-                                  required
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.",
-                                  )}
-                              </p>
-                              <p class="pf-c-form__helper-text">
-                                  ${msg("See more about OCI support here:")}&nbsp;
-                                  <a
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="${docLink(
-                                          "/docs/customize/blueprints/?utm_source=authentik#storage---oci",
-                                      )}"
-                                      >${msg("Documentation")}</a
-                                  >
-                              </p>
-                          </ak-form-element-horizontal>`
-                        : html``}
+                        ? html` <ak-text-input
+                              name="path"
+                              label=${msg("OCI URL")}
+                              input-hint="code"
+                              required
+                              placeholder="oci://..."
+                              value="${ifDefined(this.instance?.path)}"
+                              .bighelp=${html`<p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          html` A valid OCI manifest URL, prefixed with the protocol
+                                              e.g.&nbsp;<code
+                                                  >oci://registry.domain.tld/path/to/manifest</code
+                                              >`,
+                                      )}
+                                  </p>
+                                  <p class="pf-c-form__helper-text">
+                                      <span>
+                                          ${msg("Read more about")}&nbsp;
+                                          <a
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              href=${docLink(
+                                                  "/customize/blueprints/#storage---oci",
+                                              )}
+                                              >${msg("OCI Support")}</a
+                                          >.
+                                      </span>
+                                  </p> `}
+                          >
+                          </ak-text-input>`
+                        : nothing}
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
                                   mode=${CodeMirrorMode.YAML}
-                                  .parseValue=${false}
+                                  raw
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
 
-            <ak-form-group>
-                <span slot="header">${msg("Additional settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}

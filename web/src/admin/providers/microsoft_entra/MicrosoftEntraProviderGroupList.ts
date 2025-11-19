@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProviderGroup,
@@ -24,9 +25,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
@@ -72,11 +71,17 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: MicrosoftEntraProviderGroup): string {
+        return item.groupObj.name;
     }
 
-    row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
+
+    row(item: MicrosoftEntraProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -86,11 +91,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     }
 
     renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html` <pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

@@ -140,7 +140,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # when `pretend` is enabled, continue regardless
             if current_stage.pretend_user_exists and not current_stage.password_stage:
                 return attrs
-            raise ValidationError("Failed to authenticate.")
+            raise ValidationError(_("Failed to authenticate."))
         self.pre_user = pre_user
 
         # Captcha check
@@ -148,7 +148,10 @@ class IdentificationChallengeResponse(ChallengeResponse):
             captcha_token = attrs.get("captcha_token", None)
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
-            verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            try:
+                verify_captcha_token(captcha_stage, captcha_token, client_ip)
+            except ValidationError:
+                raise ValidationError(_("Failed to authenticate.")) from None
 
         # Password check
         if not current_stage.password_stage:
@@ -171,7 +174,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     password=password,
                 )
             if not user:
-                raise ValidationError("Failed to authenticate.")
+                raise ValidationError(_("Failed to authenticate."))
             self.pre_user = user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc

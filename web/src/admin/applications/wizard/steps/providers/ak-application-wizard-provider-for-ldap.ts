@@ -23,7 +23,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
         return html`
             <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors, this.brand)}
+                ${renderForm({ provider, errors, brand: this.brand })}
             </form>
         `;
     }

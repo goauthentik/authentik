@@ -1,9 +1,11 @@
 import "#elements/Divider";
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
 
 import { LOCALES } from "#elements/ak-locale-context/definitions";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -24,6 +26,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -38,6 +41,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         PFAlert,
         PFForm,
         PFFormControl,
+        PFInputGroup,
         PFTitle,
         PFButton,
         PFCheck,
@@ -51,10 +55,13 @@ export class PromptStage extends WithCapabilitiesConfig(
     ];
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
+        const fieldId = `field-${prompt.fieldKey}`;
+
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
@@ -64,6 +71,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                 />`;
             case PromptTypeEnum.TextArea:
                 return html`<textarea
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
@@ -75,6 +83,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.TextReadOnly:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -83,6 +92,7 @@ ${prompt.initialValue}</textarea
                 />`;
             case PromptTypeEnum.TextAreaReadOnly:
                 return html`<textarea
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -93,6 +103,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Username:
                 return html`<input
                     type="text"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
@@ -104,6 +115,8 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Email:
                 return html`<input
                     type="email"
+                    id=${fieldId}
+                    autocomplete="email"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -113,6 +126,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Password:
                 return html`<input
                     type="password"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
@@ -122,6 +136,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Number:
                 return html`<input
                     type="number"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -131,6 +146,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Date:
                 return html`<input
                     type="date"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -140,6 +156,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.DateTime:
                 return html`<input
                     type="datetime"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -149,6 +166,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.File:
                 return html`<input
                     type="file"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
@@ -160,6 +178,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Hidden:
                 return html`<input
                     type="hidden"
+                    id=${fieldId}
                     name="${prompt.fieldKey}"
                     value="${prompt.initialValue}"
                     class="pf-c-form-control"
@@ -171,27 +190,27 @@ ${prompt.initialValue}</textarea
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
-                            value="${choice}"
-                            ?selected=${prompt.initialValue === choice}
+                            value="${choice.value}"
+                            ?selected=${prompt.initialValue === choice.value}
                         >
-                            ${choice}
+                            ${choice.label}
                         </option>`;
                     })}
                 </select>`;
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
-                    const id = `${prompt.fieldKey}-${choice}`;
+                    const id = `${prompt.fieldKey}-${choice.value}`;
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
                             class="pf-c-check__input"
                             name="${prompt.fieldKey}"
                             id="${id}"
-                            ?checked="${prompt.initialValue === choice}"
+                            ?checked="${prompt.initialValue === choice.value}"
                             ?required="${prompt.required}"
-                            value="${choice}"
+                            value="${choice.value}"
                         />
-                        <label class="pf-c-check__label" for=${id}>${choice}</label>
+                        <label class="pf-c-check__label" for=${id}>${choice.label}</label>
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
@@ -208,7 +227,11 @@ ${prompt.initialValue}</textarea
                         </option> `,
                 );
 
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                return html`<select
+                    class="pf-c-form-control"
+                    id=${fieldId}
+                    name="${prompt.fieldKey}"
+                >
                     <option value="" ?selected=${prompt.initialValue === ""}>
                         ${msg("Auto-detect (based on your browser)")}
                     </option>
@@ -221,9 +244,10 @@ ${prompt.initialValue}</textarea
     }
 
     renderPromptHelpText(prompt: StagePrompt) {
-        if (prompt.subText === "") {
+        if (!prompt.subText) {
             return nothing;
         }
+
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
@@ -256,24 +280,30 @@ ${prompt.initialValue}</textarea
             </div>`;
         }
         if (this.shouldRenderInWrapper(prompt)) {
-            return html`<ak-form-element
-                label="${prompt.label}"
-                ?required="${prompt.required}"
-                class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
-            >
+            const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
+
+            return html`<div class="pf-c-form__group">
+                ${AKLabel(
+                    {
+                        required: prompt.required,
+                        htmlFor: `field-${prompt.fieldKey}`,
+                    },
+                    prompt.label,
+                )}
                 ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
-            </ak-form-element>`;
+                ${AKFormErrors({ errors })}
+            </div>`;
         }
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
     renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+        return html`<fieldset class="pf-c-form__group pf-m-action">
+            <legend class="sr-only">${msg("Form actions")}</legend>
+            <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
-        </div>`;
+        </fieldset>`;
     }
 
     render(): TemplateResult {

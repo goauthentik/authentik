@@ -12,18 +12,26 @@ import { APIMessage } from "#elements/messages/Message";
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, CSSResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Adds a message to the message container, displaying it to the user.
+ *
  * @param message The message to display.
  * @param unique Whether to only display the message if the title is unique.
+ *
+ * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
-export function showMessage(message: APIMessage, unique = false): void {
+export function showMessage(message: APIMessage | null, unique = false): void {
+    if (!message) {
+        return;
+    }
+
     const container = document.querySelector<MessageContainer>("ak-message-container");
 
     if (!container) {
@@ -31,7 +39,10 @@ export function showMessage(message: APIMessage, unique = false): void {
     }
 
     if (!message.message.trim()) {
-        message.message = msg("Error");
+        console.warn("authentik/messages: `showMessage` received an empty message", message);
+
+        message.message = msg("An unknown error occurred");
+        message.description ??= msg("Please check the browser console for more details.");
     }
 
     container.addMessage(message, unique);
@@ -75,8 +86,8 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
-    @property({ attribute: false })
-    messages: APIMessage[] = [];
+    @state()
+    protected messages: APIMessage[] = [];
 
     @property()
     alignment: "top" | "bottom" = "top";
@@ -99,6 +110,9 @@ export class MessageContainer extends AKElement {
     constructor() {
         super();
 
+        // Note: This seems to be susceptible to race conditions.
+        // Events are dispatched regardless if the message container is listening.
+
         window.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
             if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
 
@@ -110,31 +124,38 @@ export class MessageContainer extends AKElement {
         }) as EventListener);
     }
 
-    addMessage(message: APIMessage, unique = false): void {
+    public addMessage(message: APIMessage, unique = false): void {
         if (unique) {
-            const matchIndex = this.messages.findIndex((m) => m.message === message.message);
+            const match = this.messages.some((m) => m.message === message.message);
 
-            if (matchIndex !== -1) return;
+            if (match) return;
         }
 
-        this.messages.push(message);
-        this.requestUpdate();
+        this.messages = [...this.messages, message];
     }
 
-    render(): TemplateResult {
-        return html`<ul class="pf-c-alert-group pf-m-toast">
-            ${Array.from(this.messages)
-                .reverse()
-                .map((message) => {
-                    return html`<ak-message
-                        .message=${message}
-                        .onRemove=${(m: APIMessage) => {
-                            this.messages = this.messages.filter((v) => v !== m);
-                            this.requestUpdate();
-                        }}
-                    >
-                    </ak-message>`;
-                })}
+    #removeMessage = (message: APIMessage) => {
+        this.messages = this.messages.filter((v) => v !== message);
+    };
+
+    render() {
+        return html`<ul
+            role="region"
+            aria-label="${msg("Status messages")}"
+            class="pf-c-alert-group pf-m-toast"
+        >
+            ${this.messages.toReversed().map((message, idx) => {
+                const { message: title, description, level } = message;
+
+                return html`<ak-message
+                    ?live=${idx === 0}
+                    level=${level}
+                    description=${ifDefined(description)}
+                    .onDismiss=${() => this.#removeMessage(message)}
+                >
+                    ${title}
+                </ak-message>`;
+            })}
         </ul>`;
     }
 }

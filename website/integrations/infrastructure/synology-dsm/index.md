@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `synology.company` is the FQDN of the Synology DSM server.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,10 +37,10 @@ To support the integration of Synology DSM with authentik, you need to create an
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://synology.company`.
     - Select any available signing key.
-    - Under **Advanced Protocol Settings**, set the **subject mode** to be based on the user's email.
+    - Under **Advanced protocol settings**, set the **subject mode** to be based on the user's email.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -49,7 +49,7 @@ To support the integration of Synology DSM with authentik, you need to create an
 
 To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider:
 
-1. In the DSM Control Panel, navigate to **Domain/LDAP** -> **SSO Client**.
+1. In the DSM Control Panel, navigate to **Domain/LDAP** > **SSO Client**.
 2. Check the **Enable OpenID Connect SSO service** checkbox in the **OpenID Connect SSO Service** section.
 3. Configure the following values:
 

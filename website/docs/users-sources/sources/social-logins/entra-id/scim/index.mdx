@@ -1,0 +1,106 @@
+---
+title: Entra ID SCIM user and group provisioning
+sidebar_label: Entra ID SCIM
+description: Provisioning users and groups from Entra ID to authentik via SCIM protocol
+toc_max_heading_level: 4
+tags:
+    - source
+    - entra
+    - azure
+    - scim
+---
+
+Allows provisioning users and groups from Entra ID to authentik by configuring Entra ID as a SCIM source.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik install.
+
+## authentik configuration
+
+To integrate authentik with Entra ID via SCIM you will need to create a SCIM source in authentik.
+
+### Create SCIM source
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **SCIM Source**.
+    - **Create SCIM Source**: provide a name and a slug.
+    - All other configurations are optional.
+3. Click **Finish**.
+4. On the **Federation and Social login** page, click on the name of the newly created SCIM source.
+5. Take note of the **SCIM Base URL**. This value will be required in the next section.
+6. Under **Token**, click **Click to copy token** and securely store the value. This value will also be required in the next section.
+
+:::warning Copying the token
+If authentik has the required browser permissions, the token will be copied into your clipboard after clicking **Click to copy token** button. However, some browsers don't allow this, in those cases a notification will appear in the bottom right corner with the token and you will need to manually copy it.
+:::
+
+## Entra ID configuration
+
+### Create a custom enterprise application
+
+1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
+2. Navigate to **Enterprise apps**, click **Create your own application**, and configure the following fields:
+    - **Name**: provide a name for the application (e.g. `authentik-scim`).
+    - Select `Integrate any other application you don't find in the gallery (Non-gallery)`.
+3. Click **Create**.
+
+### Configure provisioning
+
+4. Navigate to **Provisioning**, click **New Configuration**, and configure the following fields:
+    - **Tenant URL**: Set to the **SCIM Base URL** from authentik (e.g. `https://authentik.company/source/scim/entra-scim/v2`).
+    - **Secret Token**: Set to the **Token** from authentik.
+5. Click **Test connection** to validate that Entra ID can communicate with authentik.
+6. If the connection is successful, click **Create** and **Save**. If the connection fails, ensure that your authentik **SCIM Base URL** is accessible from the internet.
+7. In the left sidebar, under **Manage**, click **Provisioning**.
+
+There are three options to determine which users and groups are provisioned to authentik:
+
+    - Set Entra ID to sync all users and groups
+    - Set Entra ID to sync all users and groups with scopes to limit which users and groups are synced
+    - Set Entra ID to sync only assigned users and groups (Group assignment is only available to Microsoft Entra Suite, Microsoft Entra ID Governance and Microsoft Entra ID P2 customers)
+
+#### Sync all users and groups
+
+1. On the **Provisioning** page, expand the **Settings** section, and set **Scope** to `Sync all users and groups`.
+2. Toggle **Provisioning status** to `On`.
+3. At the top of the page, click **Save**.
+4. Track provisioning progress via the **Overview** page.
+
+#### Sync all users and groups with scopes
+
+1. On the **Provisioning** page, expand the **Settings** section, and set **Scope** to `Sync all users and groups`.
+2. At the top of the page, click **Save**.
+3. Expand the **Mappings** section and then click **Provision Microsoft Entra ID Users**.
+4. Under **Source Object Scope**, click **All records**.
+5. Click **Add new filter group**, design the filters that you want applied to synced users and click **Apply**.
+6. Optionally, configure **Target object actions** and modify the **Attribute Mappings**.
+7. At the top of the page, click **Save**.
+8. On the **Provisioning** page, expand the **Mappings** section and then click **Provision Microsoft Entra ID Groups** and repeat steps 4-7.
+9. Back on the **Provisioning** page, toggle **Provisioning status** to `On`.
+10. At the top of the page, click **Save**.
+11. Track provisioning progress via the **Overview** page.
+
+#### Sync only assigned users and groups
+
+1. On the **Provisioning** page, expand the **Settings** section, and set **Scope** to `Sync only assigned users and groups`.
+2. At the top of the page, click **Save**.
+3. Under **Manage**, click **Users and groups** and then click **Add user/group**.
+4. Select the users and groups that you want synced to authentik.
+5. Click **Assign**.
+6. On the **Provisioning** page, toggle **Provisioning status** to `On`.
+7. At the top of the page, click **Save**.
+8. Track provisioning progress via the **Overview** page.
+
+:::note Group assignment
+Group assignment is only available for Microsoft Entra Suite, Microsoft Entra ID Governance and Microsoft Entra ID P2 subscribers.
+:::
+
+## Confirm provisioning in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click on the name of the SCIM source.
+3. Open the **Provisioned Users** and **Provisioned Groups** tabs to confirm whether the correct users and groups have been provisioned from Entra ID.

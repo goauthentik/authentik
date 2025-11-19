@@ -20,7 +20,6 @@ This stack will create the following resources:
 - AWS SSM secrets for the PostgreSQL user and the authentik secret key
 - A VPC for all other resources
 - A RDS PostgreSQL Multi-AZ cluster
-- An ElastiCache Redis Multi-AZ cluster
 - An ECS cluster with two tasks:
     - One for the authentik server
     - One for the authentik worker

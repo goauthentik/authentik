@@ -1,9 +1,11 @@
 """authentik reputation request signals"""
 
 from django.contrib.auth.signals import user_logged_in
-from django.db import transaction
+from django.db.models import F
+from django.db.models.functions import Greatest, Least
 from django.dispatch import receiver
 from django.http import HttpRequest
+from psqlextra.query import ConflictAction
 from structlog.stdlib import get_logger
 
 from authentik.core.signals import login_failed
@@ -17,40 +19,31 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 
 
-def clamp(value, min, max):
-    return sorted([min, value, max])[1]
-
-
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
-    tenant = get_current_tenant()
-    new_score = clamp(amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit)
+    tenant = getattr(request, "tenant", get_current_tenant())
+    amount = max(tenant.reputation_lower_limit, min(tenant.reputation_upper_limit, amount))
 
-    with transaction.atomic():
-        reputation, created = Reputation.objects.select_for_update().get_or_create(
-            ip=remote_ip,
-            identifier=identifier,
-            defaults={
-                "score": clamp(
-                    amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit
-                ),
-                "ip_geo_data": GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
-                "ip_asn_data": ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
-                "expires": reputation_expiry(),
-            },
-        )
-
-        if not created:
-            new_score = clamp(
-                reputation.score + amount,
+    reputation = Reputation.objects.on_conflict(
+        ["ip", "identifier"],
+        ConflictAction.UPDATE,
+        update_values=dict(
+            score=Greatest(
                 tenant.reputation_lower_limit,
-                tenant.reputation_upper_limit,
-            )
-            reputation.score = new_score
-            reputation.save()
+                Least(tenant.reputation_upper_limit, F("score") + amount),
+            ),
+        ),
+    ).insert_and_get(
+        ip=remote_ip,
+        identifier=identifier,
+        score=amount,
+        ip_geo_data=GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
+        ip_asn_data=ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
+        expires=reputation_expiry(),
+    )
 
-    LOGGER.info("Updated score", amount=new_score, for_user=identifier, for_ip=remote_ip)
+    LOGGER.info("Updated score", amount=reputation.score, for_user=identifier, for_ip=remote_ip)
 
 
 @receiver(login_failed)

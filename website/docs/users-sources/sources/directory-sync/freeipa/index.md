@@ -42,7 +42,7 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 
 ## authentik Setup
 
-In authentik, create a new LDAP Source in Directory -> Federation & Social login.
+In authentik, create a new LDAP Source in **Directory > Federation & Social login**.
 
 Use these settings:
 
@@ -75,6 +75,6 @@ After you save the source, you can kick off a synchronization by navigating to t
 
 ![](./06_sync_source.png)
 
-Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under Flows -> Stages.
+Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under **Flows > Stages**.
 
 ![](./07_password_stage.png)

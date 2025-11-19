@@ -1,7 +1,8 @@
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -73,8 +74,8 @@ export class WizardFormPage extends WizardPage {
             return false;
         };
 
-    renderForm(): TemplateResult {
-        return html``;
+    renderForm(): SlottedTemplateResult {
+        return nothing;
     }
 
     activeCallback = async () => {

@@ -131,7 +131,6 @@ class PolicyProcess(PROCESS_CLASS):
                 binding_order=self.binding.order,
                 binding_target_type=self.binding.target_type,
                 binding_target_name=self.binding.target_name,
-                object_pk=str(self.request.obj.pk) if self.request.obj else "",
                 object_type=class_to_path(self.request.obj.__class__) if self.request.obj else "",
                 mode="execute_process",
             ).time(),
@@ -145,6 +144,6 @@ class PolicyProcess(PROCESS_CLASS):
         """Task wrapper to run policy checking"""
         try:
             self.connection.send(self.profiling_wrapper())
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Policy failed to run", exc=exc)
             self.connection.send(PolicyResult(False, str(exc)))

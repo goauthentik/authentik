@@ -173,9 +173,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Connection settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Connection settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Server URI")}
                         required
@@ -267,7 +266,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-secret-text-input
                         label=${msg("Bind Password")}
                         name="bindPassword"
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
@@ -279,9 +278,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("LDAP Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("LDAP Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -316,9 +314,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Additional settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {

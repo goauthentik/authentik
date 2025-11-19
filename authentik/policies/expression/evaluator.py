@@ -71,7 +71,7 @@ class PolicyEvaluator(BaseEvaluator):
             # PolicyExceptions should be propagated back to the process,
             # which handles recording and returning a correct result
             raise exc
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))
         else:

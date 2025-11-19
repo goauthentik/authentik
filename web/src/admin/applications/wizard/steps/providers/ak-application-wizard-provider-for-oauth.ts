@@ -26,6 +26,9 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
     showClientSecret = true;
 
     @state()
+    showLogoutMethod = false;
+
+    @state()
     oauthSources?: PaginatedOAuthSourceList;
 
     constructor() {
@@ -44,14 +47,19 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    provider ?? {},
+                ${renderForm({
+                    provider,
                     errors,
-                    this.showClientSecret,
+                    showClientSecret: this.showClientSecret,
                     showClientSecretCallback,
-                )}
+                    showLogoutMethod: this.showLogoutMethod,
+                    showLogoutMethodCallback,
+                })}
             </form>`;
     }
 

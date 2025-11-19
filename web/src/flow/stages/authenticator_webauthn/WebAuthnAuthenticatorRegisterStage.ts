@@ -16,7 +16,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -44,24 +44,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFFormControl,
-        PFForm,
-        PFTitle,
-        PFButton,
-        // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
-        css`
-            .pf-c-form__group.pf-m-action {
-                display: flex;
-                gap: 16px;
-                margin-top: 0;
-                margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
-                flex-direction: column;
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
 
     async register(): Promise<void> {
         if (!this.challenge) {
@@ -151,11 +134,10 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                     </span>
                 </ak-empty-state>
                 ${this.challenge?.responseErrors
-                    ? html`<p class="pf-m-block">
-                          ${this.challenge.responseErrors.response[0].string}
-                      </p>`
+                    ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
                     : nothing}
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     ${!this.registerRunning
                         ? html` <button
                               class="pf-c-button pf-m-primary pf-m-block"
@@ -167,7 +149,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                               ${msg("Retry registration")}
                           </button>`
                         : nothing}
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

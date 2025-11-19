@@ -12,8 +12,8 @@ context:
     context1: context-nested-value
     context2: !Context context1
 entries:
-    - model: !Format ["%s", authentik_sources_oauth.oauthsource]
-      state: !Format ["%s", present]
+    - model: !Format ["%%s", authentik_sources_oauth.oauthsource]
+      state: !Format ["%%s", present]
       identifiers:
           slug: test
       attrs:
@@ -27,20 +27,23 @@ entries:
                   [slug, default-source-authentication],
               ]
           enrollment_flow:
-              !Find [!Format  ["%s", authentik_flows.Flow], [slug, default-source-enrollment]]
+              !Find [!Format  ["%%s", authentik_flows.Flow], [slug, default-source-enrollment]]
     - attrs:
           expression: return True
       identifiers:
-          name: !Format [foo-%s-%s-%s, !Context foo, !Context bar, qux]
+          name: !Format [foo-%%s-%%s-%%s, !Context foo, !Context bar, qux]
       id: policy
       model: authentik_policies_expression.expressionpolicy
     - attrs:
           attributes:
               env_null: !Env [bar-baz, null]
+              file_content: !File '%(file_name)s'
+              file_default: !File ['%(file_default_name)s', 'default']
+              file_non_existent: !File '/does-not-exist'
               json_parse: !ParseJSON '{"foo": "bar"}'
               policy_pk1:
                   !Format [
-                      "%s-%s",
+                      "%%s-%%s",
                       !Find [
                           authentik_policies_expression.expressionpolicy,
                           [
@@ -51,29 +54,29 @@ entries:
                       ],
                       suffix,
                   ]
-              policy_pk2: !Format ["%s-%s", !KeyOf policy, suffix]
+              policy_pk2: !Format ["%%s-%%s", !KeyOf policy, suffix]
               boolAnd:
-                  !Condition [AND, !Context foo, !Format ["%s", "a_string"], 1]
+                  !Condition [AND, !Context foo, !Format ["%%s", "a_string"], 1]
               boolNand:
-                  !Condition [NAND, !Context foo, !Format ["%s", "a_string"], 1]
+                  !Condition [NAND, !Context foo, !Format ["%%s", "a_string"], 1]
               boolOr:
                   !Condition [
                       OR,
                       !Context foo,
-                      !Format ["%s", "a_string"],
+                      !Format ["%%s", "a_string"],
                       null,
                   ]
               boolNor:
                   !Condition [
                       NOR,
                       !Context foo,
-                      !Format ["%s", "a_string"],
+                      !Format ["%%s", "a_string"],
                       null,
                   ]
               boolXor:
-                  !Condition [XOR, !Context foo, !Format ["%s", "a_string"], 1]
+                  !Condition [XOR, !Context foo, !Format ["%%s", "a_string"], 1]
               boolXnor:
-                  !Condition [XNOR, !Context foo, !Format ["%s", "a_string"], 1]
+                  !Condition [XNOR, !Context foo, !Format ["%%s", "a_string"], 1]
               boolComplex:
                   !Condition [
                       XNOR,
@@ -89,7 +92,7 @@ entries:
                               {
                                   with: { keys: "and_values" },
                                   and_nested_custom_tags:
-                                      !Format ["foo-%s", !Context foo],
+                                      !Format ["foo-%%s", !Context foo],
                               },
                       },
                       null,
@@ -98,7 +101,7 @@ entries:
                   !If [
                       !Condition [AND, false],
                       null,
-                      [list, with, items, !Format ["foo-%s", !Context foo]],
+                      [list, with, items, !Format ["foo-%%s", !Context foo]],
                   ]
               if_true_simple: !If [!Context foo, true, text]
               if_short: !If [!Context foo]
@@ -106,22 +109,22 @@ entries:
               enumerate_mapping_to_mapping: !Enumerate [
                   !Context mapping,
                   MAP,
-                  [!Format ["prefix-%s", !Index 0], !Format ["other-prefix-%s", !Value 0]]
+                  [!Format ["prefix-%%s", !Index 0], !Format ["other-prefix-%%s", !Value 0]]
               ]
               enumerate_mapping_to_sequence: !Enumerate [
                   !Context mapping,
                   SEQ,
-                  !Format ["prefixed-pair-%s-%s", !Index 0, !Value 0]
+                  !Format ["prefixed-pair-%%s-%%s", !Index 0, !Value 0]
               ]
               enumerate_sequence_to_sequence: !Enumerate [
                   !Context sequence,
                   SEQ,
-                  !Format ["prefixed-items-%s-%s", !Index 0, !Value 0]
+                  !Format ["prefixed-items-%%s-%%s", !Index 0, !Value 0]
               ]
               enumerate_sequence_to_mapping: !Enumerate [
                   !Context sequence,
                   MAP,
-                  [!Format ["index: %d", !Index 0], !Value 0]
+                  [!Format ["index: %%d", !Index 0], !Value 0]
               ]
               nested_complex_enumeration: !Enumerate [
                   !Context sequence,
@@ -132,9 +135,9 @@ entries:
                           !Context mapping,
                           MAP,
                           [
-                              !Format ["%s", !Index 0],
+                              !Format ["%%s", !Index 0],
                               [
-                                  !Enumerate [!Value 2, SEQ, !Format ["prefixed-%s", !Value 0]],
+                                  !Enumerate [!Value 2, SEQ, !Format ["prefixed-%%s", !Value 0]],
                                   {
                                     outer_value: !Value 1,
                                     outer_index: !Index 1,
@@ -151,6 +154,7 @@ entries:
               at_index_sequence_default: !AtIndex [!Context sequence, 100, "non existent"]
               at_index_mapping: !AtIndex [!Context mapping, "key2"]
               at_index_mapping_default: !AtIndex [!Context mapping, "invalid", "non existent"]
+              find_object: !AtIndex [!FindObject [authentik_providers_oauth2.scopemapping, [scope_name, openid]], managed]
       identifiers:
           name: test
       conditions:

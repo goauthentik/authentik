@@ -5,6 +5,8 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -53,6 +55,7 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     async send(data: Group): Promise<Group> {
+        data.attributes ??= {};
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
@@ -66,34 +69,27 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="isSuperuser">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.isSuperuser ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Is superuser")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Users added to this group will be superusers.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Parent")} name="parent">
+        return html` <ak-text-input
+                name="name"
+                required
+                placeholder=${msg("Type a group name...")}
+                value="${ifDefined(this.instance?.name)}"
+                label=${msg("Group Name")}
+                autocomplete="off"
+                spellcheck="false"
+            ></ak-text-input>
+
+            <ak-switch-input
+                name="isSuperuser"
+                label=${msg("Superuser Privileges")}
+                ?checked=${this.instance?.isSuperuser ?? false}
+                help=${msg("Whether users added to this group will have superuser privileges.")}
+            >
+            </ak-switch-input>
+
+            <ak-form-element-horizontal label=${msg("Parent Group")} name="parent">
                 <ak-search-select
+                    placeholder=${msg("Select an optional parent group...")}
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
@@ -145,7 +141,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} required name="attributes">
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"

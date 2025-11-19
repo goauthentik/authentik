@@ -93,7 +93,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		}),
 	)
 	if len(outposts.Results) < 1 {
-		log.Panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
@@ -122,6 +122,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		eventHandlers:   []EventHandler{},
 		refreshHandlers: make([]func(), 0),
 	}
+	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	err = ac.initEvent(akURL, outpost.Pk)
 	if err != nil {
@@ -133,6 +134,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 func (a *APIController) Log() *log.Entry {
 	return a.logger
+}
+
+func (a *APIController) IsEmbedded() bool {
+	if m := a.Outpost.Managed.Get(); m != nil {
+		return *m == "goauthentik.io/outposts/embedded"
+	}
+	return false
 }
 
 // Start Starts all handlers, non-blocking
@@ -198,7 +206,7 @@ func (a *APIController) OnRefresh() error {
 
 func (a *APIController) getEventPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
-		"version":        constants.VERSION,
+		"version":        constants.VERSION(),
 		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),
 		"golangVersion":  runtime.Version(),
@@ -218,7 +226,7 @@ func (a *APIController) StartBackgroundTasks() error {
 		"outpost_name": a.Outpost.Name,
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
-		"version":      constants.VERSION,
+		"version":      constants.VERSION(),
 		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {

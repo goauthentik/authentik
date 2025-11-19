@@ -1,14 +1,9 @@
-import { globalAK } from "#common/global";
-import { applyDocumentTheme } from "#common/theme";
-
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -16,21 +11,26 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class Loading extends AKElement {
     static styles = [
         PFBase,
-        PFPage,
         PFSpinner,
-        PFEmptyState,
         css`
-            :host([theme="dark"]) h1 {
-                color: var(--ak-dark-foreground);
+            :host {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-flow: column;
+                place-items: center;
+                justify-content: center;
+                text-align: center;
+                gap: var(--pf-global--spacer--md);
+            }
+
+            label {
+                font-size: var(--pf-global--FontSize--xl);
+                font-weight: var(--pf-global--FontWeight--normal);
+                font-family: var(--pf-global--FontFamily--heading--sans-serif);
             }
         `,
     ];
-
-    constructor() {
-        super();
-
-        applyDocumentTheme(globalAK().brand.uiTheme);
-    }
 
     public connectedCallback(): void {
         super.connectedCallback();
@@ -38,24 +38,17 @@ export class Loading extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<section
-            class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl"
-        >
-            <div class="pf-c-empty-state" style="height: 100vh;">
-                <div class="pf-c-empty-state__content">
-                    <span
-                        class="pf-c-spinner pf-m-xl"
-                        role="progressbar"
-                        aria-valuetext="${msg("Loading...")}"
-                    >
-                        <span class="pf-c-spinner__clipper"></span>
-                        <span class="pf-c-spinner__lead-ball"></span>
-                        <span class="pf-c-spinner__tail-ball"></span>
-                    </span>
-                    <h1 class="pf-c-title pf-m-lg">${msg("Loading...")}</h1>
-                </div>
-            </div>
-        </section>`;
+        return html`<span class="pf-c-spinner pf-m-xl" aria-hidden="true">
+                <span class="pf-c-spinner__clipper"></span>
+                <span class="pf-c-spinner__lead-ball"></span>
+                <span class="pf-c-spinner__tail-ball"></span>
+            </span>
+            <label for="progress" class="pf-c-title pf-m-lg">${msg("Loading")}</label>
+            <progress
+                class="sr-only"
+                id="progress"
+                aria-valuetext=${msg("Please wait while the content is loading")}
+            ></progress>`;
     }
 }
 

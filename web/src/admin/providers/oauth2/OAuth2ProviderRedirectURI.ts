@@ -1,11 +1,10 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import { AkControlElement } from "#elements/AkControlElement";
-import { type Spread } from "#elements/types";
+import { LitPropertyRecord } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { MatchingModeEnum, RedirectURI } from "@goauthentik/api";
-
-import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -16,9 +15,12 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export interface IRedirectURIInput {
+export type RedirectURIProperties = LitPropertyRecord<{
     redirectURI: RedirectURI;
-}
+}> & {
+    style?: string;
+    name: string;
+};
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
@@ -34,10 +36,13 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     ];
 
     @property({ type: Object, attribute: false })
-    redirectURI: RedirectURI = {
+    public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
     };
+
+    @property({ type: String })
+    public inputID?: string;
 
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
@@ -79,24 +84,18 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
             <input
                 type="text"
                 @change=${onChange}
-                value="${ifDefined(this.redirectURI.url ?? undefined)}"
+                value="${ifPresent(this.redirectURI.url)}"
                 class="pf-c-form-control ak-form-control pf-m-monospace"
                 spellcheck="false"
                 autocomplete="off"
                 required
-                id="url"
+                id=${ifDefined(this.inputID)}
                 placeholder=${msg("URL")}
                 name="url"
                 tabindex="1"
             />
         </div>`;
     }
-}
-
-export function akOAuthRedirectURIInput(properties: IRedirectURIInput) {
-    return html`<ak-provider-oauth2-redirect-uri
-        ${spread(properties as unknown as Spread)}
-    ></ak-provider-oauth2-redirect-uri>`;
 }
 
 declare global {

@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -32,23 +32,22 @@ To support the integration of Stripe with authentik, you need to create a group,
 4. In the **Attributes** field enter: `stripe_role: admin`. Other account types are also supported, see the [Stripe SSO Documentation](https://docs.stripe.com/get-started/account/sso/other#configuring-your-identity-provider)
 5. Click **Create**.
 6. Then, click the name of the newly created group and navigate to the **Users** tab.
-7. Click **Add existing user**, select the user that needs Wazuh admin access and click **Add**.
+7. Click **Add existing user**, select the user that needs Stripe admin access and click **Add**.
 
 ### Create a property mapping in authentik
 
 1.  Log in to authentik as an administrator and open the authentik Admin interface.
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Then, create a **SAML Provider Property Mapping** using the following settings:
+    - **Name**: `Stripe Role`
+    - **SAML Attribute Name**: `Stripe-Role-<stripe-account-id>` Can be found [here](https://dashboard.stripe.com/settings/account)
+    - **Friendly Name**: Leave blank
+    - **Expression**:
 
-        - **Name**: `Stripe Role`
-        - **SAML Attribute Name**: `Stripe-Role-acct-<stripe-account-id>`
-        - **Friendly Name**: Leave blank
-        - **Expression**:
+    ```python
+    return request.user.group_attributes().get("stripe_role", "")
+    ```
 
-        ```python
-        return request.user.group_attributes().get("stripe_role", "")
-        ```
-
-    :::note
+    :::info
     To find your Stripe account ID, log in to your Stripe dashboard and navigate to **Settings** > **Account** > **Account details**. You'll find your account ID, which starts with `acct_`, displayed on the right-hand side.
     :::
 
@@ -63,7 +62,7 @@ To support the integration of Stripe with authentik, you need to create a group,
         - Set the **Audience** to `https://dashboard.stripe.com/saml/metadata`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
+            - Set an available **Signing certificate**.
             - Add the previously created `Stripe Role` property mapping to **Selected User Property Mappings**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
 

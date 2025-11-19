@@ -48,15 +48,23 @@ sequenceDiagram
     rp->>user: User is logged in
 ```
 
+## OAuth2 endpoints and bindings
+
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
 | Authorization        | `/application/o/authorize/`                                          |
 | Token                | `/application/o/token/`                                              |
 | User Info            | `/application/o/userinfo/`                                           |
 | Token Revoke         | `/application/o/revoke/`                                             |
+| Token Introspection  | `/application/o/introspect/`                                         |
+| Device Authorization | `/application/o/device/`                                             |
 | End Session          | `/application/o/<application slug>/end-session/`                     |
 | JWKS                 | `/application/o/<application slug>/jwks/`                            |
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
+
+:::caution Reserved application slugs
+Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+:::
 
 ### Additional configuration options with Redirect URIs
 
@@ -65,6 +73,12 @@ When using an OAuth 2.0 provider in authentik, the OP must validate the provided
 When you create a new OAuth 2.0 provider and app in authentik and you leave the **Redirect URI** field empty, then the first time a user opens that app, authentik uses that URL as the saved redirect URL.
 
 For advanced use cases, an authentik admin can use regular expressions (regex) instead of a redirect URL. For example, if you want to list ten different applications, instead of listing them all individually, you can create an expression with wildcards. When using regex, be aware that authentik uses a dot as a separator in the URL, but in regex a dot means "one of any character", a wildcard. You should therefore escape the dot with `\.` to prevent its interpretation as a wildcard.
+
+### OAuth2/OpenID Connect back-channel logout
+
+Using back-channel logout (a server-to-server notification mechanism) allows an identity provider to notify connected OAuth2/OpenID clients whenever a user's session is terminated.
+
+For more information, see our [OAuth2/OpenID Connect front-channel and back-channel logout](./frontchannel_and_backchannel_logout.mdx) documentation.
 
 ## OAuth 2.0 flows and grant types
 
@@ -130,7 +144,7 @@ Starting with authentik 2024.2, the refresh token grant type requires the `offli
 
 ## Scope mappings
 
-Scopes can be configured using scope mappings, a type of [property mapping](../property-mappings/index.md#scope-mappings).
+Scopes can be configured using scope mappings, a type of [property mapping](../property-mappings/index.md#scope-mappings-with-oauth2).
 
 ## Scope authorization
 

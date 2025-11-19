@@ -1,7 +1,7 @@
 import "#elements/Alert";
 
 import { globalAK } from "#common/global";
-import OneDark from "#common/styles/one-dark.css";
+import { BrandedHTMLPolicy } from "#common/purify";
 
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
 import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
@@ -9,9 +9,11 @@ import { fetchMDXModule, MDXModuleContext } from "#elements/ak-mdx/MDXModuleCont
 import { remarkAdmonition } from "#elements/ak-mdx/remark/remark-admonition";
 import { remarkHeadings } from "#elements/ak-mdx/remark/remark-headings";
 import { remarkLists } from "#elements/ak-mdx/remark/remark-lists";
+import Styles from "#elements/ak-mdx/styles.css";
 import { AKElement } from "#elements/Base";
 
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
+import OneDark from "#styles/atom/one-dark.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -32,7 +34,6 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
 import type { MDXModule } from "~docs/types";
 
-import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -57,110 +58,27 @@ export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
-    @property({
-        reflect: true,
-    })
-    url: string = "";
+    // HACK: Fixes Lit Analyzer's parsing of TSX files with decorators.
 
-    @property()
-    content: string = "";
+    @((property as typeof property)({ type: String, reflect: true }))
+    public url?: string;
 
-    @property({ attribute: false })
-    replacers: Replacer[] = [];
+    @((property as typeof property)())
+    public content?: string;
+
+    @((property as typeof property)({ attribute: false }))
+    public replacers: Replacer[] = [];
 
     #reactRoot: Root | null = null;
 
-    resolvedHTML = "";
-
     static styles = [
+        // ---
         PFBase,
         PFList,
         PFTable,
         PFContent,
         OneDark,
-        css`
-            :host {
-                --ak-mermaid-message-text: var(--pf-c-content--Color);
-                --ak-table-stripe-background: var(--pf-global--BackgroundColor--light-200);
-            }
-
-            :host([theme="dark"]) {
-                --ak-mermaid-message-text: var(--ak-dark-foreground);
-                --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
-                --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
-            }
-
-            ak-alert + p {
-                margin-block-start: var(--pf-global--spacer--md);
-            }
-
-            a {
-                --pf-global--link--Color: var(--pf-global--link--Color--light);
-                --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-                --pf-global--link--Color--visited: var(--pf-global--link--Color);
-            }
-
-            /*
-            Note that order of anchor pseudo-selectors must follow:
-                1. link
-                2. visited
-                3. hover
-                4. active
-            */
-            a:link {
-                color: var(--pf-global--link--Color);
-            }
-
-            a:visited {
-                color: var(--pf-global--link--Color--visited);
-            }
-
-            a:hover {
-                color: var(--pf-global--link--Color--hover);
-            }
-
-            a:active {
-                color: var(--pf-global--link--Color);
-            }
-
-            h2:first-of-type {
-                margin-top: 0;
-            }
-
-            table thead,
-            table tr:nth-child(2n) {
-                background-color: var(--ak-table-stripe-background,);
-            }
-
-            table td,
-            table th {
-                border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
-                padding: var(--pf-global--spacer--md);
-            }
-
-            pre {
-                overflow-x: auto;
-            }
-
-            pre:has(.hljs) {
-                padding: var(--pf-global--spacer--md);
-            }
-
-            svg[id^="mermaid-svg-"] {
-                .rect {
-                    fill: var(
-                        --ak-mermaid-box-background-color,
-                        var(--pf-global--BackgroundColor--light-300)
-                    ) !important;
-                }
-
-                .messageText {
-                    stroke-width: 4;
-                    fill: var(--ak-mermaid-message-text) !important;
-                    paint-order: stroke;
-                }
-            }
-        `,
+        Styles,
     ];
 
     public async connectedCallback() {
@@ -181,7 +99,7 @@ export class AKMDX extends AKElement {
             nextMDXModule = await fetchMDXModule(pathname);
         } else {
             nextMDXModule = {
-                content: this.content,
+                content: `${BrandedHTMLPolicy.createHTML(this.content || "")}`,
             };
         }
 
@@ -227,7 +145,6 @@ export class AKMDX extends AKElement {
         });
 
         const { frontmatter = {} } = mdxExports;
-
         this.#reactRoot.render(
             <MDXModuleContext.Provider value={mdxModule}>
                 <Content

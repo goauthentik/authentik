@@ -190,7 +190,7 @@ class Flow(SerializerModel, PolicyBindingModel):
             )
         if self.background.name.startswith("http"):
             return self.background.name
-        if self.background.name.startswith("/static"):
+        if self.background.name.startswith("/"):
             return CONFIG.get("web.path", "/")[:-1] + self.background.name
         return self.background.url
 
@@ -291,7 +291,7 @@ class ConfigurableStage(models.Model):
 class FriendlyNamedStage(models.Model):
     """Abstract base class for a Stage that can have a user friendly name configured."""
 
-    friendly_name = models.TextField(null=True)
+    friendly_name = models.TextField(blank=True)
 
     class Meta:
         abstract = True

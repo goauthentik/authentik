@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://docs.github.com/en/enterprise-cloud@latest/admin/overview/about-github-for-enterprises
 
-:::note
+:::info
 GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with authentik. GitHub currently only permits SAML/OIDC for EMU organizations with Okta and/or Microsoft Entra ID (Azure AD).
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -41,7 +41,7 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
     - Set the **Audience** to `https://github.com/enterprises/foo`.
     - Set the **Issuer** to `https://github.com/enterprises/foo`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

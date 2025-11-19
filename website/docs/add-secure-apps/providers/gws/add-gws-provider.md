@@ -15,10 +15,8 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
 
 ### Create the Google Workspace provider in authentik
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-
-2. In the Admin interface, navigate to **Applications -> Providers**.
-
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications > Providers**.
 3. Click **Create**, and select **Google Workspace Provider**, and in the **New provider** box, define the following fields:
     - **Name**: define a descriptive name, such as "GWS provider".
 
@@ -37,14 +35,17 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
         - **User Property Mappings**: select any applicable mappings, or use the default.
         - **Group Property Mappings**: select any applicable mappings, or use the default.
 
+        :::info Skipping certain users or groups
+        The `SkipObject` exception can be used within a property mapping to prevent specific objects from being synced. Refer to the [Provider property mappings documentation](../property-mappings/index.md#skip-objects-during-synchronization) for more information.
+
 4. Click **Finish**.
 
 ### Create a Google Workspace application in authentik
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Applications -> Applications**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications > Applications**.
    :::info
-   If you have also configured Google Workspace to log in using authentik following this [ integration guide](/integrations/cloud-providers/google), then this configuration can be done on the same app by adding this new provider as a backchannel provider on the existing app instead of creating a new app.
+   If you have also configured Google Workspace to log in using authentik following this [integration guide](/integrations/cloud-providers/google), then this configuration can be done on the same app by adding this new provider as a backchannel provider on the existing app instead of creating a new app.
    :::
 3. Click **Create**, and in the **New provider** box, and define the following fields:
     - **Slug**: enter the name of the app as you want it to appear in the URL.

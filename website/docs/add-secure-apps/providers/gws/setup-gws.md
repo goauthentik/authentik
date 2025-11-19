@@ -40,13 +40,13 @@ For detailed instructions, refer to Google documentation.
 ### Set credentials for the service account
 
 1. On the **Service accounts** page, click the account that you just created.
-2. Click the **Keys** tab at top of the page, the click **Add Key -> Create new key**.
+2. Click the **Keys** tab at top of the page, the click **Add Key > Create new key**.
 3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
    Later, when you create your authentik provider for Google Workspace, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Copy the **Client ID** (under **Domain-wide delegation**), and then click **View Google Workspace Admin Console**.
-6. Log in to the Admin Console, and then navigate to **Security -> Access and data control -> API controls**.
+6. Log in to the Admin Console, and then navigate to **Security > Access and data control > API controls**.
 7. On the **API controls** page, click **Manage Domain Wide Delegation**.
 8. On the **Domain Wide Delegation** page, click **Add new**.
 9. In the **Add a new client ID** box, paste in the Client ID that you copied from the Admin console earlier (the value from the downloaded JSON file) and paste in the following scope documents:
@@ -59,7 +59,7 @@ For detailed instructions, refer to Google documentation.
 
 The Delegated Subject email address is a required field when creating the provider in authentik.
 
-1. Open to the main Admin console page, and navigate to **Directory -> Users**.
+1. Open to the main Admin console page, and navigate to **Directory > Users**.
 2. You can either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
 3. Save this email address to enter into authentik when you are creating the Google Workspace provider.
 

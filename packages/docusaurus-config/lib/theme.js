@@ -58,6 +58,7 @@ export function createPrismConfig(overrides = {}) {
             "nginx",
             "python",
             "bash",
+            "powershell",
         ],
     };
 

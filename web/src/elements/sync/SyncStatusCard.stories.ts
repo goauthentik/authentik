@@ -1,6 +1,6 @@
 import "./SyncStatusCard.js";
 
-import { LogLevelEnum, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
+import { SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -17,7 +17,6 @@ export const Running: StoryObj = {
     args: {
         status: {
             isRunning: true,
-            tasks: [],
         } as SyncStatus,
     },
     // @ts-ignore
@@ -32,33 +31,11 @@ export const Running: StoryObj = {
     },
 };
 
-export const SingleTask: StoryObj = {
+export const LastSyncDone: StoryObj = {
     args: {
         status: {
             isRunning: false,
-            tasks: [
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-            ],
+            lastSyncStatus: TaskAggregatedStatusEnum.Done,
         } as SyncStatus,
     },
     // @ts-ignore
@@ -73,75 +50,30 @@ export const SingleTask: StoryObj = {
     },
 };
 
-export const MultipleTasks: StoryObj = {
+export const LastSyncError: StoryObj = {
     args: {
         status: {
             isRunning: false,
-            tasks: [
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-                {
-                    uuid: "9ff42169-8249-4b67-ae3d-e455d822de2b",
-                    name: "Single task",
-                    fullName: "foo:bar:baz",
-                    status: SystemTaskStatusEnum.Successful,
-                    messages: [
-                        {
-                            logger: "foo",
-                            event: "bar",
-                            attributes: {
-                                foo: "bar",
-                            },
-                            timestamp: new Date(),
-                            logLevel: LogLevelEnum.Info,
-                        },
-                    ],
-                    description: "foo",
-                    startTimestamp: new Date(),
-                    finishTimestamp: new Date(),
-                    duration: 0,
-                },
-            ],
+            lastSyncStatus: TaskAggregatedStatusEnum.Error,
+        } as SyncStatus,
+    },
+    // @ts-ignore
+    render: ({ status }: SyncStatus) => {
+        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+            <ak-sync-status-card
+                .fetch=${async () => {
+                    return status;
+                }}
+            ></ak-sync-status-card>
+        </div>`;
+    },
+};
+
+export const LastSuccessfulSync: StoryObj = {
+    args: {
+        status: {
+            isRunning: false,
+            lastSuccessfulSync: new Date(),
         } as SyncStatus,
     },
     // @ts-ignore

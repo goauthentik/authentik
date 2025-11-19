@@ -16,7 +16,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
@@ -78,7 +78,7 @@ class SystemInfoSerializer(PassiveSerializer):
         """Get versions"""
         return {
             "architecture": platform.machine(),
-            "authentik_version": get_full_version(),
+            "authentik_version": authentik_full_version(),
             "environment": get_env(),
             "openssl_fips_enabled": (
                 backend._fips_enabled if LicenseKey.get_total().status().is_valid else None

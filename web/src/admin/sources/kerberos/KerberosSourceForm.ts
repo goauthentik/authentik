@@ -31,7 +31,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -121,9 +121,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
                 )}
             ></ak-switch-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Realm settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Realm settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="realm"
                         label=${msg("Realm")}
@@ -213,9 +212,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Sync connection settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Sync connection settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("KAdmin type")}
                         required
@@ -253,7 +251,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
@@ -261,7 +259,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
@@ -276,9 +274,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("SPNEGO settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("SPNEGO settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="spnegoServerName"
                         label=${msg("SPNEGO server name")}
@@ -290,7 +287,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="spnegoKeytab"
                         label=${msg("SPNEGO keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
@@ -305,9 +302,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Kerberos Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Kerberos Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -344,9 +340,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
@@ -377,9 +372,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Additional settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="userPathTemplate"
                         label=${msg("User path")}
@@ -397,7 +391,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                                             ${msg("Currently set to:")} ${this.instance?.icon}
                                         </p>
                                     `
-                                  : html``}
+                                  : nothing}
                           </ak-form-element-horizontal>
                           ${this.instance?.icon
                               ? html`
@@ -425,7 +419,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                                         </p>
                                     </ak-form-element-horizontal>
                                 `
-                              : html``}`
+                              : nothing}`
                     : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input
                               type="text"
