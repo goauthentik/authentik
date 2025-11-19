@@ -33,7 +33,7 @@ export class PolicyListPage extends TablePage<Policy> {
     protected override searchEnabled = true;
     protected override entityLabel = {
         singular: msg("Policy", { id: "entity.policy.singular" }),
-        plural: msg("Policies", { id: "entity.policie.plural" }),
+        plural: msg("Policies", { id: "entity.policy.plural" }),
     };
     public pageDescription = msg(
         "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
