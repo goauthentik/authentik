@@ -1,7 +1,7 @@
 from enum import StrEnum
 
 
-class Usage(StrEnum):
+class FileUsage(StrEnum):
     """Usage types for file storage"""
 
     MEDIA = "media"

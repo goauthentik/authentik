@@ -13,7 +13,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.service import resolve_file_url_full
-from authentik.admin.files.usage import Usage
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout

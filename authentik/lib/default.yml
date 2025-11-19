@@ -150,28 +150,7 @@ worker:
   scheduler_interval: "seconds=60"
 
 storage:
-  # Storage backend: 'file' (local filesystem) or 's3' (S3-compatible storage)
-  # This configuration is shared across all file types (media, reports)
-  # File types only affect the path prefix:
-  #   - File backend: /data/media/{tenant}/ and /data/reports/{tenant}/
-  #   - S3 backend: {bucket}/media/{tenant}/ and {bucket}/reports/{tenant}/
   backend: file
-
-  # S3-compatible storage configuration (used when backend=s3)
   s3:
-    # Connection settings
-    # region: "us-east-1"  # AWS region, required for AWS S3 and R2
-    # endpoint: "https://s3.us-east-1.amazonaws.com"  # Custom endpoint for S3-compatible providers
-    # bucket_name: "authentik-files"  # S3 bucket name
-    # addressing_style: "auto"  # S3 addressing style: auto, path, or virtual
-
-    # Authentication (choose one method)
-    # access_key: ""  # S3 access key ID
-    # secret_key: ""  # S3 secret access key
-    # security_token: ""  # S3 session token (for temporary credentials)
-    # session_profile: ""  # AWS profile name (uses ~/.aws/credentials)
-
-    # URL generation settings
     secure_urls: true  # Use HTTPS for generated URLs
-    presigned_expiry: 3600  # Presigned URL expiry in seconds (1 hour)
-    # custom_domain: null  # Custom domain hostname (without bucket/path)
+    presigned_expiry: "minutes=15"

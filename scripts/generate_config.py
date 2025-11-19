@@ -32,16 +32,14 @@ def generate_local_config() -> dict[str, Any]:
             }
         },
         "storage": {
-            "media": {
-                "backend": "file",
-                "s3": {
-                    "endpoint": "http://localhost:8020",
-                    "access_key": "accessKey1",
-                    "secret_key": "secretKey1",
-                    "bucket_name": "authentik-media",
-                    "custom_domain": "localhost:8020/authentik-media",
-                    "secure_urls": False,
-                },
+            "backend": "file",
+            "s3": {
+                "endpoint": "http://localhost:8020",
+                "access_key": "accessKey1",
+                "secret_key": "secretKey1",
+                "bucket_name": "authentik-media",
+                "custom_domain": "localhost:8020/authentik-media",
+                "secure_urls": False,
             },
         },
         "tenants": {

@@ -26,7 +26,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.service import resolve_file_url, resolve_file_url_full
-from authentik.admin.files.usage import Usage
+from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer

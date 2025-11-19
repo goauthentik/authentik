@@ -2,22 +2,15 @@
 
 from django.http import HttpRequest
 
-from authentik.admin.files.constants import (
-    EXTERNAL_URL_SCHEMES,
-    FONT_AWESOME_SCHEME,
-    STATIC_PATH_PREFIX,
-)
-from authentik.admin.files.factory import BackendFactory
-from authentik.admin.files.usage import Usage
-from authentik.admin.files.utils import RequestWrapper, strip_schema_prefix
+from authentik.admin.files.usage import FileUsage
 
 
-def resolve_file_url(file_path: str, usage: Usage) -> str:
+def resolve_file_url(file_path: str, usage: FileUsage) -> str:
     """Resolve a file path to it's URL using the appropriate backend.
 
     Args:
         file_path: The file path to resolve
-        usage: Usage type to determine which backend to use
+        usage: FileUsage type to determine which backend to use
 
     Returns:
         Absolute URL for the file
@@ -58,14 +51,14 @@ def resolve_file_url(file_path: str, usage: Usage) -> str:
 # TODO we could maybe pass boolean needs_full_url instead of duplicating this function
 def resolve_file_url_full(
     file_path: str,
-    usage: Usage,
+    usage: FileUsage,
     request: HttpRequest | None = None,
 ) -> str:
     """Resolve a file path to its FULL URL ,including scheme and domain.
 
     Args:
         file_path: The file path to resolve
-        usage: Usage type to determine which backend to use
+        usage: FileUsage type to determine which backend to use
         request: Optional HTTP request for extracting host information
 
     Returns:
@@ -115,38 +108,3 @@ def resolve_file_url_full(
             return request_wrapper.build_absolute_uri(url)
 
     return url
-
-
-def is_file_path_supported(file_path: str, backend_type: str) -> bool:
-    """Check if a file path pattern is supported by a backend type.
-
-    Args:
-        file_path: File path pattern to check
-        backend_type: Backend type identifier
-
-    Returns:
-        True if the backend supports this file path pattern
-
-    Example:
-        >>> is_file_path_supported("/static/icon.png", "static")
-        True
-        >>> is_file_path_supported("my-file.png", "file")
-        True
-        >>> is_file_path_supported("fa://fa-icon", "passthrough")
-        True
-    """
-    if backend_type == "static":
-        return file_path.startswith(STATIC_PATH_PREFIX) or file_path.startswith("web/dist/assets")
-
-    if backend_type == "passthrough":
-        if file_path.startswith(FONT_AWESOME_SCHEME):
-            return True
-        for scheme in EXTERNAL_URL_SCHEMES:
-            if file_path.startswith(scheme):
-                return True
-        return False
-
-    # For file/s3 backends, any path that's not static or passthrough
-    return not is_file_path_supported(file_path, "static") and not is_file_path_supported(
-        file_path, "passthrough"
-    )

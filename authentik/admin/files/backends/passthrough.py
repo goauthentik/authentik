@@ -1,10 +1,12 @@
-"""Passthrough backend for external URLs or Font Awesome"""
+from collections.abc import Generator
 
-from collections.abc import Generator, Iterator
+from django.http.request import HttpRequest
 
 from authentik.admin.files.backends.base import Backend
-from authentik.admin.files.constants import EXTERNAL_URL_SCHEMES, FONT_AWESOME_SCHEME
-from authentik.admin.files.usage import Usage
+from authentik.admin.files.usage import FileUsage
+
+EXTERNAL_URL_SCHEMES = ["http:", "https://"]
+FONT_AWESOME_SCHEME = "fa://"
 
 
 class PassthroughBackend(Backend):
@@ -19,16 +21,15 @@ class PassthroughBackend(Backend):
     Only accessible through resolve_file_url when an external URL is detected.
     """
 
-    allowed_usages = [Usage.MEDIA]
-    manageable = False
+    allowed_usages = [FileUsage.MEDIA]
 
-    def supports_file_path(self, file_path: str) -> bool:
+    def supports_file(self, name: str) -> bool:
         """Check if file path is an external URL or Font Awesome icon."""
-        if file_path.startswith(FONT_AWESOME_SCHEME):
+        if name.startswith(FONT_AWESOME_SCHEME):
             return True
 
         for scheme in EXTERNAL_URL_SCHEMES:
-            if file_path.startswith(scheme):
+            if name.startswith(scheme):
                 return True
 
         return False
@@ -37,26 +38,6 @@ class PassthroughBackend(Backend):
         """External files cannot be listed."""
         yield from []
 
-    def file_url(self, name: str) -> str:
+    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
         """Return the URL as-is for passthrough files."""
         return name
-
-    def file_size(self, name: str) -> int:
-        """External files size not tracked."""
-        return 0
-
-    def file_exists(self, name: str) -> bool:
-        """External files are assumed to exist if they match the pattern."""
-        return self.supports_file_path(name)
-
-    def save_file(self, name: str, content: bytes) -> None:
-        """Not supported for passthrough backend."""
-        raise NotImplementedError("Cannot save files to passthrough backend")
-
-    def save_file_stream(self, name: str) -> Iterator:
-        """Not supported for passthrough backend."""
-        raise NotImplementedError("Cannot save files to passthrough backend")
-
-    def delete_file(self, name: str) -> None:
-        """Not supported for passthrough backend."""
-        raise NotImplementedError("Cannot delete files from passthrough backend")

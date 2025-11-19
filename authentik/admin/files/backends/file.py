@@ -1,21 +1,21 @@
-"""Local filesystem storage backend"""
-
 import os
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
 from django.db import connection
+from django.http.request import HttpRequest
+from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backends.base import Backend
-from authentik.admin.files.usage import Usage
-from authentik.admin.files.utils import get_web_path_prefix
+from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.usage import FileUsage
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
 
-class FileBackend(Backend):
+class FileBackend(ManageableBackend):
     """Local filesystem backend for file storage.
 
     Stores files in a local directory structure:
@@ -24,64 +24,50 @@ class FileBackend(Backend):
     - Used when storage.backend=file (default)
     """
 
-    allowed_usages = list(Usage)  # All usages
-    manageable = True
+    name = "file"
+    allowed_usages = list(FileUsage)  # All usages
 
-    @property
+    @cached_property
+    def _base_dir(self) -> Path:
+        return Path(
+            CONFIG.get(
+                f"storage.{self.usage.value}.{self.name}.path",
+                CONFIG.get(f"storage.{self.name}.path", "./data"),
+            )
+        )
+
+    @cached_property
     def base_path(self) -> Path:
         """Path structure: {base_dir}/{usage}/{schema}"""
-        # TODO: There must be a better way of doing this? ./data in local dev with
-        # /data in containers, tho containers might still use ./data since
-        # it's the "default" value
-        file_path = self.get_config("file.path", "/data")
-        base_dir = Path(file_path)
-        result = base_dir / self.usage.value / connection.schema_name
+        return self._base_dir / self.usage.value / connection.schema_name
 
-        LOGGER.info(
-            "File storage base path resolved",
-            usage=self.usage.value,
-            schema=connection.schema_name,
-            path=str(result),
-        )
-        return result
-
-    def supports_file_path(self, file_path: str) -> bool:
+    def supports_file(self, name: str) -> bool:
         """Check if this backend type is configured."""
-        return self._backend_type == "file"
+        return self.base_path.exists() and (
+            self._base_dir.is_mount() or (self._base_dir / self.usage.value).is_mount()
+        )
 
     def list_files(self) -> Generator[str]:
         """List all files returning relative paths from base_path."""
-        base_path = self.base_path
-
-        if not base_path.exists():
-            LOGGER.warning(
-                "File storage path does not exist",
-                usage=self.usage.value,
-                schema=connection.schema_name,
-                path=str(base_path),
-            )
-            return
-
-        file_count = 0
-        for root, _, files in os.walk(base_path):
+        for root, _, files in os.walk(self.base_path):
             for file in files:
                 full_path = Path(root) / file
-                rel_path = full_path.relative_to(base_path)
-                file_count += 1
+                rel_path = full_path.relative_to(self.base_path)
                 yield str(rel_path)
 
-        LOGGER.info(
-            "Listed files from storage",
-            usage=self.usage.value,
-            schema=connection.schema_name,
-            count=file_count,
-        )
+    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+        """Get URL for accessing the file."""
+        prefix = CONFIG.get("web.path", "/")[:-1]
+        url = f"{prefix}/static/{self.usage.value}/{connection.schema_name}/{name}"
+        if request is None:
+            return url
+        return request.build_absolute_uri(url)
 
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to local filesystem."""
         path = self.base_path / Path(name)
         path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "wb") as f:
+        with open(path, "w+b") as f:
             f.write(content)
 
     @contextmanager
@@ -96,11 +82,6 @@ class FileBackend(Backend):
         """Delete file from local filesystem."""
         path = self.base_path / Path(name)
         path.unlink(missing_ok=True)
-
-    def file_url(self, name: str) -> str:
-        """Get URL for accessing the file."""
-        prefix = get_web_path_prefix()
-        return f"{prefix}/static/{self.usage.value}/{connection.schema_name}/{name}"
 
     def file_size(self, name: str) -> int:
         """Get file size in bytes."""

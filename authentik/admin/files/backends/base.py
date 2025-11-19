@@ -1,70 +1,40 @@
-"""Base backend interface and Usage enum"""
-
-from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterator
 
+from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.usage import Usage
-from authentik.admin.files.utils import get_storage_config
+from authentik.admin.files.usage import FileUsage
 
 LOGGER = get_logger()
 
 
-class Backend(ABC):
-    """Base class for file storage backends.
+class Backend:
+    """
+    Base class for file storage backends.
 
     Class attributes:
-        allowed_usages: List of Usage types this backend can handle
-        manageable: Whether files can be uploaded/deleted through the API
+        allowed_usages: List of usages that can be used with this backend
     """
 
-    allowed_usages: list[Usage] = []
-    manageable: bool = True
+    allowed_usages: list[FileUsage]
 
-    @classmethod
-    def get_allowed_api_usages(cls) -> list[Usage]:
-        """Get usages that can be accessed via the files API.
-
-        Returns:
-            List of Usage types that are both allowed and manageable
+    def __init__(self, usage: FileUsage):
         """
-        return [u for u in cls.allowed_usages if cls.manageable]
-
-    def __init__(self, usage: Usage):
-        """Initialize backend for the given usage type.
+        Initialize backend for the given usage type.
 
         Args:
-            usage: Usage type enum value
+            usage: FileUsage type enum value
         """
         self.usage = usage
-        # Only get backend config for manageable backends
-        if self.manageable:
-            self._backend_type = get_storage_config("backend", "file")
-            LOGGER.info(
-                "Initialized storage backend",
-                backend=self.__class__.__name__,
-                usage=usage.value,
-                backend_type=self._backend_type,
-            )
-        else:
-            self._backend_type = None
+        LOGGER.debug(
+            "Initializing storage backend",
+            backend=self.__class__.__name__,
+            usage=usage.value,
+        )
 
-    def get_config(self, key: str, default=None):
-        """Get storage configuration value.
-
-        Args:
-            key: Configuration key to look up
-            default: Default value if not found
-
-        Returns:
-            Configuration value
+    def supports_file(self, name: str) -> bool:
         """
-        return get_storage_config(key, default)
-
-    @abstractmethod
-    def supports_file_path(self, file_path: str) -> bool:
-        """Check if this backend can handle the given file path pattern.
+        Check if this backend can handle the given file path pattern.
 
         Args:
             file_path: File path pattern to check
@@ -72,93 +42,96 @@ class Backend(ABC):
         Returns:
             True if this backend supports this file path pattern
         """
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
     def list_files(self) -> Generator[str]:
-        """List all files managed by this backend.
+        """
+        List all files stored in this backend.
 
         Yields:
             Relative file paths
         """
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
-    def save_file(self, name: str, content: bytes) -> None:
-        """Save file content to storage.
-
-        Args:
-            name: Relative file path
-            content: File content as bytes
+    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
         """
-        pass
-
-    @abstractmethod
-    def save_file_stream(self, name: str) -> Iterator:
-        """Context manager for streaming file writes.
+        Get URL for accessing the file.
 
         Args:
-            name: Relative file path
-
-        Returns:
-            Context manager that yields a writable file-like object
-
-        Usage:
-            with backend.save_file_stream("output.csv") as f:
-                f.write(b"data...")
-        """
-        pass
-
-    @abstractmethod
-    def delete_file(self, name: str) -> None:
-        """Delete file from storage.
-
-        Args:
-            name: Relative file path
-        """
-        pass
-
-    @abstractmethod
-    def file_url(self, name: str) -> str:
-        """Get URL for accessing the file.
-
-        Args:
-            name: Relative file path
+            file_path: Relative file path
+            request: Optional Django HttpRequest for fully qualifed URL building
 
         Returns:
             URL to access the file (may be relative or absolute depending on backend)
         """
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
-    def file_size(self, name: str) -> int:
-        """Get file size in bytes.
+
+class ManageableBackend(Backend):
+    """
+    Base class for manageable file storage backends.
+
+    Class attributes:
+        name: Canonical name of the storage backend, for use in configuration.
+    """
+
+    name: str
+
+    def save_file(self, name: str, content: bytes) -> None:
+        """
+        Save file content to storage.
 
         Args:
-            name: Relative file path
+            file_path: Relative file path
+            content: File content as bytes
+        """
+        raise NotImplementedError
+
+    def save_file_stream(self, name: str) -> Iterator:
+        """
+        Context manager for streaming file writes.
+
+        Args:
+            file_path: Relative file path
+
+        Returns:
+            Context manager that yields a writable file-like object
+
+        FileUsage:
+            with backend.save_file_stream("output.csv") as f:
+                f.write(b"data...")
+        """
+        raise NotImplementedError
+
+    def delete_file(self, name: str) -> None:
+        """
+        Delete file from storage.
+
+        Args:
+            file_path: Relative file path
+        """
+        raise NotImplementedError
+
+    def file_size(self, name: str) -> int:
+        """
+        Get file size in bytes.
+
+        Args:
+            file_path: Relative file path
 
         Returns:
             File size in bytes, or 0 if file doesn't exist
         """
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
     def file_exists(self, name: str) -> bool:
-        """Check if a file exists.
+        """
+        Check if a file exists.
 
         Args:
-            name: Relative file path
+            file_path: Relative file path
 
         Returns:
             True if file exists, False otherwise
         """
-        pass
-
-
-def get_allowed_api_usages() -> list[Usage]:
-    """Get list of usages that are accessible via the files API.
-
-    Returns:
-        List of allowed Usage types for API access
-    """
-    return [Usage.MEDIA]
+        raise NotImplementedError
