@@ -1,7 +1,18 @@
+from typing import cast
+
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    IntegerField,
+    SerializerMethodField,
+)
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -14,7 +25,7 @@ from authentik.endpoints.connectors.agent.auth import (
     AgentEnrollmentAuth,
 )
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
-from authentik.endpoints.facts import DeviceFacts
+from authentik.endpoints.facts import DeviceFacts, OSFamily
 from authentik.endpoints.models import Device, DeviceConnection
 from authentik.lib.utils.time import timedelta_from_string
 
@@ -47,6 +58,24 @@ class EnrollSerializer(PassiveSerializer):
 class EnrollResponseSerializer(PassiveSerializer):
 
     token = CharField()
+
+
+class MDMConfigSerializer(PassiveSerializer):
+
+    platform = ChoiceField(choices=OSFamily.choices)
+    enrollment_token = PrimaryKeyRelatedField(queryset=EnrollmentToken.objects.all())
+
+    def validate_platform(self, platform: OSFamily) -> OSFamily:
+        if platform not in [OSFamily.iOS, OSFamily.macOS, OSFamily.windows]:
+            raise ValidationError(_("Selected platform not supported"))
+        return platform
+
+    def validate_enrollment_token(self, token: EnrollmentToken) -> EnrollmentToken:
+        if token.is_expired:
+            raise ValidationError(_("Token is expired"))
+        if token.connector != self.context["connector"]:
+            raise ValidationError(_("Invalid token for connector"))
+        return token
 
 
 class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
@@ -111,3 +140,15 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         connection: DeviceConnection = token.device
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
+
+    @extend_schema(request=MDMConfigSerializer)
+    @action(methods=["GET"], detail=True)
+    def mdm_config(self, request: Request, pk) -> Response:
+        connector = cast(AgentConnector, self.get_object())
+        data = MDMConfigSerializer(data=request.query_params, context={"connector": connector})
+        data.is_valid(raise_exception=True)
+        token = data.validated_data["enrollment_token"]
+        if not request.user.has_perm("view_enrollmenttoken", token):
+            raise PermissionDenied()
+        ctrl = connector.controller(connector)
+        return ctrl.generate_mdm_config(data.validated_data["platform"], request, token)

@@ -14,7 +14,7 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 if TYPE_CHECKING:
-    from authentik.endpoints.connectors.agent.connector import AgentConnector
+    from authentik.endpoints.connectors.agent.connector import AgentConnectorController
 
 
 class AgentConnector(Connector):
@@ -50,10 +50,10 @@ class AgentConnector(Connector):
         return AuthenticatorEndpointStageView
 
     @property
-    def controller(self) -> type["AgentConnector"]:
-        from authentik.endpoints.connectors.agent.connector import AgentConnector
+    def controller(self) -> type["AgentConnectorController"]:
+        from authentik.endpoints.connectors.agent.connector import AgentConnectorController
 
-        return AgentConnector
+        return AgentConnectorController
 
     @property
     def component(self) -> str:
