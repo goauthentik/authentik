@@ -61,7 +61,7 @@ export class DeviceViewPage extends AKElement {
             header: this.device?.name
                 ? msg(str`Device ${this.device?.name}`)
                 : msg("Loading device..."),
-            description: this.device
+            description: this.device?.facts.data.os
                 ? this.device?.facts.data.os?.name + " " + this.device?.facts.data.os?.version
                 : undefined,
             icon: "fa fa-laptop",
@@ -84,14 +84,14 @@ export class DeviceViewPage extends AKElement {
                     <div class="pf-c-card__body">
                         ${renderDescriptionList(
                             [
-                                [msg("Name"), this.device.facts.data.network?.hostname],
-                                [msg("Serial number"), this.device.facts.data.hardware?.serial],
+                                [msg("Name"), this.device.name],
+                                [msg("Serial number"), this.device.facts.data.hardware?.serial ?? "-"],
                                 [
                                     msg("Operating system"),
-                                    [
+                                    this.device.facts.data.os ? [
                                         this.device.facts.data.os?.name,
                                         this.device.facts.data.os?.version,
-                                    ].join(" "),
+                                    ].join(" ") : "-",
                                 ],
                                 [
                                     msg("Disk encryption"),
@@ -117,13 +117,13 @@ export class DeviceViewPage extends AKElement {
                             [
                                 [
                                     msg("Manufacturer"),
-                                    this.device.facts.data.hardware?.manufacturer,
+                                    this.device.facts.data.hardware?.manufacturer ?? "-",
                                 ],
-                                [msg("Model"), this.device.facts.data.hardware?.model],
+                                [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
                                 [
                                     msg("CPU"),
                                     msg(
-                                        str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
+                                        this.device.facts.data.hardware? str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}` : "-",
                                     ),
                                 ],
                                 [
