@@ -37,6 +37,6 @@ export function getUserDisplayName(user: User): string {
  */
 export class UserDeleteForm extends DeleteForm {
     protected override getObjectDisplayName(): string | undefined {
-        return this.obj ? getUserDisplayName(this.obj as User) : undefined;
+        return this.obj ? getUserDisplayName(this.obj as unknown as User) : undefined;
     }
 }
