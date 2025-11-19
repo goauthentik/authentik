@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.service import resolve_file_url_full
-from authentik.admin.files.usage import Usage
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
@@ -37,7 +37,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             return None
 
         request = self.context.get("request")
-        return resolve_file_url_full(obj.icon, Usage.MEDIA, request)
+        return FileManager(FileUsage.MEDIA).file_url(obj.icon, request)
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

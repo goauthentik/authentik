@@ -14,8 +14,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.service import resolve_file_url_full
-from authentik.admin.files.usage import Usage
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
@@ -57,8 +57,7 @@ class FlowSerializer(ModelSerializer):
         if not flow.background:
             return None
 
-        request = self.context.get("request")
-        return resolve_file_url_full(flow.background, Usage.MEDIA, request)
+        return FileManager(FileUsage.MEDIA).file_url(flow.background, self.context.get("request"))
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""

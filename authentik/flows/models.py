@@ -20,6 +20,8 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
 
 if TYPE_CHECKING:
     from authentik.flows.planner import FlowPlan
