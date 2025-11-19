@@ -36284,6 +36284,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - facts
       - group_obj
@@ -36317,6 +36320,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
         connections_obj:
           type: array
           items:
@@ -36362,6 +36368,9 @@ components:
           type: string
           format: date-time
           nullable: true
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - group_obj
       - name
@@ -45479,6 +45488,9 @@ components:
           type: string
           format: date-time
           nullable: true
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedEndpointRequest:
       type: object
       description: Endpoint Serializer

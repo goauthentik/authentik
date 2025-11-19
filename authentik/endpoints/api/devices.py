@@ -30,6 +30,7 @@ class EndpointDeviceSerializer(ModelSerializer):
             "expiring",
             "expires",
             "facts",
+            "attributes"
         ]
 
 

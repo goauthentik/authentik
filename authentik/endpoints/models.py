@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel
+from authentik.core.models import AttributesMixin, ExpiringModel
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
 
 
-class Device(ExpiringModel, PolicyBindingModel):
+class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
