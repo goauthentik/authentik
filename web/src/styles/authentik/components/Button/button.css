@@ -7,6 +7,7 @@
         --pf-global--disabled-color--100: var(--pf-global--danger-color--50);
         --pf-global--disabled-color--200: transparent;
         --pf-global--disabled-color--300: var(--pf-global--danger-color--100);
+        --pf-global--danger-color--200: var(--pf-global--palette--red-200);
     }
 }
 
