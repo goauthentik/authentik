@@ -3,13 +3,14 @@
 from collections.abc import Generator, Iterator
 from pathlib import Path
 
-from authentik.admin.files.backend import Backend, Usage
+from authentik.admin.files.backends.base import Backend
 from authentik.admin.files.constants import (
     STATIC_ASSETS_DIRS,
     STATIC_FILE_EXTENSIONS,
     STATIC_PATH_PREFIX,
     STATIC_SOURCES_DIR,
 )
+from authentik.admin.files.usage import Usage
 from authentik.admin.files.utils import get_web_path_prefix
 
 

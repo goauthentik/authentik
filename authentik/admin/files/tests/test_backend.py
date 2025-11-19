@@ -1,11 +1,12 @@
 """Test Backend base class and utilities"""
 
 from abc import ABC
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from django.test import TestCase
 
-from authentik.admin.files.backend import Backend, Usage, get_allowed_api_usages
+from authentik.admin.files.backends.base import Backend, get_allowed_api_usages
+from authentik.admin.files.usage import Usage
 
 
 class ConcreteBackend(Backend):
@@ -201,7 +202,7 @@ class TestBackend(TestCase):
         mock_get_config.return_value = "test"
 
         with self.assertLogs("_pytest.compat", level="INFO") as logs:
-            backend = ConcreteBackend(Usage.MEDIA)
+            _ = ConcreteBackend(Usage.MEDIA)
 
         log_output = "".join(logs.output)
         self.assertIn("Initialized storage backend", log_output)
@@ -213,7 +214,7 @@ class TestBackend(TestCase):
         # Non-manageable backends shouldn't trigger INFO logs
         with self.assertRaises(AssertionError):
             with self.assertLogs("authentik.admin.files.backend", level="INFO"):
-                backend = NonManageableBackend(Usage.MEDIA)
+                _ = NonManageableBackend(Usage.MEDIA)
 
     @patch("authentik.admin.files.backend.get_storage_config")
     def test_backend_methods_callable(self, mock_get_config):

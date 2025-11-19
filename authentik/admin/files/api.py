@@ -11,9 +11,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backend import Backend, Usage, get_allowed_api_usages
 from authentik.admin.files.backends import PassthroughBackend, StaticBackend
+from authentik.admin.files.backends.base import Backend, get_allowed_api_usages
 from authentik.admin.files.factory import BackendFactory
+from authentik.admin.files.usage import Usage
 from authentik.admin.files.utils import (
     add_schema_prefix,
     get_mime_from_filename,
@@ -87,7 +88,8 @@ class FileViewSet(ViewSet):
             # For common error codes
             if error_code == "SignatureDoesNotMatch":
                 raise ValidationError(
-                    "S3 authentication failed. Please check your access key, secret key, and region configuration."
+                    "S3 authentication failed. Please check your access key, secret key, and "
+                    "region configuration."
                 ) from error
             elif error_code == "NoSuchBucket":
                 raise ValidationError(
@@ -99,7 +101,8 @@ class FileViewSet(ViewSet):
                 ) from error
             else:
                 raise ValidationError(
-                    f"An error occurred during {operation}. Please check your storage configuration or contact support."
+                    f"An error occurred during {operation}. "
+                    "Please check your storage configuration or contact support."
                 ) from error
         elif isinstance(error, BotoCoreError):
             LOGGER.error(
@@ -108,11 +111,12 @@ class FileViewSet(ViewSet):
                 error=str(error),
             )
             raise ValidationError(
-                "Failed to connect to S3 storage. Please check your configuration or try again later."
+                "Failed to connect to S3 storage. "
+                "Please check your configuration or try again later."
             ) from error
         else:
             # Re-raise non-S3 errors
-            raise
+            raise error
 
     def _build_file_response(self, file_path: str, backend: Backend, usage: Usage) -> dict:
         """Build standardized file response with schema prefix for display.
@@ -192,13 +196,15 @@ class FileViewSet(ViewSet):
                 required=False,
                 description="Include static files in the results",
             ),
-            # Useful for the Admin interface where media usage by default allows passthrough and static backends too
+            # TODO: should be a manageable boolean
+            # Useful for the Admin interface where media usage by default allows passthrough and
+            # static backends too
             # So, we need to add a param to omit in this case
             OpenApiParameter(
                 name="omit",
                 type=str,
                 required=False,
-                description="Comma-separated list of backend types to exclude (e.g., 'passthrough,static')",
+                description="Comma-separated list of backend types to exclude",
             ),
         ],
         responses={200: FileSerializer(many=True)},

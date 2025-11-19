@@ -93,7 +93,7 @@ class TestGetStorageConfig(TestCase):
         """Test getting config with default value"""
         mock_config.get.return_value = "default-value"
 
-        result = get_storage_config("missing.key", "default-value")
+        _ = get_storage_config("missing.key", "default-value")
 
         mock_config.get.assert_called_once_with("storage.missing.key", "default-value")
 

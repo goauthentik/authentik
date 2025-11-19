@@ -1,18 +1,12 @@
 """Test Static backend implementation"""
 
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.backends.static import StaticBackend
-from authentik.admin.files.constants import (
-    STATIC_ASSETS_DIRS,
-    STATIC_FILE_EXTENSIONS,
-    STATIC_PATH_PREFIX,
-    STATIC_SOURCES_DIR,
-)
+from authentik.admin.files.usage import Usage
 
 
 class TestStaticBackend(TestCase):

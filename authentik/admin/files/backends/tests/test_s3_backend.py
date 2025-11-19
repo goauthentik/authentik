@@ -1,14 +1,13 @@
 """Test S3 backend implementation"""
 
-from io import BytesIO
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 from botocore.exceptions import ClientError
 from django.test import TestCase
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.constants import S3_DEFAULT_ACL, S3_PRESIGNED_URL_EXPIRY_SECONDS
+from authentik.admin.files.usage import Usage
 
 
 class TestS3Backend(TestCase):
@@ -124,7 +123,7 @@ class TestS3Backend(TestCase):
             }.get(key, default)
 
             backend = S3Backend(self.usage)
-            client = backend.client
+            _ = backend.client
 
             # Verify client was created with correct parameters
             mock_session_instance.client.assert_called_once()

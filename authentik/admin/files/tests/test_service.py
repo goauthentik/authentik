@@ -4,12 +4,12 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.service import (
     is_file_path_supported,
     resolve_file_url,
     resolve_file_url_full,
 )
+from authentik.admin.files.usage import Usage
 
 
 class TestResolveFileUrl(TestCase):
@@ -168,7 +168,8 @@ class TestResolveFileUrlFull(TestCase):
         }
         # Mock is_secure() to return True for HTTPS
         # Note: can't use HTTPS: "on" in META because HttpRequest.is_secure() doesn't check that
-        # in test environment it requires proper WSGI setup which we can't easily mock and it's just impractical to do
+        # in test environment it requires proper WSGI setup which we can't easily mock and it's just
+        # impractical to do
         mock_request.is_secure = MagicMock(return_value=True)
 
         result = resolve_file_url_full("/static/icon.svg", Usage.MEDIA, mock_request)

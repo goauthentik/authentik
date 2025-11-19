@@ -14,8 +14,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.service import resolve_file_url_full
+from authentik.admin.files.usage import Usage
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin

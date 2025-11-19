@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from rest_framework.request import Request
 
 
-
 class RequestWrapper:
     """Wrapper to handle both Django HttpRequest and DRF Request objects."""
 

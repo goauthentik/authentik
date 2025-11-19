@@ -2,20 +2,13 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterator
-from enum import Enum
 
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.usage import Usage
 from authentik.admin.files.utils import get_storage_config
 
 LOGGER = get_logger()
-
-
-class Usage(str, Enum):
-    """Usage types for file storage"""
-
-    MEDIA = "media"
-    REPORTS = "reports"
 
 
 class Backend(ABC):

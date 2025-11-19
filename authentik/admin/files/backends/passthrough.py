@@ -2,8 +2,9 @@
 
 from collections.abc import Generator, Iterator
 
-from authentik.admin.files.backend import Backend, Usage
+from authentik.admin.files.backends.base import Backend
 from authentik.admin.files.constants import EXTERNAL_URL_SCHEMES, FONT_AWESOME_SCHEME
+from authentik.admin.files.usage import Usage
 
 
 class PassthroughBackend(Backend):

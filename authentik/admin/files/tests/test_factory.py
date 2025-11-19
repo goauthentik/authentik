@@ -5,9 +5,9 @@ from unittest.mock import patch
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.backends import FileBackend, PassthroughBackend, S3Backend, StaticBackend
 from authentik.admin.files.factory import BackendFactory, _register_default_backends
+from authentik.admin.files.usage import Usage
 
 
 class TestBackendFactory(TestCase):
@@ -19,6 +19,7 @@ class TestBackendFactory(TestCase):
 
     def test_register(self):
         """Test registering a custom backend"""
+
         # Create a mock backend class
         class MockBackend:
             pass
@@ -150,7 +151,7 @@ class TestBackendFactory(TestCase):
         mock_get_config.return_value = "file"
 
         with self.assertLogs("authentik.admin.files.factory", level="INFO") as logs:
-            backend = BackendFactory.create(self.usage)
+            _ = BackendFactory.create(self.usage)
 
             # Verify logging occurred
             log_output = "".join(logs.output)

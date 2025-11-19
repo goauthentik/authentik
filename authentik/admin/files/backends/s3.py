@@ -11,11 +11,12 @@ from botocore.exceptions import ClientError
 from django.db import connection
 from django.utils.functional import cached_property
 
-from authentik.admin.files.backend import Backend, Usage
+from authentik.admin.files.backends.base import Backend
 from authentik.admin.files.constants import (
     S3_DEFAULT_ACL,
     S3_PRESIGNED_URL_EXPIRY_SECONDS,
 )
+from authentik.admin.files.usage import Usage
 
 
 class S3Backend(Backend):

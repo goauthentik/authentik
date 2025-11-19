@@ -8,7 +8,8 @@ from structlog.stdlib import get_logger
 from authentik.admin.files.utils import get_storage_config
 
 if TYPE_CHECKING:
-    from authentik.admin.files.backend import Backend, Usage
+    from authentik.admin.files.backends.base import Backend
+    from authentik.admin.files.usage import Usage
 
 LOGGER = get_logger()
 

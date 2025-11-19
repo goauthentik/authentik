@@ -2,13 +2,13 @@
 
 from django.http import HttpRequest
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.constants import (
     EXTERNAL_URL_SCHEMES,
     FONT_AWESOME_SCHEME,
     STATIC_PATH_PREFIX,
 )
 from authentik.admin.files.factory import BackendFactory
+from authentik.admin.files.usage import Usage
 from authentik.admin.files.utils import RequestWrapper, strip_schema_prefix
 
 

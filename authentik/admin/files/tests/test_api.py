@@ -9,7 +9,7 @@ from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
 from authentik.admin.files.api import FileViewSet
-from authentik.admin.files.backend import Usage
+from authentik.admin.files.usage import Usage
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id

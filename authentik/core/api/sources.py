@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.service import resolve_file_url_full
+from authentik.admin.files.usage import Usage
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer

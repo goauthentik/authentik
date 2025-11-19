@@ -7,8 +7,8 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.backends.file import FileBackend
+from authentik.admin.files.usage import Usage
 
 
 class TestFileBackend(TestCase):

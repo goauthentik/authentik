@@ -8,7 +8,8 @@ from pathlib import Path
 from django.db import connection
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backend import Backend, Usage
+from authentik.admin.files.backends.base import Backend
+from authentik.admin.files.usage import Usage
 from authentik.admin.files.utils import get_web_path_prefix
 
 LOGGER = get_logger()

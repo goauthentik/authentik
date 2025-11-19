@@ -2,8 +2,8 @@
 
 from django.test import TestCase
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.backends.passthrough import PassthroughBackend
+from authentik.admin.files.usage import Usage
 
 
 class TestPassthroughBackend(TestCase):

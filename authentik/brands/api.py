@@ -14,8 +14,8 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.files.backend import Usage
 from authentik.admin.files.service import resolve_file_url_full
+from authentik.admin.files.usage import Usage
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
