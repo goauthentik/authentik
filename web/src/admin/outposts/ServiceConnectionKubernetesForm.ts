@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
@@ -75,9 +75,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="verifySsl">
                 <label class="pf-c-switch">

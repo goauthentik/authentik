@@ -11,7 +11,7 @@ import "#components/ak-switch-input";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
@@ -143,9 +143,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>`;
     }
 }

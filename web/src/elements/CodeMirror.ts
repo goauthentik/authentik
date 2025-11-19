@@ -20,11 +20,13 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { drawSelection, EditorView, keymap, lineNumbers, ViewUpdate } from "@codemirror/view";
+import { spread } from "@open-wc/lit-helpers";
+import type { HTMLAttributes } from "react";
 import { Jsonifiable } from "type-fest";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 //#region Enums
@@ -306,6 +308,39 @@ export class CodeMirrorTextarea<
     };
 
     //#endregion
+}
+
+export interface CodeMirrorHelperTextProps extends HTMLAttributes<HTMLParagraphElement> {
+    yaml?: boolean;
+    json?: boolean;
+}
+
+export function CodeMirrorHelperText({
+    yaml = true,
+    json = true,
+    ...props
+}: CodeMirrorHelperTextProps = {}) {
+    if (!yaml && !json) {
+        return null;
+    }
+
+    let label: string;
+
+    if (!json) {
+        label = msg("Set custom attributes using YAML.", {
+            id: "codemirror.helper-text.yaml",
+        });
+    } else if (!yaml) {
+        label = msg("Set custom attributes using JSON.", {
+            id: "codemirror.helper-text.json",
+        });
+    } else {
+        label = msg("Set custom attributes using YAML or JSON.", {
+            id: "codemirror.helper-text.yaml-or-json",
+        });
+    }
+
+    return html`<p class="pf-c-form__helper-text" ${spread(props)}>${label}</p>`;
 }
 
 declare global {

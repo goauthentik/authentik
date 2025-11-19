@@ -5,7 +5,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
@@ -49,7 +49,13 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Entitlement Name", {
+                    id: "label.entitlement-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -57,15 +63,18 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+            <ak-form-element-horizontal
+                label=${msg("Attributes", {
+                    id: "label.attributes",
+                })}
+                name="attributes"
+            >
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>`;
     }
 }

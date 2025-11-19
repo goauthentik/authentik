@@ -10,7 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { formatSuccessMessage } from "#common/i18n/actions";
 import { MessageLevel } from "#common/messages";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { APIMessage } from "#elements/messages/Message";
@@ -213,9 +213,7 @@ export class UserForm extends ModelForm<User, number> {
                     )}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>`;
     }
 }
