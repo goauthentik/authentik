@@ -119,7 +119,7 @@ The LDAP provider supports two different search modes:
 
 #### Direct search
 
-Every LDAP search request will trigger one or more requests to the authentik core API. This will always return the latest data, however this has a performance hit due all the layers the backend requests have to go through.
+In this mode, every LDAP search request will trigger one or more requests to the authentik core API. This will always return the latest data, however this has a performance hit due to all the layers the backend requests have to go through.
 
 #### Cached search
 
