@@ -26,7 +26,7 @@ authentik also has built-in support for [PostgreSQL Read Replicas](../configurat
 
 In an active-standby deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
 
-The components of an active-standby authentik deployment:
+The components of an active-standby authentik deployment include:
 
 - **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
 - **Standby Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
