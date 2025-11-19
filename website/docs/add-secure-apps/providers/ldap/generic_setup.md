@@ -24,7 +24,7 @@ Refer to [Code-based MFA support](./index.md#code-based-mfa-support) for more in
 
 You'll need to create the stages that make up the flow.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Stages**, and click **Create**.
 
 #### Identification Stage
@@ -60,7 +60,7 @@ Finally, you'll need to create a User Login Stage.
 
 Now you'll need to create the LDAP authentication flow and bind the previously created stages.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**, click **Create**, and set the following required configurations:
     - Provide a **Name**, **Title** and **Slug** for the flow (e.g. `ldap-authentication-flow`).
     - Set **Designation** to `Authentication`.
@@ -74,7 +74,7 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
 
 The LDAP application and provider can now be created.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications**, click **Create with Provider** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **LDAP Provider** as the **Provider Type**, and then click **Next**.
@@ -88,7 +88,7 @@ If you followed the optional [Create an LDAP authentication flow](#create-an-lda
 
 Create a service account to bind to LDAP with.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users** and click **New User**.
 3. Provide a name for the service account (e.g. `ldapservice`) and click **Create**.
 4. Click the name of the newly created service account.
@@ -102,7 +102,7 @@ The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthen
 
 The service account needs permissions to search the LDAP directory.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**
 3. Click on the name of the newly created LDAP provider, then open the **Permissions** tab.
 4. Click **Assign to new user**
@@ -113,7 +113,7 @@ The service account needs permissions to search the LDAP directory.
 
 The LDAP provider requires the deployment of an LDAP [Outpost](../../outposts/index.mdx).
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Outposts**, click **Create** and set the following required configurations:
     - Provide a **Name** for the outpost (e.g. `LDAP Outpost').
     - Set the **Type** as `LDAP`.
