@@ -41,11 +41,11 @@ export class DeleteForm extends ModalButton {
 
     /**
      * Get the formatted object name for display in messages.
-     * Returns empty string if no display name, otherwise returns ` displayName` with a leading space.
+     * Returns ` "displayName"` with quotes if display name exists, empty string otherwise.
      */
     protected getFormattedObjectName(): string {
         const displayName = this.getObjectDisplayName();
-        return displayName ? ` ${displayName}` : "";
+        return displayName ? ` "${displayName}"` : "";
     }
 
     confirm(): Promise<void> {
