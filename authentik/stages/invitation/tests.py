@@ -1,13 +1,13 @@
 """invitation tests"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
-from django.utils.timezone import now
-from datetime import timedelta
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
