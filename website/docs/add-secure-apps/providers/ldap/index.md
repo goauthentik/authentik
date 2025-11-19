@@ -29,19 +29,19 @@ To aid compatibility, each user belongs to its own "virtual" group, as is standa
 
 The following attributes are returned for users:
 
-| Attribute       | Description                                                                                                                                                 |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cn`            | User's username                                                                                                                                             |
-| `uid`           | Unique user identifier                                                                                                                                      |
-| `uidNumber`     | A unique numeric identifier for the user                                                                                                                    |
-| `name`          | User's name                                                                                                                                                 |
-| `displayName`   | User's display name                                                                                                                                         |
-| `mail`          | User's email address                                                                                                                                        |
-| `objectClass`   | A list of these strings: "user", "organizationalPerson", "goauthentik.io/ldap/user"                                                                         |
-| `memberOf`      | A list of all DNs that the user is a member of                                                                                                              |
-| `homeDirectory` | A default home directory path for the user, by default `/home/$username`. Can be overwritten by setting `homeDirectory` as an attribute on users or groups. |
-| `ak-active`     | `true` if the account is active, otherwise `false`                                                                                                          |
-| `ak-superuser`  | `true` if the account is part of a group with superuser permissions, otherwise `false`                                                                      |
+| Attribute       | Description                                                                                                                                               |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cn`            | User's username                                                                                                                                           |
+| `uid`           | Unique user identifier                                                                                                                                    |
+| `uidNumber`     | A unique numeric identifier for the user                                                                                                                  |
+| `name`          | User's name                                                                                                                                               |
+| `displayName`   | User's display name                                                                                                                                       |
+| `mail`          | User's email address                                                                                                                                      |
+| `objectClass`   | List of these strings: "user", "organizationalPerson", "goauthentik.io/ldap/user"                                                                         |
+| `memberOf`      | List of all DNs that the user is a member of                                                                                                              |
+| `homeDirectory` | Default home directory path for the user, by default `/home/$username`. Can be overwritten by setting `homeDirectory` as an attribute on users or groups. |
+| `ak-active`     | `true` if the account is active, otherwise `false`                                                                                                        |
+| `ak-superuser`  | `true` if the account is part of a group with superuser permissions, otherwise `false`                                                                    |
 
 :::info Custom attributes
 Any custom attributes you set are also returned as LDAP attributes. Built-in attributes will be overwritten by custom attributes with matching names. Periods and slashes in custom attributes are sanitized.
