@@ -9,6 +9,7 @@ from django.db.models import OuterRef, Subquery
 from django.utils.timezone import now
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import AttributesMixin, ExpiringModel
 from authentik.flows.models import Stage
@@ -22,6 +23,7 @@ from authentik.tasks.schedules.models import ScheduledModel
 if TYPE_CHECKING:
     from authentik.endpoints.connector import BaseConnector
 
+LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
 
 
@@ -79,6 +81,7 @@ class DeviceConnection(SerializerModel):
         expires = now() + timedelta_from_string(self.connector.snapshot_expiry)
         # If this is the first snapshot for this connection, purge the cache
         if not DeviceFactSnapshot.objects.filter(connection=self).exists():
+            LOGGER.debug("Purging facts cache for device", device=self.device)
             cache.delete(self.device.cache_key_facts)
         return DeviceFactSnapshot.objects.create(
             connection=self,

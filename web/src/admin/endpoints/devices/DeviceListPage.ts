@@ -1,4 +1,5 @@
 import "#elements/cards/AggregateCard";
+import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -22,6 +23,8 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     public pageTitle = msg("Devices");
     public pageDescription = "";
     public pageIcon = "fa fa-laptop";
+
+    checkbox = true;
 
     static styles: CSSResult[] = [
         ...super.styles,
@@ -84,6 +87,31 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`${item.group || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
         ];
+    }
+
+    renderToolbarSelected() {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Endpoint Device(s)")}
+            .objects=${this.selectedElements}
+            .metadata=${(item: EndpointDevice) => {
+                return [{ key: msg("Name"), value: item.name }];
+            }}
+            .usedBy=${(item: EndpointDevice) => {
+                return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesUsedByList({
+                    deviceUuid: item.deviceUuid!,
+                });
+            }}
+            .delete=${(item: EndpointDevice) => {
+                return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesDestroy({
+                    deviceUuid: item.deviceUuid!,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 }
 
