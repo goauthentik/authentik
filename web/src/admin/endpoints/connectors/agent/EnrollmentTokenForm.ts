@@ -2,6 +2,7 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
+import "#admin/endpoints/ak-endpoints-device-group-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -51,12 +52,17 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
 
     renderForm() {
         return html`<ak-text-input
-            name="name"
-            placeholder=${msg("Token name...")}
-            label=${msg("Token name")}
-            value=${ifDefined(this.instance?.name)}
-            required
-        ></ak-text-input>`;
+                name="name"
+                placeholder=${msg("Token name...")}
+                label=${msg("Token name")}
+                value=${ifDefined(this.instance?.name)}
+                required
+            ></ak-text-input>
+            <ak-form-element-horizontal label=${msg("Device Group")} name="deviceGroup">
+                <ak-endpoints-device-group-search
+                    .group=${this.instance?.deviceGroup}
+                ></ak-endpoints-device-group-search>
+            </ak-form-element-horizontal> `;
     }
 }
 
