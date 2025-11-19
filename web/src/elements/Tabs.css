@@ -59,8 +59,4 @@ ak-tabs[vertical] {
 
 .pf-c-tabs__link {
     --pf-c-tabs__link--Color: var(--pf-global--Color--100);
-
-    &::before {
-        border-color: transparent;
-    }
 }

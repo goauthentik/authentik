@@ -1,3 +1,18 @@
+.pf-c-banner {
+    --pf-c-banner--PaddingTop: var(--pf-global--spacer--sm);
+    --pf-c-banner--PaddingBottom: var(--pf-global--spacer--sm);
+    --pf-c-banner--link--hover--FontWeight: var(--pf-global--FontWeight--normal);
+
+    font-family: var(--pf-global--FontFamily--heading--sans-serif);
+
+    a {
+        text-decoration-color: color-mix(in srgb, currentColor 30%, transparent 70%);
+    }
+    a:hover {
+        text-decoration-color: currentColor;
+    }
+}
+
 :host([theme="dark"]) .pf-c-banner {
     &.pf-m-info,
     &.pf-m-blue,
@@ -7,6 +22,8 @@
     &.pf-m-green,
     &.pf-m-warning,
     &.pf-m-gold {
+        --pf-c-banner--Color: var(--pf-global--palette--black-900);
+        --pf-c-banner--link--Color: var(--pf-global--palette--black-900);
         color: var(--pf-global--palette--black-900);
     }
 }
