@@ -34,12 +34,15 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
     @property
+    def cache_key_facts(self):
+        return f"goauthentik.io/endpoints/devices/{self.device_uuid}/facts"
+
+    @property
     def cached_facts(self) -> "DeviceFactSnapshot":
-        cache_key = f"goauthentik.io/endpoints/devices/{self.device_uuid}/facts"
-        if cached := cache.get(cache_key):
+        if cached := cache.get(self.cache_key_facts):
             return cached
         facts = self.facts
-        cache.set(cache_key, facts, timeout=DEVICE_FACTS_CACHE_TIMEOUT)
+        cache.set(self.cache_key_facts, facts, timeout=DEVICE_FACTS_CACHE_TIMEOUT)
         return facts
 
     @property
@@ -74,6 +77,9 @@ class DeviceConnection(SerializerModel):
 
     def create_snapshot(self, data: dict[str, Any]):
         expires = now() + timedelta_from_string(self.connector.snapshot_expiry)
+        # If this is the first snapshot for this connection, purge the cache
+        if not DeviceFactSnapshot.objects.filter(connection=self).exists():
+            cache.delete(self.device.cache_key_facts)
         return DeviceFactSnapshot.objects.create(
             connection=self,
             data=data,
