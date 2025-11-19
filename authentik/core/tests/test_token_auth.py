@@ -1,6 +1,9 @@
 """Test token auth"""
 
+from datetime import timedelta
+
 from django.test import TestCase
+from django.utils.timezone import now
 
 from authentik.core.auth import TokenBackend
 from authentik.core.models import Token, TokenIntents, User
@@ -26,6 +29,15 @@ class TestTokenAuth(TestCase):
         """Test auth with token"""
         self.assertEqual(
             TokenBackend().authenticate(self.request, "test-user", self.token.key), self.user
+        )
+
+    def test_token_auth_expired(self):
+        """Test auth with token"""
+        self.token.expiring = True
+        self.token.expires = now() - timedelta(hours=1)
+        self.token.save()
+        self.assertEqual(
+            TokenBackend().authenticate(self.request, "test-user", self.token.key), None
         )
 
     def test_token_auth_none(self):

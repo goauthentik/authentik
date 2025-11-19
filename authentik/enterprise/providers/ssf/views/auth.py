@@ -25,7 +25,7 @@ class SSFTokenAuth(BaseAuthentication):
 
     def check_token(self, key: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct provider"""
-        token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
+        token = Token.objects.filter(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
         provider: SSFProvider = token.ssfprovider_set.first()
@@ -39,7 +39,7 @@ class SSFTokenAuth(BaseAuthentication):
         """Check JWT-based authentication, this supports tokens issued either by providers
         configured directly in the provider, and by providers assigned to the application
         that the SSF provider is a backchannel provider of."""
-        token = AccessToken.filter_not_expired(token=jwt, revoked=False).first()
+        token = AccessToken.objects.filter(token=jwt, revoked=False).first()
         if not token:
             return None
         ssf_provider = SSFProvider.objects.filter(

@@ -220,7 +220,7 @@ class ClientIPMiddleware:
             return None
         delegated_ip = request.META[self.outpost_remote_ip_header]
         token = (
-            Token.filter_not_expired(
+            Token.objects.filter(
                 key=request.META.get(self.outpost_token_header), intent=TokenIntents.INTENT_API
             )
             .select_related("user")

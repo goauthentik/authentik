@@ -155,7 +155,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             ),
         )
         self.client.logout()
-        self.assertEqual(AccessToken.objects.all().count(), 0)
+        self.assertEqual(AccessToken.including_expired().all().count(), 0)
 
     def test_revoke_session_delete(self):
         """Test revoke on logout"""
@@ -180,7 +180,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             ),
         )
         session.delete()
-        self.assertEqual(AccessToken.objects.all().count(), 0)
+        self.assertEqual(AccessToken.including_expired().all().count(), 0)
 
     def test_revoke_user_deactivated(self):
         """Test revoke on logout"""
@@ -217,6 +217,6 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.user.is_active = False
         self.user.save()
 
-        self.assertEqual(AccessToken.objects.all().count(), 0)
-        self.assertEqual(RefreshToken.objects.all().count(), 0)
-        self.assertEqual(DeviceToken.objects.all().count(), 0)
+        self.assertEqual(AccessToken.including_expired().all().count(), 0)
+        self.assertEqual(RefreshToken.including_expired().all().count(), 0)
+        self.assertEqual(DeviceToken.including_expired().all().count(), 0)
