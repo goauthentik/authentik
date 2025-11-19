@@ -60,14 +60,12 @@ def auth_user_lookup(raw_header: bytes) -> User | None:
     if not auth_credentials:
         return None
     # first, check traditional tokens
-    key_token = Token.filter_not_expired(
-        key=auth_credentials, intent=TokenIntents.INTENT_API
-    ).first()
+    key_token = Token.objects.filter(key=auth_credentials, intent=TokenIntents.INTENT_API).first()
     if key_token:
         CTX_AUTH_VIA.set("api_token")
         return key_token.user
     # then try to auth via JWT
-    jwt_token = AccessToken.filter_not_expired(
+    jwt_token = AccessToken.objects.filter(
         token=auth_credentials, _scope__icontains=SCOPE_AUTHENTIK_API
     ).first()
     if jwt_token:

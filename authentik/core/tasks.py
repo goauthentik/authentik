@@ -27,7 +27,10 @@ def clean_expired_models():
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
+            cls.objects.including_expired()
+            .all()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
         for obj in chunked_queryset(objects):
