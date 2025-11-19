@@ -35,7 +35,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
 
     protected override get searchPlaceholder() {
         return msg("Search for an event by action or user...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.event-list",
         });
     }
 

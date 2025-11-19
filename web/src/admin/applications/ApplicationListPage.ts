@@ -52,7 +52,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override get searchPlaceholder() {
         return msg("Search for an application by name or group...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.application-list",
         });
     }
 

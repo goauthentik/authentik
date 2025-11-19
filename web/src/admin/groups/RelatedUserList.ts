@@ -126,7 +126,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
     protected override get searchPlaceholder() {
         return msg("Search for users by username or display name...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.user-related-list",
         });
     }
 

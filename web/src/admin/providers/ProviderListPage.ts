@@ -40,7 +40,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     protected override get searchPlaceholder() {
         return msg("Search for a provider by name or application...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.provider-list",
         });
     }
 

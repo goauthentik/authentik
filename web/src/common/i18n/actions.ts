@@ -13,7 +13,7 @@ import { msg, str } from "@lit/localize";
  * @see {@linkcode formatSuccessMessage} for a wrapper around this function.
  */
 export function formatSuccessActionMessage(pastTenseVerb: string, singularNoun: string): string {
-    return msg(`Successfully ${pastTenseVerb} ${singularNoun}.`, {
+    return msg(str`Successfully ${pastTenseVerb} ${singularNoun}.`, {
         id: "success-action-message",
         desc: "A message indicating that an action was successfully performed on an entity, with placeholders for the verb and noun",
     });
@@ -44,7 +44,7 @@ export function formatSuccessMessage(singularNoun: string, instance: unknown = f
  * @see {@linkcode formatErrorMessage} for a wrapper around this function.
  */
 export function formatErrorActionMessage(presentTenseVerb: string, singularNoun: string): string {
-    return msg(`Failed to ${presentTenseVerb} ${singularNoun}.`, {
+    return msg(str`Failed to ${presentTenseVerb} ${singularNoun}.`, {
         id: "error-action-message",
         desc: "A message indicating that an action failed to be performed on an entity, with placeholders for the verb and noun",
     });

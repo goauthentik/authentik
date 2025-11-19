@@ -30,7 +30,7 @@ export class GroupListPage extends TablePage<Group> {
 
     protected override get searchPlaceholder() {
         return msg("Search for a group by name...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.groups-list",
         });
     }
 

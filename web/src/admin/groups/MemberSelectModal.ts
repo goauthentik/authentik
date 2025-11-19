@@ -30,7 +30,7 @@ export class MemberSelectTable extends TableModal<User> {
 
     protected override get searchPlaceholder() {
         return msg("Search for users by username or display name...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.user-select-modal",
         });
     }
 

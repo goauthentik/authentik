@@ -89,10 +89,20 @@ export class RecentEventsCard extends Table<Event> {
             return super.renderEmpty(inner);
         }
 
+        const entityLabel = this.entityLabel.plural.toLowerCase();
+
         return super.renderEmpty(
             html`<ak-empty-state
-                ><span>${msg(msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`))}</span>
-                <div slot="body">${msg("No matching events could be found.")}</div>
+                ><span
+                    >${msg(str`No ${entityLabel} found.`, {
+                        id: "empty-state.heading",
+                    })}</span
+                >
+                <div slot="body">
+                    ${msg(str`No matching ${entityLabel} could be found.`, {
+                        id: "empty-state.body",
+                    })}
+                </div>
             </ak-empty-state>`,
         );
     }

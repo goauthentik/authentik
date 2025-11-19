@@ -77,7 +77,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
             <ak-form-element-horizontal
                 label=${msg("Role", {
                     id: "label.initial.permissions.role",
-                    desc: "Label for initial permissions role select",
+                    desc: "Label for initial permissions role mode",
                 })}
                 required
                 name="role"

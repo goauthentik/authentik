@@ -26,18 +26,42 @@ export const ActionTenseRecord: Record<ActionName, TenseRecord> = {
     //#region Constructive
 
     create: {
-        past: () => msg("Created"),
-        present: () => msg("Create"),
+        past: () =>
+            msg("Created", {
+                id: "action.created",
+                desc: "Past tense command form verb 'created'",
+            }),
+        present: () =>
+            msg("Create", {
+                id: "action.create",
+                desc: "Present tense command form verb 'Create'",
+            }),
     },
 
     add: {
-        past: () => msg("Added"),
-        present: () => msg("Add"),
+        past: () =>
+            msg("Added", {
+                id: "action.added",
+                desc: "Past tense command form verb 'added'",
+            }),
+        present: () =>
+            msg("Add", {
+                id: "action.add",
+                desc: "Present tense command form verb 'Add'",
+            }),
     },
 
     generate: {
-        past: () => msg("Generated"),
-        present: () => msg("Generate"),
+        past: () =>
+            msg("Generated", {
+                id: "action.generated",
+                desc: "Past tense command form verb 'generated'",
+            }),
+        present: () =>
+            msg("Generate", {
+                id: "action.generate",
+                desc: "Present tense command form verb 'Generate'",
+            }),
     },
 
     //#endregion
@@ -45,18 +69,42 @@ export const ActionTenseRecord: Record<ActionName, TenseRecord> = {
     //#region Destructive
 
     delete: {
-        past: () => msg("Deleted"),
-        present: () => msg("Delete"),
+        past: () =>
+            msg("Deleted", {
+                id: "action.deleted",
+                desc: "Past tense command form verb 'deleted'",
+            }),
+        present: () =>
+            msg("Delete", {
+                id: "action.delete",
+                desc: "Present tense command form verb 'Delete'",
+            }),
     },
 
     revoke: {
-        past: () => msg("Revoked"),
-        present: () => msg("Revoke"),
+        past: () =>
+            msg("Revoked", {
+                id: "action.revoked",
+                desc: "Past tense command form verb 'revoked'",
+            }),
+        present: () =>
+            msg("Revoke", {
+                id: "action.revoke",
+                desc: "Present tense command form verb 'Revoke'",
+            }),
     },
 
     remove: {
-        past: () => msg("Removed"),
-        present: () => msg("Remove"),
+        past: () =>
+            msg("Removed", {
+                id: "action.removed",
+                desc: "Past tense command form verb 'removed'",
+            }),
+        present: () =>
+            msg("Remove", {
+                id: "action.remove",
+                desc: "Present tense command form verb 'Remove'",
+            }),
     },
 
     //#endregion
@@ -64,28 +112,68 @@ export const ActionTenseRecord: Record<ActionName, TenseRecord> = {
     //#region Directive
 
     import: {
-        past: () => msg("Imported"),
-        present: () => msg("Import"),
+        past: () =>
+            msg("Imported", {
+                id: "action.imported",
+                desc: "Past tense command form verb 'imported'",
+            }),
+        present: () =>
+            msg("Import", {
+                id: "action.import",
+                desc: "Present tense command form verb 'Import'",
+            }),
     },
 
     send: {
-        past: () => msg("Sent"),
-        present: () => msg("Send"),
+        past: () =>
+            msg("Sent", {
+                id: "action.sent",
+                desc: "Past tense command form verb 'sent'",
+            }),
+        present: () =>
+            msg("Send", {
+                id: "action.send",
+                desc: "Present tense command form verb 'Send'",
+            }),
     },
 
     assign: {
-        past: () => msg("Assigned"),
-        present: () => msg("Assign"),
+        past: () =>
+            msg("Assigned", {
+                id: "action.assigned",
+                desc: "Past tense command form verb 'assigned'",
+            }),
+        present: () =>
+            msg("Assign", {
+                id: "action.assign",
+                desc: "Present tense command form verb 'Assign'",
+            }),
     },
 
     trigger: {
-        past: () => msg("Triggered"),
-        present: () => msg("Trigger"),
+        past: () =>
+            msg("Triggered", {
+                id: "action.triggered",
+                desc: "Past tense command form verb 'triggered'",
+            }),
+        present: () =>
+            msg("Trigger", {
+                id: "action.trigger",
+                desc: "Present tense command form verb 'Trigger'",
+            }),
     },
 
     impersonate: {
-        past: () => msg("Impersonated"),
-        present: () => msg("Impersonate"),
+        past: () =>
+            msg("Impersonated", {
+                id: "action.impersonated",
+                desc: "Past tense command form verb 'impersonated'",
+            }),
+        present: () =>
+            msg("Impersonate", {
+                id: "action.impersonate",
+                desc: "Present tense command form verb 'Impersonate'",
+            }),
     },
 
     //#endregion
@@ -93,23 +181,55 @@ export const ActionTenseRecord: Record<ActionName, TenseRecord> = {
     //#region Modificative
 
     edit: {
-        past: () => msg("Edited"),
-        present: () => msg("Edit"),
+        past: () =>
+            msg("Edited", {
+                id: "action.edited",
+                desc: "Past tense command form verb 'edited'",
+            }),
+        present: () =>
+            msg("Edit", {
+                id: "action.edit",
+                desc: "Present tense command form verb 'Edit'",
+            }),
     },
 
     update: {
-        past: () => msg("Updated"),
-        present: () => msg("Update"),
+        past: () =>
+            msg("Updated", {
+                id: "action.updated",
+                desc: "Past tense command form verb 'updated'",
+            }),
+        present: () =>
+            msg("Update", {
+                id: "action.update",
+                desc: "Present tense command form verb 'Update'",
+            }),
     },
 
     save: {
-        past: () => msg("Saved"),
-        present: () => msg("Save"),
+        past: () =>
+            msg("Saved", {
+                id: "action.saved",
+                desc: "Past tense command form verb 'saved'",
+            }),
+        present: () =>
+            msg("Save", {
+                id: "action.save",
+                desc: "Present tense command form verb 'Save'",
+            }),
     },
 
     apply: {
-        past: () => msg("Applied Changes"),
-        present: () => msg("Apply Changes"),
+        past: () =>
+            msg("Applied Changes", {
+                id: "action.applied-changes",
+                desc: "Past tense command form verb 'apply changes'",
+            }),
+        present: () =>
+            msg("Apply Changes", {
+                id: "action.apply-changes",
+                desc: "Present tense command form verb 'Apply Changes'",
+            }),
     },
 
     //#endregion

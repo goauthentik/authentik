@@ -91,7 +91,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     >
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg(this.editEntityLabel)}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>

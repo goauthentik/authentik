@@ -27,7 +27,7 @@ export class BrandListPage extends TablePage<Brand> {
     };
     protected get searchPlaceholder() {
         return msg("Search by domain or brand name...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.brand-list",
         });
     }
 

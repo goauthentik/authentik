@@ -92,7 +92,7 @@ export class UserListPage extends WithBrandConfig(
     protected override searchEnabled = true;
     public override get searchPlaceholder() {
         return msg("Search by username, email, etc...", {
-            id: "search.placeholder.",
+            id: "search.placeholder.user-list",
         });
     }
 
