@@ -62,7 +62,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 <ak-endpoints-device-group-search
                     .group=${this.instance?.deviceGroup}
                 ></ak-endpoints-device-group-search>
-            </ak-form-element-horizontal> `;
+            </ak-form-element-horizontal>`;
     }
 }
 

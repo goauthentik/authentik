@@ -1,5 +1,7 @@
 import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
+import "#admin/endpoints/devices/DeviceForm";
+import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -85,13 +87,18 @@ export class DeviceViewPage extends AKElement {
                         ${renderDescriptionList(
                             [
                                 [msg("Name"), this.device.name],
-                                [msg("Serial number"), this.device.facts.data.hardware?.serial ?? "-"],
+                                [
+                                    msg("Serial number"),
+                                    this.device.facts.data.hardware?.serial ?? "-",
+                                ],
                                 [
                                     msg("Operating system"),
-                                    this.device.facts.data.os ? [
-                                        this.device.facts.data.os?.name,
-                                        this.device.facts.data.os?.version,
-                                    ].join(" ") : "-",
+                                    this.device.facts.data.os
+                                        ? [
+                                              this.device.facts.data.os?.name,
+                                              this.device.facts.data.os?.version,
+                                          ].join(" ")
+                                        : "-",
                                 ],
                                 [
                                     msg("Disk encryption"),
@@ -104,6 +111,21 @@ export class DeviceViewPage extends AKElement {
                                     html`<ak-status-label
                                         ?good=${this.device.facts.data.network?.firewallEnabled}
                                     ></ak-status-label>`,
+                                ],
+                                [
+                                    msg("Actions"),
+                                    html`<ak-forms-modal>
+                                        <span slot="submit">${msg("Update")}</span>
+                                        <span slot="header">${msg("Update Device")}</span>
+                                        <ak-endpoints-device-form
+                                            slot="form"
+                                            .instancePk=${this.device.deviceUuid}
+                                        >
+                                        </ak-endpoints-device-form>
+                                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                                            ${msg("Edit")}
+                                        </button>
+                                    </ak-forms-modal>`,
                                 ],
                             ],
                             { horizontal: true },
@@ -123,7 +145,9 @@ export class DeviceViewPage extends AKElement {
                                 [
                                     msg("CPU"),
                                     msg(
-                                        this.device.facts.data.hardware? str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}` : "-",
+                                        this.device.facts.data.hardware
+                                            ? str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`
+                                            : "-",
                                     ),
                                 ],
                                 [

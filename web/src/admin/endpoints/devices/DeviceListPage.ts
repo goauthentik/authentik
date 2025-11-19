@@ -1,5 +1,7 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
+import "#admin/endpoints/devices/DeviceForm";
+import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -42,6 +44,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         [msg("OS")],
         [msg("Group")],
         [msg("Last updated")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     ordering = "name";
@@ -86,6 +89,17 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`${osFamilyToLabel(item.facts.data.os?.family)} ${item.facts.data.os?.version}`,
             html`${item.group || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
+            html`<ak-forms-modal>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Device")}</span>
+                <ak-endpoints-device-form slot="form" .instancePk=${item.deviceUuid}>
+                </ak-endpoints-device-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 
