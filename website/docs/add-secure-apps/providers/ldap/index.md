@@ -53,14 +53,14 @@ Groups are located under: `ou=groups,<base DN>`
 
 The following attributes are returned for groups:
 
-| Attribute     | Description                                                                                            |
-| ------------- | ------------------------------------------------------------------------------------------------------ |
-| `cn`          | The group's name                                                                                       |
-| `uid`         | Unique group identifier                                                                                |
-| `gidNumber`   | A unique numeric identifier for the group                                                              |
-| `member`      | A list of all DNs of the group's members, including groups which have this group as their parent group |
-| `memberOf`    | The DN of the parent group if this group has a parent group                                            |
-| `objectClass` | A list of these strings: "group", "goauthentik.io/ldap/group"                                          |
+| Attribute     | Description                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------- |
+| `cn`          | The group's name                                                                                     |
+| `uid`         | Unique group identifier                                                                              |
+| `gidNumber`   | Unique numeric identifier for the group                                                              |
+| `member`      | List of all DNs of the group's members, including groups which have this group as their parent group |
+| `memberOf`    | The DN of the parent group if this group has a parent group                                          |
+| `objectClass` | List of these strings: "group", "goauthentik.io/ldap/group"                                          |
 
 :::info Custom attributes
 Any custom attributes you set are also returned as LDAP attributes. Built-in attributes will be overwritten by custom attributes with matching names. Periods and slashes in custom attributes are sanitized.
