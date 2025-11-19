@@ -7,25 +7,10 @@ import Tabs from "@theme/Tabs";
 
 Creating an authentik LDAP provider requires the following steps:
 
-1. Create a service account
-2. Create an LDAP authentication flow _(optional)_
-3. Create an LDAP application and provider
-4. Assign the LDAP search permission to the service account
-5. Create an LDAP Outpost
-
-## Create a service account
-
-Create a new user account to bind with
-
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Users** and click **New User**.
-3. Provide a name for the service account (e.g. `ldapservice`) and click **Create**.
-4. Click the name of the newly created service account.
-5. Under **Recovery**, click **Set password**, provide a secure password for the account, and click **Update password**.
-
-:::info Default DN of service account
-The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
-:::
+1. Create an LDAP authentication flow _(optional)_
+2. Create an LDAP application and provider
+3. Create a service account and assign the LDAP search permission
+4. Create an LDAP Outpost
 
 ## Create an LDAP authentication flow _(optional)_
 
@@ -44,7 +29,7 @@ You'll need to create the stages that make up the flow.
 
 #### Identification Stage
 
-First, you'll need to create a Password Stage:
+First, you'll need to create a Password Stage.
 
 3. Select **Password Stage** as the stage type, click **Next**, and set the following required configurations:
     - Provide a **Name** for the stage (e.g. `ldap-authentication-password-stage`).
@@ -53,7 +38,7 @@ First, you'll need to create a Password Stage:
 
 #### Password Stage
 
-Next, you'll need to create an Identification Stage:
+Next, you'll need to create an Identification Stage.
 
 5. On the **Stages** page, click **Create**.
 6. Select **Identification Stage** as the stage type, click **Next**, and set the following required configurations:
@@ -64,7 +49,7 @@ Next, you'll need to create an Identification Stage:
 
 #### User Login Stage
 
-Finally, you'll need to create a User Login Stage:
+Finally, you'll need to create a User Login Stage.
 
 8. On the **Stages** page, click **Create**.
 9. Select **User Login Stage** as the stage type, click **Next**, and set the following required configurations:
@@ -73,7 +58,7 @@ Finally, you'll need to create a User Login Stage:
 
 ### Create an LDAP authentication flow
 
-Now you'll need to create the LDAP authentication flow and bind the previously created stages:
+Now you'll need to create the LDAP authentication flow and bind the previously created stages.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**, click **Create**, and set the following required configurations:
@@ -87,6 +72,8 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
 
 ## Create an LDAP application and provider
 
+The LDAP application and provider can now be created.
+
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications**, click **Create with Provider** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
@@ -97,7 +84,23 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
 If you followed the optional [Create an LDAP authentication flow](#create-an-ldap-authentication-flow-optional) section, ensure that you set **Bind flow** to newly created authentication flow (e.g. `ldap-authentication-flow`).
 :::
 
-## Assign the LDAP search permission
+## Create a service account
+
+Create a service account to bind to LDAP with.
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click **New User**.
+3. Provide a name for the service account (e.g. `ldapservice`) and click **Create**.
+4. Click the name of the newly created service account.
+5. Under **Recovery**, click **Set password**, provide a secure password for the account, and click **Update password**.
+
+:::info Default DN of service account
+The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+:::
+
+### Assign the LDAP search permission to the service account
+
+The service account needs permissions to search the LDAP directory.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**
