@@ -23,7 +23,6 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-endpoints-agent-enrollment-token-list")
 export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
-    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
