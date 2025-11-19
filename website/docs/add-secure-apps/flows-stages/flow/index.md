@@ -34,7 +34,7 @@ Flows can be imported and exported (as [blueprints](../../../customize/blueprint
 
 You can create your own flow or download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
-Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
+Starting with authentik 2022.8, flows are exported as YAML, but JSON-based flows can still be imported.
 
 ## Create a custom flow
 
@@ -91,6 +91,6 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 ## Edit or delete a flow
 
-- To edit a flow, navigate to **Customization > Flows** in the Admin interface, and then click **Edit** for the flow that you want to modify.
+- To edit a flow, navigate to **Flows and Stages > Flows** in the Admin interface, and then click **Edit** for the flow that you want to modify.
 
-- To delete a flow, navigate to **Customization > Flows** in the Admin interface, select the checkbox in front of the flow instance that you want to delete, and then click **Delete** at the top of the list. You can retrieve and re-apply that flow by following the steps above to create a new flow.
+- To delete a flow, navigate to **Flows and Stages > Flows** in the Admin interface, select the checkbox in front of the flow instance that you want to delete, and then click **Delete** at the top of the list. You can retrieve and re-apply that flow by following the steps above to create a new flow.

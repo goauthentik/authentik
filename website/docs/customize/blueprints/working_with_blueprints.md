@@ -19,7 +19,7 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
 3. Click **Create** and define the new blueprint instance.
     - **Name**: provide a descriptive name.
     - **Enabled**: toggle on or off. Disabled blueprints cannot be applied.
-    - **Blueprint**: select the source for this instance. You can choose a file from a **Local path**, an **OCI registry**, or **Internal** (paste file contents directly).
+    - **Blueprint**: select the source for this instance. You can choose a file from a **Local path**, an **OCI registry**, or **Internal** (paste file contents directly, stored in database).
     - **Additional Settings**:
         - **Context**: add any [`key:value` context variable](./index.mdx#blueprint-execution) used in the blueprint instance.
 4. Click **Create** to save the new blueprint instance. This file is read and applied regularly by authentik.
