@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
-from authentik.endpoints.models import Device, DeviceConnection
+from authentik.endpoints.models import Device, DeviceConnection, DeviceGroup
 from authentik.lib.generators import generate_id
 
 CHECK_IN_DATA_VALID = {
@@ -55,6 +55,23 @@ class TestAgentConnector(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_enroll_group(self):
+        device_group = DeviceGroup.objects.create(
+            name=generate_id()
+        )
+        self.token.device_group = device_group
+        self.token.save()
+        ident = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": ident, "device_name": "bar"},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        device = Device.objects.filter(identifier=ident).first()
+        self.assertIsNotNone(device)
+        self.assertEqual(device.group, device_group)
 
     def test_enroll_expired(self):
         dev_id = generate_id()

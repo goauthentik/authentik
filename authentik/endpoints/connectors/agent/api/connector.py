@@ -75,6 +75,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
             defaults={
                 "name": data.validated_data["device_name"],
                 "expiring": False,
+                "group": token.device_group,
             },
         )
         connection, _ = DeviceConnection.objects.update_or_create(
