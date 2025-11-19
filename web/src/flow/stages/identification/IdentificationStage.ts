@@ -400,16 +400,13 @@ export class IdentificationStage extends BaseStage<
                     : nothing}
                 ${this.renderInput()}
                 ${this.challenge.passwordlessUrl
-                    ? html`
-                          <div>
-                              <a
-                                  href=${this.challenge.passwordlessUrl}
-                                  class="pf-c-button pf-m-secondary pf-m-block"
-                              >
-                                  ${msg("Use a security key")}
-                              </a>
-                          </div>
-                      `
+                    ? html`<a
+                          name="passwordless"
+                          href=${this.challenge.passwordlessUrl}
+                          class="pf-c-button pf-m-secondary pf-m-block"
+                      >
+                          ${msg("Use a security key")}
+                      </a> `
                     : nothing}
             </form>
             ${this.challenge.sources?.length

@@ -113,7 +113,7 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp(`^/flow/flows/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/flows/FlowViewPage");
-        return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
+        return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("#admin/events/EventListPage");

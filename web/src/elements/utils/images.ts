@@ -36,3 +36,7 @@ export function renderImage(imagePath: string, alt: string = "", className: stri
     const src = themeImage(imagePath);
     return html`<img src="${src}" alt="${alt}" class="${className}" role="img" />`;
 }
+
+export function isDefaultAvatar(path?: string | null): boolean {
+    return !!path?.endsWith("user_default.png");
+}

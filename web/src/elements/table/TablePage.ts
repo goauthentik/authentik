@@ -19,6 +19,10 @@ export abstract class TablePage<T extends object> extends Table<T> {
         PFContent,
         PFSidebar,
         css`
+            :host {
+                display: flex;
+            }
+
             .pf-c-sidebar__panel {
                 --pf-c-sidebar__panel--Position: static;
                 flex: 0 1 25%;
