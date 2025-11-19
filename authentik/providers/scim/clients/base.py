@@ -92,7 +92,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
-        cache_key = f"scim_provider_config_{self.provider.pk}"
+        cache_key = f"goauthentik.io/providers/scim/{self.provider.pk}/service_provider_config"
 
         # Check cache first
         cached_config = cache.get(cache_key)
