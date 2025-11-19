@@ -2,94 +2,181 @@
 title: Create an LDAP provider
 ---
 
-### Create Service account
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
-1. Create a new user account to bind with under **Directory > Users > Create**, in this example called `ldapservice`.
+Creating an authentik LDAP provider requires the following steps:
 
-    Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+1. Create a service account
+2. Create an LDAP authentication flow _(optional)_
+3. Create an LDAP application and provider
+4. Assign the LDAP search permission to the service account
+5. Create an LDAP Outpost
 
-:::info
-Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices and WebAuthn (which enables passkey-based authentication) devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Application & Provider](#create-ldap-application--provider)
+## Create a service account
+
+Create a new user account to bind with
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click **New User**.
+3. Provide a name for the service account (e.g. `ldapservice`) and click **Create**.
+4. Click the name of the newly created service account.
+5. Under **Recovery**, click **Set password**, provide a secure password for the account, and click **Update password**.
+
+:::info Default DN of service account
+The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 :::
 
-### LDAP Flow
+## Create an LDAP authentication flow _(optional)_
 
-#### Create Custom Stages
+The `default-authentication-flow` validates MFA by default. DUO, TOTP and static authenticators are supported by the LDAP provider (not WebAuthn or SMS).
 
-1. Create a new identification stage. **Flows & Stages > Stages > Create**
-   ![](./general_setup1.png)
-2. Name it `ldap-identification-stage`. Select User fields Username and Email (and UPN if it is relevant to your setup).
-   ![](./general_setup2.png)
-3. Create a new password stage. **Flows & Stages > Stages > Create**
-   ![](./general_setup3.png)
-4. Name it `ldap-authentication-password`. Leave the defaults for Backends.
-   ![](./general_setup4.png)
-5. Create a new user login stage. **Flows & Stages > Stages > Create**
-   ![](./general_setup5.png)
-6. Name it `ldap-authentication-login`.
-   ![](./general_setup6.png)
+If you plan to use only dedicated service accounts to bind to LDAP, or only use LDAP supported MFA authenticators, then you can use the default authentictation flow and skip this section and continue at [Create LDAP Application and Provider](#create-an-ldap-application-and-provider)
 
-#### Create Custom Flow
+Refer to [Code-based MFA support](./index.md#code-based-mfa-support) for more information on LDAP and MFA.
 
-1. Create a new authentication flow under **Flows & Stages > Flows > Create**, and name it `ldap-authentication-flow`
-   ![](./general_setup7.png)
-2. Click the newly created flow and choose _Stage Bindings_.
-   ![](./general_setup8.png)
-3. Click `Bind Stage` choose `ldap-identification-stage` and set the order to `10`.
-   ![](./general_setup9.png)
-4. Click `Bind Stage` choose `ldap-authentication-login` and set the order to `30`.
-   ![](./general_setup11.png)
-5. Edit the `ldap-identification-stage`.
-   ![](./general_setup12.png)
-6. Change the Password stage to `ldap-authentication-password`.
-   ![](./general_setup13.png)
+### Create custom stages
 
-### Create LDAP Application & Provider
+You'll need to create the stages that make up the flow.
 
-1. Create the LDAP Application under **Applications > Applications > Create With provider** and name it `LDAP`.
-   ![](./general_setup14.png)
-   ![](./general_setup15.png)
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Stages**, and click **Create**.
 
-### Assign LDAP permissions
+#### Identification Stage
 
-1. Navigate to the LDAP Provider under **Applications > Providers** > `Provider for LDAP`.
-2. Switch to the _Permissions_ tab.
-3. Click the _Assign to new user_ button to select a user to assign the full directory search permission to.
-4. Select the `ldapservice` user typing in its username. Select the _Search full LDAP directory_ permission and click _Assign_
+First, you'll need to create a Password Stage:
 
-### Create LDAP Outpost
+3. Select **Password Stage** as the stage type, click **Next**, and set the following required configurations:
+    - Provide a **Name** for the stage (e.g. `ldap-authentication-password-stage`).
+    - For **Backends**, leave the default settings.
+4. Click **Finish**
 
-1. Create (or update) the LDAP Outpost under **Applications > Outposts > Create**. Set the Type to `LDAP` and choose the `LDAP` application created in the previous step.
-   ![](./general_setup16.png)
+#### Password Stage
+
+Next, you'll need to create an Identification Stage:
+
+5. On the **Stages** page, click **Create**.
+6. Select **Identification Stage** as the stage type, click **Next**, and set the following required configurations:
+    - Provide a **Name** for the stage (e.g. `ldap-identification-stage`).
+    - For **User fields**, select `Username` and `Email` (and UPN if it is relevant to your setup).
+    - Set **Password stage** to the Password Stage created in the previous section (e.g. `ldap-authentication-password-stage`)
+7. Click **Finish**
+
+#### User Login Stage
+
+Finally, you'll need to create a User Login Stage:
+
+8. On the **Stages** page, click **Create**.
+9. Select **User Login Stage** as the stage type, click **Next**, and set the following required configurations:
+    - Provide a **Name** for the stage (e.g. `ldap-authentication-login-stage`).
+10. Click **Finish**
+
+### Create an LDAP authentication flow
+
+Now you'll need to create the LDAP authentication flow and bind the previously created stages:
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows**, click **Create**, and set the following required configurations:
+    - Provide a **Name**, **Title** and **Slug** for the flow (e.g. `ldap-authentication-flow`).
+    - Set **Designation** to `Authentication`.
+3. Click **Create**.
+4. Click the name of the newly created flow, open the **Stage Bindings** tab, and click **Bind existing stage**.
+5. Select the previously created LDAP Identification Stage (e.g.`ldap-identification-stage`), set the order to `10`, and click **Create**.
+6. Click **Bind existing stage**.
+7. Select the previously created LDAP User Login Stage (e.g.`ldap-authentication-login-stage`), set the order to `30`, and click **Create**.
+
+## Create an LDAP application and provider
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications**, click **Create with Provider** to create an application and provider pair.
+3. On the **New application** page, define the application details, and then click **Next**.
+4. Select **LDAP Provider** as the **Provider Type**, and then click **Next**.
+5. On the **Configure LDAP Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
 
 :::info
-The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access
+If you followed the optional [Create an LDAP authentication flow](#create-an-ldap-authentication-flow-optional) section, ensure that you set **Bind flow** to newly created authentication flow (e.g. `ldap-authentication-flow`).
 :::
 
-### ldapsearch Test
+## Assign the LDAP search permission
 
-Test connectivity by using ldapsearch.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers**
+3. Click on the name of the newly created LDAP provider, then open the **Permissions** tab.
+4. Click **Assign to new user**
+5. For **User**, select a user to assign the full directory search permission to (e.g. `ldapservice`).
+6. Enable the **Search full LDAP directory** permission and click **Assign**
 
-:::info
-ldapsearch can be installed on Linux system with these commands
+## Create an LDAP Outpost
+
+The LDAP provider requires the deployment of an LDAP [Outpost](../../outposts/index.mdx).
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts**, click **Create** and set the following required configurations:
+    - Provide a **Name** for the outpost (e.g. `LDAP Outpost').
+    - Set the **Type** as `LDAP`.
+    - Set **Integration** to match your deployment method or manually deploy an outpost via [Docker-Compose](../../outposts/manual-deploy-docker-compose.md) or [Kubernetes](../../outposts/manual-deploy-kubernetes.md). For more information, refer to the [Outpost documentation](../../outposts/index.mdx).
+    - Under **Applications**, select the LDAP application created in the previous section.
+    - Under **Advanced settings**, set the required outpost configurations. For more information, refer to [Outpost Configuration](../../outposts/index.mdx#configuration)
+
+3. Click **Create**.
+
+:::warning Multiple LDAP providers
+The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access.
+:::
+
+## Configuration verification
+
+You can test the LDAP provider by using the `ldapsearch` tool on Linux and macOS or the `dsquery` tool on Windows.
+
+<Tabs
+defaultValue="ldapsearch"
+values={[
+{ label: "ldapsearch", value: "ldapsearch" },
+{ label: "dsquery", value: "dsquery" },
+]}
+
+> <TabItem value="ldapsearch">
+
+To install the `ldapsearch` tool, use one of the following commands:
 
 ```shell
 sudo apt-get install ldap-utils -y # Debian-based systems
 sudo yum install openldap-clients -y # CentOS-based systems
+brew install openldap #macOS based systems (requires Homebrew to be installed)
 ```
 
-:::
+To search the LDAP directory using the previously created `ldapservice` service account, use the following command:
 
 ```shell
 ldapsearch \
   -x \
-  -H ldap://<LDAP Outpost IP address>:<Port number 389> \ # In production it is recommended to use SSL, which also requires `ldaps://` as the protocol and the SSL port
+  -H ldap://<LDAP outpost IP address>:389 \
   -D 'cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io' \
   -w '<ldapuserpassword>' \
   -b 'DC=ldap,DC=goauthentik,DC=io' \
   '(objectClass=user)'
 ```
 
-:::info
-This query will log the first successful attempt in an event in the **Events > Logs** area, further successful logins from the same user are not logged as they are cached in the outpost.
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. By default, further successful logins from the same user are not logged as they are cached in the outpost, see [Bind modes](./index.md#bind-modes) for more information.
+
+:::warning LDAPS
+In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.
 :::
+
+  </TabItem>
+  <TabItem value="dsquery">
+
+To search the LDAP directory using the previously created `ldapservice` service account, use the following command:
+
+```powershell
+dsquery * -s <LDAP outpost IP address> -u "cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io" -p <ldapuserpassword> -b "DC=ldap,DC=goauthentik,DC=io" -filter "(objectClass=user)"
+```
+
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. By default, further successful logins from the same user are not logged as they are cached in the outpost, see [Bind modes](./index.md#bind-modes) for more information.
+
+:::warning LDAPS
+In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.
+:::
+
+  </TabItem>
+</Tabs>
