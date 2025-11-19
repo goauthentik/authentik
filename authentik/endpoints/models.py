@@ -62,6 +62,9 @@ class Device(ExpiringModel, PolicyBindingModel):
 
 class DeviceUserBinding(PolicyBinding):
     is_primary = models.BooleanField(default=False)
+    # Used for storing a reference to the connector if this user/group binding was created
+    # by a connector and not manually
+    connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
 
 
 class DeviceConnection(SerializerModel):
