@@ -4976,6 +4976,33 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/{connector_uuid}/mdm_config/:
+    get:
+      operationId: endpoints_agents_connectors_mdm_config_retrieve
+      description: Generate configuration for MDM systems to deploy authentik Agent
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Agent Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/{connector_uuid}/used_by/:
     get:
       operationId: endpoints_agents_connectors_used_by_list

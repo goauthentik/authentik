@@ -144,6 +144,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(request=MDMConfigSerializer)
     @action(methods=["GET"], detail=True)
     def mdm_config(self, request: Request, pk) -> Response:
+        """Generate configuration for MDM systems to deploy authentik Agent"""
         connector = cast(AgentConnector, self.get_object())
         data = MDMConfigSerializer(data=request.query_params, context={"connector": connector})
         data.is_valid(raise_exception=True)

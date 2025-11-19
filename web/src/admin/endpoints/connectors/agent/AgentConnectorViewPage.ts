@@ -68,22 +68,23 @@ export class AgentConnectorViewPage extends AKElement {
     }
 
     renderTabOverview() {
-        return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                                <div class="pf-c-card__title">${msg("Setup")}</div>
+        return html`<div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__title">${msg("Setup")}</div>
                 <ak-endpoints-connector-agent-setup
                     class="pf-c-card__body"
-                .connector=${this.connector}
+                    .connector=${this.connector}
                 ></ak-endpoints-connector-agent-setup>
-                </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__title">${msg("Enrollment Tokens")}</div>
                 <ak-endpoints-agent-enrollment-token-list
                     .connector=${this.connector}
                 ></ak-endpoints-agent-enrollment-token-list>
             </div>
-            </div>
-        `;
+        </div> `;
     }
 
     render() {
