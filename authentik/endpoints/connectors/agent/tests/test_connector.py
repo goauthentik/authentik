@@ -57,9 +57,7 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_enroll_group(self):
-        device_group = DeviceGroup.objects.create(
-            name=generate_id()
-        )
+        device_group = DeviceGroup.objects.create(name=generate_id())
         self.token.device_group = device_group
         self.token.save()
         ident = generate_id()

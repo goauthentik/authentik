@@ -2,7 +2,6 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
-from deepmerge import always_merger
 from django.core.cache import cache
 from django.db import models
 from django.db.models import OuterRef, Subquery
@@ -14,6 +13,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import AttributesMixin, ExpiringModel
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -60,7 +60,7 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
                 .values("snapshot_id")[:1]
             )
         ).values_list("data", "created"):
-            always_merger.merge(data, snapshot_data)
+            MERGE_LIST_UNIQUE.merge(data, snapshot_data)
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
