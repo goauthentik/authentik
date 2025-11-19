@@ -129,7 +129,7 @@ The LDAP Outpost selects different providers based on their Base DN. Adding mult
 
 ## Configuration verification
 
-You can test the LDAP provider by using the `ldapsearch` tool on Linux and macOS or the `dsquery` tool on Windows.
+You can test the LDAP provider by using the `ldapsearch` tool on Linux and macOS, or the `dsquery` tool on Windows.
 
 <Tabs
 defaultValue="ldapsearch"
@@ -160,7 +160,7 @@ ldapsearch \
   '(objectClass=user)'
 ```
 
-This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. By default, further successful logins from the same user are not logged as they are cached in the outpost, see [Bind modes](./index.md#bind-modes) for more information.
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.md#bind-modes).
 
 :::warning LDAPS
 In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.
@@ -175,7 +175,7 @@ To search the LDAP directory using the previously created `ldapservice` service 
 dsquery * -s <LDAP outpost IP address> -u "cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io" -p <ldapuserpassword> -b "DC=ldap,DC=goauthentik,DC=io" -filter "(objectClass=user)"
 ```
 
-This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. By default, further successful logins from the same user are not logged as they are cached in the outpost, see [Bind modes](./index.md#bind-modes) for more information.
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.md#bind-modes).
 
 :::warning LDAPS
 In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.

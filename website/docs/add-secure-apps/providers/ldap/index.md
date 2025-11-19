@@ -17,7 +17,7 @@ You can configure under which **Base DN** the LDAP directory should be available
 
 The setting is available under **Protocol settings** on the LDAP provider.
 
-:::info Base DNs when using multiple LDAP providers
+:::info Base DN when using multiple LDAP providers
 When using multiple LDAP providers, each LDAP provider must have a unique Base DN. You can achieve this by prepending an application-specific OU or DC. e.g. `OU=appname,DC=ldap,DC=goauthentik,DC=io`
 :::
 
