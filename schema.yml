@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.10.0-rc1
+  version: 2025.12.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4515,6 +4515,20 @@ paths:
         schema:
           type: boolean
           default: true
+      - in: query
+        name: key_type
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - dsa
+            - ec
+            - ed25519
+            - ed448
+            - rsa
+        description: Filter by key algorithm type (RSA, EC, DSA, etc). Can be specified
+          multiple times (e.g. '?key_type=rsa&key_type=ec')
       - in: query
         name: managed
         schema:
@@ -33271,10 +33285,10 @@ components:
           type: boolean
           description: Show if this keypair has a private key configured or not
           readOnly: true
-        private_key_type:
-          type: string
+        key_type:
+          allOf:
+          - $ref: '#/components/schemas/KeyTypeEnum'
           nullable: true
-          description: Get the private key's type, if set
           readOnly: true
         certificate_download_url:
           type: string
@@ -33299,12 +33313,12 @@ components:
       - certificate_download_url
       - fingerprint_sha1
       - fingerprint_sha256
+      - key_type
       - managed
       - name
       - pk
       - private_key_available
       - private_key_download_url
-      - private_key_type
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -36067,6 +36081,14 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -36238,6 +36260,15 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -37596,6 +37627,14 @@ components:
       - name
       - realm
       - slug
+    KeyTypeEnum:
+      enum:
+      - rsa
+      - ec
+      - dsa
+      - ed25519
+      - ed448
+      type: string
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -38570,6 +38609,14 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -38736,6 +38783,15 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -39737,6 +39793,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
         callback_url:
@@ -39916,6 +39974,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
@@ -40163,6 +40223,12 @@ components:
       - ldap
       - radius
       - rac
+      type: string
+    PKCEMethodEnum:
+      enum:
+      - none
+      - plain
+      - S256
       type: string
     PaginatedApplicationEntitlementList:
       type: object
@@ -43733,6 +43799,15 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -44398,6 +44473,15 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -44709,6 +44793,8 @@ components:
           nullable: true
           description: URL used by authentik to get user information.
           maxLength: 255
+        pkce:
+          $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
           minLength: 1
@@ -45681,6 +45767,15 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -46914,6 +47009,17 @@ components:
           minLength: 1
           default: ak-stage-prompt
       additionalProperties: {}
+    PromptChoice:
+      type: object
+      description: Serializer for a single Choice field
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
     PromptRequest:
       type: object
       description: Prompt Serializer
@@ -49337,6 +49443,14 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -49446,6 +49560,15 @@ components:
           type: string
           format: uuid
           nullable: true
+        sync_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: Controls the number of objects synced in a single task
+        sync_page_timeout:
+          type: string
+          minLength: 1
+          description: Timeout for synchronization of a single page
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -50608,7 +50731,7 @@ components:
         choices:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/PromptChoice'
           nullable: true
       required:
       - choices

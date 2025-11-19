@@ -1,0 +1,12 @@
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+
+.pf-c-content h1 i {
+    font-style: normal;
+}
+
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
+}

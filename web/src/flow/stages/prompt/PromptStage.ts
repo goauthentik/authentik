@@ -190,27 +190,27 @@ ${prompt.initialValue}</textarea
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
-                            value="${choice}"
-                            ?selected=${prompt.initialValue === choice}
+                            value="${choice.value}"
+                            ?selected=${prompt.initialValue === choice.value}
                         >
-                            ${choice}
+                            ${choice.label}
                         </option>`;
                     })}
                 </select>`;
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
-                    const id = `${prompt.fieldKey}-${choice}`;
+                    const id = `${prompt.fieldKey}-${choice.value}`;
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
                             class="pf-c-check__input"
                             name="${prompt.fieldKey}"
                             id="${id}"
-                            ?checked="${prompt.initialValue === choice}"
+                            ?checked="${prompt.initialValue === choice.value}"
                             ?required="${prompt.required}"
-                            value="${choice}"
+                            value="${choice.value}"
                         />
-                        <label class="pf-c-check__label" for=${id}>${choice}</label>
+                        <label class="pf-c-check__label" for=${id}>${choice.label}</label>
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
@@ -300,7 +300,7 @@ ${prompt.initialValue}</textarea
     renderContinue(): TemplateResult {
         return html`<fieldset class="pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+            <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
         </fieldset>`;

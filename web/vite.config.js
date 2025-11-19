@@ -1,16 +1,30 @@
 /// <reference types="vitest/config" />
 
+import { join } from "node:path";
+
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
 
+import { resolvePackage } from "@goauthentik/core/paths/node";
+
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vite";
+
+const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
 export default defineConfig({
     define: createBundleDefinitions(),
+    resolve: {
+        alias: {
+            "./assets/fonts": join(patternflyPath, "assets", "fonts"),
+            "./assets/pficon": join(patternflyPath, "assets", "pficon"),
+        },
+    },
     plugins: [
         // ---
         inlineCSSPlugin(),
     ],
+
     test: {
         dir: "./test",
         exclude: [
@@ -36,7 +50,7 @@ export default defineConfig({
                     name: "browser",
                     browser: {
                         enabled: true,
-                        provider: "playwright",
+                        provider: playwright(),
 
                         instances: [
                             {

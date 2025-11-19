@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 00:10+0000\n"
+"POT-Creation-Date: 2025-10-20 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1719,11 +1719,6 @@ msgstr "Rechercher dans l'annuaire LDAP complet"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Pattern de regex invalide : {url}"
 
-#: authentik/providers/oauth2/api/providers.py
-msgid "Logout method cannot be set without a logout URI"
-msgstr ""
-"La méthode de déconnexion ne peut pas être définie sans URI de déconnexion"
-
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
 msgstr "Basé sur le hash de l'ID utilisateur"
@@ -2975,6 +2970,18 @@ msgid "Include the client ID and secret as request parameters"
 msgstr "Inclure le client ID et secret comme paramètres de la requête"
 
 #: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "Pas de PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "En clair"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "URL du jeton de requête"
 
@@ -3014,6 +3021,10 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Portées additionnelles"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
 
 #: authentik/sources/oauth/models.py
 msgid ""

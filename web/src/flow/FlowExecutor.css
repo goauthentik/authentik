@@ -1,0 +1,14 @@
+@import "../styles/authentik/components/Login/login.css";
+
+:host {
+    display: flex;
+    min-height: 100dvh;
+    flex-flow: column nowrap;
+}
+
+.inspector-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+}

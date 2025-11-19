@@ -99,7 +99,7 @@ class OutgoingSyncProviderStatusMixin:
     )
     def sync_object(self, request: Request, pk: int) -> Response:
         """Sync/Re-sync a single user/group object"""
-        provider: OutgoingSyncProvider = self.get_object()
+        provider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
         object_type = params.validated_data["sync_object_model"]

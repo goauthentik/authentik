@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gorm.io/driver/postgres"
+	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
@@ -19,9 +19,8 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
-func SetupTestDB(t *testing.T) *gorm.DB {
+func SetupTestDB(t *testing.T) (*gorm.DB, *postgresstore.RefreshableConnPool) {
 	cfg := config.Get().PostgreSQL
-	dsn := buildDSN(cfg)
 
 	gormConfig := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -30,34 +29,25 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 		},
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
+	// Use standardized setup
+	db, pool, err := postgresstore.SetupGORMWithRefreshablePool(cfg, gormConfig, 10, 100, time.Hour)
 	require.NoError(t, err)
 
-	return db
+	return db, pool
 }
 
-func CleanupTestDB(t *testing.T, db *gorm.DB) {
+func CleanupTestDB(t *testing.T, db *gorm.DB, pool *postgresstore.RefreshableConnPool) {
 	assert.NoError(t, db.Exec("DELETE FROM authentik_providers_proxy_proxysession").Error)
-	sdb, err := db.DB()
-	assert.NoError(t, err)
-	assert.NoError(t, sdb.Close())
+	assert.NoError(t, pool.Close())
 }
 
-func buildDSN(cfg config.PostgreSQLConfig) string {
-	dsn, err := postgresstore.BuildDSN(cfg)
-	if err != nil {
-		panic(err)
-	}
-	return dsn
-}
-
-func NewTestStore(db *gorm.DB) *postgresstore.PostgresStore {
-	return postgresstore.NewTestStore(db)
+func NewTestStore(db *gorm.DB, pool *postgresstore.RefreshableConnPool) *postgresstore.PostgresStore {
+	return postgresstore.NewTestStore(db, pool)
 }
 
 func TestPostgresStore_SessionLifecycle(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
+	db, pool := SetupTestDB(t)
+	defer CleanupTestDB(t, db, pool)
 
 	// Create sessions directly in the database for testing
 	userID := uuid.New()
@@ -111,8 +101,8 @@ func TestPostgresStore_SessionLifecycle(t *testing.T) {
 }
 
 func TestPostgresStore_LogoutSessions(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
+	db, pool := SetupTestDB(t)
+	defer CleanupTestDB(t, db, pool)
 
 	// Create multiple sessions for different users
 	user1 := uuid.New()
@@ -164,7 +154,7 @@ func TestPostgresStore_LogoutSessions(t *testing.T) {
 	assert.Equal(t, int64(3), totalCount)
 
 	// Logout user1 sessions using LogoutSessions method
-	store := NewTestStore(db)
+	store := NewTestStore(db, pool)
 	err := store.LogoutSessions(context.Background(), func(c types.Claims) bool {
 		return c.Sub == user1.String()
 	})
@@ -182,8 +172,8 @@ func TestPostgresStore_LogoutSessions(t *testing.T) {
 }
 
 func TestPostgresStore_SessionExpiration(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
+	db, pool := SetupTestDB(t)
+	defer CleanupTestDB(t, db, pool)
 
 	// Create expired and valid sessions
 	expiredSession := postgresstore.ProxySession{
@@ -234,8 +224,8 @@ func TestPostgresStore_SessionExpiration(t *testing.T) {
 }
 
 func TestPostgresStore_SessionClaims(t *testing.T) {
-	db := SetupTestDB(t)
-	defer CleanupTestDB(t, db)
+	db, pool := SetupTestDB(t)
+	defer CleanupTestDB(t, db, pool)
 
 	// Create session with complex claims
 	userID := uuid.New()

@@ -37,6 +37,16 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                 align-content: center;
                 height: 100%;
             }
+
+            .pf-c-button {
+                --pf-c-button--m-plain--Color: var(--pf-global--Color-300) !important;
+
+                &.pf-m-plain {
+                    --pf-c-button--m-plain--disabled--Color: var(
+                        --pf-global--Color--400
+                    ) !important;
+                }
+            }
         `,
     ];
 

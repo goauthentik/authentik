@@ -31,7 +31,10 @@ To support the integration of Miniflux with authentik, you need to create an app
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name (e.g., `Miniflux`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations. - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later. - Set a `Strict` redirect URI to `https://miniflux.company/oauth2/oidc/callback` - Select any available signing key.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://miniflux.company/oauth2/oidc/callback`
+        - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -54,6 +57,10 @@ The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC
 :::
 
 Restart the Miniflux service for the changes to take effect.
+
+:::info Existing Miniflux accounts
+Existing Miniflux accounts must first be linked to a matching authentik account. To do this, log in using your existing Miniflux credentials, go to **Settings** and click on **Link my OpenID Connect account**.
+:::
 
 ## Configuration verification
 

@@ -2,13 +2,38 @@
 title: Notification Rule Expression Policies
 ---
 
-## Introduction
+[Notification rules](./notifications.md) with [bound expression policies](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy) are very powerful. The following are examples of what can be achieved.
 
-Notification rules with bound expression policies are very powerful. The following are examples of what can be achieved.
+### Trigger alert when user logs in from unknown device
+
+This expression policy is triggered when a user logs in from an unknown device. This can be combined with a notification rule to alert administrators, or the user in question if `Send notification to event user` is enabled on the notification rule.
+
+```python
+# Check if an event has occurred
+event = request.context.get("event", None)
+if not event:
+    ak_logger.info("no event")
+    return False
+
+# Check if the event action includes updating a model
+if event.action != "login":
+    ak_logger.info("event action does not match")
+    return False
+
+# Get the known device status
+known_device = event.context["auth_method_args"]["known_device"]
+
+# Alert if device is unknown
+if known_device == False:
+  ak_logger.info("User logged in from unknown device")
+  return True
+else:
+  return False
+```
 
 ### Change user attributes upon account deactivation
 
-This example code is triggered when a user account with the `sshPublicKey` attribute set is deactivated. It saves the `sshPublicKey` attribute to a new `inactivesshPublicKey` attribute, and subsequently nullifies the `sshPublicKey` attribute.
+This expression policy is triggered when a user account with the `sshPublicKey` attribute set is deactivated. It saves the `sshPublicKey` attribute to a new `inactivesshPublicKey` attribute, and subsequently nullifies the `sshPublicKey` attribute.
 
 ```python
 from authentik.core.models import User
@@ -63,7 +88,7 @@ return False
 
 ### Alert when application is created without binding
 
-This code is triggered when a new application is created without any user, group, or policy bound to it. The notification rule can then be configured to alert an administrator. This feature is useful for ensuring limited access to applications, as by default, an application without any users, groups, or policies bound to it can be accessed by all users.
+This expression policy is triggered when a new application is created without any user, group, or policy bound to it. The notification rule can then be configured to alert an administrator. This feature is useful for ensuring limited access to applications, because by default an application without any users, groups, or policies bound to it can be accessed by all users.
 
 ```python
 from authentik.core.models import Application
@@ -106,7 +131,7 @@ return False
 
 ### Append user addition history to group attributes
 
-This code is triggered when a user is added to a group. It then creates and updates a `UserAddedHistory` attribute to the group with a date/time stamp and the username of the added user. This functionality is already available within the changelog of a group, but this code can be used as a template to trigger alerts or other events.
+This expression policy is triggered when a user is added to a group. The policy then creates and updates a `UserAddedHistory` attribute to the group with a date/time stamp and the username of the added user. This functionality is already available within the changelog of a group, but this code can be used as a template to trigger alerts or other events.
 
 :::info
 This policy interacts with the `diff` event output. This field is only available with an enterprise license.

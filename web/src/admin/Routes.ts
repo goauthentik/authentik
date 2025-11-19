@@ -1,5 +1,7 @@
 import "#admin/admin-overview/AdminOverviewPage";
 
+import { globalAK } from "#common/global";
+
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
 
 import { html } from "lit";
@@ -111,7 +113,7 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp(`^/flow/flows/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/flows/FlowViewPage");
-        return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
+        return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("#admin/events/EventListPage");
@@ -158,3 +160,14 @@ export const ROUTES: Route[] = [
         return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
     }),
 ];
+
+/**
+ * Application route helpers.
+ *
+ * @TODO: This API isn't quite right yet. Revisit after the hash router is replaced.
+ */
+export const ApplicationRoute = {
+    EditURL(slug: string, base = globalAK().api.base) {
+        return `${base}if/admin/#/core/applications/${slug}`;
+    },
+} as const;

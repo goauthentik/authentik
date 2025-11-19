@@ -217,7 +217,7 @@ class LicenseKey:
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
         status = self.status()
-        latest_valid = datetime.fromtimestamp(self.exp)
+        latest_valid = datetime.fromtimestamp(self.exp).replace(tzinfo=UTC)
         return LicenseSummary(
             latest_valid=latest_valid,
             internal_users=self.internal_users,

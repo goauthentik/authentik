@@ -28,7 +28,12 @@ class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
     def __init__(
-        self, to: list[tuple[str]], template_name=None, template_context=None, language="", **kwargs
+        self,
+        to: list[tuple[str, str]],
+        template_name=None,
+        template_context=None,
+        language="",
+        **kwargs,
     ):
         sanitized_to = []
         # Ensure that all recipients are valid

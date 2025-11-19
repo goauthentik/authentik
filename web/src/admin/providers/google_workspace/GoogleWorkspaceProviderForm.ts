@@ -1,4 +1,7 @@
 import "#elements/CodeMirror";
+import "#components/ak-number-input";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
@@ -51,11 +54,13 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
@@ -271,6 +276,29 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             ${msg("Property mappings used to group creation.")}
                         </p>
                     </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Sync settings")}">
+                <div class="pf-c-form">
+                    <ak-number-input
+                        label=${msg("Page size")}
+                        required
+                        name="pageSize"
+                        value="${this.instance?.syncPageSize ?? 100}"
+                        help=${msg("Controls the number of objects synced in a single task.")}
+                    ></ak-number-input>
+                    <ak-text-input
+                        name="syncPageTimeout"
+                        label=${msg("Page timeout")}
+                        input-hint="code"
+                        required
+                        value="${ifDefined(this.instance?.syncPageTimeout ?? "minutes=30")}"
+                        .bighelp=${html`<p class="pf-c-form__helper-text">
+                                ${msg("Timeout for synchronization of a single page.")}
+                            </p>
+                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                    >
+                    </ak-text-input>
                 </div>
             </ak-form-group>`;
     }

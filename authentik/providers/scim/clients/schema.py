@@ -83,7 +83,7 @@ class EnterpriseUser(BaseModel):
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    model_config = ConfigDict(serialize_by_alias=True)
+    model_config = ConfigDict(serialize_by_alias=True, extra="allow")
 
     id: str | int | None = None
     schemas: list[str] = [SCIM_USER_SCHEMA]
@@ -105,6 +105,8 @@ class User(BaseUser):
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
+
+    model_config = ConfigDict(extra="allow")
 
     id: str | int | None = None
     schemas: list[str] = [SCIM_GROUP_SCHEMA]

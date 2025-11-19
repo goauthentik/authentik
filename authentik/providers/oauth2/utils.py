@@ -2,8 +2,9 @@
 
 import re
 import uuid
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
+from hashlib import sha256
 from typing import Any
 from urllib.parse import urlparse
 
@@ -75,6 +76,15 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
         response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
 
     return response
+
+
+def pkce_s256_challenge(verifier: str) -> str:
+    """Convert PKCE verifier to S256 challenge"""
+    return (
+        urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
+        .decode("utf-8")
+        .replace("=", "")
+    )
 
 
 def extract_access_token(request: HttpRequest) -> str | None:

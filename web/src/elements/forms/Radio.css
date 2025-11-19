@@ -1,0 +1,16 @@
+.pf-c-form__group-control {
+    padding-top: calc(var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3);
+}
+
+.pf-m-disabled {
+    cursor: not-allowed;
+
+    .pf-c-radio__label {
+        cursor: not-allowed;
+        color: var(--pf-global--disabled-color--100);
+    }
+}
+
+.pf-c-radio__description {
+    text-wrap: balance;
+}

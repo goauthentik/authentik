@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-11 00:10+0000\n"
+"POT-Creation-Date: 2025-11-13 03:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -446,6 +446,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr ""
 
@@ -475,6 +476,26 @@ msgstr ""
 
 #: authentik/crypto/builder.py
 msgid "ecdsa"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "RSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed448"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -1104,6 +1125,14 @@ msgid "Invalid next URL"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
 msgid ""
 "When enabled, provider will not modify or create objects in the remote "
 "system."
@@ -1466,6 +1495,10 @@ msgid "Not you?"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
 msgstr ""
 
@@ -1532,10 +1565,6 @@ msgstr ""
 #: authentik/providers/oauth2/api/providers.py
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
-msgstr ""
-
-#: authentik/providers/oauth2/api/providers.py
-msgid "Logout method cannot be set without a logout URI"
 msgstr ""
 
 #: authentik/providers/oauth2/constants.py
@@ -2025,16 +2054,6 @@ msgid "ACS URL"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid ""
-"Value of the audience restriction field of the assertion. When left empty, "
-"no audience restriction will be added."
-msgstr ""
-
-#: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr ""
-
-#: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
 msgstr ""
 
@@ -2042,6 +2061,16 @@ msgstr ""
 msgid ""
 "This determines how authentik sends the response back to the Service "
 "Provider."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "Also known as EntityID"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -2656,6 +2685,18 @@ msgid "Include the client ID and secret as request parameters"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr ""
 
@@ -2690,6 +2731,10 @@ msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
 msgstr ""
 
 #: authentik/sources/oauth/models.py

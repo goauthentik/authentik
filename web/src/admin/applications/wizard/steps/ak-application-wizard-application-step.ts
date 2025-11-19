@@ -115,14 +115,15 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
-        return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
+        return html` <ak-wizard-title>${msg("Configure the Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
                     autocomplete="off"
-                    placeholder=${msg("Application name")}
+                    placeholder=${msg("Type an application name...")}
                     value=${ifDefined(app.name)}
-                    label=${msg("Name")}
+                    label=${msg("Application Name")}
+                    spellcheck="false"
                     required
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("The name displayed in the application library.")}
@@ -161,7 +162,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
-                            placeholder="https://..."
+                            placeholder=${msg("https://...")}
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
                             .errorMessages=${errors.metaLaunchUrl ??

@@ -1,0 +1,23 @@
+.pf-c-drawer__body {
+    max-height: 100dvh;
+}
+
+:host {
+    background-color: var(--pf-c-notification-drawer--BackgroundColor);
+}
+
+.pf-c-notification-drawer__body {
+    .pf-l-stack__item:last-child {
+        padding-block-end: var(--pf-global--spacer--md);
+    }
+}
+
+code.break {
+    word-break: break-all;
+}
+
+pre {
+    word-break: break-all;
+    overflow-x: hidden;
+    white-space: break-spaces;
+}
