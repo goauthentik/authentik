@@ -5,8 +5,8 @@ title: High availability (HA)
 authentik supports highly available setups in various ways:
 
 - Multiple instances of the server and worker can be run in parallel, allowing for redundancy.
-- The authentik database is PostgreSQL which has extensive support for different highly available setups.
-- It's possible to have multiple authentik deployments in an active-standby setup using the same PostgreSQL database.
+- The authentik database is PostgreSQL which has extensive support for different [highly available setups](https://www.postgresql.org/docs/current/high-availability.html).
+- Both authentik and PostgreSQL can be configured for active/standby setups.
 
 ## Parallel server and worker instances
 
