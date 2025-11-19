@@ -110,16 +110,14 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
                 config.patch.supported = False
             if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
                 config.filter.supported = True
-
-            # Cache the successfully fetched config
-            cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
-            return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
             self.logger.warning(
                 "failed to get ServiceProviderConfig, using default",
                 exc=exc,
                 provider=self.provider.name,
             )
-            # Cache the default config so we don't keep retrying
-            cache.set(cache_key, default_config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
-            return default_config
+            config = default_config
+
+        # Cache the config (either successfully fetched or default)
+        cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
+        return config
