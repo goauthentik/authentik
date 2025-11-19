@@ -1,12 +1,11 @@
 from plistlib import PlistFormat, dumps
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 
-from authentik.endpoints.connector import BaseConnector
-from authentik.endpoints.connectors.agent.models import AgentConnector as DBC
-from authentik.endpoints.connectors.agent.models import EnrollmentToken
+from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.endpoints.controller import BaseController
 from authentik.endpoints.facts import OSFamily
 
 
@@ -33,7 +32,7 @@ def csp_create_replace_item(loc_uri, data_value) -> Element:
     return replace
 
 
-class AgentConnectorController(BaseConnector[DBC]):
+class AgentConnectorController(BaseController[AgentConnector]):
 
     def supported_enrollment_methods(self):
         return []

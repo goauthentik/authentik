@@ -6,16 +6,16 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
-from authentik.endpoints.connector import EnrollmentMethods
+from authentik.endpoints.controller import EnrollmentMethods
 from authentik.endpoints.models import Connector
 
 LOGGER = get_logger()
 
 
 @actor(description=_("Sync endpoints."))
-def endpoints_sync(connector_pr: Any):
+def endpoints_sync(connector_pk: Any):
     connector: Connector | None = (
-        Connector.objects.filter(pk=connector_pr).select_subclasses().first()
+        Connector.objects.filter(pk=connector_pk).select_subclasses().first()
     )
     if not connector:
         return

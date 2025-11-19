@@ -19,7 +19,7 @@ class ConnectorSyncException(SentryIgnoredException):
     """Base exceptions for errors during sync"""
 
 
-class BaseConnector[T: "Connector"]:
+class BaseController[T: "Connector"]:
 
     connector: T
     logger: BoundLogger

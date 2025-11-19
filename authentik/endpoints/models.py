@@ -21,7 +21,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
 if TYPE_CHECKING:
-    from authentik.endpoints.connector import BaseConnector
+    from authentik.endpoints.controller import BaseController
 
 LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
@@ -134,7 +134,7 @@ class Connector(ScheduledModel, SerializerModel):
         raise NotImplementedError
 
     @property
-    def controller(self) -> type["BaseConnector[Connector]"]:
+    def controller(self) -> type["BaseController[Connector]"]:
         raise NotImplementedError
 
     @property
