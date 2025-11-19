@@ -8,7 +8,7 @@ from authentik.endpoints.connectors.agent.models import EnrollmentToken
 
 class EnrollmentTokenSerializer(ModelSerializer):
 
-    device_group_obj = DeviceGroupSerializer(required=False)
+    device_group_obj = DeviceGroupSerializer(source="device_group", read_only=True, required=False)
 
     class Meta:
         model = EnrollmentToken

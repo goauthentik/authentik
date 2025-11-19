@@ -5994,20 +5994,6 @@
                     "type": "integer",
                     "title": "Device group"
                 },
-                "device_group_obj": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ],
-                    "title": "Device group obj"
-                },
                 "connector": {
                     "type": "integer",
                     "title": "Connector"

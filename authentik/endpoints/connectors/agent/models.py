@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 
 class AgentConnector(Connector):
+    """Configure authentication and add device compliance using the authentik Agent."""
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
     nss_gid_offset = models.PositiveIntegerField(default=1000)

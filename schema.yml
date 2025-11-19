@@ -36441,7 +36441,9 @@ components:
           format: uuid
           nullable: true
         device_group_obj:
-          $ref: '#/components/schemas/DeviceGroup'
+          allOf:
+          - $ref: '#/components/schemas/DeviceGroup'
+          readOnly: true
         connector:
           type: string
           format: uuid
@@ -36449,6 +36451,7 @@ components:
           type: string
       required:
       - connector
+      - device_group_obj
       - name
       - token_uuid
     EnrollmentTokenRequest:
@@ -36458,8 +36461,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        device_group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
         connector:
           type: string
           format: uuid
@@ -45526,8 +45527,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        device_group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
         connector:
           type: string
           format: uuid
