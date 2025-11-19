@@ -25,7 +25,7 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.service import resolve_file_url, resolve_file_url_full
+from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -583,7 +583,7 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.meta_icon:
             return None
 
-        return resolve_file_url(self.meta_icon, Usage.MEDIA)
+        return FileManager(FileUsage.MEDIA).file_url(self.meta_icon)
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
@@ -791,7 +791,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-        return resolve_file_url(self.icon, Usage.MEDIA)
+        return FileManager(FileUsage.MEDIA).file_url(self.icon)
 
     def get_icon_url_with_request(self, request=None) -> str | None:
         """Get the FULL URL to the icon including domain
@@ -805,7 +805,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-        return resolve_file_url_full(self.icon, Usage.MEDIA, request)
+        return FileManager(FileUsage.MEDIA).file_url(self.icon, request)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

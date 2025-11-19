@@ -9,7 +9,6 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.service import resolve_file_url
-from authentik.admin.files.usage import FileUsage
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel

@@ -1,15 +1,17 @@
 from collections.abc import Generator, Iterator
+
 from django.core.exceptions import ImproperlyConfigured
 from django.http.request import HttpRequest
-from structlog.stdlib import get_logger
-from authentik.admin.files.backends.base import ManageableBackend
-from authentik.lib.config import CONFIG
 from rest_framework.request import Request
+from structlog.stdlib import get_logger
+
+from authentik.admin.files.backends.base import ManageableBackend
 from authentik.admin.files.backends.file import FileBackend
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.usage import FileUsage
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
