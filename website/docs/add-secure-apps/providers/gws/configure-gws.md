@@ -3,13 +3,13 @@ title: Configure Google Workspace
 authentik_enterprise: true
 ---
 
-The configuration and set up of your Google Workspace must be completed before you [add the new provider](./add-gws-provider.md) in authentik.
+Your Google Workspace orginization must be configured before you [create a Google Workspace provider](./create-gws-provider.md) in authentik.
 
-## Overview of steps
+## Configuring your Google Workspace Organization
 
-The main steps to set up your Google workspace are as follows:
+The main steps to configure your Google Workspace organization are as follows:
 
-1. [Create your Google Cloud Project](#create-a-google-cloud-project)
+1. [Create a Google Cloud project](#create-a-google-cloud-project)
 2. [Create a service account](#create-a-service-account)
 3. [Set credentials for the service account](#set-credentials-for-the-service-account)
 4. [Define access and scope in the Admin Console](#set-credentials-for-the-service-account)
@@ -63,4 +63,4 @@ The Delegated Subject email address is a required field when creating the provid
 2. You can either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
 3. Save this email address to enter into authentik when you are creating the Google Workspace provider.
 
-Now that you have configured your Google Workspace, you are ready to [add it as a provider in authentik](./add-gws-provider.md).
+Now that you have configured your Google Workspace, you are ready to [add it as a provider in authentik](./create-gws-provider.md).
