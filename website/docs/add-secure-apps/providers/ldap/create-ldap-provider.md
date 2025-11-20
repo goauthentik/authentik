@@ -7,10 +7,10 @@ import Tabs from "@theme/Tabs";
 
 Creating an authentik LDAP provider requires the following steps:
 
-1. Create an LDAP authentication flow _(optional)_
-2. Create an LDAP application and provider
-3. Create a service account and assign the LDAP search permission
-4. Create an LDAP Outpost
+1. [Create an LDAP authentication flow _(optional)_](#create-an-ldap-authentication-flow-optional)
+2. [Create an LDAP application and provider](#create-an-ldap-application-and-provider)
+3. [Create a service account and assign the LDAP search permission](#create-a-service-account)
+4. [Create an LDAP Outpost](#create-an-ldap-outpost)
 
 ## Create an LDAP authentication flow _(optional)_
 
