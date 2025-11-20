@@ -1,37 +1,39 @@
 ---
-title: High availability (HA)
+title: High availability
 ---
+
+High availability refers to designing systems to minimize downtime even in the event of failures or disruptions.
 
 authentik supports highly available setups in various ways:
 
 - Multiple instances of the server and worker can be run in parallel, allowing for redundancy.
-- The authentik database is PostgreSQL which has extensive support for different [highly available setups](https://www.postgresql.org/docs/current/high-availability.html).
-- Both authentik and PostgreSQL can be configured for active/standby setups.
+- The authentik database uses PostgreSQL, which has extensive support for different [highly available setups](https://www.postgresql.org/docs/current/high-availability.html).
+- Both authentik and PostgreSQL can be configured for active/passive setups.
 
 ## Parallel server and worker instances
 
 authentik server and worker instances are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker instances, ensuring resilience and fault tolerance.
 
-If a server or worker instance goes offline, another instance can continue to provide service availability. If these instances are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
+If a server or worker instance goes offline, another instance can continue to serve traffic. If these instances are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
 
 ## PostgreSQL high availability
 
 PostgreSQL supports high availability through replication and clustering.
 
-Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more information.
+Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more details.
 
 authentik also has built-in support for [PostgreSQL Read Replicas](../configuration/#read-replicas) and using [PostgreSQL Connection Poolers](../configuration/#using-a-postgresql-connection-pooler) like PgBouncer or PgPool.
 
-## Active-Standy authentik deployment
+## Active-Passive authentik deployment
 
-In an active-standby deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
+In an active-passive deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
 
-The components of an active-standby authentik deployment include:
+The components of an active-passive authentik deployment include:
 
 - **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
-- **Standby Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
+- **Passive Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
 - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because authentik is stateless, there are no data conflicts.
-- **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the standby instance to active by redirecting all traffic to it. This failover can be triggered automatic or manually depending on your failover policy. When the original active authentik instance is restored, it can either remain as a standby or be promoted back to active (failback).
+- **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the passive instance to active by redirecting all traffic to it. This failover can be triggered automatically or manually depending on your failover strategy. When the original active authentik instance is restored, it can either remain as a passive or be promoted back to active (failback).
 
 For more information on monitoring the health of an authentik instance, refer to the [Monitoring documentation](../sys-mgmt/ops/monitoring.md).
 
@@ -39,7 +41,7 @@ For more information on monitoring the health of an authentik instance, refer to
 graph TD
     subgraph authentikInstances["authentik instances"]
         A[Active authentik instance]@{stroke: #fd4b2d}
-        S[Standby authentik instance]@{stroke: #fd4b2d}
+        P[Passive authentik instance]@{stroke: #fd4b2d}
     end
 
     U[Users]@{ shape: processes}
@@ -49,19 +51,19 @@ graph TD
     U <-->|Traffic| L
 
     L <-->|Traffic + Health monitoring| A
-    L ---|Health monitoring| S
+    L ---|Health monitoring| P
 
     A <-->|Database traffic - Read & Write| PG
-    S ---|Database traffic - Read only| PG
+    P ---|Database traffic - Read only| PG
 
     style A stroke: #fd4b2d,stroke-width:2px
-    style S stroke: #fd4b2d,stroke-width:2px
+    style P stroke: #fd4b2d,stroke-width:2px
     style authentikInstances stroke:#fd4b2d,stroke-width:2px
 ```
 
 This setup provides several advantages:
 
-- **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacentres or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
-- **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and standby instances.
+- **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacenters, or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
+- **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and passive instances.
 - **Automatic failover**: A load balancer allows for automatic failover based on health monitoring, rather than waiting for administrators to detect an issue and manually failover.
 - **Possibility of blue-green deployment**: The use of a load balancer also allows for blue-green methodology, assuming that appropriate changes are made to the database.
