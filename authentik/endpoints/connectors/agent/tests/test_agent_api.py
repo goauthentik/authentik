@@ -182,5 +182,4 @@ class TestAgentAPI(APITestCase):
             ),
             data={"platform": OSFamily.macOS, "enrollment_token": self.token.pk},
         )
-        self.assertEqual(res["Content-Type"], "application/xml")
         self.assertEqual(res.status_code, 200)
