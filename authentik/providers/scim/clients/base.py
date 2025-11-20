@@ -29,7 +29,6 @@ if TYPE_CHECKING:
     from django.db.models import Model
     from pydantic import BaseModel
 
-# Cache timeout for ServiceProviderConfig (1 hour)
 SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT = 3600
 
 
