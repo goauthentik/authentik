@@ -36493,6 +36493,12 @@ components:
           format: uuid
         name:
           type: string
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - connector
       - device_group_obj
@@ -36511,6 +36517,12 @@ components:
         name:
           type: string
           minLength: 1
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - connector
       - name
@@ -45578,6 +45590,12 @@ components:
         name:
           type: string
           minLength: 1
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
     PatchedEventMatcherPolicyRequest:
       type: object
       description: Event Matcher Policy Serializer

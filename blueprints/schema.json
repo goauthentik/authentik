@@ -6002,6 +6002,18 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "expiring": {
+                    "type": "boolean",
+                    "title": "Expiring"
+                },
+                "expires": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Expires"
                 }
             },
             "required": []

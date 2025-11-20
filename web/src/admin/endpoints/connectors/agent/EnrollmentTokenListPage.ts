@@ -4,10 +4,11 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#components/ak-status-label";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
@@ -44,6 +45,8 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Group")],
+        [msg("Expires?"), "expiring"],
+        [msg("Expiry date"), "expires"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -79,6 +82,8 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
         return [
             html`${item.name}`,
             html`${item.deviceGroupObj?.name || "-"}`,
+            html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
             html`<div>
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>

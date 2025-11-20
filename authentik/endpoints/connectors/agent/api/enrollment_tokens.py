@@ -18,6 +18,8 @@ class EnrollmentTokenSerializer(ModelSerializer):
             "device_group_obj",
             "connector",
             "name",
+            "expiring",
+            "expires",
         ]
 
 
