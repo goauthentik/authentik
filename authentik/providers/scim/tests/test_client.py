@@ -166,3 +166,45 @@ class SCIMClientTests(TestCase):
 
             # Verify both configs are the same default
             self.assertEqual(config1, config2)
+
+    def test_config_cache_invalidation_on_save(self):
+        """Test that ServiceProviderConfig cache is cleared when provider is saved"""
+        config_json = {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+            "documentationUri": "https://example.com/docs",
+            "authenticationSchemes": [
+                {
+                    "type": "oauthbearertoken",
+                    "name": "OAuth Bearer Token",
+                    "description": "OAuth Bearer Token",
+                    "specUri": "https://www.rfc-editor.org/info/rfc6750",
+                    "documentationUri": "https://example.com/auth",
+                    "primary": True,
+                }
+            ],
+            "patch": {"supported": True},
+            "bulk": {"supported": False, "maxOperations": 1, "maxPayloadSize": 1048576},
+            "filter": {"supported": True, "maxResults": 50},
+            "changePassword": {"supported": False},
+            "sort": {"supported": False},
+            "etag": {"supported": False},
+        }
+
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json=config_json)
+
+            # First client instantiation caches the config
+            client1 = SCIMClient(self.provider)
+            self.assertEqual(mock.call_count, 1)
+
+            # Creating another client should use cached config
+            client2 = SCIMClient(self.provider)
+            self.assertEqual(mock.call_count, 1)  # Still 1, using cache
+
+            # Save the provider (e.g., changing compatibility mode)
+            self.provider.compatibility_mode = "aws"
+            self.provider.save()
+
+            # Creating a new client should now hit the API again since cache was cleared
+            client3 = SCIMClient(self.provider)
+            self.assertEqual(mock.call_count, 2)  # New API call after cache invalidation
