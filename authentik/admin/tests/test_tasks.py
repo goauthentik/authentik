@@ -1,10 +1,13 @@
 """test admin tasks"""
 
+from typing import cast
+
 from django.apps import apps
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
+from authentik.admin.apps import AuthentikAdminConfig
 from authentik.admin.tasks import (
     VERSION_CACHE_KEY,
     update_latest_version,
@@ -26,7 +29,7 @@ RESPONSE_VALID = {
 class TestAdminTasks(TestCase):
     """test admin tasks"""
 
-    def test_version_valid_response(self):
+    def test_version_valid_response(self) -> None:
         """Test Update checker with valid response"""
         with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
             mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
@@ -52,7 +55,7 @@ class TestAdminTasks(TestCase):
                 1,
             )
 
-    def test_version_error(self):
+    def test_version_error(self) -> None:
         """Test Update checker with invalid response"""
         with Mocker() as mocker:
             mocker.get("https://version.goauthentik.io/version.json", status_code=400)
@@ -64,15 +67,15 @@ class TestAdminTasks(TestCase):
                 ).exists()
             )
 
-    def test_version_disabled(self):
+    def test_version_disabled(self) -> None:
         """Test Update checker while its disabled"""
         with CONFIG.patch("disable_update_check", True):
             update_latest_version.send()
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
 
-    def test_clear_update_notifications(self):
+    def test_clear_update_notifications(self) -> None:
         """Test clear of previous notification"""
-        admin_config = apps.get_app_config("authentik_admin")
+        admin_config = cast(AuthentikAdminConfig, apps.get_app_config("authentik_admin"))
         Event.objects.create(
             action=EventAction.UPDATE_AVAILABLE,
             context={"new_version": "99999999.9999999.9999999"},
