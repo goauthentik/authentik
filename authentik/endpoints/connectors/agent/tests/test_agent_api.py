@@ -125,7 +125,7 @@ class TestAgentAPI(APITestCase):
 
     def test_mdm_api_wrong_platform(self):
         self.client.force_login(create_test_admin_user())
-        res = self.client.get(
+        res = self.client.post(
             reverse(
                 "authentik_api:agentconnector-mdm-config",
                 kwargs={
@@ -142,7 +142,7 @@ class TestAgentAPI(APITestCase):
         other_connector = AgentConnector.objects.create(name=generate_id())
         self.token.connector = other_connector
         self.token.save()
-        res = self.client.get(
+        res = self.client.post(
             reverse(
                 "authentik_api:agentconnector-mdm-config",
                 kwargs={
@@ -158,7 +158,7 @@ class TestAgentAPI(APITestCase):
         self.client.force_login(create_test_admin_user())
         self.token.expires = now() - timedelta(hours=1)
         self.token.save()
-        res = self.client.get(
+        res = self.client.post(
             reverse(
                 "authentik_api:agentconnector-mdm-config",
                 kwargs={
@@ -172,7 +172,7 @@ class TestAgentAPI(APITestCase):
 
     def test_mdm_api(self):
         self.client.force_login(create_test_admin_user())
-        res = self.client.get(
+        res = self.client.post(
             reverse(
                 "authentik_api:agentconnector-mdm-config",
                 kwargs={
