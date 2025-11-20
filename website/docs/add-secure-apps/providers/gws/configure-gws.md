@@ -3,7 +3,7 @@ title: Configure Google Workspace
 authentik_enterprise: true
 ---
 
-Your Google Workspace orginization must be configured before you [create a Google Workspace provider](./create-gws-provider.md) in authentik.
+Your Google Workspace organization must be configured before you [create a Google Workspace provider](./create-gws-provider.md) in authentik.
 
 ## Configuring your Google Workspace Organization
 
