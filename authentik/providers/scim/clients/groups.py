@@ -129,27 +129,36 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     def _update_patch(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
-        """Apply provider-specific parameters for PATCH request"""
-        if connection.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
-            for attr in ("displayName", "externalId"):
-                self._update_patch_call(group, scim_group, connection, attr)
-        else:
-            self._update_patch_call(group, scim_group, connection)
+        """Apply provider-specific PATCH requests"""
+        match connection.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                self._update_patch_aws(group, scim_group, connection)
+            case _:
+                self._update_patch_general(group, scim_group, connection)
         return self.patch_compare_users(group)
 
-    def _update_patch_call(
-        self,
-        group: Group,
-        scim_group: SCIMGroupSchema,
-        connection: SCIMProviderGroup,
-        attr: str = None,
+    def _update_patch_aws(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
+    ):
+        """Run PATCH requests for supported attributes"""
+        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
+        self._patch_chunked(
+            connection.scim_id,
+            *[
+                PatchOperation(
+                    op=PatchOp.replace,
+                    path=attr,
+                    value=group_dict[attr],
+                )
+                for attr in ("displayName", "externalId")
+            ],
+        )
+
+    def _update_patch_general(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
         """Update a group via PATCH request"""
         # Patch group's attributes instead of replacing it and re-adding users if we can
-        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
-        value = group_dict
-        if attr is not None:
-            value = group_dict[attr]
         self._request(
             "PATCH",
             f"/Groups/{connection.scim_id}",
@@ -157,8 +166,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 Operations=[
                     PatchOperation(
                         op=PatchOp.replace,
-                        path=attr,
-                        value=value,
+                        path=None,
+                        value=scim_group.model_dump(mode="json", exclude_unset=True),
                     )
                 ]
             ).model_dump(
@@ -167,7 +176,6 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_none=True,
             ),
         )
-        return self.patch_compare_users(group)
 
     def _update_put(self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup):
         """Update a group via PUT request"""
