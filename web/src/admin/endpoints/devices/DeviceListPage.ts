@@ -1,6 +1,7 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
 import "#admin/endpoints/devices/DeviceForm";
+import "#admin/endpoints/devices/DeviceAddHowTo";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -101,6 +102,12 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 </button>
             </ak-forms-modal>`,
         ];
+    }
+
+    renderObjectCreate() {
+        return html`<ak-endpoints-device-add>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Add")}</button>
+        </ak-endpoints-device-add>`;
     }
 
     renderToolbarSelected() {

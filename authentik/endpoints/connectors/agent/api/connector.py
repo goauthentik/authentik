@@ -141,12 +141,12 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
 
-    @extend_schema(request=MDMConfigSerializer)
-    @action(methods=["GET"], detail=True)
+    @extend_schema(request=MDMConfigSerializer())
+    @action(methods=["POST"], detail=True)
     def mdm_config(self, request: Request, pk) -> Response:
         """Generate configuration for MDM systems to deploy authentik Agent"""
         connector = cast(AgentConnector, self.get_object())
-        data = MDMConfigSerializer(data=request.query_params, context={"connector": connector})
+        data = MDMConfigSerializer(data=request.data, context={"connector": connector})
         data.is_valid(raise_exception=True)
         token = data.validated_data["enrollment_token"]
         if not request.user.has_perm("view_enrollmenttoken", token):

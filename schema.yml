@@ -4977,8 +4977,8 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/{connector_uuid}/mdm_config/:
-    get:
-      operationId: endpoints_agents_connectors_mdm_config_retrieve
+    post:
+      operationId: endpoints_agents_connectors_mdm_config_create
       description: Generate configuration for MDM systems to deploy authentik Agent
       parameters:
       - in: path
@@ -4990,6 +4990,12 @@ paths:
         required: true
       tags:
       - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MDMConfigRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -35587,6 +35593,17 @@ components:
         vendor:
           type: object
           additionalProperties: {}
+    DeviceFactsOSFamily:
+      enum:
+      - linux
+      - unix
+      - bsd
+      - windows
+      - mac_os
+      - android
+      - i_os
+      - other
+      type: string
     DeviceFactsRequest:
       type: object
       properties:
@@ -36977,17 +36994,6 @@ components:
           minLength: 1
       required:
       - object_pk
-    FamilyEnum:
-      enum:
-      - linux
-      - unix
-      - bsd
-      - windows
-      - mac_os
-      - android
-      - i_os
-      - other
-      type: string
     FilePathRequest:
       type: object
       description: Serializer to upload file
@@ -40305,6 +40311,18 @@ components:
       required:
       - challenge
       - name
+    MDMConfigRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        platform:
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
+        enrollment_token:
+          type: string
+          format: uuid
+      required:
+      - enrollment_token
+      - platform
     MatchingModeEnum:
       enum:
       - strict
@@ -41905,7 +41923,7 @@ components:
       type: object
       properties:
         family:
-          $ref: '#/components/schemas/FamilyEnum'
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
         name:
           type: string
         version:
@@ -41919,7 +41937,7 @@ components:
       type: object
       properties:
         family:
-          $ref: '#/components/schemas/FamilyEnum'
+          $ref: '#/components/schemas/DeviceFactsOSFamily'
         name:
           type: string
           minLength: 1
