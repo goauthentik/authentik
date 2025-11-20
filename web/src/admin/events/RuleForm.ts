@@ -41,11 +41,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated rule.")
-            : msg("Successfully created rule.");
-    }
+    protected override entityLabel = msg("Rule");
 
     async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {
@@ -60,7 +56,11 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Rule Name", { id: "label.rule-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

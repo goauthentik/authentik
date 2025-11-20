@@ -6,6 +6,7 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatNewMessage } from "#common/i18n/actions";
 
 import { AKElement } from "#elements/Base";
 import type { Wizard } from "#elements/wizard/Wizard";
@@ -25,7 +26,7 @@ export class ServiceConnectionWizard extends AKElement {
     static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    createText = formatNewMessage(msg("Service Connection"));
 
     @property({ attribute: false })
     connectionTypes: TypeCreate[] = [];

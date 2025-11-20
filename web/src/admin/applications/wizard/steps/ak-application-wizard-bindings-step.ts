@@ -30,7 +30,11 @@ const COLUMNS = [
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
     [msg("Timeout"), "timeout"],
-    [msg("Actions"), null, msg("Row Actions")],
+    [
+        msg("Actions", { id: "column.actions" }),
+        null,
+        msg("Row Actions", { id: "column.row-actions" }),
+    ],
 ];
 
 @customElement("ak-application-wizard-bindings-step")

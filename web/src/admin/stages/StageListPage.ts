@@ -45,12 +45,22 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    public pageTitle = msg("Stages");
+    protected override entityLabel = {
+        singular: msg("Stages", { id: "entity.stages.singular" }),
+        plural: msg("Stages", { id: "entity.stage.plural" }),
+    };
     public pageDescription = msg(
         "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+        {
+            id: "page.description.stage-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-plugged";
     protected override searchEnabled = true;
+
+    protected override get searchPlaceholder(): string {
+        return msg("Search by stage name...");
+    }
 
     checkbox = true;
     clearOnRefresh = true;
@@ -64,9 +74,13 @@ export class StageListPage extends TablePage<Stage> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Flows")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Flows", { id: "column.flows" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -125,7 +139,7 @@ export class StageListPage extends TablePage<Stage> {
             </ul>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

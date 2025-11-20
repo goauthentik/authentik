@@ -10,7 +10,9 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 @customElement("ak-form-static")
 export class FormStatic extends AKElement {
     public override role = "banner";
-    public override ariaLabel = msg("User information");
+    public override ariaLabel = msg("User information", {
+        id: "aria.label.user-information",
+    });
 
     @property()
     userAvatar?: string;

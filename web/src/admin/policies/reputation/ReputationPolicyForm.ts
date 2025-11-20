@@ -48,7 +48,11 @@ username they are attempting to login as, by one.`,
 doesn't pass when either or both of the selected options are equal or above the threshold.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Reputation Policy Name", { id: "label.reputation-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

@@ -21,8 +21,16 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
     protected override searchEnabled = true;
-    public override searchPlaceholder = msg("Search by domain or brand name...");
-    public pageTitle = msg("Brands");
+    protected override entityLabel = {
+        singular: msg("Brand", { id: "entity.brand.singular" }),
+        plural: msg("Brands", { id: "entity.brand.plural" }),
+    };
+    protected get searchPlaceholder() {
+        return msg("Search by domain or brand name...", {
+            id: "search.placeholder.brand-list",
+        });
+    }
+
     public pageDescription = msg("Configure visual settings and defaults for different domains.");
     public pageIcon = "pf-icon pf-icon-tenant";
 
@@ -41,10 +49,14 @@ export class BrandListPage extends TablePage<Brand> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Domain"), "domain"],
-        [msg("Brand name"), "branding_title"],
-        [msg("Default?"), "default"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Domain", { id: "column.domain" }), "domain"],
+        [msg("Brand name", { id: "column.brand-name" }), "branding_title"],
+        [msg("Default?", { id: "column.default-question-mark" }), "default"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -79,7 +91,7 @@ export class BrandListPage extends TablePage<Brand> {
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Brand")}</span>
                     <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -101,10 +113,12 @@ export class BrandListPage extends TablePage<Brand> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create Brand")}</span>
-                <span slot="header">${msg("New Brand")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Brand")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

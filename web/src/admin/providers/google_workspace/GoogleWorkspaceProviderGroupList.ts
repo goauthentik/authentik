@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -24,6 +25,11 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     providerId?: number;
 
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Google Workspace Group", { id: "entity.google-workspace-group.singular" }),
+        plural: msg("Google Workspace Groups", { id: "entity.google-workspace-group.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -79,9 +85,8 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
+        [msg("Name", { id: "column.name" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {

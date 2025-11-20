@@ -1,6 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
 
+import { EntityLabel } from "#common/i18n/nouns";
 import { formatElapsedTime } from "#common/temporal";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -21,6 +22,11 @@ export class LogViewer extends Table<LogEvent> {
 
     expandable = true;
     paginated = false;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Log Message", { id: "entity.log-message.singular" }),
+        plural: msg("Log Messages", { id: "entity.log-message.plural" }),
+    };
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

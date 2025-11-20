@@ -139,7 +139,7 @@ export function renderForm({
     return html` <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("SAML Provider Name", { id: "label.saml-provider-name" })}
             required
             .errorMessages=${errors.name}
         ></ak-text-input>

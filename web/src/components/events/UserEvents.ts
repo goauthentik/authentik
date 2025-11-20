@@ -6,6 +6,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EntityLabel } from "#common/i18n/nouns";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -15,13 +16,18 @@ import { renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-events-user")
 export class UserEvents extends Table<Event> {
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Event", { id: "entity.event.singular" }),
+        plural: msg("Events", { id: "entity.event.plural" }),
+    };
 
     @property()
     order = "-created";
@@ -63,7 +69,7 @@ export class UserEvents extends Table<Event> {
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
+                ><span>${msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`)}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

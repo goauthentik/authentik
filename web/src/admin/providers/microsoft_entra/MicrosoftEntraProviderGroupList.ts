@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -26,6 +27,11 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     expandable = true;
 
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Microsoft Entra Group", { id: "entity.microsoft-entra-group.singular" }),
+        plural: msg("Microsoft Entra Groups", { id: "entity.microsoft-entra-group.plural" }),
+    };
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
@@ -76,9 +82,8 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Name")],
-        [msg("ID")],
+        [msg("Name", { id: "column.name" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: MicrosoftEntraProviderGroup): SlottedTemplateResult[] {

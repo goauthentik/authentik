@@ -25,11 +25,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated invitation.")
-            : msg("Successfully created invitation.");
-    }
+    protected override entityLabel = msg("Invitation", { id: "entity.invitation.singular" });
 
     async send(data: Invitation): Promise<Invitation> {
         if (this.instance) {
@@ -50,7 +46,11 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             }
         };
 
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Invitation Name", { id: "label.invitation-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     id="admin-stages-invitation-name"

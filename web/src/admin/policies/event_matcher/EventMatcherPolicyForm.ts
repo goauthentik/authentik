@@ -50,7 +50,11 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Event Matcher Policy Name", { id: "label.event-matcher-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

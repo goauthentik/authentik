@@ -22,7 +22,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Prompts");
+    protected override entityLabel = {
+        singular: msg("Prompt", { id: "entity.prompt.singular" }),
+        plural: msg("Prompts", { id: "entity.prompt.plural" }),
+    };
     public pageDescription = msg("Single Prompts that can be used for Prompt Stages.");
     public pageIcon = "pf-icon pf-icon-plugged";
 
@@ -39,12 +42,16 @@ export class PromptListPage extends TablePage<Prompt> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Field"), "field_key"],
-        [msg("Type"), "type"],
-        [msg("Order"), "order"],
-        [msg("Stages")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Field", { id: "column.field" }), "field_key"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [msg("Order", { id: "column.order" }), "order"],
+        [msg("Stages", { id: "column.stages" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -79,7 +86,7 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal size=${PFSize.XLarge}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Prompt")}</span>
                     <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -99,10 +106,12 @@ export class PromptListPage extends TablePage<Prompt> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal size=${PFSize.XLarge}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Prompt")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-prompt-form slot="form"> </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

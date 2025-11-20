@@ -32,9 +32,9 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     @property({ attribute: false })
     request?: number;
 
-    getSuccessMessage(): string {
-        return msg("Successfully sent test-request.");
-    }
+    protected override readonly actionName = "send";
+
+    protected override entityLabel = msg("Test Request");
 
     async send(data: { forUser: number }): Promise<PolicyTestResult> {
         this.request = data.forUser;

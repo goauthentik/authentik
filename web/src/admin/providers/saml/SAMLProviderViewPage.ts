@@ -11,6 +11,9 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
@@ -59,6 +62,11 @@ interface SAMLPreviewAttribute {
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Saml Provider", { id: "entity.saml-provider.singular" }),
+        plural: msg("Saml Providers", { id: "entity.saml-provider.plural" }),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -363,12 +371,12 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update SAML Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present()}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>

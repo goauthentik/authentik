@@ -9,7 +9,7 @@ import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { PaginatedResponse } from "#elements/table/Table";
 
@@ -120,11 +120,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.providers = providerProvider(this.type);
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated outpost.")
-            : msg("Successfully created outpost.");
-    }
+    protected override entityLabel = msg("Outpost", { id: "entity.outpost.singular" });
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
@@ -146,7 +142,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             [OutpostTypeEnum.Rac, msg("RAC")],
         ];
 
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Outpost Name", { id: "label.outpost-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -243,9 +243,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 this.instance ? this.instance.config : this.defaultConfig?.config,
                             )}"
                         ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Set custom attributes using YAML or JSON.")}
-                        </p>
+                        ${CodeMirrorHelperText()}
                         <p class="pf-c-form__helper-text">
                             ${msg("See more here:")}&nbsp;
                             <a

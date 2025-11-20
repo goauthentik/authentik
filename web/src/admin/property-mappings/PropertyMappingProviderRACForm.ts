@@ -57,7 +57,11 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("RAC Property Mapping Name", { id: "label.rac-property-mapping-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

@@ -47,11 +47,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     @property({ type: Boolean })
     showEmail = false;
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated transport.")
-            : msg("Successfully created transport.");
-    }
+    protected override entityLabel = msg("Transport");
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
@@ -87,7 +83,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Transport Name", { id: "label.transport-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

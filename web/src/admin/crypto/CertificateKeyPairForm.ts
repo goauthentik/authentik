@@ -21,11 +21,9 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated certificate-key pair.")
-            : msg("Successfully created certificate-key pair.");
-    }
+    protected override entityLabel = msg("Certificate Key Pair", {
+        id: "entity.certificate-key-pair.singular",
+    });
 
     async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {
@@ -40,7 +38,11 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
+        return html` <ak-form-element-horizontal
+                label=${msg("Certificate Key Pair Name", { id: "label.certificate-key-pair-name" })}
+                name="name"
+                required
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

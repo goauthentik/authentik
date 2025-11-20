@@ -9,6 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -25,6 +26,11 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export class ScheduleList extends Table<Schedule> {
     expandable = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Schedule", { id: "entity.schedule.singular" }),
+        plural: msg("Schedules", { id: "entity.schedule.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -136,7 +142,7 @@ export class ScheduleList extends Table<Schedule> {
                     </pf-tooltip>
                 </ak-action-button>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Schedule")}</span>
                     <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

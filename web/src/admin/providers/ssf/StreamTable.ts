@@ -5,6 +5,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -17,6 +18,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Ssf Stream", { id: "entity.ssf-stream.singular" }),
+        plural: msg("Ssf Streams", { id: "entity.ssf-stream.plural" }),
+    };
+
     protected override searchEnabled = true;
     checkbox = true;
     clearOnRefresh = true;
@@ -40,7 +46,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Audience"), "aud"],
+        [msg("Audience", { id: "column.audience" }), "aud"],
     ];
 
     row(item: SSFStream): SlottedTemplateResult[] {

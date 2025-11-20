@@ -15,6 +15,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { EntityLabel } from "#common/i18n/nouns";
 import { MessageLevel } from "#common/messages";
 import { me } from "#common/users";
 
@@ -48,9 +49,9 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
     @state()
     usersToAdd: User[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user(s).");
-    }
+    protected override readonly actionName = "add";
+
+    protected override entityLabel = msg("Users", { id: "entity.user.plural" });
 
     async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
@@ -123,9 +124,18 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
-    public override searchPlaceholder = msg("Search for users by username or display name...");
-    public override searchLabel = msg("Group User Search");
+    protected override get searchPlaceholder() {
+        return msg("Search for users by username or display name...", {
+            id: "search.placeholder.user-related-list",
+        });
+    }
+
     public override label = msg("Group Users");
+
+    public override entityLabel: EntityLabel = {
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
+    };
 
     expandable = true;
     checkbox = true;
@@ -165,10 +175,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Active"), "is_active"],
-        [msg("Last login"), "last_login"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Active", { id: "column.active" }), "is_active"],
+        [msg("Last login", { id: "column.last-login" }), "last_login"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -216,8 +230,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update User")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -343,7 +357,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                   </ak-action-button>
                                   ${item.email
                                       ? html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                            <span slot="submit"> ${msg("Send link")} </span>
+                                            <span slot="submit">${msg("Send link")}</span>
                                             <span slot="header">
                                                 ${msg("Send recovery link to user")}
                                             </span>
@@ -417,8 +431,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 >
                     <li role="presentation">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Create User")}</span>
-                            <span slot="header">${msg("New User")}</span>
+                            <span slot="submit">${this.createEntityLabel}</span>
+                            <span slot="header">${this.newEntityActionLabel}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">
@@ -430,7 +444,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                 : nothing}
                             <ak-user-form .group=${this.targetGroup} slot="form"> </ak-user-form>
                             <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("New user...")}
+                                ${this.newEntityActionLabel}
                             </a>
                         </ak-forms-modal>
                     </li>
@@ -453,7 +467,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             <ak-user-service-account-form .group=${this.targetGroup} slot="form">
                             </ak-user-service-account-form>
                             <a role="menuitem" slot="trigger" class="pf-c-dropdown__menu-item">
-                                ${msg("New service account...")}
+                                ${msg("New Service Account")}
                             </a>
                         </ak-forms-modal>
                     </li>

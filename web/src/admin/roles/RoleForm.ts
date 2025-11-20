@@ -2,17 +2,18 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
@@ -22,11 +23,7 @@ export class RoleForm extends ModelForm<Role, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated role.")
-            : msg("Successfully created role.");
-    }
+    protected override entityLabel = msg("Role", { id: "entity.role.singular" });
 
     async send(data: Role): Promise<Role> {
         if (this.instance?.pk) {
@@ -41,14 +38,13 @@ export class RoleForm extends ModelForm<Role, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
-            <input
-                type="text"
-                value="${ifDefined(this.instance?.name)}"
-                class="pf-c-form-control"
-                required
-            />
-        </ak-form-element-horizontal>`;
+        return html`<ak-text-input
+            name="name"
+            label=${msg("Role Name")}
+            placeholder=${msg("Type a name for this role...")}
+            required
+            value="${ifPresent(this.instance?.name)}"
+        ></ak-text-input>`;
     }
 }
 

@@ -27,11 +27,7 @@ export class TokenForm extends ModelForm<Token, string> {
         return token;
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated token.")
-            : msg("Successfully created token.");
-    }
+    protected override entityLabel = msg("Token", { id: "entity.token.singular" });
 
     async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {

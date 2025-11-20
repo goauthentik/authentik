@@ -41,7 +41,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Licenses");
+    protected override entityLabel = {
+        singular: msg("License", { id: "entity.license.singular" }),
+        plural: msg("Licenses", { id: "entity.license.plural" }),
+    };
     public pageDescription = msg("Manage enterprise licenses");
     public pageIcon = "pf-icon pf-icon-key";
 
@@ -88,10 +91,14 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Users")],
-        [msg("Expiry date")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Users", { id: "column.users" })],
+        [msg("Expiry date", { id: "column.expiry-date" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     // TODO: Make this more generic, maybe automatically get the plural name
@@ -221,7 +228,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
                     </ak-enterprise-license-form>

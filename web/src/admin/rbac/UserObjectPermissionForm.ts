@@ -4,6 +4,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionName } from "#common/i18n/verbs";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -52,9 +53,11 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
-        return msg("Successfully assigned permission.");
+    protected override get actionName(): ActionName {
+        return "assign";
     }
+
+    protected override entityLabel = msg("Permission", { id: "entity.permission.singular" });
 
     send(data: UserAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({

@@ -11,6 +11,9 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import type { Replacer } from "#elements/ak-mdx/index";
 import { AKElement } from "#elements/Base";
@@ -78,6 +81,11 @@ export function isForward(mode: ProxyMode): boolean {
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Proxy Provider", { id: "entity.proxy-provider.singular" }),
+        plural: msg("Proxy Providers", { id: "entity.proxy-provider.plural" }),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -381,15 +389,15 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update Proxy Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present()}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-proxy-form
                                 slot="form"
                                 .instancePk=${this.provider.pk || 0}
                             >
                             </ak-provider-proxy-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>

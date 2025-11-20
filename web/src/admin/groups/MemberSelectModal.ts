@@ -2,6 +2,7 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
@@ -22,8 +23,17 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
-    public override searchPlaceholder = msg("Search for users by username or display name...");
-    public override searchLabel = msg("Search Users");
+    protected override entityLabel: EntityLabel = {
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for users by username or display name...", {
+            id: "search.placeholder.user-select-modal",
+        });
+    }
+
     public override label = msg("Select Users");
     static styles = [
         ...super.styles,
@@ -72,9 +82,9 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Active"), "is_active"],
-        [msg("Last login"), "last_login"],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Active", { id: "column.active" }), "is_active"],
+        [msg("Last login", { id: "column.last-login" }), "last_login"],
     ];
 
     renderToolbarAfter() {

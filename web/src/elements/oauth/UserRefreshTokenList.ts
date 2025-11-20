@@ -4,6 +4,7 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -19,6 +20,11 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 @customElement("ak-user-oauth-refresh-token-list")
 export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Refresh Token", { id: "entity.refresh-token.singular" }),
+        plural: msg("Refresh Tokens", { id: "entity.refresh-token.plural" }),
+    };
 
     @property({ type: Number })
     userId?: number;

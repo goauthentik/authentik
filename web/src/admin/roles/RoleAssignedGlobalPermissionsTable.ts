@@ -2,6 +2,7 @@ import "#admin/roles/RolePermissionForm";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -18,6 +19,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
     roleUuid?: string;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Permission", { id: "entity.permission.singular" }),
+        plural: msg("Permissions", { id: "entity.permission.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -41,9 +47,9 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Model"), "model"],
-        [msg("Permission"), ""],
-        ["", null, msg("Assigned to role")],
+        [msg("Model", { id: "column.model" }), "model"],
+        [msg("Permission", { id: "column.permission" }), ""],
+        ["", null, msg("Assigned to role", { id: "column.assigned-to-role" })],
     ];
 
     renderObjectCreate(): TemplateResult {

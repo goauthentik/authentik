@@ -22,6 +22,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -38,12 +39,16 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Property Mappings");
     public pageDescription = msg("Control how authentik exposes and interprets information.");
     public pageIcon = "pf-icon pf-icon-blueprint";
 
     checkbox = true;
     clearOnRefresh = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Property Mapping", { id: "entity.property-mapping.singular" }),
+        plural: msg("Property Mappings", { id: "entity.property-mapping.plural" }),
+    };
 
     @property()
     order = "name";
@@ -59,9 +64,13 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Type"), "type"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -91,7 +100,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             html`${item.name}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

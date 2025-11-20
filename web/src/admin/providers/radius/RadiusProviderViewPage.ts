@@ -9,6 +9,9 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -35,6 +38,11 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Radius Provider", { id: "entity.radius-provider.singular" }),
+        plural: msg("Radius Providers", { id: "entity.radius-provider.plural" }),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -139,7 +147,9 @@ export class RadiusProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
-                                        <span slot="submit">${msg("Update")}</span>
+                                        <span slot="submit"
+                                            >${ActionTenseRecord.apply.present()}</span
+                                        >
                                         <span slot="header">
                                             ${msg("Update Radius Provider")}
                                         </span>
@@ -149,7 +159,7 @@ export class RadiusProviderViewPage extends AKElement {
                                         >
                                         </ak-provider-radius-form>
                                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${msg("Edit")}
+                                            ${formatEditMessage(this.entityLabel)}
                                         </button>
                                     </ak-forms-modal>
                                 </div>

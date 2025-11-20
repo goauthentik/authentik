@@ -472,7 +472,7 @@ export class FlowExecutor
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"
-                aria-label=${msg("Authentication form")}
+                aria-label=${msg("Authentication form", { id: "flow.executor.main.aria-label" })}
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
@@ -480,7 +480,9 @@ export class FlowExecutor
                         class="branding-logo"
                         part="branding-logo"
                         src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        alt="${msg("authentik Logo")}"
+                        alt="${msg("authentik Logo", {
+                            id: "flow.executor.branding-logo.alt",
+                        })}"
                         role="presentation"
                     />
                 </div>

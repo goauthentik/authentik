@@ -6,7 +6,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import {
@@ -38,9 +38,11 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     request?: PolicyTestRequest;
 
-    getSuccessMessage(): string {
-        return msg("Successfully sent test-request.");
-    }
+    protected override readonly actionName = "send";
+
+    protected override entityLabel = msg("Test Request", {
+        id: "entity.policy.test.request.singular",
+    });
 
     async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
         this.request = data;
@@ -128,9 +130,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     value=${YAML.stringify(this.request?.context ?? {})}
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : nothing}`;
     }

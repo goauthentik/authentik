@@ -49,7 +49,11 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         is pending, a new user is created, and data is written to them.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("User Write Stage Name", { id: "label.user-write-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

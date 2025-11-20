@@ -37,11 +37,9 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated initial permissions.")
-            : msg("Successfully created initial permissions.");
-    }
+    protected override entityLabel = msg("Initial Permissions", {
+        id: "entity.initial.permissions.singular",
+    });
 
     async send(data: InitialPermissions): Promise<InitialPermissions> {
         if (this.instance?.pk) {
@@ -57,15 +55,33 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Permission Name", {
+                    id: "label.initial.permissions.name",
+                    desc: "Label for initial permissions name input",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
+                    placeholder=${msg("Type a descriptive name...", {
+                        id: "placeholder.initial.permissions.name",
+                        desc: "Placeholder text for initial permissions name input",
+                    })}
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Role")} required name="role">
+            <ak-form-element-horizontal
+                label=${msg("Role", {
+                    id: "label.initial.permissions.role",
+                    desc: "Label for initial permissions role mode",
+                })}
+                required
+                name="role"
+            >
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {

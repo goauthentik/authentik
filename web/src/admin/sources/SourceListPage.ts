@@ -10,6 +10,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -25,9 +26,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
-    public pageTitle = msg("Federation and Social login");
+    protected override entityLabel = {
+        singular: msg("Federation And Social Login", {
+            id: "entity.federation-and-social-login.singular",
+        }),
+        plural: msg("Federation And Social Login", {
+            id: "entity.plural.federation-and-social-login",
+        }),
+    };
     public pageDescription = msg(
         "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
+        {
+            id: "page.description.source-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-middleware";
     protected override searchEnabled = true;
@@ -44,9 +55,9 @@ export class SourceListPage extends TablePage<Source> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Type")],
-        ["", null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" })],
+        ["", null, msg("Row Actions", { id: "column.row-actions" })],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -89,7 +100,7 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                 <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                 <ak-proxy-form
                     slot="form"
@@ -100,7 +111,7 @@ export class SourceListPage extends TablePage<Source> {
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
+                    <pf-tooltip position="top" content=${this.editEntityLabel}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>

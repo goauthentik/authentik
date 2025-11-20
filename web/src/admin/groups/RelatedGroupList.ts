@@ -8,6 +8,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -28,9 +29,9 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @state()
     groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user to group(s).");
-    }
+    protected override readonly actionName = "add";
+
+    protected override entityLabel = msg("User To Group", { id: "entity.user-to-group.singular" });
 
     async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
@@ -90,6 +91,11 @@ export class RelatedGroupList extends Table<Group> {
     clearOnRefresh = true;
     protected override searchEnabled = true;
 
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
+    };
+
     @property()
     order = "name";
 
@@ -105,10 +111,14 @@ export class RelatedGroupList extends Table<Group> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
-        [msg("Superuser privileges?")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Parent", { id: "column.parent" }), "parent"],
+        [msg("Superuser privileges?", { id: "column.superuser-privileges-question-mark" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -143,8 +153,8 @@ export class RelatedGroupList extends Table<Group> {
             html`${item.parentName || msg("-")}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Group")}</span>
+                <span slot="submit">${this.updateEntityLabel}</span>
+                <span slot="header">${this.editEntityLabel}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
@@ -169,8 +179,8 @@ export class RelatedGroupList extends Table<Group> {
                   </ak-forms-modal>`
                 : nothing}
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Group")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Add new group")}

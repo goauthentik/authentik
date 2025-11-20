@@ -9,6 +9,9 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
@@ -39,6 +42,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends WithSession(AKElement) {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Ldap Provider", { id: "entity.ldap-provider.singular" }),
+        plural: msg("Ldap Providers", { id: "entity.ldap-provider.plural" }),
+    };
+
     @property({ type: Number })
     providerID?: number;
 
@@ -130,14 +138,11 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
             return nothing;
         }
 
-        return html`
-            ${
-                this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Provider is not used by any Outpost.")}
-                      </div>`
-                    : nothing
-            }
+        return html`${!this.provider.outpostSet.length
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${msg("Warning: Provider is not used by any Outpost.")}
+                  </div>`
+                : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -182,24 +187,20 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
-                            <span slot="header">${msg("Update LDAP Provider")}</span>
+                            <span slot="submit">${ActionTenseRecord.apply.present()}</span>
+                            <span slot="header">${formatEditMessage(this.entityLabel)}</span>
                             <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-ldap-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
+                                ${formatEditMessage(this.entityLabel)}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">
-                        ${msg("How to connect")}
-                    </div>
+                    <div class="pf-c-card__title">${msg("How to connect")}</div>
                     <div class="pf-c-card__body">
-                        <p>
-                            ${msg("Connect to the LDAP Server on port 389:")}
-                        </p>
+                        <p>${msg("Connect to the LDAP Server on port 389:")}</p>
                         <ul class="pf-c-list">
                             <li>${msg("Check the IP of the Kubernetes service, or")}</li>
                             <li>${msg("The Host IP of the docker host")}</li>
@@ -210,7 +211,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                                     <span class="pf-c-form__label-text">${msg("Bind DN")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${`cn=${this.currentUser?.username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
@@ -218,12 +219,12 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg(
-                                        "Bind Password",
-                                    )}</span>
+                                    <span class="pf-c-form__label-text"
+                                        >${msg("Bind Password")}</span
+                                    >
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${msg("Your authentik password")}
@@ -234,7 +235,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                                     <span class="pf-c-form__label-text">${msg("Search base")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-c-form-control pf-m-monospace"
                                     readonly
                                     type="text"
                                     value=${ifDefined(this.provider?.baseDn?.toLowerCase())}
@@ -243,8 +244,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
     }
 }
 

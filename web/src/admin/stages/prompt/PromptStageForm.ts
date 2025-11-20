@@ -25,6 +25,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
+    protected override entityLabel = msg("Prompt Stage");
+
     loadInstance(pk: string): Promise<PromptStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
             stageUuid: pk,
@@ -49,7 +51,11 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Prompt Stage Name", { id: "label.prompt-stage-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -68,15 +74,15 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         ></ak-dual-select-dynamic-selected>
                         ${this.instance
                             ? html`<ak-forms-modal size=${PFSize.XLarge}>
-                                  <span slot="submit">${msg("Create")}</span>
-                                  <span slot="header">${msg("Create Prompt")}</span>
+                                  <span slot="submit">${this.createEntityLabel}</span>
+                                  <span slot="header">${this.newEntityActionLabel}</span>
                                   <ak-prompt-form slot="form"> </ak-prompt-form>
                                   <button
                                       type="button"
                                       slot="trigger"
                                       class="pf-c-button pf-m-primary"
                                   >
-                                      ${msg("Create")}
+                                      ${this.createEntityLabel}
                                   </button>
                               </ak-forms-modal>`
                             : nothing}

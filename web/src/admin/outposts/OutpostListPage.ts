@@ -54,9 +54,15 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
-    public pageTitle = msg("Outposts");
+    protected override entityLabel = {
+        singular: msg("Outpost", { id: "entity.outpost.singular" }),
+        plural: msg("Outposts", { id: "entity.outpost.plural" }),
+    };
     public pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+        {
+            id: "page.description.outpost-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-zone";
@@ -84,12 +90,16 @@ export class OutpostListPage extends TablePage<Outpost> {
     health: { [key: string]: OutpostHealth[] } = {};
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Type"), "type"],
-        [msg("Providers")],
-        [msg("Integration"), "service_connection__name"],
-        [msg("Health and Version")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" }), "type"],
+        [msg("Providers", { id: "column.providers" })],
+        [msg("Integration", { id: "column.integration" }), "service_connection__name"],
+        [msg("Health and Version", { id: "column.health-and-version" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
@@ -126,7 +136,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             ></ak-outpost-health-simple>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
                         slot="form"
@@ -233,10 +243,12 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Outpost")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-outpost-form slot="form"> </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

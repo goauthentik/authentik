@@ -9,6 +9,7 @@ import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -37,6 +38,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     order = "order";
 
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Entitlement", { id: "entity.entitlement.singular" }),
+        plural: msg("Entitlements", { id: "entity.entitlement.plural" }),
+    };
+
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
@@ -46,8 +52,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -76,8 +86,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Entitlement")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-application-entitlement-form
                         slot="form"
                         .instancePk=${item.pbmUuid}
@@ -85,7 +95,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     >
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -126,12 +136,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("Create Entitlement")}</span>
+            <span slot="submit">${this.createEntityLabel}</span>
+            <span slot="header">${this.newEntityActionLabel}</span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Create entitlement")}
+                ${this.newEntityActionLabel}
             </button>
         </ak-forms-modal> `;
     }

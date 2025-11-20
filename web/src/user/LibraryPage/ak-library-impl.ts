@@ -178,8 +178,6 @@ export class LibraryPage extends WithSession(AKElement) {
         threshold: 0.3,
     });
 
-    public pageTitle = msg("My Applications");
-
     //#region Lifecycle
 
     public override connectedCallback() {

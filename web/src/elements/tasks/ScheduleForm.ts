@@ -6,8 +6,10 @@ import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { MessageLevel } from "#common/messages";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { APIMessage } from "#elements/messages/Message";
 
 import { Schedule, TasksApi } from "@goauthentik/api";
 
@@ -24,11 +26,15 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    protected override formatAPISuccessMessage(): APIMessage | null {
         if (!this.instance) {
-            return "";
+            return null;
         }
-        return msg("Successfully updated schedule.");
+
+        return {
+            level: MessageLevel.success,
+            message: msg("Successfully updated schedule."),
+        };
     }
 
     async send(data: Schedule): Promise<Schedule | void> {

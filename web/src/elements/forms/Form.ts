@@ -5,6 +5,13 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
+import {
+    formatCreateMessage,
+    formatEditMessage,
+    formatNewMessage,
+    formatSuccessActionMessage,
+} from "#common/i18n/actions";
+import { ActionName, ActionTenseRecord } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 
@@ -221,7 +228,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Properties
 
-    @property({ type: String })
+    @property({ type: String, attribute: "success-message" })
     public successMessage?: string;
 
     @property({ type: String })
@@ -266,19 +273,55 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * An overridable method for returning a success message after a successful submission.
-     *
-     * @deprecated Use `formatAPISuccessMessage` instead.
+     * The label for the type of entity being listed.
      */
-    protected getSuccessMessage(): string | undefined {
-        return this.successMessage;
+    protected entityLabel: string = msg("object", {
+        id: "form-entity-singular",
+        desc: "Singular form of 'object', used as a generic placeholder for an entity label",
+    });
+
+    /**
+     * The label for the action performed when submitting the form.
+     * @abstract
+     */
+    protected abstract actionName?: ActionName;
+
+    /**
+     * Label for opening a "new entity" modal or page.
+     */
+    protected get newEntityActionLabel(): string {
+        return formatNewMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for a "create entity" button.
+     */
+    protected get createEntityLabel(): string {
+        return formatCreateMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "edit entity" button.
+     */
+    protected get editEntityLabel(): string {
+        return formatEditMessage(this.entityLabel);
+    }
+
+    /**
+     * Label for an "Apply" button.
+     */
+    protected get updateEntityLabel(): string {
+        return ActionTenseRecord.apply.present();
     }
 
     /**
      * An overridable method for returning a formatted message after a successful submission.
      */
     protected formatAPISuccessMessage(response: unknown): APIMessage | null {
-        const message = this.getSuccessMessage();
+        const actionName: ActionName = this.actionName || "create";
+        const action = ActionTenseRecord[actionName].past;
+
+        const message = formatSuccessActionMessage(action(), this.entityLabel);
 
         if (!message) return null;
 
@@ -293,7 +336,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      */
     protected formatAPIErrorMessage(error: APIError): APIMessage | null {
         return {
-            message: msg("There was an error submitting the form."),
+            message: msg("There was an error submitting the form.", {
+                id: "form-submission-error-message",
+                desc: "A generic error message indicating that a form submission has failed",
+            }),
             description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
             level: MessageLevel.error,
         };

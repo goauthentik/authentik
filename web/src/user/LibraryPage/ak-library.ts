@@ -93,8 +93,6 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    public pageTitle = msg("My Applications");
-
     render() {
         if (this.apps.loading) {
             return html`<ak-empty-state default-label></ak-empty-state>`;

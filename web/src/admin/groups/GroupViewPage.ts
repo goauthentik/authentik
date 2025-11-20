@@ -12,6 +12,9 @@ import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -37,6 +40,11 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
+    };
+
     @property({ type: String })
     set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
@@ -145,12 +153,16 @@ export class GroupViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit">${msg("Update")}</span>
-                                    <span slot="header">${msg("Update Group")}</span>
+                                    <span slot="submit">
+                                        ${ActionTenseRecord.apply.present()}
+                                    </span>
+                                    <span slot="header">
+                                        ${formatEditMessage(this.entityLabel)}
+                                    </span>
                                     <ak-group-form slot="form" .instancePk=${this.group.pk}>
                                     </ak-group-form>
                                     <button slot="trigger" class="pf-m-primary pf-c-button">
-                                        ${msg("Edit")}
+                                        ${formatEditMessage(this.entityLabel)}
                                     </button>
                                 </ak-forms-modal>
                             </div>

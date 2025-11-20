@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
@@ -26,11 +26,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated integration.")
-            : msg("Successfully created integration.");
-    }
+    protected override entityLabel = msg("Integration", { id: "entity.integration.singular" });
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {
@@ -45,7 +41,13 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Service Connection Kubernetes Name", {
+                    id: "label.service-connection-kubernetes-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -79,9 +81,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="verifySsl">
                 <label class="pf-c-switch">

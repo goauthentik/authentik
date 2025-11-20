@@ -2,6 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -17,6 +18,11 @@ import { customElement, property } from "lit/decorators.js";
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
     @property()
     roleUuid?: string;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Permission", { id: "entity.permission.singular" }),
+        plural: msg("Permissions", { id: "entity.permission.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -37,9 +43,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     }
 
     protected columns: TableColumn[] = [
-        [msg("Model"), "model"],
-        [msg("Permission"), ""],
-        [msg("Object"), ""],
+        [msg("Model", { id: "column.model" }), "model"],
+        [msg("Permission", { id: "column.permission" }), ""],
+        [msg("Object", { id: "column.object" }), ""],
         [""],
     ];
 

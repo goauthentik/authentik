@@ -33,9 +33,15 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Certificate-Key Pairs");
+    protected override entityLabel = {
+        singular: msg("Certificate Key Pair", { id: "entity.certificate-key-pair.singular" }),
+        plural: msg("Certificate Key Pairs", { id: "entity.certificate-key-pair.plural" }),
+    };
     public pageDescription = msg(
         "Import certificates of external providers or create certificates to sign requests with.",
+        {
+            id: "page.description.certificate-key-pair-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-key";
 
@@ -51,10 +57,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Private key available?")],
-        [msg("Expiry date")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Private key available?", { id: "column.private-key-available-question-mark" })],
+        [msg("Expiry date", { id: "column.expiry-date" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -114,7 +124,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                     </ak-crypto-certificate-form>

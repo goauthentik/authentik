@@ -2,6 +2,7 @@ import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -17,6 +18,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
+    };
+
     @property({ attribute: false })
     user?: User;
 
@@ -31,11 +37,15 @@ export class UserApplicationTable extends Table<Application> {
 
     protected columns: TableColumn[] = [
         [""],
-        [msg("Name"), "name"],
-        [msg("Group"), "group"],
-        [msg("Provider")],
-        [msg("Provider Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Group", { id: "column.group" }), "group"],
+        [msg("Provider", { id: "column.provider" })],
+        [msg("Provider Type", { id: "column.provider-type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     row(item: Application): SlottedTemplateResult[] {
@@ -54,12 +64,12 @@ export class UserApplicationTable extends Table<Application> {
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Application")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>

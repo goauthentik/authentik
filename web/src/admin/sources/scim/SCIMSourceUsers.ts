@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -15,6 +16,12 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     sourceSlug?: string;
 
     expandable = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("User", { id: "entity.user.singular" }),
+        plural: msg("Users", { id: "entity.user.plural" }),
+    };
+
     protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceUser>> {
@@ -30,8 +37,8 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Username")],
-        [msg("ID")],
+        [msg("Username", { id: "column.username" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     renderExpanded(item: SCIMSourceUser): TemplateResult {

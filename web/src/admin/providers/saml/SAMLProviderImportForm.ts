@@ -15,9 +15,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-    getSuccessMessage(): string {
-        return msg("Successfully imported provider.");
-    }
+    protected override readonly actionName = "import";
+
+    protected override entityLabel = msg("Provider", { id: "entity.provider.singular" });
 
     async send(data: SAMLProvider): Promise<void> {
         const file = this.files().get("metadata");
@@ -33,7 +33,11 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html`<ak-form-element-horizontal
+                label=${msg("SAML Provider Name", { id: "label.saml-provider-name" })}
+                required
+                name="name"
+            >
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

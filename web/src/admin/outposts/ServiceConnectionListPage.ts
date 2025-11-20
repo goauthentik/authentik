@@ -28,9 +28,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
-    public pageTitle = msg("Outpost integrations");
+    protected override entityLabel = {
+        singular: msg("Outpost Integration", { id: "entity.outpost-integration.singular" }),
+        plural: msg("Outpost Integrations", { id: "entity.outpost-integration.plural" }),
+    };
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+        {
+            id: "page.description.outpost-service-connection-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-integration";
@@ -62,11 +68,15 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     state: { [key: string]: ServiceConnectionState } = {};
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Type")],
-        [msg("Local"), "local"],
-        [msg("State")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" })],
+        [msg("Local", { id: "column.local" }), "local"],
+        [msg("State", { id: "column.state" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     @property()
@@ -83,7 +93,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

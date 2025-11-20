@@ -4,7 +4,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -33,13 +33,14 @@ export abstract class TablePage<T extends object> extends Table<T> {
         `,
     ];
 
-    //#region Abstract properties
-
     /**
      * The title of the page.
-     * @abstract
      */
-    public abstract pageTitle: string;
+    public get pageTitle(): string {
+        return this.entityLabel.plural;
+    }
+
+    //#region Abstract properties
 
     /**
      * The description of the page.
@@ -119,7 +120,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${msg(str`No ${this.entityLabel.plural.toLowerCase()} found.`)}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>

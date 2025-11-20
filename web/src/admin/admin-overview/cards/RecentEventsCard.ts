@@ -7,6 +7,7 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EntityLabel } from "#common/i18n/nouns";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -17,7 +18,7 @@ import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -26,8 +27,13 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     public override role = "region";
-    public override ariaLabel = msg("Recent events");
-    public override label = msg("Events");
+    public override ariaLabel = msg("Recent events", { id: "aria.label.recent-events" });
+    public override label = msg("Events", { id: "card.label.recent-events" });
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Event", { id: "entity.event.singular" }),
+        plural: msg("Events", { id: "entity.event.plural" }),
+    };
 
     @property()
     order = "-created";
@@ -54,10 +60,10 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Action"), "action"],
-        [msg("User"), "user"],
-        [msg("Creation Date"), "created"],
-        [msg("Client IP"), "client_ip"],
+        [msg("Action", { id: "column.action" }), "action"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Creation Date", { id: "column.creation-date" }), "created"],
+        [msg("Client IP", { id: "column.client-ip" }), "client_ip"],
     ];
 
     renderToolbar(): TemplateResult {
@@ -83,10 +89,20 @@ export class RecentEventsCard extends Table<Event> {
             return super.renderEmpty(inner);
         }
 
+        const entityLabel = this.entityLabel.plural.toLowerCase();
+
         return super.renderEmpty(
             html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
-                <div slot="body">${msg("No matching events could be found.")}</div>
+                ><span
+                    >${msg(str`No ${entityLabel} found.`, {
+                        id: "empty-state.heading",
+                    })}</span
+                >
+                <div slot="body">
+                    ${msg(str`No matching ${entityLabel} could be found.`, {
+                        id: "empty-state.body",
+                    })}
+                </div>
             </ak-empty-state>`,
         );
     }

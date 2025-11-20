@@ -53,7 +53,11 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("GeoIP Policy Name", { id: "label.geoip-policy-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

@@ -2,6 +2,7 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
@@ -19,6 +20,11 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 export class GroupSelectModal extends TableModal<Group> {
     checkbox = true;
     checkboxChip = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
+    };
 
     protected override searchEnabled = true;
     public supportsQL = true;
@@ -38,9 +44,9 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Superuser"), "is_superuser"],
-        [msg("Members"), ""],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Superuser", { id: "column.superuser" }), "is_superuser"],
+        [msg("Members", { id: "column.members" }), ""],
     ];
 
     row(item: Group): SlottedTemplateResult[] {

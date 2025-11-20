@@ -40,10 +40,6 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
         this.innerElement?.reset();
     }
 
-    public override getSuccessMessage(): string {
-        return this.innerElement?.getSuccessMessage() || "";
-    }
-
     public override async requestUpdate(name?: PropertyKey, oldValue?: unknown): Promise<unknown> {
         const result = super.requestUpdate(name, oldValue);
 

@@ -17,6 +17,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -32,10 +33,22 @@ import { customElement, property } from "lit/decorators.js";
 export class ProviderListPage extends TablePage<Provider> {
     protected override searchEnabled = true;
 
-    override pageTitle = msg("Providers");
+    protected override entityLabel = {
+        singular: msg("Provider", { id: "entity.provider.singular" }),
+        plural: msg("Providers", { id: "entity.provider.plural" }),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for a provider by name or application...", {
+            id: "search.placeholder.provider-list",
+        });
+    }
 
     public pageDescription = msg(
         "Provide support for protocols like SAML and OAuth to assigned applications.",
+        {
+            id: "page.description.provider-list",
+        },
     );
 
     public pageIcon = "pf-icon pf-icon-integration";
@@ -46,9 +59,6 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     public order = "name";
 
-    public searchLabel = msg("Provider Search");
-    public searchPlaceholder = msg("Search for providers…");
-
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
             await this.defaultEndpointConfig(),
@@ -56,10 +66,14 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     protected override columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Application")],
-        [msg("Type")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Application", { id: "column.application" })],
+        [msg("Type", { id: "column.type" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     override renderToolbarSelected(): TemplateResult {
@@ -113,7 +127,7 @@ export class ProviderListPage extends TablePage<Provider> {
             html`${item.verboseName}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${ActionTenseRecord.apply.present()}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"

@@ -28,7 +28,17 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
     supportsQL = true;
 
-    public pageTitle = msg("Event Log");
+    protected override entityLabel = {
+        singular: msg("Event Log", { id: "entity.event-log.singular" }),
+        plural: msg("Event Log", { id: "entity.plural.event-log" }),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for an event by action or user...", {
+            id: "search.placeholder.event-list",
+        });
+    }
+
     public pageDescription = "";
 
     public pageIcon = "pf-icon pf-icon-catalog";
@@ -52,12 +62,16 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Action"), "action"],
-        [msg("User"), "user"],
-        [msg("Creation Date"), "created"],
-        [msg("Client IP"), "client_ip"],
-        [msg("Brand"), "brand_name"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Action", { id: "column.action" }), "action"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Creation Date", { id: "column.creation-date" }), "created"],
+        [msg("Client IP", { id: "column.client-ip" }), "client_ip"],
+        [msg("Brand", { id: "column.brand" }), "brand_name"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     protected override rowLabel(item: Event): string | null {

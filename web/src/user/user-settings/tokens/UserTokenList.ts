@@ -8,6 +8,8 @@ import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatCreateMessage, formatNewMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
@@ -27,6 +29,11 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export class UserTokenList extends Table<Token> {
     protected override searchEnabled = true;
 
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Token", { id: "entity.token.singular" }),
+        plural: msg("Tokens", { id: "entity.token.plural" }),
+    };
+
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
@@ -45,9 +52,17 @@ export class UserTokenList extends Table<Token> {
     }
 
     protected columns: TableColumn[] = [
-        // ---
-        [msg("Identifier"), "identifier"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [
+            msg("Identifier", {
+                id: "column.identifier",
+            }),
+            "identifier",
+        ],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
@@ -59,20 +74,20 @@ export class UserTokenList extends Table<Token> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="submit">${this.newEntityActionLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create Token")}
+                    ${this.newEntityActionLabel}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create App password")}</span>
+                <span slot="submit">${formatCreateMessage(msg("App Password"))}</span>
+                <span slot="header">${formatNewMessage(msg("App Password"))}</span>
                 <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create App password")}
+                    ${formatCreateMessage(msg("App Password"))}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
@@ -151,7 +166,7 @@ export class UserTokenList extends Table<Token> {
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Token")}</span>
                     <ak-user-token-form
                         intent=${item.intent ?? IntentEnum.Api}

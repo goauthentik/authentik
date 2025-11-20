@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionName } from "#common/i18n/verbs";
 import { MessageLevel } from "#common/messages";
 
 import { ModalForm } from "#elements/forms/ModalForm";
@@ -31,9 +32,11 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    getSuccessMessage(): string {
-        return msg("Successfully imported device.");
+    protected override get actionName(): ActionName {
+        return "import";
     }
+
+    protected override entityLabel = msg("Device", { id: "entity.device.singular" });
 
     async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;

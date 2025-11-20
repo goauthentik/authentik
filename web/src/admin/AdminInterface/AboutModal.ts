@@ -48,12 +48,12 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
             >`;
         }
         return [
-            [msg("Version"), version.versionCurrent],
-            [msg("UI Version"), import.meta.env.AK_VERSION],
-            [msg("Build"), build],
-            [msg("Python version"), status.runtime.pythonVersion],
-            [msg("Platform"), status.runtime.platform],
-            [msg("Kernel"), status.runtime.uname],
+            [msg("Version", { id: "label.version" }), version.versionCurrent],
+            [msg("UI Version", { id: "label.ui-version" }), import.meta.env.AK_VERSION],
+            [msg("Build", { id: "label.build" }), build],
+            [msg("Python version", { id: "label.python-version" }), status.runtime.pythonVersion],
+            [msg("Platform", { id: "label.platform" }), status.runtime.platform],
+            [msg("Kernel", { id: "label.kernel" }), status.runtime.uname],
             [
                 msg("OpenSSL"),
                 `${status.runtime.opensslVersion} ${status.runtime.opensslFipsEnabled ? "FIPS" : ""}`,

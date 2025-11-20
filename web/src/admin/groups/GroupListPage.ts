@@ -6,6 +6,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -22,11 +23,22 @@ export class GroupListPage extends TablePage<Group> {
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
-    public searchPlaceholder = msg("Search for a group by name…");
-    public searchLabel = msg("Group Search");
-    public pageTitle = msg("Groups");
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Group", { id: "entity.group.singular" }),
+        plural: msg("Groups", { id: "entity.group.plural" }),
+    };
+
+    protected override get searchPlaceholder() {
+        return msg("Search for a group by name...", {
+            id: "search.placeholder.groups-list",
+        });
+    }
+
     public pageDescription = msg(
         "Group users together and give them permissions based on the membership.",
+        {
+            id: "page.description.groups-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-users";
     public supportsQL = true;
@@ -42,11 +54,15 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
-        [msg("Members")],
-        [msg("Superuser privileges?")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Parent", { id: "column.parent" }), "parent"],
+        [msg("Members", { id: "column.members" })],
+        [msg("Superuser privileges?", { id: "column.superuser-privileges-question-mark" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -83,11 +99,11 @@ export class GroupListPage extends TablePage<Group> {
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Group")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
+                    <span slot="header">${this.editEntityLabel}</span>
                     <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <pf-tooltip position="top" content=${this.editEntityLabel}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
@@ -99,10 +115,12 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create Group")}</span>
-                <span slot="header">${msg("New Group")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Group")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

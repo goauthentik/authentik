@@ -58,7 +58,10 @@ export function formatBlueprintDescription(item: BlueprintInstance): string | nu
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Blueprints");
+    protected override entityLabel = {
+        singular: msg("Blueprint Instance", { id: "entity.blueprint-instance.singular" }),
+        plural: msg("Blueprint Instances", { id: "entity.blueprint-instance.plural" }),
+    };
     public pageDescription = msg("Automate and template configuration within authentik.");
     public pageIcon = "pf-icon pf-icon-blueprint";
 
@@ -78,11 +81,15 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Status"), "status"],
-        [msg("Last applied"), "last_applied"],
-        [msg("Enabled"), "enabled"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Status", { id: "column.status" }), "status"],
+        [msg("Last applied", { id: "column.last-applied" }), "last_applied"],
+        [msg("Enabled", { id: "column.enabled" }), "enabled"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -156,7 +163,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button
@@ -204,10 +211,12 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Blueprint Instance")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.newEntityActionLabel}
+                </button>
             </ak-forms-modal>
         `;
     }

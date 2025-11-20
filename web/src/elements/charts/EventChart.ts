@@ -67,7 +67,9 @@ export function actionToColor(action: EventActions): string {
 }
 
 export abstract class EventChart extends AKChart<EventVolume[]> {
-    public override ariaLabel = msg("Event volume chart");
+    public override ariaLabel = msg("Event volume chart", {
+        id: "aria.label.event-volume-chart",
+    });
 
     eventVolume(
         data: EventVolume[],

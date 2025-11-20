@@ -57,11 +57,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @property({ type: Boolean })
     public clearIcon = false;
 
-    protected override getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated application.")
-            : msg("Successfully created application.");
-    }
+    protected override entityLabel = msg("Application");
 
     public override async send(applicationRequest: Application): Promise<Application | void> {
         applicationRequest.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
@@ -138,12 +134,18 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             <ak-text-input
                 name="name"
                 autocomplete="off"
-                placeholder=${msg("Type an application name...")}
+                placeholder=${msg("Type an application name...", {
+                    id: "application.form.name.placeholder",
+                })}
                 value=${ifDefined(this.instance?.name)}
-                label=${msg("Application Name")}
+                label=${msg("Application Name", {
+                    id: "application.form.name.label",
+                })}
                 spellcheck="false"
                 required
-                help=${msg("The name displayed in the application library.")}
+                help=${msg("The name displayed in the application library.", {
+                    id: "application.form.name.help",
+                })}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
@@ -151,16 +153,26 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
-                help=${msg("Internal application name used in URLs.")}
+                help=${msg("Internal application name used in URLs.", {
+                    id: "application.form.slug.help",
+                    desc: "Help text for the slug field in the application form",
+                })}
                 input-hint="code"
             ></ak-slug-input>
             <ak-text-input
                 name="group"
                 value=${ifDefined(this.instance?.group)}
                 label=${msg("Group")}
-                placeholder=${msg("e.g. Collaboration, Communication, Internal, etc.")}
+                placeholder=${msg("e.g. Collaboration, Communication, Internal, etc.", {
+                    id: "application.form.group.placeholder",
+                    desc: "Placeholder text for the group field in the application form",
+                })}
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
+                    {
+                        id: "application.form.group.help",
+                        desc: "Help text for the group field in the application form",
+                    },
                 )}
                 input-hint="code"
             ></ak-text-input>
@@ -168,7 +180,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 name="provider"
                 label=${msg("Provider")}
                 value=${ifPresent(this.instance?.provider)}
-                help=${msg("Select a provider that this application should use.")}
+                help=${msg("Select a provider that this application should use.", {
+                    id: "application.form.provider.help",
+                    desc: "Help text for the provider field in the application form",
+                })}
                 blankable
             ></ak-provider-search-input>
             <ak-backchannel-providers-input
@@ -176,18 +191,26 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Backchannel Providers")}
                 help=${msg(
                     "Select backchannel providers which augment the functionality of the main provider.",
+                    {
+                        id: "application.form.backchannel-providers.help",
+                        desc: "Help text for the backchannel providers field in the application form",
+                    },
                 )}
                 .providers=${this.backchannelProviders}
                 .confirm=${this.#handleConfirmBackchannelProviders}
                 .remover=${this.#makeRemoveBackchannelProviderHandler}
                 .tooltip=${html`<pf-tooltip
                     position="top"
-                    content=${msg("Add provider")}
+                    content=${msg("Add provider", {
+                        id: "application.form.backchannel-providers.add-provider.tooltip",
+                    })}
                 ></pf-tooltip>`}
             >
             </ak-backchannel-providers-input>
             <ak-radio-input
-                label=${msg("Policy engine mode")}
+                label=${msg("Policy engine mode", {
+                    id: "application.form.policy-engine-mode.label",
+                })}
                 required
                 name="policyEngineMode"
                 .options=${policyEngineModes}
@@ -208,9 +231,14 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     <ak-switch-input
                         name="openInNewTab"
                         ?checked=${this.instance?.openInNewTab ?? false}
-                        label=${msg("Open in new tab")}
+                        label=${msg("Open in new tab", {
+                            id: "application.form.open-in-new-tab.label",
+                        })}
                         help=${msg(
                             "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            {
+                                id: "application.form.open-in-new-tab.help",
+                            },
                         )}
                     >
                     </ak-switch-input>
@@ -219,32 +247,44 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                                   label="${msg("Icon")}"
                                   name="metaIcon"
                                   value=${ifPresent(this.instance?.metaIcon)}
-                                  current=${msg("Currently set to:")}
+                                  current=${msg("Currently set to:", {
+                                      id: "application.form.icon.current",
+                                  })}
                               ></ak-file-input>
                               ${this.instance?.metaIcon
                                   ? html`
                                         <ak-switch-input
                                             name=""
-                                            label=${msg("Clear icon")}
-                                            help=${msg("Delete currently set icon.")}
+                                            label=${msg("Clear icon", {
+                                                id: "application.form.clear-icon.label",
+                                            })}
+                                            help=${msg("Delete currently set icon.", {
+                                                id: "application.form.clear-icon.help",
+                                            })}
                                             @change=${this.handleClearIcon}
                                         ></ak-switch-input>
                                     `
                                   : nothing}`
                         : html` <ak-text-input
-                              label=${msg("Icon")}
+                              label=${msg("Icon", {
+                                  id: "application.form.icon.label",
+                              })}
                               name="metaIcon"
                               value=${this.instance?.metaIcon ?? ""}
                               help=${iconHelperText}
                           >
                           </ak-text-input>`}
                     <ak-text-input
-                        label=${msg("Publisher")}
+                        label=${msg("Publisher", {
+                            id: "application.form.publisher.label",
+                        })}
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
                     ></ak-text-input>
                     <ak-textarea-input
-                        label=${msg("Description")}
+                        label=${msg("Description", {
+                            id: "application.form.description.label",
+                        })}
                         name="metaDescription"
                         value=${ifDefined(this.instance?.metaDescription)}
                     ></ak-textarea-input>

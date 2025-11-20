@@ -8,6 +8,9 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { formatEditMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+import { ActionTenseRecord } from "#common/i18n/verbs";
 
 import { AKElement } from "#elements/Base";
 
@@ -31,6 +34,11 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
+    protected entityLabel: EntityLabel = {
+        singular: msg("Role", { id: "entity.role.singular" }),
+        plural: msg("Roles", { id: "entity.role.plural" }),
+    };
+
     @property({ type: String })
     set roleId(id: string) {
         new RbacApi(DEFAULT_CONFIG)
@@ -76,10 +84,12 @@ export class RoleViewPage extends AKElement {
     renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Role")}</span>
-                <ak-role-form slot="form" .instancePk=${role.pk}> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Edit")}</button>
+                <span slot="submit">${ActionTenseRecord.apply.present()}</span>
+                <span slot="header">${formatEditMessage(this.entityLabel)}</span>
+                <ak-role-form slot="form" .instancePk=${role.pk}></ak-role-form>
+                <button slot="trigger" class="pf-m-primary pf-c-button">
+                    ${formatEditMessage(this.entityLabel)}
+                </button>
             </ak-forms-modal>
         </div>`;
     }
@@ -106,8 +116,13 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Role Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList([
-                                    [msg("Name"), this._role.name],
-                                    [msg("Edit"), this.renderUpdateControl(this._role)],
+                                    [msg("Name", { id: "column.name" }), this._role.name],
+                                    [
+                                        msg("Actions", {
+                                            id: "column.actions",
+                                        }),
+                                        this.renderUpdateControl(this._role),
+                                    ],
                                 ])}
                             </div>
                         </div>
@@ -143,7 +158,15 @@ export class RoleViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "fa fa-lock",
-            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
+            header: this._role?.name
+                ? msg(str`Role ${this._role.name}`, {
+                      id: "header.role.view",
+                      desc: "Header for role view page",
+                  })
+                : msg("Role", {
+                      id: "header.role.view.fallback",
+                      desc: "Fallback header for nameless role view page",
+                  }),
         });
     }
 }

@@ -8,6 +8,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
+import { EntityLabel } from "#common/i18n/nouns";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
@@ -32,6 +33,11 @@ export class MFADevicesPage extends Table<Device> {
     checkbox = true;
     clearOnRefresh = true;
 
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Device", { id: "entity.device.singular" }),
+        plural: msg("Devices", { id: "entity.device.plural" }),
+    };
+
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
@@ -49,11 +55,15 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name")],
-        [msg("Type")],
-        [msg("Created at")],
-        [msg("Last used at")],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "column.name" })],
+        [msg("Type", { id: "column.type" })],
+        [msg("Created at", { id: "column.created-at" })],
+        [msg("Last used at", { id: "column.last-used-at" })],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbar(): TemplateResult {
@@ -156,7 +166,7 @@ export class MFADevicesPage extends Table<Device> {
             Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>

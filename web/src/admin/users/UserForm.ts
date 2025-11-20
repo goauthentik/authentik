@@ -7,10 +7,13 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatSuccessMessage } from "#common/i18n/actions";
+import { MessageLevel } from "#common/messages";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
+import { CodeMirrorHelperText, CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { APIMessage } from "#elements/messages/Message";
 
 import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
@@ -73,14 +76,20 @@ export class UserForm extends ModelForm<User, number> {
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated user.");
-        }
+    protected override formatAPISuccessMessage(): APIMessage | null {
         if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+            return {
+                level: MessageLevel.success,
+                message: formatSuccessMessage(
+                    msg(str`user and added to group ${this.group.name}`),
+                    this.instance,
+                ),
+            };
         }
-        return msg("Successfully created user.");
+        return {
+            level: MessageLevel.success,
+            message: formatSuccessMessage(msg("user"), this.instance),
+        };
     }
 
     async send(data: User): Promise<User> {
@@ -204,9 +213,7 @@ export class UserForm extends ModelForm<User, number> {
                     )}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
+                ${CodeMirrorHelperText()}
             </ak-form-element-horizontal>`;
     }
 }

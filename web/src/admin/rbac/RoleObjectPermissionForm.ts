@@ -4,6 +4,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { ActionName } from "#common/i18n/verbs";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -51,9 +52,11 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
-        return msg("Successfully assigned permission.");
+    protected override get actionName(): ActionName {
+        return "assign";
     }
+
+    protected override entityLabel = msg("Permission", { id: "entity.permission.singular" });
 
     send(data: RoleAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
@@ -71,7 +74,13 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             return nothing;
         }
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Role")} name="role">
+            <ak-form-element-horizontal
+                label=${msg("Role", {
+                    id: "label.role.object.permission.role",
+                    desc: "Label for role object permission role select",
+                })}
+                name="role"
+            >
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {

@@ -57,7 +57,13 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal
+                label=${msg("Authenticator WebAuthn Stage Name", {
+                    id: "label.authenticator-webauthn-stage-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"

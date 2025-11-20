@@ -19,18 +19,18 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
 > {
     protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated mapping.")
-            : msg("Successfully created mapping.");
-    }
+    protected override entityLabel = msg("Mapping", { id: "entity.mapping.singular" });
 
     renderExtraFields(): SlottedTemplateResult {
         return nothing;
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Property Mapping Name", { id: "label.property-mapping-name" })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

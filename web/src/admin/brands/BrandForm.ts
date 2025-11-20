@@ -41,11 +41,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated brand.")
-            : msg("Successfully created brand.");
-    }
+    protected override entityLabel = msg("Brand");
 
     async send(data: Brand): Promise<Brand> {
         data.attributes ??= {};

@@ -28,9 +28,15 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Tokens");
+    protected override entityLabel = {
+        singular: msg("Token", { id: "entity.token.singular" }),
+        plural: msg("Tokens", { id: "entity.token.plural" }),
+    };
     public pageDescription = msg(
         "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
+        {
+            id: "page.description.token-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-security";
 
@@ -49,12 +55,16 @@ export class TokenListPage extends TablePage<Token> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Identifier"), "identifier"],
-        [msg("User"), "user"],
-        [msg("Expires?"), "expiring"],
-        [msg("Expiry date"), "expires"],
-        [msg("Intent"), "intent"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Identifier", { id: "column.identifier" }), "identifier"],
+        [msg("User", { id: "column.user" }), "user"],
+        [msg("Expires?", { id: "column.expires-question-mark" }), "expiring"],
+        [msg("Expiry date", { id: "column.expiry-date" }), "expires"],
+        [msg("Intent", { id: "column.intent" }), "intent"],
+        [
+            msg("Actions", { id: "column.actions" }),
+            null,
+            msg("Row Actions", { id: "column.row-actions" }),
+        ],
     ];
 
     renderToolbarSelected(): TemplateResult {
@@ -85,10 +95,12 @@ export class TokenListPage extends TablePage<Token> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="submit">${this.createEntityLabel}</span>
+                <span slot="header">${this.newEntityActionLabel}</span>
                 <ak-token-form slot="form"> </ak-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${this.createEntityLabel}
+                </button>
             </ak-forms-modal>
         `;
     }
@@ -106,7 +118,7 @@ export class TokenListPage extends TablePage<Token> {
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>
-                          <span slot="submit">${msg("Update")}</span>
+                          <span slot="submit">${this.updateEntityLabel}</span>
                           <span slot="header">${msg("Update Token")}</span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">

@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,6 +23,11 @@ import { customElement, property } from "lit/decorators.js";
 export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     @property({ type: Number })
     providerId?: number;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Scim User", { id: "entity.scim-user.singular" }),
+        plural: msg("Scim Users", { id: "entity.scim-user.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -77,8 +83,8 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Username")],
-        [msg("ID")],
+        [msg("Username", { id: "column.username" })],
+        [msg("ID", { id: "column.id" })],
     ];
 
     row(item: SCIMProviderUser): SlottedTemplateResult[] {

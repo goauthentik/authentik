@@ -31,9 +31,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Policies");
+    protected override entityLabel = {
+        singular: msg("Policy", { id: "entity.policy.singular" }),
+        plural: msg("Policies", { id: "entity.policy.plural" }),
+    };
     public pageDescription = msg(
         "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
+        {
+            id: "page.description.policy-list",
+        },
     );
     public pageIcon = "pf-icon pf-icon-infrastructure";
 
@@ -49,9 +55,9 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "name"],
-        [msg("Type")],
-        [msg("Actions")],
+        [msg("Name", { id: "column.name" }), "name"],
+        [msg("Type", { id: "column.type" })],
+        [msg("Actions", { id: "column.actions" })],
     ];
 
     row(item: Policy): SlottedTemplateResult[] {
@@ -66,7 +72,7 @@ export class PolicyListPage extends TablePage<Policy> {
                       </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${this.updateEntityLabel}</span>
                     <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
@@ -127,8 +133,8 @@ export class PolicyListPage extends TablePage<Policy> {
     renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
-                successMessage=${msg("Successfully cleared policy cache")}
-                errorMessage=${msg("Failed to delete policy cache")}
+                success-message=${msg("Successfully cleared policy cache")}
+                error-message=${msg("Failed to delete policy cache")}
                 action=${msg("Clear cache")}
                 .onConfirm=${() => {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();

@@ -1,6 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
@@ -16,6 +17,11 @@ import { customElement, property } from "lit/decorators.js";
 export class ProviderSelectModal extends TableModal<Provider> {
     checkbox = true;
     checkboxChip = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Provider", { id: "entity.provider.singular" }),
+        plural: msg("Providers", { id: "entity.provider.plural" }),
+    };
 
     protected override searchEnabled = true;
 
@@ -36,8 +42,8 @@ export class ProviderSelectModal extends TableModal<Provider> {
 
     protected columns: TableColumn[] = [
         // ---
-        [msg("Name"), "username"],
-        [msg("Type")],
+        [msg("Name", { id: "column.name" }), "username"],
+        [msg("Type", { id: "column.type" })],
     ];
 
     row(item: Provider): SlottedTemplateResult[] {

@@ -46,11 +46,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         return inst;
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated instance.")
-            : msg("Successfully created instance.");
-    }
+    protected override entityLabel = msg("Instance");
 
     static styles: CSSResult[] = [...super.styles, PFContent];
 
@@ -67,7 +63,13 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal
+                label=${msg("Blueprint Name", {
+                    id: "label.blueprint-name",
+                })}
+                required
+                name="name"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

@@ -2,6 +2,9 @@ import "#admin/applications/ApplicationForm";
 import "#elements/Spinner";
 import "#elements/forms/ModalForm";
 
+import { formatCreateMessage, formatNewMessage } from "#common/i18n/actions";
+import { EntityLabel } from "#common/i18n/nouns";
+
 import { AKElement } from "#elements/Base";
 
 import { Provider } from "@goauthentik/api";
@@ -16,6 +19,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
     static styles: CSSResult[] = [PFBase, PFButton];
+
+    protected entityLabel: EntityLabel = {
+        singular: msg("Application", { id: "entity.application.singular" }),
+        plural: msg("Applications", { id: "entity.application.plural" }),
+    };
 
     @property({ attribute: false })
     provider?: Provider;
@@ -37,10 +45,13 @@ export class RelatedApplicationButton extends AKElement {
             </a>`;
         }
         return html`<ak-forms-modal>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("Create Application")}</span>
+            <span slot="submit">${formatCreateMessage(this.entityLabel)}</span>
+            <span slot="header">${formatNewMessage(this.entityLabel)}</span>
+
             <ak-application-form slot="form" .provider=${this.provider?.pk}> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${formatNewMessage(this.entityLabel)}
+            </button>
         </ak-forms-modal>`;
     }
 }

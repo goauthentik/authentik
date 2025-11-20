@@ -29,7 +29,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
-                    label=${msg("Name")}
+                    label=${msg("Provider Name", { id: "label.provider-name" })}
                     value=${ifDefined(provider.name)}
                     .errorMessages=${this.errorMessages("name")}
                     required
@@ -61,17 +61,24 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     input-hint="code"
                 ></ak-text-input>
 
-                <ak-form-group open label="${msg("Protocol settings")}">
+                <ak-form-group
+                    open
+                    label="${msg("Protocol settings", { id: "label.protocol-settings" })}"
+                >
                     <div class="pf-c-form">
                         <ak-form-element-horizontal
-                            label=${msg("Property mappings")}
+                            label=${msg("Property mappings", { id: "label.property-mappings" })}
                             name="propertyMappings"
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${propertyMappingsProvider}
                                 .selector=${propertyMappingsSelector(provider?.propertyMappings)}
-                                available-label="${msg("Available Property Mappings")}"
-                                selected-label="${msg("Selected Property Mappings")}"
+                                available-label=${msg("Available Property Mappings", {
+                                    id: "label.available-property-mappings",
+                                })}
+                                selected-label=${msg("Selected Property Mappings", {
+                                    id: "label.selected-property-mappings",
+                                })}
                             ></ak-dual-select-dynamic-selected>
                         </ak-form-element-horizontal>
                     </div>

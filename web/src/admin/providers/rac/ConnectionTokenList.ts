@@ -4,6 +4,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EntityLabel } from "#common/i18n/nouns";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,6 +23,11 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
+
+    protected override entityLabel: EntityLabel = {
+        singular: msg("Connection Token", { id: "entity.connection-token.singular" }),
+        plural: msg("Connection Tokens", { id: "entity.connection-token.plural" }),
+    };
 
     @property()
     order = "name";

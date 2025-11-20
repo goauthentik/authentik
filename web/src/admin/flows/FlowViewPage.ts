@@ -123,13 +123,13 @@ export class FlowViewPage extends AKElement {
                                         </dd>
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${msg("Related actions")}</span
+                                                >${msg("Actions")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit"> ${msg("Update")} </span>
+                                                    <span slot="submit">${msg("Update")}</span>
                                                     <span slot="header">
                                                         ${msg("Update Flow")}
                                                     </span>
@@ -145,6 +145,16 @@ export class FlowViewPage extends AKElement {
                                                         ${msg("Edit")}
                                                     </button>
                                                 </ak-forms-modal>
+                                            </div>
+                                        </dd>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <a
+                                                    class="pf-c-button pf-m-block pf-m-secondary"
+                                                    href=${this.flow.exportUrl}
+                                                >
+                                                    ${msg("Export")}
+                                                </a>
                                             </div>
                                         </dd>
                                         <dt class="pf-c-description-list__term">
@@ -220,21 +230,6 @@ export class FlowViewPage extends AKElement {
                                                 >
                                                     ${msg("Use inspector")}
                                                 </button>
-                                            </div>
-                                        </dd>
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Export flow")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <a
-                                                    class="pf-c-button pf-m-block pf-m-secondary"
-                                                    href=${this.flow.exportUrl}
-                                                >
-                                                    ${msg("Export")}
-                                                </a>
                                             </div>
                                         </dd>
                                     </div>
