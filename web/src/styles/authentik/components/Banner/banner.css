@@ -1,0 +1,12 @@
+:host([theme="dark"]) .pf-c-banner {
+    &.pf-m-info,
+    &.pf-m-blue,
+    &.pf-m-danger,
+    &.pf-m-red,
+    &.pf-m-success,
+    &.pf-m-green,
+    &.pf-m-warning,
+    &.pf-m-gold {
+        color: var(--pf-global--palette--black-900);
+    }
+}

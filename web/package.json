@@ -5,12 +5,11 @@
     "private": true,
     "scripts": {
         "build": "wireit",
-        "build-locales": "wireit",
-        "build-locales:build": "wireit",
+        "build-locales": "node scripts/build-locales.mjs",
         "build-proxy": "wireit",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "wireit",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
@@ -27,11 +26,12 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "tsc": "wireit",
-        "watch": "run-s build-locales esbuild:watch"
+        "watch": "run-s build-locales bundler:watch"
     },
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
+        "./styles/*": "./src/styles/*",
         "./elements/*": "./src/elements/*",
         "./common/*": "./src/common/*",
         "./components/*": "./src/components/*",
@@ -53,7 +53,8 @@
         }
     },
     "imports": {
-        "#common/*.css": "./src/common/*.css",
+        "#styles/*.css": "./src/styles/*.css",
+        "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
         "#elements/*.css": "./src/elements/*.css",
         "#elements/*": "./src/elements/*.js",
@@ -115,21 +116,22 @@
         "@patternfly/elements": "^4.2.0",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.56.1",
-        "@sentry/browser": "^10.24.0",
-        "@storybook/addon-docs": "^10.0.6",
-        "@storybook/addon-links": "^10.0.6",
-        "@storybook/web-components": "^10.0.6",
-        "@storybook/web-components-vite": "^10.0.6",
+        "@sentry/browser": "^10.25.0",
+        "@storybook/addon-docs": "^10.0.8",
+        "@storybook/addon-links": "^10.0.8",
+        "@storybook/web-components": "^10.0.8",
+        "@storybook/web-components-vite": "^10.0.8",
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.4",
         "@types/mocha": "^10.0.10",
-        "@types/node": "^24.10.0",
-        "@types/react": "^19.2.2",
-        "@types/react-dom": "^19.2.2",
+        "@types/node": "^24.10.1",
+        "@types/react": "^19.2.6",
+        "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
-        "@vitest/browser": "^3.2.4",
+        "@vitest/browser": "^4.0.10",
+        "@vitest/browser-playwright": "^4.0.10",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
@@ -147,10 +149,10 @@
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.2",
         "fuse.js": "^7.1.0",
-        "globals": "^16.4.0",
+        "globals": "^16.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.66.2",
+        "knip": "^5.70.0",
         "lit": "^3.3.1",
         "lit-analyzer": "^2.0.3",
         "md-front-matter": "^1.0.4",
@@ -175,14 +177,14 @@
         "storybook": "^10.0.3",
         "style-mod": "^4.1.3",
         "trusted-types": "^2.0.0",
-        "ts-pattern": "^5.8.0",
+        "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
-        "type-fest": "^5.1.0",
+        "type-fest": "^5.2.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.4",
+        "typescript-eslint": "^8.47.0",
         "unist-util-visit": "^5.0.0",
-        "vite": "^7.1.12",
-        "vitest": "^3.2.4",
+        "vite": "^7.2.2",
+        "vitest": "^4.0.10",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
         "yaml": "^2.8.1"
@@ -191,9 +193,9 @@
         "@esbuild/darwin-arm64": "^0.25.4",
         "@esbuild/linux-arm64": "^0.25.4",
         "@esbuild/linux-x64": "^0.25.4",
-        "@rollup/rollup-darwin-arm64": "^4.52.5",
-        "@rollup/rollup-linux-arm64-gnu": "^4.52.5",
-        "@rollup/rollup-linux-x64-gnu": "^4.52.5",
+        "@rollup/rollup-darwin-arm64": "^4.53.2",
+        "@rollup/rollup-linux-arm64-gnu": "^4.53.2",
+        "@rollup/rollup-linux-x64-gnu": "^4.53.2",
         "chromedriver": "^141.0.4",
         "p-iteration": "^1.1.8"
     },
@@ -224,9 +226,7 @@
                 "./dist/enterprise/**",
                 "./dist/poly-*.js",
                 "./dist/poly-*.js.map",
-                "./dist/theme-dark.css",
-                "./dist/one-dark.css",
-                "./dist/patternfly.min.css"
+                "./dist/styles/**"
             ],
             "dependencies": [
                 "build-locales",
@@ -245,24 +245,8 @@
                 "build-locales"
             ]
         },
-        "build-locales:build": {
-            "command": "lit-localize build"
-        },
-        "build-locales:repair": {
+        "locales:repair": {
             "command": "prettier --write ./src/locale-codes.ts"
-        },
-        "build-locales": {
-            "command": "node scripts/build-locales.mjs",
-            "files": [
-                "./xliff/*.xlf"
-            ],
-            "output": [
-                "./src/locales/*.ts",
-                "./src/locale-codes.ts"
-            ]
-        },
-        "extract-locales": {
-            "command": "lit-localize extract"
         },
         "lint:components": {
             "command": "lit-analyzer src"

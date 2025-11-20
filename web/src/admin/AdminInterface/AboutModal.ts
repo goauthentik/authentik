@@ -23,6 +23,10 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ...ModalButton.styles,
         PFAbout,
         css`
+            .pf-c-about-modal-box {
+                --pf-c-about-modal-box--BackgroundColor: var(--pf-global--palette--black-900);
+            }
+
             .pf-c-about-modal-box__hero {
                 background-image: url("/static/dist/assets/images/flow_background.jpg");
             }

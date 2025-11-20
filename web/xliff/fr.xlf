@@ -9820,10 +9820,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
   <target>Configure la politique NameID par défaut utilisée pour les connexions initiées par l'IDP et lorsqu'une assertion entrante ne spécifie pas de politique NameID (s'applique également lors de l'utilisation d'un mappage NameID personnalisé).</target>
 </trans-unit>
-<trans-unit id="s6c973fe9014080fc">
-  <source>Application name</source>
-  <target>Nom de l'application</target>
-</trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
   <target>Le nom affiché dans la bibliothèque d'applications.</target>
@@ -10642,10 +10638,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Authentication form</source>
   <target>Formulaire d'authentification</target>
 </trans-unit>
-<trans-unit id="sdd2ea73c24b40d5d">
-  <source>Site footer</source>
-  <target>Pied de page du site</target>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
   <target>Consommée</target>
@@ -10895,6 +10887,45 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sd4fd64791f73d37b">
   <source>Also known as Entity ID.</source>
+</trans-unit>
+<trans-unit id="source-settings-list-item-label">
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+</trans-unit>
+<trans-unit id="s20b2b040b332bb55">
+  <source>Source Settings</source>
+</trans-unit>
+<trans-unit id="sdd35b688281b6dea">
+  <source>Japanese</source>
+</trans-unit>
+<trans-unit id="seb6ab868740e4e36">
+  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+</trans-unit>
+<trans-unit id="s05a941e4b4bfca9f">
+  <source>Additional actions</source>
+</trans-unit>
+<trans-unit id="s53dddf1733e26c98">
+  <source>Login sources</source>
+</trans-unit>
+<trans-unit id="sa00a53efc9c70de5">
+  <source>Please wait while the content is loading</source>
+</trans-unit>
+<trans-unit id="sf609e15e71559cd2">
+  <source>Failed to fetch applications.</source>
+</trans-unit>
+<trans-unit id="s07b0bf005510fe29">
+  <source>Type an application name...</source>
+</trans-unit>
+<trans-unit id="s972540f502b0f4dc">
+  <source>Application Name</source>
+</trans-unit>
+<trans-unit id="s71e967b36e080e3c">
+  <source>https://...</source>
+</trans-unit>
+<trans-unit id="sd144a9315e8f87c1">
+  <source>http(s)://...</source>
+</trans-unit>
+<trans-unit id="sf8633bb541bfb123">
+  <source>domain.tld</source>
 </trans-unit>
     </body>
   </file>

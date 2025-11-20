@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-10 00:11+0000\n"
+"POT-Creation-Date: 2025-11-19 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -446,6 +446,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr ""
 
@@ -1119,6 +1120,10 @@ msgstr ""
 msgid "Flow Tokens"
 msgstr ""
 
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
+msgstr ""
+
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr ""
@@ -1491,6 +1496,10 @@ msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html

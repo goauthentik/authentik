@@ -9,19 +9,24 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
+import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
+import { applyBackgroundImageProperty } from "#common/theme";
 import { WebsocketClient } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { LitPropertyRecord } from "#elements/types";
+import { exportParts } from "#elements/utils/attributes";
 import { themeImage } from "#elements/utils/images";
 
-import { StageHost, SubmitOptions } from "#flow/stages/base";
+import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
 import {
     CapabilitiesEnum,
@@ -34,8 +39,10 @@ import {
     ShellChallenge,
 } from "@goauthentik/api";
 
+import { spread } from "@open-wc/lit-helpers";
+
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -46,132 +53,32 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-const FlowLayoutClasses = {
-    [FlowLayoutEnum.ContentLeft]: "pf-c-login__container",
-    [FlowLayoutEnum.ContentRight]: "pf-c-login__container content-right",
-    [FlowLayoutEnum.SidebarLeft]: "ak-login-container",
-    [FlowLayoutEnum.SidebarRight]: "ak-login-container",
-    [FlowLayoutEnum.Stacked]: "ak-login-container",
-    [FlowLayoutEnum.UnknownDefaultOpenApi]: "ak-login-container",
-} as const satisfies Record<FlowLayoutEnum, string>;
 
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
     implements StageHost
 {
+    static readonly DefaultLayout: FlowLayoutEnum =
+        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+
     //#region Styles
 
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFDrawer,
         PFButton,
         PFTitle,
         PFList,
         PFBackgroundImage,
-        css`
-            :host {
-                --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
-            }
-            .pf-c-background-image::before {
-                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
-                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
-
-                @media (max-width: 768px) {
-                    background: var(--pf-c-login__main--BackgroundColor) !important;
-                }
-            }
-
-            .ak-hidden {
-                display: none;
-            }
-            :host {
-                position: relative;
-            }
-            .pf-c-drawer__content {
-                background-color: transparent;
-            }
-            .pf-c-login {
-                align-items: baseline;
-            }
-            /* layouts */
-            @media (min-height: 60rem) {
-                .pf-c-login[data-layout="stacked"] .pf-c-login__main {
-                    margin-top: 13rem;
-                }
-            }
-            .pf-c-login__container.content-right {
-                grid-template-areas:
-                    "header main"
-                    "footer main"
-                    ". main";
-            }
-            .pf-c-login[data-layout="sidebar_left"] {
-                justify-content: flex-start;
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-            .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
-            .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
-                height: 100%;
-                min-height: 100dvh;
-                background-color: var(--pf-c-login__main--BackgroundColor);
-                padding-inline: var(--pf-global--spacer--lg);
-                padding-block-end: var(--pf-global--spacer--xs);
-            }
-            .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
-            .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
-                color: #000;
-            }
-            .pf-c-login[data-layout="sidebar_right"] {
-                justify-content: flex-end;
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .ak-login-container,
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .ak-login-container {
-                background-color: var(--ak-dark-background);
-            }
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_left"] .pf-c-list,
-            :host([theme="dark"]) .pf-c-login[data-layout="sidebar_right"] .pf-c-list {
-                color: var(--ak-dark-foreground);
-            }
-            .pf-c-brand {
-                padding-top: calc(
-                    var(--pf-c-login__main-footer-links--PaddingTop) +
-                        var(--pf-c-login__main-footer-links--PaddingBottom) +
-                        var(--pf-c-login__main-body--PaddingBottom)
-                );
-                max-height: 9rem;
-            }
-            .ak-brand {
-                display: flex;
-                justify-content: center;
-            }
-            .ak-brand img {
-                padding: 0 2rem;
-                max-height: inherit;
-            }
-            .inspector-toggle {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                z-index: 100;
-            }
-        `,
+        Styles,
     ];
 
     //#endregion
 
     //#region Properties
 
-    @property()
+    @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
     #challenge?: ChallengeTypes;
@@ -198,11 +105,16 @@ export class FlowExecutor
 
     //#region State
 
-    @state()
-    protected inspectorOpen?: boolean;
+    #inspectorLoaded = false;
 
-    @state()
-    protected inspectorAvailable?: boolean;
+    @property({ type: Boolean })
+    public inspectorOpen?: boolean;
+
+    @property({ type: Boolean })
+    public inspectorAvailable?: boolean;
+
+    @property({ type: String, attribute: "data-layout", useDefault: true })
+    public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
     public flowInfo?: ContextualFlowInfo;
@@ -227,10 +139,6 @@ export class FlowExecutor
             this.inspectorAvailable = true;
         }
 
-        this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
-            this.inspectorOpen = !this.inspectorOpen;
-        });
-
         window.addEventListener("message", (event) => {
             const msg: {
                 source?: string;
@@ -247,8 +155,16 @@ export class FlowExecutor
         });
     }
 
+    public connectedCallback(): void {
+        super.connectedCallback();
+
+        window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+    }
+
     public disconnectedCallback(): void {
         super.disconnectedCallback();
+
+        window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
 
         WebsocketClient.close();
     }
@@ -297,8 +213,24 @@ export class FlowExecutor
 
     // DOM post-processing has to happen after the render.
     public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
+            this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
+        }
+
         if (changedProperties.has("flowInfo") && this.flowInfo) {
-            this.#setShadowStyles(this.flowInfo);
+            applyBackgroundImageProperty(this.flowInfo.background);
+        }
+
+        if (
+            changedProperties.has("inspectorOpen") &&
+            this.inspectorOpen &&
+            !this.#inspectorLoaded
+        ) {
+            import("#flow/FlowInspector").then(() => {
+                this.#inspectorLoaded = true;
+            });
         }
     }
 
@@ -358,283 +290,209 @@ export class FlowExecutor
             });
     };
 
-    #setShadowStyles(value: ContextualFlowInfo) {
-        if (!value) return;
+    //#region Render Challenge
 
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
-            });
-    }
+    async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
+        const { challenge, inspectorOpen } = this;
 
-    //#region Render
+        const stageProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
+            ".challenge": challenge!,
+            ".host": this,
+        };
 
-    get layout(): FlowLayoutEnum {
-        return (
-            this.challenge?.flowInfo?.layout || globalAK()?.flow?.layout || FlowLayoutEnum.Stacked
-        );
-    }
+        const props = {
+            ...stageProps,
+            part: "challenge",
+            exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
+        };
 
-    async renderChallenge(): Promise<TemplateResult> {
-        if (!this.challenge) {
-            return html`<ak-flow-card loading></ak-flow-card>`;
-        }
-        switch (this.challenge?.component) {
+        switch (component) {
             case "ak-stage-access-denied":
                 await import("#flow/stages/access_denied/AccessDeniedStage");
-                return html`<ak-stage-access-denied
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-access-denied>`;
+                return html`<ak-stage-access-denied ${spread(props)}></ak-stage-access-denied>`;
             case "ak-stage-identification":
                 await import("#flow/stages/identification/IdentificationStage");
-                return html`<ak-stage-identification
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-identification>`;
+                return html`<ak-stage-identification ${spread(props)}></ak-stage-identification>`;
             case "ak-stage-password":
                 await import("#flow/stages/password/PasswordStage");
-                return html`<ak-stage-password
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-password>`;
+                return html`<ak-stage-password ${spread(props)}></ak-stage-password>`;
             case "ak-stage-captcha":
                 await import("#flow/stages/captcha/CaptchaStage");
-                return html`<ak-stage-captcha
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-captcha>`;
+                return html`<ak-stage-captcha ${spread(props)}></ak-stage-captcha>`;
             case "ak-stage-consent":
                 await import("#flow/stages/consent/ConsentStage");
-                return html`<ak-stage-consent
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-consent>`;
+                return html`<ak-stage-consent ${spread(props)}></ak-stage-consent>`;
             case "ak-stage-dummy":
                 await import("#flow/stages/dummy/DummyStage");
-                return html`<ak-stage-dummy
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-dummy>`;
+                return html`<ak-stage-dummy ${spread(props)}></ak-stage-dummy>`;
             case "ak-stage-email":
                 await import("#flow/stages/email/EmailStage");
-                return html`<ak-stage-email
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-email>`;
+                return html`<ak-stage-email ${spread(props)}></ak-stage-email>`;
             case "ak-stage-autosubmit":
                 await import("#flow/stages/autosubmit/AutosubmitStage");
-                return html`<ak-stage-autosubmit
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-autosubmit>`;
+                return html`<ak-stage-autosubmit ${spread(props)}></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
                 await import("#flow/stages/prompt/PromptStage");
-                return html`<ak-stage-prompt
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-prompt>`;
+                return html`<ak-stage-prompt ${spread(props)}></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
                 await import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage");
                 return html`<ak-stage-authenticator-totp
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
                 await import("#flow/stages/authenticator_duo/AuthenticatorDuoStage");
                 return html`<ak-stage-authenticator-duo
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
                 await import("#flow/stages/authenticator_static/AuthenticatorStaticStage");
                 return html`<ak-stage-authenticator-static
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-static>`;
             case "ak-stage-authenticator-webauthn":
                 return html`<ak-stage-authenticator-webauthn
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-webauthn>`;
             case "ak-stage-authenticator-email":
                 await import("#flow/stages/authenticator_email/AuthenticatorEmailStage");
                 return html`<ak-stage-authenticator-email
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("#flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
                 await import("#flow/stages/authenticator_validate/AuthenticatorValidateStage");
                 return html`<ak-stage-authenticator-validate
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
                 await import("#flow/stages/user_login/UserLoginStage");
-                return html`<ak-stage-user-login
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-user-login>`;
+                return html`<ak-stage-user-login ${spread(props)}></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
-                return html`<ak-flow-source-plex
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-flow-source-plex>`;
+                return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;
             case "ak-source-oauth-apple":
                 return html`<ak-flow-source-oauth-apple
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-source-oauth-apple>`;
             case "ak-source-telegram":
-                return html`<ak-flow-source-telegram
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-flow-source-telegram>`;
+                return html`<ak-flow-source-telegram ${spread(props)}></ak-flow-source-telegram>`;
             // Providers
             case "ak-provider-oauth2-device-code":
                 await import("#flow/providers/oauth2/DeviceCode");
                 return html`<ak-flow-provider-oauth2-code
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-provider-oauth2-code>`;
             case "ak-provider-oauth2-device-code-finish":
                 await import("#flow/providers/oauth2/DeviceCodeFinish");
                 return html`<ak-flow-provider-oauth2-code-finish
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-flow-provider-oauth2-code-finish>`;
             case "ak-stage-session-end":
                 await import("#flow/providers/SessionEnd");
-                return html`<ak-stage-session-end
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-session-end>`;
+                return html`<ak-stage-session-end ${spread(props)}></ak-stage-session-end>`;
             case "ak-provider-saml-native-logout":
                 await import("#flow/providers/saml/NativeLogoutStage");
                 return html`<ak-provider-saml-native-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-provider-saml-native-logout>`;
             case "ak-provider-iframe-logout":
                 await import("#flow/providers/IFrameLogoutStage");
                 return html`<ak-provider-iframe-logout
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    ${spread(props)}
                 ></ak-provider-iframe-logout>`;
             // Internal stages
             case "ak-stage-flow-error":
-                return html`<ak-stage-flow-error
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-flow-error>`;
+                return html`<ak-stage-flow-error ${spread(props)}></ak-stage-flow-error>`;
             case "xak-flow-redirect":
-                return html`<ak-stage-redirect
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                    ?promptUser=${this.inspectorOpen}
-                >
+                return html`<ak-stage-redirect ${spread(props)} ?promptUser=${inspectorOpen}>
                 </ak-stage-redirect>`;
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case "xak-flow-frame":
                 return html`<xak-flow-frame
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
+                    .host=${this}
+                    .challenge=${challenge}
                 ></xak-flow-frame>`;
             default:
                 return html`Invalid native challenge element`;
         }
     }
 
-    async renderInspector() {
-        if (!this.inspectorOpen) {
-            return nothing;
+    //#endregion
+
+    //#region Render Inspector
+
+    #toggleInspector = () => {
+        this.inspectorOpen = !this.inspectorOpen;
+
+        const drawer = document.getElementById("flow-drawer");
+
+        if (!drawer) {
+            return;
         }
 
-        return import("#flow/FlowInspector").then(
-            () =>
-                html`<ak-flow-inspector
-                    id="flow-inspector"
-                    class="pf-c-drawer__panel pf-m-width-33"
-                    .flowSlug=${this.flowSlug}
-                ></ak-flow-inspector>`,
-        );
+        drawer.classList.toggle("pf-m-expanded", this.inspectorOpen);
+        drawer.classList.toggle("pf-m-collapsed", !this.inspectorOpen);
+    };
+
+    protected renderInspectorButton() {
+        if (!this.inspectorAvailable || this.inspectorOpen) {
+            return null;
+        }
+
+        return html`<button
+            aria-label=${this.inspectorOpen
+                ? msg("Close flow inspector")
+                : msg("Open flow inspector")}
+            aria-expanded=${this.inspectorOpen ? "true" : "false"}
+            class="inspector-toggle pf-c-button pf-m-primary"
+            aria-controls="flow-inspector"
+            @click=${this.#toggleInspector}
+        >
+            <i class="fa fa-search-plus" aria-hidden="true"></i>
+        </button>`;
     }
 
-    render(): TemplateResult {
-        const { layout } = this;
+    //#endregion
 
-        return html`<ak-locale-context>
-            <div class="pf-c-background-image" part="background-image"></div>
-            <div class="pf-c-page__drawer" part="page-drawer">
-                <div
-                    class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
-                    part="drawer"
-                >
-                    <div class="pf-c-drawer__main" part="drawer-main">
-                        <div class="pf-c-drawer__content" part="drawer-content">
-                            <div class="pf-c-drawer__body" part="drawer-body">
-                                <div class="pf-c-login" data-layout=${layout} part="flow">
-                                    <div class=${FlowLayoutClasses[layout]} part="flow-container">
-                                        <main
-                                            class="pf-c-login__main"
-                                            aria-label=${msg("Authentication form")}
-                                            part="flow-main"
-                                        >
-                                            ${this.loading && this.challenge
-                                                ? html`<ak-loading-overlay></ak-loading-overlay>`
-                                                : nothing}
-                                            <div
-                                                class="pf-c-login__main-header pf-c-brand ak-brand"
-                                            >
-                                                <img
-                                                    src="${themeImage(this.brandingLogo)}"
-                                                    alt="${msg("authentik Logo")}"
-                                                    role="presentation"
-                                                />
-                                            </div>
-                                            ${until(this.renderChallenge())}
-                                        </main>
-                                        <ak-brand-links
-                                            part="brand-links"
-                                            role="contentinfo"
-                                            aria-label=${msg("Site footer")}
-                                            class="pf-c-login__footer"
-                                            .links=${this.brandingFooterLinks}
-                                        ></ak-brand-links>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        ${this.inspectorAvailable && !this.inspectorOpen
-                            ? html`<button
-                                  aria-label=${this.inspectorOpen
-                                      ? msg("Close flow inspector")
-                                      : msg("Open flow inspector")}
-                                  aria-expanded=${this.inspectorOpen ? "true" : "false"}
-                                  class="inspector-toggle pf-c-button pf-m-primary"
-                                  aria-controls="flow-inspector"
-                                  @click=${() => {
-                                      this.inspectorOpen = true;
-                                  }}
-                              >
-                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
-                              </button>`
-                            : nothing}
-                        ${until(this.renderInspector())}
-                    </div>
+    //#region Render
+
+    protected renderLoading(): TemplateResult {
+        return html`<slot class="slotted-content" name="placeholder"></slot>`;
+    }
+
+    public override render(): TemplateResult {
+        const { component } = this.challenge || {};
+
+        return html`<header class="pf-c-login__header">${this.renderInspectorButton()}</header>
+            <main
+                data-layout=${this.layout}
+                class="pf-c-login__main"
+                aria-label=${msg("Authentication form")}
+                part="main"
+            >
+                <div class="pf-c-login__main-header pf-c-brand" part="branding">
+                    <img
+                        class="branding-logo"
+                        part="branding-logo"
+                        src="${themeImage(this.brandingLogo, this.activeTheme)}"
+                        alt="${msg("authentik Logo")}"
+                        role="presentation"
+                    />
                 </div>
-            </div>
-        </ak-locale-context>`;
+                ${this.loading && this.challenge
+                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    : nothing}
+                ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
+            </main>
+            <slot name="footer"></slot>`;
     }
+
+    //#endregion
 }
 
 declare global {

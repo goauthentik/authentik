@@ -1,25 +1,21 @@
 import { globalAK } from "#common/global";
-import { applyDocumentTheme } from "#common/theme";
+import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
 import { ConfigContextController } from "#elements/controllers/ConfigContextController";
 import { ModalOrchestrationController } from "#elements/controllers/ModalOrchestrationController";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 /**
  * The base interface element for the application.
  */
 export abstract class Interface extends AKElement {
-    static styles = [PFBase];
-
     constructor() {
         super();
 
         const { config, brand } = globalAK();
 
-        applyDocumentTheme(brand.uiTheme);
+        createUIThemeEffect(applyDocumentTheme);
 
         this.addController(new ConfigContextController(this, config));
         this.addController(new BrandingContextController(this, brand));

@@ -1,0 +1,18 @@
+:host {
+    display: block;
+    height: 100dvh;
+}
+
+img.logo {
+    width: 100%;
+    padding: 1rem 0.5rem 1.5rem 0.5rem;
+    min-height: 48px;
+}
+
+[part="rapi-doc"] {
+    height: 100%;
+}
+
+rapi-doc::part(section-main-content) {
+    place-content: center;
+}

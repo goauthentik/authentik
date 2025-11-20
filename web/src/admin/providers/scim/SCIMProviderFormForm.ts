@@ -110,7 +110,9 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>

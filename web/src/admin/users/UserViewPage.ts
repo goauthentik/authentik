@@ -356,7 +356,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <ak-user-settings-source userId=${user.pk} .canConnect=${false}>
+                        <ak-user-settings-source user-id=${user.pk}>
                         </ak-user-settings-source>
                     </div>
                 </div>
