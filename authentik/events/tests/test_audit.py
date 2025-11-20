@@ -8,6 +8,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.constants import PASSWORD_HASH_UPGRADE_REASON
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
@@ -63,3 +64,21 @@ class TestAudit(APITestCase):
             context__reason=PASSWORD_HASH_UPGRADE_REASON,
         )
         self.assertTrue(events.exists())
+
+    def test_set_password_no_password_upgrade_reason(self):
+        """Ensure that setting a password is not detected as a password hash upgrade."""
+        self.client.login(username=self.user.username, password=self.user.username)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.user.pk}),
+            data={"password": generate_id()},
+        )
+        self.assertEqual(response.status_code, 204)
+
+        events = Event.objects.filter(
+            action=EventAction.MODEL_UPDATED,
+            context__model__app="authentik_core",
+            context__model__model_name="user",
+            context__model__pk=self.user.pk,
+            context__reason=PASSWORD_HASH_UPGRADE_REASON,
+        )
+        self.assertFalse(events.exists())

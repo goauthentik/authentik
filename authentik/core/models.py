@@ -22,7 +22,6 @@ from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
-from model_utils.tracker import FieldTracker
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -290,7 +289,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     objects = UserManager()
 
-    tracker = FieldTracker()
+    # Used to track password hash changes outside the user changing their passwords
+    password_hash_changed = False
 
     class Meta:
         verbose_name = _("User")
@@ -397,9 +397,12 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """
 
         def setter(raw_password):
+            old_password_hash = self.password
             self.set_password(raw_password, signal=False)
             # Password hash upgrades shouldn't be considered password changes.
             self._password = None
+            self.password_hash_changed = self.password != old_password_hash
+
             self.save(update_fields=["password"])
 
         return check_password(raw_password, self.password, setter)

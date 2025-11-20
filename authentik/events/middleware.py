@@ -204,8 +204,9 @@ class AuditMiddleware:
         user = self.get_user(request)
 
         context = {}
-        if isinstance(instance, User) and instance.tracker.has_changed("password"):
+        if isinstance(instance, User) and instance.password_hash_changed:
             context["reason"] = PASSWORD_HASH_UPGRADE_REASON
+            instance.password_hash_changed = False
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
         thread = EventNewThread(
