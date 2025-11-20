@@ -14,7 +14,7 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
 
 ### Add and apply a new blueprint instance
 
-1. Log in as an administrator to authentik, and open the Admin interface.
+1. Log in as an administrator to authentik and open the Admin interface.
 2. Navigate to **Customization** > **Blueprints**.
 3. Click **Create** and define the new blueprint instance.
     - **Name**: provide a descriptive name.
@@ -30,13 +30,13 @@ You can apply a new flow from either the **Flows** page or the **Blueprints** pa
 
 #### Flows page
 
-1. Log in as an administrator to authentik, and open the Admin interface.
+1. Log in as an administrator to authentik and open the Admin interface.
 2. Navigate to **Flows and Stages > Flows**, then click **Import**.
 3. Under **Flow**, select the YAML file to import. Typically this is a file you [exported](./export.mdx) and saved to your local file system.
 
 #### Blueprints page
 
-1. Log in as an administrator to authentik, and open the Admin interface.
+1. Log in as an administrator to authentik and open the Admin interface.
 2. Navigate to **Customization > Blueprints**.
 3. Select the blueprint, and, under **Actions**, click the **Apply** icon.
 
@@ -46,12 +46,12 @@ You can download our [example flows](../../add-secure-apps/flows-stages/flow/exa
 
 ## Edit a blueprint instance or flow
 
-- To edit a blueprint instance, navigate to **Customization** > **Blueprints** in the Admin interface, select the checkbox nexto the instance, and click **Edit**. Alternatively, edit the YAML file directly.
+- To edit a blueprint instance, navigate to **Customization** > **Blueprints** in the Admin interface and click the **Edit** icon of the instance. Alternatively, edit the YAML file directly.
 
-- To edit a flow, navigate to **Flows & Stages > Flows** in the Admin interface and click **Edit** nexto the flow you want to modify.
+- To edit a flow, navigate to **Flows and Stages > Flows** in the Admin interface and click **Edit** next to the flow you want to modify.
 
 ## Delete a blueprint instance or flow
 
 - To delete a blueprint instance, go to **Customization** > **Blueprints**, select the checkbox next to the instance, and click **Delete**. You can recreate and apply it by creating a new blueprint instance and selecting the file in the **Create** page, under **Path**..
 
-- To delete a flow, navigate to **Flows & Stages** > **Flows**, select the checkbox next to the flow, and click **Delete**. You can re-import the flow later by repeating the import steps in the previous section.
+- To delete a flow, navigate to **Flows and Stages** > **Flows**, select the checkbox next to the flow, and click **Delete**. You can re-import the flow later by repeating the import steps in the previous section.

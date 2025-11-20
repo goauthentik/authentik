@@ -30,7 +30,7 @@ Keep in mind that in certain circumstances, policies cannot match against users 
 
 ## Import or export a flow
 
-Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints)) to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality to existing workflows, or to add a new, custom workflow.
+Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints)) to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality to existing flows, or to add a new, custom flow.
 
 You can create your own flow or download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 

@@ -19,7 +19,7 @@ To learn how to apply, create, modify, and manage blueprints, refer to [Working 
 
 ### Blueprint instance
 
-A Blueprint _instance_ is an instantiation of a blueprint. Each instance refers to a YAML file that is either mounted into the authentik (worker) container, in an OCI registry or the local database. (See [Blueprint storage](#blueprint-storage) for more information.)This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+A Blueprint _instance_ is an instantiation of a blueprint. Each instance refers to a YAML file that is either mounted into the authentik (worker) container, in an OCI registry or the local database. (See [Blueprint storage](#blueprint-storage) for more information.) This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
 
 :::info
 authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
@@ -27,7 +27,7 @@ authentik watches for file modification/creation events in the blueprint directo
 
 ### Imported flow
 
-You can apply an example flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is out of the box.
+You can apply an example flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is.
 
 This YAML file is validated and applied directly after being uploaded, but is not monitored further, nor is it automatically applied on startup like blueprint instances.
 
