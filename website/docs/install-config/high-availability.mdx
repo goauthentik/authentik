@@ -4,11 +4,11 @@ title: High availability
 
 High availability refers to designing systems to minimize downtime even in the event of failures or disruptions.
 
-authentik supports high availability in various ways:
+authentik supports high availability in several ways:
 
 - Multiple instances of the server and worker can be run in parallel, allowing for redundancy.
-- The authentik database uses PostgreSQL, which has extensive support for different [highly available setups](https://www.postgresql.org/docs/current/high-availability.html).
-- Both authentik and PostgreSQL support active/passive deployments.
+- The authentik database is PostgreSQL, which has extensive support for different [highly available setups](https://www.postgresql.org/docs/current/high-availability.html).
+- Both authentik and PostgreSQL support active-passive deployments.
 
 ## Parallel server and worker instances
 
@@ -18,13 +18,13 @@ If a server or worker instance goes offline, another instance can continue to se
 
 ## PostgreSQL high availability
 
-PostgreSQL supports high availability through replication and clustering.
+PostgreSQL supports high availability through _replication_ and _clustering_.
 
 Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more details.
 
 authentik also has built-in support for [PostgreSQL Read Replicas](../configuration/#read-replicas) and using [PostgreSQL Connection Poolers](../configuration/#using-a-postgresql-connection-pooler) like PgBouncer or PgPool.
 
-## Active-Passive authentik deployment
+## Active-passive authentik deployment
 
 In an active-passive deployment, one authentik instance actively serves all requests while the other is on standby, prepared to assume control in the event of a failure.
 
