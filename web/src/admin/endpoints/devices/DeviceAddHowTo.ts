@@ -8,7 +8,7 @@ import { ModalButton } from "#elements/buttons/ModalButton";
 import { Connector, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-add")
@@ -49,7 +49,7 @@ export class DeviceAddHowTo extends ModalButton {
             </div>
             <div class="pf-c-modal-box__body">
                 ${this.connectors.length === 0
-                    ? nothing
+                    ? this.renderNone()
                     : html` <ak-tabs part="tabs" vertical>
                           ${this.connectors.map((c, idx) => {
                               return html`<div

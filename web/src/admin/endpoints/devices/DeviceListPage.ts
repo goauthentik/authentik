@@ -78,6 +78,26 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                     >
                         ${this.data?.pagination.count}
                     </ak-aggregate-card>
+                    <ak-aggregate-card
+                        role="status"
+                        class="pf-l-grid__item"
+                        icon="fa fa-laptop"
+                        label=${msg("Unreachable devices")}
+                        subtext=${msg(
+                            "Devices that authentik hasn't received information about in 24h.",
+                        )}
+                    >
+                        -
+                    </ak-aggregate-card>
+                    <ak-aggregate-card
+                        role="status"
+                        class="pf-l-grid__item"
+                        icon="fa fa-laptop"
+                        label=${msg("Outdated agents")}
+                        subtext=${msg("Devices running an outdated version of an agent")}
+                    >
+                        -
+                    </ak-aggregate-card>
                 </div>
             </section>
         `;
@@ -107,7 +127,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     renderObjectCreate() {
         return html`<ak-endpoints-device-add>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Add")}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Setup")}</button>
         </ak-endpoints-device-add>`;
     }
 
