@@ -1,5 +1,6 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenForm";
+import "#admin/endpoints/connectors/agent/ak-enrollment-token-copy-button";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -104,6 +105,11 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                     objectPk=${item.tokenUuid}
                 >
                 </ak-rbac-object-permission-modal>
+                <ak-enrollment-token-copy-button .identifier=${item.tokenUuid}>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </ak-enrollment-token-copy-button>
             </div>`,
         ];
     }

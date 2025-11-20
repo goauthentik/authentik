@@ -5277,8 +5277,8 @@
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
+                            "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
-                            "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -6032,8 +6032,8 @@
                             "add_enrollmenttoken",
                             "change_enrollmenttoken",
                             "delete_enrollmenttoken",
-                            "view_enrollmenttoken",
-                            "view_token_key"
+                            "view_enrollment_token_key",
+                            "view_enrollmenttoken"
                         ]
                     },
                     "user": {
@@ -10478,8 +10478,8 @@
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
+                            "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
-                            "authentik_endpoints_connectors_agent.view_token_key",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",

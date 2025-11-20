@@ -95,5 +95,5 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
             models.Index(fields=["key"]),
         ]
         permissions = [
-            ("view_token_key", _("View token's key")),
+            ("view_enrollment_token_key", _("View token's key")),
         ]

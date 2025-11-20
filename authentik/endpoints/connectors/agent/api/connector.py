@@ -149,7 +149,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         data = MDMConfigSerializer(data=request.data, context={"connector": connector})
         data.is_valid(raise_exception=True)
         token = data.validated_data["enrollment_token"]
-        if not request.user.has_perm("view_enrollmenttoken", token):
+        if not request.user.has_perm("view_enrollment_token_key", token):
             raise PermissionDenied()
         ctrl = connector.controller(connector)
         return ctrl.generate_mdm_config(data.validated_data["platform"], request, token)

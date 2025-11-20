@@ -5304,6 +5304,35 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/enrollment_tokens/{token_uuid}/view_key/:
+    get:
+      operationId: endpoints_agents_enrollment_tokens_view_key_retrieve
+      description: Return token key and log access
+      parameters:
+      - in: path
+        name: token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Enrollment Token.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenView'
+          description: ''
+        '404':
+          description: Token not found or expired
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/connectors/:
     get:
       operationId: endpoints_connectors_list
