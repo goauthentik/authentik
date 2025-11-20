@@ -71,7 +71,7 @@ export class AgentConnectorSetup extends AKElement {
                 .value=${(token: EnrollmentToken | undefined): string | undefined => {
                     return token?.tokenUuid;
                 }}
-                @ak-change=${(ev) => {
+                @ak-change=${(ev: CustomEvent) => {
                     this.token = ev.detail.value;
                 }}
             >

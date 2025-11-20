@@ -1,22 +1,22 @@
-import { FamilyEnum } from "@goauthentik/api";
+import { DeviceFactsOSFamily } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 
-export function osFamilyToLabel(family: FamilyEnum | undefined): string {
+export function osFamilyToLabel(family: DeviceFactsOSFamily | undefined): string {
     switch (family) {
-        case FamilyEnum.Linux:
+        case DeviceFactsOSFamily.Linux:
             return msg("Linux");
-        case FamilyEnum.Unix:
+        case DeviceFactsOSFamily.Unix:
             return msg("Unix");
-        case FamilyEnum.Bsd:
+        case DeviceFactsOSFamily.Bsd:
             return msg("BSD");
-        case FamilyEnum.Windows:
+        case DeviceFactsOSFamily.Windows:
             return msg("Windows");
-        case FamilyEnum.MacOs:
+        case DeviceFactsOSFamily.MacOs:
             return msg("macOS");
-        case FamilyEnum.Android:
+        case DeviceFactsOSFamily.Android:
             return msg("Android");
-        case FamilyEnum.IOs:
+        case DeviceFactsOSFamily.IOs:
             return msg("iOS");
     }
     return msg("Unknown");

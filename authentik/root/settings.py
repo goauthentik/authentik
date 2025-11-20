@@ -187,7 +187,7 @@ SPECTACULAR_SETTINGS = {
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
-        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily"
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
