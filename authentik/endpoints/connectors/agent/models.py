@@ -35,7 +35,7 @@ class AgentConnector(Connector):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.endpoints.connectors.agent.api.connector import (
+        from authentik.endpoints.connectors.agent.api.connectors import (
             AgentConnectorSerializer,
         )
 

@@ -141,7 +141,10 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
 
-    @extend_schema(request=MDMConfigSerializer())
+    @extend_schema(
+        request=MDMConfigSerializer(),
+        responses={(200, "application/xml"): OpenApiResponse(OpenApiTypes.BINARY)},
+    )
     @action(methods=["POST"], detail=True)
     def mdm_config(self, request: Request, pk) -> Response:
         """Generate configuration for MDM systems to deploy authentik Agent"""

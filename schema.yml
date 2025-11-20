@@ -5001,9 +5001,10 @@ paths:
       responses:
         '200':
           content:
-            application/json:
+            application/xml:
               schema:
-                $ref: '#/components/schemas/AgentConnector'
+                type: string
+                format: binary
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
