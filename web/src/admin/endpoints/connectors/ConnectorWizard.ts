@@ -65,6 +65,13 @@ export class EndpointConnectorWizard extends AKElement {
                         this.wizard.isValid = true;
                     }}
                 >
+                    <div slot="above-form">
+                        <p>
+                            ${msg(
+                                "Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to ane external API to create devices.",
+                            )}
+                        </p>
+                    </div>
                 </ak-wizard-page-type-create>
                 ${this.connectorTypes.map((type) => {
                     return html`
