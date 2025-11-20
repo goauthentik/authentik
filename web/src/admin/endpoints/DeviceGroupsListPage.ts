@@ -19,7 +19,7 @@ import { customElement } from "lit/decorators.js";
 export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
     public pageIcon = "pf-icon pf-icon-server-group	";
     public pageTitle = msg("Device groups");
-    public pageDescription = msg("TODO");
+    public pageDescription = msg("Create groups of devices to manage access.");
 
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [

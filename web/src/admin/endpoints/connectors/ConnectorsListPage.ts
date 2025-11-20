@@ -21,7 +21,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class ConnectorsListPage extends TablePage<Connector> {
     public pageIcon = "pf-icon pf-icon-data-source";
     public pageTitle = msg("Connectors");
-    public pageDescription = msg("TODO");
+    public pageDescription = msg(
+        "Configure how devices communicate with authentik and external sources device data is fetched from.",
+    );
 
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
