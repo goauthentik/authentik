@@ -119,6 +119,8 @@ class SystemPermission(models.Model):
             ("access_admin_interface", _("Can access admin interface")),
             ("view_system_settings", _("Can view system settings")),
             ("edit_system_settings", _("Can edit system settings")),
+            ("view_files", _("Can view files")),
+            ("manage_files", _("Can manage files")),
         ]
 
     def __str__(self) -> str:

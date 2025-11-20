@@ -1,45 +1,35 @@
+import mimetypes
 from pathlib import Path, PurePosixPath
 
-from botocore.exceptions import BotoCoreError, ClientError
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField
 from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 from structlog.stdlib import get_logger
-from rest_framework.fields import CharField
 
-from authentik.admin.files.backends.base import Backend
-from authentik.admin.files.factory import BackendFactory
 from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage, MANAGE_API_USAGES
-from authentik.admin.files.utils import (
-    get_mime_from_filename,
-)
+from authentik.admin.files.usage import MANAGE_API_USAGES, FileUsage
 from authentik.admin.files.validation import (
     sanitize_file_path,
     validate_file_size,
     validate_file_type,
 )
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.rbac.permissions import HasPermission
 
 LOGGER = get_logger()
 
 
-class FileSerializer(PassiveSerializer):
-    name = serializers.CharField(read_only=True)
-    url = serializers.CharField(read_only=True)
-    mime_type = serializers.CharField(read_only=True)
-    size = serializers.IntegerField(read_only=True)
-    usage = serializers.ChoiceField(
-        choices=[(u.value, u.value) for u in FileUsage],
-        read_only=True,
-    )
+def get_mime_from_filename(filename: str) -> str:
+    mime_type, _ = mimetypes.guess_type(filename)
+    return mime_type or "application/octet-stream"
 
 
 class FileUploadSerializer(PassiveSerializer):
@@ -52,12 +42,19 @@ class FileUploadSerializer(PassiveSerializer):
     )
 
 
-class FileViewSet(ViewSet):
+class FileView(APIView):
     pagination_class = None
-    serializer_class = FileSerializer
     parser_classes = [MultiPartParser]
-    # Dummy queryset for permission checks
-    queryset = User.objects.none()
+    filter_backends = []
+
+    def get_permissions(self):
+        return [
+            HasPermission(
+                "authentik_rbac.view_files"
+                if self.request.method in SAFE_METHODS
+                else "authentik_rbac.manage_files"
+            )()
+        ]
 
     @extend_schema(
         responses={
@@ -112,7 +109,6 @@ class FileViewSet(ViewSet):
     )
     def list(self, request: Request) -> Response:
         """List files from storage backend."""
-        # TODO: permissions
         usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
         search_query = request.query_params.get("search", "").strip().lower()
         manageable_only = request.query_params.get("manageableOnly", "false").lower() == "true"
@@ -121,7 +117,6 @@ class FileViewSet(ViewSet):
             usage = FileUsage(usage_param)
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
-
         if usage not in MANAGE_API_USAGES:
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
@@ -146,7 +141,6 @@ class FileViewSet(ViewSet):
     @action(detail=False, methods=["POST"])
     def upload(self, request: Request) -> Response:
         """Upload file to storage backend."""
-        # TODO: permissions
         serializer = FileUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -162,7 +156,6 @@ class FileViewSet(ViewSet):
             usage = FileUsage(usage_value)
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_value}") from exc
-
         if usage not in MANAGE_API_USAGES:
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
@@ -183,7 +176,7 @@ class FileViewSet(ViewSet):
 
         # Check if file already exists
         if manager.file_exists(name):
-            raise ValidationError({"name": [("A file with this name already exists.")]})
+            raise ValidationError({"name": ["A file with this name already exists."]})
 
         # Save to backend
         # TODO: make this work
@@ -205,13 +198,13 @@ class FileViewSet(ViewSet):
                 name="name",
                 type=str,
                 required=True,
-                description="File path to delete",
+                description="File to delete",
             ),
             OpenApiParameter(
                 name="usage",
                 type=str,
-                enum=[u.value for u in get_allowed_api_usages()],
-                default=Usage.MEDIA.value,
+                enum=[u.value for u in MANAGE_API_USAGES],
+                default=FileUsage.MEDIA.value,
                 description="Usage type",
             ),
         ],
@@ -220,53 +213,30 @@ class FileViewSet(ViewSet):
     @action(detail=False, methods=["DELETE"])
     def delete(self, request: Request) -> Response:
         """Delete file from storage backend."""
-        file_path = request.query_params.get("name")
-        usage_param = request.query_params.get("usage", Usage.MEDIA.value)
+        name = request.query_params.get("name")
+        usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
 
-        if not file_path:
+        if not name:
             raise ValidationError("name parameter is required")
-
-        file_path = strip_schema_prefix(file_path)
-        file_path = sanitize_file_path(file_path)
+        name = sanitize_file_path(name)
 
         try:
-            usage = Usage(usage_param)
-        except ValueError as e:
-            LOGGER.warning(
-                "Invalid usage parameter in delete", usage_param=usage_param, error=str(e)
-            )
-            raise ValidationError(f"Invalid usage: {usage_param}") from e
-
-        allowed_usages = get_allowed_api_usages()
-        if usage not in allowed_usages:
-            LOGGER.warning(
-                "Delete attempted with disallowed usage",
-                usage=usage.value,
-                allowed_usages=[u.value for u in allowed_usages],
-            )
+            usage = FileUsage(usage_param)
+        except ValueError as exc:
+            raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
+        if usage not in MANAGE_API_USAGES:
             raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
-        backend = BackendFactory.create(usage)
+        manager = FileManager(usage)
 
         # Delete from backend
-        try:
-            backend.delete_file(file_path)
-        except (ClientError, BotoCoreError) as e:
-            self._handle_storage_error(e, "delete file")
-
-        LOGGER.info(
-            "File deleted",
-            file_path=file_path,
-            usage=usage.value,
-            backend=backend.__class__.__name__,
-        )
+        manager.delete_file(name)
 
         # Audit log for file deletion
         Event.new(
             EventAction.FILE_DELETED,
-            file_path=file_path,
+            name=name,
             usage=usage.value,
-            backend=backend.__class__.__name__,
         ).from_http(request)
 
-        return Response({"message": f"File {file_path} deleted successfully"})
+        return Response()

@@ -12,7 +12,8 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.service import resolve_file_url_full
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
@@ -20,8 +21,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
-from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage
 
 if TYPE_CHECKING:
     from authentik.flows.planner import FlowPlan
@@ -198,7 +197,7 @@ class Flow(SerializerModel, PolicyBindingModel):
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
 
-        return resolve_file_url_full(self.background, Usage.MEDIA, request)
+        return FileManager(FileUsage.MEDIA).file_url(self.background, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
