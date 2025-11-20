@@ -33,7 +33,7 @@ The components of an active-passive authentik deployment include:
 - **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
 - **Passive Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
 - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because authentik is stateless, there are no data conflicts.
-- **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the passive instance to active by redirecting all traffic to it. This failover can be triggered automatically or manually depending on your failover strategy. When the original active authentik instance is restored, it can either remain as a passive or be promoted back to active (failback).
+- **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the passive instance to active by redirecting all traffic to it. This failover can be triggered automatically or manually, depending on your failover strategy. When the original active authentik instance is restored, it can either remain passive or be promoted back to active (failback).
 
 For more information on monitoring the health of an authentik instance, refer to the [Monitoring documentation](../sys-mgmt/ops/monitoring.md).
 
@@ -63,7 +63,7 @@ graph TD
 
 This setup provides several advantages:
 
-- **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacenters, or providers can be utilized for each deploymnet to increase resiliency and fault tolerance.
+- **Resilient hosting options**: The ability to host each authentik deployment in separate environments. Different hardware, datacenters, or providers can be utilized for each deployment to increase resiliency and fault tolerance.
 - **Continuity of service**: During maintenance windows, continuity of service can be assured by switching between active and passive instances.
 - **Automatic failover**: A load balancer allows for automatic failover based on health monitoring, rather than waiting for administrators to detect an issue and manually failover.
 - **Possibility of blue-green deployment**: The use of a load balancer also allows for blue-green methodology, assuming that appropriate changes are made to the database.
