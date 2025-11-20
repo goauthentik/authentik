@@ -209,12 +209,13 @@ class ResponseProcessor:
         user.set_unusable_password()
         user.save()
         UserSAMLSourceConnection.objects.create(
-            source=self._source, user=user, identifier=name_id.text
+            source=self._source,
+            user=user,
+            identifier=name_id.text,
         )
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=str(name_id.text),
             user_info={
                 "root": self._root,
                 "name_id": name_id,
@@ -274,7 +275,6 @@ class ResponseProcessor:
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=str(name_id.text),
             user_info={
                 "root": self._root,
                 "name_id": name_id,

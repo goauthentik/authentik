@@ -17,15 +17,11 @@ class DiscordOAuthRedirect(OAuthRedirect):
         }
 
 
-class DiscordOAuth2Callback(OAuthCallback):
-    """Discord OAuth2 Callback"""
-
-
 @registry.register()
 class DiscordType(SourceType):
     """Discord Type definition"""
 
-    callback_view = DiscordOAuth2Callback
+    callback_view = OAuthCallback
     redirect_view = DiscordOAuthRedirect
     verbose_name = "Discord"
     name = "discord"
@@ -36,6 +32,7 @@ class DiscordType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("id"),
             "username": info.get("username"),
             "email": info.get("email", None),
             "name": info.get("username"),

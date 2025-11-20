@@ -41,6 +41,7 @@ class GitLabType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("id"),
             "username": info.get("preferred_username"),
             "email": info.get("email"),
             "name": info.get("name"),

@@ -199,6 +199,7 @@ class KerberosSource(ScheduledModel, Source):
         localpart, _ = principal.rsplit("@", 1)
 
         properties = {
+            "id": principal,
             "username": localpart,
             "type": UserTypes.INTERNAL,
             "path": self.get_user_path(),

@@ -18,7 +18,6 @@ INFO = {
     "birthdate": "1975-12-31",
     "nickname": "foo",
 }
-IDENTIFIER = INFO["sub"]
 
 
 class TestPropertyMappings(TestCase):
@@ -34,12 +33,21 @@ class TestPropertyMappings(TestCase):
             consumer_key=generate_id(),
         )
 
+    def test_user_id(self):
+        request = get_request("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(self.source, request, {"info": INFO}, {})
+        self.assertEqual(
+            flow_manager.identifier,
+            "83692",
+        )
+
     def test_user_base_properties(self):
         """Test user base properties"""
         properties = self.source.get_base_user_properties(info=INFO)
         self.assertEqual(
             properties,
             {
+                "id": "83692",
                 "email": "alice@example.com",
                 "groups": [],
                 "name": "Alice Adams",
@@ -65,7 +73,7 @@ class TestPropertyMappings(TestCase):
             )
         )
         request = get_request("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": INFO}, {})
+        flow_manager = OAuthSourceFlowManager(self.source, request, {"info": INFO}, {})
         self.assertEqual(
             flow_manager.user_properties,
             {
@@ -89,7 +97,7 @@ class TestPropertyMappings(TestCase):
             )
         )
         request = get_request("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        flow_manager = OAuthSourceFlowManager(self.source, request, {"info": info}, {})
         self.assertEqual(
             flow_manager.groups_properties,
             {
