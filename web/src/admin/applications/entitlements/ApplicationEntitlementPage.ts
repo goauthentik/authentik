@@ -37,7 +37,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     order = "order";
 
-    protected searchEnabled: boolean = true;
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
