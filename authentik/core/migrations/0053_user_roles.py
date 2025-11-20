@@ -18,9 +18,10 @@ def migrate_object_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     RoleModelPermission = apps.get_model("guardian", "RoleModelPermission")
 
     def get_role_for_user_id(user_id: int) -> Role:
+        name = f"ak-managed-role--user-{user_id}"
         role, created = Role.objects.using(db_alias).get_or_create(
-            name=f"ak-managed-role--user-{user_id}",
-            managed=True,
+            name=name,
+            managed=name,
         )
         if created:
             role.users.add(user_id)
@@ -31,10 +32,11 @@ def migrate_object_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         if not role:
             # Every django group should already have a role, so this should never happen.
             # But let's be nice.
+            name = f"ak-managed-role--group-{group_id}"
             role, created = Role.objects.using(db_alias).get_or_create(
                 group_id=group_id,
-                name=f"ak-managed-role--group-{group_id}",
-                managed=True,
+                name=name,
+                managed=name,
             )
             if created:
                 role.group_id = group_id
