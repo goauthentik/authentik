@@ -27,7 +27,7 @@ You'll need to create the stages that make up the flow.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Stages**, and click **Create**.
 
-#### Identification Stage
+#### Password Stage
 
 First, you'll need to create a Password Stage.
 
@@ -36,7 +36,7 @@ First, you'll need to create a Password Stage.
     - For **Backends**, leave the default settings.
 4. Click **Finish**
 
-#### Password Stage
+#### Identification Stage
 
 Next, you'll need to create an Identification Stage.
 
