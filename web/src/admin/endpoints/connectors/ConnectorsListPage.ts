@@ -23,6 +23,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
     public pageTitle = msg("Connectors");
     public pageDescription = msg("TODO");
 
+    protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Type")],

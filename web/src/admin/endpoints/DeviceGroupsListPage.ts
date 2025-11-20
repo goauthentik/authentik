@@ -21,6 +21,7 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
     public pageTitle = msg("Device groups");
     public pageDescription = msg("TODO");
 
+    protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Actions"), null, msg("Row Actions")],

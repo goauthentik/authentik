@@ -40,6 +40,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         `,
     ];
 
+    protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("OS")],
