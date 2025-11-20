@@ -67,7 +67,7 @@ Certificate discovery can be manually initiated by restarting the `certificate_d
 
 When a new keypair is added or changed, authentik automatically triggers an outpost refresh.
 
-When a new keypair is added that has a private key that already exists in the database, authentik will automatically update the keypair’s certificate in the database rather than creating a new keypair.
+When a new keypair is added that has a private key that already exists in the database, authentik will automatically update the keypair's certificate in the database rather than creating a new keypair.
 
 ### Manual imports
 
