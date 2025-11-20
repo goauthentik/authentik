@@ -14,29 +14,7 @@
 }
 
 :host([theme="dark"]) {
-    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
-    --pf-global--primary-color--200: var(--pf-global--primary-color--light-200) !important;
-    --pf-global--primary-color--300: var(--pf-global--primary-color--light-300) !important;
-
-    .pf-c-page__header-tools {
-        color: var(--ak-dark-foreground) !important;
-    }
-
     .pf-c-avatar {
         background-color: var(--pf-global--BackgroundColor--dark-300);
-    }
-}
-
-.pf-c-page__header-tools-item .fas,
-.pf-c-notification-badge__count,
-.pf-c-page__header-tools-group .pf-c-button {
-    --pf-c-button--m-plain--Color: var(--pf-global--Color--300);
-
-    .pf-c-button.pf-m-secondary {
-        --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--200);
-        --pf-c-button--m-secondary--hover--after--BorderColor: var(--pf-global--primary-color--200);
-
-        --pf-c-button--m-secondary--Color: red;
-        --pf-c-button--m-secondary--Color: var(--pf-global--primary-color--100);
     }
 }

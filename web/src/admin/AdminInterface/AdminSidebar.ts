@@ -35,7 +35,11 @@ export function renderSidebarItem([
         properties.path = path;
     }
 
-    return html`<ak-sidebar-item label=${ifDefined(label)} ${spread(properties)}>
+    return html`<ak-sidebar-item
+        exportparts="list-item, link"
+        label=${ifDefined(label)}
+        ${spread(properties)}
+    >
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
 }

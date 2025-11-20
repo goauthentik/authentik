@@ -22,7 +22,6 @@
 
         <style data-id="brand-css">{{ brand_css }}</style>
         <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
-        <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
         {% for key, value in html_meta.items %}

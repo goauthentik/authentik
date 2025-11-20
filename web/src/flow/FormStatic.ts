@@ -1,4 +1,5 @@
 import { AKElement } from "#elements/Base";
+import { isDefaultAvatar } from "#elements/utils/images";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -70,7 +71,7 @@ export class FormStatic extends AKElement {
 
         return html`
             <div class="primary-content">
-                ${this.userAvatar
+                ${this.userAvatar && !isDefaultAvatar(this.userAvatar)
                     ? html`<img
                           class="pf-c-avatar"
                           src=${this.userAvatar}

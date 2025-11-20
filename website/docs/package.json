@@ -23,7 +23,7 @@
         "@goauthentik/docusaurus-config": "^2.1.2",
         "@goauthentik/docusaurus-theme": "*",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.2.4",
+        "@types/react": "^19.2.6",
         "@types/react-dom": "^19.2.3",
         "prism-react-renderer": "^2.3.0",
         "react": "^19.1.1",

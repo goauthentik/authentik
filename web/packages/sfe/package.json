@@ -16,7 +16,7 @@
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.7.9",
-        "@swc/core": "^1.15.1",
+        "@swc/core": "^1.15.2",
         "@trivago/prettier-plugin-sort-imports": "^6.0.0",
         "base64-js": "^1.5.1",
         "bootstrap": "^4.6.2",

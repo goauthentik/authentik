@@ -85,7 +85,7 @@ fieldset {
         ) !important;
     }
 
-    &:has(legend.sr-only) {
+    &:has(legend.sr-only:not(.more-contrast-only)) {
         border-width: 0;
 
         &:not(.pf-c-modal-box__footer) {
