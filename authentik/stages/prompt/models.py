@@ -261,7 +261,9 @@ class Prompt(SerializerModel):
 
         return value
 
-    def field(self, default: Any | None, choices: list[Any] | None = None) -> CharField:
+    def field(  # noqa PLR0915
+        self, default: Any | None, choices: list[Any] | None = None
+    ) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
