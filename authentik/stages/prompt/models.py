@@ -275,6 +275,7 @@ class Prompt(SerializerModel):
                 field_class = ReadOnlyField
                 # required can't be set for ReadOnlyField
                 kwargs["required"] = False
+                kwargs["allow_blank"] = True
             case FieldTypes.EMAIL:
                 field_class = EmailField
                 kwargs["allow_blank"] = not self.required
