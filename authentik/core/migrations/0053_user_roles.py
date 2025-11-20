@@ -19,7 +19,8 @@ def migrate_object_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
     def get_role_for_user_id(user_id: int) -> Role:
         role, created = Role.objects.using(db_alias).get_or_create(
-            name=f"ak-managed-role--user-{user_id}"
+            name=f"ak-managed-role--user-{user_id}",
+            managed=True,
         )
         if created:
             role.users.add(user_id)
@@ -31,7 +32,9 @@ def migrate_object_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
             # Every django group should already have a role, so this should never happen.
             # But let's be nice.
             role, created = Role.objects.using(db_alias).get_or_create(
-                group_id=group_id, name=f"ak-managed-role--group-{group_id}"
+                group_id=group_id,
+                name=f"ak-managed-role--group-{group_id}",
+                managed=True,
             )
             if created:
                 role.group_id = group_id

@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.serializers import BaseSerializer
 
+from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.reflection import get_apps
 
@@ -31,7 +32,7 @@ def get_permission_choices():
     )
 
 
-class Role(SerializerModel):
+class Role(SerializerModel, ManagedModel):
     """RBAC role, which can have different permissions (both global and per-object) attached
     to it."""
 

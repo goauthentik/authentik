@@ -2,7 +2,10 @@
 
 from django.contrib.auth.models import Permission
 from django.http import Http404
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from django_filters.filters import AllValuesMultipleFilter, BooleanFilter
+from django_filters.filterset import FilterSet
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import (
@@ -14,6 +17,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -22,7 +26,7 @@ from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
 
 
-class RoleSerializer(ModelSerializer):
+class RoleSerializer(ManagedSerializer, ModelSerializer):
     """Role serializer"""
 
     def __init__(self, *args, **kwargs):
@@ -59,6 +63,18 @@ class RoleSerializer(ModelSerializer):
         fields = ["pk", "name"]
 
 
+class RoleFilterSet(FilterSet):
+    """Filter for PropertyMapping"""
+
+    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
+
+    managed__isnull = BooleanFilter(field_name="managed", lookup_expr="isnull")
+
+    class Meta:
+        model = Role
+        fields = ["name", "users", "managed"]
+
+
 class RoleViewSet(UsedByMixin, ModelViewSet):
     """Role viewset"""
 
@@ -66,7 +82,7 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
     queryset = Role.objects.all()
     search_fields = ["name"]
     ordering = ["name"]
-    filterset_fields = ["name", "users"]
+    filterset_class = RoleFilterSet
 
     class UserAccountSerializerForRole(PassiveSerializer):
         """Account adding/removing operations"""

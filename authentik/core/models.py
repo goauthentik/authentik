@@ -234,7 +234,7 @@ class Group(SerializerModel, AttributesMixin):
 
     def get_managed_role(self, create=False):
         if create:
-            role, created = Role.objects.get_or_create(name=managed_role_name(self))
+            role, created = Role.objects.get_or_create(name=managed_role_name(self), managed=True)
             if created:
                 role.groups.add(self)
             return role
@@ -404,7 +404,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def get_managed_role(self, create=False):
         if create:
-            role, created = Role.objects.get_or_create(name=managed_role_name(self))
+            role, created = Role.objects.get_or_create(name=managed_role_name(self), managed=True)
             if created:
                 role.users.add(self)
             return role
