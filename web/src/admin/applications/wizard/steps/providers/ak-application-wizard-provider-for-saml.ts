@@ -79,7 +79,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
-                    provider: this.wizard.provider as SAMLProvider,
+                    provider: this.wizard.provider,
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
