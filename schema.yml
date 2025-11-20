@@ -5001,10 +5001,9 @@ paths:
       responses:
         '200':
           content:
-            application/xml:
+            application/json:
               schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/MDMConfigResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -40365,6 +40364,14 @@ components:
       required:
       - enrollment_token
       - platform
+    MDMConfigResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        config:
+          type: string
+      required:
+      - config
     MatchingModeEnum:
       enum:
       - strict

@@ -78,6 +78,11 @@ class MDMConfigSerializer(PassiveSerializer):
         return token
 
 
+class MDMConfigResponseSerializer(PassiveSerializer):
+
+    config = CharField(required=True)
+
+
 class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AgentConnector.objects.all()
@@ -143,7 +148,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request=MDMConfigSerializer(),
-        responses={(200, "application/xml"): OpenApiResponse(OpenApiTypes.BINARY)},
+        responses=MDMConfigResponseSerializer(),
     )
     @action(methods=["POST"], detail=True)
     def mdm_config(self, request: Request, pk) -> Response:
@@ -155,4 +160,5 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         if not request.user.has_perm("view_enrollment_token_key", token):
             raise PermissionDenied()
         ctrl = connector.controller(connector)
-        return ctrl.generate_mdm_config(data.validated_data["platform"], request, token)
+        payload = ctrl.generate_mdm_config(data.validated_data["platform"], request, token)
+        return Response({"config": payload})

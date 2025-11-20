@@ -24,8 +24,7 @@ class TestAgentConnector(APITestCase):
             OSFamily.macOS, request, self.token
         )
         self.assertIsNotNone(res)
-        self.assertEqual(res["Content-Type"], "application/xml")
-        data = loads(res.content, fmt=PlistFormat.FMT_XML)
+        data = loads(res, fmt=PlistFormat.FMT_XML)
         self.assertEqual(data["PayloadContent"][0]["RegistrationToken"], self.token.key)
         self.assertEqual(data["PayloadContent"][0]["URL"], "http://testserver/")
 
@@ -35,7 +34,6 @@ class TestAgentConnector(APITestCase):
             OSFamily.windows, request, self.token
         )
         self.assertIsNotNone(res)
-        self.assertEqual(res["Content-Type"], "application/xml")
-        fromstring(f"<root>{res.content.decode()}</root>")
-        self.assertIn(self.token.key, res.content.decode())
-        self.assertIn("http://testserver/", res.content.decode())
+        fromstring(f"<root>{res}</root>")
+        self.assertIn(self.token.key, res)
+        self.assertIn("http://testserver/", res)

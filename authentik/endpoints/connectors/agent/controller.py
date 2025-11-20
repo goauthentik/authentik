@@ -1,7 +1,7 @@
 from plistlib import PlistFormat, dumps
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
 from django.urls import reverse
 
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
@@ -39,14 +39,14 @@ class AgentConnectorController(BaseController[AgentConnector]):
 
     def generate_mdm_config(
         self, target_platform: OSFamily, request: HttpRequest, token: EnrollmentToken
-    ) -> HttpResponse:
+    ) -> str:
         if target_platform == OSFamily.windows:
             return self._generate_mdm_config_windows(request, token)
         if target_platform in [OSFamily.iOS, OSFamily.macOS]:
             return self._generate_mdm_config_macos(request, token)
         raise ValueError(f"Unsupported platform for MDM Configuration: {target_platform}")
 
-    def _generate_mdm_config_windows(self, request: HttpRequest, token: EnrollmentToken):
+    def _generate_mdm_config_windows(self, request: HttpRequest, token: EnrollmentToken) -> str:
         base_uri = (
             "./Vendor/MSFT/Registry/HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig"
         )
@@ -60,15 +60,9 @@ class AgentConnectorController(BaseController[AgentConnector]):
         )
 
         payload = tostring(token_item, encoding="unicode") + tostring(url_item, encoding="unicode")
-        response = HttpResponse(payload, content_type="application/xml")
-        response["Content-Disposition"] = (
-            f'attachment; filename="{self.connector.name}_config.csp.xml"'
-        )
-        return response
+        return payload
 
-    def _generate_mdm_config_macos(
-        self, request: HttpRequest, token: EnrollmentToken
-    ) -> HttpResponse:
+    def _generate_mdm_config_macos(self, request: HttpRequest, token: EnrollmentToken) -> str:
         payload = dumps(
             {
                 "PayloadContent": [
@@ -91,8 +85,4 @@ class AgentConnectorController(BaseController[AgentConnector]):
             },
             fmt=PlistFormat.FMT_XML,
         ).decode()
-        response = HttpResponse(payload, content_type="application/xml")
-        response["Content-Disposition"] = (
-            f'attachment; filename="{self.connector.name}_config.mobileconfig"'
-        )
-        return response
+        return payload
