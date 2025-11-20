@@ -5,9 +5,10 @@ from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.facts import OSFamily
-from authentik.endpoints.models import Device, DeviceConnection, DeviceGroup
+from authentik.endpoints.models import Device, DeviceGroup
 from authentik.lib.generators import generate_id
 
 CHECK_IN_DATA_VALID = {
@@ -41,7 +42,7 @@ class TestAgentAPI(APITestCase):
         self.device = Device.objects.create(
             identifier=generate_id(),
         )
-        self.connection = DeviceConnection.objects.create(
+        self.connection = AgentDeviceConnection.objects.create(
             device=self.device,
             connector=self.connector,
         )

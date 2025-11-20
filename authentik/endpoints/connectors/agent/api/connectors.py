@@ -24,9 +24,14 @@ from authentik.endpoints.connectors.agent.auth import (
     AgentAuth,
     AgentEnrollmentAuth,
 )
-from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    AgentDeviceConnection,
+    DeviceToken,
+    EnrollmentToken,
+)
 from authentik.endpoints.facts import DeviceFacts, OSFamily
-from authentik.endpoints.models import Device, DeviceConnection
+from authentik.endpoints.models import Device
 from authentik.lib.utils.time import timedelta_from_string
 
 
@@ -112,7 +117,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
                 "group": token.device_group,
             },
         )
-        connection, _ = DeviceConnection.objects.update_or_create(
+        connection, _ = AgentDeviceConnection.objects.update_or_create(
             device=device,
             connector=token.connector,
         )
@@ -142,7 +147,7 @@ class AgentConnectorViewSet(UsedByMixin, ModelViewSet):
         token: DeviceToken = request.auth
         data = DeviceFacts(data=request.data)
         data.is_valid(raise_exception=True)
-        connection: DeviceConnection = token.device
+        connection: AgentDeviceConnection = token.device
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
 

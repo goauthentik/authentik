@@ -7,7 +7,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.models import Connector, DeviceConnection, DeviceGroup
+from authentik.endpoints.models import Connector, DeviceConnection, DeviceGroup, DeviceUserBinding
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 from authentik.lib.models import SerializerModel
@@ -64,14 +64,30 @@ class AgentConnector(Connector):
         verbose_name_plural = _("Agent Connectors")
 
 
+class AgentDeviceConnection(DeviceConnection):
+
+    apple_signing_key = models.TextField()
+    apple_encryption_key = models.TextField()
+    apple_key_exchange_key = models.TextField()
+    apple_sign_key_id = models.TextField()
+    apple_enc_key_id = models.TextField()
+
+
+class AgentDeviceUserBinding(DeviceUserBinding):
+
+    apple_secure_enclave_key = models.TextField()
+    apple_enclave_key_id = models.TextField()
+
+
 class DeviceToken(ExpiringModel):
 
     token_uuid = models.UUIDField(primary_key=True, default=uuid4)
-    device = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
+    device = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
     key = models.TextField(default=generate_key)
 
 
 class EnrollmentToken(ExpiringModel, SerializerModel):
+
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField()
     key = models.TextField(default=default_token_key)
