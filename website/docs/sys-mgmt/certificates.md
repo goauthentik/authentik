@@ -36,7 +36,7 @@ We recommend using a certificate generated outside of authentik that correlates 
 
 ### Radius EAP-TLS
 
-We recommend using a certificate generated outside of authentik, however an internally generated cert which isn't publicly trusted is sufficient.
+We recommend using a certificate generated outside of authentik. A non-publicly trusted certificate is sufficient.
 
 ## Downloading SAML certificates
 
