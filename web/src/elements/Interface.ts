@@ -1,3 +1,8 @@
+import {
+    createContrastPreferenceEffect,
+    createMotionPreferenceEffect,
+    createTransparencyPreferenceEffect,
+} from "#common/a11y";
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
@@ -20,6 +25,10 @@ export abstract class Interface extends AKElement {
         this.addController(new ConfigContextController(this, config));
         this.addController(new BrandingContextController(this, brand));
         this.addController(new ModalOrchestrationController());
+
+        createMotionPreferenceEffect();
+        createContrastPreferenceEffect();
+        createTransparencyPreferenceEffect();
     }
 
     public connectedCallback(): void {

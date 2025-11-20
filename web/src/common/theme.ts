@@ -2,6 +2,7 @@
  * @file Theme utilities.
  */
 
+import { createMediaQueryEffect, MediaChangeEffect } from "#common/matchers";
 import { setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";
@@ -156,9 +157,7 @@ export function createUIThemeEffect(
     const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
 
     // First, wrap the effect to ensure we can abort it.
-    const mediaChangeListener = (event: MediaQueryListEvent) => {
-        if (listenerOptions?.signal?.aborted) return;
-
+    const mediaChangeListener: MediaChangeEffect = (event) => {
         const { themeChoice, theme: previousTheme } = document.documentElement.dataset;
 
         if (themeChoice && themeChoice !== "auto") {
@@ -197,12 +196,16 @@ export function createUIThemeEffect(
     });
 
     // Listen for changes to the color scheme...
-    mediaQueryList.addEventListener("change", mediaChangeListener);
+    const disposeChangeListener = createMediaQueryEffect(
+        mediaQueryList,
+        mediaChangeListener,
+        listenerOptions,
+    );
 
     // Finally, allow the caller to remove the effect.
     const cleanup = () => {
         documentObserver.disconnect();
-        mediaQueryList.removeEventListener("change", mediaChangeListener);
+        disposeChangeListener();
     };
 
     listenerOptions?.signal?.addEventListener("abort", cleanup);
