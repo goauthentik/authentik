@@ -88,6 +88,7 @@ const items = [
             "install-config/beta",
             "install-config/reverse-proxy",
             "install-config/automated-install",
+            "install-config/high-availability",
             "install-config/air-gapped",
         ],
     },
