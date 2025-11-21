@@ -34,7 +34,7 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Checkout main
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           ref: main
           token: "${{ steps.app-token.outputs.token }}"
@@ -62,7 +62,7 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Checkout main
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           ref: main
           token: ${{ steps.generate_token.outputs.token }}
