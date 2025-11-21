@@ -11,9 +11,18 @@
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
-        ".": "./index.js",
-        "./imports-plugin": "./lib/imports.js",
-        "./formatter": "./lib/formatter.js"
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./imports-plugin": {
+            "import": "./lib/imports.js",
+            "types": "./out/lib/imports.d.ts"
+        },
+        "./formatter": {
+            "import": "./lib/formatter.js",
+            "types": "./out/lib/formatter.d.ts"
+        }
     },
     "dependencies": {
         "format-imports": "^4.0.8"
