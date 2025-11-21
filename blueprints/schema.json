@@ -4806,9 +4806,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal application name, used in URLs."
                 },
@@ -6754,9 +6752,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -6888,9 +6884,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -7043,9 +7037,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -7557,9 +7549,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Visible in the URL."
                 },
@@ -11116,9 +11106,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -11457,9 +11445,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -11828,9 +11814,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -12212,9 +12196,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -12514,9 +12496,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -12842,9 +12822,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -13020,9 +12998,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -13261,9 +13237,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13452,9 +13426,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13681,9 +13653,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13894,9 +13864,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14074,9 +14042,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14250,9 +14216,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14429,9 +14393,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14640,9 +14602,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14798,9 +14758,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14932,9 +14890,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15055,9 +15011,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15178,9 +15132,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15375,9 +15327,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15554,9 +15504,7 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Name"
                 },
                 "expires": {
@@ -15636,9 +15584,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15760,9 +15706,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16016,9 +15960,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16151,9 +16093,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16291,9 +16231,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16410,9 +16348,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16574,9 +16510,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16693,9 +16627,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
