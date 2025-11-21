@@ -132,6 +132,9 @@ class IPCUser(AnonymousUser):
     def is_authenticated(self):
         return True
 
+    def all_roles(self):
+        return []
+
 
 def token_ipc(value: str) -> User | None:
     """Check if the token is the secret key

@@ -2,23 +2,40 @@
 title: Blueprints
 ---
 
-Blueprints offer a new way to template, automate and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage config as code without any external tools, and to distribute application configs.
+Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage infrastructure-as-code without any external tools, and to distribute application configurations. Blueprints are YAML files, whose format is described further in [File structure](./v1/structure).
 
-## Types
+Blueprints are used to manage authentik's default flows and other system objects. For example, authentik's `default-authentication-flow` is, under the covers, created by a blueprint.
 
-Blueprints are yaml files, whose format is described further in [File structure](./v1/structure). Blueprints can be applied in one of two ways:
+Custom blueprints can be used to replace or modify default blueprints in certain circumstances. For example, you could create a new flow that is based on the `default-authentication-flow` but adds an additional stage or policy.
 
-- As a Blueprint instance, which is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+## Applying blueprints
 
-    :::info
-    Starting with authentik 2022.12.1, authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
-    :::
+To _apply_ a blueprint means that the content in the blueprint file is instantiated and then implemented by authentik. Blueprints can be applied in one of two ways:
 
-- As a Flow import, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied.
+- as a _blueprint instance_ (a new instance of any authentik configuration, which you can then further customize)
+- as an _imported flow_ (to add a new flow, or to revert to the default, out-of-box flow)
 
-Starting with authentik 2022.8, blueprints are used to manage authentik default flows and other system objects. These blueprints can be disabled/replaced with custom blueprints in certain circumstances.
+To learn how to apply, create, modify, and manage blueprints, refer to [Working with blueprints](./working_with_blueprints.md).
 
-## Blueprint Execution
+### Blueprint instance
+
+A Blueprint _instance_ is an instantiation of a blueprint. Each instance refers to a YAML file that is either mounted into the authentik (worker) container, in an OCI registry or the local database. (See [Blueprint storage](#blueprint-storage) for more information.) This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+
+:::info
+authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
+:::
+
+### Imported flow
+
+You can apply an example flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is.
+
+This YAML file is validated and applied directly after being uploaded, but is not monitored further, nor is it automatically applied on startup like blueprint instances.
+
+:::info
+Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
+:::
+
+## Blueprint execution
 
 When a blueprint is applied, all entries are processed within a single **atomic database transaction**. This means:
 
@@ -31,16 +48,22 @@ Additionally, all blueprints have access to built-in context variables:
 - `goauthentik.io/enterprise/licensed`: Boolean indicating if an enterprise license is active
 - `goauthentik.io/rbac/models`: Dictionary of available RBAC models
 
-These can be accessed using the `!Context` tag, for example:
+When you create or edit a blueprint instance, these context variables can be accessed using the `!Context` tag in the YAML file (or in the UI under **Advanced settings** on the Create/Edit page).
+
+**Example**:
 
 ```yaml
 conditions:
     - !Context goauthentik.io/enterprise/licensed
 ```
 
-## Storage - File
+## Blueprint storage
 
-The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple default subdirectories:
+When you add a new blueprint instance you can define from where the `.yaml` file is accessed and read by authentik: as a local file, in an OCI registry, or internally in authentik's database.
+
+### As a local file
+
+The authentik container by default looks for blueprints in `/blueprints`. Underneath this directory, there are a couple of default subdirectories:
 
 - `/blueprints/default`: Default blueprints for default flows, tenants, etc
 - `/blueprints/example`: Example blueprints for common configurations and flows
@@ -58,7 +81,7 @@ Please note that, by default, blueprint discovery and evaluation is not guarante
 If you have dependencies between blueprints, you should use [meta models](./v1/meta#authentik_blueprintsmetaapplyblueprint) to make sure that objects are created in the correct order.
 :::
 
-## Storage - OCI
+### In an OCI registry
 
 Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.
 
@@ -74,7 +97,7 @@ To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) ca
 oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
 ```
 
-## Storage - Internal
+### Internally in authentik's database
 
 Blueprints can be stored in authentik's database, which allows blueprints to be managed via external configuration management tools like Terraform.
 

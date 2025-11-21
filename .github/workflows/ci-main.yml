@@ -89,7 +89,7 @@ jobs:
               prev_stable=$current_version_family
           fi
           echo "::notice::Checking out ${prev_stable} as stable version..."
-          git checkout $(prev_stable)
+          git checkout ${prev_stable}
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (stable)
