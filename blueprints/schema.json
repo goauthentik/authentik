@@ -464,6 +464,86 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.enrollmenttoken"
                         },
                         "id": {
@@ -4945,10 +5025,13 @@
                     "title": "Is superuser",
                     "description": "Users added to this group will be superusers."
                 },
-                "parent": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Parent"
+                "parents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Parents"
                 },
                 "users": {
                     "type": "array",
@@ -4969,14 +5052,6 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
-                },
-                "children": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Children"
                 }
             },
             "required": []
@@ -5131,6 +5206,14 @@
                     },
                     "title": "Groups"
                 },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Roles"
+                },
                 "email": {
                     "type": "string",
                     "format": "email",
@@ -5182,6 +5265,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -5195,6 +5280,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -5206,6 +5293,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -5225,6 +5314,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
@@ -5267,15 +5358,23 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
@@ -5976,6 +6075,126 @@
                             "change_agentconnector",
                             "delete_agentconnector",
                             "view_agentconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceconnection": {
+            "type": "object",
+            "properties": {
+                "device": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Device"
+                },
+                "connector": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentdeviceconnection",
+                            "change_agentdeviceconnection",
+                            "delete_agentdeviceconnection",
+                            "view_agentdeviceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Policy"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                },
+                "negate": {
+                    "type": "boolean",
+                    "title": "Negate",
+                    "description": "Negates the outcome of the policy. Messages are unaffected."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Timeout",
+                    "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentdeviceuserbinding",
+                            "change_agentdeviceuserbinding",
+                            "delete_agentdeviceuserbinding",
+                            "view_agentdeviceuserbinding"
                         ]
                     },
                     "user": {
@@ -8151,6 +8370,8 @@
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
+                        "authentik_endpoints_connectors_agent.agentdeviceconnection",
+                        "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
                         "authentik_events.event",
@@ -10383,6 +10604,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -10396,6 +10619,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -10407,6 +10632,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -10426,6 +10653,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
@@ -10468,15 +10697,23 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",

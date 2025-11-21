@@ -1,7 +1,6 @@
 """Test InitialPermissions"""
 
 from django.contrib.auth.models import Permission
-from guardian.shortcuts import assign_perm
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
@@ -37,7 +36,7 @@ class TestInitialPermissions(APITestCase):
         self.view_role = Permission.objects.filter(codename="view_role").first()
         self.ip.permissions.add(self.view_role)
 
-        assign_perm("authentik_rbac.add_role", self.user)
+        self.user.assign_perms_to_managed_role("authentik_rbac.add_role")
         self.client.force_login(self.user)
 
     def test_different_role(self):
@@ -52,7 +51,7 @@ class TestInitialPermissions(APITestCase):
 
     def test_different_model(self):
         """InitialPermissions for different model does nothing"""
-        assign_perm("authentik_stages_dummy.add_dummystage", self.user)
+        self.user.assign_perms_to_managed_role("authentik_stages_dummy.add_dummystage")
 
         self.client.post(
             reverse("authentik_api:stages-dummy-list"), {"name": "test-stage", "throw-error": False}
@@ -62,14 +61,6 @@ class TestInitialPermissions(APITestCase):
         self.assertFalse(self.user.has_perm("authentik_rbac.view_role", role))
         stage = DummyStage.objects.filter(name="test-stage").first()
         self.assertFalse(self.user.has_perm("authentik_stages_dummy.view_dummystage", stage))
-
-    def test_mode_user(self):
-        """InitialPermissions adds user permission in user mode"""
-        self.client.post(reverse("authentik_api:roles-list"), {"name": "test-role"})
-
-        role = Role.objects.filter(name="test-role").first()
-        self.assertTrue(self.user.has_perm("authentik_rbac.view_role", role))
-        self.assertFalse(self.same_role_user.has_perm("authentik_rbac.view_role", role))
 
     def test_mode_role(self):
         """InitialPermissions adds role permission in role mode"""

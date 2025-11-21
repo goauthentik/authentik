@@ -16,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ProvidersApi,
     RadiusProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -182,7 +182,7 @@ export class RadiusProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRadiusRadiusprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

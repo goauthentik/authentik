@@ -125,6 +125,17 @@ jobs:
         if: ${{ always() }}
         with:
           flags: unit-migrate
+      - name: Write postgres logs
+        if: ${{ always() }}
+        run: |
+          docker compose -f .github/actions/setup/docker-compose.yml logs postgresql > postgres_logs-${{ matrix.psql }}-${{ matrix.run_id }}.txt
+      - name: Upload postgres logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: postgres_logs-${{ matrix.psql }}-${{ matrix.run_id }}.txt
+          path: postgres_logs-${{ matrix.psql }}-${{ matrix.run_id }}.txt
+          retention-days: 3
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest

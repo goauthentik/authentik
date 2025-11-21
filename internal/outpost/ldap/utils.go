@@ -28,14 +28,12 @@ func (pi *ProviderInstance) MembersForGroup(group api.Group) []string {
 }
 
 func (pi *ProviderInstance) MemberOfForGroup(group api.Group) []string {
-	if group.ParentName.IsSet() {
-		parent := group.ParentName.Get()
-		if parent != nil {
-			return []string{pi.GetGroupDN(*group.ParentName.Get())}
-		}
+	groups := make([]string, len(group.ParentsObj))
+	for i, group := range group.ParentsObj {
+		fmt.Printf("in range")
+		groups[i] = pi.GetGroupDN(group.Name)
 	}
-
-	return []string{}
+	return groups
 }
 
 func (pi *ProviderInstance) GetUserDN(user string) string {
