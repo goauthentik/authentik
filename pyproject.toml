@@ -104,7 +104,9 @@ dev = [
   "requests-mock==1.12.1",
   "ruff==0.11.9",
   "selenium==4.32.0",
+  "types-cachetools==6.2.0.20251022",
   "types-channels==4.3.0.20250822",
+  "types-docker==7.1.0.20251009",
   "types-ldap3==2.9.13.20250622",
 ]
 
@@ -208,7 +210,7 @@ plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
 exclude = ['^gen-py-api/']
 
 [[tool.mypy.overrides]]
-module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*", "debugpy.*"]
 follow_untyped_imports = true
 
 [[tool.mypy.overrides]]
@@ -227,7 +229,9 @@ module = [
   "authentik.enterprise.*",
   "authentik.events.*",
   "authentik.flows.*",
-  "authentik.lib.*",
+  "authentik.lib.config",
+  "authentik.lib.models",
+  "authentik.lib.tests.test_config",
   "authentik.outposts.*",
   "authentik.policies.*",
   "authentik.policies.dummy.*",

@@ -11,20 +11,20 @@ from authentik.lib.utils.time import timedelta_from_string, timedelta_string_val
 class TestTimeUtils(TestCase):
     """Test time-utils"""
 
-    def test_valid(self):
+    def test_valid(self) -> None:
         """Test valid expression"""
         expr = "hours=3;minutes=1"
         expected = timedelta(hours=3, minutes=1)
         self.assertEqual(timedelta_from_string(expr), expected)
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         """Test invalid expression"""
         with self.assertRaises(ValueError):
             timedelta_from_string("foo")
         with self.assertRaises(ValueError):
             timedelta_from_string("bar=baz")
 
-    def test_validation(self):
+    def test_validation(self) -> None:
         """Test Django model field validator"""
         with self.assertRaises(ValidationError):
             timedelta_string_validator("foo")

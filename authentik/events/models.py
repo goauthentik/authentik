@@ -237,7 +237,7 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         if self._state.adding:
             LOGGER.info(
                 "Created Event",

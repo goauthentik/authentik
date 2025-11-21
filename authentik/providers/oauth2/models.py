@@ -458,7 +458,7 @@ class BaseGrantModel(models.Model):
         return self._scope.split()
 
     @scope.setter
-    def scope(self, value):
+    def scope(self, value: list[str]) -> None:
         self._scope = " ".join(value)
 
 

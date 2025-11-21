@@ -12,7 +12,6 @@ from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
-    BackchannelProvider,
     Group,
     PropertyMapping,
     User,
@@ -84,7 +83,7 @@ class GoogleWorkspaceProviderGroup(SerializerModel):
         return f"Google Workspace Provider Group {self.group_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
+class GoogleWorkspaceProvider(OutgoingSyncProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()

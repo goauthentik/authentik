@@ -1,7 +1,8 @@
 """Basic outgoing sync Client"""
 
+from collections.abc import MutableMapping
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from deepmerge import always_merger
 from django.db import DatabaseError
@@ -18,11 +19,11 @@ from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSy
 if TYPE_CHECKING:
     from django.db.models import Model
 
+    from authentik.core.models import Group, User
     from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
 class Direction(StrEnum):
-
     add = "add"
     remove = "remove"
 
@@ -36,7 +37,10 @@ SAFE_METHODS = [
 
 
 class BaseOutgoingSyncClient[
-    TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
+    TModel: "User | Group",
+    TConnection: "Model",
+    TSchema: MutableMapping[Any, Any],
+    TProvider: "OutgoingSyncProvider",
 ]:
     """Basic Outgoing sync client Client"""
 
@@ -55,14 +59,17 @@ class BaseOutgoingSyncClient[
         """Create object in remote destination"""
         raise NotImplementedError()
 
-    def update(self, obj: TModel, connection: TConnection):
+    def update(self, obj: TModel, connection: TConnection) -> None:
         """Update object in remote destination"""
         raise NotImplementedError()
 
-    def write(self, obj: TModel) -> tuple[TConnection, bool]:
+    def update_group(self, group: "Group", action: Direction, users_set: list[Any]) -> None:
+        raise NotImplementedError()
+
+    def write(self, obj: TModel) -> tuple[TConnection | None, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        connection = self.connection_type.objects.filter(
+        connection = self.connection_type.objects.filter(  # type: ignore[attr-defined]
             provider=self.provider, **{self.connection_type_query: obj}
         ).first()
         try:
@@ -82,13 +89,13 @@ class BaseOutgoingSyncClient[
                 connection.delete()
         return None, False
 
-    def delete(self, obj: TModel):
+    def delete(self, obj: TModel) -> None:
         """Delete object from destination"""
         raise NotImplementedError()
 
-    def to_schema(self, obj: TModel, connection: TConnection | None, **defaults) -> TSchema:
+    def to_schema(self, obj: TModel, connection: TConnection | None, **defaults: Any) -> TSchema:
         """Convert object to destination schema"""
-        raw_final_object = {}
+        raw_final_object: dict[Any, Any] = {}
         try:
             eval_kwargs = {
                 "request": None,
@@ -97,7 +104,7 @@ class BaseOutgoingSyncClient[
                 obj._meta.model_name: obj,
             }
             eval_kwargs.setdefault("user", None)
-            for value in self.mapper.iter_eval(**eval_kwargs):
+            for value in self.mapper.iter_eval(**eval_kwargs):  # type: ignore[arg-type, misc]
                 always_merger.merge(raw_final_object, value)
         except ControlFlowException as exc:
             raise exc from exc
@@ -113,16 +120,16 @@ class BaseOutgoingSyncClient[
             raise StopSync(ValueError("No mappings configured"), obj)
         for key, value in defaults.items():
             raw_final_object.setdefault(key, value)
-        return raw_final_object
+        return cast(TSchema, raw_final_object)
 
-    def discover(self):
+    def discover(self) -> None:
         """Optional method. Can be used to implement a "discovery" where
         upon creation of this provider, this function will be called and can
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
 
-    def update_single_attribute(self, connection: TConnection):
+    def update_single_attribute(self, connection: TConnection) -> None:
         """Update connection attributes on a connection object, when the connection
         is manually created"""
         raise NotImplementedError

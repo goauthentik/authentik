@@ -19,7 +19,7 @@ ALLOWED_KEYS = (
 )
 
 
-def timedelta_string_validator(value: str):
+def timedelta_string_validator(value: str) -> None:
     """Validator for Django that checks if value can be parsed with `timedelta_from_string`"""
     try:
         timedelta_from_string(value)

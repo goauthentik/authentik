@@ -1,7 +1,7 @@
 """file utils"""
 
 from django.db.models import Model
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from rest_framework.fields import BooleanField, CharField, FileField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -25,7 +25,7 @@ class FilePathSerializer(PassiveSerializer):
     url = CharField()
 
 
-def set_file(request: Request, obj: Model, field_name: str):
+def set_file(request: Request, obj: Model, field_name: str) -> HttpResponse:
     """Upload file"""
     field = getattr(obj, field_name)
     file = request.FILES.get("file", None)
@@ -45,7 +45,7 @@ def set_file(request: Request, obj: Model, field_name: str):
     return HttpResponseBadRequest()
 
 
-def set_file_url(request: Request, obj: Model, field_name: str):
+def set_file_url(request: Request, obj: Model, field_name: str) -> HttpResponse:
     """Set file field to URL"""
     field = getattr(obj, field_name)
     url = request.data.get("url", None)

@@ -1,10 +1,13 @@
 """authentik lib reflection utilities"""
 
 import os
+from collections.abc import Generator
 from importlib import import_module
 from pathlib import Path
 from tempfile import gettempdir
+from typing import cast
 
+from django.apps.config import AppConfig
 from django.conf import settings
 from django.utils.module_loading import import_string
 
@@ -13,9 +16,9 @@ from authentik.lib.config import CONFIG
 SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
 
 
-def all_subclasses[T: type](cls: T, sort=True) -> list[T] | set[T]:
+def all_subclasses[T: type](cls: T, sort: bool = True) -> list[T] | set[T]:
     """Recursively return all subclassess of cls"""
-    classes = set(cls.__subclasses__()).union(
+    classes: list[T] | set[T] = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
     )
     # Check if we're in debug mode, if not exclude classes which have `__debug_only__`
@@ -38,10 +41,10 @@ def path_to_class(path: str = "") -> type:
     parts = path.split(".")
     package = ".".join(parts[:-1])
     _class = getattr(import_module(package), parts[-1])
-    return _class
+    return cast(type, _class)
 
 
-def get_apps():
+def get_apps() -> Generator[AppConfig]:
     """Get list of all authentik apps"""
     from django.apps.registry import apps
 
@@ -65,11 +68,11 @@ def get_env() -> str:
     return "custom"
 
 
-def ConditionalInheritance(path: str):
+def ConditionalInheritance(path: str) -> type:
     """Conditionally inherit from a class, intended for things like authentik.enterprise,
     without which authentik should still be able to run"""
     try:
         cls = import_string(path)
-        return cls
+        return cast(type, cls)
     except ModuleNotFoundError:
         return object

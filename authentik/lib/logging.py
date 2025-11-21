@@ -3,9 +3,11 @@
 import logging
 from logging import Logger
 from os import getpid
+from typing import Any
 
 import structlog
 from django.db import connection
+from structlog.typing import EventDict
 
 from authentik.lib.config import CONFIG
 
@@ -19,9 +21,9 @@ LOG_PRE_CHAIN = [
 ]
 
 
-def get_log_level():
+def get_log_level() -> str:
     """Get log level, clamp trace to debug"""
-    level = CONFIG.get("log_level").upper()
+    level: str = CONFIG.get("log_level").upper()
     # We could add a custom level to stdlib logging and structlog, but it's not easy or clean
     # https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
     # Additionally, the entire code uses debug as highest level
@@ -31,7 +33,7 @@ def get_log_level():
     return level
 
 
-def structlog_configure():
+def structlog_configure() -> None:
     """Configure structlog itself"""
     structlog.configure_once(
         processors=[
@@ -56,11 +58,11 @@ def structlog_configure():
     )
 
 
-def get_logger_config():
+def get_logger_config() -> dict[str, Any]:
     """Configure python stdlib's logging"""
     debug = CONFIG.get_bool("debug")
     global_level = get_log_level()
-    base_config = {
+    base_config: dict[str, Any] = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
@@ -121,13 +123,13 @@ def get_logger_config():
     return base_config
 
 
-def add_process_id(logger: Logger, method_name: str, event_dict):
+def add_process_id(logger: Logger, method_name: str, event_dict: EventDict) -> EventDict:
     """Add the current process ID"""
     event_dict["pid"] = getpid()
     return event_dict
 
 
-def add_tenant_information(logger: Logger, method_name: str, event_dict):
+def add_tenant_information(logger: Logger, method_name: str, event_dict: EventDict) -> EventDict:
     """Add the current tenant"""
     tenant = getattr(connection, "tenant", None)
     schema_name = getattr(connection, "schema_name", None)

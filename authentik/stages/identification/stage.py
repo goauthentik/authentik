@@ -253,19 +253,19 @@ class IdentificationStageView(ChallengeStageView):
         if current_stage.enrollment_flow:
             challenge.initial_data["enroll_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                query=get_qs,
+                qs=get_qs,
                 kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
             challenge.initial_data["recovery_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                query=get_qs,
+                qs=get_qs,
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
         if current_stage.passwordless_flow:
             challenge.initial_data["passwordless_url"] = reverse_with_qs(
                 "authentik_core:if-flow",
-                query=get_qs,
+                qs=get_qs,
                 kwargs={"flow_slug": current_stage.passwordless_flow.slug},
             )
 

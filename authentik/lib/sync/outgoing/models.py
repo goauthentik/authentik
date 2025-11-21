@@ -4,11 +4,11 @@ import pglock
 from django.core.paginator import Paginator
 from django.core.validators import MinValueValidator
 from django.db import connection, models
-from django.db.models import Model, QuerySet, TextChoices
+from django.db.models import QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
-from authentik.core.models import Group, User
+from authentik.core.models import BackchannelProvider, Group, User
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -24,7 +24,7 @@ class OutgoingSyncDeleteAction(TextChoices):
     SUSPEND = "suspend"
 
 
-class OutgoingSyncProvider(ScheduledModel, Model):
+class OutgoingSyncProvider(ScheduledModel, BackchannelProvider):
     """Base abstract models for providers implementing outgoing sync"""
 
     sync_page_size = models.PositiveIntegerField(
@@ -56,7 +56,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def get_object_qs[T: User | Group](self, type: type[T]) -> QuerySet[T]:
         raise NotImplementedError
 
-    def get_paginator[T: User | Group](self, type: type[T]) -> Paginator:
+    def get_paginator[T: User | Group](self, type: type[T]) -> "Paginator[T]":
         return Paginator(self.get_object_qs(type), self.sync_page_size)
 
     def get_object_sync_time_limit_ms[T: User | Group](self, type: type[T]) -> int:
@@ -74,13 +74,15 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
+            lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",  # type: ignore[attr-defined]
             timeout=0,
             side_effect=pglock.Return,
         )
 
     @property
-    def sync_actor(self) -> Actor:
+    def sync_actor(
+        self,
+    ) -> Actor[[int, Actor[[str, int, int, bool, dict[str, Any] | None], None]], None]:
         raise NotImplementedError
 
     @property
@@ -94,6 +96,6 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                     "time_limit": self.get_sync_time_limit_ms(),
                 },
                 send_on_save=True,
-                crontab=f"{fqdn_rand(self.pk)} */4 * * *",
+                crontab=f"{fqdn_rand(str(self.pk))} */4 * * *",
             ),
         ]
