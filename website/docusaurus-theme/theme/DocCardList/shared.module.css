@@ -1,0 +1,68 @@
+.errorState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-danger);
+}
+
+.loadingState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryShort {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.glossaryShortMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong {
+    color: var(--ifm-color-emphasis-700);
+}
+
+.glossaryLongMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong p {
+    margin-bottom: 0.75rem;
+}
+
+.glossaryLong p:last-child {
+    margin-bottom: 0;
+}
+
+.expandButton {
+    background: none;
+    border: none;
+    color: var(--ifm-color-primary);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.expandButton:hover {
+    color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
+}
+
+.cardContainer {
+    contain: layout style;
+}
+
+@media (max-width: 768px) {
+    .glossaryShort {
+        font-size: 1rem;
+    }
+}
