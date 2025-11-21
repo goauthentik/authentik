@@ -7,7 +7,13 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, default_token_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.models import Connector, DeviceConnection, DeviceGroup, DeviceUserBinding
+from authentik.endpoints.models import (
+    Connector,
+    Device,
+    DeviceConnection,
+    DeviceGroup,
+    DeviceUserBinding,
+)
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 from authentik.lib.models import SerializerModel
@@ -20,16 +26,19 @@ if TYPE_CHECKING:
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
-    nss_uid_offset = models.PositiveIntegerField(default=1000)
-    nss_gid_offset = models.PositiveIntegerField(default=1000)
-    authentication_flow = models.ForeignKey(
-        "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
-    )
+    domain_name = models.TextField(unique=True)
     auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
         default="minutes=30",
         validators=[timedelta_string_validator],
     )
+
+    authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
+
+    nss_uid_offset = models.PositiveIntegerField(default=1000)
+    nss_gid_offset = models.PositiveIntegerField(default=1000)
 
     challenge_key = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE, null=True)
 
@@ -80,13 +89,23 @@ class AgentDeviceUserBinding(DeviceUserBinding):
 
 
 class DeviceToken(ExpiringModel):
+    """Per-device token used for authentication."""
 
     token_uuid = models.UUIDField(primary_key=True, default=uuid4)
     device = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
     key = models.TextField(default=generate_key)
 
+    class Meta:
+        verbose_name = _("Device Token")
+        verbose_name_plural = _("Device Tokens")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["key"]),
+        ]
+
 
 class EnrollmentToken(ExpiringModel, SerializerModel):
+    """Token used during enrollment, a device will receive
+    a device token for further authentication"""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField()
@@ -113,3 +132,10 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
         permissions = [
             ("view_enrollment_token_key", _("View token's key")),
         ]
+
+
+class AuthenticationToken(ExpiringModel):
+
+    identifier = models.UUIDField(default=uuid4, primary_key=True)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    secret = models.TextField(default=generate_key(), unique=True)

@@ -30,7 +30,7 @@ DEVICE_FACTS_CACHE_TIMEOUT = 3600
 class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     identifier = models.TextField(unique=True)
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
     group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
@@ -118,12 +118,13 @@ class Connector(ScheduledModel, SerializerModel):
 
     name = models.TextField()
     enabled = models.BooleanField(default=True)
-    objects = InheritanceManager()
 
     snapshot_expiry = models.TextField(
         default="hours=24",
         validators=[timedelta_string_validator],
     )
+
+    objects = InheritanceManager()
 
     @property
     def stage(self) -> type[StageView] | None:

@@ -5056,6 +5056,24 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/authenticate_interactive/:
+    post:
+      operationId: endpoints_agents_connectors_authenticate_interactive_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentAuthenticationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/check_in/:
     post:
       operationId: endpoints_agents_connectors_check_in_create
@@ -19443,6 +19461,8 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceconnection
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -19656,6 +19676,8 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceconnection
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -32466,24 +32488,35 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AgentAuthenticationResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        url:
+          type: string
+      required:
+      - url
     AgentConfig:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        domain_name:
+          type: string
+        refresh_interval:
+          type: integer
+          readOnly: true
+        authorization_flow:
+          type: string
         nss_uid_offset:
           type: integer
         nss_gid_offset:
           type: integer
-        authentication_flow:
-          type: string
         auth_terminate_session_on_expiry:
           type: boolean
-        refresh_interval:
-          type: integer
-          readOnly: true
       required:
       - auth_terminate_session_on_expiry
-      - authentication_flow
+      - authorization_flow
+      - domain_name
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
@@ -32493,6 +32526,14 @@ components:
         connector_uuid:
           type: string
           format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -32505,16 +32546,18 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        name:
-          type: string
-        enabled:
-          type: boolean
         snapshot_expiry:
           type: string
+        domain_name:
+          type: string
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32523,20 +32566,13 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
       required:
       - component
+      - domain_name
       - meta_model_name
       - name
       - verbose_name
@@ -32555,6 +32591,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        domain_name:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32563,20 +32611,12 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
       required:
+      - domain_name
       - name
     AlgEnum:
       enum:
@@ -40698,6 +40738,8 @@ components:
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_agent.agentdeviceconnection
+      - authentik_endpoints_connectors_agent.agentdeviceuserbinding
       - authentik_endpoints_connectors_agent.enrollmenttoken
       - authentik_enterprise.license
       - authentik_events.event
@@ -44862,6 +44904,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        domain_name:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -44870,15 +44924,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
