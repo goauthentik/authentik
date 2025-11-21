@@ -16,13 +16,13 @@ To switch which source is used for a specific user based on their email domain, 
 
 ## Bind the policy to the stage
 
-The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information read our documentation about [bindings](../../../../add-secure-apps/flows-stages/bindings/), and for instructions to bind a policy, see [Bind a policy to a stage]](../../../../customize/policies/working_with_policies/#bind-a-policy-to-a-stage).
+The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information read our documentation about [bindings](../../../../add-secure-apps/flows-stages/bindings/), and for instructions to bind a policy, see [Bind a policy to a stage](../../../../customize/policies/working_with_policies/#bind-a-policy-to-a-stage).
 
 ## Example expression
 
 ```python
 # This is a mapping of domains to sources
-# the key is a domain for the user and the value is the `slug` of the source to redirect to
+# the key is a domain for the user and the value is the 'slug' of the source to redirect to
 source_email_map = {
     "foo.bar.com": "entra-foo",
     "bar.baz.com": "entra-bar",
