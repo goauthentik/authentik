@@ -238,7 +238,7 @@ class ChallengeStageView(StageView):
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,
             )
-        return HttpChallengeResponse(challenge_response)
+        return HttpChallengeResponse(challenge_response, status_code=400)
 
 
 class AccessDeniedStage(ChallengeStageView):
