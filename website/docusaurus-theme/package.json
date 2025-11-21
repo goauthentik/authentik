@@ -14,6 +14,7 @@
         "./redirects/plugin": "./redirects/plugin.mjs",
         "./redirects/node": "./redirects/node.mjs",
         "./redirects": "./redirects/index.mjs",
+        "./releases/common": "./releases/common.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
         "./releases/node": "./releases/node.mjs"
     },
