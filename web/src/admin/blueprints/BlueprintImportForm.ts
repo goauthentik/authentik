@@ -8,7 +8,7 @@ import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
 
-import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
+import { BlueprintImportResult, Flow, ManagedApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -16,28 +16,28 @@ import { customElement, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-@customElement("ak-flow-import-form")
-export class FlowImportForm extends Form<Flow> {
+@customElement("ak-blueprint-import-form")
+export class BlueprintImportForm extends Form<Flow> {
     @state()
-    result?: FlowImportResult;
+    result?: BlueprintImportResult;
 
     getSuccessMessage(): string {
-        return msg("Successfully imported flow.");
+        return msg("Successfully imported blueprint.");
     }
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async send(): Promise<FlowImportResult> {
-        const file = this.files().get("flow");
+    async send(): Promise<BlueprintImportResult> {
+        const file = this.files().get("blueprint");
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
-        const result = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesImportCreate({
+        const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate({
             file: file,
         });
         if (!result.success) {
             this.result = result;
-            throw new SentryIgnoredError("Failed to import flow");
+            throw new SentryIgnoredError("Failed to import blueprint");
         }
         return result;
     }
@@ -66,7 +66,7 @@ export class FlowImportForm extends Form<Flow> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
+        return html`<ak-form-element-horizontal label=${msg("Blueprint")} name="blueprint">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
                     ${msg(".yaml files, which can be found in the Example Flows documentation")}
@@ -87,6 +87,6 @@ export class FlowImportForm extends Form<Flow> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-flow-import-form": FlowImportForm;
+        "ak-blueprint-import-form": BlueprintImportForm;
     }
 }
