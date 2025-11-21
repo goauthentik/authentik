@@ -4,7 +4,7 @@ import { MessageLevel } from "#common/messages";
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
 
-import { FilesApi, FileUploadRequestUsageEnum } from "@goauthentik/api";
+import { AdminApi, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -13,7 +13,7 @@ import { customElement, property, state } from "lit/decorators.js";
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String })
-    usage: FileUploadRequestUsageEnum = FileUploadRequestUsageEnum.Media;
+    usage: UsageEnum = UsageEnum.Media;
 
     @state()
     selectedFile?: File;
@@ -39,13 +39,13 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             );
         }
 
-        const api = new FilesApi(DEFAULT_CONFIG);
+        const api = new AdminApi(DEFAULT_CONFIG);
         const customName = this.shadowRoot
             ?.querySelector<HTMLInputElement>("#file-name")
             ?.value?.trim();
 
         // If custom name provided, validate and append original extension
-        let finalPath = this.selectedFile.name;
+        let finalName = this.selectedFile.name;
         if (customName) {
             if (!safeFilenameRegex.test(customName)) {
                 throw new Error(
@@ -55,13 +55,13 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                 );
             }
             const ext = this.selectedFile.name.substring(this.selectedFile.name.lastIndexOf("."));
-            finalPath = customName + ext;
+            finalName = customName + ext;
         }
 
         try {
-            await api.filesUploadCreate({
+            await api.adminFileCreate({
                 file: this.selectedFile,
-                path: finalPath,
+                name: finalName,
                 usage: this.usage,
             });
 

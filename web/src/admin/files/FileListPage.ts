@@ -12,9 +12,10 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
-    FilesApi,
-    FilesDeleteDestroyUsageEnum,
-    FileUploadRequestUsageEnum,
+    AdminApi,
+    AdminFileDestroyUsageEnum,
+    AdminFileListUsageEnum,
+    UsageEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -26,12 +27,7 @@ interface FileItem {
     url: string;
     mime_type: string;
     size: number;
-    usage: FileUploadRequestUsageEnum;
-}
-
-interface UsageType {
-    value: string;
-    label: string;
+    usage: UsageEnum;
 }
 
 @customElement("ak-files-list")
@@ -48,31 +44,28 @@ export class FileListPage extends TablePage<FileItem> {
     order = "name";
 
     @property()
-    usage: FileUploadRequestUsageEnum = FileUploadRequestUsageEnum.Media;
-
-    @property({ type: Array })
-    usageTypes: UsageType[] = [];
-
-    async firstUpdated(): Promise<void> {
-        super.firstUpdated();
-        await this.fetchUsageTypes();
-    }
-
-    async fetchUsageTypes(): Promise<void> {
-        const api = new FilesApi(DEFAULT_CONFIG);
-        const response = await api.filesUsagesList();
-        this.usageTypes = response as UsageType[];
-    }
+    usage: UsageEnum = UsageEnum.Media;
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
-        const api = new FilesApi(DEFAULT_CONFIG);
-        const response = (await api.filesList({
-            usage: this.usage,
+        const api = new AdminApi(DEFAULT_CONFIG);
+        const items = (await api.adminFileList({
+            usage: this.usage as AdminFileListUsageEnum,
             ...(this.search ? { search: this.search } : {}),
-            omit: "passthrough,static",
-        })) as unknown as PaginatedResponse<FileItem>;
+        })) as unknown as FileItem[];
 
-        return response;
+        // Wrap array response in paginated response structure
+        return {
+            pagination: {
+                next: 0,
+                previous: 0,
+                count: items.length,
+                current: 1,
+                total_pages: 1,
+                start_index: 1,
+                end_index: items.length,
+            },
+            results: items,
+        };
     }
 
     protected columns: TableColumn[] = [
@@ -81,31 +74,6 @@ export class FileListPage extends TablePage<FileItem> {
         [msg("Size")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
-
-    renderToolbar(): TemplateResult {
-        return html`
-            <select
-                class="pf-c-form-control"
-                @change=${(e: Event) => {
-                    const target = e.target as HTMLSelectElement;
-                    this.usage = target.value as FileUploadRequestUsageEnum;
-                    this.fetch();
-                }}
-            >
-                ${this.usageTypes.map(
-                    (usageType) => html`
-                        <option
-                            value=${usageType.value}
-                            ?selected=${this.usage === usageType.value}
-                        >
-                            ${usageType.label}
-                        </option>
-                    `,
-                )}
-            </select>
-            ${super.renderToolbar()}
-        `;
-    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -120,9 +88,9 @@ export class FileListPage extends TablePage<FileItem> {
                 ];
             }}
             .delete=${(item: FileItem) => {
-                return new FilesApi(DEFAULT_CONFIG).filesDeleteDestroy({
+                return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
                     name: item.name,
-                    usage: item.usage as FilesDeleteDestroyUsageEnum,
+                    usage: item.usage as AdminFileDestroyUsageEnum,
                 });
             }}
         >

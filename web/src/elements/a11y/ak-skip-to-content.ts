@@ -16,6 +16,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export function findMainContent(context: HTMLElement): HTMLElement | null {
     const renderRoot = context instanceof LitElement ? context.renderRoot : context;
 
+    // If renderRoot is undefined (e.g., LitElement not fully initialized), return null
+    if (!renderRoot) {
+        return null;
+    }
+
     const mainContent = renderRoot.querySelector<HTMLElement>("main,[role=main]");
 
     if (mainContent) {

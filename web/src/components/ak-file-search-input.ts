@@ -8,7 +8,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "#packages/core/id";
 
-import { FilesApi, FilesListUsageEnum, FileUploadRequestUsageEnum } from "@goauthentik/api";
+import { AdminApi, AdminFileListUsageEnum, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -70,7 +70,7 @@ export class AkFileSearchInput extends AKElement {
     help: string | null = null;
 
     @property({ type: String })
-    usage: FileUploadRequestUsageEnum = FileUploadRequestUsageEnum.Media;
+    usage: UsageEnum = UsageEnum.Media;
 
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
@@ -90,18 +90,18 @@ export class AkFileSearchInput extends AKElement {
 
     async #fetch(query?: string): Promise<FileItem[]> {
         try {
-            const api = new FilesApi(DEFAULT_CONFIG);
-            const response = (await api.filesList({
-                usage: this.usage as FilesListUsageEnum,
+            const api = new AdminApi(DEFAULT_CONFIG);
+            const response = (await api.adminFileList({
+                usage: this.usage as AdminFileListUsageEnum,
                 ...(query ? { search: query } : {}),
-            })) as unknown as PaginatedFileResponse;
+            })) as unknown as FileItem[];
 
-            if (!response || !Array.isArray(response.results)) {
+            if (!response || !Array.isArray(response)) {
                 console.error("Invalid response format from files API", response);
                 return [];
             }
 
-            let results = response.results;
+            let results = response;
 
             // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
             // add it as a synthetic item so it shows up as selected
