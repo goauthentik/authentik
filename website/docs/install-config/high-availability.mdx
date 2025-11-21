@@ -2,7 +2,7 @@
 title: High availability
 ---
 
-High availability refers to designing systems to minimize downtime even in the event of failures or disruptions.
+High availability refers to system design that minimizes downtime even in the event of failures or disruptions.
 
 authentik supports high availability in several ways:
 
@@ -12,13 +12,13 @@ authentik supports high availability in several ways:
 
 ## Parallel server and worker instances
 
-authentik server and worker instances are stateless, meaning that session states and configurations are stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker instances, ensuring resilience and fault tolerance.
+authentik server and worker instances are stateless. All session state and configuration data is stored in the database. This statelessness makes it easy to horizontally scale authentik deployments by adding more server and worker instances, ensuring resilience and fault tolerance.
 
 If a server or worker instance goes offline, another instance can continue to serve traffic. If these instances are distributed among multiple hosts, it can provide even higher levels of resilience and fault tolerance.
 
 ## PostgreSQL high availability
 
-PostgreSQL supports high availability through _replication_ and _clustering_.
+PostgreSQL provides high availability through _replication_ and _clustering_.
 
 Refer to the [PostgreSQL High Availability, Load Balancing, and Replication documentation](https://www.postgresql.org/docs/current/high-availability.html) for more details.
 
@@ -30,7 +30,7 @@ In an active-passive deployment, one authentik instance actively serves all requ
 
 The components of an active-passive authentik deployment include:
 
-- **Active Instance**: Handles all user authentication requests, API calls, and background tasks during normal operation. It is fully operational and serves live traffic.
+- **Active Instance**: Handles all user authentication requests, API calls, and background tasks. It is fully operational and serves live traffic.
 - **Passive Instance**: Runs as a hot/warm standby. Does not handle incoming traffic or processing. Does not actively write to the database.
 - **Shared Database**: Both instances connect to the same PostgreSQL database which ensures data consistency. Because authentik is stateless, there are no data conflicts.
 - **Load Balancer**: A load balancer monitors the active instance's health. Upon detecting failure, it promotes the passive instance to active by redirecting all traffic to it. This failover can be triggered automatically or manually, depending on your failover strategy. When the original active authentik instance is restored, it can either remain passive or be promoted back to active (failback).
