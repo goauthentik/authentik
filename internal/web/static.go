@@ -61,38 +61,18 @@ func (ws *WebServer) configureStatic() {
 		).ServeHTTP(rw, r)
 	})
 
-	// Media and Reports files from filesystem
-	// Files are stored with their actual names (e.g., folder/image.png)
-	// The path is: /data/{usage}/{schema}/{filepath}
-	fsFiles := http.FileServer(http.Dir(config.Get().Storage.File.Path))
-	fileHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
-		fsFiles.ServeHTTP(w, r)
-	})
-
-	// Serve media files: /static/media/{schema}/{filepath}
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/media/").Handler(pathStripper(
-		fileHandler,
-		"static/",
-		config.Get().Web.Path,
-	))
-
-	// Serve report files: /static/reports/{schema}/{filepath} with token authentication
-	reportsHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Require token parameter for reports access
-		token := r.URL.Query().Get("token")
-		if token == "" {
-			http.Error(w, "Unauthorized: token required", http.StatusUnauthorized)
-			return
-		}
-		// TODO: Validate token against database
-		fileHandler.ServeHTTP(w, r)
-	})
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/reports/").Handler(pathStripper(
-		reportsHandler,
-		"static/",
-		config.Get().Web.Path,
-	))
+	// Media files, if backend is file
+	if config.Get().Storage.Media.Backend == "file" {
+		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+				fsMedia.ServeHTTP(w, r)
+			}),
+			"media/",
+			config.Get().Web.Path,
+		))
+	}
 
 	staticRouter.PathPrefix(config.Get().Web.Path).Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
