@@ -98,6 +98,10 @@ class S3Backend(ManageableBackend):
     def bucket(self):
         return self.client.Bucket(self.bucket_name)
 
+    @property
+    def manageable(self) -> bool:
+        return True
+
     def supports_file(self, name: str) -> bool:
         """We support all file usages"""
         return True

@@ -49,13 +49,16 @@ class FileManager:
                 self.backends.append(self.management_backend)
             elif not issubclass(backend, ManageableBackend):
                 self.backends.append(backend(usage))
+        print(self.backends)
+        print(management_backend_name)
+        print(self.management_backend)
 
     @property
     def manageable(self) -> bool:
         """
         Whether this file manager is able to manage files.
         """
-        return self.management_backend is not None
+        return self.management_backend is not None and self.management_backend.manageable
 
     def list_files(self, manageable_only: bool = False) -> Generator[str]:
         """

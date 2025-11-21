@@ -77,6 +77,15 @@ class ManageableBackend(Backend):
 
     name: str
 
+    @property
+    def manageable(self) -> bool:
+        """
+        Whether this backend can actually be used for management.
+
+        Used only for management check, not for created the backend
+        """
+        raise NotImplementedError
+
     def save_file(self, name: str, content: bytes) -> None:
         """
         Save file content to storage.

@@ -10,6 +10,7 @@ from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 
 
 class TestFileAPI(TestCase):
@@ -19,10 +20,11 @@ class TestFileAPI(TestCase):
         super().setUp()
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
-        self.file_manager = FileManager(FileUsage.MEDIA)
 
+    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_creates_event(self):
         """Test that uploading a file creates a FILE_UPLOADED event"""
+        manager = FileManager(FileUsage.MEDIA)
         file_content = b"test file content"
         file_name = "test-upload.png"
 
@@ -52,12 +54,14 @@ class TestFileAPI(TestCase):
         self.assertEqual(event.user["username"], self.user.username)
         self.assertEqual(event.user["pk"], self.user.pk)
 
-        self.file_manager.delete_file(file_name)
+        manager.delete_file(file_name)
 
+    @CONFIG.patch("storage.media.backend", "file")
     def test_delete_creates_event(self):
         """Test that deleting a file creates a FILE_DELETED event"""
+        manager = FileManager(FileUsage.MEDIA)
         file_name = "test-delete.png"
-        self.file_manager.save_file(file_name, b"test content")
+        manager.save_file(file_name, b"test content")
 
         # Delete file
         response = self.client.delete(
@@ -158,8 +162,10 @@ class TestFileAPI(TestCase):
             response.data,
         )
 
+    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_file_with_custom_path(self):
         """Test uploading file with custom path"""
+        manager = FileManager(FileUsage.MEDIA)
         file_name = "custom/test"
         file_content = b"test content"
         response = self.client.post(
@@ -173,15 +179,16 @@ class TestFileAPI(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(self.file_manager.file_exists(file_name))
-        self.file_manager.delete_file(file_name)
+        self.assertTrue(manager.file_exists(file_name))
+        manager.delete_file(file_name)
 
+    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_file_duplicate(self):
         """Test uploading file that already exists"""
-        # Mock validation functions
+        manager = FileManager(FileUsage.MEDIA)
         file_name = "test-file.png"
         file_content = b"test content"
-        self.file_manager.save_file(file_name, file_content)
+        manager.save_file(file_name, file_content)
         response = self.client.post(
             reverse("authentik_api:files"),
             {
@@ -193,7 +200,7 @@ class TestFileAPI(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("already exists", str(response.data))
-        self.file_manager.delete_file(file_name)
+        manager.delete_file(file_name)
 
     def test_delete_without_name_parameter(self):
         """Test delete without name parameter"""

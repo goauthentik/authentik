@@ -3,6 +3,7 @@ from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 
+from django.conf import settings
 from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
@@ -41,12 +42,17 @@ class FileBackend(ManageableBackend):
         """Path structure: {base_dir}/{usage}/{schema}"""
         return self._base_dir / self.usage.value / connection.schema_name
 
+    @property
+    def manageable(self) -> bool:
+        return (
+            self.base_path.exists()
+            and (self._base_dir.is_mount() or (self._base_dir / self.usage.value).is_mount())
+            or (settings.DEBUG or settings.TEST)
+        )
+
     def supports_file(self, name: str) -> bool:
         """We support all file usages"""
         return True
-        # return self.base_path.exists() and (
-        #     self._base_dir.is_mount() or (self._base_dir / self.usage.value).is_mount()
-        # )
 
     def list_files(self) -> Generator[str]:
         """List all files returning relative paths from base_path."""
