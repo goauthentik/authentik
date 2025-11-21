@@ -163,4 +163,4 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
     def current(self, request: Request) -> Response:
         """Get current brand"""
         brand: Brand = request._request.brand
-        return Response(CurrentBrandSerializer(brand).data)
+        return Response(CurrentBrandSerializer(brand, context={"request": request}).data)

@@ -25,11 +25,13 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.validation import validate_file_name
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -549,12 +551,10 @@ class Application(SerializerModel, PolicyBindingModel):
         default=False, help_text=_("Open launch URL in a new browser tab or window.")
     )
 
-    # For template applications, this can be set to /static/authentik/applications/*
-    meta_icon = models.FileField(
-        upload_to="application-icons/",
-        default=None,
-        null=True,
-        max_length=500,
+    meta_icon = models.TextField(
+        blank=True,
+        default="",
+        validators=[validate_file_name],
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
@@ -572,17 +572,11 @@ class Application(SerializerModel, PolicyBindingModel):
 
     @property
     def get_meta_icon(self) -> str | None:
-        """Get the URL to the App Icon image. If the name is /static or starts with http
-        it is returned as-is"""
+        """Get the URL to the App Icon image"""
         if not self.meta_icon:
             return None
-        if self.meta_icon.name.startswith("http"):
-            return self.meta_icon.name
-        if self.meta_icon.name.startswith("fa://"):
-            return self.meta_icon.name
-        if self.meta_icon.name.startswith("/"):
-            return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
-        return self.meta_icon.url
+
+        return FileManager(FileUsage.MEDIA).file_url(self.meta_icon)
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
@@ -731,11 +725,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     group_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
     )
-    icon = models.FileField(
-        upload_to="source-icons/",
-        default=None,
-        null=True,
-        max_length=500,
+
+    icon = models.TextField(
+        blank=True,
+        default="",
+        validators=[validate_file_name],
     )
 
     authentication_flow = models.ForeignKey(
@@ -777,17 +771,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     @property
     def icon_url(self) -> str | None:
-        """Get the URL to the Icon. If the name is /static or
-        starts with http it is returned as-is"""
+        """Get the URL to the source icon"""
         if not self.icon:
             return None
-        if self.icon.name.startswith("http"):
-            return self.icon.name
-        if self.icon.name.startswith("fa://"):
-            return self.icon.name
-        if self.icon.name.startswith("/"):
-            return CONFIG.get("web.path", "/")[:-1] + self.icon.name
-        return self.icon.url
+
+        return FileManager(FileUsage.MEDIA).file_url(self.icon)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

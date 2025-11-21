@@ -24,7 +24,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
@@ -479,13 +479,7 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    <img
-                        class="branding-logo"
-                        part="branding-logo"
-                        src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        alt="${msg("authentik Logo")}"
-                        role="presentation"
-                    />
+                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

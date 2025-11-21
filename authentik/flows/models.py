@@ -12,6 +12,9 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.validation import validate_file_name
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
@@ -151,12 +154,11 @@ class Flow(SerializerModel, PolicyBindingModel):
         ),
     )
 
-    background = models.FileField(
-        upload_to="flow-backgrounds/",
-        default=None,
-        null=True,
+    background = models.TextField(
+        blank=True,
+        default="",
+        validators=[validate_file_name],
         help_text=_("Background shown during execution"),
-        max_length=500,
     )
 
     compatibility_mode = models.BooleanField(
@@ -180,19 +182,15 @@ class Flow(SerializerModel, PolicyBindingModel):
     )
 
     def background_url(self, request: HttpRequest | None = None) -> str:
-        """Get the URL to the background image. If the name is /static or starts with http
-        it is returned as-is"""
+        """Get the URL to the background image"""
         if not self.background:
             if request:
                 return request.brand.branding_default_flow_background_url()
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
-        if self.background.name.startswith("http"):
-            return self.background.name
-        if self.background.name.startswith("/"):
-            return CONFIG.get("web.path", "/")[:-1] + self.background.name
-        return self.background.url
+
+        return FileManager(FileUsage.MEDIA).file_url(self.background, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

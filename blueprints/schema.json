@@ -464,6 +464,86 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.enrollmenttoken"
                         },
                         "id": {
@@ -4832,6 +4912,10 @@
                     "type": "string",
                     "title": "Meta launch url"
                 },
+                "meta_icon": {
+                    "type": "string",
+                    "title": "Meta icon"
+                },
                 "meta_description": {
                     "type": "string",
                     "title": "Meta description"
@@ -5267,15 +5351,23 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
@@ -5539,7 +5631,9 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_files",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_files",
                             "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
@@ -5976,6 +6070,126 @@
                             "change_agentconnector",
                             "delete_agentconnector",
                             "view_agentconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceconnection": {
+            "type": "object",
+            "properties": {
+                "device": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Device"
+                },
+                "connector": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentdeviceconnection",
+                            "change_agentdeviceconnection",
+                            "delete_agentdeviceconnection",
+                            "view_agentdeviceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Policy"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                },
+                "negate": {
+                    "type": "boolean",
+                    "title": "Negate",
+                    "description": "Negates the outcome of the policy. Messages are unaffected."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Timeout",
+                    "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentdeviceuserbinding",
+                            "change_agentdeviceuserbinding",
+                            "delete_agentdeviceuserbinding",
+                            "view_agentdeviceuserbinding"
                         ]
                     },
                     "user": {
@@ -7189,6 +7403,8 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "file_uploaded",
+                        "file_deleted",
                         "custom_"
                     ],
                     "title": "Action"
@@ -7290,6 +7506,8 @@
                                 "model_deleted",
                                 "email_sent",
                                 "update_available",
+                                "file_uploaded",
+                                "file_deleted",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -7585,8 +7803,8 @@
                 },
                 "background": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Background"
+                    "title": "Background",
+                    "description": "Background shown during execution"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -8035,6 +8253,8 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "file_uploaded",
+                        "file_deleted",
                         "custom_"
                     ],
                     "title": "Action",
@@ -8067,6 +8287,7 @@
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
                         "authentik.events",
+                        "authentik.admin.files",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -8151,6 +8372,8 @@
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
+                        "authentik_endpoints_connectors_agent.agentdeviceconnection",
+                        "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
                         "authentik_events.event",
@@ -10468,15 +10691,23 @@
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
@@ -10740,7 +10971,9 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_files",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_files",
                             "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
@@ -11070,11 +11303,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11181,7 +11409,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -11360,11 +11587,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11411,11 +11633,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11522,7 +11739,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "server_uri": {
@@ -11731,11 +11947,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11782,11 +11993,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11893,7 +12099,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12115,11 +12320,6 @@
                     "type": "string",
                     "format": "date-time",
                     "title": "Expires"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12166,11 +12366,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12277,7 +12472,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12417,11 +12611,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Plex token"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12468,11 +12657,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12579,7 +12763,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12796,11 +12979,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12872,11 +13050,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "User path template"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12974,11 +13147,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13085,7 +13253,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "bot_username": {
@@ -13206,11 +13373,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []

@@ -112,6 +112,18 @@ jobs:
       - name: migrate to latest
         run: |
           uv run python -m lifecycle.migrate
+      - id: cache-web
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
+        run: |
+          npm ci
+          make -C .. gen-client-ts
+          npm run build
       - name: run tests
         env:
           # Test in the main database that we just migrated from the previous stable version
@@ -143,6 +155,18 @@ jobs:
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
+      - id: cache-web
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
+        run: |
+          npm ci
+          make -C .. gen-client-ts
+          npm run build
       - name: run unittest
         env:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}

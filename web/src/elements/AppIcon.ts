@@ -2,6 +2,7 @@ import { PFSize } from "#common/enums";
 
 import Styles from "#elements/AppIcon.css";
 import { AKElement } from "#elements/Base";
+import { FontAwesomeProtocol } from "#elements/utils/images";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -17,7 +18,7 @@ export interface IAppIcon {
 
 @customElement("ak-app-icon")
 export class AppIcon extends AKElement implements IAppIcon {
-    public static readonly FontAwesomeProtocol = "fa://";
+    public static readonly FontAwesomeProtocol = FontAwesomeProtocol;
 
     static styles: CSSResult[] = [PFFAIcons, Styles];
 

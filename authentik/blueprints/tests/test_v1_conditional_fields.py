@@ -3,12 +3,10 @@
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.importer import Importer
-from authentik.core.models import Application, Token, User
+from authentik.core.models import Token, User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.sources.oauth.models import OAuthSource
 
 
 class TestBlueprintsV1ConditionalFields(TransactionTestCase):
@@ -28,24 +26,6 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         token = Token.objects.filter(identifier=f"{self.uid}-token").first()
         self.assertIsNotNone(token)
         self.assertEqual(token.key, self.uid)
-
-    def test_application(self):
-        """Test application"""
-        app = Application.objects.filter(slug=f"{self.uid}-app").first()
-        self.assertIsNotNone(app)
-        self.assertEqual(app.meta_icon, "https://goauthentik.io/img/icon.png")
-
-    def test_source(self):
-        """Test source"""
-        source = OAuthSource.objects.filter(slug=f"{self.uid}-source").first()
-        self.assertIsNotNone(source)
-        self.assertEqual(source.icon, "https://goauthentik.io/img/icon.png")
-
-    def test_flow(self):
-        """Test flow"""
-        flow = Flow.objects.filter(slug=f"{self.uid}-flow").first()
-        self.assertIsNotNone(flow)
-        self.assertEqual(flow.background, "https://goauthentik.io/img/icon.png")
 
     def test_user(self):
         """Test user"""

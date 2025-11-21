@@ -61,15 +61,55 @@ func (ws *WebServer) configureStatic() {
 		).ServeHTTP(rw, r)
 	})
 
-	// Media files, if backend is file
-	if config.Get().Storage.Media.Backend == "file" {
-		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+	// Files, if backend is file
+	defaultBackend := config.Get().Storage.Backend
+	if defaultBackend == "" {
+		defaultBackend = "file"
+	}
+	mediaBackend := config.Get().Storage.Media.Backend
+	if mediaBackend == "" {
+		mediaBackend = defaultBackend
+	}
+	reportsBackend := config.Get().Storage.Reports.Backend
+	if reportsBackend == "" {
+		reportsBackend = defaultBackend
+	}
+
+	defaultStoragePath := config.Get().Storage.File.Path
+	if defaultStoragePath == "" {
+		defaultStoragePath = "./data"
+	}
+
+	if mediaBackend == "file" {
+		mediaPath := config.Get().Storage.Media.File.Path
+		if mediaPath == "" {
+			mediaPath = defaultStoragePath
+		}
+		mediaPath = mediaPath + "/media"
+		fsMedia := http.FileServer(http.Dir(mediaPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/media/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsMedia.ServeHTTP(w, r)
 			}),
-			"media/",
+			"files/media/",
+			config.Get().Web.Path,
+		))
+	}
+
+	if reportsBackend == "file" {
+		reportsPath := config.Get().Storage.Reports.File.Path
+		if reportsPath == "" {
+			reportsPath = defaultStoragePath
+		}
+		reportsPath = reportsPath + "/reports"
+		fsReports := http.FileServer(http.Dir(reportsPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/reports/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+				fsReports.ServeHTTP(w, r)
+			}),
+			"files/reports/",
 			config.Get().Web.Path,
 		))
 	}

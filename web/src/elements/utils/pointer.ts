@@ -22,8 +22,11 @@ export function isEventTargetingListener(event?: Pick<Event, "target" | "current
         return false;
     }
 
-    return !!(
-        triggerElement.matches(InteractiveElementsQuery) ||
-        triggerElement.parentElement?.matches(InteractiveElementsQuery)
-    );
+    const interactiveTarget = triggerElement.closest(InteractiveElementsQuery);
+
+    if (!interactiveTarget) {
+        return false;
+    }
+
+    return listenerTarget.contains(interactiveTarget);
 }
