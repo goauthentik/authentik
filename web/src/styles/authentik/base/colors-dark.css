@@ -67,8 +67,8 @@ html[data-theme="dark"] {
 
 html[data-theme="dark"] {
     --pf-global--BorderColor--100: #444548;
-    --pf-global--BorderColor--200: #444548;
-    --pf-global--BorderColor--300: #57585a;
+    --pf-global--BorderColor--200: #57585a;
+    --pf-global--BorderColor--300: #444548;
     --pf-global--BorderColor--400: #aaabac;
 }
 
