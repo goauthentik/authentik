@@ -258,3 +258,22 @@ class TestResponseProcessor(TestCase):
 
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
+
+    def test_transient(self):
+        """Test success"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_transient.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        parser.prepare_flow_manager()

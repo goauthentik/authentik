@@ -1,6 +1,7 @@
 """authentik core tasks"""
 
 from datetime import datetime, timedelta
+from hashlib import sha256
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +13,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
+    USER_ATTRIBUTE_TRANSIENT_TOKEN,
     ExpiringModel,
     User,
 )
@@ -46,6 +48,13 @@ def clean_temporary_users():
     deleted_users = 0
     for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
         if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
+            continue
+        if sha256(user.username.encode("utf-8")).hexdigest() != user.attributes.get(
+            USER_ATTRIBUTE_TRANSIENT_TOKEN
+        ):
+            user.attributes.pop(USER_ATTRIBUTE_TRANSIENT_TOKEN, None)
+            user.attributes.pop(USER_ATTRIBUTE_EXPIRES, None)
+            user.save()
             continue
         delta: timedelta = _now - datetime.fromtimestamp(
             user.attributes.get(USER_ATTRIBUTE_EXPIRES)

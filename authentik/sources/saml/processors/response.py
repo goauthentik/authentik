@@ -268,7 +268,8 @@ class ResponseProcessor:
                 got=name_id.attrib["Format"],
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        #if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if False:
             return self._handle_name_id_transient()
 
         return SAMLSourceFlowManager(
