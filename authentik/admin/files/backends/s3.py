@@ -175,7 +175,7 @@ class S3Backend(ManageableBackend):
             yield file
             file.seek(0)
             self.client.upload_fileobj(
-                Filobj=file,
+                Fileobj=file,
                 Bucket=self.bucket_name,
                 Key=f"{self.base_path}/{name}",
                 ExtraArgs={

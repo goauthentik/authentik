@@ -7,13 +7,13 @@ from django.urls import reverse
 
 from authentik.admin.files.api import get_mime_from_filename
 from authentik.admin.files.manager import FileManager
+from authentik.admin.files.tests.utils import FileTestFileBackendMixin
 from authentik.admin.files.usage import FileUsage
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
 
 
-class TestFileAPI(TestCase):
+class TestFileAPI(FileTestFileBackendMixin, TestCase):
     """test file api"""
 
     def setUp(self) -> None:
@@ -21,7 +21,6 @@ class TestFileAPI(TestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
-    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_creates_event(self):
         """Test that uploading a file creates a FILE_UPLOADED event"""
         manager = FileManager(FileUsage.MEDIA)
@@ -56,7 +55,6 @@ class TestFileAPI(TestCase):
 
         manager.delete_file(file_name)
 
-    @CONFIG.patch("storage.media.backend", "file")
     def test_delete_creates_event(self):
         """Test that deleting a file creates a FILE_DELETED event"""
         manager = FileManager(FileUsage.MEDIA)
@@ -162,7 +160,6 @@ class TestFileAPI(TestCase):
             response.data,
         )
 
-    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_file_with_custom_path(self):
         """Test uploading file with custom path"""
         manager = FileManager(FileUsage.MEDIA)
@@ -182,7 +179,6 @@ class TestFileAPI(TestCase):
         self.assertTrue(manager.file_exists(file_name))
         manager.delete_file(file_name)
 
-    @CONFIG.patch("storage.media.backend", "file")
     def test_upload_file_duplicate(self):
         """Test uploading file that already exists"""
         manager = FileManager(FileUsage.MEDIA)
