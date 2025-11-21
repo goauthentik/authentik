@@ -10,8 +10,8 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 
 import {
-    AdminSidebarEnterpriseEntries,
-    AdminSidebarEntries,
+    createAdminSidebarEnterpriseEntries,
+    createAdminSidebarEntries,
     renderSidebarItems,
 } from "./AdminSidebar.js";
 
@@ -208,10 +208,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
-                    ${renderSidebarItems(AdminSidebarEntries)}
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                    >${renderSidebarItems(createAdminSidebarEntries())}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(AdminSidebarEnterpriseEntries)
+                        ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
                         : nothing}
                 </ak-sidebar>
 
