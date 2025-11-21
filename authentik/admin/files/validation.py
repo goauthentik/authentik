@@ -4,8 +4,8 @@ from pathlib import PurePosixPath
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.backends.passthrough import PassthroughBackend
+from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.usage import FileUsage
 
 # File upload limits

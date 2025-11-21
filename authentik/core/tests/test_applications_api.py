@@ -2,8 +2,6 @@
 
 from json import loads
 
-from django.core.files.base import ContentFile
-from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
