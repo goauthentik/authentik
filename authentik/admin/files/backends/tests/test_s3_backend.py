@@ -1,4 +1,3 @@
-
 from django.test import TestCase
 
 from authentik.admin.files.tests.utils import FileTestS3BackendMixin

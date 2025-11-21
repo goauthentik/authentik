@@ -10,7 +10,9 @@ TENANT_MEDIA_ROOT = MEDIA_ROOT / "public"
 
 class Migration(BaseMigration):
     def needs_migration(self) -> bool:
-        return not TENANT_MEDIA_ROOT.exists() and CONFIG.get("storage.backend", "file") != "s3"
+        return (
+            not TENANT_MEDIA_ROOT.exists() and CONFIG.get("storage.media.backend", "file") != "s3"
+        )
 
     def run(self):
         TENANT_MEDIA_ROOT.mkdir(parents=True)
