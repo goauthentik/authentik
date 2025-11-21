@@ -107,11 +107,10 @@ class SCIMGroupTests(TestCase):
             },
         )
         group.save()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[2].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "PUT")
+        self.assertEqual(mock.request_history[2].method, "PUT")
 
     @Mocker()
     def test_group_create_delete(self, mock: Mocker):
@@ -144,7 +143,7 @@ class SCIMGroupTests(TestCase):
             },
         )
         group.delete()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "DELETE")
-        self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
+        self.assertEqual(mock.request_history[2].method, "DELETE")
+        self.assertEqual(mock.request_history[2].url, f"https://localhost/Groups/{scim_id}")

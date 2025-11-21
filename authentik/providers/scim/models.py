@@ -161,6 +161,13 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             return SCIMGroupClient(self)
         raise ValueError(f"Invalid model {model}")
 
+    def save(self, *args, **kwargs):
+        from django.core.cache import cache
+
+        cache_key = f"goauthentik.io/providers/scim/{self.pk}/service_provider_config"
+        cache.delete(cache_key)
+        super().save(*args, **kwargs)
+
     def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering

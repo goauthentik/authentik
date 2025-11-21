@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
@@ -27,6 +28,8 @@ from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMProvider
 if TYPE_CHECKING:
     from django.db.models import Model
     from pydantic import BaseModel
+
+SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT = 3600
 
 
 class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
@@ -88,16 +91,32 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
+        cache_key = f"goauthentik.io/providers/scim/{self.provider.pk}/service_provider_config"
+
+        # Check cache first
+        cached_config = cache.get(cache_key)
+        if cached_config is not None:
+            return cached_config
+
+        # Attempt to fetch from remote
         path = "/ServiceProviderConfig"
         if self.provider.compatibility_mode == SCIMCompatibilityMode.SALESFORCE:
             path = "/ServiceProviderConfigs"
+
         try:
             config = ServiceProviderConfiguration.model_validate(self._request("GET", path))
             if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
                 config.patch.supported = False
             if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
                 config.filter.supported = True
-            return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
-            self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
-            return default_config
+            self.logger.warning(
+                "failed to get ServiceProviderConfig, using default",
+                exc=exc,
+                provider=self.provider.name,
+            )
+            config = default_config
+
+        # Cache the config (either successfully fetched or default)
+        cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
+        return config
