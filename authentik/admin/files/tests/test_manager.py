@@ -52,7 +52,7 @@ class TestResolveFileUrl(TestCase):
         """Test resolving uploaded storage file"""
         manager = FileManager(FileUsage.MEDIA)
         result = manager.file_url("test.png")
-        self.assertEqual(result, "/media/public/test.png")
+        self.assertEqual(result, "/files/media/public/test.png")
 
     def test_resolve_full_static_with_request(self):
         """Test resolving static file with request builds absolute URI"""
@@ -79,7 +79,7 @@ class TestResolveFileUrl(TestCase):
         manager = FileManager(FileUsage.MEDIA)
         result = manager.file_url("test.png", mock_request)
 
-        self.assertEqual(result, "http://example.com/media/public/test.png")
+        self.assertEqual(result, "http://example.com/files/media/public/test.png")
 
     @CONFIG.patch("storage.media.backend", "s3")
     @CONFIG.patch("storage.media.s3.bucket", "test")

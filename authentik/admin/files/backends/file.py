@@ -65,7 +65,7 @@ class FileBackend(ManageableBackend):
     def file_url(self, name: str, request: HttpRequest | None = None) -> str:
         """Get URL for accessing the file."""
         prefix = CONFIG.get("web.path", "/")[:-1]
-        url = f"{prefix}/{self.usage.value}/{connection.schema_name}/{name}"
+        url = f"{prefix}/files/{self.usage.value}/{connection.schema_name}/{name}"
         if request is None:
             return url
         return request.build_absolute_uri(url)
