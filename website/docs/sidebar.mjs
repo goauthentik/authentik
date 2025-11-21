@@ -433,6 +433,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
@@ -773,6 +774,8 @@ const items = [
                         type: "category",
                         label: "2025",
                         items: [
+                            "security/cves/CVE-2025-64708",
+                            "security/cves/CVE-2025-64521",
                             "security/cves/CVE-2025-53942",
                             "security/cves/CVE-2025-52553",
                             "security/cves/CVE-2025-29928",

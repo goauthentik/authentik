@@ -370,7 +370,10 @@ export class FlowExecutor
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
                 await import("#flow/stages/user_login/UserLoginStage");
-                return html`<ak-stage-user-login ${spread(props)}></ak-stage-user-login>`;
+                return html`<ak-stage-user-login
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
                 return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;

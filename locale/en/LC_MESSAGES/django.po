@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 03:19+0000\n"
+"POT-Creation-Date: 2025-11-19 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1118,6 +1118,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
+msgstr ""
+
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
 msgstr ""
 
 #: authentik/flows/views/executor.py

@@ -10638,10 +10638,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Authentication form</source>
   <target>Formulaire d'authentification</target>
 </trans-unit>
-<trans-unit id="sdd2ea73c24b40d5d">
-  <source>Site footer</source>
-  <target>Pied de page du site</target>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
   <target>Consommée</target>

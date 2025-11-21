@@ -9622,9 +9622,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sa17ce23517e56461">
   <source>Authentication form</source>
 </trans-unit>
-<trans-unit id="sdd2ea73c24b40d5d">
-  <source>Site footer</source>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
 </trans-unit>
