@@ -434,6 +434,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
