@@ -5,12 +5,11 @@ from django.test import TestCase
 
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.tests.utils import FileTestFileBackendMixin, FileTestS3BackendMixin
 from authentik.lib.config import CONFIG
 
 
-class TestResolveFileUrl(TestCase):
-    """Test resolve_file_url function"""
-
+class TestResolveFileUrlBasic(TestCase):
     def test_resolve_empty_path(self):
         """Test resolving empty file path"""
         manager = FileManager(FileUsage.MEDIA)
@@ -47,7 +46,8 @@ class TestResolveFileUrl(TestCase):
         result = manager.file_url("/static/authentik/sources/icon.svg")
         self.assertEqual(result, "/static/authentik/sources/icon.svg")
 
-    @CONFIG.patch("storage.media.backend", "file")
+
+class TestResolveFileUrlFileBackend(FileTestFileBackendMixin, TestCase):
     def test_resolve_storage_file(self):
         """Test resolving uploaded storage file"""
         manager = FileManager(FileUsage.MEDIA)
@@ -67,7 +67,6 @@ class TestResolveFileUrl(TestCase):
 
         self.assertEqual(result, "http://example.com/static/icon.svg")
 
-    @CONFIG.patch("storage.media.backend", "file")
     def test_resolve_full_file_backend_with_request(self):
         """Test resolving FileBackend file with request"""
         mock_request = HttpRequest()
@@ -81,8 +80,8 @@ class TestResolveFileUrl(TestCase):
 
         self.assertEqual(result, "http://example.com/files/media/public/test.png")
 
-    @CONFIG.patch("storage.media.backend", "s3")
-    @CONFIG.patch("storage.media.s3.bucket", "test")
+
+class TestResolveFileUrlS3Backend(FileTestS3BackendMixin, TestCase):
     @CONFIG.patch("storage.media.s3.custom_domain", "s3.test:8080/test")
     @CONFIG.patch("storage.media.s3.secure_urls", False)
     def test_resolve_full_s3_backend(self):
