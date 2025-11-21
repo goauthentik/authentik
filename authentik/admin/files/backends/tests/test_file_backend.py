@@ -159,7 +159,7 @@ class TestFileBackend(TestCase):
             file_name = "icon.png"
 
             url = self.backend.file_url(file_name)
-            expected = "/static/media/public/icon.png"
+            expected = "/media/public/icon.png"
             self.assertEqual(url, expected)
 
     @CONFIG.patch("web.path", "/authentik/")
@@ -169,7 +169,7 @@ class TestFileBackend(TestCase):
             file_name = "logo.svg"
 
             url = self.backend.file_url(file_name)
-            expected = "/authentik/static/media/public/logo.svg"
+            expected = "/authentik/media/public/logo.svg"
             self.assertEqual(url, expected)
 
     def test_file_url_nested_path(self):
@@ -178,7 +178,7 @@ class TestFileBackend(TestCase):
             file_name = "path/to/file.png"
 
             url = self.backend.file_url(file_name)
-            expected = "/static/media/public/path/to/file.png"
+            expected = "/media/public/path/to/file.png"
             self.assertEqual(url, expected)
 
     def test_file_size_existing_file(self):

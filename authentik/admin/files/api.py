@@ -1,9 +1,9 @@
 import mimetypes
 from pathlib import Path, PurePosixPath
 
+from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from rest_framework import serializers
-from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.parsers import MultiPartParser
@@ -11,20 +11,15 @@ from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from structlog.stdlib import get_logger
 
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import MANAGE_API_USAGES, FileUsage
-from authentik.admin.files.validation import (
-    sanitize_file_path,
-    validate_file_size,
-    validate_file_type,
-)
+from authentik.admin.files.validation import validate_file_name
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 from authentik.rbac.permissions import HasPermission
 
-LOGGER = get_logger()
+MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024  # 25MB
 
 
 def get_mime_from_filename(filename: str) -> str:
@@ -45,7 +40,6 @@ class FileUploadSerializer(PassiveSerializer):
 class FileView(APIView):
     pagination_class = None
     parser_classes = [MultiPartParser]
-    filter_backends = []
 
     def get_permissions(self):
         return [
@@ -55,24 +49,6 @@ class FileView(APIView):
                 else "authentik_rbac.manage_files"
             )()
         ]
-
-    @extend_schema(
-        responses={
-            200: inline_serializer(
-                "UsageSerializer",
-                {
-                    "label": CharField(required=True),
-                    "value": CharField(required=True),
-                },
-                many=True,
-            )
-        }
-    )
-    @action(detail=False, methods=["GET"])
-    def manage_api_usages(self, request: Request) -> Response:
-        """Get usages that can be managed through this API"""
-        usages = [{"value": u.value, "name": u.value.title()} for u in MANAGE_API_USAGES]
-        return Response(usages)
 
     @extend_schema(
         parameters=[
@@ -107,7 +83,7 @@ class FileView(APIView):
             )
         },
     )
-    def list(self, request: Request) -> Response:
+    def get(self, request: Request) -> Response:
         """List files from storage backend."""
         usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
         search_query = request.query_params.get("search", "").strip().lower()
@@ -138,8 +114,7 @@ class FileView(APIView):
         request=FileUploadSerializer,
         responses={200: None},
     )
-    @action(detail=False, methods=["POST"])
-    def upload(self, request: Request) -> Response:
+    def post(self, request: Request) -> Response:
         """Upload file to storage backend."""
         serializer = FileUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -149,8 +124,17 @@ class FileView(APIView):
         usage_value = serializer.validated_data.get("usage", FileUsage.MEDIA.value)
 
         # Validate file size and type
-        validate_file_size(file.size)
-        validate_file_type(file.content_type or "", usage_value)
+        if file.size > MAX_FILE_SIZE_BYTES:
+            raise ValidationError(
+                {
+                    "file": [
+                        _(
+                            f"File size ({file.size}B) exceeds maximum allowed "
+                            f"size ({MAX_FILE_SIZE_BYTES}B)."
+                        )
+                    ]
+                }
+            )
 
         try:
             usage = FileUsage(usage_value)
@@ -170,7 +154,7 @@ class FileView(APIView):
             name = file.name
 
         # Sanitize path to prevent directory traversal
-        name = sanitize_file_path(name)
+        validate_file_name(name, ValidationError)
 
         manager = FileManager(usage)
 
@@ -210,15 +194,12 @@ class FileView(APIView):
         ],
         responses={200: None},
     )
-    @action(detail=False, methods=["DELETE"])
     def delete(self, request: Request) -> Response:
         """Delete file from storage backend."""
-        name = request.query_params.get("name")
+        name = request.query_params.get("name", "")
         usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
 
-        if not name:
-            raise ValidationError("name parameter is required")
-        name = sanitize_file_path(name)
+        validate_file_name(name, ValidationError)
 
         try:
             usage = FileUsage(usage_param)

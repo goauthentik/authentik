@@ -43,11 +43,12 @@ class FileManager:
 
         self.backends = []
         for backend in _FILE_BACKENDS:
-            if usage in backend.allowed_usages:
-                if isinstance(self.management_backend, backend):
-                    self.backends.append(self.management_backend)
-                else:
-                    self.backends.append(backend(usage))
+            if usage not in backend.allowed_usages:
+                continue
+            if isinstance(self.management_backend, backend):
+                self.backends.append(self.management_backend)
+            elif not issubclass(backend, ManageableBackend):
+                self.backends.append(backend(usage))
 
     @property
     def manageable(self) -> bool:
@@ -67,23 +68,23 @@ class FileManager:
 
     def file_url(
         self,
-        file_path: str,
+        name: str | None,
         request: HttpRequest | Request | None = None,
     ) -> str:
         """
         Get URL for accessing the file.
         """
-        if not file_path:
+        if not name:
             return ""
 
         if isinstance(request, Request):
             request = request._request
 
         for backend in self.backends:
-            if backend.supports_file_path(file_path):
-                return backend.file_url(file_path, request)
+            if backend.supports_file(name):
+                return backend.file_url(name, request)
 
-        LOGGER.warning(f"Could not find file backend for file: {file_path}")
+        LOGGER.warning(f"Could not find file backend for file: {name}")
         return ""
 
     def _check_manageable(self) -> None:

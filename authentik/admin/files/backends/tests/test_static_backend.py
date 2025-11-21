@@ -33,8 +33,8 @@ class TestStaticBackend(TestCase):
         self.assertFalse(self.backend.supports_file("/media/test.svg"))
         self.assertFalse(self.backend.supports_file("test.jpg"))
 
-    def test_list_files_sources(self):
-        """Test list_files includes source icons"""
+    def test_list_files(self):
+        """Test list_files includes expected files"""
         files = list(self.backend.list_files())
 
         self.assertIn("/static/dist/assets/icons/icon.svg", files)

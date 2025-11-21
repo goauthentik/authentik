@@ -99,7 +99,7 @@ class S3Backend(ManageableBackend):
         return self.client.Bucket(self.bucket_name)
 
     def supports_file(self, name: str) -> bool:
-        """Check if this backend type is configured."""
+        """We support all file usages"""
         return True
 
     def list_files(self) -> Generator[str]:

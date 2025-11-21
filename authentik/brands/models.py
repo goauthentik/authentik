@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.service import resolve_file_url
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
@@ -85,7 +84,7 @@ class Brand(SerializerModel):
 
     def branding_logo_url(self) -> str:
         """Get branding_logo URL using appropriate backend"""
-        return resolve_file_url(self.branding_logo, Usage.MEDIA)
+        return resolve_file_url(self.branding_logo, FileUsage.MEDIA)
 
     def branding_favicon_url(self) -> str:
         """Get branding_favicon URL using appropriate backend"""
