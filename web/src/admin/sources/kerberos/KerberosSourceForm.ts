@@ -2,6 +2,7 @@ import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
@@ -14,6 +15,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSo
 
 import { config, DEFAULT_CONFIG } from "#common/api/config";
 
+import { RadioOption } from "#elements/forms/Radio";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -27,6 +29,7 @@ import {
     KerberosSource,
     KerberosSourceRequest,
     SourcesApi,
+    SyncOutgoingTriggerModeEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -35,6 +38,28 @@ import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const SyncOutgoingTriggerModeOptions: readonly RadioOption<SyncOutgoingTriggerModeEnum>[] = [
+    {
+        label: msg("None"),
+        value: SyncOutgoingTriggerModeEnum.None,
+        description: html`${msg("Outgoing syncs will not be triggered.")}`,
+    },
+    {
+        label: msg("Immediate"),
+        value: SyncOutgoingTriggerModeEnum.Immediate,
+        description: html`${msg(
+            "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+        )}`,
+    },
+    {
+        label: msg("Deferred until end"),
+        value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+        default: true,
+        description: html`${msg(
+            "Outgoing syncs will be triggered at the end of the source synchronization.",
+        )}`,
+    },
+];
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
     async loadInstance(pk: string): Promise<KerberosSource> {
@@ -428,6 +453,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                           />
                           <p class="pf-c-form__helper-text">${iconHelperText}</p>
                       </ak-form-element-horizontal>`}
+                <ak-radio-input
+                    label=${msg("Outgoing sync trigger mode")}
+                    required
+                    name="type"
+                    .value=${this.instance?.syncOutgoingTriggerMode}
+                    .options=${SyncOutgoingTriggerModeOptions}
+                >
+                </ak-radio-input>
             </ak-form-group>`;
     }
 }
