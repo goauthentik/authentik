@@ -1,0 +1,29 @@
+[package]
+name = "authentik-worker"
+version = "0.0.0"
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[dependencies]
+axum.workspace = true
+axum-server.workspace = true
+clap.workspace = true
+color-eyre.workspace = true
+fork.workspace = true
+nix.workspace = true
+pyo3.workspace = true
+signal-hook.workspace = true
+shadow-rs.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[build-dependencies]
+shadow-rs.workspace = true
+
+[lints]
+workspace = true
