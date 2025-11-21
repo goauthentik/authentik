@@ -8,6 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.manager import FileManager
+from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.validation import validate_file_name
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
@@ -30,11 +33,18 @@ class Brand(SerializerModel):
 
     branding_title = models.TextField(default="authentik")
 
-    branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
-    branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
+    branding_logo = models.TextField(
+        validators=[validate_file_name],
+        default="/static/dist/assets/icons/icon_left_brand.svg",
+    )
+    branding_favicon = models.TextField(
+        validators=[validate_file_name],
+        default="/static/dist/assets/icons/icon.png",
+    )
     branding_custom_css = models.TextField(default="", blank=True)
     branding_default_flow_background = models.TextField(
-        default="/static/dist/assets/images/flow_background.jpg"
+        validators=[validate_file_name],
+        default="/static/dist/assets/images/flow_background.jpg",
     )
 
     flow_authentication = models.ForeignKey(
@@ -82,20 +92,24 @@ class Brand(SerializerModel):
     )
     attributes = models.JSONField(default=dict, blank=True)
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.media_manager = FileManager(FileUsage.MEDIA)
+
     def branding_logo_url(self) -> str:
-        """Get branding_logo URL using appropriate backend"""
-        return resolve_file_url(self.branding_logo, FileUsage.MEDIA)
+        """Get branding_logo URL"""
+        return self.media_manager.file_url(self.branding_logo)
 
     def branding_favicon_url(self) -> str:
-        """Get branding_favicon URL using appropriate backend"""
-        return resolve_file_url(self.branding_favicon, Usage.MEDIA)
+        """Get branding_favicon URL"""
+        return self.media_manager.file_url(self.branding_favicon)
 
     def branding_default_flow_background_url(self) -> str:
-        """Get branding_default_flow_background URL using appropriate backend"""
-        return resolve_file_url(self.branding_default_flow_background, Usage.MEDIA)
+        """Get branding_default_flow_background URL"""
+        return self.media_manager.file_url(self.branding_default_flow_background)
 
     @property
-    def serializer(self) -> Serializer:
+    def serializer(self) -> type[Serializer]:
         from authentik.brands.api import BrandSerializer
 
         return BrandSerializer

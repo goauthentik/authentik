@@ -1,6 +1,5 @@
 """Test file service layer"""
 
-
 from django.http import HttpRequest
 from django.test import TestCase
 
@@ -97,5 +96,4 @@ class TestResolveFileUrl(TestCase):
         result = manager.file_url("test.png", mock_request)
 
         # S3 URLs should be returned as-is (already absolute)
-        print(result)
         self.assertTrue(result.startswith("http://s3.test:8080/test"))

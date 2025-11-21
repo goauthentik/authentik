@@ -5342,7 +5342,9 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_files",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_files",
                             "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
@@ -6241,11 +6243,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -6379,11 +6376,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -6539,11 +6531,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -10175,7 +10162,9 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_files",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_files",
                             "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
@@ -12651,11 +12640,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -12846,11 +12830,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -13081,11 +13060,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -13299,11 +13273,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -13484,11 +13453,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -13664,11 +13628,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -13848,11 +13807,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -14065,11 +14019,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -14228,11 +14177,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -14367,11 +14311,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -14495,11 +14434,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -14622,11 +14556,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -14824,11 +14753,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -15091,11 +15015,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -15219,11 +15138,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -15481,11 +15395,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -15620,11 +15529,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -15766,11 +15670,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -15889,11 +15788,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",
@@ -16059,11 +15953,6 @@
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
                             },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
-                            },
                             "policy_engine_mode": {
                                 "type": "string",
                                 "enum": [
@@ -16182,11 +16071,6 @@
                                 ],
                                 "title": "Designation",
                                 "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "background": {
-                                "type": "string",
-                                "title": "Background",
-                                "description": "Background shown during execution"
                             },
                             "policy_engine_mode": {
                                 "type": "string",

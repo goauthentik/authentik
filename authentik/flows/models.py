@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.validation import validate_file_name
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
@@ -153,11 +154,10 @@ class Flow(SerializerModel, PolicyBindingModel):
         ),
     )
 
-    # File path in authentik.files storage (e.g., "my-background.png")
-    # Can also be: URL (http://...), Font Awesome (fa://fa-icon), or static path (/static/...)
     background = models.TextField(
         blank=True,
         default="",
+        validators=[validate_file_name],
         help_text=_("Background shown during execution"),
     )
 
@@ -182,14 +182,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     )
 
     def background_url(self, request: HttpRequest | None = None) -> str:
-        """Get the URL to the background image using the appropriate backend
-
-        Handles:
-        - File paths from authentik.files storage (e.g., "my-background.png")
-        - Font Awesome icons (fa://fa-icon-name)
-        - Static paths (/static/...)
-        - External URLs (http://, https://...)
-        """
+        """Get the URL to the background image"""
         if not self.background:
             if request:
                 return request.brand.branding_default_flow_background_url()

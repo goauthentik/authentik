@@ -7,15 +7,13 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, FileField, SerializerMethodField
+from rest_framework.fields import BooleanField, FileField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.used_by import UsedByMixin
@@ -38,26 +36,20 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-class FileUploadSerializer(PassiveSerializer):
-    """Serializer for flow import file upload"""
+class FlowUploadSerializer(PassiveSerializer):
+    """Serializer to upload file"""
 
-    file = FileField()
+    file = FileField(required=False)
+    clear = BooleanField(default=False)
 
 
 class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
-    background_url = SerializerMethodField()
+    background_url = ReadOnlyField()
 
     cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
-
-    def get_background_url(self, flow: Flow) -> str | None:
-        """Get the full URL to the background image"""
-        if not flow.background:
-            return None
-
-        return FileManager(FileUsage.MEDIA).file_url(flow.background, self.context.get("request"))
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
@@ -102,7 +94,7 @@ class FlowSetSerializer(FlowSerializer):
             "slug",
             "title",
             "designation",
-            "background",
+            "background_url",
             "policy_engine_mode",
             "compatibility_mode",
             "export_url",
@@ -169,7 +161,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         ],
     )
     @extend_schema(
-        request={"multipart/form-data": FileUploadSerializer},
+        request={"multipart/form-data": FlowUploadSerializer},
         responses={
             204: FlowImportResultSerializer,
             400: FlowImportResultSerializer,

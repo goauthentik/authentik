@@ -12,7 +12,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -50,15 +50,7 @@ class ApplicationSerializer(ModelSerializer):
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
-    meta_icon_url = SerializerMethodField()
-
-    def get_meta_icon_url(self, app: Application) -> str | None:
-        """Get the full URL to the App Icon image"""
-        if not app.meta_icon:
-            return None
-
-        request = self.context.get("request")
-        return resolve_file_url_full(app.meta_icon, Usage.MEDIA, request)
+    meta_icon_url = ReadOnlyField(source="get_meta_icon")
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""

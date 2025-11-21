@@ -49,9 +49,6 @@ class FileManager:
                 self.backends.append(self.management_backend)
             elif not issubclass(backend, ManageableBackend):
                 self.backends.append(backend(usage))
-        print(self.backends)
-        print(management_backend_name)
-        print(self.management_backend)
 
     @property
     def manageable(self) -> bool:

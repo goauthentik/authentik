@@ -136,7 +136,7 @@ class OAuthSource(NonCreatableType, Source):
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=self.get_icon_url_with_request(request),
+            icon_url=self.icon_url,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

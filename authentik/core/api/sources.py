@@ -12,8 +12,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
@@ -29,15 +27,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     managed = ReadOnlyField()
     component = SerializerMethodField()
-    icon_url = SerializerMethodField()
-
-    def get_icon_url(self, obj: Source) -> str | None:
-        """Get the full URL to the icon"""
-        if not obj.icon:
-            return None
-
-        request = self.context.get("request")
-        return FileManager(FileUsage.MEDIA).file_url(obj.icon, request)
+    icon_url = ReadOnlyField()
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

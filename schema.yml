@@ -30,6 +30,86 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/:
+    get:
+      operationId: admin_file_list
+      description: List files from storage backend.
+      parameters:
+      - in: query
+        name: manageableOnly
+        schema:
+          type: boolean
+        description: Only include manageable files
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: usage
+        schema:
+          type: string
+          enum:
+          - media
+          default: media
+        description: Usage type
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_file_create
+      description: Upload file to storage backend.
+      tags:
+      - admin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: admin_file_destroy
+      description: Delete file from storage backend.
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: usage
+        schema:
+          type: string
+          enum:
+          - media
+          default: media
+        description: Usage type
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -3839,8 +3919,8 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/transactional/applications/:
-    post:
-      operationId: core_transactional_applications_create
+    put:
+      operationId: core_transactional_applications_update
       description: Convert data into a blueprint, validate it and apply it
       tags:
       - core
@@ -6047,118 +6127,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /files/:
-    get:
-      operationId: files_list
-      description: List files from storage backend.
-      parameters:
-      - in: query
-        name: includeStatic
-        schema:
-          type: boolean
-        description: Include static files in the results
-      - in: query
-        name: omit
-        schema:
-          type: string
-        description: Comma-separated list of backend types to exclude (e.g., 'passthrough,static')
-      - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: usage
-        schema:
-          type: string
-          enum:
-          - media
-          default: media
-        description: Usage type
-      tags:
-      - files
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/File'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /files/delete/:
-    delete:
-      operationId: files_delete_destroy
-      description: Delete file from storage backend.
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - in: query
-        name: usage
-        schema:
-          type: string
-          enum:
-          - media
-          default: media
-        description: Usage type
-      tags:
-      - files
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /files/upload/:
-    post:
-      operationId: files_upload_create
-      description: Upload file to storage backend.
-      tags:
-      - files
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequestRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/File'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /files/usages/:
-    get:
-      operationId: files_usages_list
-      description: Get available usage types
-      tags:
-      - files
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Usage'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -6845,8 +6813,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-        required: true
+              $ref: '#/components/schemas/FlowUploadRequest'
       security:
       - authentik: []
       responses:
@@ -31344,7 +31311,7 @@ components:
         meta_icon_url:
           type: string
           nullable: true
-          description: Get the full URL to the App Icon image
+          description: Get the URL to the App Icon image
           readOnly: true
         meta_description:
           type: string
@@ -32883,24 +32850,12 @@ components:
           type: string
         branding_logo:
           type: string
-        branding_logo_url:
-          type: string
-          description: Get the full URL to the branding logo
-          readOnly: true
         branding_favicon:
           type: string
-        branding_favicon_url:
-          type: string
-          description: Get the full URL to the branding favicon
-          readOnly: true
         branding_custom_css:
           type: string
         branding_default_flow_background:
           type: string
-        branding_default_flow_background_url:
-          type: string
-          description: Get the full URL to the default flow background
-          readOnly: true
         flow_authentication:
           type: string
           format: uuid
@@ -32947,9 +32902,6 @@ components:
           additionalProperties: {}
       required:
       - brand_uuid
-      - branding_default_flow_background_url
-      - branding_favicon_url
-      - branding_logo_url
       - domain
     BrandRequest:
       type: object
@@ -33871,12 +33823,8 @@ components:
           type: string
         branding_logo:
           type: string
-          description: Get the full URL to the branding logo
-          readOnly: true
         branding_favicon:
           type: string
-          description: Get the full URL to the branding favicon
-          readOnly: true
         branding_custom_css:
           type: string
         ui_footer_links:
@@ -35266,63 +35214,29 @@ components:
       - object_pk
     File:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
       properties:
         name:
           type: string
-          readOnly: true
-        url:
-          type: string
-          readOnly: true
         mime_type:
           type: string
-          readOnly: true
-        size:
-          type: integer
-          readOnly: true
-        usage:
-          allOf:
-          - $ref: '#/components/schemas/FileUsageEnum'
-          readOnly: true
       required:
       - mime_type
       - name
-      - size
-      - url
-      - usage
     FileUploadRequest:
-      type: object
-      description: Serializer for flow import file upload
-      properties:
-        file:
-          type: string
-          format: binary
-      required:
-      - file
-    FileUploadRequestRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
         file:
           type: string
           format: binary
-        path:
+        name:
           type: string
         usage:
           allOf:
-          - $ref: '#/components/schemas/FileUploadRequestUsageEnum'
+          - $ref: '#/components/schemas/UsageEnum'
           default: media
       required:
       - file
-    FileUploadRequestUsageEnum:
-      enum:
-      - media
-      type: string
-    FileUsageEnum:
-      enum:
-      - media
-      - reports
-      type: string
     Flow:
       type: object
       description: Flow Serializer
@@ -35356,8 +35270,7 @@ components:
           description: Background shown during execution
         background_url:
           type: string
-          nullable: true
-          description: Get the full URL to the background image
+          description: Get the URL to the background image
           readOnly: true
         stages:
           type: array
@@ -35648,9 +35561,10 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
-        background:
+        background_url:
           type: string
-          description: Background shown during execution
+          description: Get the URL to the background image
+          readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -35669,6 +35583,7 @@ components:
           description: Configure what should happen when a flow denies access to a
             user.
       required:
+      - background_url
       - designation
       - export_url
       - name
@@ -35698,9 +35613,6 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
-        background:
-          type: string
-          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -35801,6 +35713,16 @@ components:
       - order
       - stage
       - target
+    FlowUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        clear:
+          type: boolean
+          default: false
     FooterLink:
       type: object
       description: Links returned in Config API
@@ -37421,8 +37343,6 @@ components:
           type: string
         icon_url:
           type: string
-          nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -38089,8 +38009,6 @@ components:
           type: string
         icon_url:
           type: string
-          nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         server_uri:
           type: string
@@ -39800,7 +39718,6 @@ components:
         icon_url:
           type: string
           nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -46626,8 +46543,6 @@ components:
           type: string
         icon_url:
           type: string
-          nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -49091,8 +49006,6 @@ components:
           type: string
         icon_url:
           type: string
-          nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         group_matching_mode:
           allOf:
@@ -50614,7 +50527,7 @@ components:
         icon_url:
           type: string
           nullable: true
-          description: Get the full URL to the icon
+          description: Get the URL to the source icon
           readOnly: true
       required:
       - component
@@ -51245,7 +51158,6 @@ components:
         icon_url:
           type: string
           nullable: true
-          description: Get the full URL to the icon
           readOnly: true
         bot_username:
           type: string
@@ -51770,17 +51682,10 @@ components:
           description: Number of passwords to check against.
       required:
       - name
-    Usage:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        value:
-          type: string
-        label:
-          type: string
-      required:
-      - label
-      - value
+    UsageEnum:
+      enum:
+      - media
+      type: string
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object

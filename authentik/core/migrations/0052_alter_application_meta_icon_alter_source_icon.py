@@ -7,17 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_flows", "0028_flowtoken_revoke_on_execution"),
+        ("authentik_core", "0051_group_authentik_c_is_supe_1e5a97_idx"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="flow",
-            name="background",
+            model_name="application",
+            name="meta_icon",
             field=models.TextField(
                 blank=True,
                 default="",
-                help_text="Background shown during execution",
+                validators=[authentik.admin.files.validation.validate_file_name],
+            ),
+        ),
+        migrations.AlterField(
+            model_name="source",
+            name="icon",
+            field=models.TextField(
+                blank=True,
+                default="",
                 validators=[authentik.admin.files.validation.validate_file_name],
             ),
         ),

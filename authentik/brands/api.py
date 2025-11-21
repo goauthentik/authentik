@@ -14,8 +14,6 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -35,28 +33,6 @@ class FooterLinkSerializer(PassiveSerializer):
 class BrandSerializer(ModelSerializer):
     """Brand Serializer"""
 
-    branding_logo_url = SerializerMethodField()
-    branding_favicon_url = SerializerMethodField()
-    branding_default_flow_background_url = SerializerMethodField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.file_manager = FileManager(FileUsage.MEDIA)
-
-    def get_branding_logo_url(self, obj: Brand) -> str:
-        """Get the full URL to the branding logo"""
-        return self.file_manager.file_url(obj.branding_logo, self.context.get("request"))
-
-    def get_branding_favicon_url(self, obj: Brand) -> str:
-        """Get the full URL to the branding favicon"""
-        return self.file_manager.file_url(obj.branding_favicon, self.context.get("request"))
-
-    def get_branding_default_flow_background_url(self, obj: Brand) -> str:
-        """Get the full URL to the default flow background"""
-        return self.file_manager.file_url(
-            obj.branding_default_flow_background, self.context.get("request")
-        )
-
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):
             brands = Brand.objects.filter(default=True)
@@ -74,12 +50,9 @@ class BrandSerializer(ModelSerializer):
             "default",
             "branding_title",
             "branding_logo",
-            "branding_logo_url",
             "branding_favicon",
-            "branding_favicon_url",
             "branding_custom_css",
             "branding_default_flow_background",
-            "branding_default_flow_background_url",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
@@ -116,21 +89,9 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()
-    branding_logo = SerializerMethodField()
-    branding_favicon = SerializerMethodField()
+    branding_logo = CharField(source="branding_logo_url")
+    branding_favicon = CharField(source="branding_favicon_url")
     branding_custom_css = CharField()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.file_manager = FileManager(FileUsage.MEDIA)
-
-    def get_branding_logo(self, obj: Brand) -> str:
-        """Get the full URL to the branding logo"""
-        return self.file_manager.file_url(obj.branding_logo, self.context.get("request"))
-
-    def get_branding_favicon(self, obj: Brand) -> str:
-        """Get the full URL to the branding favicon"""
-        return self.file_manager.file_url(obj.branding_favicon, self.context.get("request"))
 
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),

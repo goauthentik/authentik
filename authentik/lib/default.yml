@@ -150,7 +150,27 @@ worker:
   scheduler_interval: "seconds=60"
 
 storage:
-  backend: file
+  backend: file # or s3
+  file:
+    path: ./data
   s3:
-    secure_urls: true  # Use HTTPS for generated URLs
+    # How to talk to s3
+    # region: "us-east-1"
+    # use_ssl: True
+    # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # access_key: ""
+    # secret_key: ""
+    # bucket_name: "authentik-data"
+    # How to render file URLs
+    # custom_domain: null
+    secure_urls: True
     presigned_expiry: "minutes=15"
+  # Usage based settings. Same schema as global settings, overrides global settings
+  # media:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}
+  # reports:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}

@@ -1,9 +1,6 @@
-from unittest.mock import MagicMock, patch
 
-from botocore.exceptions import ClientError
 from django.test import TestCase
 
-from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.tests.utils import FileTestS3BackendMixin
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG

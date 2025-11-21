@@ -4,16 +4,9 @@ from typing import Any
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     """Recursively walk through `root`, checking each part of `path` separated by `sep`.
     If at any point a dict does not exist, return default"""
-    from authentik.lib.config import Attr
-
     walk: Any = root
     for comp in path.split(sep):
-        # If walk is an Attr object, extract its value for traversal
-        if isinstance(walk, Attr):
-            walk = walk.value
-
-        # Check if we can traverse further
-        if walk and isinstance(walk, dict) and comp in walk:
+        if walk and comp in walk:
             walk = walk.get(comp)
         else:
             return default

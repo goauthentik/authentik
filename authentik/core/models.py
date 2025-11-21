@@ -27,6 +27,7 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.files.validation import validate_file_name
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -550,11 +551,10 @@ class Application(SerializerModel, PolicyBindingModel):
         default=False, help_text=_("Open launch URL in a new browser tab or window.")
     )
 
-    # File path in authentik.files storage (e.g., "my-icon.png")
-    # Can also be: URL (http://...), Font Awesome (fa://fa-icon), or static path (/static/...)
     meta_icon = models.TextField(
         blank=True,
         default="",
+        validators=[validate_file_name],
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
@@ -572,14 +572,7 @@ class Application(SerializerModel, PolicyBindingModel):
 
     @property
     def get_meta_icon(self) -> str | None:
-        """Get the URL to the App Icon image using the appropriate backend
-
-        Handles:
-        - File paths from authentik.files storage (e.g., "my-icon.png")
-        - Font Awesome icons (fa://fa-icon-name)
-        - Static paths (/static/...)
-        - External URLs (http://, https://...)
-        """
+        """Get the URL to the App Icon image"""
         if not self.meta_icon:
             return None
 
@@ -732,11 +725,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     group_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
     )
-    # File path in authentik.files storage (e.g., "my-icon.png")
-    # Can also be: URL (http://...), Font Awesome (fa://fa-icon), or static path (/static/...)
+
     icon = models.TextField(
         blank=True,
         default="",
+        validators=[validate_file_name],
     )
 
     authentication_flow = models.ForeignKey(
@@ -778,34 +771,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     @property
     def icon_url(self) -> str | None:
-        """Get the URL to the icon using the appropriate backend
-
-        Handles:
-        - File paths from authentik.files storage (e.g., "my-icon.png")
-        - Font Awesome icons (fa://fa-icon-name)
-        - Static paths (/static/...)
-        - External URLs (http://, https://...)
-
-        Note: Returns relative URLs. Use get_icon_url_with_request() for full URLs.
-        """
+        """Get the URL to the source icon"""
         if not self.icon:
             return None
 
         return FileManager(FileUsage.MEDIA).file_url(self.icon)
-
-    def get_icon_url_with_request(self, request=None) -> str | None:
-        """Get the FULL URL to the icon including domain
-
-        Args:
-            request: Optional HTTP request for getting domain/scheme
-
-        Returns:
-            Full URL with domain for uploaded files, relative URL if no request provided
-        """
-        if not self.icon:
-            return None
-
-        return FileManager(FileUsage.MEDIA).file_url(self.icon, request)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""
