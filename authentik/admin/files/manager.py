@@ -125,14 +125,6 @@ class FileManager:
         assert self.management_backend is not None
         return self.management_backend.delete_file(file_path)
 
-    def file_size(self, file_path: str) -> int:
-        """
-        Get file size in bytes.
-        """
-        self._check_manageable()
-        assert self.management_backend is not None
-        return self.management_backend.file_size(file_path)
-
     def file_exists(self, file_path: str) -> bool:
         """
         Check if a file exists.

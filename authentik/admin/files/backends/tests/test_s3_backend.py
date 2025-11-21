@@ -261,32 +261,6 @@ class TestS3Backend(TestCase):
             self.assertEqual(call_args["ExpiresIn"], 60)
 
     @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
-    def test_file_size(self):
-        """Test file_size retrieves from S3"""
-        with patch.object(self.backend, "client") as mock_client:
-            mock_client.head_object.return_value = {"ContentLength": 12345}
-
-            size = self.backend.file_size("test.png")
-
-            self.assertEqual(size, 12345)
-            mock_client.head_object.assert_called_once_with(
-                Bucket="test-bucket",
-                Key="media/public/test.png",
-            )
-
-    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
-    def test_file_size_not_found(self):
-        """Test file_size returns 0 for non-existent file"""
-        with patch.object(self.backend, "client") as mock_client:
-            mock_client.head_object.side_effect = ClientError(
-                {"Error": {"Code": "404", "Message": "Not Found"}}, "head_object"
-            )
-
-            size = self.backend.file_size("nonexistent.png")
-
-            self.assertEqual(size, 0)
-
-    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
     def test_file_exists_true(self):
         """Test file_exists returns True for existing file"""
         with patch.object(self.backend, "client") as mock_client:

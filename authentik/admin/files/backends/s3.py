@@ -186,17 +186,6 @@ class S3Backend(ManageableBackend):
             Key=f"{self.base_path}/{name}",
         )
 
-    def file_size(self, name: str) -> int:
-        """Get file size in bytes."""
-        try:
-            response = self.client.head_object(
-                Bucket=self.bucket_name,
-                Key=f"{self.base_path}/{name}",
-            )
-            return response.get("ContentLength", 0)
-        except ClientError:
-            return 0
-
     def file_exists(self, name: str) -> bool:
         """Check if a file exists in S3."""
         try:

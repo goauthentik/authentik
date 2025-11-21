@@ -181,38 +181,6 @@ class TestFileBackend(TestCase):
             expected = "/media/public/path/to/file.png"
             self.assertEqual(url, expected)
 
-    def test_file_size_existing_file(self):
-        """Test file_size returns correct size for existing file"""
-        with CONFIG.patch("storage.file.path", self.temp_dir):
-            content = b"12345"
-            file_name = "size_test.txt"
-
-            self.backend.save_file(file_name, content)
-            size = self.backend.file_size(file_name)
-            self.assertEqual(size, len(content))
-
-    def test_file_size_nonexistent_file(self):
-        """Test file_size returns 0 for nonexistent file"""
-        with CONFIG.patch("storage.file.path", self.temp_dir):
-            size = self.backend.file_size("does_not_exist.txt")
-            self.assertEqual(size, 0)
-
-    def test_file_size_oserror(self):
-        """Test file_size returns 0 when OSError occurs"""
-        with CONFIG.patch("storage.file.path", self.temp_dir):
-            # Mock path.stat() to raise OSError
-            with patch.object(Path, "stat", side_effect=OSError("Permission denied")):
-                size = self.backend.file_size("error_file.txt")
-                self.assertEqual(size, 0)
-
-    def test_file_size_valueerror(self):
-        """Test file_size returns 0 when ValueError occurs"""
-        with CONFIG.patch("storage.file.path", self.temp_dir):
-            # Mock path.stat() to raise ValueError
-            with patch.object(Path, "stat", side_effect=ValueError("Invalid file")):
-                size = self.backend.file_size("invalid_file.txt")
-                self.assertEqual(size, 0)
-
     def test_file_exists_true(self):
         """Test file_exists returns True for existing file"""
         with CONFIG.patch("storage.file.path", self.temp_dir):

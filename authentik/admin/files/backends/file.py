@@ -84,14 +84,6 @@ class FileBackend(ManageableBackend):
         path = self.base_path / Path(name)
         path.unlink(missing_ok=True)
 
-    def file_size(self, name: str) -> int:
-        """Get file size in bytes."""
-        path = self.base_path / Path(name)
-        try:
-            return path.stat().st_size if path.exists() else 0
-        except (OSError, ValueError):
-            return 0
-
     def file_exists(self, name: str) -> bool:
         """Check if a file exists."""
         path = self.base_path / Path(name)

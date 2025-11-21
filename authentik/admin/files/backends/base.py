@@ -112,18 +112,6 @@ class ManageableBackend(Backend):
         """
         raise NotImplementedError
 
-    def file_size(self, name: str) -> int:
-        """
-        Get file size in bytes.
-
-        Args:
-            file_path: Relative file path
-
-        Returns:
-            File size in bytes, or 0 if file doesn't exist
-        """
-        raise NotImplementedError
-
     def file_exists(self, name: str) -> bool:
         """
         Check if a file exists.
