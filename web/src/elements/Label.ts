@@ -3,12 +3,11 @@ import type { SlottedTemplateResult, Spread } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum PFColor {
     Green = "pf-m-green",
@@ -47,18 +46,7 @@ export class Label extends AKElement implements ILabel {
     @property({ type: Boolean })
     compact = false;
 
-    static styles = [
-        PFBase,
-        PFLabel,
-        css`
-            :host([theme="dark"]) {
-                .pf-m-grey {
-                    --pf-c-label__icon--Color: var(--ak-dark-background);
-                    --pf-c-label__content--Color: var(--ak-dark-background);
-                }
-            }
-        `,
-    ];
+    static styles = [PFLabel];
 
     get classesAndIcon() {
         const chrome = chromeList.find(
