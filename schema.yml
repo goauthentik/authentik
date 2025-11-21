@@ -6205,6 +6205,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/:
+    get:
+      operationId: endpoints_fleet_connectors_list
+      description: FleetConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFleetConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_fleet_connectors_create
+      description: FleetConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_fleet_connectors_retrieve
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_fleet_connectors_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_fleet_connectors_partial_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFleetConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_fleet_connectors_destroy
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_fleet_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -19545,6 +19735,7 @@ paths:
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
+          - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -19759,6 +19950,7 @@ paths:
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
+          - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -33021,6 +33213,7 @@ components:
       - authentik.blueprints
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
+      - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -37602,6 +37795,69 @@ components:
           default: media
       required:
       - file
+    FleetConnector:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          maxLength: 200
+      required:
+      - component
+      - meta_model_name
+      - name
+      - url
+      - verbose_name
+      - verbose_name_plural
+    FleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - name
+      - token
+      - url
     Flow:
       type: object
       description: Flow Serializer
@@ -41368,6 +41624,7 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -43326,6 +43583,21 @@ components:
       required:
       - pagination
       - results
+    PaginatedFleetConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FleetConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedFlowList:
       type: object
       properties:
@@ -46347,6 +46619,27 @@ components:
       properties:
         object_pk:
           type: string
+          minLength: 1
+    PatchedFleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
           minLength: 1
     PatchedFlowRequest:
       type: object
