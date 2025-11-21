@@ -4,8 +4,8 @@ from django.http import HttpRequest
 from django.test import TestCase
 
 from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import FileUsage
 from authentik.admin.files.tests.utils import FileTestFileBackendMixin, FileTestS3BackendMixin
+from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 
 
