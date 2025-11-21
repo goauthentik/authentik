@@ -44,7 +44,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         event = Event.objects.filter(action=EventAction.FILE_UPLOADED).first()
 
         self.assertIsNotNone(event)
-        assert event is not None
+        assert event is not None  # nosec
         self.assertEqual(event.context["name"], file_name)
         self.assertEqual(event.context["usage"], FileUsage.MEDIA.value)
         self.assertEqual(event.context["mime_type"], "image/png")
@@ -78,7 +78,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         event = Event.objects.filter(action=EventAction.FILE_DELETED).first()
 
         self.assertIsNotNone(event)
-        assert event is not None
+        assert event is not None  # nosec
         self.assertEqual(event.context["name"], file_name)
         self.assertEqual(event.context["usage"], FileUsage.MEDIA.value)
 

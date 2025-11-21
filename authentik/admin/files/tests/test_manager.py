@@ -82,6 +82,7 @@ class TestResolveFileUrl(TestCase):
         self.assertEqual(result, "http://example.com/media/public/test.png")
 
     @CONFIG.patch("storage.media.backend", "s3")
+    @CONFIG.patch("storage.media.s3.bucket", "test")
     @CONFIG.patch("storage.media.s3.custom_domain", "s3.test:8080/test")
     @CONFIG.patch("storage.media.s3.secure_urls", False)
     def test_resolve_full_s3_backend(self):

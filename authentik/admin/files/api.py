@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import MANAGE_API_USAGES, FileUsage
-from authentik.admin.files.validation import validate_file_name
+from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
 from authentik.rbac.permissions import HasPermission
@@ -154,7 +154,7 @@ class FileView(APIView):
             name = file.name
 
         # Sanitize path to prevent directory traversal
-        validate_file_name(name, ValidationError)
+        validate_upload_file_name(name, ValidationError)
 
         manager = FileManager(usage)
 
@@ -199,7 +199,7 @@ class FileView(APIView):
         name = request.query_params.get("name", "")
         usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
 
-        validate_file_name(name, ValidationError)
+        validate_upload_file_name(name, ValidationError)
 
         try:
             usage = FileUsage(usage_param)

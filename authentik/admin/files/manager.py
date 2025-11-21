@@ -96,7 +96,7 @@ class FileManager:
         Save file contents to storage.
         """
         self._check_manageable()
-        assert self.management_backend is not None
+        assert self.management_backend is not None  # nosec
         return self.management_backend.save_file(file_path, content)
 
     def save_file_stream(self, file_path: str) -> Iterator:
@@ -114,7 +114,7 @@ class FileManager:
                 f.write(b"data...")
         """
         self._check_manageable()
-        assert self.management_backend is not None
+        assert self.management_backend is not None  # nosec
         return self.management_backend.save_file_stream(file_path)
 
     def delete_file(self, file_path: str) -> None:
@@ -122,7 +122,7 @@ class FileManager:
         Delete file from storage.
         """
         self._check_manageable()
-        assert self.management_backend is not None
+        assert self.management_backend is not None  # nosec
         return self.management_backend.delete_file(file_path)
 
     def file_exists(self, file_path: str) -> bool:
@@ -130,5 +130,5 @@ class FileManager:
         Check if a file exists.
         """
         self._check_manageable()
-        assert self.management_backend is not None
+        assert self.management_backend is not None  # nosec
         return self.management_backend.file_exists(file_path)

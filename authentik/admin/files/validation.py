@@ -4,6 +4,10 @@ from pathlib import PurePosixPath
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from authentik.admin.files.backends.static import StaticBackend
+from authentik.admin.files.backends.passthrough import PassthroughBackend
+from authentik.admin.files.usage import FileUsage
+
 # File upload limits
 MAX_FILE_NAME_LENGTH = 1024
 MAX_PATH_COMPONENT_LENGTH = 255
@@ -15,7 +19,18 @@ ALLOWED_MIME_TYPES = {
 }
 
 
-def validate_file_name(name: str, ValidationError: type[Exception] = ValidationError) -> None:
+def validate_file_name(name: str) -> None:
+    if StaticBackend(FileUsage.MEDIA).supports_file(name):
+        return
+    if PassthroughBackend(FileUsage.MEDIA).supports_file(name):
+        return
+    validate_upload_file_name(name)
+
+
+def validate_upload_file_name(
+    name: str,
+    ValidationError: type[Exception] = ValidationError,
+) -> None:
     """Sanitize file path.
 
     Args:
