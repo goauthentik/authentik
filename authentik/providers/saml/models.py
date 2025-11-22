@@ -77,7 +77,14 @@ class SAMLProvider(Provider):
             "no audience restriction will be added."
         ),
     )
-    issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
+    issuer = models.TextField(
+        blank=True,
+        null=True,
+        default=None,
+        help_text=_(
+            "Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/"
+        ),
+    )
     sls_url = models.TextField(
         blank=True,
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
