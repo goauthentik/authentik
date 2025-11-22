@@ -74,7 +74,7 @@ export class DeviceViewPage extends AKElement {
         if (!this.device) {
             return nothing;
         }
-        const _rootDisk = this.device.facts.data.disks?.filter((d) => d.mountpoint === "/") || [];
+        const _rootDisk = this.device.facts.data.disks?.filter((d) => d.mountpoint === "/" || d.mountpoint === "C:") || [];
         let rootDisk: Disk | undefined = undefined;
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
