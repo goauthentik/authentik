@@ -45,6 +45,8 @@ from authentik.core.models import (
 from authentik.endpoints.connectors.agent.models import (
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+)
+from authentik.endpoints.connectors.agent.models import (
     DeviceToken as EndpointDeviceToken,
 )
 from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceFactSnapshot
