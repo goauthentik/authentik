@@ -1,4 +1,30 @@
 /**
+ * Extensions of PF4's sidebar color to better match our existing dark theme.
+ */
+.pf-c-page {
+    --pf-c-page__main-nav--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --pf-c-page__sidebar--m-dark--BackgroundColor: var(--pf-global--BackgroundColor--100);
+
+    --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+
+    .pf-c-page__sidebar {
+        z-index: calc(var(--pf-c-page__header--ZIndex) + 1);
+    }
+
+    @media screen and (min-width: 1200px) {
+        .pf-c-page__sidebar.pf-m-expanded {
+            --pf-c-page__sidebar--BoxShadow: var(--pf-global--BoxShadow--sm-right);
+        }
+    }
+}
+
+ak-tabs::part(row) {
+    background-color: transparent;
+    margin-block-start: 0;
+    padding-block-start: var(--pf-global--spacer--sm);
+}
+
+/**
  * We reverse the page header colors because PatternFly assumes a dark header
  * on light themes. The opposite must be done for dark themes.
  */
@@ -16,20 +42,42 @@
 
 [data-theme="dark"] .pf-c-page,
 :host([theme="dark"]) .pf-c-page {
-    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
-    --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
-}
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200) !important;
 
-/**
- * cf. Color reversal.
- */
-.pf-c-page__header {
-    --pf-global--Color--100: var(--pf-global--Color--light-100);
-    --pf-global--Color--200: var(--pf-global--Color--light-200);
-    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
-    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
-    --pf-global--link--Color: var(--pf-global--link--Color--light);
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+    /**
+     * Lighten the main section background to contrast page content.
+     */
+    --pf-c-page__main-section--BackgroundColor: var(--pf-global--BackgroundColor--200);
+
+    --pf-c-page__header-tools--c-button--m-selected--before--BackgroundColor: var(
+        --pf-global--BackgroundColor--300
+    );
+    --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-dark--BackgroundColor);
+    --pf-c-page__header--BackgroundColor: var(--pf-global--palette--black-1000);
+
+    /**
+     * cf. Color reversal.
+     */
+    .pf-c-page__header {
+        --pf-global--Color--100: var(--pf-global--Color--light-100);
+        --pf-global--Color--200: var(--pf-global--Color--light-200);
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+        --pf-global--link--Color: var(--pf-global--link--Color--light);
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+    }
+
+    .pf-c-page__header-tools-item.pf-m-selected .pf-c-button {
+        color: var(--pf-global--Color--100);
+    }
+
+    .pf-c-page__header-tools-item.pf-m-selected
+        .pf-c-button
+        .pf-c-notification-badge:hover::before {
+        background-color: var(
+            --pf-c-page__header-tools--c-button--m-selected--before--BackgroundColor
+        );
+    }
 }
 
 /* #endregion */

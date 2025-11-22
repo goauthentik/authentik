@@ -78,10 +78,10 @@ class EndpointDevice(SerializerModel, Device):
     @property
     def serializer(self) -> Serializer:
         from authentik.enterprise.stages.authenticator_endpoint_gdtc.api import (
-            EndpointDeviceSerializer,
+            GoogleEndpointDeviceSerializer,
         )
 
-        return EndpointDeviceSerializer
+        return GoogleEndpointDeviceSerializer
 
     def __str__(self):
         return str(self.name) or str(self.user_id)

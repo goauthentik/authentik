@@ -42,6 +42,8 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
+from authentik.endpoints.connectors.agent.models import DeviceToken as EndpointDeviceToken
+from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceFactSnapshot
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
 from authentik.enterprise.providers.google_workspace.models import (
@@ -112,6 +114,7 @@ def excluded_models() -> list[type[Model]]:
         OutpostServiceConnection,
         Policy,
         PolicyBindingModel,
+        Connector,
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
@@ -139,6 +142,10 @@ def excluded_models() -> list[type[Model]]:
         MicrosoftEntraProviderGroup,
         EndpointDevice,
         EndpointDeviceConnection,
+        EndpointDeviceToken,
+        Device,
+        DeviceConnection,
+        DeviceFactSnapshot,
         DeviceToken,
         StreamEvent,
         UserConsent,
