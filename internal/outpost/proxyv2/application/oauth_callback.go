@@ -13,6 +13,13 @@ import (
 )
 
 func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
+	// Check for CORS preflight request and allow it to pass through unauthenticated
+	if a.isCORSPreflightRequest(r) {
+		a.sendCORSPreflightResponse(rw, r)
+		a.log.Trace("responding to CORS preflight request on callback endpoint")
+		return
+	}
+
 	state := a.stateFromRequest(r)
 	if state == nil {
 		a.log.Warning("invalid state")
