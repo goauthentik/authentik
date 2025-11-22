@@ -9797,10 +9797,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>
           IDP起動ログインおよび受信アサーションでNameIDポリシーが指定されていない場合に使用するデフォルトのNameIDポリシーを設定します（カスタムNameIDマッピング使用時にも適用されます）。</target>
 </trans-unit>
-<trans-unit id="s6c973fe9014080fc">
-  <source>Application name</source>
-  <target>アプリ名</target>
-</trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
   <target>アプリライブラリに表示される名前。</target>
@@ -10620,10 +10616,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Authentication form</source>
   <target>認証フォーム</target>
 </trans-unit>
-<trans-unit id="sdd2ea73c24b40d5d">
-  <source>Site footer</source>
-  <target>サイトフッター</target>
-</trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
   <target>消費済み</target>
@@ -10915,6 +10907,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+</trans-unit>
+<trans-unit id="s07b0bf005510fe29">
+  <source>Type an application name...</source>
+</trans-unit>
+<trans-unit id="s972540f502b0f4dc">
+  <source>Application Name</source>
+</trans-unit>
+<trans-unit id="s71e967b36e080e3c">
+  <source>https://...</source>
+</trans-unit>
+<trans-unit id="sd144a9315e8f87c1">
+  <source>http(s)://...</source>
+</trans-unit>
+<trans-unit id="sf8633bb541bfb123">
+  <source>domain.tld</source>
 </trans-unit>
     </body>
   </file>

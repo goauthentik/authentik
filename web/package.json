@@ -5,12 +5,11 @@
     "private": true,
     "scripts": {
         "build": "wireit",
-        "build-locales": "wireit",
-        "build-locales:build": "wireit",
+        "build-locales": "node scripts/build-locales.mjs",
         "build-proxy": "wireit",
         "build:sfe": "npm run build -w @goauthentik/web-sfe",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "wireit",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
@@ -27,7 +26,7 @@
         "test": "vitest",
         "test:e2e": "playwright test",
         "tsc": "wireit",
-        "watch": "run-s build-locales esbuild:watch"
+        "watch": "run-s build-locales bundler:watch"
     },
     "type": "module",
     "exports": {
@@ -55,6 +54,7 @@
     },
     "imports": {
         "#styles/*.css": "./src/styles/*.css",
+        "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
         "#elements/*.css": "./src/elements/*.css",
         "#elements/*": "./src/elements/*.js",
@@ -117,20 +117,21 @@
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.56.1",
         "@sentry/browser": "^10.25.0",
-        "@storybook/addon-docs": "^10.0.7",
-        "@storybook/addon-links": "^10.0.7",
-        "@storybook/web-components": "^10.0.7",
-        "@storybook/web-components-vite": "^10.0.7",
+        "@storybook/addon-docs": "^10.0.8",
+        "@storybook/addon-links": "^10.0.8",
+        "@storybook/web-components": "^10.0.8",
+        "@storybook/web-components-vite": "^10.0.8",
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.4",
         "@types/mocha": "^10.0.10",
         "@types/node": "^24.10.1",
-        "@types/react": "^19.2.4",
+        "@types/react": "^19.2.6",
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
-        "@vitest/browser": "^3.2.4",
+        "@vitest/browser": "^4.0.10",
+        "@vitest/browser-playwright": "^4.0.10",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
@@ -138,7 +139,7 @@
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
         "core-js": "^3.46.0",
-        "country-flag-icons": "^1.5.21",
+        "country-flag-icons": "^1.6.1",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.3.0",
@@ -151,7 +152,7 @@
         "globals": "^16.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.66.2",
+        "knip": "^5.70.0",
         "lit": "^3.3.1",
         "lit-analyzer": "^2.0.3",
         "md-front-matter": "^1.0.4",
@@ -176,14 +177,14 @@
         "storybook": "^10.0.3",
         "style-mod": "^4.1.3",
         "trusted-types": "^2.0.0",
-        "ts-pattern": "^5.8.0",
+        "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.2.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.4",
+        "typescript-eslint": "^8.47.0",
         "unist-util-visit": "^5.0.0",
         "vite": "^7.2.2",
-        "vitest": "^3.2.4",
+        "vitest": "^4.0.10",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
         "yaml": "^2.8.1"
@@ -244,24 +245,8 @@
                 "build-locales"
             ]
         },
-        "build-locales:build": {
-            "command": "lit-localize build"
-        },
-        "build-locales:repair": {
+        "locales:repair": {
             "command": "prettier --write ./src/locale-codes.ts"
-        },
-        "build-locales": {
-            "command": "node scripts/build-locales.mjs",
-            "files": [
-                "./xliff/*.xlf"
-            ],
-            "output": [
-                "./src/locales/*.ts",
-                "./src/locale-codes.ts"
-            ]
-        },
-        "extract-locales": {
-            "command": "lit-localize extract"
         },
         "lint:components": {
             "command": "lit-analyzer src"

@@ -7,6 +7,7 @@ import { formatUserDisplayName, isGuest } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
+import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
 
@@ -159,7 +160,14 @@ export class NavigationButtons extends WithSession(AKElement) {
 
     renderAvatar() {
         const { currentUser } = this;
+
         if (!currentUser) {
+            return nothing;
+        }
+
+        const { avatar } = currentUser;
+
+        if (!avatar || isDefaultAvatar(avatar)) {
             return nothing;
         }
 
@@ -167,9 +175,7 @@ export class NavigationButtons extends WithSession(AKElement) {
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             aria-hidden="true"
         >
-            ${currentUser.avatar
-                ? html`<img src=${currentUser.avatar} alt=${msg("Avatar image")} />`
-                : nothing}
+            <img src=${avatar} alt=${msg("Avatar image")} />
         </div>`;
     }
 

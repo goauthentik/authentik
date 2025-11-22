@@ -1,16 +1,12 @@
 .pf-c-button {
-    --pf-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--sm);
-    --pf-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--sm);
-    --pf-c-button--focus--after--BorderWidth: var(--pf-global--BorderWidth--sm);
-
     &.pf-m-danger {
         /**
          * TODO: PF4 doesn't seem to have disabled styles for danger buttons in the
          * way that we've come to expect. This is a workaround until PF5 is adopted.
          */
-        --pf-global--disabled-color--100: var(--pf-global--danger-color--100);
-        --pf-global--disabled-color--200: var(--pf-global--palette--red-50);
-        --pf-global--disabled-color--300: var(--pf-global--danger-color--300);
+        --pf-global--disabled-color--100: var(--pf-global--danger-color--50);
+        --pf-global--disabled-color--200: transparent;
+        --pf-global--disabled-color--300: var(--pf-global--danger-color--100);
     }
 }
 
@@ -25,18 +21,29 @@ a.pf-c-button {
 
 /* #region Dark Theme */
 
+/**
+ * @see PatternFly's variables.css for reference:
+ *
+ * @remarks
+ * PF4 components have an assumption of a CSS order which doesn't align with
+ * how we structure our web component styles.
+ *
+ * Variables which do not apply are commented out.
+ */
 [data-theme="dark"] .pf-c-button,
 :host([theme="dark"]) .pf-c-button {
-    --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--200);
+    &.pf-m-secondary {
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    }
+
+    /* --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--200);
     --pf-c-button--m-secondary--hover--after--BorderColor: var(--pf-global--primary-color--200);
 
-    /* --pf-c-button--disabled--BackgroundColor: var(--pf-global--Color--300); */
     --pf-c-button--m-plain--hover--BackgroundColor: var(--ak-dark-background-lighter);
     --pf-c-button--m-plain--active--BackgroundColor: var(--ak-dark-background-lighter);
     --pf-c-button--m-plain--focus--BackgroundColor: var(--ak-dark-background-lighter);
 
     &.pf-m-plain {
-        /* --pf-c-button--disabled--BackgroundColor: transparent; */
         --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
         --pf-c-button--m-plain--active--BackgroundColor: var(--ak-dark-background-lighter);
         --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
@@ -73,10 +80,56 @@ a.pf-c-button {
         }
     }
 
-    &.pf-m-danger {
-        --pf-global--danger-color--200: var(--pf-global--palette--red-200);
+    */
 
-        --pf-global--disabled-color--200: var(--pf-global--palette--red-400);
-        --pf-global--disabled-color--100: var(--pf-global--palette--red-200);
+    &.pf-m-danger {
+        --pf-global--disabled-color--100: var(--pf-global--palette--red-100);
+    }
+
+    --pf-c-button--disabled--Color: var(--pf-global--disabled-color--300);
+    /* --pf-c-button--m-primary--BackgroundColor: var(--pf-global--primary-color--300); */
+    --pf-c-button--m-tertiary--after--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-button--m-tertiary--Color: var(--pf-global--palette--black-100);
+    --pf-c-button--m-tertiary--hover--after--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-button--m-tertiary--hover--Color: var(--pf-global--palette--black-100);
+    --pf-c-button--m-tertiary--focus--after--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-button--m-tertiary--focus--Color: var(--pf-global--palette--black-100);
+    --pf-c-button--m-tertiary--active--after--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-button--m-tertiary--active--Color: var(--pf-global--palette--black-100);
+    --pf-c-button--m-warning--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-warning--hover--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-warning--focus--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-warning--active--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-warning--hover--BackgroundColor: var(--pf-global--warning-color--200);
+    --pf-c-button--m-warning--focus--BackgroundColor: var(--pf-global--warning-color--200);
+    --pf-c-button--m-warning--active--BackgroundColor: var(--pf-global--warning-color--200);
+    /* --pf-c-button--m-danger--Color: var(--pf-global--palette--black-900); */
+    --pf-c-button--m-danger--Color: var(--pf-global--palette--black--50);
+    --pf-c-button--m-danger--hover--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-danger--focus--Color: var(--pf-global--palette--black-900);
+    --pf-c-button--m-danger--active--Color: var(--pf-global--palette--black-900);
+    /* --pf-c-button--m-control--BackgroundColor: var(--pf-global--BackgroundColor--400); */
+    --pf-c-button--m-control--hover--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --pf-c-button--m-control--active--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --pf-c-button--m-control--focus--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    /* --pf-c-button--m-control--m-expanded--BackgroundColor: var(--pf-global--BackgroundColor--400); */
+    --pf-c-button--m-control--after--BorderTopColor: transparent;
+    --pf-c-button--m-control--after--BorderRightColor: transparent;
+    --pf-c-button--m-control--after--BorderBottomColor: var(--pf-global--BorderColor--400);
+    --pf-c-button--m-control--after--BorderLeftColor: transparent;
+    --pf-c-button--m-control--hover--after--BorderBottomColor: var(--pf-global--primary-color--100);
+    --pf-c-button--m-control--active--after--BorderBottomColor: var(
+        --pf-global--primary-color--100
+    );
+    --pf-c-button--m-control--focus--after--BorderBottomColor: var(--pf-global--primary-color--100);
+    --pf-c-button--m-control--m-expanded--after--BorderBottomColor: var(
+        --pf-global--primary-color--100
+    );
+    --pf-c-button--m-control--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    --pf-c-button--m-primary__c-badge--BorderColor: var(--pf-global--Color--100);
+
+    &.pf-m-control:disabled::after {
+        border: 0;
+        border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--palette--black-700);
     }
 }

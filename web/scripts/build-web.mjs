@@ -201,10 +201,11 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.StandaloneLoading];
+    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
