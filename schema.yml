@@ -49490,6 +49490,7 @@ components:
       - reddit
       - twitch
       - twitter
+      - wechat
       type: string
     ProxyMode:
       enum:
