@@ -1,5 +1,5 @@
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "../tsconfig/tsconfig.json",
     "compilerOptions": {
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "resolveJsonModule": true,
