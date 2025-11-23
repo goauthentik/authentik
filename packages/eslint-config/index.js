@@ -1,17 +1,26 @@
-import eslint from "@eslint/js";
-import * as litconf from "eslint-plugin-lit";
-import * as wcconf from "eslint-plugin-wc";
-import tseslint from "typescript-eslint";
+/**
+ * @file ESLint Configuration Entry Point
+ *
+ * @import { Config } from "eslint/config";
+ * @import { ParserOptions } from "@typescript-eslint/parser";
+ */
 
 import { javaScriptConfig } from "./lib/javascript-config.js";
 import { reactConfig } from "./lib/react-config.js";
 import { typescriptConfig } from "./lib/typescript-config.js";
+
+import eslint from "@eslint/js";
+import * as litconf from "eslint-plugin-lit";
+import * as wcconf from "eslint-plugin-wc";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 // @ts-check
 
 /**
  * @typedef ESLintPackageConfigOptions Options for creating package ESLint configuration.
  * @property {string[]} [ignorePatterns] Override ignore patterns for ESLint.
+ * @property {ParserOptions} [parserOptions] Override options for TypeScript ESLint's parser.
  */
 
 /**
@@ -39,12 +48,18 @@ export const DefaultIgnorePatterns = [
  *
  * @param {ESLintPackageConfigOptions} options The preferred package configuration options.
  *
- * @returns The ESLint configuration object.
+ * @returns {Config[]} The ESLint configuration object.
  */
-export function createESLintPackageConfig({ ignorePatterns = DefaultIgnorePatterns } = {}) {
-    return tseslint.config(
+export function createESLintPackageConfig({
+    ignorePatterns = DefaultIgnorePatterns,
+    parserOptions = {},
+} = {}) {
+    return defineConfig(
         {
             ignores: ignorePatterns,
+            languageOptions: {
+                parserOptions,
+            },
         },
 
         eslint.configs.recommended,
