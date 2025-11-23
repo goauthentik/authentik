@@ -1,7 +1,6 @@
 """authentik saml source processor"""
 
 from base64 import b64decode
-from time import mktime
 from typing import TYPE_CHECKING, Any
 
 import xmlsec
@@ -9,19 +8,10 @@ from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
-from django.utils.timezone import now
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
-    USER_ATTRIBUTE_EXPIRES,
-    USER_ATTRIBUTE_GENERATED,
-    USER_ATTRIBUTE_SOURCES,
-    User,
-)
 from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
@@ -183,45 +173,6 @@ class ResponseProcessor:
         if message is not None:
             raise ValueError(message.text)
 
-    def _handle_name_id_transient(self) -> SourceFlowManager:
-        """Handle a NameID with the Format of Transient. This is a bit more complex than other
-        formats, as we need to create a temporary User that is used in the session. This
-        user has an attribute that refers to our Source for cleanup. The user is also deleted
-        on logout and periodically."""
-        # Create a temporary User
-        name_id = self._get_name_id()
-        expiry = mktime(
-            (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
-        )
-        user: User = User.objects.create(
-            username=name_id.text,
-            attributes={
-                USER_ATTRIBUTE_GENERATED: True,
-                USER_ATTRIBUTE_SOURCES: [
-                    self._source.name,
-                ],
-                USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
-                USER_ATTRIBUTE_EXPIRES: expiry,
-            },
-            path=self._source.get_user_path(),
-        )
-        LOGGER.debug("Created temporary user for NameID Transient", username=name_id.text)
-        user.set_unusable_password()
-        user.save()
-        UserSAMLSourceConnection.objects.create(
-            source=self._source, user=user, identifier=name_id.text
-        )
-        return SAMLSourceFlowManager(
-            source=self._source,
-            request=self._http_request,
-            identifier=str(name_id.text),
-            user_info={
-                "root": self._root,
-                "name_id": name_id,
-            },
-            policy_context={},
-        )
-
     def _get_name_id(self) -> "Element":
         """Get NameID Element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
@@ -246,6 +197,8 @@ class ResponseProcessor:
             return {"email": name_id}
         if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
             return {"username": name_id}
+        if _format == SAML_NAME_ID_FORMAT_TRANSIENT:
+            return {"username": name_id}
         if _format == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             return {"attributes__distinguishedName": name_id}
@@ -268,7 +221,7 @@ class ResponseProcessor:
                 got=name_id.attrib["Format"],
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
-        #if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        # if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
         if False:
             return self._handle_name_id_transient()
 

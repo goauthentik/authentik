@@ -1,10 +1,14 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from hashlib import sha256
+from unittest.mock import patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
+from django.utils import timezone
 
+from authentik.core.models import SourceUserMatchingModes
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
@@ -259,13 +263,55 @@ class TestResponseProcessor(TestCase):
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
 
-    def test_transient(self):
-        """Test success"""
+    @patch("authentik.sources.saml.models.now")
+    def test_transient(self, mocked_now):
+        """Test SAML transient NameID with attributes"""
+        fixed_time = timezone.make_aware(timezone.datetime(2020, 10, 30, 19, 30))
+        mocked_now.return_value = fixed_time
         request = self.factory.post(
             "/",
             data={
                 "SAMLResponse": b64encode(
                     load_fixture("fixtures/response_transient.xml").encode()
+                ).decode()
+            },
+        )
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        username = "_8506547b023fc02080023cfacdfcb527"
+        self.assertEqual(
+            sfm.user_properties,
+            {
+                "username": username,
+                "path": self.source.get_user_path(),
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
+                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
+                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "attributes": {
+                    "goauthentik.io/user/expires": 1604172600.0,
+                    "goauthentik.io/user/generated": True,
+                    "goauthentik.io/user/transient-token": sha256(
+                        username.encode("utf-8")
+                    ).hexdigest(),
+                },
+            },
+        )
+
+    @patch("authentik.sources.saml.models.now")
+    def test_transient_simple(self, mocked_now):
+        """Test SAML transient NameID without attributes"""
+        mocked_now.return_value = timezone.make_aware(timezone.datetime(2020, 10, 30, 19, 30))
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_transient_simple.xml").encode()
                 ).decode()
             },
         )
@@ -276,4 +322,116 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
-        parser.prepare_flow_manager()
+        sfm = parser.prepare_flow_manager()
+        username = "_ef5783d83c0d4147212322815d7e4064"
+        self.assertEqual(
+            sfm.user_properties,
+            {
+                "username": username,
+                "path": self.source.get_user_path(),
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
+                "attributes": {
+                    "goauthentik.io/user/expires": 1604172600.0,
+                    "goauthentik.io/user/generated": True,
+                    "goauthentik.io/user/transient-token": sha256(
+                        username.encode("utf-8")
+                    ).hexdigest(),
+                },
+            },
+        )
+
+    def test_persistent(self):
+        """Test SAML persistent NameID"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_persistent.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(
+            sfm.user_properties,
+            {
+                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
+                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
+                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "username": "LHPJHTQTRBOHWQRFZIYHL7PASE67UJVM",
+                "path": self.source.get_user_path(),
+                "attributes": {},
+            },
+        )
+
+    def test_persistent_match_email(self):
+        """Test SAML persistent NameID witch email matching"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_persistent.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        self.source.user_matching_mode = SourceUserMatchingModes.EMAIL_LINK
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(
+            sfm.user_properties,
+            {
+                "email": "test001@example.org",
+                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
+                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
+                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "username": "test001@example.org",
+                "path": self.source.get_user_path(),
+                "attributes": {},
+            },
+        )
+
+    def test_persistent_match_eppn(self):
+        """Test SAML persistent NameID witch eppn matching"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_persistent.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(
+            sfm.user_properties,
+            {
+                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
+                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
+                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "username": "test001@example.org",
+                "path": self.source.get_user_path(),
+                "attributes": {},
+            },
+        )

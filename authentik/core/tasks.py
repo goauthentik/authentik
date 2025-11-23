@@ -49,9 +49,8 @@ def clean_temporary_users():
     for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
         if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
             continue
-        if sha256(user.username.encode("utf-8")).hexdigest() != user.attributes.get(
-            USER_ATTRIBUTE_TRANSIENT_TOKEN
-        ):
+        transient_token = user.attributes.get(USER_ATTRIBUTE_TRANSIENT_TOKEN)
+        if transient_token and sha256(user.username.encode("utf-8")).hexdigest() != transient_token:
             user.attributes.pop(USER_ATTRIBUTE_TRANSIENT_TOKEN, None)
             user.attributes.pop(USER_ATTRIBUTE_EXPIRES, None)
             user.save()
@@ -63,4 +62,5 @@ def clean_temporary_users():
             LOGGER.debug("User is expired and will be deleted.", user=user, delta=delta)
             user.delete()
             deleted_users += 1
+        print(f"Delta {delta}")
     self.info(f"Successfully deleted {deleted_users} users.")
