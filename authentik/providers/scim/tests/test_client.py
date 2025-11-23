@@ -194,11 +194,11 @@ class SCIMClientTests(TestCase):
             mock.get("https://localhost/ServiceProviderConfig", json=config_json)
 
             # First client instantiation caches the config
-            client1 = SCIMClient(self.provider)
+            SCIMClient(self.provider)
             self.assertEqual(mock.call_count, 1)
 
             # Creating another client should use cached config
-            client2 = SCIMClient(self.provider)
+            SCIMClient(self.provider)
             self.assertEqual(mock.call_count, 1)  # Still 1, using cache
 
             # Save the provider (e.g., changing compatibility mode)
@@ -206,5 +206,5 @@ class SCIMClientTests(TestCase):
             self.provider.save()
 
             # Creating a new client should now hit the API again since cache was cleared
-            client3 = SCIMClient(self.provider)
+            SCIMClient(self.provider)
             self.assertEqual(mock.call_count, 2)  # New API call after cache invalidation
