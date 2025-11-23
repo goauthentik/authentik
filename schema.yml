@@ -32507,6 +32507,10 @@ components:
           readOnly: true
         authorization_flow:
           type: string
+        jwks:
+          type: object
+          additionalProperties: {}
+          readOnly: true
         nss_uid_offset:
           type: integer
         nss_gid_offset:
@@ -32517,6 +32521,7 @@ components:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - domain_name
+      - jwks
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
