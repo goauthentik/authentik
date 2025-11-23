@@ -978,7 +978,11 @@ func generateTestCerts(t *testing.T) (rootCertPath, clientCertPath, clientKeyPat
 	rootCertPath = filepath.Join(tmpDir, "root.crt")
 	rootCertFile, err := os.Create(rootCertPath)
 	require.NoError(t, err)
-	defer rootCertFile.Close()
+	defer func() {
+		if closeErr := rootCertFile.Close(); closeErr != nil {
+			t.Logf("failed to close root cert file: %v", closeErr)
+		}
+	}()
 	err = pem.Encode(rootCertFile, &pem.Block{Type: "CERTIFICATE", Bytes: caCertDER})
 	require.NoError(t, err)
 
@@ -1005,7 +1009,11 @@ func generateTestCerts(t *testing.T) (rootCertPath, clientCertPath, clientKeyPat
 	clientCertPath = filepath.Join(tmpDir, "client.crt")
 	clientCertFile, err := os.Create(clientCertPath)
 	require.NoError(t, err)
-	defer clientCertFile.Close()
+	defer func() {
+		if closeErr := clientCertFile.Close(); closeErr != nil {
+			t.Logf("failed to close client cert file: %v", closeErr)
+		}
+	}()
 	err = pem.Encode(clientCertFile, &pem.Block{Type: "CERTIFICATE", Bytes: clientCertDER})
 	require.NoError(t, err)
 
@@ -1013,7 +1021,11 @@ func generateTestCerts(t *testing.T) (rootCertPath, clientCertPath, clientKeyPat
 	clientKeyPath = filepath.Join(tmpDir, "client.key")
 	clientKeyFile, err := os.Create(clientKeyPath)
 	require.NoError(t, err)
-	defer clientKeyFile.Close()
+	defer func() {
+		if closeErr := clientKeyFile.Close(); closeErr != nil {
+			t.Logf("failed to close client key file: %v", closeErr)
+		}
+	}()
 	clientKeyBytes := x509.MarshalPKCS1PrivateKey(clientKey)
 	err = pem.Encode(clientKeyFile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: clientKeyBytes})
 	require.NoError(t, err)
