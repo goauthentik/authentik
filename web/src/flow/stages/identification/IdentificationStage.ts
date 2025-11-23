@@ -259,7 +259,7 @@ export class IdentificationStage extends BaseStage<
                 class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
                 aria-label=${msg(str`Continue with ${source.name}`)}
             >
-                ${source.name}
+                ${msg(str`Continue with ${source.name}`)}
             </button>`;
         }
 
@@ -272,7 +272,7 @@ export class IdentificationStage extends BaseStage<
             }}
             part="source-item"
             name=${`source-${kebabCase(source.name)}`}
-            class="pf-c-button pf-m-block source-button"
+            class="pf-c-button source-button"
             aria-label=${msg(str`Continue with ${source.name}`)}
         >
             <span class="pf-c-button__icon pf-m-start">${icon}</span>
