@@ -18,6 +18,7 @@ fieldset[name="login-sources"] {
         align-items: center;
         justify-content: center;
         gap: var(--pf-global--spacer--sm);
+        flex: 0 1 auto;
 
         &:hover {
             background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
@@ -26,6 +27,12 @@ fieldset[name="login-sources"] {
         .pf-c-button__icon {
             line-height: 1;
         }
+    }
+
+    .source-button-promoted {
+        flex: 1 1 100%;
+        width: 100%;
+        margin-block-end: var(--pf-global--spacer--sm);
     }
 
     .pf-c-button__icon img {

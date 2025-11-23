@@ -725,6 +725,13 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
+    promoted = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, this source will be displayed as a prominent button on the "
+            "login page, instead of a small icon."
+        ),
+    )
     user_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
     )

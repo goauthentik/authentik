@@ -244,7 +244,26 @@ export class IdentificationStage extends BaseStage<
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
+        const isPromoted = source.promoted ?? false;
 
+        // Promoted source
+        if (isPromoted) {
+            return html`<button
+                type="button"
+                @click=${() => {
+                    if (!this.host) return;
+                    this.host.challenge = source.challenge;
+                }}
+                part="source-item source-item-promoted"
+                name=${`source-${kebabCase(source.name)}`}
+                class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+                aria-label=${msg(str`Continue with ${source.name}`)}
+            >
+                ${source.name}
+            </button>`;
+        }
+
+        // Non-promoted sources (the default one)
         return html`<button
             type="button"
             @click=${() => {
@@ -419,7 +438,14 @@ export class IdentificationStage extends BaseStage<
                   >
                       <legend class="sr-only">${msg("Login sources")}</legend>
                       ${repeat(
-                          this.challenge.sources,
+                          [...this.challenge.sources].sort((a, b) => {
+                              // Sort promoted sources first
+                              const aPromoted = a.promoted ?? false;
+                              const bPromoted = b.promoted ?? false;
+                              if (aPromoted && !bPromoted) return -1;
+                              if (!aPromoted && bPromoted) return 1;
+                              return 0;
+                          }),
                           (source, idx) => source.name + idx,
                           (source) => this.renderSource(source),
                       )}
