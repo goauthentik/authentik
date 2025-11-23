@@ -20,7 +20,7 @@ const AK_KEEP_UNUSED_IMPORTS = !!process.env.AK_KEEP_UNUSED_IMPORTS;
 function resolveModule(name) {
     try {
         return require.resolve(name);
-    } catch (error) {
+    } catch (_error) {
         return null;
     }
 }
@@ -61,12 +61,12 @@ function normalizeImports(filepath, input) {
             [
                 // ---
                 `(?:import|from)`,
-                `\\\(?\\n?\\s*`,
-                `"(?<suffix>@goauthentik\/${submodule}\/)`,
+                `\\(?\\n?\\s*`,
+                `"(?<suffix>@goauthentik/${submodule}/)`,
 
                 `(?<path>[^"'.]+)`,
                 `(?:.[^"']+)?["']`,
-                `\\n?\\s*\\\)?;`,
+                `\\n?\\s*\\)?;`,
             ].join(""),
             "gm",
         );
