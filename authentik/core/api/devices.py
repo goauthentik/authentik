@@ -77,7 +77,7 @@ class AdminDeviceViewSet(ViewSet):
         """Get all devices in all child classes"""
         for model in device_classes():
             device_set = get_objects_for_user(
-                self.request.user, f"{model._meta.app_label}.view_{model._meta.model_name}", model
+                self.request.user, f"{model._meta.app_label}.view_{model._meta.model_name}"
             ).filter(**kwargs)
             yield from device_set
 

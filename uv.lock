@@ -197,7 +197,6 @@ dependencies = [
     { name = "django-tenants" },
     { name = "djangoql" },
     { name = "djangorestframework" },
-    { name = "djangorestframework-guardian" },
     { name = "docker" },
     { name = "drf-orjson-renderer" },
     { name = "drf-spectacular" },
@@ -302,7 +301,6 @@ requires-dist = [
     { name = "django-tenants", specifier = "==3.9.0" },
     { name = "djangoql", specifier = "==0.18.1" },
     { name = "djangorestframework", specifier = "==3.16.1" },
-    { name = "djangorestframework-guardian", specifier = "==0.4.0" },
     { name = "docker", specifier = "==7.1.0" },
     { name = "drf-orjson-renderer", specifier = "==1.7.3" },
     { name = "drf-spectacular", specifier = "==0.28.0" },
@@ -1270,20 +1268,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8a/95/5376fe618646fde6899b3cdc85fd959716bb67542e273a76a80d9f326f27/djangorestframework-3.16.1.tar.gz", hash = "sha256:166809528b1aced0a17dc66c24492af18049f2c9420dbd0be29422029cfc3ff7", size = 1089735, upload-time = "2025-08-06T17:50:53.251Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b0/ce/bf8b9d3f415be4ac5588545b5fcdbbb841977db1c1d923f7568eeabe1689/djangorestframework-3.16.1-py3-none-any.whl", hash = "sha256:33a59f47fb9c85ede792cbf88bde71893bcda0667bc573f784649521f1102cec", size = 1080442, upload-time = "2025-08-06T17:50:50.667Z" },
-]
-
-[[package]]
-name = "djangorestframework-guardian"
-version = "0.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "django-guardian" },
-    { name = "djangorestframework" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c1/c4/67df9963395e9dddd4e16cbf75098953798e5135f73fb8f4855895505e39/djangorestframework_guardian-0.4.0.tar.gz", hash = "sha256:a8113659e062f65b74cc31af6982420c382642e782d38581b3fdc748a179756c", size = 8239, upload-time = "2025-07-01T07:22:10.809Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/81/3d62f7ff71f7c45ec6664ebf03a4c736bf77f49481604361d40f8f4471e4/djangorestframework_guardian-0.4.0-py3-none-any.whl", hash = "sha256:30c2a349318c1cd603d6953d50d58159f9a0c833f5f8f5a811407d5984a39e14", size = 6064, upload-time = "2025-07-01T07:22:09.661Z" },
 ]
 
 [[package]]
