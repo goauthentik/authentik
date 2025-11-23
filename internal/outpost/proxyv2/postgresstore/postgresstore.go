@@ -115,8 +115,8 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 			// Set verification mode
 			switch cfg.SSLMode {
 			case "require":
-				// Verify the server certificate (secure by default)
-				tlsConfig.InsecureSkipVerify = false
+				// Don't verify the server certificate (just encrypt)
+				tlsConfig.InsecureSkipVerify = true
 			case "verify-ca":
 				// Verify the certificate is signed by a trusted CA
 				tlsConfig.InsecureSkipVerify = false
