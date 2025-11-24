@@ -309,6 +309,9 @@
         "format-imports": {
             "eslint": "$eslint"
         },
+        "node-fetch-commonjs": {
+            "node-domexception": "$node-domexception"
+        },
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
         }
