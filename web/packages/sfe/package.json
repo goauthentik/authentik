@@ -9,6 +9,10 @@
         "prettier-check": "prettier --cache --check -u .",
         "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
     },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json"
+    },
     "dependencies": {
         "@goauthentik/api": "^2025.10.0-rc1-1760106928",
         "@goauthentik/core": "^1.0.0",
@@ -17,26 +21,25 @@
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.7.9",
         "@swc/core": "^1.15.3",
-        "@trivago/prettier-plugin-sort-imports": "^6.0.0",
         "base64-js": "^1.5.1",
-        "bootstrap": "^4.6.2",
-        "formdata-polyfill": "^4.0.10",
+        "bootstrap": "^5.3.8",
+        "formdata-polyfill": "^2025.11.0",
+        "globby": "16.0.0",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",
         "rollup": "^4.53.3",
-        "rollup-plugin-copy": "^3.5.0",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
-        "@swc/core-darwin-arm64": "^1.6.13",
-        "@swc/core-darwin-x64": "^1.6.13",
-        "@swc/core-linux-arm-gnueabihf": "^1.6.13",
-        "@swc/core-linux-arm64-gnu": "^1.6.13",
-        "@swc/core-linux-arm64-musl": "^1.6.13",
-        "@swc/core-linux-x64-gnu": "^1.6.13",
-        "@swc/core-linux-x64-musl": "^1.6.13",
-        "@swc/core-win32-arm64-msvc": "^1.6.13",
-        "@swc/core-win32-ia32-msvc": "^1.6.13",
-        "@swc/core-win32-x64-msvc": "^1.6.13"
+        "@swc/core-darwin-arm64": "^1.15.3",
+        "@swc/core-darwin-x64": "^1.15.3",
+        "@swc/core-linux-arm-gnueabihf": "^1.15.3",
+        "@swc/core-linux-arm64-gnu": "^1.15.3",
+        "@swc/core-linux-arm64-musl": "^1.15.3",
+        "@swc/core-linux-x64-gnu": "^1.15.3",
+        "@swc/core-linux-x64-musl": "^1.15.3",
+        "@swc/core-win32-arm64-msvc": "^1.15.3",
+        "@swc/core-win32-ia32-msvc": "^1.15.3",
+        "@swc/core-win32-x64-msvc": "^1.15.3"
     }
 }

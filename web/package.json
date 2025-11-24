@@ -92,7 +92,7 @@
         "@codemirror/lang-xml": "^6.1.0",
         "@codemirror/legacy-modes": "^6.5.2",
         "@codemirror/theme-one-dark": "^6.1.3",
-        "@eslint/js": "^9.31.0",
+        "@eslint/js": "^9.39.1",
         "@floating-ui/dom": "^1.7.4",
         "@formatjs/intl-listformat": "^7.7.13",
         "@fortawesome/fontawesome-free": "^7.1.0",
@@ -116,7 +116,7 @@
         "@patternfly/elements": "^4.2.0",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.56.1",
-        "@sentry/browser": "^10.25.0",
+        "@sentry/browser": "^10.26.0",
         "@storybook/addon-docs": "^10.0.8",
         "@storybook/addon-links": "^10.0.8",
         "@storybook/web-components": "^10.0.8",
@@ -124,26 +124,25 @@
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.4",
-        "@types/mocha": "^10.0.10",
         "@types/node": "^24.10.1",
-        "@types/react": "^19.2.6",
+        "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.38.0",
-        "@typescript-eslint/parser": "^8.38.0",
-        "@vitest/browser": "^4.0.10",
-        "@vitest/browser-playwright": "^4.0.10",
+        "@typescript-eslint/eslint-plugin": "^8.47.0",
+        "@typescript-eslint/parser": "^8.47.0",
+        "@vitest/browser": "^4.0.13",
+        "@vitest/browser-playwright": "^4.0.13",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
         "chart.js": "^4.5.1",
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
-        "core-js": "^3.46.0",
-        "country-flag-icons": "^1.6.1",
+        "core-js": "^3.47.0",
+        "country-flag-icons": "^1.6.4",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.3.0",
-        "esbuild": "^0.25.11",
+        "esbuild": "^0.27.0",
         "esbuild-plugin-copy": "^2.1.1",
         "eslint": "^9.39.1",
         "eslint-plugin-lit": "^2.1.1",
@@ -152,17 +151,19 @@
         "globals": "^16.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.70.0",
+        "knip": "^5.70.1",
+        "lex": "^2025.11.0",
         "lit": "^3.3.1",
         "lit-analyzer": "^2.0.3",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.12.0",
+        "mermaid": "^11.12.1",
+        "node-domexception": "^2025.11.0",
         "npm-run-all": "^4.1.5",
         "pino": "^10.1.0",
         "pino-pretty": "^13.1.2",
         "playwright": "^1.55.1",
         "prettier": "^3.6.2",
-        "pseudolocale": "^2.1.0",
+        "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
@@ -174,7 +175,7 @@
         "remark-frontmatter": "^5.0.0",
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.2.0",
-        "storybook": "^10.0.3",
+        "storybook": "^10.0.8",
         "style-mod": "^4.1.3",
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.9.0",
@@ -183,21 +184,20 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.47.0",
         "unist-util-visit": "^5.0.0",
-        "vite": "^7.2.2",
-        "vitest": "^4.0.10",
+        "vite": "^7.2.4",
+        "vitest": "^4.0.13",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
         "yaml": "^2.8.1"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.25.4",
-        "@esbuild/linux-arm64": "^0.25.4",
-        "@esbuild/linux-x64": "^0.25.4",
+        "@esbuild/darwin-arm64": "^0.27.0",
+        "@esbuild/linux-arm64": "^0.27.0",
+        "@esbuild/linux-x64": "^0.27.0",
         "@rollup/rollup-darwin-arm64": "^4.53.3",
         "@rollup/rollup-linux-arm64-gnu": "^4.53.3",
         "@rollup/rollup-linux-x64-gnu": "^4.53.3",
-        "chromedriver": "^141.0.4",
-        "p-iteration": "^1.1.8"
+        "chromedriver": "^142.0.3"
     },
     "wireit": {
         "build": {
@@ -229,8 +229,7 @@
                 "./dist/styles/**"
             ],
             "dependencies": [
-                "build-locales",
-                "build:sfe"
+                "build-locales"
             ],
             "env": {
                 "NODE_RUNNER": {
@@ -294,21 +293,28 @@
         }
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "workspaces": [
         "./packages/*"
     ],
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
-        "chromedriver": {
-            "axios": "^1.8.4"
+        "@goauthentik/esbuild-plugin-live-reload": {
+            "esbuild": "$esbuild"
+        },
+        "@mrmarble/djangoql-completion": {
+            "lex": "$lex"
         },
         "format-imports": {
             "eslint": "$eslint"
         },
+        "node-fetch-commonjs": {
+            "node-domexception": "$node-domexception"
+        },
         "rapidoc": {
-            "@apitools/openapi-parser@": "0.0.37"
+            "@apitools/openapi-parser": "0.0.37"
         }
     }
 }

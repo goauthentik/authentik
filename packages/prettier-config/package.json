@@ -5,6 +5,8 @@
     "license": "MIT",
     "scripts": {
         "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check ."
     },
@@ -28,18 +30,30 @@
         "format-imports": "^4.0.8"
     },
     "devDependencies": {
-        "@goauthentik/tsconfig": "^1.0.4",
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/tsconfig": "../tsconfig",
         "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.47.0",
+        "@typescript-eslint/parser": "^8.47.0",
+        "eslint": "^9.39.1",
         "prettier": "^3.6.2",
         "prettier-plugin-packagejson": "^2.5.19",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.47.0"
     },
     "peerDependencies": {
         "prettier": "^3.6.2",
         "prettier-plugin-packagejson": "^2.5.19"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/prettier-config"
     },
     "types": "./out/index.d.ts",
     "files": [

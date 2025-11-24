@@ -5,10 +5,10 @@ on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config/**
+      - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
-      - packages/tsconfig/**
+      - packages/docusaurus-config/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
@@ -24,10 +24,11 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` packages should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
+          - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
@@ -43,6 +44,8 @@ jobs:
         with:
           files: |
             ${{ matrix.package }}/package.json
+      - name: Install Dependencies
+        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}

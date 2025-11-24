@@ -89,6 +89,10 @@
     }
 }
 
+.ak-c-placeholder {
+    grid-area: main;
+}
+
 [data-theme="dark"] .pf-c-login,
 :host([theme="dark"]) .pf-c-login {
     --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
