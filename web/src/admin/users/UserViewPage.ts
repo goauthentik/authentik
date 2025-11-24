@@ -30,10 +30,10 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
-import { me } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
 
 import { setPageDetails } from "#components/ak-page-navbar";
@@ -45,7 +45,6 @@ import {
     CapabilitiesEnum,
     CoreApi,
     RbacPermissionsAssignedByRolesListModelEnum,
-    SessionUser,
     User,
 } from "@goauthentik/api";
 
@@ -66,26 +65,20 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
+export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement)) {
     @property({ type: Number })
     set userId(id: number) {
-        me().then((me) => {
-            this.me = me;
-            new CoreApi(DEFAULT_CONFIG)
-                .coreUsersRetrieve({
-                    id: id,
-                })
-                .then((user) => {
-                    this.user = user;
-                });
-        });
+        new CoreApi(DEFAULT_CONFIG)
+            .coreUsersRetrieve({
+                id: id,
+            })
+            .then((user) => {
+                this.user = user;
+            });
     }
 
-    @property({ attribute: false })
-    user?: User;
-
     @state()
-    me?: SessionUser;
+    protected user: User | null = null;
 
     static styles = [
         PFBase,
@@ -160,7 +153,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderActionButtons(user: User) {
         const canImpersonate =
-            this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.me?.user.pk;
+            this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>

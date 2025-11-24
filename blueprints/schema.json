@@ -464,46 +464,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_endpoints_connectors_agent.agentdeviceconnection"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceconnection"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentdeviceuserbinding"
                         },
                         "id": {
@@ -6086,48 +6046,6 @@
                 }
             }
         },
-        "model_authentik_endpoints_connectors_agent.agentdeviceconnection": {
-            "type": "object",
-            "properties": {
-                "device": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Device"
-                },
-                "connector": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Connector"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_endpoints_connectors_agent.agentdeviceconnection_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_agentdeviceconnection",
-                            "change_agentdeviceconnection",
-                            "delete_agentdeviceconnection",
-                            "view_agentdeviceconnection"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding": {
             "type": "object",
             "properties": {
@@ -8370,7 +8288,6 @@
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
-                        "authentik_endpoints_connectors_agent.agentdeviceconnection",
                         "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
