@@ -1,7 +1,7 @@
 /**
  * @file Common Docusaurus configuration utilities.
  *
- * @import { Config, DocusaurusConfig } from "@docusaurus/types"
+ * @import { Config } from "@docusaurus/types"
  * @import { UserThemeConfig, UserThemeConfigExtra } from "./theme.js"
  */
 
@@ -103,7 +103,7 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
         themeConfig: createThemeConfig(themeConfig),
     };
 
-    // @ts-ignore
+    // @ts-expect-error JSDoc types cannot infer that `overrides` is of the correct type.
     return deepmerge(config, overrides);
 }
 

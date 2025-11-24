@@ -55,7 +55,7 @@
         "typescript-eslint": "^8.47.0"
     },
     "peerDependencies": {
-        "esbuild": "^0.25.9"
+        "esbuild": "^0.27.0"
     },
     "engines": {
         "node": ">=24"
