@@ -23,16 +23,8 @@ a[data-icon]::after {
     content: attr(aria-label);
 }
 
-@media (max-width: 1300px) {
-    .navbar--fixed-top .navbar__items a[data-icon]::after {
-        display: none;
-    }
-}
-
-@media (max-width: 998px) {
-    .navbar--fixed-top .navbar__items a[data-icon] {
-        display: none;
-    }
+.navbar--fixed-top .navbar__items a[data-icon]::after {
+    display: none;
 }
 
 a[data-icon="github"]::before {
