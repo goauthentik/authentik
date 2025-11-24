@@ -10,7 +10,7 @@ import { formatSourceFromFile } from "format-imports";
 import { parsers as babelParsers } from "prettier/plugins/babel";
 import { parsers as typescriptParsers } from "prettier/plugins/typescript";
 
-const require = createRequire(process.cwd() + "/");
+const require = createRequire(`${process.cwd()}/`);
 const AK_KEEP_UNUSED_IMPORTS = !!process.env.AK_KEEP_UNUSED_IMPORTS;
 
 /**

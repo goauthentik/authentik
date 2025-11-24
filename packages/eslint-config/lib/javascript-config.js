@@ -69,7 +69,7 @@ export const javaScriptConfig = defineConfig({
         "no-fallthrough": "error",
         "no-func-assign": "error",
         "no-implied-eval": "error",
-        "no-implicit-coercion": "error",
+        "no-implicit-coercion": ["error", { allow: ["!!"] }],
         "no-implicit-globals": "error",
         "no-inner-declarations": ["error", "functions"],
         "no-invalid-regexp": "error",
