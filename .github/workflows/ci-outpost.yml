@@ -34,7 +34,7 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@0a35821d5c230e903fcfe077583637dea1b27b47 # v8
+        uses: golangci/golangci-lint-action@e7fa5ac41e1cf5b7d48e45e42232ce7ada589601 # v8
         with:
           version: latest
           args: --timeout 5000s --verbose
