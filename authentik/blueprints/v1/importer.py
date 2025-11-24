@@ -42,7 +42,12 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
-from authentik.endpoints.connectors.agent.models import DeviceToken as EndpointDeviceToken
+from authentik.endpoints.connectors.agent.models import (
+    AgentDeviceConnection,
+)
+from authentik.endpoints.connectors.agent.models import (
+    DeviceToken as EndpointDeviceToken,
+)
 from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceFactSnapshot
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
@@ -145,6 +150,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceToken,
         Device,
         DeviceConnection,
+        AgentDeviceConnection,
         DeviceFactSnapshot,
         DeviceToken,
         StreamEvent,

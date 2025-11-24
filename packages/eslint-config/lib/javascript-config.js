@@ -1,5 +1,6 @@
+import { defineConfig } from "eslint/config";
+
 // @ts-check
-import tseslint from "typescript-eslint";
 
 const MAX_DEPTH = 4;
 const MAX_NESTED_CALLBACKS = 4;
@@ -8,7 +9,7 @@ const MAX_PARAMS = 5;
 /**
  * ESLint configuration for JavaScript authentik projects.
  */
-export const javaScriptConfig = tseslint.config({
+export const javaScriptConfig = defineConfig({
     rules: {
         // TODO: Clean up before enabling.
         "accessor-pairs": "off",
@@ -68,7 +69,7 @@ export const javaScriptConfig = tseslint.config({
         "no-fallthrough": "error",
         "no-func-assign": "error",
         "no-implied-eval": "error",
-        "no-implicit-coercion": "error",
+        "no-implicit-coercion": ["error", { allow: ["!!"] }],
         "no-implicit-globals": "error",
         "no-inner-declarations": ["error", "functions"],
         "no-invalid-regexp": "error",

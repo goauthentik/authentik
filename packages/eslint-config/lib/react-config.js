@@ -1,11 +1,13 @@
 import reactPlugin from "eslint-plugin-react";
 import hooksPlugin from "eslint-plugin-react-hooks";
-import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+
+// @ts-check
 
 /**
  * ESLint configuration for React authentik projects.
  */
-export const reactConfig = tseslint.config({
+export const reactConfig = defineConfig({
     settings: {
         react: {
             version: "detect",

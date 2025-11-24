@@ -18,6 +18,7 @@ import {
 import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
+import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
@@ -136,8 +137,8 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
-        if (changedProperties.has("session")) {
-            if (isAPIResultReady(this.session) && !canAccessAdmin(this.session.user)) {
+        if (changedProperties.has("session") && isAPIResultReady(this.session)) {
+            if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
                 window.location.assign("/if/user/");
             }
         }
