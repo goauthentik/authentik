@@ -44,7 +44,7 @@ jobs:
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: extract-compile-backend-translation
