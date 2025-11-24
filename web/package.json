@@ -193,9 +193,9 @@
         "@esbuild/darwin-arm64": "^0.25.4",
         "@esbuild/linux-arm64": "^0.25.4",
         "@esbuild/linux-x64": "^0.25.4",
-        "@rollup/rollup-darwin-arm64": "^4.53.2",
-        "@rollup/rollup-linux-arm64-gnu": "^4.53.2",
-        "@rollup/rollup-linux-x64-gnu": "^4.53.2",
+        "@rollup/rollup-darwin-arm64": "^4.53.3",
+        "@rollup/rollup-linux-arm64-gnu": "^4.53.3",
+        "@rollup/rollup-linux-x64-gnu": "^4.53.3",
         "chromedriver": "^141.0.4",
         "p-iteration": "^1.1.8"
     },
