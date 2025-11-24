@@ -106,6 +106,11 @@ func (ws *WebServer) configureStatic() {
 		fsReports := http.FileServer(http.Dir(reportsPath))
 		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/reports/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				token := r.URL.Query().Get("token")
+				if token == "" {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
 				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsReports.ServeHTTP(w, r)
 			}),
