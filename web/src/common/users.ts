@@ -15,15 +15,15 @@ export interface ClientSessionPermissions {
 /**
  * The display name of the current user, according to their UI config settings.
  */
-export function formatUserDisplayName(user: UserSelf | null, uiConfig: UIConfig): string {
+export function formatUserDisplayName(user: UserSelf | null, uiConfig?: UIConfig): string {
     if (!user) return "";
 
-    const label = match(uiConfig.navbar.userDisplay)
+    const label = match(uiConfig?.navbar.userDisplay)
         .with(UserDisplay.username, () => user.username)
         .with(UserDisplay.name, () => user.name)
         .with(UserDisplay.email, () => user.email)
         .with(UserDisplay.none, () => null)
-        .otherwise(() => user.username);
+        .otherwise(() => user.name || user.username);
 
     return label || "";
 }
