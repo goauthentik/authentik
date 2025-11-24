@@ -26,6 +26,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.models import PolicyBindingModel
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
@@ -55,8 +56,8 @@ class PolicyAccessView(AccessMixin, View):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
 
-    provider: Provider
-    application: Application
+    provider: Provider | None  = None
+    application: Application | None = None
 
     def pre_permission_check(self):
         """Optionally hook in before permission check to check if a request is valid.
@@ -121,19 +122,28 @@ class PolicyAccessView(AccessMixin, View):
         """optionally modify the policy request"""
         return request
 
-    def user_has_access(self, user: User | None = None) -> PolicyResult:
+    def user_has_access(
+        self, user: User | None = None, pbm: PolicyBindingModel | None = None
+    ) -> PolicyResult:
         """Check if user has access to application."""
         user = user or self.request.user
-        policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)
+        policy_engine = PolicyEngine(
+            pbm or self.application, user or self.request.user, self.request
+        )
         policy_engine.use_cache = False
         policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()
         result = policy_engine.result
+        log_kwargs = {}
+        if pbm:
+            log_kwargs["pbm"] = pbm.pk
+        else:
+            log_kwargs["app"] = self.application.slug
         LOGGER.debug(
             "PolicyAccessView user_has_access",
             user=user.username,
-            app=self.application.slug,
             result=result,
+            **log_kwargs
         )
         if not result.passing:
             for message in result.messages:

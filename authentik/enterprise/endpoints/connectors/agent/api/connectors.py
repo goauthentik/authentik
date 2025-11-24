@@ -38,7 +38,7 @@ class AgentConnectorViewSetMixin:
         token: DeviceToken = request.auth
         auth_token = AuthenticationToken.objects.create(
             device=token.device.device,
-            connector=token.device.connector,
+            connector=token.device.connector.agentconnector,
         )
         return Response(
             {
