@@ -19443,6 +19443,7 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -19656,6 +19657,7 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -40698,6 +40700,7 @@ components:
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_agent.agentdeviceuserbinding
       - authentik_endpoints_connectors_agent.enrollmenttoken
       - authentik_enterprise.license
       - authentik_events.event

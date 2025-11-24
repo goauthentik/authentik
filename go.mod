@@ -8,7 +8,7 @@ require (
 	beryju.io/ldap v0.1.0
 	beryju.io/radius-eap v0.1.0
 	github.com/avast/retry-go/v4 v4.7.0
-	github.com/coreos/go-oidc/v3 v3.16.0
+	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/getsentry/sentry-go v0.38.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.12
@@ -32,7 +32,7 @@ require (
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025120.3
+	goauthentik.io/api/v3 v3.2025120.4
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.33.0
 	golang.org/x/sync v0.18.0
