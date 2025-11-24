@@ -24,10 +24,11 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` package should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
+          - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
