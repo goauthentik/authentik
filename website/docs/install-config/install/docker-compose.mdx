@@ -105,3 +105,17 @@ COMPOSE_PORT_HTTPS=443
 ```
 
 See [Configuration](../configuration/configuration.mdx) to change the internal ports. Be sure to run `docker compose up -d` to rebuild with the new port numbers.
+
+## Docker socket
+
+By default, the authentik Docker Compose file mounts the Docker socket to the authentik worker container:
+
+```yaml
+- /var/run/docker.sock:/var/run/docker.sock
+```
+
+This is required for [automatic deployment and management of authentik Outposts](../../add-secure-apps/outposts/integrations/docker.md).
+
+Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can utilize a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
+
+Alternatively you can remove this mount and instead [manually deploy and manage Outposts](../../add-secure-apps/outposts/manual-deploy-docker-compose.md).
