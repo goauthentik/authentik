@@ -47,7 +47,8 @@
         "prettier-plugin-packagejson": "^2.5.19"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "repository": {
         "type": "git",

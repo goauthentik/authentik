@@ -58,7 +58,8 @@
         "esbuild": "^0.27.0"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "keywords": [
         "esbuild",

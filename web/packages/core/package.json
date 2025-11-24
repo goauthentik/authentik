@@ -50,7 +50,8 @@
         "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "types": "./out/index.d.ts"
 }

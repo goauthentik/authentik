@@ -9,7 +9,8 @@
     "main": "tsconfig.json",
     "type": "module",
     "engines": {
-        "node": ">=20.11"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "keywords": [
         "tsconfig",

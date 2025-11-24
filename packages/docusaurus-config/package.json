@@ -55,7 +55,8 @@
         "react-dom": ">=18"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "repository": {
         "type": "git",

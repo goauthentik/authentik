@@ -32,6 +32,7 @@
         "unist-util-visit": "^5.0.0"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     }
 }
