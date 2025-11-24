@@ -47,7 +47,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:55c15144167fe7daeca1344da9f8020ee6d327ad23865015c2eab7f352045633
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:8b7e8d0ba3b768289dd405b71d31cfecae00aeef8c2fb7075459d236f1630159
 
 ARG VERSION
 ARG GIT_BUILD_HASH
