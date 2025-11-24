@@ -73,7 +73,7 @@ jobs:
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
       - name: Create pull request
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: release-bump-${{ inputs.next_version }}
