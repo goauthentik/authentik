@@ -19,6 +19,7 @@ const ESLintConfig = createESLintPackageConfig({
         "src/locale-codes.ts",
         "storybook-static/",
         "src/locales/",
+        "**/*.min.js",
     ],
 });
 

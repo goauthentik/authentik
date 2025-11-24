@@ -11,23 +11,7 @@
     },
     "type": "module",
     "exports": {
-        "./package.json": "./package.json",
-        "./*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "./*/browser.min": {
-            "types": "./out/*/browser.min.d.ts",
-            "import": "./*/browser.min.js"
-        },
-        "./*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "./*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+        "./package.json": "./package.json"
     },
     "dependencies": {
         "@goauthentik/api": "^2025.10.0-rc1-1760106928",
@@ -39,6 +23,7 @@
         "@swc/core": "^1.15.3",
         "base64-js": "^1.5.1",
         "bootstrap": "^5.3.8",
+        "formdata-polyfill": "^2025.11.0",
         "globby": "16.0.0",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",

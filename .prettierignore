@@ -22,10 +22,11 @@ website/api/reference
 ## Yarn
 .yarn/**/*
 
-## Node
+## JavaScript
 node_modules
 coverage
 vendored
+*.min.js
 
 ## Configs
 *.log
