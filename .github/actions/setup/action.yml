@@ -21,7 +21,7 @@ runs:
         sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3 # v5
+      uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244 # v5
       with:
         enable-cache: true
     - name: Setup python
