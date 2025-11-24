@@ -9,6 +9,26 @@
         "prettier-check": "prettier --cache --check -u .",
         "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
     },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/browser.min": {
+            "types": "./out/*/browser.min.d.ts",
+            "import": "./*/browser.min.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
     "dependencies": {
         "@goauthentik/api": "^2025.10.0-rc1-1760106928",
         "@goauthentik/core": "^1.0.0",
@@ -16,15 +36,13 @@
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.7.9",
-        "@swc/core": "^1.15.2",
-        "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+        "@swc/core": "^1.15.3",
         "base64-js": "^1.5.1",
-        "bootstrap": "^4.6.2",
-        "formdata-polyfill": "^4.0.10",
+        "bootstrap": "^5.3.8",
+        "globby": "16.0.0",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",
-        "rollup": "^4.53.2",
-        "rollup-plugin-copy": "^3.5.0",
+        "rollup": "^4.52.2",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {

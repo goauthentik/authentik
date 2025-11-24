@@ -11,6 +11,7 @@ const ESLintConfig = createESLintPackageConfig({
     ignorePatterns: [
         "**/dist/**",
         "**/out/**",
+        "**/vendored/**",
         "**/.wireit/**",
         "**/node_modules/",
         "**/.storybook/*",

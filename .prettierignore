@@ -25,6 +25,7 @@ website/api/reference
 ## Node
 node_modules
 coverage
+vendored
 
 ## Configs
 *.log
