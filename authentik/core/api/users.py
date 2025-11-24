@@ -147,7 +147,8 @@ class UserSerializer(ModelSerializer):
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return PartialGroupSerializer(instance.ak_groups, many=True).data
+        # Use .all() to access prefetched data instead of triggering new queries
+        return PartialGroupSerializer(instance.ak_groups.all(), many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -452,9 +453,31 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         ]
 
     def get_queryset(self):
+        from django.db.models import Exists, OuterRef, Prefetch, Q
+
+        from authentik.core.models import Group
+
         base_qs = User.objects.all().exclude_anonymous()
+
+        # Annotate is_superuser to avoid expensive recursive CTE for each user
+        # This checks if user is in any superuser group
+        base_qs = base_qs.annotate(
+            is_superuser=Exists(
+                Group.objects.filter(Q(users=OuterRef("pk")) & Q(is_superuser=True))
+            )
+        )
+
+        # Always prefetch groups since UserSerializer includes 'groups' field for PKs
         if self.serializer_class(context={"request": self.request})._should_include_groups:
-            base_qs = base_qs.prefetch_related("ak_groups")
+            # When including full group data, prefetch with parent selected
+            base_qs = base_qs.prefetch_related(
+                Prefetch("ak_groups", queryset=Group.objects.select_related("parent"))
+            )
+        else:
+            # When only needing PKs, just prefetch minimal data
+            base_qs = base_qs.prefetch_related(
+                Prefetch("ak_groups", queryset=Group.objects.all().only("pk"))
+            )
         return base_qs
 
     @extend_schema(
