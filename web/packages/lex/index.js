@@ -204,23 +204,27 @@ export class Lexer {
                 pattern.lastIndex = lastIndex;
                 const result = pattern.exec(input);
 
-                if (result && result.index === lastIndex) {
-                    let j = matches.push({
-                        result: result,
-                        action: rule.action,
-                        length: result[0].length,
-                    });
+                if (!result || result.index !== lastIndex) {
+                    continue;
+                }
 
-                    if (rule.global) index = j;
+                let j = matches.push({
+                    result: result,
+                    action: rule.action,
+                    length: result[0].length,
+                });
 
-                    while (--j > index) {
-                        const k = j - 1;
+                if (rule.global) {
+                    index = j;
+                }
 
-                        if (matches[j].length > matches[k].length) {
-                            const temple = matches[j];
-                            matches[j] = matches[k];
-                            matches[k] = temple;
-                        }
+                while (--j > index) {
+                    const k = j - 1;
+
+                    if (matches[j].length > matches[k].length) {
+                        const temple = matches[j];
+                        matches[j] = matches[k];
+                        matches[k] = temple;
                     }
                 }
             }
