@@ -1,4 +1,4 @@
-import "@goauthentik/web-sfe/vendored/formdata-polyfill/browser.min";
+import "formdata-polyfill";
 import "weakmap-polyfill";
 
 import {
