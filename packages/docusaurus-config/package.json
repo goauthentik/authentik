@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.1.2",
+    "version": "2.2.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "scripts": {
@@ -22,20 +22,20 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "^3.8.1",
-        "@docusaurus/theme-search-algolia": "^3.8.1",
-        "@docusaurus/types": "^3.8.1",
+        "@docusaurus/theme-common": "3.9.2",
+        "@docusaurus/theme-search-algolia": "^3.9.2",
+        "@docusaurus/types": "^3.9.2",
         "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
-        "@types/react": "^19.1.6",
-        "@types/react-dom": "^19.1.5",
-        "prettier": "^3.5.3",
-        "typescript": "^5.8.3"
+        "@types/react": "^19.2.7",
+        "@types/react-dom": "^19.2.3",
+        "prettier": "^3.6.2",
+        "typescript": "^5.9.3"
     },
     "peerDependencies": {
-        "@docusaurus/theme-common": "^3.8.1",
-        "@docusaurus/theme-search-algolia": "^3.8.1",
-        "@docusaurus/types": "^3.8.0",
+        "@docusaurus/theme-common": "^3.9.2",
+        "@docusaurus/theme-search-algolia": "^3.9.2",
+        "@docusaurus/types": "^3.9.2",
         "react": ">=18",
         "react-dom": ">=18"
     },
