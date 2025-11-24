@@ -19443,6 +19443,8 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceconnection
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -19656,6 +19658,8 @@ paths:
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
+          - authentik_endpoints_connectors_agent.agentdeviceconnection
+          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
           - authentik_events.event
@@ -38695,6 +38699,10 @@ components:
         enable_remember_me:
           type: boolean
           default: true
+        passkey_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -38711,15 +38719,17 @@ components:
           default: ak-stage-identification
         uid_field:
           type: string
-          minLength: 1
+          nullable: true
         password:
           type: string
           nullable: true
         captcha_token:
           type: string
           nullable: true
-      required:
-      - uid_field
+        passkey:
+          type: object
+          additionalProperties: {}
+          nullable: true
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -38811,6 +38821,14 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        passkey_login:
+          type: boolean
+          description: When enabled, provides a WebAuthn challenge to the user in
+            the browser's autofill dropdown, allowing passwordless login with passkeys.
+        passkey_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for passkey authentication.
       required:
       - component
       - meta_model_name
@@ -38889,6 +38907,14 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        passkey_login:
+          type: boolean
+          description: When enabled, provides a WebAuthn challenge to the user in
+            the browser's autofill dropdown, allowing passwordless login with passkeys.
+        passkey_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for passkey authentication.
       required:
       - name
     IframeLogoutChallenge:
@@ -40698,6 +40724,8 @@ components:
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
+      - authentik_endpoints_connectors_agent.agentdeviceconnection
+      - authentik_endpoints_connectors_agent.agentdeviceuserbinding
       - authentik_endpoints_connectors_agent.enrollmenttoken
       - authentik_enterprise.license
       - authentik_events.event
@@ -46114,6 +46142,14 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        passkey_login:
+          type: boolean
+          description: When enabled, provides a WebAuthn challenge to the user in
+            the browser's autofill dropdown, allowing passwordless login with passkeys.
+        passkey_user_verification:
+          allOf:
+          - $ref: '#/components/schemas/UserVerificationEnum'
+          description: Enforce user verification for passkey authentication.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
