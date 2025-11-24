@@ -138,4 +138,5 @@ class AuthenticationToken(ExpiringModel):
 
     identifier = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
     secret = models.TextField(default=generate_key(), unique=True)

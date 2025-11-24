@@ -44,9 +44,7 @@ class EnrollResponseSerializer(PassiveSerializer):
     token = CharField()
 
 
-class AgentAuthenticationRequest(PassiveSerializer): ...
-
-
 class AgentAuthenticationResponse(PassiveSerializer):
 
     url = CharField()
+    nonce = CharField()

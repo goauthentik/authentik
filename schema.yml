@@ -5056,9 +5056,35 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agents/connectors/authenticate_interactive/:
+  /endpoints/agents/connectors/auth_fed/:
     post:
-      operationId: endpoints_agents_connectors_authenticate_interactive_create
+      operationId: endpoints_agents_connectors_auth_fed_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/auth_ia/:
+    post:
+      operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
       tags:
@@ -32494,7 +32520,10 @@ components:
       properties:
         url:
           type: string
+        nonce:
+          type: string
       required:
+      - nonce
       - url
     AgentConfig:
       type: object
