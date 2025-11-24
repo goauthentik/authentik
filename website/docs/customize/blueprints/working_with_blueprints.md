@@ -14,7 +14,7 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
 
 ### Add and apply a new blueprint instance
 
-1. Log in as an administrator to authentik and open the Admin interface.
+1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Customization** > **Blueprints**.
 3. Click **Create** and define the new blueprint instance.
     - **Name**: provide a descriptive name.
@@ -30,13 +30,13 @@ You can apply a new flow from either the **Flows** page or the **Blueprints** pa
 
 #### Flows page
 
-1. Log in as an administrator to authentik and open the Admin interface.
+1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Flows and Stages > Flows**, then click **Import**.
 3. Under **Flow**, select the YAML file to import. Typically this is a file you [exported](./export.mdx) and saved to your local file system.
 
 #### Blueprints page
 
-1. Log in as an administrator to authentik and open the Admin interface.
+1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Customization > Blueprints**.
 3. Select the blueprint, and, under **Actions**, click the **Apply** icon.
 
