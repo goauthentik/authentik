@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.utils.timezone import now
 from jwt import encode
@@ -36,9 +38,10 @@ class AgentInteractiveAuth(PolicyAccessView):
             {
                 "iss": "goauthentik.io/platform",
                 "aud": str(self.device.pk),
-                "iat": int(now().timestamp()),
                 "jti": str(self.auth_token.identifier),
-                # "sub":
+                "iat": int(now().timestamp()),
+                "exp": int((now() + timedelta(days=3)).timestamp()),
+                "preferred_username": request.user.username,
             },
             kp.private_key,
             algorithm=JWTAlgorithms.from_private_key(kp.private_key),
