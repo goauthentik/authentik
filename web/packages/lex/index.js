@@ -11,17 +11,21 @@
  */
 
 /**
+ * @typedef {(this: Lexer, ...args: RegExpExecArray) => string | string[] | undefined} RuleAction
+ */
+
+/**
  * @typedef {Object} Rule
  * @property {RegExp} pattern
  * @property {boolean} global
- * @property {Function} action
+ * @property {RuleAction} action
  * @property {number[]} start
  */
 
 /**
  * @typedef {Object} Match
  * @property {RegExpExecArray} result
- * @property {Function} action
+ * @property {RuleAction} action
  * @property {number} length
  */
 
@@ -69,7 +73,7 @@ export class Lexer {
      * Add a lexing rule.
      *
      * @param {RegExp} pattern
-     * @param {Function} action
+     * @param {RuleAction} action
      * @param {number[]} [start]
      * @returns {Lexer}
      */
@@ -115,6 +119,7 @@ export class Lexer {
     /**
      * Lex the next token from the input.
      *
+     * @returns {string | string[] | undefined}
      */
     lex = () => {
         if (this.tokens.length) return this.tokens.shift();
@@ -126,29 +131,30 @@ export class Lexer {
             const index = this.index;
 
             while (matches.length) {
+                if (!this.reject) {
+                    break;
+                }
+                const match = matches.shift();
+
+                if (!match) break;
+
+                const result = match.result;
+                const length = match.length;
+                this.index += length;
+                this.reject = false;
+                this.remove++;
+
+                let token = match.action.apply(this, result);
+
                 if (this.reject) {
-                    const match = matches.shift();
-
-                    if (!match) break;
-
-                    const result = match.result;
-                    const length = match.length;
-                    this.index += length;
-                    this.reject = false;
-                    this.remove++;
-
-                    var token = match.action.apply(this, result);
-                    if (this.reject) this.index = result.index;
-                    else if (typeof token !== "undefined") {
-                        if (Array.isArray(token)) {
-                            this.tokens = token.slice(1);
-                            token = token[0];
-                        } else {
-                            if (length) this.remove = 0;
-                            return token;
-                        }
-                    }
-                } else break;
+                    this.index = result.index;
+                } else if (Array.isArray(token)) {
+                    this.tokens = token.slice(1);
+                    token = token[0];
+                } else {
+                    if (length) this.remove = 0;
+                    return token;
+                }
             }
 
             const input = this.input;
@@ -156,7 +162,7 @@ export class Lexer {
             if (index < input.length) {
                 if (this.reject) {
                     this.remove = 0;
-                    var token = this.defunct(input.charAt(this.index++));
+                    const token = this.defunct(input.charAt(this.index++));
                     if (typeof token !== "undefined") {
                         if (Array.isArray(token)) {
                             this.tokens = token.slice(1);
@@ -172,6 +178,11 @@ export class Lexer {
         }
     };
 
+    /**
+     * Scan the input for matches.
+     *
+     * @returns {Match[]}
+     */
     scan = () => {
         /**
          * @type {Match[]}
