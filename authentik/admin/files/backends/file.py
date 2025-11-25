@@ -1,17 +1,21 @@
 import os
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
+from datetime import timedelta
 from pathlib import Path
 
+import jwt
 from django.conf import settings
 from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.backends.base import ManageableBackend
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.time import timedelta_from_string
 
 LOGGER = get_logger()
 
@@ -64,8 +68,25 @@ class FileBackend(ManageableBackend):
 
     def file_url(self, name: str, request: HttpRequest | None = None) -> str:
         """Get URL for accessing the file."""
+        expires_in = timedelta_from_string(
+            CONFIG.get(
+                f"storage.{self.usage.value}.{self.name}.presigned_expiry",
+                CONFIG.get(f"storage.{self.name}.presigned_expiry", "minutes=15"),
+            )
+        )
+
         prefix = CONFIG.get("web.path", "/")[:-1]
-        url = f"{prefix}/files/{self.usage.value}/{connection.schema_name}/{name}"
+        path = f"{self.usage.value}/{connection.schema_name}/{name}"
+        token = jwt.encode(
+            payload={
+                "path": path,
+                "exp": now() + expires_in,
+                "nbf": now() - timedelta(seconds=15),
+            },
+            key="key",
+            algorithm="HS256",
+        )
+        url = f"{prefix}/files/{path}?token={token}"
         if request is None:
             return url
         return request.build_absolute_uri(url)
