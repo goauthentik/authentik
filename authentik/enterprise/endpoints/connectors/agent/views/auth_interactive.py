@@ -43,6 +43,8 @@ class AgentInteractiveAuth(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         device_token_hash = request.headers.get("X-Authentik-Platform-Auth-DTH")
+        if not device_token_hash:
+            return HttpResponseBadRequest("Invalid device token")
         if not compare_digest(
             device_token_hash, sha256(self.auth_token.device_token.key.encode()).hexdigest()
         ):
@@ -78,6 +80,8 @@ class AgentAuthFulfillmentStage(StageView):
         )
 
         token, exp = agent_auth_issue_token(device, request.user, jti=str(auth_token.identifier))
+        if not token or not exp:
+            return self.executor.stage_invalid("Failed to generate token")
         auth_token.token = token
         auth_token.expires = exp
         auth_token.expiring = True
