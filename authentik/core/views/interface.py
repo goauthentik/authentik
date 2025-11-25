@@ -8,7 +8,6 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views.generic.base import RedirectView, TemplateView
-from rest_framework.request import Request
 
 from authentik import authentik_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
