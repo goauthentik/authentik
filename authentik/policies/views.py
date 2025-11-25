@@ -14,7 +14,7 @@ from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
-from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -119,7 +119,7 @@ class PolicyAccessView(AccessMixin, View):
         planner = FlowPlanner(flow)
         try:
             plan = planner.plan(self.request, self.modify_flow_context(flow, flow_context))
-        except FlowNonApplicableException as exc:
+        except (FlowNonApplicableException, EmptyFlowException) as exc:
             LOGGER.warning("Non-applicable authentication flow", exc=exc)
             raise Http404 from None
         return plan.to_redirect(self.request, flow)
