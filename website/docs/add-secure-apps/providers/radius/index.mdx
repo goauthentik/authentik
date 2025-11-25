@@ -7,7 +7,7 @@ import { HashSupport } from "./HashSupport";
 You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
 
 :::info
-This provider requires the deployment of the [RADIUS outpost](../../outposts/index.mdx)
+This provider requires the deployment of a [RADIUS outpost](../../outposts/index.mdx).
 :::
 
 Currently, only authentication requests are supported.
@@ -18,11 +18,13 @@ Authentication requests against the Radius Server use a flow in the background. 
 
 The following stages are supported:
 
-- [Identification](../../flows-stages/stages/identification/index.mdx)
-- [Password](../../flows-stages/stages/password/index.md)
-- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
+    - [Identification](../../flows-stages/stages/identification/index.mdx)
+    - [Password](../../flows-stages/stages/password/index.md)
+    - [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
 
-    Note: Authenticator validation currently only supports DUO, TOTP, and static authenticators.
+    :::info
+    Authenticator validation currently only supports DUO, TOTP, and static authenticator.
+    :::
 
     For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the MFA token `123456`, the input must be `example-password;123456`.
 
@@ -33,20 +35,34 @@ The following stages are supported:
 - [Deny](../../flows-stages/stages/deny.md)
 - [Mutual TLS stage](../../flows-stages/stages/mtls/index.md)
 
-### EAP
+### Protocol support
 
-<div className="badge-group">
+The RADIUS provider supports EAP-TLS and [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol. For password-based authentication, only PAP protocol is supported due to other password hashing methods requiring reversible password hashes, which we don’t support for security reasons.
 
-:ak-version[2025.10]
-:ak-enterprise
+<details>
+  <summary>RADIUS compatibility matrix for password-based authentication:</summary>
 
-</div>
+This table represents the password-hash compatibillity with various RADIUS protocols.
 
-authentik supports EAP with TLS as the inner protocol. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
+<HashSupport />
+</details>
+
+### EAP :ak-enterprise :ak-version[2025.10]
+
+authentik supports EAP with TLS as the inner protocol, between the application and transport layers to encrypt and secure communications. To set this up, a certificate authority needs to be available and client certificates need to be installed on machines, the configuration of which is outside of the scope of this document.
 
 #### EAP-TLS
 
-Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your certificate authority. Afterwards a certificate needs to be generated for the RADIUS outpost, which can be configured in the RADIUS provider. Once the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+Create an authentication flow with a [Mutual TLS stage](../../flows-stages/stages/mtls/index.md) as its first stage. This stage should be configured to use your CA's certificate. Afterwards a server certificate needs to be selected in the RADIUS provider (which serves as an outpost). Then, configure your RADIUS provider to use this authentication flow to enable EAP-TLS authentication. After the certificate and the authentication flow are configured in the provider, authentication via EAP-TLS is possible.
+
+For certificates, ensure that you use a client certificate and a server certificate that are created by a certificate authority, not a self-generated certificate.
+
+:::warning Use of trusted Certificate Authority
+
+For EAP-TLS, note that you should NOT use a globally known CA.
+
+Using private PKI certificates that are trusted by the end-device is best practise. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via EAP-TLS, and in addition you should implement [custom validation](../../flows-stages/flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+:::
 
 ### RADIUS attributes
 
@@ -67,9 +83,3 @@ return packet
 ```
 
 After creation, make sure to select the RADIUS property mapping in the RADIUS provider.
-
-### Limitations
-
-The RADIUS provider only supports the [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol:
-
-<HashSupport />

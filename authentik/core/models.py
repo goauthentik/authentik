@@ -16,7 +16,7 @@ from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
-from django.utils.functional import SimpleLazyObject, cached_property
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_cte import CTE, with_cte
@@ -45,18 +45,19 @@ from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGT
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
-USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
-USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
-USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
-USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
-USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
-USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
-USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
-USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
-USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
-USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
-USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
+_USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
+USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
+USER_ATTRIBUTE_GENERATED = f"{_USER_ATTR_PREFIX}/generated"
+USER_ATTRIBUTE_EXPIRES = f"{_USER_ATTR_PREFIX}/expires"
+USER_ATTRIBUTE_DELETE_ON_LOGOUT = f"{_USER_ATTR_PREFIX}/delete-on-logout"
+USER_ATTRIBUTE_SOURCES = f"{_USER_ATTR_PREFIX}/sources"
+USER_ATTRIBUTE_TOKEN_EXPIRING = f"{_USER_ATTR_PREFIX}/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = f"{_USER_ATTR_PREFIX}/token-maximum-lifetime"  # nosec
+USER_ATTRIBUTE_CHANGE_USERNAME = f"{_USER_ATTR_PREFIX}/can-change-username"
+USER_ATTRIBUTE_CHANGE_NAME = f"{_USER_ATTR_PREFIX}/can-change-name"
+USER_ATTRIBUTE_CHANGE_EMAIL = f"{_USER_ATTR_PREFIX}/can-change-email"
+USER_PATH_SERVICE_ACCOUNT = f"{USER_PATH_SYSTEM_PREFIX}/service-accounts"
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
@@ -582,24 +583,24 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
         if self.meta_icon.name.startswith("http"):
             return self.meta_icon.name
+        if self.meta_icon.name.startswith("fa://"):
+            return self.meta_icon.name
         if self.meta_icon.name.startswith("/"):
             return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
         return self.meta_icon.url
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+        from authentik.core.api.users import UserSerializer
+
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
         if user and url:
-            if isinstance(user, SimpleLazyObject):
-                user._setup()
-                user = user._wrapped
             try:
-                return url % user.__dict__
-
+                return url % UserSerializer(instance=user).data
             except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
@@ -733,6 +734,13 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
+    promoted = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, this source will be displayed as a prominent button on the "
+            "login page, instead of a small icon."
+        ),
+    )
     user_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
     )
@@ -790,6 +798,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
         if self.icon.name.startswith("http"):
+            return self.icon.name
+        if self.icon.name.startswith("fa://"):
             return self.icon.name
         if self.icon.name.startswith("/"):
             return CONFIG.get("web.path", "/")[:-1] + self.icon.name
@@ -935,7 +945,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Self"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):

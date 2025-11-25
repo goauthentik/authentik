@@ -1,19 +1,15 @@
 import "#elements/EmptyState";
 import "./ak-library-impl.js";
 
-import type { PageUIConfig } from "./types.js";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { rootInterface } from "#common/theme";
-import { me } from "#common/users";
+import { APIResult } from "#common/api/responses";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
-import type { UserInterface } from "#user/index.entrypoint";
-
 import { Application, CoreApi } from "@goauthentik/api";
 
-import { localized, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -31,44 +27,38 @@ import { customElement, state } from "lit/decorators.js";
 
 const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 
-@localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
-    @state()
-    protected ready = false;
+    static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
 
-    @state()
-    protected admin = false;
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
 
     /**
      * The list of applications. This is the *complete* list; the constructor fetches as many pages
      * as the server announces when page one is accessed, and then concatenates them all together.
      */
     @state()
-    protected apps: Application[] = [];
+    protected apps: APIResult<Application[]> = {
+        loading: true,
+        error: null,
+    };
 
-    @state()
-    uiConfig: PageUIConfig;
+    public override connectedCallback(): void {
+        super.connectedCallback();
 
-    constructor() {
-        super();
-        const { uiConfig } = rootInterface<UserInterface>();
-
-        if (!uiConfig) {
-            throw new Error("Could not retrieve uiConfig. Reason: unknown. Check logs.");
-        }
-
-        this.uiConfig = {
-            layout: uiConfig.layout.type,
-            background: uiConfig.theme.cardBackground,
-            searchEnabled: uiConfig.enabledFeatures.search,
-        };
-
-        Promise.all([this.fetchApplications(), me()]).then(([applications, meStatus]) => {
-            this.apps = applications;
-            this.admin = meStatus.user.isSuperuser;
-            this.ready = true;
-        });
+        this.fetchApplications()
+            .then((apps) => {
+                this.apps = apps;
+            })
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+                this.apps = {
+                    loading: false,
+                    error: parsedError,
+                };
+            });
     }
 
     async fetchApplications(): Promise<Application[]> {
@@ -105,20 +95,19 @@ export class LibraryPage extends AKElement {
 
     public pageTitle = msg("My Applications");
 
-    loading() {
-        return html`<ak-empty-state default-label></ak-empty-state>`;
-    }
-
-    running() {
-        return html`<ak-library-impl
-            ?admin=${this.admin}
-            .apps=${this.apps}
-            .uiConfig=${this.uiConfig}
-        ></ak-library-impl>`;
-    }
-
     render() {
-        return this.ready ? this.running() : this.loading();
+        if (this.apps.loading) {
+            return html`<ak-empty-state default-label></ak-empty-state>`;
+        }
+
+        if (this.apps.error) {
+            return html`<ak-empty-state icon="fa-ban"
+                ><span>${msg("Failed to fetch applications.")}</span>
+                <div slot="body">${pluckErrorDetail(this.apps.error)}</div>
+            </ak-empty-state>`;
+        }
+
+        return html`<ak-library-impl .apps=${this.apps}></ak-library-impl>`;
     }
 }
 

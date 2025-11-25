@@ -3,6 +3,7 @@ import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
@@ -68,9 +69,16 @@ export class FlowImportForm extends Form<Flow> {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
-                    )}
+                    ${msg(".yaml files, which can be found in the Example Flows documentation")}
+                </p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("See more here:")}&nbsp;
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                        >${msg("Documentation")}</a
+                    >
                 </p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : nothing}`;

@@ -11,9 +11,12 @@ from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
 
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.models import (
     AuthorizationCodeAuthMethod,
+    PKCEMethod,
 )
 
 LOGGER = get_logger()
@@ -67,8 +70,12 @@ class OAuth2Client(BaseOAuthClient):
             args["redirect_uri"] = callback
         if code:
             args["code"] = code
-        if self.request and SESSION_KEY_OAUTH_PKCE in self.request.session:
-            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
+        if self.request:
+            pkce_mode = self.source.source_type.pkce
+            if self.source.source_type.urls_customizable and self.source.pkce:
+                pkce_mode = self.source.pkce
+            if pkce_mode != PKCEMethod.NONE:
+                args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         if (
             self.source.source_type.authorization_code_auth_method
             == AuthorizationCodeAuthMethod.POST_BODY
@@ -132,6 +139,18 @@ class OAuth2Client(BaseOAuthClient):
         if state is not None:
             args["state"] = state
             self.request.session[self.session_key] = state
+        pkce_mode = self.source.source_type.pkce
+        if self.source.source_type.urls_customizable and self.source.pkce:
+            pkce_mode = self.source.pkce
+        if pkce_mode != PKCEMethod.NONE:
+            verifier = generate_id(length=128)
+            self.request.session[SESSION_KEY_OAUTH_PKCE] = verifier
+            # https://datatracker.ietf.org/doc/html/rfc7636#section-4.2
+            if pkce_mode == PKCEMethod.PLAIN:
+                args["code_challenge"] = verifier
+            elif pkce_mode == PKCEMethod.S256:
+                args["code_challenge"] = pkce_s256_challenge(verifier)
+            args["code_challenge_method"] = str(pkce_mode)
         return args
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:

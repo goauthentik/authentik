@@ -127,6 +127,21 @@ class TestApplicationsAPI(APITestCase):
         self.allowed.refresh_from_db()
         self.assertEqual(self.allowed.get_meta_icon, "https://authentik.company/img.png")
 
+    def test_set_icon_fa(self):
+        """Test set_icon (url)"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={"url": "fa://fa-check-circle"},
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, "fa://fa-check-circle")
+
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)

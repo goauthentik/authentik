@@ -66,10 +66,8 @@ For detailed instructions, refer to Google documentation.
 
 ### Create the stage
 
-1. Log in as an admin to authentik, and go to the Admin interface.
-
-2. In the Admin interface, navigate to **Flows > Stages**.
-
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows > Stages**.
 3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 

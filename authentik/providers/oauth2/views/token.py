@@ -1,10 +1,9 @@
 """authentik OAuth2 Token views"""
 
-from base64 import b64decode, urlsafe_b64encode
+from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
-from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -62,7 +61,12 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    cors_allow,
+    extract_client_auth,
+    pkce_s256_challenge,
+)
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -220,11 +224,7 @@ class TokenParams:
             if not self.code_verifier:
                 raise TokenError("invalid_grant")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
-                new_code_challenge = (
-                    urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
-                    .decode("utf-8")
-                    .replace("=", "")
-                )
+                new_code_challenge = pkce_s256_challenge(self.code_verifier)
             else:
                 new_code_challenge = self.code_verifier
 
@@ -336,7 +336,7 @@ class TokenParams:
         self, request: HttpRequest, username: str, password: str
     ):
         # Authenticate user based on credentials
-        user = User.objects.filter(username=username).first()
+        user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
@@ -378,9 +378,11 @@ class TokenParams:
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"]["kid"]
-        fallback_alg = decode_unvalidated["header"]["alg"]
+        expected_kid = decode_unvalidated["header"].get("kid")
+        fallback_alg = decode_unvalidated["header"].get("alg")
         token = source = None
+        if not expected_kid or not fallback_alg:
+            return None, None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):

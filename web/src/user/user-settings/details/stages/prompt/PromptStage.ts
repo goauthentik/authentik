@@ -61,7 +61,9 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
+                    <button name="continue" type="submit" class="pf-c-button pf-m-primary">
+                        ${msg("Save")}
+                    </button>
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"

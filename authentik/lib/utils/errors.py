@@ -1,6 +1,7 @@
 """error utils"""
 
 from traceback import extract_tb
+from typing import Any
 
 from structlog.tracebacks import ExceptionDictTransformer
 
@@ -23,6 +24,6 @@ def exception_to_string(exc: Exception) -> str:
     )
 
 
-def exception_to_dict(exc: Exception) -> dict:
+def exception_to_dict(exc: Exception) -> list[dict[str, Any]]:
     """Format exception as a dictionary"""
     return _exception_transformer((type(exc), exc, exc.__traceback__))

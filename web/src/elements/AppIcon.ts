@@ -1,102 +1,64 @@
 import { PFSize } from "#common/enums";
 
+import Styles from "#elements/AppIcon.css";
 import { AKElement } from "#elements/Base";
 
-import { match, P } from "ts-pattern";
-
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 export interface IAppIcon {
-    name?: string;
-    icon?: string;
-    size?: PFSize;
+    name?: string | null;
+    icon?: string | null;
+    size?: PFSize | null;
 }
 
 @customElement("ak-app-icon")
 export class AppIcon extends AKElement implements IAppIcon {
-    @property({ type: String })
-    name?: string;
+    public static readonly FontAwesomeProtocol = "fa://";
+
+    static styles: CSSResult[] = [PFFAIcons, Styles];
 
     @property({ type: String })
-    icon?: string;
+    public name: string | null = null;
+
+    @property({ type: String })
+    public icon: string | null = null;
 
     @property({ reflect: true })
-    size: PFSize = PFSize.Medium;
-
-    static styles: CSSResult[] = [
-        PFFAIcons,
-        PFAvatar,
-        css`
-            :host {
-                max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-
-                display: flex;
-                place-content: center;
-            }
-            :host([size="pf-m-lg"]) {
-                --icon-height: 4rem;
-                --icon-border: 0.25rem;
-            }
-            :host([size="pf-m-md"]) {
-                --icon-height: 2rem;
-                --icon-border: 0.125rem;
-            }
-            :host([size="pf-m-sm"]) {
-                --icon-height: 1rem;
-                --icon-border: 0.125rem;
-            }
-            :host([size="pf-m-xl"]) {
-                --icon-height: 6rem;
-                --icon-border: 0.25rem;
-            }
-            .pf-c-avatar {
-                --pf-c-avatar--BorderRadius: 0;
-                --pf-c-avatar--Height: calc(
-                    var(--icon-height) + var(--icon-border) + var(--icon-border)
-                );
-                --pf-c-avatar--Width: calc(
-                    var(--icon-height) + var(--icon-border) + var(--icon-border)
-                );
-            }
-            .icon {
-                --app-icon-shadow-blend-color: color-mix(
-                    in srgb,
-                    var(--app-icon--shadow-background-color, var(--pf-global--BackgroundColor--150))
-                        100%,
-                    black 100%
-                );
-
-                font-size: var(--icon-font-size, var(--icon-height));
-                color: var(--ak-global--Color--100);
-                padding: var(--icon-border);
-                max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                filter: drop-shadow(-0.5px 0px 0px var(--app-icon-shadow-blend-color));
-            }
-
-            div {
-                height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-            }
-        `,
-    ];
+    public size: PFSize = PFSize.Medium;
 
     render(): TemplateResult {
-        // prettier-ignore
-        return match([this.name, this.icon])
-            .with([P.nullish, P.nullish],
-                () => html`<div><i part="icon" aria-hidden="true" class="icon fas fa-question-circle"></i></div>`)
-            .with([P._, P.string.startsWith("fa://")],
-                ([_name, icon]) => html`<div><i part="icon" aria-hidden="true" class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
-            .with([P._, P.string],
-                ([_name, icon]) => html`<img part="icon" aria-hidden="true" class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
-            .with([P.string, P.nullish],
-                ([name]) => html`<span part="icon" aria-hidden="true" class="icon">${name.charAt(0).toUpperCase()}</span>`)
-            .exhaustive();
+        const applicationName = this.name ?? msg("Application");
+        const label = msg(str`${applicationName} Icon`);
+
+        if (this.icon?.startsWith(AppIcon.FontAwesomeProtocol)) {
+            return html`<i
+                part="icon font-awesome"
+                role="img"
+                aria-label=${label}
+                class="icon fas ${this.icon.slice(AppIcon.FontAwesomeProtocol.length)}"
+            ></i>`;
+        }
+
+        const insignia = this.name?.charAt(0).toUpperCase() ?? "�";
+
+        if (this.icon) {
+            return html`<img
+                part="icon image"
+                role="img"
+                aria-label=${label}
+                class="icon"
+                src=${this.icon}
+                alt=${insignia}
+            />`;
+        }
+
+        return html`<span part="icon insignia" role="img" aria-label=${label} class="icon"
+            >${insignia}</span
+        >`;
     }
 }
 

@@ -9,7 +9,7 @@ import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/type
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -69,7 +69,17 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFSelect];
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFFormControl,
+        PFSelect,
+        css`
+            .pf-c-select {
+                --pf-c-select__toggle-wrapper--MaxWidth: initial;
+            }
+        `,
+    ];
 
     //#region Properties
 

@@ -27,6 +27,12 @@ class AuthorizationCodeAuthMethod(models.TextChoices):
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
 
 
+class PKCEMethod(models.TextChoices):
+    NONE = "none", _("No PKCE")
+    PLAIN = "plain", _("Plain")
+    S256 = "S256", _("S256")
+
+
 class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
@@ -67,6 +73,9 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    pkce = models.TextField(
+        choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
+    )
     authorization_code_auth_method = models.TextField(
         choices=AuthorizationCodeAuthMethod.choices,
         default=AuthorizationCodeAuthMethod.BASIC_AUTH,
@@ -128,6 +137,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

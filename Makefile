@@ -17,21 +17,20 @@ pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
 
-UNAME := $(shell uname)
-
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
 # to prevent SAML-related tests from failing and ensure correct pip dependency compilation
-ifeq ($(UNAME), Darwin)
-# Only add for brew users who installed libxmlsec1
-	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
-	ifdef BREW_EXISTS
-		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
-		ifdef LIBXML2_EXISTS
-			BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
-			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
-			BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
-		endif
-	endif
+# These functions are only evaluated when called in specific targets
+LIBXML2_EXISTS = $(shell brew list libxml2 2> /dev/null)
+KRB5_EXISTS = $(shell brew list krb5 2> /dev/null)
+
+LIBXML2_LDFLAGS = -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
+LIBXML2_CPPFLAGS = -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
+LIBXML2_PKG_CONFIG = $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+
+KRB_PATH =
+
+ifneq ($(KRB5_EXISTS),)
+	KRB_PATH = PATH="$(shell brew --prefix krb5)/sbin:$(shell brew --prefix krb5)/bin:$$PATH"
 endif
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
@@ -50,7 +49,7 @@ go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
-	uv run coverage run manage.py test --keepdb authentik
+	$(KRB_PATH) uv run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
 	uv run coverage html
 	uv run coverage report
 
@@ -66,11 +65,11 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-ifdef LIBXML2_EXISTS
+ifneq ($(LIBXML2_EXISTS),)
 # Clear cache to ensure fresh compilation
 	uv cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
-	LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+	LDFLAGS="$(LIBXML2_LDFLAGS)" CPPFLAGS="$(LIBXML2_CPPFLAGS)" PKG_CONFIG_PATH="$(LIBXML2_PKG_CONFIG)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
 else
 	uv sync --frozen
 endif
@@ -149,14 +148,13 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	npx prettier --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > old_schema.yml
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.8 \
-		--markdown /local/diff.md \
-		/local/old_schema.yml /local/schema.yml
-	rm old_schema.yml
+	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
+	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" diff \
+		--markdown \
+		/local/diff.md \
+		/local/schema-old.yml \
+		/local/schema.yml
+	rm schema-old.yml
 	sed -i 's/{/&#123;/g' diff.md
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
@@ -165,28 +163,21 @@ gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/${GEN_API_TS}/
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
-gen-clean-go:  ## Remove generated API client for Go
-	mkdir -p ${PWD}/${GEN_API_GO}
-ifneq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
-	make -C ${PWD}/${GEN_API_GO} clean
-else
-	rm -rf ${PWD}/${GEN_API_GO}
-endif
-
 gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ${PWD}/${GEN_API_PY}/
+	rm -rf ${PWD}/${GEN_API_PY}
+
+gen-clean-go:  ## Remove generated API client for Go
+	rm -rf ${PWD}/${GEN_API_GO}
 
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
+	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" gen \
+		generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api-ts-config.yaml \
+		-c /local/scripts/api/ts-config.yaml \
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
@@ -196,23 +187,21 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
-		-i /local/schema.yml \
-		-g python \
-		-o /local/${GEN_API_PY} \
-		-c /local/scripts/api-py-config.yaml \
-		--additional-properties=packageVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
+	mkdir -p ${PWD}/${GEN_API_PY}
+ifeq ($(wildcard ${PWD}/${GEN_API_PY}/.*),)
+	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
+else
+	cd ${PWD}/${GEN_API_PY} && git pull
+endif
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
+	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
+gen-client-go:  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
 ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
 else
+	cd ${PWD}/${GEN_API_GO} && git reset --hard
 	cd ${PWD}/${GEN_API_GO} && git pull
 endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}

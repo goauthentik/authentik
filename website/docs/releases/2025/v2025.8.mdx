@@ -5,7 +5,7 @@ slug: "/releases/2025.8"
 
 ## Highlights
 
-- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/backchannel-logout.mdx).
+- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
 
 - **Event map**: :ak-enterprise View geolocation of user events on a map.
 
@@ -416,6 +416,21 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - tasks: reduce default number of retries and max backoff (cherry-pick #17107 to version-2025.8) (#17109)
 - web: Fix layout class for row in LibraryPage (cherry-pick #16752 to version-2025.8) (#17091)
 - web/admin: fix federation sources automatically selected (cherry-pick #17069 to version-2025.8) (#17070)
+
+## Fixed in 2025.8.5
+
+- blueprints: ensure tasks retry on database errors (cherry-pick #17333 to version-2025.8) (#17334)
+- build(deps): bump django from 5.1.12 to 5.1.13 (cherry-pick #17198 to version-2025.8) (#17199)
+- core: bump Django from 5.1.13 to 5.1.14 for 2025.8 (#17968)
+- core: fix absolute and relative path file uploads (cherry-pick #17269 to version-2025.8) (#17272)
+- internal: Automated internal backport: 1487-invitation-expiry.sec.patch to authentik-2025.8 (#18261)
+- internal: Automated internal backport: 1498-oauth2-cc-user-active.sec.patch to authentik-2025.8 (#18262)
+- lib/sync/outgoing: revert reduce number of db queries made (revert #14177) (cherry-pick #17306 to version-2025.8) (#17330)
+- packages/django-dramatiq-postgres: broker: fix task expiration (cherry-pick #17178 to version-2025.8) (#17217)
+- packages/django-dramatiq-postgres: fix error when updating task with no changes (cherry-pick #16728 to version-2025.8) (#17238)
+- tasks/middlewares/messages: make sure exceptions are always logged (cherry-pick #17237 to version-2025.8) (#17248)
+- web: Fix behavior for modals configured with closeAfterSuccessfulSubmit (cherry-pick #17277 to version-2025.8) (#17299)
+- web/admin: fix incorrect placeholder for scim provider (cherry-pick #17308 to version-2025.8) (#17309)
 
 ## API Changes
 

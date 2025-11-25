@@ -51,7 +51,8 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
         <ak-text-input
             name="name"
             label=${msg("Provider Name")}
-            placeholder=${msg("Provider name...")}
+            placeholder=${msg("Type a provider name...")}
+            autocomplete="off"
             value=${ifDefined(provider.name)}
             .errorMessages=${errors.name}
             required

@@ -28,6 +28,7 @@ import {
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PKCEMethodEnum,
     ProviderTypeEnum,
     SourcesApi,
     SourceType,
@@ -48,6 +49,22 @@ const authorizationCodeAuthMethodOptions = [
     {
         label: msg("Include the client ID and secret as request parameters"),
         value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
+
+const pkceMethodOptions = [
+    {
+        label: msg("None"),
+        value: PKCEMethodEnum.None,
+        default: true,
+    },
+    {
+        label: msg("Plain"),
+        value: PKCEMethodEnum.Plain,
+    },
+    {
+        label: msg("S256"),
+        value: PKCEMethodEnum.S256,
     },
 ];
 
@@ -242,6 +259,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
                     : nothing}
+                <ak-radio-input
+                    label=${msg("PKCE Method")}
+                    name="pkce"
+                    required
+                    .options=${pkceMethodOptions}
+                    .value=${this.instance?.pkce}
+                    help=${msg("Configure Proof Key for Code Exchange for this source.")}
+                >
+                </ak-radio-input>
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect
                     ? html`<ak-radio-input
                           label=${msg("Authorization code authentication method")}
@@ -289,6 +315,26 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </span>
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}

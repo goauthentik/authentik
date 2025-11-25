@@ -88,6 +88,7 @@ const items = [
             "install-config/beta",
             "install-config/reverse-proxy",
             "install-config/automated-install",
+            "install-config/high-availability",
             "install-config/air-gapped",
         ],
     },
@@ -130,6 +131,15 @@ const items = [
                             id: "add-secure-apps/providers/property-mappings/index",
                         },
                         items: ["add-secure-apps/providers/property-mappings/expression"],
+                    },
+                    {
+                        type: "category",
+                        label: "Single Logout",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/single-logout/index",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
@@ -176,7 +186,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
-                            "add-secure-apps/providers/oauth2/backchannel-logout",
+                            "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },
@@ -220,7 +230,18 @@ const items = [
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
-                    "add-secure-apps/providers/saml/index",
+                    {
+                        type: "category",
+                        label: "SAML Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/saml/index",
+                        },
+                        items: [
+                            "add-secure-apps/providers/saml/create-saml-provider",
+                            "add-secure-apps/providers/saml/saml_single_logout",
+                        ],
+                    },
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
@@ -413,6 +434,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
@@ -753,6 +775,8 @@ const items = [
                         type: "category",
                         label: "2025",
                         items: [
+                            "security/cves/CVE-2025-64708",
+                            "security/cves/CVE-2025-64521",
                             "security/cves/CVE-2025-53942",
                             "security/cves/CVE-2025-52553",
                             "security/cves/CVE-2025-29928",

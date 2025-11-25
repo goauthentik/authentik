@@ -28,6 +28,8 @@ The following options can be configured:
 
     You can use placeholders in the launch url to build them dynamically based on the logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
 
+    For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
+
     Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
 
 - _Icon (URL)_: Optionally configure an Icon for the application
@@ -36,5 +38,5 @@ The following options can be configured:
 
     If there is a mount under `/media` or if [S3 storage](../../sys-mgmt/ops/storage-s3.md) is configured, you'll instead see a field to upload a file.
 
-- _Publisher_: Text shown below the application
-- _Description_: Subtext shown on the application card below the publisher
+- _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
+- _Description_: Text shown in the application card's expandable kebab menu (⋮)

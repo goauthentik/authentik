@@ -132,8 +132,7 @@ export class UserForm extends ModelForm<User, number> {
                 autocomplete="off"
                 value="${ifDefined(this.instance?.name)}"
                 input-hint="code"
-                maxlength=${150}
-                help=${msg("The user's display name. 150 characters or fewer.")}
+                help=${msg("The user's display name.")}
             ></ak-text-input>
 
             <ak-radio-input

@@ -19,9 +19,7 @@ import (
 	staticWeb "goauthentik.io/web"
 )
 
-var (
-	ErrAuthentikStarting = errors.New("authentik starting")
-)
+var ErrAuthentikStarting = errors.New("authentik starting")
 
 const (
 	maxBodyBytes = 32 * 1024 * 1024
@@ -99,11 +97,11 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 
 		if strings.Contains(accept, "application/json") {
 			header.Set("Content-Type", "application/json")
+			rw.WriteHeader(http.StatusServiceUnavailable)
 
 			err = json.NewEncoder(rw).Encode(map[string]string{
 				"error": "authentik starting",
 			})
-
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to write error message")
 				return
@@ -113,21 +111,18 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 			rw.WriteHeader(http.StatusServiceUnavailable)
 
 			loadingSplashFile, err := staticWeb.StaticDir.Open("standalone/loading/startup.html")
-
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to open startup splash screen")
 				return
 			}
 
 			loadingSplashHTML, err := io.ReadAll(loadingSplashFile)
-
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to read startup splash screen")
 				return
 			}
 
 			_, err = rw.Write(loadingSplashHTML)
-
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to write startup splash screen")
 				return
@@ -138,7 +133,6 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 
 			// Fallback to just a status message
 			_, err = rw.Write([]byte("authentik starting"))
-
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to write initializing HTML")
 			}

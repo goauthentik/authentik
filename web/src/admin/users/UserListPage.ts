@@ -16,22 +16,19 @@ import { PFSize } from "#common/enums";
 import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
-import { rootInterface } from "#common/theme";
-import { DefaultUIConfig, uiConfig } from "#common/ui/config";
-import { me } from "#common/users";
+import { DefaultUIConfig } from "#common/ui/config";
 
 import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
-import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
-
-import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
+import { CoreApi, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -84,7 +81,9 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
+export class UserListPage extends WithBrandConfig(
+    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+) {
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
@@ -110,9 +109,6 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     userPaths?: UserPath;
 
-    @state()
-    me?: SessionUser;
-
     static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
@@ -123,13 +119,11 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     constructor() {
         super();
-        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        const defaultPath = DefaultUIConfig.defaults.userPath;
         this.activePath = getURLParam<string>("path", defaultPath);
-        uiConfig().then((c) => {
-            if (c.defaults.userPath !== defaultPath) {
-                this.activePath = c.defaults.userPath;
-            }
-        });
+        if (this.uiConfig.defaults.userPath !== defaultPath) {
+            this.activePath = this.uiConfig.defaults.userPath;
+        }
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -142,7 +136,6 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,
         });
-        this.me = await me();
         return users;
     }
 
@@ -164,9 +157,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        const currentUser = rootInterface<AdminInterface>()?.user;
+        const { currentUser, originalUser } = this;
+
         const shouldShowWarning = this.selectedElements.find((el) => {
-            return el.pk === currentUser?.user.pk || el.pk === currentUser?.original?.pk;
+            return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -247,8 +241,11 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     row(item: User): SlottedTemplateResult[] {
-        const canImpersonate =
-            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
+        const { currentUser } = this;
+
+        const impersionationVisible =
+            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
+
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -268,7 +265,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${canImpersonate
+                ${impersionationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gorilla/sessions"
+	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -27,7 +28,7 @@ func TestClaimsJSONSerialization(t *testing.T) {
 		Entitlements:      []string{"read", "write"},
 		Sid:               "session-id-456",
 		Proxy: &types.ProxyClaims{
-			UserAttributes: map[string]interface{}{
+			UserAttributes: map[string]any{
 				"custom_field": "custom_value",
 				"department":   "engineering",
 			},
@@ -70,35 +71,33 @@ func TestClaimsJSONSerialization(t *testing.T) {
 	assert.Equal(t, "engineering", parsedClaims.Proxy.UserAttributes["department"])
 }
 
-// TestClaimsMapSerialization tests that Claims stored as map[string]interface{} can be converted back
+// TestClaimsMapSerialization tests that Claims stored as map[string]any can be converted back
 func TestClaimsMapSerialization(t *testing.T) {
 	// Simulate how claims are stored in session as map (like from PostgreSQL JSONB)
-	claimsMap := map[string]interface{}{
+	claimsMap := map[string]any{
 		"sub":                "user-id-123",
 		"exp":                float64(1234567890), // json numbers become float64
 		"email":              "test@example.com",
 		"email_verified":     true,
 		"name":               "Test User",
 		"preferred_username": "testuser",
-		"groups":             []interface{}{"admin", "user"},
-		"entitlements":       []interface{}{"read", "write"},
+		"groups":             []any{"admin", "user"},
+		"entitlements":       []any{"read", "write"},
 		"sid":                "session-id-456",
-		"ak_proxy": map[string]interface{}{
-			"user_attributes": map[string]interface{}{
+		"ak_proxy": map[string]any{
+			"user_attributes": map[string]any{
 				"custom_field": "custom_value",
 			},
 			"backend_override": "custom-backend",
 			"host_header":      "example.com",
 			"is_superuser":     true,
 		},
+		"raw_token": "not-a-real-token",
 	}
 
-	// Convert map to Claims using JSON marshaling (like getClaimsFromSession does)
-	jsonData, err := json.Marshal(claimsMap)
-	require.NoError(t, err)
-
+	// Convert map to Claims using mapstructure marshaling (like getClaimsFromSession does)
 	var claims types.Claims
-	err = json.Unmarshal(jsonData, &claims)
+	err := mapstructure.Decode(claimsMap, &claims)
 	require.NoError(t, err)
 
 	// Verify fields
@@ -111,6 +110,7 @@ func TestClaimsMapSerialization(t *testing.T) {
 	assert.Equal(t, []string{"admin", "user"}, claims.Groups)
 	assert.Equal(t, []string{"read", "write"}, claims.Entitlements)
 	assert.Equal(t, "session-id-456", claims.Sid)
+	assert.Equal(t, "not-a-real-token", claims.RawToken)
 
 	// Verify proxy claims
 	require.NotNil(t, claims.Proxy)
@@ -122,7 +122,7 @@ func TestClaimsMapSerialization(t *testing.T) {
 
 // TestClaimsMinimalFields tests that Claims work with minimal required fields
 func TestClaimsMinimalFields(t *testing.T) {
-	claimsMap := map[string]interface{}{
+	claimsMap := map[string]any{
 		"sub": "user-id-123",
 		"exp": float64(1234567890),
 	}
@@ -144,11 +144,11 @@ func TestClaimsMinimalFields(t *testing.T) {
 
 // TestClaimsWithEmptyArrays tests that empty arrays are handled correctly
 func TestClaimsWithEmptyArrays(t *testing.T) {
-	claimsMap := map[string]interface{}{
+	claimsMap := map[string]any{
 		"sub":          "user-id-123",
 		"exp":          float64(1234567890),
-		"groups":       []interface{}{},
-		"entitlements": []interface{}{},
+		"groups":       []any{},
+		"entitlements": []any{},
 	}
 
 	jsonData, err := json.Marshal(claimsMap)
@@ -167,7 +167,7 @@ func TestClaimsWithEmptyArrays(t *testing.T) {
 
 // TestClaimsWithNullProxyClaims tests that null proxy claims don't cause issues
 func TestClaimsWithNullProxyClaims(t *testing.T) {
-	claimsMap := map[string]interface{}{
+	claimsMap := map[string]any{
 		"sub":      "user-id-123",
 		"exp":      float64(1234567890),
 		"ak_proxy": nil,
@@ -185,18 +185,18 @@ func TestClaimsWithNullProxyClaims(t *testing.T) {
 }
 
 // TestGetClaimsFromSession_Success tests successful retrieval of claims from session
-// uses a mock session that returns claims as map[string]interface{} to simulate
+// uses a mock session that returns claims as map[string]any to simulate
 // how PostgreSQL storage deserializes JSONB data
 func TestGetClaimsFromSession_Success(t *testing.T) {
 	// Create a custom mock store that returns claims as map
 	store := &mockMapSessionStore{
-		claimsMap: map[string]interface{}{
+		claimsMap: map[string]any{
 			"sub":                "user-id-123",
 			"exp":                float64(1234567890),
 			"email":              "test@example.com",
 			"email_verified":     true,
 			"preferred_username": "testuser",
-			"groups":             []interface{}{"admin", "user"},
+			"groups":             []any{"admin", "user"},
 		},
 	}
 
@@ -217,9 +217,9 @@ func TestGetClaimsFromSession_Success(t *testing.T) {
 	assert.Equal(t, []string{"admin", "user"}, claims.Groups)
 }
 
-// mockMapSessionStore is a mock session store that returns claims as map[string]interface{}
+// mockMapSessionStore is a mock session store that returns claims as map[string]any
 type mockMapSessionStore struct {
-	claimsMap map[string]interface{}
+	claimsMap map[string]any
 }
 
 func (m *mockMapSessionStore) Get(r *http.Request, name string) (*sessions.Session, error) {
@@ -314,7 +314,7 @@ func TestClaimsRoundTrip(t *testing.T) {
 		Entitlements:      []string{"ent1", "ent2"},
 		Sid:               "session-789",
 		Proxy: &types.ProxyClaims{
-			UserAttributes: map[string]interface{}{
+			UserAttributes: map[string]any{
 				"attr1": "value1",
 				"attr2": float64(42),
 				"attr3": true,
@@ -329,8 +329,8 @@ func TestClaimsRoundTrip(t *testing.T) {
 	jsonData, err := json.Marshal(originalClaims)
 	require.NoError(t, err)
 
-	// Step 2: Deserialize to map[string]interface{} (simulating PostgreSQL load)
-	var claimsMap map[string]interface{}
+	// Step 2: Deserialize to map[string]any (simulating PostgreSQL load)
+	var claimsMap map[string]any
 	err = json.Unmarshal(jsonData, &claimsMap)
 	require.NoError(t, err)
 

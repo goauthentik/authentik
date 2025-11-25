@@ -7,6 +7,9 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
 import "#admin/common/ak-license-notice";
+import "#components/ak-number-input";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
@@ -107,7 +110,9 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
@@ -299,6 +304,30 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         ${msg("Property mappings used to group creation.")}
                     </p>
                 </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>
+
+        <ak-form-group label="${msg("Sync settings")}">
+            <div class="pf-c-form">
+                <ak-number-input
+                    label=${msg("Page size")}
+                    required
+                    name="pageSize"
+                    value="${provider.syncPageSize ?? 100}"
+                    help=${msg("Controls the number of objects synced in a single task.")}
+                ></ak-number-input>
+                <ak-text-input
+                    name="syncPageTimeout"
+                    label=${msg("Page timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.syncPageTimeout ?? "minutes=30"}"
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg("Timeout for synchronization of a single page.")}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
             </div>
         </ak-form-group>
     `;

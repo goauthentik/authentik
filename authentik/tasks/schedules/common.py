@@ -2,8 +2,10 @@ import pickle  # nosec
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
+from uuid import UUID
 
 from dramatiq.actor import Actor
+from psqlextra.types import ConflictAction
 
 if TYPE_CHECKING:
     from authentik.tasks.schedules.models import Schedule
@@ -14,7 +16,7 @@ class ScheduleSpec:
     actor: Actor
     crontab: str
     paused: bool = False
-    identifier: str | None = None
+    identifier: str | UUID | None = None
     uid: str | None = None
 
     args: Iterable[Any] = field(default_factory=tuple)
@@ -40,30 +42,33 @@ class ScheduleSpec:
         return pickle.dumps(options)
 
     def update_or_create(self) -> "Schedule":
+        from django.contrib.contenttypes.models import ContentType
+
         from authentik.tasks.schedules.models import Schedule
 
-        query = {
-            "actor_name": self.actor.actor_name,
-            "identifier": self.identifier,
-        }
-        defaults = {
-            **query,
+        update_values = {
             "_uid": self.uid,
             "paused": self.paused,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),
             "options": self.get_options(),
         }
-        create_defaults = {
-            **defaults,
+        if self.rel_obj is not None:
+            update_values["rel_obj_content_type"] = ContentType.objects.get_for_model(self.rel_obj)
+            update_values["rel_obj_id"] = str(self.rel_obj.pk)
+        create_values = {
+            **update_values,
             "crontab": self.crontab,
-            "rel_obj": self.rel_obj,
         }
 
-        schedule, _ = Schedule.objects.update_or_create(
-            **query,
-            defaults=defaults,
-            create_defaults=create_defaults,
+        schedule = Schedule.objects.on_conflict(
+            ["actor_name", "identifier"],
+            ConflictAction.UPDATE,
+            update_values=update_values,
+        ).insert_and_get(
+            actor_name=self.actor.actor_name,
+            identifier=str(self.identifier),
+            **create_values,
         )
 
         return schedule

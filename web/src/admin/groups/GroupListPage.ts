@@ -29,6 +29,7 @@ export class GroupListPage extends TablePage<Group> {
         "Group users together and give them permissions based on the membership.",
     );
     public pageIcon = "pf-icon pf-icon-users";
+    public supportsQL = true;
 
     @property()
     order = "name";

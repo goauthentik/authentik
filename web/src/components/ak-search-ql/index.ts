@@ -7,10 +7,12 @@ import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-asso
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
 
+import Styles from "#components/ak-search-ql/styles.css";
+
 import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -52,78 +54,11 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     declare anchor: HTMLTextAreaElement | null;
 
     public static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFFormControl,
         PFSearchInput,
-        css`
-            .ql.pf-c-form-control {
-                --input-height: 2.25em;
-
-                height: var(--input-height);
-                min-height: var(--input-height);
-                max-height: calc(var(--input-height) * 6);
-                resize: vertical;
-                outline: none;
-            }
-
-            .pf-c-search-input[aria-expanded="true"] {
-                .ql.pf-c-form-control {
-                    --pf-c-form-control--BorderBottomColor: var(
-                        --pf-c-form-control--focus--BorderBottomColor
-                    );
-                }
-                .pf-c-search-input__text::after {
-                    --pf-c-search-input__text--after--BorderBottomWidth: var(
-                        --pf-c-search-input__text--focus-within--after--BorderBottomWidth
-                    );
-                    --pf-c-search-input__text--after--BorderBottomColor: var(
-                        --pf-c-search-input__text--focus-within--after--BorderBottomColor
-                    );
-                }
-            }
-
-            .selected {
-                background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
-            }
-
-            .pf-c-search-input__menu-list {
-                user-select: none;
-            }
-
-            :host([theme="dark"]) {
-                .pf-c-search-input__menu {
-                    --pf-c-search-input__menu--BackgroundColor: var(--ak-dark-background-light-ish);
-                    color: var(--ak-dark-foreground);
-                }
-
-                .pf-c-search-input__menu-item {
-                    --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
-                }
-
-                .pf-c-search-input__menu-item:hover {
-                    --pf-c-search-input__menu-item--BackgroundColor: var(
-                        --ak-dark-background-lighter
-                    );
-                }
-
-                .pf-c-search-input__menu-list-item.selected {
-                    --pf-c-search-input__menu-item--hover--BackgroundColor: var(
-                        --ak-dark-background-light
-                    );
-                }
-
-                .pf-c-search-input__text::before {
-                    border: 0;
-                }
-            }
-
-            .pf-c-search-input__menu {
-                position: fixed;
-                min-width: 0;
-                overflow-y: auto;
-                max-height: 50vh;
-            }
-        `,
+        Styles,
     ];
 
     //#region Properties
@@ -283,6 +218,28 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     //#region Completions
 
+    #selectCompletion(index: number) {
+        if (!this.#ql) {
+            console.debug(`authentik/ql: Skipping selection of index ${index}, QL not initialized`);
+            return;
+        }
+
+        try {
+            this.#ql.selectCompletion(index);
+        } catch (error) {
+            if (error instanceof TypeError && error.message.includes("convert")) {
+                console.warn(
+                    `authentik/ql: Failed to select invalid completion at index ${index}`,
+                    error.message,
+                );
+
+                return;
+            }
+
+            console.warn(`authentik/ql: Failed to select completion at index ${index}:`, error);
+        }
+    }
+
     #refreshCompletions = () => {
         if (this.anchor) {
             this.value = this.anchor.value;
@@ -415,7 +372,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
             case "Tab":
                 if (this.selectionIndex) {
-                    this.#ql?.selectCompletion(this.selectionIndex);
+                    this.#selectCompletion(this.selectionIndex);
                     event.preventDefault();
                 }
 
@@ -426,7 +383,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
                 if (this.selectionIndex !== -1) {
-                    this.#ql?.selectCompletion(this.selectionIndex);
+                    this.#selectCompletion(this.selectionIndex);
                     this.selectionIndex = 0;
                 }
 
@@ -491,7 +448,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                                 type="button"
                                 aria-label=${label}
                                 @click=${() => {
-                                    this.#ql?.selectCompletion(idx);
+                                    this.#selectCompletion(idx);
                                     this.#refreshCompletions();
                                 }}
                             >

@@ -7,17 +7,16 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/postgres"
+	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"gorm.io/gorm/logger"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -26,7 +25,8 @@ import (
 
 // PostgresStore stores gorilla sessions in PostgreSQL using GORM
 type PostgresStore struct {
-	db *gorm.DB
+	db   *gorm.DB
+	pool *RefreshableConnPool // Keep reference to pool for cleanup
 	// default options to use when a new session is created
 	options sessions.Options
 	// key prefix with which the session will be stored
@@ -80,8 +80,6 @@ func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
 	// Add SSL mode
 	if cfg.SSLMode != "" {
 		dsnParts = append(dsnParts, "sslmode="+cfg.SSLMode)
-	} else {
-		dsnParts = append(dsnParts, "sslmode=prefer")
 	}
 
 	// Add SSL certificates if provided
@@ -107,47 +105,88 @@ func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
 	return strings.Join(dsnParts, " "), nil
 }
 
-// NewPostgresStore returns a new PostgresStore
-func NewPostgresStore() (*PostgresStore, error) {
-	cfg := config.Get().PostgreSQL
-
+// SetupGORMWithRefreshablePool creates a GORM DB with a refreshable connection pool.
+// This is the standardized way to create database connections for both production and tests.
+//
+// The RefreshableConnPool wraps database/sql and automatically detects PostgreSQL
+// authentication errors (SQLSTATE 28xxx), refreshes credentials from config sources
+// (file://, env://, or plain environment variables), and reconnects without downtime.
+//
+// Parameters:
+//   - cfg: PostgreSQL configuration (host, port, user, password, etc.)
+//   - gormConfig: GORM configuration (logger, naming strategy, etc.)
+//   - maxIdleConns: Maximum number of idle connections in the pool
+//   - maxOpenConns: Maximum number of open connections to the database
+//   - connMaxLifetime: Maximum lifetime of a connection
+//
+// Returns:
+//   - *gorm.DB: GORM database instance for ORM operations
+//   - *RefreshableConnPool: Connection pool reference (caller must Close when done)
+//   - error: Any error encountered during setup
+func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.Config, maxIdleConns, maxOpenConns int, connMaxLifetime time.Duration) (*gorm.DB, *RefreshableConnPool, error) {
 	// Build connection string
 	dsn, err := BuildDSN(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to build DSN: %w", err)
+		return nil, nil, fmt.Errorf("failed to build DSN: %w", err)
 	}
+
+	// Create refreshable connection pool
+	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+
+	// Create GORM DB using the refreshable connection pool
+	db, err := pool.NewGORMDB()
+	if err != nil {
+		_ = pool.Close()
+		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
+	}
+
+	// Test the connection with a simple query
+	// This will trigger the connection pool's tryWithRefresh logic if there's an auth error
+	ctx := context.Background()
+	var result int
+	err = db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
+	if err != nil {
+		_ = pool.Close()
+		return nil, nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
+	}
+
+	return db, pool, nil
+}
+
+// NewPostgresStore returns a new PostgresStore
+func NewPostgresStore(log *log.Entry) (*PostgresStore, error) {
+	cfg := config.Get().PostgreSQL
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
+		Logger: NewLogger(log),
 		NowFunc: func() time.Time {
 			return time.Now().UTC()
 		},
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), gormConfig)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
-	}
-
-	// Configure connection pool
-	sqlDB, err := db.DB()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get underlying sql.DB: %w", err)
-	}
-
-	// Set connection pool settings
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetMaxOpenConns(100)
-
+	// Determine connection pool settings
+	maxIdleConns := 10
+	maxOpenConns := 100
+	var connMaxLifetime time.Duration
 	if cfg.ConnMaxAge > 0 {
-		sqlDB.SetConnMaxLifetime(time.Duration(cfg.ConnMaxAge) * time.Second)
+		connMaxLifetime = time.Duration(cfg.ConnMaxAge) * time.Second
 	} else {
-		sqlDB.SetConnMaxLifetime(time.Hour) // Default 1 hour
+		connMaxLifetime = time.Hour // Default 1 hour
+	}
+
+	// Use standardized setup
+	db, pool, err := SetupGORMWithRefreshablePool(cfg, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
+	if err != nil {
+		return nil, fmt.Errorf("failed to setup database: %w", err)
 	}
 
 	ps := &PostgresStore{
-		db: db,
+		db:   db,
+		pool: pool,
 		options: sessions.Options{
 			Path:   "/",
 			MaxAge: 86400 * 30, // 30 days default (but overwritten in postgresstore creation based on token validation)
@@ -177,7 +216,7 @@ func (s *PostgresStore) New(r *http.Request, name string) (*sessions.Session, er
 	}
 	session.ID = c.Value
 
-	err = s.load(session)
+	err = s.load(r.Context(), session)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return session, nil
@@ -192,8 +231,8 @@ func (s *PostgresStore) New(r *http.Request, name string) (*sessions.Session, er
 func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
 	// Delete if max-age is <= 0
 	if session.Options.MaxAge <= 0 {
-		if err := s.delete(session); err != nil {
-			return err
+		if err := s.delete(r.Context(), session); err != nil {
+			return fmt.Errorf("failed to delete session: %w", err)
 		}
 		http.SetCookie(w, sessions.NewCookie(session.Name(), "", session.Options))
 		return nil
@@ -204,8 +243,8 @@ func (s *PostgresStore) Save(r *http.Request, w http.ResponseWriter, session *se
 		session.ID = s.keyPrefix + generateSessionID()
 	}
 
-	if err := s.save(session); err != nil {
-		return err
+	if err := s.save(r.Context(), session); err != nil {
+		return fmt.Errorf("failed to save session: %w", err)
 	}
 
 	http.SetCookie(w, sessions.NewCookie(session.Name(), session.ID, session.Options))
@@ -224,15 +263,14 @@ func (s *PostgresStore) KeyPrefix(keyPrefix string) {
 
 // Close closes the PostgreSQL store
 func (s *PostgresStore) Close() error {
-	sqlDB, err := s.db.DB()
-	if err != nil {
-		return err
+	if s.pool != nil {
+		return s.pool.Close()
 	}
-	return sqlDB.Close()
+	return nil
 }
 
 // save writes session to PostgreSQL
-func (s *PostgresStore) save(session *sessions.Session) error {
+func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) error {
 	// Convert session.Values (map[interface{}]interface{}) to map[string]interface{} for JSON marshaling
 	stringKeyedValues := make(map[string]interface{})
 	for k, v := range session.Values {
@@ -275,30 +313,30 @@ func (s *PostgresStore) save(session *sessions.Session) error {
 		proxySession.Expires = expiresAt
 	}
 
-	return s.db.Clauses(clause.OnConflict{
+	return s.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "session_key"}},
 		DoUpdates: clause.AssignmentColumns([]string{"user_id", "session_data", "expires"}),
 	}).Create(&proxySession).Error
 }
 
 // load reads session from PostgreSQL
-func (s *PostgresStore) load(session *sessions.Session) error {
+func (s *PostgresStore) load(ctx context.Context, session *sessions.Session) error {
 	var proxySession ProxySession
-	err := s.db.Where("session_key = ?", session.ID).First(&proxySession).Error
+	err := s.db.WithContext(ctx).Where("session_key = ?", session.ID).First(&proxySession).Error
 
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to load session: %w", err)
 	}
 
 	// Check if session is expired
 	if time.Now().UTC().After(proxySession.Expires) {
 		// Session is expired, delete it and return not found error
-		s.db.Delete(&ProxySession{}, "session_key = ?", session.ID)
+		s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key = ?", session.ID)
 		return gorm.ErrRecordNotFound
 	}
 
 	// Deserialize session data from JSON
-	if proxySession.SessionData != "" && proxySession.SessionData != "{}" {
+	if proxySession.SessionData != "" {
 		// First unmarshal to map[string]interface{}
 		var stringKeyedValues map[string]interface{}
 		err = json.Unmarshal([]byte(proxySession.SessionData), &stringKeyedValues)
@@ -317,13 +355,13 @@ func (s *PostgresStore) load(session *sessions.Session) error {
 }
 
 // delete removes session from PostgreSQL
-func (s *PostgresStore) delete(session *sessions.Session) error {
-	return s.db.Delete(&ProxySession{}, "session_key = ?", session.ID).Error
+func (s *PostgresStore) delete(ctx context.Context, session *sessions.Session) error {
+	return s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key = ?", session.ID).Error
 }
 
 // CleanupExpired removes expired sessions by checking MaxAge in session_data
-func (s *PostgresStore) CleanupExpired() error {
-	result := s.db.Where(`"expires" < ?`, time.Now().UTC().Format(time.RFC3339)).Delete(&ProxySession{})
+func (s *PostgresStore) CleanupExpired(ctx context.Context) error {
+	result := s.db.WithContext(ctx).Where(`"expires" < ?`, time.Now().UTC()).Delete(&ProxySession{})
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete expired sessions: %w", result.Error)
 	}
@@ -344,7 +382,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	// Pre-filter sessions using JSONB operators where possible
 	// Only fetch sessions that have claims (session_data->'claims' IS NOT NULL)
 	var sessions []ProxySession
-	err := s.db.Where(fmt.Sprintf("session_data::jsonb ? '%s'", constants.SessionClaims)).Find(&sessions).Error
+	err := s.db.WithContext(ctx).Where(fmt.Sprintf("session_data::jsonb ? '%s'", constants.SessionClaims)).Find(&sessions).Error
 	if err != nil {
 		return fmt.Errorf("failed to fetch sessions: %w", err)
 	}
@@ -352,7 +390,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	var sessionKeysToDelete []string
 
 	for _, session := range sessions {
-		if session.SessionData == "" || session.SessionData == "{}" {
+		if session.SessionData == "" {
 			continue
 		}
 
@@ -383,7 +421,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 	}
 
 	if len(sessionKeysToDelete) > 0 {
-		err = s.db.Delete(&ProxySession{}, "session_key IN ?", sessionKeysToDelete).Error
+		err = s.db.WithContext(ctx).Delete(&ProxySession{}, "session_key IN ?", sessionKeysToDelete).Error
 		if err != nil {
 			return fmt.Errorf("failed to delete sessions: %w", err)
 		}
@@ -397,43 +435,12 @@ func generateSessionID() string {
 	return uuid.New().String()
 }
 
-var (
-	globalStore *PostgresStore
-	mu          sync.Mutex
-)
-
-// GetPersistentStore creates a new postgres store if it is the first time the function has been called.
-// If the function is called multiple times, the store from the variable is returned to ensure that only one instance is running.
-func GetPersistentStore() (*PostgresStore, error) {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore == nil {
-		store, err := NewPostgresStore()
-		if err != nil {
-			return nil, err
-		}
-		globalStore = store
-	}
-
-	return globalStore, nil
-}
-
-// StopPersistentStore stops the cleanup background job and clears the globalStore variable.
-func StopPersistentStore() {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore != nil {
-		_ = globalStore.Close()
-		globalStore = nil
-	}
-}
-
-// NewTestStore creates a PostgresStore for testing with the given database
-func NewTestStore(db *gorm.DB) *PostgresStore {
+// NewTestStore creates a PostgresStore for testing with the given database and pool.
+// The pool reference is required to properly close connections in test cleanup.
+func NewTestStore(db *gorm.DB, pool *RefreshableConnPool) *PostgresStore {
 	return &PostgresStore{
-		db: db,
+		db:   db,
+		pool: pool,
 		options: sessions.Options{
 			Path:   "/",
 			MaxAge: 3600,

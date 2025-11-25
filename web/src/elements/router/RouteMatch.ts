@@ -1,6 +1,7 @@
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { Route } from "#elements/router/Route";
+import { RouteParameterRecord } from "#elements/router/shared";
 
 import { TemplateResult } from "lit";
 
@@ -49,10 +50,10 @@ export function getURLParam<T>(key: string, fallback: T): T {
     return fallback;
 }
 
-export function getURLParams(): { [key: string]: unknown } {
+export function getURLParams(): RouteParameterRecord {
     const params = {};
     if (window.location.hash.includes(ROUTE_SEPARATOR)) {
-        const urlParts = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR, 2);
+        const urlParts = window.location.hash.slice(1).split(ROUTE_SEPARATOR, 2);
         const rawParams = decodeURIComponent(urlParts[1]);
         try {
             return JSON.parse(rawParams);
@@ -63,21 +64,43 @@ export function getURLParams(): { [key: string]: unknown } {
     return params;
 }
 
-export function setURLParams(params: { [key: string]: unknown }, replace = true): void {
-    const paramsString = JSON.stringify(params);
-    const currentUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
-    const newUrl = `#${currentUrl};${encodeURIComponent(paramsString)}`;
+/**
+ * Serialize route parameters to a JSON string, removing empty values.
+ *
+ * @param params The route parameters to serialize.
+ */
+export function prepareURLParams(params: RouteParameterRecord): RouteParameterRecord {
+    const preparedParams: RouteParameterRecord = {};
+    for (const [key, value] of Object.entries(params)) {
+        if (value !== null && value !== undefined && value !== "") {
+            preparedParams[key] = value;
+        }
+    }
+    return preparedParams;
+}
+
+export function serializeURLParams(params: RouteParameterRecord): string {
+    const preparedParams = prepareURLParams(params);
+
+    return Object.keys(preparedParams).length === 0 ? "" : JSON.stringify(preparedParams);
+}
+
+export function setURLParams(params: RouteParameterRecord, replace = true): void {
+    const [currentHash] = window.location.hash.slice(1).split(ROUTE_SEPARATOR);
+    let nextHash = "#" + currentHash;
+    const preparedParams = prepareURLParams(params);
+
+    if (Object.keys(preparedParams).length) {
+        nextHash += ROUTE_SEPARATOR + encodeURIComponent(JSON.stringify(preparedParams));
+    }
+
     if (replace) {
-        history.replaceState(undefined, "", newUrl);
+        history.replaceState(undefined, "", nextHash);
     } else {
-        history.pushState(undefined, "", newUrl);
+        history.pushState(undefined, "", nextHash);
     }
 }
 
-export function updateURLParams(params: { [key: string]: unknown }, replace = true): void {
-    const currentParams = getURLParams();
-    for (const key in params) {
-        currentParams[key] = params[key] as string;
-    }
-    setURLParams(currentParams, replace);
+export function updateURLParams(params: RouteParameterRecord, replace = true): void {
+    setURLParams({ ...getURLParams(), ...params }, replace);
 }

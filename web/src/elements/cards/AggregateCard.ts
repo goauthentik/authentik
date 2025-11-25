@@ -1,8 +1,8 @@
-import { SlottedTemplateResult } from "../types";
-
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/cards/AggregateCard.css";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -59,61 +59,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: String })
     public subtext: string | null = null;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFCard,
-        PFFlex,
-        css`
-            .pf-c-card.pf-c-card-aggregate {
-                height: 100%;
-            }
-            .pf-c-card__header {
-                padding: var(--pf-global--spacer--md);
-            }
-            .pf-c-card__title {
-                display: flex;
-                align-items: center;
-                gap: var(--pf-global--spacer--sm);
-                flex: 1 1 auto;
-            }
-
-            .subtext {
-                margin-top: var(--pf-global--spacer--sm);
-                font-size: var(--pf-global--FontSize--sm);
-            }
-            .pf-c-card__body {
-                overflow-x: auto;
-                padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
-                padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
-            }
-
-            .status-container {
-                font-size: var(--pf-global--icon--FontSize--lg);
-                text-align: center;
-
-                .status-heading {
-                    display: flex;
-                    gap: var(--pf-global--spacer--sm);
-                    justify-content: center;
-                    align-items: baseline;
-                }
-            }
-            .pf-c-card__header,
-            .pf-c-card__title,
-            .pf-c-card__body,
-            .pf-c-card__footer {
-                padding-bottom: 0;
-            }
-
-            .pf-c-card__footer {
-                min-height: 1ex;
-            }
-
-            :host([role="status"]) {
-                text-align: center;
-            }
-        `,
-    ];
+    public static styles: CSSResult[] = [PFBase, PFCard, PFFlex, Styles];
 
     renderInner(): SlottedTemplateResult {
         if (this.role === "status") {

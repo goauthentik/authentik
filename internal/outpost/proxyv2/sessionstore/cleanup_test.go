@@ -1,6 +1,7 @@
 package sessionstore
 
 import (
+	"context"
 	"sync"
 	"testing"
 
@@ -15,7 +16,7 @@ type mockSessionStore struct {
 	shouldFailNext bool
 }
 
-func (m *mockSessionStore) CleanupExpired() error {
+func (m *mockSessionStore) CleanupExpired(ctx context.Context) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 

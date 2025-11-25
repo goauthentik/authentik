@@ -1,5 +1,7 @@
 import "#admin/admin-overview/AdminOverviewPage";
 
+import { globalAK } from "#common/global";
+
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
 
 import { html } from "lit";
@@ -36,6 +38,28 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/core/applications/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/applications/ApplicationViewPage");
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
+    }),
+    new Route(new RegExp("^/endpoints/devices$"), async () => {
+        await import("#admin/endpoints/devices/DeviceListPage");
+        return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
+    }),
+    new Route(new RegExp(`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/devices/DeviceViewPage");
+        return html`<ak-endpoints-device-view .deviceId=${args.uuid}></ak-endpoints-device-view>`;
+    }),
+    new Route(new RegExp("^/endpoints/connectors$"), async () => {
+        await import("#admin/endpoints/connectors/ConnectorsListPage");
+        return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
+    }),
+    new Route(new RegExp(`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/connectors/ConnectorViewPage");
+        return html`<ak-endpoints-connector-view
+            .connectorID=${args.uuid}
+        ></ak-endpoints-connector-view>`;
+    }),
+    new Route(new RegExp("^/endpoints/groups$"), async () => {
+        await import("#admin/endpoints/DeviceGroupsListPage");
+        return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
     }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
@@ -111,7 +135,7 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp(`^/flow/flows/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/flows/FlowViewPage");
-        return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
+        return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("#admin/events/EventListPage");
@@ -158,3 +182,14 @@ export const ROUTES: Route[] = [
         return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
     }),
 ];
+
+/**
+ * Application route helpers.
+ *
+ * @TODO: This API isn't quite right yet. Revisit after the hash router is replaced.
+ */
+export const ApplicationRoute = {
+    EditURL(slug: string, base = globalAK().api.base) {
+        return `${base}if/admin/#/core/applications/${slug}`;
+    },
+} as const;

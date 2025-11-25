@@ -67,7 +67,7 @@ The **Web Certificate** option can be used to configure which certificate authen
 
 #### Client Certificates:ak-version[2025.4]
 
-When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this option configures which certificate authorities clients' certificates can be issued by.
+When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this setting specifies which certificate authorities are trusted to issue client certificates.
 
 #### Attributes
 

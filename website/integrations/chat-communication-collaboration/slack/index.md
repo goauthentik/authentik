@@ -51,7 +51,7 @@ To support the integration of Slack with authentik, you need to create an applic
     - Set the **ACS URL** to `https://company.slack.com/sso/saml`.
     - Set the **Issuer** to `https://slack.com`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the two **Property Mappings** you created in the previous section, then select a **Signing Certificate**.
+    - Under **Advanced protocol settings**, select an available **Signing certificate** and add the two **Property Mappings** you created in the previous section.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

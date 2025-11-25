@@ -38,6 +38,8 @@ class SCIMProviderSerializer(
             "compatibility_mode",
             "exclude_users_service_account",
             "filter_group",
+            "sync_page_size",
+            "sync_page_timeout",
             "dry_run",
         ]
         extra_kwargs = {}

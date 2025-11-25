@@ -22,7 +22,7 @@ LOGGER = get_logger()
 
 
 def send_mails(
-    stage: EmailStage | AuthenticatorEmailStage | None, *messages: list[EmailMultiAlternatives]
+    stage: EmailStage | AuthenticatorEmailStage | None, *messages: EmailMultiAlternatives
 ):
     """Wrapper to convert EmailMessage to dict and send it from worker
 

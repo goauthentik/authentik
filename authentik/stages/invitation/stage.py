@@ -11,10 +11,10 @@ from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-INVITATION_TOKEN_KEY_CONTEXT = "token"  # nosec
-INVITATION_TOKEN_KEY = "itoken"  # nosec
-INVITATION_IN_EFFECT = "invitation_in_effect"
-INVITATION = "invitation"
+QS_INVITATION_TOKEN_KEY = "itoken"  # nosec
+PLAN_CONTEXT_INVITATION_TOKEN = "token"  # nosec
+PLAN_CONTEXT_INVITATION_IN_EFFECT = "invitation_in_effect"
+PLAN_CONTEXT_INVITATION = "invitation"
 
 
 class InvitationStageView(StageView):
@@ -23,13 +23,13 @@ class InvitationStageView(StageView):
     def get_token(self) -> str | None:
         """Get token from saved get-arguments or prompt_data"""
         # Check for ?token= and ?itoken=
-        if INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
-            return self.request.session[SESSION_KEY_GET][INVITATION_TOKEN_KEY]
-        if INVITATION_TOKEN_KEY_CONTEXT in self.request.session.get(SESSION_KEY_GET, {}):
-            return self.request.session[SESSION_KEY_GET][INVITATION_TOKEN_KEY_CONTEXT]
+        if QS_INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
+            return self.request.session[SESSION_KEY_GET][QS_INVITATION_TOKEN_KEY]
+        if PLAN_CONTEXT_INVITATION_TOKEN in self.request.session.get(SESSION_KEY_GET, {}):
+            return self.request.session[SESSION_KEY_GET][PLAN_CONTEXT_INVITATION_TOKEN]
         # Check for {'token': ''} in the context
-        if INVITATION_TOKEN_KEY_CONTEXT in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
-            return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY_CONTEXT]
+        if PLAN_CONTEXT_INVITATION_TOKEN in self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}):
+            return self.executor.plan.context[PLAN_CONTEXT_PROMPT][PLAN_CONTEXT_INVITATION_TOKEN]
         return None
 
     def get_invite(self) -> Invitation | None:
@@ -38,7 +38,7 @@ class InvitationStageView(StageView):
         if not token:
             return None
         try:
-            invite: Invitation = Invitation.objects.filter(pk=token).first()
+            invite: Invitation | None = Invitation.filter_not_expired(pk=token).first()
         except ValidationError:
             self.logger.debug("invalid invitation", token=token)
             return None
@@ -60,8 +60,8 @@ class InvitationStageView(StageView):
                 return self.executor.stage_ok()
             return self.executor.stage_invalid(_("Invalid invite/invite not found"))
 
-        self.executor.plan.context[INVITATION_IN_EFFECT] = True
-        self.executor.plan.context[INVITATION] = invite
+        self.executor.plan.context[PLAN_CONTEXT_INVITATION_IN_EFFECT] = True
+        self.executor.plan.context[PLAN_CONTEXT_INVITATION] = invite
 
         context = {}
         always_merger.merge(context, self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}))

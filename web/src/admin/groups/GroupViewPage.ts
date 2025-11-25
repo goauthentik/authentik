@@ -8,6 +8,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -159,8 +160,10 @@ export class GroupViewPage extends AKElement {
                         >
                             <div class="pf-c-card__title">${msg("Notes")}</div>
                             <div class="pf-c-card__body">
-                                ${Object.hasOwn(this.group?.attributes || {}, "notes")
-                                    ? html`${this.group.attributes?.notes}`
+                                ${this.group?.attributes?.notes
+                                    ? html`<ak-mdx
+                                          .content=${this.group.attributes.notes}
+                                      ></ak-mdx>`
                                     : html`
                                           <p>
                                               ${msg(

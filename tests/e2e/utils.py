@@ -1,9 +1,9 @@
 """authentik e2e testing utilities"""
 
-import json
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
+from json import JSONDecodeError, dumps, loads
 from os import environ, getenv
 from sys import stderr
 from time import sleep
@@ -22,7 +22,12 @@ from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchShadowRootException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.command import Command
@@ -40,6 +45,9 @@ from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
+SHADOW_ROOT_RETRIES = 5
+
+JSONType = dict[str, Any] | list[Any] | str | int | float | bool | None
 
 
 def get_local_ip() -> str:
@@ -206,14 +214,16 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::endgroup::")
         self.driver.quit()
 
-    def wait_for_url(self, desired_url):
+    def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
+
         self.wait.until(
             lambda driver: driver.current_url == desired_url,
-            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
+            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}. "
+            f"HTML: {self.driver.page_source[:1000]}",
         )
 
-    def url(self, view, query: dict | None = None, **kwargs) -> str:
+    def url(self, view: str, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         url = self.live_server_url + reverse(view, kwargs=kwargs)
         if query:
@@ -227,14 +237,112 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             return f"{url}#{path}"
         return url
 
+    def parse_json_content(
+        self, context: WebElement | None = None, timeout: float | None = 10
+    ) -> JSONType:
+        """
+        Parse JSON from a Selenium element's text content.
+
+        If `context` is not provided, defaults to the <body> element.
+        Raises a clear test failure if the element isn't found, the text doesn't appear
+        within `timeout` seconds, or the text is not valid JSON.
+        """
+
+        try:
+            if context is None:
+                context = self.driver.find_element(By.TAG_NAME, "body")
+        except NoSuchElementException:
+            self.fail(
+                f"No element found (defaulted to <body>). Current URL: {self.driver.current_url}"
+            )
+
+        wait_timeout = timeout or self.wait_timeout
+        wait = WebDriverWait(context, wait_timeout)
+
+        try:
+            wait.until(lambda d: len(d.text.strip()) != 0)
+        except TimeoutException:
+            snippet = context.text.strip()[:500].replace("\n", " ")
+            self.fail(
+                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
+                f"Current content: {snippet or '<empty>'}"
+            )
+
+        body_text = context.text.strip()
+        inner_html = context.get_attribute("innerHTML") or ""
+
+        if "redirecting" in inner_html.lower():
+            try:
+                wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
+            except TimeoutException:
+                snippet = context.text.strip()[:500].replace("\n", " ")
+                inner_html = context.get_attribute("innerHTML") or ""
+
+                self.fail(
+                    f"Timed out waiting for redirect to finish at {self.driver.current_url}. "
+                    f"Current content: {snippet or '<empty>'}"
+                    f"{inner_html or '<empty>'}"
+                )
+
+            inner_html = context.get_attribute("innerHTML") or ""
+            body_text = context.text.strip()
+
+        snippet = body_text[:500].replace("\n", " ")
+
+        if not body_text.startswith("{") and not body_text.startswith("["):
+            self.fail(
+                f"Expected JSON content but got non-JSON text at {self.driver.current_url}: "
+                f"{snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
+            )
+
+        try:
+            body_json = loads(body_text)
+        except JSONDecodeError as e:
+            self.fail(
+                f"Expected JSON but got invalid content at {self.driver.current_url}: "
+                f"{snippet or '<empty>'}"
+                f"{inner_html or '<empty>'}"
+                f"(JSON error: {e})"
+            )
+
+        return body_json
+
     def get_shadow_root(
-        self, selector: str, container: WebElement | WebDriver | None = None
+        self, selector: str, container: WebElement | WebDriver | None = None, timeout: float = 10
     ) -> WebElement:
-        """Get shadow root element's inner shadowRoot"""
+        """Get the shadow root of a web component specified by `selector`."""
         if not container:
             container = self.driver
-        el = container.find_element(By.CSS_SELECTOR, selector)
-        return el.shadow_root
+        wait = WebDriverWait(container, timeout)
+        host: WebElement | None = None
+
+        try:
+            host = wait.until(lambda c: c.find_element(By.CSS_SELECTOR, selector))
+        except TimeoutException:
+            self.fail(f"Timed out waiting for shadow host {selector} to appear")
+
+        attempts = 0
+
+        while attempts < SHADOW_ROOT_RETRIES:
+            try:
+                return host.shadow_root
+            except NoSuchShadowRootException:
+                attempts += 1
+                sleep(0.2)
+                # re-find host in case it was re-attached
+                try:
+                    host = container.find_element(By.CSS_SELECTOR, selector)
+                except NoSuchElementException:
+                    # loop and retry finding host
+                    pass
+
+        inner_html = host.get_attribute("innerHTML") or "<no host>"
+
+        raise RuntimeError(
+            f"Failed to obtain shadow root for {selector} after {attempts} attempts. "
+            f"Host innerHTML: {inner_html}"
+        )
 
     def shady_dom(self) -> WebElement:
         class wrapper:
@@ -249,7 +357,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         return wrapper(self.driver)
 
     def login(self, shadow_dom=True):
-        """Do entire login flow"""
+        """Perform the entire authentik login flow."""
 
         if shadow_dom:
             flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -287,13 +395,42 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
-        self.driver.get(self.url("authentik_api:user-me") + "?format=json")
-        user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        user = UserSerializer(data=json.loads(user_json)["user"])
+
+        expected_url = self.url("authentik_api:user-me") + "?format=json"
+        self.driver.get(expected_url)
+
+        self.wait.until(lambda d: d.current_url == expected_url)
+
+        user_json = self.parse_json_content()
+        data = user_json.get("user")
+        snippet = dumps(user_json, indent=2)[:500].replace("\n", " ")
+
+        self.assertIsNotNone(
+            data,
+            f"Missing 'user' key in response at {self.driver.current_url}: {snippet}",
+        )
+
+        user = UserSerializer(data=data)
+
         user.is_valid()
-        self.assertEqual(user["username"].value, expected_user.username)
-        self.assertEqual(user["name"].value, expected_user.name)
-        self.assertEqual(user["email"].value, expected_user.email)
+
+        self.assertEqual(
+            user["username"].value,
+            expected_user.username,
+            f"Username mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            user["name"].value,
+            expected_user.name,
+            f"Name mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            user["email"].value,
+            expected_user.email,
+            f"Email mismatch at {self.driver.current_url}: {snippet}",
+        )
 
 
 @lru_cache

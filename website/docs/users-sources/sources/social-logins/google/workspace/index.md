@@ -1,17 +1,20 @@
 ---
 title: Google Workspace (with SAML)
 sidebar_label: Google Workspace (SAML)
-tags: [integration, saml, google]
-support_level: authentik
+tags:
+    - source
+    - google
+    - google workspace
+    - saml
 ---
 
-This topic covers configuring authentik to authenticate users with their Google Workspace credentials.
+Allows users to authenticate using their Google Workspace credentials by configuring Google Workspace as a federated identity provider via SAML.
 
 ## What is Google Workspace?
 
 Google Workspace (formerly G Suite) is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
 
-Organizations using Google Workspace allow their users to authenticate into applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (<abbr>SAML</abbr>) as the authentication method between Google Workspace and authentik.
+Organizations using Google Workspace allow their users to authenticate into applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
 
 ## SAML Authentication Flow
 
@@ -38,147 +41,86 @@ In short, the user navigates to the application, is redirected to authentik, cho
 
 The key characteristic that makes this an IdP-to-IdP flow is that authentik is acting as an intermediary identity provider, brokering trust between your application and Google Workspace.
 
----
-
 ## Preparation
 
-By the end of this integration, your authentik instance will allow users to authenticate using their Google Workspace credentials.
+The following placeholders are used in this guide:
 
-You'll need to have authentik instance running and accessible on an HTTPS domain, and a Google Workspace domain with super-administrator access.
-
-Keep a text-editor handy because we'll be copying and pasting values between the two services.
-
-### Placeholders
-
-The following placeholders are used:
-
-- `authentik.company`: The Fully Qualified Domain Name of the authentik installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Google Workspace configuration
 
-We'll need some information from Google to complete the integration, so
-start by logging into [Workspace Admin Console](https://admin.google.com/) as a super-admin.
+To integrate Google Workspace with authentik you will need to create a SAML application in the Google Workspace Admin Console.
 
 ### Create a new application
 
-From the Workspace Admin Console, navigate to the _Apps_ section, and then to _Web and mobile apps_.
-Continue by expanding the **Add app** dropdown and selecting **Add custom SAML app.**
+1. Log in to the [Google Workspace Admin Console](https://admin.google.com/) as a super-admin.
+2. Navigate to **Apps** > **Web and mobile apps**.
+3. Expand the **Add app** dropdown and select **Add custom SAML app**.
+4. Set the following fields:
+    - **Name**: `authentik`
+    - **Description**: `Single Sign-On for authentik`
+5. Press **Continue** to generate the SAML configuration.
+6. Under **Option 2**, download the certificate and take note of the **SSO URL**. Both will be required when configuring authentik.
 
-Within the app creation page, define the following **Name** and **Description** for the new application.
-
-| Field       | Value                        |
-| ----------- | ---------------------------- |
-| Name        | authentik                    |
-| Description | Single Sign-On for authentik |
-
-Press **Continue** to generate the SAML configuration we'll need to complete the integration.
-
-### Google Identity Provider details
-
-You should now be presented with a choice to download metadata file containing the SAML configuration, or copy the details to your clipboard.
-
-Under _Option 2_, copy the SSO URL to your text editor and download the certificate.
-
-:::info{title="Entity ID"}
-
+:::info Entity ID
 authentik is acting as both a Service Provider (SP) to Google and an Identity Provider (IdP) to your applications. Since we only need the SP configuration, you can ignore the Entity ID provided by Google.
-
 :::
 
-With the SSO URL and certificate downloaded, press **Continue** to proceed to the next step.
+7. Click **Continue**.
 
 ### Service Provider details
 
-We'll need to provide Google with some information about our authentik instance, specifically the Assertion Consumer Service (ACS) URL. This URL is where Google sends the SAML response after a user is authenticated. We'll also need to provide the Entity ID, which can be any unique identifier, but we recommend using the URL of your authentik instance.
+8. We'll need to provide Google with some information about our authentik instance. Set the following fields:
+    - **ACS URL**: `https://authentik.company/source/saml/google/acs/`
+    - **Entity ID**: `https://authentik.company`
+    - **Start URL**: `https://authentik.company`
+    - **Name ID format**: `EMAIL`
+    - **Name ID**: Basic Information › Primary Email
+    - **Signed Response**: Enabled
 
-| Field           | Value                                               |
-| --------------- | --------------------------------------------------- |
-| ACS URL         | `https://authentik.company/source/saml/google/acs/` |
-| Entity ID       | `https://authentik.company`                         |
-| Start URL       | `https://authentik.company`                         |
-| Name ID format  | `EMAIL`                                             |
-| Name ID         | Basic Information › Primary Email                   |
-| Signed Response | Enabled ✅                                          |
-
-:::info{title="Verify signed responses"}
-
-Enabling signed responses indicates that the entire SAML authentication response will be signed by Google. You'll need to configure uploaded certificates in authentik if you enable this option.
-
-[Read more about uploading certificates ›](../../../../../sys-mgmt/certificates)
-
+:::info Verify signed responses
+Enabling signed responses indicates that the entire SAML authentication response will be signed by Google. You'll need to [configure certificates in authentik](../../../../../sys-mgmt/certificates) if you enable this option.
 :::
-
-Before you proceed, copy these values to your text editor as we'll need them when configuring authentik.
 
 ### Attribute mapping
 
-Next, we configure which user attributes Google should send to authentik.
-This is where we map the Google Directory attributes to the attributes that authentik expects.
-
-| Google Directory attributes       | App attributes |
-| --------------------------------- | -------------- |
-| Basic Information › Primary Email | `email`        |
+9. Next, we configure which user attributes Google should send to authentik, and map them to the attributes that authentik expects. Set the following field:
+    - **Basic Information › Primary Email**: `email`
 
 ### Enable the application for your organization
 
-Finally, we complete the application creation process by saving the configuration.
+10. Finally, we complete the application creation process by saving the configuration.
 
-You should now see the new application in the list of SAML apps. View the application details and confirm that the SSO URL and Entity ID are correct. Note that you may need to **enable the app** for your organization to allow users to authenticate.
-
----
+You should now see the new application in the list of SAML apps. View the application details and confirm that the **SSO URL** and **Entity ID** are correct. You may need to **Enable the app** for your organization to allow users to authenticate.
 
 ## authentik configuration
 
-We'll now configure authentik to accept SAML authentication from Google Workspace.
+To support the integration of Google Workspace with authentik, you need to create an SAML source in authentik.
 
-Start by logging into your authentik instance as an administrator and navigating to the Admin Interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **SAML Source** as the source type.
+    - **Create SAML Source**: provide a name, a slug which must match the slug used in the Google Workspace `ACS URL` field (e.g. `google`), and set the following required configurations:
+        - **Protocol settings**
+            - **SSO URL**: SSO URL from Google Workspace
+            - **Issuer (Entity ID)**: `https://authentik.company`
+            - **Verification Certificate**: Certificate downloaded from Google Workspace
+        - **Advanced Protocol Settings**:
+            - **Allow IdP-initiated Login**: Enabled
+            - **NameID Policy**: `Email address`
+3. Click **Finish** to save your settings.
 
-### Create a Federation Source
-
-In the Admin interface, navigate to **Directory > Federation & Social login** and press **Create**.
-
-In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
-
-| Field | Value            |
-| ----- | ---------------- |
-| Name  | Google Workspace |
-| Slug  | `google`         |
-
-:::info{title="Choosing a slug"}
-Your choice of `slug` should match the ACS URL you provided to Google Workspace.
-You can choose a different slug, but you will need to update the ACS URL in Google Workspace to match.
-:::
-
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
 :::
 
-#### Protocol settings
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/index.md).
+:::
 
-Next, we'll configure the SAML protocol settings for the source. Fill in the following fields with the values you copied from Google Workspace:
+## Source property mappings
 
-|                          |                                                           |
-| ------------------------ | --------------------------------------------------------- |
-| SSO URL                  | `https://accounts.google.com/o/saml2/idp?idpid=#########` |
-| Issuer (Entity ID)       | `https://authentik.company`                               |
-| Verification Certificate | _Certificate downloaded from Google Workspace_            |
-
-#### Advanced protocol settings
-
-Depending on your Google Workspace configuration, you might need to adjust the advanced protocol settings.
-
-| Field                     | Value         |
-| ------------------------- | ------------- |
-| Allow IdP-initiated Login | Enabled ✅    |
-| NameID Policy             | Email address |
-
-Finally, save the source configuration and confirm the application is present in the list of federated sources.
-
-## Testing your configuration
-
-To test your configuration, navigate to the login page of your authentik instance and confirm the Google Workspace option is available as an alternative login method.
-
-Next, click on the Google Workspace button and confirm that you are redirected to authenticate via your Google Workspace credentials. After successful authentication **with a non-super-admin account**, you should be redirected back to your authentik instance and logged in.
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../../property-mappings/index.md) for more information.
 
 ## Troubleshooting
 
@@ -199,10 +141,8 @@ In the Google Workspace Admin Console, go to **Menu > Apps > Web and mobile apps
 
 This may take a few minutes to propagate, so try logging in again after a short wait.
 
-## External references
+## Resources
 
-- [Google Workspace Admin Console](https://admin.google.com/)
-- [Google Developer Console](https://support.google.com/a/answer/6327792)
-- [Setting up SAML with Google Workspace](https://support.google.com/a/answer/6087519)
-- [SAML app error messages](https://support.google.com/a/answer/6301076)
-- [SAML authentication flow](https://infosec.mozilla.org/guidelines/iam/saml.html)
+- [Google Workspace Admin Help - Creating custom attributes using the user schema](https://support.google.com/a/answer/6327792)
+- [Google Workspace Admin Help - Set up your own custom SAML app](https://support.google.com/a/answer/6087519)
+- [Google Workspace Admin Help - SAML app error messages](https://support.google.com/a/answer/6301076)

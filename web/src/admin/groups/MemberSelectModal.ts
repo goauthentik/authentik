@@ -37,6 +37,7 @@ export class MemberSelectTable extends TableModal<User> {
             }
         `,
     ];
+    public supportsQL = true;
 
     checkbox = true;
     checkboxChip = true;

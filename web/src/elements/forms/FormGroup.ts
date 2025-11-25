@@ -1,7 +1,8 @@
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/FormGroup.css";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -20,57 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFForm,
-        PFButton,
-        PFFormControl,
-
-        css`
-            :host([theme="dark"]) {
-                --marker-color: var(--pf-global--Color--200);
-                --marker-color-hover: var(--ak-dark-foreground-darker);
-            }
-
-            .pf-c-form__field-group-header-description {
-                text-wrap: balance;
-            }
-
-            details {
-                &::details-content {
-                    padding-inline-start: var(
-                        --pf-c-form__field-group--GridTemplateColumns--toggle
-                    );
-                }
-
-                & > summary {
-                    list-style-position: outside;
-                    margin-inline-start: 2em;
-                    padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
-                    padding: var(--pf-global--spacer--md);
-                    list-style-type: "\\f105";
-                    cursor: pointer;
-                    user-select: none;
-
-                    &::marker {
-                        color: var(--marker-color, var(--pf-global--Color--200));
-                        transition: var(--pf-c-form__field-group-toggle-icon--Transition);
-                        font-family: "Font Awesome 5 Free";
-                        font-weight: 900;
-                    }
-
-                    &:hover::marker {
-                        outline: 1px dashed red;
-                        color: var(--marker-color-hover, var(--pf-global--Color--100));
-                    }
-                }
-
-                &[open] summary {
-                    list-style-type: "\\f107";
-                }
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFBase, PFForm, PFButton, PFFormControl, Styles];
 
     //region Properties
 

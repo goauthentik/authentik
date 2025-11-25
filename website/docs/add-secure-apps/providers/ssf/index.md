@@ -26,7 +26,7 @@ Another example use case is when an application uses SSF to subscribe to authori
 
 Let's look at a few details about using SSF in authentik.
 
-The SSF provider in authentik serves as a [backchannel provider](../../applications/manage_apps#backchannel-providers). Backchannel providers are used to augment the functionality of the main provider for an application. Thus you will still need to [create a typical application/provider pair](../../applications/manage_apps#instructions) (using an OIDC provider), and when creating the application, assign the SSF provider as a backchannel provider.
+The SSF provider in authentik serves as a [backchannel provider](../../applications/manage_apps#backchannel-providers). Backchannel providers are used to augment the functionality of the main provider for an application. Thus you will still need to [create a typical application/provider pair](../../applications/manage_apps#create-an-application-and-provider-pair) (using an OIDC provider), and when creating the application, assign the SSF provider as a backchannel provider.
 
 When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the application (the receiver) and authentik (the IdP and the transmitter).
 

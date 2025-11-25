@@ -29,6 +29,45 @@ export function isActiveElement(
 }
 
 /**
+ * Type predicate to check if an element is focusable.
+ *
+ * @param target The element to check.
+ *
+ * @category DOM
+ */
+export function isFocusable(target: Element | null | undefined): target is HTMLElement {
+    if (!target) {
+        console.debug("FocusTarget: Skipping focus, no target", target);
+        return false;
+    }
+    if (!(target instanceof HTMLElement)) {
+        console.debug("FocusTarget: Skipping focus, target is not an HTMLElement", target);
+        return false;
+    }
+
+    if (document.activeElement === target) {
+        console.debug("FocusTarget: Target is already focused", target);
+        return false;
+    }
+
+    // Despite our type definitions, this method isn't available in all browsers,
+    // so we fallback to assuming the element is visible.
+    const visible = target.checkVisibility?.() ?? true;
+
+    if (!visible) {
+        console.debug("FocusTarget: Skipping focus, target is not visible", target);
+        return false;
+    }
+
+    if (typeof target.focus !== "function") {
+        console.debug("FocusTarget: Skipping focus, target has no focus method", target);
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * A combination reference and focus target.
  *
  * @category DOM
@@ -46,33 +85,9 @@ export class FocusTarget<T extends HTMLElement = HTMLElement> {
     }
 
     public focus = (options?: FocusOptions): void => {
-        const { target } = this;
-
-        if (!target) {
-            console.debug("FocusTarget: Skipping focus, no target", target);
-            return;
+        if (isFocusable(this.target)) {
+            this.target.focus(options);
         }
-
-        if (document.activeElement === target) {
-            console.debug("FocusTarget: Target is already focused", target);
-            return;
-        }
-
-        // Despite our type definitions, this method isn't available in all browsers,
-        // so we fallback to assuming the element is visible.
-        const visible = target.checkVisibility?.() ?? true;
-
-        if (!visible) {
-            console.debug("FocusTarget: Skipping focus, target is not visible", target);
-            return;
-        }
-
-        if (typeof target.focus !== "function") {
-            console.debug("FocusTarget: Skipping focus, target has no focus method", target);
-            return;
-        }
-
-        target.focus(options);
     };
 
     public toRef() {
