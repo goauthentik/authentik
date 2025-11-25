@@ -9,7 +9,9 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.generators import generate_id
 from authentik.stages.captcha.models import CaptchaStage
+from authentik.stages.captcha.stage import PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY, PLAN_CONTEXT_CAPTCHA_SITE_KEY
 
 # https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do
 RECAPTCHA_PUBLIC_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
@@ -45,6 +47,37 @@ class TestCaptchaStage(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    @Mocker()
+    def test_valid_override(self, mock: Mocker):
+        """Test valid captcha"""
+        self.stage.private_key = generate_id()
+        self.stage.public_key = generate_id()
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 0.5,
+            },
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context = {
+            PLAN_CONTEXT_CAPTCHA_SITE_KEY: "testvalue",
+            PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY: "",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertJSONEqual(response.content, {})
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"token": "PASSED"},
