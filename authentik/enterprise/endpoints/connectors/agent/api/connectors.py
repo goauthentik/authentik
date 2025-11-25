@@ -3,9 +3,9 @@ from django.urls import reverse
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
-from jwt import PyJWTError, decode
 from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from structlog.stdlib import get_logger
@@ -17,15 +17,17 @@ from authentik.endpoints.connectors.agent.api.agent import (
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.endpoints.connectors.agent.models import (
-    AgentConnector,
     DeviceAuthenticationToken,
     DeviceToken,
 )
 from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.connectors.agent.auth import agent_auth_issue_token
+from authentik.enterprise.endpoints.connectors.agent.auth import (
+    agent_auth_fed_validate,
+    agent_auth_issue_token,
+    check_device_policies,
+)
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
@@ -82,31 +84,17 @@ class AgentConnectorViewSetMixin:
             LOGGER.warning("Couldn't find device")
             raise Http404
 
-        connectors_for_device = AgentConnector.objects.filter(device__in=[device])
-        providers = OAuth2Provider.objects.filter(agentconnector__in=connectors_for_device)
-        federated_token = AccessToken.objects.filter(
-            token=raw_token, provider__in=providers
-        ).first()
-        if not federated_token:
-            LOGGER.warning("Couldn't lookup provider")
-            raise Http404
-        _key, _alg = federated_token.provider.jwt_key
-        try:
-            token = decode(
-                raw_token,
-                _key,
-                algorithms=[_alg],
-                options={
-                    "verify_aud": False,
-                },
-            )
-            provider = federated_token.provider
-            self.user = federated_token.user
-        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-            LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
-            return HttpResponseBadRequest()
+        federated_token = agent_auth_fed_validate(raw_token, device)
+        LOGGER.info(
+            "successfully verified JWT with provider", provider=federated_token.provider.name
+        )
 
-        LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+        policy_result = check_device_policies(device, federated_token.user, request._request)
+        if not policy_result.passing:
+            raise ValidationError(
+                {"policy_result": "Policy denied access", "policy_messages": policy_result.messages}
+            )
+
         token, exp = agent_auth_issue_token(device, federated_token.user)
         rel_exp = int((exp - now()).total_seconds())
         Event.new(
@@ -115,9 +103,9 @@ class AgentConnectorViewSetMixin:
                 PLAN_CONTEXT_METHOD: "jwt",
                 PLAN_CONTEXT_METHOD_ARGS: {
                     "jwt": federated_token,
-                    "provider": provider,
+                    "provider": federated_token.provider,
                 },
                 PLAN_CONTEXT_DEVICE: device,
             },
-        ).from_http(request, user=self.user)
+        ).from_http(request, user=federated_token.user)
         return Response({"token": token, "expires_in": rel_exp})

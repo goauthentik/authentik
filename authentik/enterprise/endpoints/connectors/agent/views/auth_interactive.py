@@ -5,7 +5,10 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseBadReque
 
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceAuthenticationToken
 from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.connectors.agent.auth import agent_auth_issue_token
+from authentik.enterprise.endpoints.connectors.agent.auth import (
+    agent_auth_issue_token,
+    check_device_policies,
+)
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import FlowPlanner
@@ -39,7 +42,7 @@ class AgentInteractiveAuth(PolicyAccessView):
         self.connector = auth_token.connector.agentconnector
 
     def user_has_access(self, user=None, pbm=None):
-        return super().user_has_access(user, self.device)
+        return check_device_policies(self.device, user or self.request.user, self.request)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         device_token_hash = request.headers.get("X-Authentik-Platform-Auth-DTH")
