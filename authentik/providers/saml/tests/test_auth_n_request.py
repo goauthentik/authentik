@@ -8,11 +8,15 @@ from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import (
+    RequestFactory,
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -82,6 +86,7 @@ class TestAuthNRequest(TestCase):
 
     @apply_blueprint("system/providers-saml.yaml")
     def setUp(self):
+        self.request_factory = RequestFactory()
         self.cert = create_test_cert()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=create_test_flow(),
@@ -102,7 +107,7 @@ class TestAuthNRequest(TestCase):
 
     def test_signed_valid(self):
         """Test generated AuthNRequest with valid signature"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -123,7 +128,7 @@ class TestAuthNRequest(TestCase):
         self.provider.save()
         self.source.encryption_kp = self.cert
         self.source.save()
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -146,7 +151,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -173,7 +178,7 @@ class TestAuthNRequest(TestCase):
         self.provider.sign_response = True
         self.provider.save()
         self.source.signed_response = True
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -213,7 +218,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -242,7 +247,7 @@ class TestAuthNRequest(TestCase):
 
     def test_signed_valid_detached(self):
         """Test generated AuthNRequest with valid signature (detached)"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -305,7 +310,7 @@ class TestAuthNRequest(TestCase):
         self.provider.authn_context_class_ref_mapping = mapping
         self.provider.save()
         user = create_test_admin_user()
-        http_request = get_request("/", user=user)
+        http_request = self.request_factory.get("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -327,7 +332,7 @@ class TestAuthNRequest(TestCase):
         self.provider.authn_context_class_ref_mapping = mapping
         self.provider.save()
         user = create_test_admin_user()
-        http_request = get_request("/", user=user)
+        http_request = self.request_factory.get("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -354,7 +359,7 @@ class TestAuthNRequest(TestCase):
     def test_request_attributes(self):
         """Test full SAML Request/Response flow, fully signed"""
         user = create_test_admin_user()
-        http_request = get_request("/", user=user)
+        http_request = self.request_factory.get("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -371,7 +376,7 @@ class TestAuthNRequest(TestCase):
     def test_request_attributes_invalid(self):
         """Test full SAML Request/Response flow, fully signed"""
         user = create_test_admin_user()
-        http_request = get_request("/", user=user)
+        http_request = self.request_factory.get("/", user=user)
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")

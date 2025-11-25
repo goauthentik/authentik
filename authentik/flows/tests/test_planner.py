@@ -2,18 +2,15 @@
 
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
 from django.http import HttpRequest
 from django.shortcuts import redirect
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from django.urls import reverse
-from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
@@ -57,7 +54,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = get_anonymous_user()
 
         with self.assertRaises(EmptyFlowException):
             planner = FlowPlanner(flow)
@@ -70,7 +66,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         planner.plan(request)
@@ -94,7 +89,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
 
@@ -113,7 +107,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = AnonymousUser()
         with self.assertRaises(FlowNonApplicableException):
             planner = FlowPlanner(flow)
             planner.allow_empty_flows = True
@@ -125,7 +118,6 @@ class TestFlowPlanner(TestCase):
             HTTP_X_AUTHENTIK_OUTPOST_TOKEN=outpost.token.key,
             HTTP_X_AUTHENTIK_REMOTE_IP="1.2.3.4",
         )
-        request.user = AnonymousUser()
         middleware = ClientIPMiddleware(dummy_get_response)
         middleware(request)
 
@@ -143,7 +135,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = get_anonymous_user()
 
         with self.assertRaises(FlowNonApplicableException):
             planner = FlowPlanner(flow)
@@ -159,7 +150,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = get_anonymous_user()
 
         planner = FlowPlanner(flow)
         planner.plan(request)
@@ -200,7 +190,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = get_anonymous_user()
 
         planner = FlowPlanner(flow)
         plan = planner.plan(request)
@@ -230,11 +219,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = get_anonymous_user()
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
         with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
@@ -256,11 +240,7 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         plan = planner.plan(request)
@@ -277,10 +257,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         plan = planner.plan(request)
@@ -309,7 +285,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         plan = planner.plan(request)
@@ -333,7 +308,6 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         plan = planner.plan(request)

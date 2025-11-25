@@ -6,8 +6,7 @@ from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.lib.tests.utils import get_request
+from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -36,10 +35,11 @@ class TestSchema(TestCase):
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
         )
+        self.request_factory = RequestFactory()
 
     def test_request_schema(self):
         """Test generated AuthNRequest against Schema"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -54,7 +54,7 @@ class TestSchema(TestCase):
 
     def test_response_schema(self):
         """Test generated AuthNRequest against Schema"""
-        http_request = get_request("/")
+        http_request = self.request_factory.get("/")
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
