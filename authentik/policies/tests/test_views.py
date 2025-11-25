@@ -55,6 +55,7 @@ class TestPolicyViews(TestCase):
 
     def test_pav_unauthenticated_no_flow(self):
         """Test simple policy access view (unauthenticated access, no authentication flow)"""
+        Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION).delete()
         provider = Provider.objects.create(
             name=generate_id(),
         )
