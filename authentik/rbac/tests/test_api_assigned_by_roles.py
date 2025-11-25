@@ -15,6 +15,9 @@ class TestRBACRoleAPI(APITestCase):
     """Test RoleAssignedPermissionViewSet api"""
 
     def setUp(self) -> None:
+        # Make sure we have no roles to start with (e.g. Read-only from blueprints)
+        Role.objects.all().delete()
+
         self.superuser = create_test_admin_user()
 
         self.user = create_test_user()
