@@ -237,7 +237,7 @@ class Group(SerializerModel, AttributesMixin):
             name = managed_role_name(self)
             role, created = Role.objects.get_or_create(name=name, managed=name)
             if created:
-                role.groups.add(self)
+                role.ak_groups.add(self)
             return role
         else:
             return Role.objects.filter(name=managed_role_name(self)).first()

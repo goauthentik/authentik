@@ -61,3 +61,14 @@ class TestGroups(TestCase):
         group.save()
         self.assertTrue(group.is_member(user))
         self.assertTrue(group2.is_member(user))
+
+    def test_group_managed_role(self):
+        """Test group managed role"""
+        perm = "authentik_core.view_user"
+        user = User.objects.create(username=generate_id())
+        group = Group.objects.create(name=generate_id())
+        group.users.add(user)
+        group.assign_perms_to_managed_role(perm)
+        self.assertEqual(group.roles.count(), 1)
+        self.assertEqual(user.roles.count(), 0)
+        self.assertTrue(user.has_perm(perm))
