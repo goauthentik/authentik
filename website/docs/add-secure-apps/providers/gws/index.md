@@ -48,7 +48,7 @@ For users, authentik only saves the full display name, while Google requires giv
 
 By default, authentik maps a user’s: email address, name, and active status.
 
-Refer to Google documentation for further details on which attributes can be mapped to: [Google Workspace Reference - Resource: User](https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User)
+Refer to Google documentation for further details on which attributes can be mapped: [Google Workspace Reference - Resource: User](https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User)
 
 ### Groups
 
@@ -56,4 +56,4 @@ For groups, Google Workspace groups require an email address. Therefore the Goog
 
 By default, authentik only maps a group's name.
 
-Refer to Google documentation for further details on which attributes can be mapped to: [Google Workspace Reference - Resource: Group](https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group)
+Refer to Google documentation for further details on which attributes can be mapped: [Google Workspace Reference - Resource: Group](https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group)

@@ -3,6 +3,8 @@ title: Configure Google Workspace
 authentik_enterprise: true
 ---
 
+For more information about using a Google Workspace provider, see the [Overview](./index.md) documentation.
+
 Your Google Workspace organization must be configured before you [create a Google Workspace provider](./create-gws-provider.md).
 
 ## Configuring your Google Workspace Organization
