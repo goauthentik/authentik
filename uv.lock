@@ -4,10 +4,10 @@ requires-python = "==3.13.*"
 
 [manifest]
 members = [
+    "ak-guardian",
     "authentik",
     "django-channels-postgres",
     "django-dramatiq-postgres",
-    "django-guardian",
     "django-postgres-cache",
 ]
 
@@ -76,6 +76,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/61/62/06741b579156360248d1ec624842ad0edf697050bbaf7c3e46394e106ad1/aiosignal-1.4.0.tar.gz", hash = "sha256:f47eecd9468083c2029cc99945502cb7708b082c232f9aca65da147157b251c7", size = 25007, upload-time = "2025-07-03T22:54:43.528Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/76/641ae371508676492379f16e2fa48f4e2c11741bd63c48be4b12a6b09cba/aiosignal-1.4.0-py3-none-any.whl", hash = "sha256:053243f8b92b990551949e63930a839ff0cf0b0ebbe0597b0f3fb19e1a0fe82e", size = 7490, upload-time = "2025-07-03T22:54:42.156Z" },
+]
+
+[[package]]
+name = "ak-guardian"
+version = "3.2.0"
+source = { editable = "packages/ak-guardian" }
+dependencies = [
+    { name = "django" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "django", specifier = ">=5.2,<6.0" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'", specifier = ">=4.12.0" },
 ]
 
 [[package]]
@@ -174,6 +188,7 @@ name = "authentik"
 version = "2025.12.0rc1"
 source = { editable = "." }
 dependencies = [
+    { name = "ak-guardian" },
     { name = "argon2-cffi" },
     { name = "channels" },
     { name = "cryptography" },
@@ -186,7 +201,6 @@ dependencies = [
     { name = "django-cte" },
     { name = "django-dramatiq-postgres" },
     { name = "django-filter" },
-    { name = "django-guardian" },
     { name = "django-model-utils" },
     { name = "django-pglock" },
     { name = "django-pgtrigger" },
@@ -278,6 +292,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ak-guardian", editable = "packages/ak-guardian" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
     { name = "cryptography", specifier = "==45.0.5" },
@@ -290,7 +305,6 @@ requires-dist = [
     { name = "django-cte", specifier = "==2.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
     { name = "django-filter", specifier = "==25.1" },
-    { name = "django-guardian", editable = "packages/django-guardian" },
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-pglock", specifier = "==1.7.2" },
     { name = "django-pgtrigger", specifier = "==4.15.2" },
@@ -1079,20 +1093,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b5/40/c702a6fe8cccac9bf426b55724ebdf57d10a132bae80a17691d0cf0b9bac/django_filter-25.1.tar.gz", hash = "sha256:1ec9eef48fa8da1c0ac9b411744b16c3f4c31176c867886e4c48da369c407153", size = 143021, upload-time = "2025-02-14T16:30:53.238Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/a6/70dcd68537c434ba7cb9277d403c5c829caf04f35baf5eb9458be251e382/django_filter-25.1-py3-none-any.whl", hash = "sha256:4fa48677cf5857b9b1347fed23e355ea792464e0fe07244d1fdfb8a806215b80", size = 94114, upload-time = "2025-02-14T16:30:50.435Z" },
-]
-
-[[package]]
-name = "django-guardian"
-version = "3.2.0"
-source = { editable = "packages/django-guardian" }
-dependencies = [
-    { name = "django" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "django", specifier = ">=3.2" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13'", specifier = ">=4.12.0" },
 ]
 
 [[package]]

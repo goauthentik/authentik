@@ -22,4 +22,4 @@ def get_version():
     """
     from importlib.metadata import version
 
-    return version("django-guardian")
+    return version("ak-guardian")

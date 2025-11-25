@@ -30,4 +30,4 @@ ROLE_OBJ_PERMS_MODEL = getattr(
 user_model_label = getattr(settings, "AUTH_USER_MODEL", "auth.User")
 role_model_label = getattr(settings, "GUARDIAN_ROLE_MODEL", None)
 if role_model_label is None:
-    raise ImproperlyConfigured("django-guardian requires settings.GUARDIAN_ROLE_MODEL")
+    raise ImproperlyConfigured("ak-guardian requires settings.GUARDIAN_ROLE_MODEL")

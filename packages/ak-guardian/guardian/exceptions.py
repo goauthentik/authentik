@@ -1,5 +1,5 @@
 """
-Exceptions used by django-guardian. All internal and guardian-specific errors
+Exceptions used by ak-guardian. All internal and guardian-specific errors
 should extend GuardianError class.
 """
 

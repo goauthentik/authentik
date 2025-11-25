@@ -1,7 +1,7 @@
 """
-django-guardian helper functions.
+ak-guardian helper functions.
 
-Functions defined within this module are a part of django-guardian's internal functionality
+Functions defined within this module are a part of ak-guardian's internal functionality
 and be considered unstable; their APIs may change in any future releases.
 """
 
@@ -57,7 +57,7 @@ def _get_anonymous_user_uncached() -> Any:
 
 
 def get_anonymous_user() -> Any:
-    """Get the django-guardian equivalent of the anonymous user.
+    """Get the ak-guardian equivalent of the anonymous user.
 
     It returns a `User` model instance (not `AnonymousUser`) depending on
     `ANONYMOUS_USER_NAME` configuration.

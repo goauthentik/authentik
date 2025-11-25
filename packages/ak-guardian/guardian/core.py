@@ -13,7 +13,7 @@ def remove_app_label(perm: str) -> str:
 
 
 class ObjectPermissionChecker:
-    """Generic object permissions checker class being the heart of `django-guardian`.
+    """Generic object permissions checker class being the heart of `ak-guardian`.
 
     Note:
        Once checked for a single object, permissions are stored, and we don't hit
