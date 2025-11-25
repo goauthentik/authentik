@@ -6014,6 +6014,13 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Challenge key"
+                },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
                 }
             },
             "required": []

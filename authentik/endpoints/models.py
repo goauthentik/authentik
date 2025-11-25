@@ -65,6 +65,9 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
+    def __str__(self):
+        return f"Device {self.name} {self.identifier} ({self.pk})"
+
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Device")
         verbose_name_plural = _("Devices")

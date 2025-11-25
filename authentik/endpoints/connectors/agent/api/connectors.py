@@ -19,7 +19,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.endpoints.connectors.agent.api.agent import (
     AgentConfigSerializer,
-    EnrollResponseSerializer,
+    AgentTokenResponseSerializer,
     EnrollSerializer,
 )
 from authentik.endpoints.connectors.agent.auth import (
@@ -50,6 +50,7 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "nss_uid_offset",
             "nss_gid_offset",
             "challenge_key",
+            "jwt_federation_providers",
         ]
 
 
@@ -109,7 +110,7 @@ class AgentConnectorViewSet(
 
     @extend_schema(
         request=EnrollSerializer(),
-        responses={200: EnrollResponseSerializer},
+        responses={200: AgentTokenResponseSerializer},
     )
     @action(
         methods=["POST"],
@@ -136,6 +137,7 @@ class AgentConnectorViewSet(
         return Response(
             {
                 "token": token.key,
+                "expires_in": 0,
             }
         )
 

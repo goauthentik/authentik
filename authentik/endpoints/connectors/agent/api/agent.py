@@ -41,13 +41,14 @@ class AgentConfigSerializer(PassiveSerializer):
 
 class EnrollSerializer(PassiveSerializer):
 
-    device_serial = CharField()
-    device_name = CharField()
+    device_serial = CharField(required=True)
+    device_name = CharField(required=True)
 
 
-class EnrollResponseSerializer(PassiveSerializer):
+class AgentTokenResponseSerializer(PassiveSerializer):
 
-    token = CharField()
+    token = CharField(required=True)
+    expires_in = IntegerField(required=0)
 
 
 class AgentAuthenticationResponse(PassiveSerializer):

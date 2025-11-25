@@ -1,17 +1,35 @@
+from django.http import Http404, HttpResponseBadRequest
 from django.urls import reverse
+from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from jwt import PyJWTError, decode
+from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from structlog import get_logger
 
-from authentik.endpoints.connectors.agent.api.agent import AgentAuthenticationResponse
+from authentik.api.authentication import validate_auth
+from authentik.endpoints.connectors.agent.api.agent import (
+    AgentAuthenticationResponse,
+    AgentTokenResponseSerializer,
+)
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
     DeviceAuthenticationToken,
     DeviceToken,
 )
+from authentik.endpoints.models import Device
+from authentik.enterprise.endpoints.connectors.agent.auth import agent_auth_issue_token
+from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+
+LOGGER = get_logger()
 
 
 class AgentConnectorViewSetMixin:
@@ -40,6 +58,66 @@ class AgentConnectorViewSetMixin:
             }
         )
 
-    @action(methods=["POST"], detail=False)
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        parameters=[OpenApiParameter("device", OpenApiTypes.STR, location="query", required=True)],
+        responses={
+            200: AgentTokenResponseSerializer(),
+            404: OpenApiResponse(description="Device not found"),
+        },
+    )
+    @action(
+        methods=["POST"],
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[],
+        authentication_classes=[],
+    )
     def auth_fed(self, request: Request) -> Response:
-        pass
+        raw_token = validate_auth(get_authorization_header(request))
+        if not raw_token:
+            raise Http404
+        device = Device.objects.filter(name=request.query_params.get("device")).first()
+        if not device:
+            raise Http404
+
+        raw_token = ""
+        connectors_for_device = AgentConnector.objects.filter(device__in=[device])
+        providers = OAuth2Provider.objects.filter(agentconnector__in=connectors_for_device)
+        federated_token = AccessToken.objects.filter(
+            token=raw_token, provider__in=providers
+        ).first()
+        if not federated_token:
+            raise Http404
+        _key, _alg = federated_token.provider.jwt_key
+        try:
+            token = decode(
+                raw_token,
+                _key.public_key(),
+                algorithms=[_alg],
+                options={
+                    "verify_aud": False,
+                },
+            )
+            provider = federated_token.provider
+            self.user = federated_token.user
+        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+            LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
+            return HttpResponseBadRequest()
+
+        LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+        token, exp = agent_auth_issue_token(device, federated_token.user, jti=federated_token.pk)
+        rel_exp = int((exp - now()).total_seconds())
+        Event.new(
+            EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "jwt",
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "jwt": federated_token,
+                    "provider": provider,
+                },
+                PLAN_CONTEXT_DEVICE: device,
+            },
+        ).from_http(request, user=self.user)
+        return Response({"token": token, "expires_in": rel_exp})

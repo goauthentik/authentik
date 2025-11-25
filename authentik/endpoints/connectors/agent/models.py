@@ -36,6 +36,9 @@ class AgentConnector(Connector):
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
+    jwt_federation_providers = models.ManyToManyField(
+        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
+    )
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
     nss_gid_offset = models.PositiveIntegerField(default=1000)

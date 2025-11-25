@@ -1,21 +1,16 @@
-from datetime import timedelta
 from hashlib import sha256
 from hmac import compare_digest
 
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseBadRequest, QueryDict
-from django.utils.timezone import now
-from jwt import encode
 
-from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceAuthenticationToken
 from authentik.endpoints.models import Device
+from authentik.enterprise.endpoints.connectors.agent.auth import agent_auth_issue_token
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.policies.views import PolicyAccessView
-from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.device_finish import PLAN_CONTEXT_DEVICE
 
@@ -82,23 +77,13 @@ class AgentAuthFulfillmentStage(StageView):
             PLAN_CONTEXT_DEVICE_AUTH_TOKEN
         )
 
-        kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
-        token = encode(
-            {
-                "iss": "goauthentik.io/platform",
-                "aud": str(device.pk),
-                "jti": str(auth_token.identifier),
-                "iat": int(now().timestamp()),
-                "exp": int((now() + timedelta(days=3)).timestamp()),
-                "preferred_username": request.user.username,
-            },
-            kp.private_key,
-            algorithm=JWTAlgorithms.from_private_key(kp.private_key),
-        )
+        token, exp = agent_auth_issue_token(device, request.user, jti=str(auth_token.identifier))
+        auth_token.token = token
+        auth_token.expires = exp
+        auth_token.expiring = True
+        auth_token.save()
         qd = QueryDict(mutable=True)
         qd[QS_AGENT_IA_TOKEN] = token
-        auth_token.token = token
-        auth_token.save()
         return HttpResponseRedirectScheme(
             "goauthentik.io://platform/finished?" + qd.urlencode(),
             allowed_schemes=["goauthentik.io"],

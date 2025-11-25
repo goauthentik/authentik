@@ -5061,23 +5061,23 @@ paths:
       operationId: endpoints_agents_connectors_auth_fed_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: device
+        schema:
+          type: string
+        required: true
       tags:
       - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AgentConnectorRequest'
-        required: true
-      security:
-      - authentik: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentConnector'
+                $ref: '#/components/schemas/AgentTokenResponse'
           description: ''
+        '404':
+          description: Device not found
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -5137,7 +5137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnrollResponse'
+                $ref: '#/components/schemas/AgentTokenResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -32607,6 +32607,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - component
       - domain_name
@@ -32652,9 +32656,23 @@ components:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - domain_name
       - name
+    AgentTokenResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        token:
+          type: string
+        expires_in:
+          type: integer
+      required:
+      - token
     AlgEnum:
       enum:
       - rsa
@@ -36571,14 +36589,6 @@ components:
       required:
       - device_name
       - device_serial
-    EnrollResponse:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        token:
-          type: string
-      required:
-      - token
     EnrollmentToken:
       type: object
       properties:
@@ -44964,6 +44974,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
