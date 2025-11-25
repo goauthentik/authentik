@@ -134,9 +134,17 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
         ]
 
 
-class AuthenticationToken(ExpiringModel):
+class DeviceAuthenticationToken(ExpiringModel):
 
     identifier = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
     connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
     token = models.TextField()
+
+    def __str__(self):
+        return f"Device authentication token {self.identifier}"
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Device authentication token")
+        verbose_name_plural = _("Device authentication tokens")

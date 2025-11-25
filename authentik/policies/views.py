@@ -56,7 +56,7 @@ class PolicyAccessView(AccessMixin, View):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
 
-    provider: Provider | None  = None
+    provider: Provider | None = None
     application: Application | None = None
 
     def pre_permission_check(self):
@@ -140,10 +140,7 @@ class PolicyAccessView(AccessMixin, View):
         else:
             log_kwargs["app"] = self.application.slug
         LOGGER.debug(
-            "PolicyAccessView user_has_access",
-            user=user.username,
-            result=result,
-            **log_kwargs
+            "PolicyAccessView user_has_access", user=user.username, result=result, **log_kwargs
         )
         if not result.passing:
             for message in result.messages:

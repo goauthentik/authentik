@@ -125,7 +125,7 @@ class DeviceFactSnapshot(ExpiringModel, SerializerModel):
 
         return DeviceFactSnapshotSerializer
 
-    class Meta:
+    class Meta(ExpiringModel.Meta):
         verbose_name = _("Device fact snapshot")
         verbose_name_plural = _("Device fact snapshots")
 
