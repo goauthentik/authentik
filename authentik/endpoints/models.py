@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import OuterRef, Subquery
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -64,12 +65,20 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Device")
+        verbose_name_plural = _("Devices")
+
 
 class DeviceUserBinding(PolicyBinding):
     is_primary = models.BooleanField(default=False)
     # Used for storing a reference to the connector if this user/group binding was created
     # by a connector and not manually
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
+
+    class Meta(PolicyBinding.Meta):
+        verbose_name = _("Device User binding")
+        verbose_name_plural = _("Device User bindings")
 
 
 class DeviceConnection(SerializerModel):
@@ -96,6 +105,10 @@ class DeviceConnection(SerializerModel):
 
         return DeviceConnectionSerializer
 
+    class Meta:
+        verbose_name = _("Device connection")
+        verbose_name_plural = _("Device connections")
+
 
 class DeviceFactSnapshot(ExpiringModel, SerializerModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
@@ -111,6 +124,10 @@ class DeviceFactSnapshot(ExpiringModel, SerializerModel):
         from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
 
         return DeviceFactSnapshotSerializer
+
+    class Meta:
+        verbose_name = _("Device fact snapshot")
+        verbose_name_plural = _("Device fact snapshots")
 
 
 class Connector(ScheduledModel, SerializerModel):
@@ -156,6 +173,16 @@ class Connector(ScheduledModel, SerializerModel):
 class DeviceGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.api.device_group import DeviceGroupSerializer
+
+        return DeviceGroupSerializer
+
+    class Meta:
+        verbose_name = _("Device group")
+        verbose_name_plural = _("Device groups")
 
 
 class EndpointStage(Stage):
