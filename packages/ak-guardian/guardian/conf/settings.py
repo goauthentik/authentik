@@ -5,8 +5,6 @@ ANONYMOUS_USER_NAME = getattr(settings, "GUARDIAN_ANONYMOUS_USER_NAME", "Anonymo
 GET_INIT_ANONYMOUS_USER = getattr(
     settings, "GUARDIAN_GET_INIT_ANONYMOUS_USER", "guardian.management.get_init_anonymous_user"
 )
-MONKEY_PATCH_USER = getattr(settings, "GUARDIAN_MONKEY_PATCH_USER", True)
-MONKEY_PATCH_GROUP = getattr(settings, "GUARDIAN_MONKEY_PATCH_GROUP", True)
 GET_CONTENT_TYPE = getattr(
     settings, "GUARDIAN_GET_CONTENT_TYPE", "guardian.ctypes.get_default_content_type"
 )
