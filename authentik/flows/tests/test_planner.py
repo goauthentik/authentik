@@ -10,7 +10,12 @@ from django.urls import reverse
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import User
-from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import (
+    RequestFactory,
+    create_test_admin_user,
+    create_test_flow,
+    dummy_get_response,
+)
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
@@ -27,7 +32,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import dummy_get_response
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.policies.dummy.models import DummyPolicy
