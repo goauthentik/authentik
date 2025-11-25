@@ -14,7 +14,7 @@ import Tabs from "@theme/Tabs";
 
 ## Prerequisites
 
-Before you begin, ensure you have the following tools installed. You can run the [provided script](#3-installing-platform-specific-dependencies) below in \*\*Installing platform-specific dependencies to install these required tools.
+Before you begin, ensure you have the following tools installed. You can run the [provided script](#3-installing-platform-specific-dependencies) below in **Installing platform-specific dependencies** to install these required tools.
 
 - [Python](https://www.python.org/) (3.13 or later)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
@@ -139,24 +139,13 @@ make migrate
 If you ever want to start over, use `make dev-reset` which drops and restores the authentik PostgreSQL database to the state after `make migrate`.
 :::
 
-### Start the authentik server and worker
-
-Now that you have everything in place, you need to start the server and worker. In two different tabs in your terminal, run the following commands from the root of your installation directory:
-
-`make run-server`
-`make run-worker`
-
 ## 5. Running authentik
 
-Now that the backend has been set up and built, you can start authentik.
-
-Start the server:
+Now that the backend has been set up and built, you can start authentik. In two different tabs in your terminal, run the following commands from the root of your installation directory:
 
 ```shell
 make run-server
 ```
-
-In a separate process, start the worker:
 
 ```shell
 make run-worker
@@ -168,8 +157,6 @@ The very first time a worker runs, it might need some time to clear the initial 
 
 Both processes need to run to get a fully functioning authentik development environment.
 
-authentik will be accessible at http://localhost:9000.
-
 ### Initial setup
 
 To set a password for the default admin user (**akadmin**):
@@ -177,7 +164,9 @@ To set a password for the default admin user (**akadmin**):
 1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
 2. Follow the prompts to set up your admin account.
 
-## 6. Build the frontend and view in live development mode
+From now on, you can now access authentik at http://localhost:9000 using the credentials you defined in Step 2.
+
+## 6. Build the frontend
 
 Even if you're not planning to develop the UI, you need to build the frontend because no compiled bundle is included by default. Run the following command to build the authentik UI:
 
