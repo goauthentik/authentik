@@ -54,4 +54,3 @@ class AgentTokenResponseSerializer(PassiveSerializer):
 class AgentAuthenticationResponse(PassiveSerializer):
 
     url = CharField()
-    nonce = CharField()

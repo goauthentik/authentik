@@ -32518,10 +32518,7 @@ components:
       properties:
         url:
           type: string
-        nonce:
-          type: string
       required:
-      - nonce
       - url
     AgentConfig:
       type: object

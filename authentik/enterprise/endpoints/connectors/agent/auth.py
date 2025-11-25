@@ -12,6 +12,8 @@ from authentik.providers.oauth2.models import JWTAlgorithms
 
 def agent_auth_issue_token(device: Device, user: User, **kwargs):
     kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
+    if not kp:
+        return None, None
     # TODO: Configurable expiry
     exp = now() + timedelta(days=3)
     token = encode(
@@ -24,6 +26,9 @@ def agent_auth_issue_token(device: Device, user: User, **kwargs):
             **kwargs,
         },
         kp.private_key,
+        headers={
+            "kid": kp.kid,
+        },
         algorithm=JWTAlgorithms.from_private_key(kp.private_key),
     )
     return token, exp

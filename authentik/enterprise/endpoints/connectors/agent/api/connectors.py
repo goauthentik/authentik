@@ -8,7 +8,7 @@ from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.api.authentication import validate_auth
 from authentik.endpoints.connectors.agent.api.agent import (
@@ -25,7 +25,6 @@ from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.agent.auth import agent_auth_issue_token
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -54,7 +53,6 @@ class AgentConnectorViewSetMixin:
                         kwargs={"token_uuid": auth_token.identifier},
                     )
                 ),
-                "nonce": generate_id(),
             }
         )
 
@@ -77,24 +75,26 @@ class AgentConnectorViewSetMixin:
     def auth_fed(self, request: Request) -> Response:
         raw_token = validate_auth(get_authorization_header(request))
         if not raw_token:
-            raise Http404
+            LOGGER.warning("Missing token")
+            return HttpResponseBadRequest()
         device = Device.objects.filter(name=request.query_params.get("device")).first()
         if not device:
+            LOGGER.warning("Couldn't find device")
             raise Http404
 
-        raw_token = ""
         connectors_for_device = AgentConnector.objects.filter(device__in=[device])
         providers = OAuth2Provider.objects.filter(agentconnector__in=connectors_for_device)
         federated_token = AccessToken.objects.filter(
             token=raw_token, provider__in=providers
         ).first()
         if not federated_token:
+            LOGGER.warning("Couldn't lookup provider")
             raise Http404
         _key, _alg = federated_token.provider.jwt_key
         try:
             token = decode(
                 raw_token,
-                _key.public_key(),
+                _key,
                 algorithms=[_alg],
                 options={
                     "verify_aud": False,
@@ -107,7 +107,7 @@ class AgentConnectorViewSetMixin:
             return HttpResponseBadRequest()
 
         LOGGER.info("successfully verified JWT with provider", provider=provider.name)
-        token, exp = agent_auth_issue_token(device, federated_token.user, jti=federated_token.pk)
+        token, exp = agent_auth_issue_token(device, federated_token.user)
         rel_exp = int((exp - now()).total_seconds())
         Event.new(
             EventAction.LOGIN,
