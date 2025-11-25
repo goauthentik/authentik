@@ -26,7 +26,6 @@ if TYPE_CHECKING:
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
-    domain_name = models.TextField(unique=True)
     auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
         default="minutes=30",

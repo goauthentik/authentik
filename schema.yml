@@ -32582,8 +32582,6 @@ components:
           readOnly: true
         snapshot_expiry:
           type: string
-        domain_name:
-          type: string
         auth_terminate_session_on_expiry:
           type: boolean
         refresh_interval:
@@ -32610,7 +32608,6 @@ components:
             type: integer
       required:
       - component
-      - domain_name
       - meta_model_name
       - name
       - verbose_name
@@ -32627,9 +32624,6 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
-          type: string
-          minLength: 1
-        domain_name:
           type: string
           minLength: 1
         auth_terminate_session_on_expiry:
@@ -32658,7 +32652,6 @@ components:
           items:
             type: integer
       required:
-      - domain_name
       - name
     AgentTokenResponse:
       type: object
@@ -44945,9 +44938,6 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
-          type: string
-          minLength: 1
-        domain_name:
           type: string
           minLength: 1
         auth_terminate_session_on_expiry:

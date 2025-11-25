@@ -48,12 +48,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="agentconnector",
-            name="domain_name",
-            field=models.TextField(default="ak", unique=True),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="agentconnector",
             name="jwt_federation_providers",
             field=models.ManyToManyField(
                 blank=True, default=None, to="authentik_providers_oauth2.oauth2provider"

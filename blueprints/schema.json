@@ -5979,11 +5979,6 @@
                     "minLength": 1,
                     "title": "Snapshot expiry"
                 },
-                "domain_name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Domain name"
-                },
                 "auth_terminate_session_on_expiry": {
                     "type": "boolean",
                     "title": "Auth terminate session on expiry"
