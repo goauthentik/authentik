@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.admin.files.manager import FileManager
-from authentik.admin.files.usage import MANAGE_API_USAGES, FileUsage
+from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -30,11 +30,7 @@ def get_mime_from_filename(filename: str) -> str:
 class FileUploadSerializer(PassiveSerializer):
     file = serializers.FileField(required=True)
     name = serializers.CharField(required=False, allow_blank=True)
-    usage = serializers.ChoiceField(
-        choices=[(u.value, u.value) for u in MANAGE_API_USAGES],
-        default=FileUsage.MEDIA.value,
-        required=False,
-    )
+    usage = serializers.CharField(required=False, default=FileApiUsage.MEDIA.value)
 
 
 class FileView(APIView):
@@ -55,8 +51,8 @@ class FileView(APIView):
             OpenApiParameter(
                 name="usage",
                 type=str,
-                enum=[u.value for u in MANAGE_API_USAGES],
-                default=FileUsage.MEDIA.value,
+                enum=list(FileApiUsage),
+                default=FileApiUsage.MEDIA.value,
                 description="Usage type",
             ),
             OpenApiParameter(
@@ -85,16 +81,14 @@ class FileView(APIView):
     )
     def get(self, request: Request) -> Response:
         """List files from storage backend."""
-        usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
+        usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
         search_query = request.query_params.get("search", "").strip().lower()
         manageable_only = request.query_params.get("manageableOnly", "false").lower() == "true"
 
         try:
-            usage = FileUsage(usage_param)
+            usage = FileApiUsage(usage_param)
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
-        if usage not in MANAGE_API_USAGES:
-            raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
         # Backend is source of truth - list all files from storage
         files = FileManager(usage).list_files(manageable_only=manageable_only)
@@ -121,7 +115,7 @@ class FileView(APIView):
 
         file = serializer.validated_data["file"]
         name = serializer.validated_data.get("name", "").strip()
-        usage_value = serializer.validated_data.get("usage", FileUsage.MEDIA.value)
+        usage_value = serializer.validated_data.get("usage", FileApiUsage.MEDIA.value)
 
         # Validate file size and type
         if file.size > MAX_FILE_SIZE_BYTES:
@@ -137,11 +131,9 @@ class FileView(APIView):
             )
 
         try:
-            usage = FileUsage(usage_value)
+            usage = FileApiUsage(usage_value)
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_value}") from exc
-        if usage not in MANAGE_API_USAGES:
-            raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
         # Determine file path
         if name:
@@ -187,8 +179,8 @@ class FileView(APIView):
             OpenApiParameter(
                 name="usage",
                 type=str,
-                enum=[u.value for u in MANAGE_API_USAGES],
-                default=FileUsage.MEDIA.value,
+                enum=list(FileApiUsage),
+                default=FileApiUsage.MEDIA.value,
                 description="Usage type",
             ),
         ],
@@ -197,16 +189,14 @@ class FileView(APIView):
     def delete(self, request: Request) -> Response:
         """Delete file from storage backend."""
         name = request.query_params.get("name", "")
-        usage_param = request.query_params.get("usage", FileUsage.MEDIA.value)
+        usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
 
         validate_upload_file_name(name, ValidationError)
 
         try:
-            usage = FileUsage(usage_param)
+            usage = FileApiUsage(usage_param)
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
-        if usage not in MANAGE_API_USAGES:
-            raise ValidationError(f"Usage {usage.value} not accessible via this API")
 
         manager = FileManager(usage)
 

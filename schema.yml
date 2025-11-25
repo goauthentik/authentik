@@ -36983,8 +36983,8 @@ components:
         name:
           type: string
         usage:
-          allOf:
-          - $ref: '#/components/schemas/UsageEnum'
+          type: string
+          minLength: 1
           default: media
       required:
       - file
@@ -53851,10 +53851,6 @@ components:
           description: Number of passwords to check against.
       required:
       - name
-    UsageEnum:
-      enum:
-      - media
-      type: string
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object

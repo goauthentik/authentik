@@ -1,11 +1,17 @@
 from enum import StrEnum
+from itertools import chain
 
 
-class FileUsage(StrEnum):
-    """Usage types for file storage"""
+class FileApiUsage(StrEnum):
+    """Usage types for file API"""
 
     MEDIA = "media"
+
+
+class FileManagedUsage(StrEnum):
+    """Usage types for managed files"""
+
     REPORTS = "reports"
 
 
-MANAGE_API_USAGES = [FileUsage.MEDIA]
+FileUsage = StrEnum("FileUsage", [(v.name, v.value) for v in chain(FileApiUsage, FileManagedUsage)])
