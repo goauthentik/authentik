@@ -48,10 +48,12 @@ For users, authentik only saves the full display name, not separate first and fa
 
 By default, authentik maps a user’s: email address, name, and active status.
 
-Refer to Enta ID documentation for further details on which attributes can be mapped to: [Microsoft Graph - Create User](https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body)
+authentik default Microsoft Entra Mapping: Group
+
+Refer to Enta ID documentation for further details on which attributes can be mapped: [Microsoft Graph - Create User](https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body)
 
 ### Groups
 
-By default, authentik only maps a group's name.
+By default, authentik only maps a group's: name, mail_enabled status, security_enabled status and mail_nickname (equivalent to name).
 
-Refer to Google documentation for further details on which attributes can be mapped to: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
+Refer to Entra ID documentation for further details on which attributes can be mapped: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
