@@ -214,7 +214,9 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             name="passkeyUserVerification"
                             .options=${[
                                 {
-                                    label: msg("Preferred: User verification is preferred if available, but not required."),
+                                    label: msg(
+                                        "Preferred: User verification is preferred if available, but not required.",
+                                    ),
                                     value: UserVerificationEnum.Preferred,
                                     default: true,
                                 },
