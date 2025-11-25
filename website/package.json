@@ -19,9 +19,9 @@
     },
     "dependencies": {
         "@eslint/js": "^9.39.1",
-        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/eslint-config": "^1.1.0",
         "@goauthentik/prettier-config": "^3.1.0",
-        "@goauthentik/tsconfig": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.5",
         "@types/node": "^24.10.1",
         "@typescript-eslint/eslint-plugin": "^8.47.0",
         "@typescript-eslint/parser": "^8.47.0",
