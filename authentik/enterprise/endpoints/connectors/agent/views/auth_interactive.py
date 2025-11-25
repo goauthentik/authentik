@@ -17,8 +17,8 @@ from authentik.flows.stage import StageView
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
+from authentik.providers.oauth2.views.device_finish import PLAN_CONTEXT_DEVICE
 
-PLAN_CONTEXT_DEVICE = "goauthentik.io/endpoints/device"
 PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
 
 QS_AGENT_IA_TOKEN = "ak-auth-ia-token"  # nosec
