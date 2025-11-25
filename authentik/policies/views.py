@@ -122,7 +122,7 @@ class PolicyAccessView(AccessMixin, View):
         except (FlowNonApplicableException, EmptyFlowException) as exc:
             LOGGER.warning("Non-applicable authentication flow", exc=exc)
             raise Http404 from None
-        return plan.to_redirect(self.request, flow)
+        return plan.to_redirect(self.request, flow, next=self.request.get_full_path())
 
     def handle_no_permission_authenticated(
         self, result: PolicyResult | None = None

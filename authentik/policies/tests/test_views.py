@@ -52,6 +52,32 @@ class TestPolicyViews(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.content, b"foo")
 
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_pav_unauthenticated_next_param(self):
+        """Test simple policy access view (unauthenticated access, with checking next param)"""
+        provider = Provider.objects.create(
+            name=generate_id(),
+        )
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        flow = Flow.objects.get(slug="default-authentication-flow")
+
+        class TestView(PolicyAccessView):
+            def resolve_provider_application(self):
+                self.provider = provider
+                self.application = app
+
+            def get(self, *args, **kwargs):
+                return HttpResponse("foo")
+
+        req = self.factory.get("/")
+        req.user = AnonymousUser()
+        req.brand = create_test_brand(flow_authentication=flow)
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(req)
+        res = TestView.as_view()(req)
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, "/if/flow/default-authentication-flow/?next=%2F")
+
     @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_pav_buffer(self):
         """Test simple policy access view"""
