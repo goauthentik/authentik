@@ -14,7 +14,7 @@ import Tabs from "@theme/Tabs";
 
 ## Prerequisites
 
-Before you begin, ensure you have the following tools installed:
+Before you begin, ensure you have the following tools installed. You can run the [provided script](#3-installing-platform-specific-dependencies) below in **Installing platform-specific dependencies to install these required tools.
 
 - [Python](https://www.python.org/) (3.13 or later)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
@@ -25,15 +25,25 @@ Before you begin, ensure you have the following tools installed:
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 - [Make](https://www.gnu.org/software/make/) (3 or later)
 
-## 1. Setting Up Required Services
+### Understanding the architecture
 
-authentik depends on several external services:
+authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files. Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python type-checking extension in your IDE.
+
+## 1. Prepare your local working repository
+
+Verify that you have a local working repository of authentik and that it is initialized and up-to-date with the [authentik repository](https://github.com/goauthentik/authentik).
+
+To run the following steps, go to the `authentik` directory in your local repository.
+
+## 2. Set up required services
+
+authentik depends on several external services, which are configured with either Option A or Option B below.
 
 - [PostgreSQL](https://www.postgresql.org/) for database storage
 - [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/) for object storage
 - [Sentry Spotlight](https://spotlightjs.com/) for error tracking and visualization
 
-### Option A: Using Docker Compose (Recommended)
+### Option A: Using docker compose (recommended)
 
 The easiest way to set up these services is using the provided Docker Compose configuration:
 
@@ -49,12 +59,12 @@ Alternatively, you can install and run these services directly on your system.
 If using locally installed databases, ensure the PostgreSQL credentials provided to authentik have `CREATE DATABASE` and `DROP DATABASE` permissions, because authentik creates temporary databases for testing.
 :::
 
-## 2. Installing Platform-Specific Dependencies
+## 3. Installing platform-specific dependencies
 
 <Tabs defaultValue="macOS">
 <TabItem value="macOS">
 
-Install the required native dependencies on macOS using Homebrew:
+Install the required native dependencies on macOS using Homebrew (you can edit the following command if you already have some of these and want to skip installing them again):
 
 ```shell
 brew install \
@@ -71,7 +81,7 @@ krb5
 </TabItem>
 <TabItem value="Linux">
 
-For Debian/Ubuntu-based distributions:
+For Debian/Ubuntu-based distributions (you can edit the following command if you already have some of these and want to skip installing them again):
 
 ```shell
 pip install uv
@@ -95,7 +105,7 @@ We're currently seeking community input on running the full development environm
 </TabItem>
 </Tabs>
 
-## 3. Set up the backend
+## 4. Set up the backend
 
 :::info
 All `make` commands must be executed from the root directory of your local authentik Git repository.
@@ -129,34 +139,16 @@ make migrate
 If you ever want to start over, use `make dev-reset` which drops and restores the authentik PostgreSQL database to the state after `make migrate`.
 :::
 
-### Understanding the architecture
+### Start the authentik server and worker
 
-authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files.
-Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python Type-checking Extension in your IDE.
+Now that you have everything in place, you need to start the server and worker. In two different tabs in your terminal, run the following commands from the root of your installation directory:
 
-## 4. Set up the frontend
-
-Even if you're not planning to develop the UI, you need to build the frontend as no compiled bundle is included by default.
-
-### Building the UI
-
-#### Live development mode
-
-For real-time feedback as you make changes:
-
-```shell
-make web-watch
-```
-
-Or instead, if you just want to build it once:
-
-```shell
-make web-build
-```
+`make run-server`
+`make run-worker`
 
 ## 5. Running authentik
 
-Now that the backend and frontend have been set up and built, you can start authentik.
+Now that the backend has been set up and built, you can start authentik.
 
 Start the server:
 
@@ -185,6 +177,21 @@ To set a password for the default admin user (**akadmin**):
 1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
 2. Follow the prompts to set up your admin account.
 
+## 6. Build the frontend and view in live development mode
+
+Even if you're not planning to develop the UI, you need to build the frontend as no compiled bundle is included by default. Run the following command to build the authentik UI:
+
+```shell
+make web-build
+```
+
+For real-time feedback you can view the UI as you make changes. Run this command and then in your browser go to http://localhost:9000/.
+
+```shell
+make web-watch
+```
+
+
 ### Hot-reloading
 
 When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code. However, due to instabilities in the reloading process of the worker, that behavior is turned off for the worker. You can enable code reloading in the worker by manually running `uv run ak worker --watch`.
@@ -205,7 +212,7 @@ Alternatively, you can connect directly via VNC on port `5900` using the passwor
 When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
 
-## 6. Contributing code
+## 7. Contributing code
 
 ### Before submitting a pull request
 
