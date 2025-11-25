@@ -47,7 +47,7 @@ export class AKTimestamp extends AKElement {
     @intersectionObserver()
     public visible = false;
 
-    @property({ type: Boolean, useDefault: true })
+    @property({ type: Boolean })
     public elapsed: boolean = true;
 
     @property({ type: Boolean, useDefault: true })
