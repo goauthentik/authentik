@@ -19,10 +19,7 @@ from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 class TestConnectorAuthFed(APITestCase):
 
     def setUp(self):
-        self.connector = AgentConnector.objects.create(
-            name=generate_id(),
-            domain_name=generate_id(),
-        )
+        self.connector = AgentConnector.objects.create(name=generate_id())
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
         self.device = Device.objects.create(
             name=generate_id(),

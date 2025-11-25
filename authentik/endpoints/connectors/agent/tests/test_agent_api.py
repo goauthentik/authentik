@@ -36,9 +36,7 @@ CHECK_IN_DATA_VALID = {
 class TestAgentAPI(APITestCase):
 
     def setUp(self):
-        self.connector = AgentConnector.objects.create(
-            name=generate_id(), domain_name=generate_id()
-        )
+        self.connector = AgentConnector.objects.create(name=generate_id())
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
         self.device = Device.objects.create(
             identifier=generate_id(),
@@ -142,9 +140,7 @@ class TestAgentAPI(APITestCase):
 
     def test_mdm_api_wrong_token(self):
         self.client.force_login(create_test_admin_user())
-        other_connector = AgentConnector.objects.create(
-            name=generate_id(), domain_name=generate_id()
-        )
+        other_connector = AgentConnector.objects.create(name=generate_id())
         self.token.connector = other_connector
         self.token.save()
         res = self.client.post(

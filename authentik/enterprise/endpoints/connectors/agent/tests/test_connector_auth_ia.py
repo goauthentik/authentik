@@ -22,7 +22,6 @@ class TestConnectorAuthIA(APITestCase):
     def setUp(self):
         self.connector = AgentConnector.objects.create(
             name=generate_id(),
-            domain_name=generate_id(),
             authorization_flow=create_test_flow(),
         )
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
