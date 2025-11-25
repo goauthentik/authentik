@@ -11261,6 +11261,11 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
+                },
                 "authentication_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -11601,6 +11606,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -11972,6 +11982,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -12357,6 +12372,11 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
+                },
                 "authentication_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -12658,6 +12678,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -13164,6 +13189,11 @@
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",

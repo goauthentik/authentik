@@ -65,6 +65,7 @@ class LoginSourceSerializer(PassiveSerializer):
 
     name = CharField()
     icon_url = CharField(required=False, allow_null=True)
+    promoted = BooleanField(default=False)
 
     challenge = ChallengeDictWrapper()
 

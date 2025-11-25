@@ -39164,6 +39164,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -39362,6 +39366,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -39826,6 +39834,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -40061,6 +40073,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -40349,6 +40365,9 @@ components:
         icon_url:
           type: string
           nullable: true
+        promoted:
+          type: boolean
+          default: false
         challenge:
           $ref: '#/components/schemas/LoginChallengeTypes'
       required:
@@ -41629,6 +41648,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -41838,6 +41861,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -46209,6 +46236,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -46409,6 +46440,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -46847,6 +46882,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -47115,6 +47154,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -47711,6 +47754,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48177,6 +48224,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48624,6 +48675,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48795,6 +48850,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -51109,6 +51168,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -51329,6 +51392,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -52656,6 +52723,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -53287,6 +53358,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -53450,6 +53525,10 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
