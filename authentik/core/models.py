@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
@@ -534,7 +535,11 @@ class Application(SerializerModel, PolicyBindingModel):
     add custom fields and other properties"""
 
     name = models.TextField(help_text=_("Application's display Name."))
-    slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
+    slug = models.TextField(
+        validators=[validate_slug],
+        help_text=_("Internal application name, used in URLs."),
+        unique=True,
+    )
     group = models.TextField(blank=True, default="")
 
     provider = models.OneToOneField(
@@ -720,7 +725,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     MANAGED_INBUILT = "goauthentik.io/sources/inbuilt"
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
+    slug = models.TextField(
+        validators=[validate_slug],
+        help_text=_("Internal source name, used in URLs."),
+        unique=True,
+    )
 
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
