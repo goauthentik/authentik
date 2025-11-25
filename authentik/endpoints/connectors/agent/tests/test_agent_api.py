@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
@@ -36,7 +37,7 @@ class TestAgentAPI(APITestCase):
 
     def setUp(self):
         self.connector = AgentConnector.objects.create(
-            name=generate_id(),
+            name=generate_id(), domain_name=generate_id()
         )
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
         self.device = Device.objects.create(
@@ -87,6 +88,7 @@ class TestAgentAPI(APITestCase):
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Device.objects.filter(identifier=dev_id).exists())
 
+    @reconcile_app("authentik_crypto")
     def test_config(self):
         response = self.client.get(
             reverse("authentik_api:agentconnector-agent-config"),
@@ -140,7 +142,9 @@ class TestAgentAPI(APITestCase):
 
     def test_mdm_api_wrong_token(self):
         self.client.force_login(create_test_admin_user())
-        other_connector = AgentConnector.objects.create(name=generate_id())
+        other_connector = AgentConnector.objects.create(
+            name=generate_id(), domain_name=generate_id()
+        )
         self.token.connector = other_connector
         self.token.save()
         res = self.client.post(
