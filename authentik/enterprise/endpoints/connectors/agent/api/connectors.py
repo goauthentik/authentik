@@ -25,6 +25,7 @@ class AgentConnectorViewSetMixin:
         token: DeviceToken = request.auth
         auth_token = DeviceAuthenticationToken.objects.create(
             device=token.device.device,
+            device_token=token,
             connector=token.device.connector.agentconnector,
         )
         return Response(

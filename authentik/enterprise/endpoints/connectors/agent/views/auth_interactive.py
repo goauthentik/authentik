@@ -56,14 +56,20 @@ class AgentInteractiveAuth(PolicyAccessView):
         planner = FlowPlanner(self.connector.authorization_flow)
         planner.allow_empty_flows = True
         try:
-            plan = planner.plan(self.request, {})
+            plan = planner.plan(
+                self.request,
+                {
+                    PLAN_CONTEXT_DEVICE: self.device,
+                    PLAN_CONTEXT_DEVICE_AUTH_TOKEN: self.auth_token,
+                },
+            )
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
         plan.append_stage(in_memory_stage(AgentAuthFulfillmentStage))
 
         return plan.to_redirect(
             self.request,
-            self.provider.authorization_flow,
+            self.connector.authorization_flow,
             allowed_silent_types=[AgentAuthFulfillmentStage],
         )
 
@@ -72,7 +78,7 @@ class AgentAuthFulfillmentStage(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         device: Device = self.executor.plan.context.pop(PLAN_CONTEXT_DEVICE)
-        auth_token: DeviceAuthenticationToken = self.executor.plan.context(
+        auth_token: DeviceAuthenticationToken = self.executor.plan.context.pop(
             PLAN_CONTEXT_DEVICE_AUTH_TOKEN
         )
 
