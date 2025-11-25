@@ -5593,7 +5593,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5619,7 +5619,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5651,7 +5651,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5682,7 +5682,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5705,7 +5705,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5788,7 +5788,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device group.
         required: true
       tags:
       - endpoints
@@ -5814,7 +5814,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device group.
         required: true
       tags:
       - endpoints
@@ -5846,7 +5846,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device group.
         required: true
       tags:
       - endpoints
@@ -5877,7 +5877,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device group.
         required: true
       tags:
       - endpoints
@@ -5900,7 +5900,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device group.
         required: true
       tags:
       - endpoints
@@ -5960,7 +5960,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -5987,7 +5987,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6020,7 +6020,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6052,7 +6052,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6075,7 +6075,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -32544,6 +32544,10 @@ components:
           type: integer
         auth_terminate_session_on_expiry:
           type: boolean
+        system_config:
+          allOf:
+          - $ref: '#/components/schemas/Config'
+          readOnly: true
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
@@ -32552,6 +32556,7 @@ components:
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
+      - system_config
     AgentConnector:
       type: object
       properties:
