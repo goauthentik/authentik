@@ -3,7 +3,7 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
-import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
 
@@ -77,18 +77,17 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
+                label=${msg("Authorization flow")}
                 required
-                name="authenticationFlow"
+                name="authorizationFlow"
             >
-                <ak-branded-flow-search
-                    label=${msg("Bind flow")}
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authenticationFlow}
-                    .brandFlow=${this.brand?.flowAuthentication}
+                <ak-flow-search
+                    label=${msg("Authorization flow")}
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
                     required
-                ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
+                ></ak-flow-search>
+                <p class="pf-c-form__helper-text">${msg("Flow used for users to authorize.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Certificate")} name="challengeKey">
                 <ak-crypto-certificate-search
