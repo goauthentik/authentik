@@ -63,8 +63,6 @@ async function akReleasesPlugin(loadContext, options) {
                 env: environment,
             };
 
-            content.publicPath;
-
             return content;
         },
 

@@ -1,7 +1,6 @@
 import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
 
 export default createESLintPackageConfig({
-    // @ts-expect-error This type can be inferred after Docusaurus 3.9
     parserOptions: {
         tsconfigRootDir: import.meta.dirname,
     },
@@ -10,6 +9,5 @@ export default createESLintPackageConfig({
         ...DefaultIgnorePatterns,
         "**/.docusaurus/",
         "**/build",
-        "**/reference",
     ],
 });
