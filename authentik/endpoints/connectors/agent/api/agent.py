@@ -16,7 +16,6 @@ from authentik.providers.oauth2.views.jwks import JWKSView
 
 class AgentConfigSerializer(PassiveSerializer):
 
-    domain_name = CharField()
     refresh_interval = SerializerMethodField()
 
     authorization_flow = CharField()

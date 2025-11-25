@@ -32524,8 +32524,6 @@ components:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
-        domain_name:
-          type: string
         refresh_interval:
           type: integer
           readOnly: true
@@ -32548,7 +32546,6 @@ components:
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
-      - domain_name
       - jwks
       - nss_gid_offset
       - nss_uid_offset
