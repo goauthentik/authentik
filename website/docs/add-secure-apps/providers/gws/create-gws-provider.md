@@ -49,4 +49,4 @@ If you have configured the [Google Workspace SAML integration](/integrations/ser
     - **Backchannel Providers**: this field is required for Google Workspace. Select the name of the Google Workspace provider that you created in the previous section.
     - **UI settings**: leave these fields empty for Google Workspace.
 
-3. Click **Finish**.
+3. Click **Create**.
