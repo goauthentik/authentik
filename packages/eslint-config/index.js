@@ -58,6 +58,9 @@ export function createESLintPackageConfig({
     return defineConfig(
         {
             ignores: ignorePatterns,
+        },
+
+        {
             languageOptions: {
                 parserOptions,
             },
@@ -66,8 +69,8 @@ export function createESLintPackageConfig({
         eslint.configs.recommended,
         javaScriptConfig,
 
-        wcconf?.configs["flat/recommended"] ?? {},
-        litconf?.configs["flat/recommended"] ?? {},
+        wcconf?.configs["flat/recommended"] ?? [{}],
+        litconf?.configs["flat/recommended"] ?? [{}],
 
         ...tseslint.configs.recommended,
 
