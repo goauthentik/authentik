@@ -456,17 +456,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
 
-        # Annotate is_superuser to avoid expensive recursive CTE for each user
-        # This checks if user is in any superuser group
-        base_qs = base_qs.annotate(
-            is_superuser=Exists(
-                Group.objects.filter(
-                    users=OuterRef("pk"),
-                    is_superuser=True,
-                )
-            )
-        )
-
         # Always prefetch groups since UserSerializer includes 'groups' field for PKs
         if self.serializer_class(context={"request": self.request})._should_include_groups:
             # When including full group data, prefetch with parent selected
