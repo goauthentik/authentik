@@ -73,7 +73,7 @@ class TestConnectorAuthFed(APITestCase):
 
     @reconcile_app("authentik_crypto")
     def test_auth_fed_policy_group_deny(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
+        device_group = DeviceTag.objects.create(name=generate_id())
         self.device.group = device_group
         self.device.save()
 
