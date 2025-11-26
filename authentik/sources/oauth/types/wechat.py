@@ -134,9 +134,7 @@ class WeChatType(SourceType):
     # WeChatOAuth2Client overrides get_access_token() to use GET,
     # so this setting would be misleading.
 
-    def get_base_user_properties(
-        self, info: dict[str, Any], **kwargs
-    ) -> dict[str, Any]:
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         """
         Map WeChat userinfo to authentik user properties.
         """
