@@ -257,10 +257,11 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         if not, we can skip this entire stage"""
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-        # Skip if user already authenticated via passkey at identification stage
-        # and this stage accepts WebAuthn devices
+        # Skip if user already authenticated via passkey at identification stage,
+        # this stage accepts WebAuthn devices, and the setting is enabled
         if (
-            self.executor.plan.context.get(PLAN_CONTEXT_METHOD) == "auth_webauthn_pwl"
+            stage.skip_if_passkey_authenticated
+            and self.executor.plan.context.get(PLAN_CONTEXT_METHOD) == "auth_webauthn_pwl"
             and DeviceClasses.WEBAUTHN in stage.device_classes
         ):
             self.logger.debug("Skipping, user already authenticated via passkey")

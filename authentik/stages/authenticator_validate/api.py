@@ -38,6 +38,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
             "webauthn_user_verification",
             "webauthn_allowed_device_types",
             "webauthn_allowed_device_types_obj",
+            "skip_if_passkey_authenticated",
         ]
 
 
