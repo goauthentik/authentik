@@ -118,7 +118,13 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
         """Validate passkey/WebAuthn response for passwordless authentication"""
-        return validate_challenge_webauthn(passkey, self.stage, self.stage.get_pending_user())
+        # Get the webauthn_stage from the current IdentificationStage
+        current_stage: IdentificationStage = IdentificationStage.objects.get(
+            pk=self.stage.executor.current_stage.pk
+        )
+        return validate_challenge_webauthn(
+            passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
+        )
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password, captcha token, or passkey"""
@@ -131,7 +137,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             device = self._validate_passkey_response(passkey)
             self.passkey_device = device
             self.pre_user = device.user
-            self.pre_user.backend = class_to_path(self)
+            self.pre_user.backend = class_to_path(type(self))
             return attrs
 
         # Standard username/password flow
@@ -251,10 +257,16 @@ class IdentificationStageView(ChallengeStageView):
 
     def get_passkey_challenge(self) -> dict | None:
         """Generate a WebAuthn challenge for passkey/conditional UI authentication"""
-        current_stage: IdentificationStage = self.executor.current_stage
+        # Refresh from DB to get the latest configuration
+        current_stage: IdentificationStage = IdentificationStage.objects.get(
+            pk=self.executor.current_stage.pk
+        )
         if not current_stage.webauthn_stage:
+            self.logger.debug("No webauthn_stage configured")
             return None
-        return get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
+        challenge = get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
+        self.logger.debug("Generated passkey challenge", challenge=challenge)
+        return challenge
 
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
