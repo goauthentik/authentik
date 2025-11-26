@@ -97,7 +97,7 @@ class FileBackend(ManageableBackend):
 
     @contextmanager
     def save_file_stream(self, name: str) -> Iterator:
-        """Contxt manager for streaming file writes to local filesystem."""
+        """Context manager for streaming file writes to local filesystem."""
         path = self.base_path / Path(name)
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "wb") as f:
