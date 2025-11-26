@@ -12,6 +12,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
@@ -473,8 +474,8 @@ class TestIdentificationStage(FlowTestCase):
             ).is_valid(raise_exception=True)
 
     def test_passkey_challenge_disabled(self):
-        """Test that passkey challenge is not included when passkey_login is disabled"""
-        self.stage.passkey_login = False
+        """Test that passkey challenge is not included when webauthn_stage is not set"""
+        self.stage.webauthn_stage = None
         self.stage.save()
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -484,9 +485,15 @@ class TestIdentificationStage(FlowTestCase):
         self.assertIsNone(data.get("passkey_challenge"))
 
     def test_passkey_challenge_enabled(self):
-        """Test that passkey challenge is included when passkey_login is enabled"""
-        self.stage.passkey_login = True
+        """Test that passkey challenge is included when webauthn_stage is set"""
+        # Create an AuthenticatorValidateStage for WebAuthn
+        webauthn_stage = AuthenticatorValidateStage.objects.create(
+            name="webauthn-validate",
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        self.stage.webauthn_stage = webauthn_stage
         self.stage.save()
+
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
@@ -501,7 +508,12 @@ class TestIdentificationStage(FlowTestCase):
 
     def test_passkey_authentication(self):
         """Test passkey authentication flow"""
-        self.stage.passkey_login = True
+        # Create an AuthenticatorValidateStage for WebAuthn
+        webauthn_stage = AuthenticatorValidateStage.objects.create(
+            name="webauthn-validate",
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        self.stage.webauthn_stage = webauthn_stage
         self.stage.save()
 
         # Create a WebAuthn device for the user
@@ -536,7 +548,12 @@ class TestIdentificationStage(FlowTestCase):
 
     def test_passkey_no_uid_field_required(self):
         """Test that uid_field is not required when passkey is provided"""
-        self.stage.passkey_login = True
+        # Create an AuthenticatorValidateStage for WebAuthn
+        webauthn_stage = AuthenticatorValidateStage.objects.create(
+            name="webauthn-validate",
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        self.stage.webauthn_stage = webauthn_stage
         self.stage.save()
 
         # Get the challenge first to set up the session
