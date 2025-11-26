@@ -1,12 +1,23 @@
-# don't ever lint node_modules
+# Prettier Ignorefile
+
+## Node
 node_modules
-# don't lint build output (make sure it's set to your correct build folder name)
+
+## Static Files
+**/LICENSE
+
+## Build asset directories
+coverage
 dist
 out
-# don't lint nyc coverage output
-coverage
-# Import order matters
-src/locale-codes.ts
-src/locales/
+
+## Storybook
 storybook-static/
 .storybook/css-import-maps*
+
+## Locales
+src/locale-codes.ts
+src/locales/
+
+## Vendored files
+*.min.js
