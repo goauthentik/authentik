@@ -153,7 +153,7 @@ storage:
   backend: file # or s3
   file:
     path: ./data
-    presigned_expiry: "minutes=15"
+    url_expiry: "minutes=15"
   s3:
     # How to talk to s3
     # region: "us-east-1"
@@ -165,7 +165,7 @@ storage:
     # How to render file URLs
     # custom_domain: null
     secure_urls: True
-    presigned_expiry: "minutes=15"
+    url_expiry: "minutes=15"
   # Usage based settings. Same schema as global settings, overrides global settings
   # media:
   #   backend: file # or s3

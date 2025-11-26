@@ -68,8 +68,8 @@ class FileBackend(ManageableBackend):
         """Get URL for accessing the file."""
         expires_in = timedelta_from_string(
             CONFIG.get(
-                f"storage.{self.usage.value}.{self.name}.presigned_expiry",
-                CONFIG.get(f"storage.{self.name}.presigned_expiry", "minutes=15"),
+                f"storage.{self.usage.value}.{self.name}.url_expiry",
+                CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
             )
         )
 
