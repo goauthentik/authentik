@@ -130,7 +130,7 @@ A pop-up will appear on your browser with the link for you to copy and to send t
 This option is only available if the default recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it. The example recovery flow includes an email stage.
 :::
 
-You can send a link with the URL for the user to reset their password via Email. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
+You can send a link with the URL for the user to reset their password via Email. This option will only work if you have [configured email](../../install-config/email.mdx) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full User details page.
