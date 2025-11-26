@@ -301,41 +301,21 @@ Requests directly coming from one an address within a CIDR specified here are ab
 
 Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
-## Storage Settings
+## Media Storage Settings
 
-These settings affect where files are stored. Files include application and source icons (media), as well as policy and blueprint attachments (reports). By default, files are stored on disk in the `/data` directory of the authentik container. S3-compatible storage is also supported.
+These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
 
-### Backend Configuration
-
-- `AUTHENTIK_STORAGE__BACKEND`: Storage backend to use. Valid values are `file` and `s3`. Defaults to `file`.
-
-### File Storage (Default)
-
-When using `file` backend, files are stored in `/data/` in the container with automatic path prefixes based on file type and tenant. No additional configuration is required.
-
-### S3-Compatible Storage
-
-When using the `s3` backend, all files are stored in the same bucket with automatic key prefixes based on file type and tenant.
-
-#### Authentication
-
-- `AUTHENTIK_STORAGE__S3__SESSION_PROFILE`: AWS profile to use for authentication. If set, uses credentials from `~/.aws/credentials`. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__S3__ACCESS_KEY`: S3 access key ID for authentication. Required if not using `SESSION_PROFILE`. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__S3__SECRET_KEY`: S3 secret access key for authentication. Required if not using `SESSION_PROFILE`. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__S3__SECURITY_TOKEN`: S3 session token for temporary credentials (e.g., when using IAM roles). Optional. Supports hot-reloading.
-
-#### Connection Settings
-
-- `AUTHENTIK_STORAGE__S3__BUCKET_NAME`: Name of the S3 bucket to store files in. Required.
-- `AUTHENTIK_STORAGE__S3__REGION`: AWS region for the bucket (e.g., `us-east-1`).
-- `AUTHENTIK_STORAGE__S3__ENDPOINT`: Custom endpoint URL for S3-compatible storage providers. Must be a full URL (e.g., `https://account-id.r2.cloudflarestorage.com`). Leave unset for AWS S3.
-- `AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE`: S3 URL addressing style. Valid values are `auto`, `path`, or `virtual`. Defaults to `auto`.
-
-#### URL Generation
-
-- `AUTHENTIK_STORAGE__S3__SECURE_URLS`: Whether generated URLs use HTTPS. Defaults to `true`.
-- `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN`: Custom domain for accessing files. Should be just the hostname (e.g., `cdn.example.com`), without the bucket name or path. Used to replace the S3 endpoint hostname in generated URLs. Optional.
-- `AUTHENTIK_STORAGE__S3__PRESIGNED_EXPIRY`: How long presigned URLs remain valid, in seconds. Defaults to `3600` (1 hour).
+- `AUTHENTIK_STORAGE__MEDIA__BACKEND`: Where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/media` directory in the container. For `s3`, see below.
+- `AUTHENTIK_STORAGE__MEDIA__S3__REGION`: S3 region where the bucket has been created. May be omitted depending on which S3 provider you use. No default.
+- `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`: Whether to use HTTPS when talking to the S3 storage providers. Defaults to `true`.
+- `AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT`: Endpoint to use to talk to the S3 storage provider. Override the previous region and use_ssl settings. Must be a valid URL in the form of `https://s3.provider`. No default.
+- `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE`: Profile to use when using AWS SDK authentication. No default. Supports hot-reloading.
+- `AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY`: Access key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+- `AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY`: Secret key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
+- `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
+- `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
+- `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
+- `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
 
 ## authentik Settings
 

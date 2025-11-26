@@ -88,10 +88,10 @@ For a path-style domain, set `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN=s3.pro
 Whether URLs use HTTPS is controlled by `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS` (defaults to `true`). Depending on your provider, you can also use a virtual hosted-style domain such as `authentik-media.s3.provider`.
 
 :::info
-You can omit `ACCESS_KEY` and `SECRET_KEY` when using AWS SDK authentication (instance roles or profiles). See `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE` and related options in the [configuration reference](../../install-config/configuration/configuration.mdx#storage-settings).
+You can omit `ACCESS_KEY` and `SECRET_KEY` when using AWS SDK authentication (instance roles or profiles). See `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE` and related options in the configuration reference](../../install-config/configuration/configuration.mdx#media-storage-settings).
 :::
 
-For more options (including `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`, session profiles, and security tokens), see the [configuration reference](../../install-config/configuration/configuration.mdx#storage-settings).
+For more options (including `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`, session profiles, and security tokens), see the [configuration reference](../../install-config/configuration/configuration.mdx#media-storage-settings).
 
 ## Migrating between storage backends
 
