@@ -103,7 +103,7 @@ class S3Backend(ManageableBackend):
         return True
 
     def supports_file(self, name: str) -> bool:
-        """We support all file usages"""
+        """We support all files"""
         return True
 
     def list_files(self) -> Generator[str]:

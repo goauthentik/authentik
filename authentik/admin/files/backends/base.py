@@ -34,13 +34,13 @@ class Backend:
 
     def supports_file(self, name: str) -> bool:
         """
-        Check if this backend can handle the given file path pattern.
+        Check if this backend can handle the given file path.
 
         Args:
-            file_path: File path pattern to check
+            name: File path to check
 
         Returns:
-            True if this backend supports this file path pattern
+            True if this backend supports this file path
         """
         raise NotImplementedError
 
