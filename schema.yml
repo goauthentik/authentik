@@ -36968,9 +36968,12 @@ components:
           type: string
         mime_type:
           type: string
+        url:
+          type: string
       required:
       - mime_type
       - name
+      - url
     FileUploadRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods

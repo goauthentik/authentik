@@ -74,6 +74,7 @@ class FileView(APIView):
                 {
                     "name": CharField(required=True),
                     "mime_type": CharField(required=True),
+                    "url": CharField(required=True),
                 },
                 many=True,
             )
@@ -91,12 +92,14 @@ class FileView(APIView):
             raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
 
         # Backend is source of truth - list all files from storage
-        files = FileManager(usage).list_files(manageable_only=manageable_only)
+        manager = FileManager(usage)
+        files = manager.list_files(manageable_only=manageable_only)
         if search_query:
             files = filter(lambda file: search_query in file.lower(), files)
         files = [
             {
                 "name": file,
+                "url": manager.file_url(file),
                 "mime_type": get_mime_from_filename(file),
             }
             for file in files
@@ -135,14 +138,8 @@ class FileView(APIView):
         except ValueError as exc:
             raise ValidationError(f"Invalid usage parameter provided: {usage_value}") from exc
 
-        # Determine file path
-        if name:
-            # Add extension from original filename if not present
-            path_obj = PurePosixPath(name)
-            if not path_obj.suffix and Path(file.name).suffix:
-                name = f"{name}{Path(file.name).suffix}"
-        else:
-            # Use original filename
+        # Use original filename
+        if not name:
             name = file.name
 
         # Sanitize path to prevent directory traversal

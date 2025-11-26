@@ -4,7 +4,7 @@ import { MessageLevel } from "#common/messages";
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
 
-import { AdminApi, UsageEnum } from "@goauthentik/api";
+import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -13,7 +13,7 @@ import { customElement, property, state } from "lit/decorators.js";
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String })
-    usage: UsageEnum = UsageEnum.Media;
+    usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
 
     @state()
     selectedFile?: File;

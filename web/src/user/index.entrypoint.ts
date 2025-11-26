@@ -135,11 +135,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
-                            ${renderImage(
-                                this.brandingLogo,
-                                this.brandingTitle,
-                                "pf-c-brand"
-                            )}
+                            ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
                         </a>
                     </div>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>

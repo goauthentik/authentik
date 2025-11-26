@@ -98,7 +98,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                         ${renderImage(
                             this.brandingFavicon,
                             msg("authentik Logo"),
-                            "pf-c-about-modal-box__brand-image"
+                            "pf-c-about-modal-box__brand-image",
                         )}
                     </div>
                     <div class="pf-c-about-modal-box__close">

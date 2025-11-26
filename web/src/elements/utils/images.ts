@@ -20,16 +20,16 @@ export function themeImage(rawPath: string) {
  * @param className - CSS classes to apply
  * @returns TemplateResult with either <img> or <i> element
  */
-export function renderImage(imagePath: string, alt: string = "", className: string = ""): TemplateResult {
+export function renderImage(
+    imagePath: string,
+    alt: string = "",
+    className: string = "",
+): TemplateResult {
     // Handle Font Awesome icons (same logic as ak-app-icon)
     // TODO: I should probably de-duplicate code from there when I have a second
     if (imagePath.startsWith(FontAwesomeProtocol)) {
         const iconClass = imagePath.slice(FontAwesomeProtocol.length);
-        return html`<i
-            role="img"
-            aria-label=${alt}
-            class="${className} fas ${iconClass}"
-        ></i>`;
+        return html`<i role="img" aria-label=${alt} class="${className} fas ${iconClass}"></i>`;
     }
 
     // Handle regular images

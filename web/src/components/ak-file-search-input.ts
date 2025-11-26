@@ -105,7 +105,7 @@ export class AkFileSearchInput extends AKElement {
 
             // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
             // add it as a synthetic item so it shows up as selected
-            if (this.value && !results.find(item => item.name === this.value)) {
+            if (this.value && !results.find((item) => item.name === this.value)) {
                 results = [
                     {
                         name: this.value,

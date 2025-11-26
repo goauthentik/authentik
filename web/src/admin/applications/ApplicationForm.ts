@@ -25,7 +25,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { Application, CoreApi, UsageEnum, Provider } from "@goauthentik/api";
+import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";

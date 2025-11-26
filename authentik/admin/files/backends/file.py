@@ -10,14 +10,11 @@ from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from structlog.stdlib import get_logger
 
 from authentik.admin.files.backends.base import ManageableBackend
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
-
-LOGGER = get_logger()
 
 
 class FileBackend(ManageableBackend):
