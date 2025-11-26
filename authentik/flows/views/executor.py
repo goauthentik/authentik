@@ -23,7 +23,6 @@ from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -64,7 +63,6 @@ LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "authentik/flows/plan"
-SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
@@ -458,7 +456,6 @@ class FlowExecutorView(APIView):
     def cancel(self):
         """Cancel current flow execution"""
         keys_to_delete = [
-            SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
             # We might need the initial POST payloads for later requests
@@ -513,10 +510,6 @@ class ToDefaultFlow(View):
         # First, attempt to get default flow from brand
         if designation == FlowDesignation.AUTHENTICATION:
             flow = brand.flow_authentication
-            # Check if we have a default flow from application
-            application: Application | None = request.session.get(SESSION_KEY_APPLICATION_PRE)
-            if application and application.provider and application.provider.authentication_flow:
-                flow = application.provider.authentication_flow
         elif designation == FlowDesignation.INVALIDATION:
             flow = brand.flow_invalidation
         if flow:
