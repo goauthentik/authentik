@@ -65,7 +65,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     ],
     [null, msg("Endpoint Devices"), null, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
-        ["/endpoints/tags", msg("Device Tags")],
+        ["/endpoints/groups", msg("Device groups")],
         ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`]],
     ]],
     [null, msg("Events"), null, [

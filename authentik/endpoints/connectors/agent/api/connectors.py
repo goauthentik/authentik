@@ -43,10 +43,13 @@ class AgentConnectorSerializer(ConnectorSerializer):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
             "snapshot_expiry",
+            "auth_terminate_session_on_expiry",
             "refresh_interval",
+            "authorization_flow",
             "nss_uid_offset",
             "nss_gid_offset",
             "challenge_key",
+            "jwt_federation_providers",
         ]
 
 

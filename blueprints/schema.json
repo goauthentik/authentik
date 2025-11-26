@@ -504,46 +504,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_endpoints_connectors_agent.authenticationprofile"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.authenticationprofile_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.authenticationprofile"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.authenticationprofile"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_endpoints_connectors_agent.enrollmenttoken"
                         },
                         "id": {
@@ -5320,55 +5280,51 @@
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceconnection",
                             "authentik_endpoints.add_devicefactsnapshot",
-                            "authentik_endpoints.add_devicetag",
+                            "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuserbinding",
                             "authentik_endpoints.add_endpointstage",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
                             "authentik_endpoints.change_devicefactsnapshot",
-                            "authentik_endpoints.change_devicetag",
+                            "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuserbinding",
                             "authentik_endpoints.change_endpointstage",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
                             "authentik_endpoints.delete_devicefactsnapshot",
-                            "authentik_endpoints.delete_devicetag",
+                            "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuserbinding",
                             "authentik_endpoints.delete_endpointstage",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
                             "authentik_endpoints.view_devicefactsnapshot",
-                            "authentik_endpoints.view_devicetag",
+                            "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.add_authenticationprofile",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.change_authenticationprofile",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.delete_authenticationprofile",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.view_authenticationprofile",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -6021,10 +5977,19 @@
                     "minLength": 1,
                     "title": "Snapshot expiry"
                 },
+                "auth_terminate_session_on_expiry": {
+                    "type": "boolean",
+                    "title": "Auth terminate session on expiry"
+                },
                 "refresh_interval": {
                     "type": "string",
                     "minLength": 1,
                     "title": "Refresh interval"
+                },
+                "authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authorization flow"
                 },
                 "nss_uid_offset": {
                     "type": "integer",
@@ -6042,6 +6007,13 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Challenge key"
+                },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
                 }
             },
             "required": []
@@ -6150,75 +6122,12 @@
                 }
             }
         },
-        "model_authentik_endpoints_connectors_agent.authenticationprofile": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Tags"
-                },
-                "authorization_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Authorization flow"
-                },
-                "auth_terminate_session_on_expiry": {
-                    "type": "boolean",
-                    "title": "Auth terminate session on expiry"
-                },
-                "jwt_federation_providers": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Jwt federation providers"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_endpoints_connectors_agent.authenticationprofile_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_authenticationprofile",
-                            "change_authenticationprofile",
-                            "delete_authenticationprofile",
-                            "view_authenticationprofile"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_endpoints_connectors_agent.enrollmenttoken": {
             "type": "object",
             "properties": {
-                "device_tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Device tags"
+                "device_group": {
+                    "type": "integer",
+                    "title": "Device group"
                 },
                 "connector": {
                     "type": "integer",
@@ -6369,7 +6278,9 @@
                             },
                             "slug": {
                                 "type": "string",
+                                "maxLength": 50,
                                 "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -8369,7 +8280,6 @@
                         "authentik_endpoints_connectors_agent.agentconnector",
                         "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
-                        "authentik_endpoints_connectors_agent.authenticationprofile",
                         "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -10661,55 +10571,51 @@
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceconnection",
                             "authentik_endpoints.add_devicefactsnapshot",
-                            "authentik_endpoints.add_devicetag",
+                            "authentik_endpoints.add_devicegroup",
                             "authentik_endpoints.add_deviceuserbinding",
                             "authentik_endpoints.add_endpointstage",
                             "authentik_endpoints.change_connector",
                             "authentik_endpoints.change_device",
                             "authentik_endpoints.change_deviceconnection",
                             "authentik_endpoints.change_devicefactsnapshot",
-                            "authentik_endpoints.change_devicetag",
+                            "authentik_endpoints.change_devicegroup",
                             "authentik_endpoints.change_deviceuserbinding",
                             "authentik_endpoints.change_endpointstage",
                             "authentik_endpoints.delete_connector",
                             "authentik_endpoints.delete_device",
                             "authentik_endpoints.delete_deviceconnection",
                             "authentik_endpoints.delete_devicefactsnapshot",
-                            "authentik_endpoints.delete_devicetag",
+                            "authentik_endpoints.delete_devicegroup",
                             "authentik_endpoints.delete_deviceuserbinding",
                             "authentik_endpoints.delete_endpointstage",
                             "authentik_endpoints.view_connector",
                             "authentik_endpoints.view_device",
                             "authentik_endpoints.view_deviceconnection",
                             "authentik_endpoints.view_devicefactsnapshot",
-                            "authentik_endpoints.view_devicetag",
+                            "authentik_endpoints.view_devicegroup",
                             "authentik_endpoints.view_deviceuserbinding",
                             "authentik_endpoints.view_endpointstage",
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.add_authenticationprofile",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.change_authenticationprofile",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.delete_authenticationprofile",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
-                            "authentik_endpoints_connectors_agent.view_authenticationprofile",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",

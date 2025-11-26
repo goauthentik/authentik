@@ -7,7 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.tokens import TokenViewSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.endpoints.api.device_tags import DeviceTagSerializer
+from authentik.endpoints.api.device_group import DeviceGroupSerializer
 from authentik.endpoints.connectors.agent.models import EnrollmentToken
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -15,16 +15,14 @@ from authentik.rbac.decorators import permission_required
 
 class EnrollmentTokenSerializer(ModelSerializer):
 
-    device_tags_obj = DeviceTagSerializer(
-        source="device_tags", many=True, read_only=True, required=False
-    )
+    device_group_obj = DeviceGroupSerializer(source="device_group", read_only=True, required=False)
 
     class Meta:
         model = EnrollmentToken
         fields = [
             "token_uuid",
-            "device_tags",
-            "device_tags_obj",
+            "device_group",
+            "device_group_obj",
             "connector",
             "name",
             "expiring",
@@ -34,7 +32,7 @@ class EnrollmentTokenSerializer(ModelSerializer):
 
 class EnrollmentTokenViewSet(UsedByMixin, ModelViewSet):
 
-    queryset = EnrollmentToken.objects.all().prefetch_related("device_tags")
+    queryset = EnrollmentToken.objects.all().prefetch_related("device_group")
     serializer_class = EnrollmentTokenSerializer
     search_fields = [
         "name",

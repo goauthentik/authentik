@@ -57,9 +57,9 @@ export const ROUTES: Route[] = [
             .connectorID=${args.uuid}
         ></ak-endpoints-connector-view>`;
     }),
-    new Route(new RegExp("^/endpoints/tags$"), async () => {
-        await import("#admin/endpoints/DeviceTagListPage");
-        return html`<ak-endpoints-device-tag-list></ak-endpoints-device-tag-list>`;
+    new Route(new RegExp("^/endpoints/groups$"), async () => {
+        await import("#admin/endpoints/DeviceGroupsListPage");
+        return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
     }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
