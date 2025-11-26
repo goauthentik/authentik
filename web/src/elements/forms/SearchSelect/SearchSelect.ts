@@ -234,9 +234,6 @@ export abstract class SearchSelectBase<T>
 
     #searchListener = (event: InputEvent) => {
         const value = (event.target as SearchSelectView).rawValue;
-        console.log(
-            `ak-search-select #searchListener: value="${value}", creatable=${this.creatable}`,
-        );
 
         if (!value) {
             this.selectedObject = null;
@@ -245,10 +242,6 @@ export abstract class SearchSelectBase<T>
 
         this.query = value;
         this.updateData()?.then(() => {
-            console.log(
-                `ak-search-select #searchListener after updateData: selectedObject=`,
-                this.selectedObject,
-            );
             // If creatable, check if selectedObject's value matches the typed value exactly
             if (this.creatable) {
                 const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
@@ -256,10 +249,6 @@ export abstract class SearchSelectBase<T>
                     // No exact match so create a synthetic object with the raw value
                     // "synthetic" isn't an official term or anything, it's just called like that here
                     this.selectedObject = { name: value } as T;
-                    console.log(
-                        `ak-search-select #searchListener (creatable): Created synthetic object`,
-                        this.selectedObject,
-                    );
                 }
             }
             this.dispatchChangeEvent(this.selectedObject);
@@ -293,10 +282,6 @@ export abstract class SearchSelectBase<T>
             if (this.creatable) {
                 // Create a synthetic object with the user's custom value
                 this.selectedObject = { name: value } as T;
-                console.log(
-                    `ak-search-select (creatable): Created synthetic object for value: ${value}`,
-                    this.selectedObject,
-                );
                 this.dispatchChangeEvent(this.selectedObject);
                 return;
             }
