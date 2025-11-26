@@ -3,6 +3,10 @@
     box-shadow: none !important;
 }
 
+button.pf-c-nav__link {
+    margin-block-end: var(--pf-global--spacer--xs);
+}
+
 :host([highlight]) .pf-c-nav__item {
     background-color: var(--ak-accent);
     margin: 16px;
@@ -32,6 +36,7 @@
     user-select: none;
     --pf-c-nav__item--MarginTop: 0;
     --pf-c-nav__link--m-current--after--BorderLeftWidth: 1px;
+    margin-inline-start: 0.2rem;
 }
 
 .pf-c-nav__link::after {

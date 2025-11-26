@@ -88,6 +88,7 @@ const items = [
             "install-config/beta",
             "install-config/reverse-proxy",
             "install-config/automated-install",
+            "install-config/high-availability",
             "install-config/air-gapped",
         ],
     },
@@ -433,6 +434,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
