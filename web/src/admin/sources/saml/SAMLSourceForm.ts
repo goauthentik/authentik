@@ -167,6 +167,26 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required

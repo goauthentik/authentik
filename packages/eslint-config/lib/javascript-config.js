@@ -123,7 +123,8 @@ export const javaScriptConfig = defineConfig({
         "prefer-const": "error",
         "prefer-rest-params": "error",
         "prefer-spread": "error",
-        "prefer-template": "error",
+        "prefer-template": "off", // This makes regular expressions harder to read.
+        "no-useless-concat": "warn",
         "radix": "error",
         "require-yield": "error",
         "strict": ["error", "global"],

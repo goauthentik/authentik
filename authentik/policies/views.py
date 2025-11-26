@@ -5,8 +5,7 @@ from uuid import uuid4
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
-from django.contrib.auth.views import redirect_to_login
-from django.http import HttpRequest, HttpResponse, QueryDict
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -15,12 +14,19 @@ from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
+from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_POST,
+    FlowPlan,
+    FlowPlanner,
+)
 from authentik.flows.views.executor import (
     SESSION_KEY_APPLICATION_PRE,
     SESSION_KEY_PLAN,
     SESSION_KEY_POST,
+    ToDefaultFlow,
 )
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.apps import BufferedPolicyAccessViewFlag
@@ -97,17 +103,26 @@ class PolicyAccessView(AccessMixin, View):
         """User has no access and is not authenticated, so we remember the application
         they try to access and redirect to the login URL. The application is saved to show
         a hint on the Identification Stage what the user should login for."""
+        flow_context = {}
         if self.application:
             self.request.session[SESSION_KEY_APPLICATION_PRE] = self.application
+            flow_context[PLAN_CONTEXT_APPLICATION] = self.application
         # Because this view might get hit with a POST request, we need to preserve that data
         # since later views might need it (mostly SAML)
         if self.request.method.lower() == "post":
             self.request.session[SESSION_KEY_POST] = self.request.POST
-        return redirect_to_login(
-            self.request.get_full_path(),
-            self.get_login_url(),
-            self.get_redirect_field_name(),
-        )
+            flow_context[PLAN_CONTEXT_POST] = self.request.POST
+
+        flow = ToDefaultFlow.get_flow(self.request, FlowDesignation.AUTHENTICATION)
+        if not flow:
+            raise Http404
+        planner = FlowPlanner(flow)
+        try:
+            plan = planner.plan(self.request, self.modify_flow_context(flow, flow_context))
+        except (FlowNonApplicableException, EmptyFlowException) as exc:
+            LOGGER.warning("Non-applicable authentication flow", exc=exc)
+            raise Http404 from None
+        return plan.to_redirect(self.request, flow, next=self.request.get_full_path())
 
     def handle_no_permission_authenticated(
         self, result: PolicyResult | None = None
@@ -121,6 +136,10 @@ class PolicyAccessView(AccessMixin, View):
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         """optionally modify the policy request"""
         return request
+
+    def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
+        """optionally modify the flow context which is used for the authentication flow"""
+        return context
 
     def user_has_access(
         self, user: User | None = None, pbm: PolicyBindingModel | None = None

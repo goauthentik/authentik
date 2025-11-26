@@ -32805,7 +32805,6 @@ components:
         slug:
           type: string
           description: Internal application name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         provider:
           type: integer
@@ -32905,7 +32904,6 @@ components:
           type: string
           minLength: 1
           description: Internal application name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         provider:
           type: integer
@@ -37146,7 +37144,6 @@ components:
         slug:
           type: string
           description: Visible in the URL.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
@@ -37386,7 +37383,6 @@ components:
           type: string
           minLength: 1
           description: Visible in the URL.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
@@ -37438,7 +37434,6 @@ components:
         slug:
           type: string
           description: Visible in the URL.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
@@ -37491,7 +37486,6 @@ components:
           type: string
           minLength: 1
           description: Visible in the URL.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
@@ -39089,7 +39083,6 @@ components:
           title: Invite uuid
         name:
           type: string
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
@@ -39126,7 +39119,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
@@ -39232,10 +39224,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -39430,10 +39425,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -39894,10 +39892,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -40129,10 +40130,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -40421,6 +40425,9 @@ components:
         icon_url:
           type: string
           nullable: true
+        promoted:
+          type: boolean
+          default: false
         challenge:
           $ref: '#/components/schemas/LoginChallengeTypes'
       required:
@@ -41697,10 +41704,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -41906,10 +41916,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -44987,7 +45000,6 @@ components:
           type: string
           minLength: 1
           description: Internal application name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         provider:
           type: integer
@@ -45812,7 +45824,6 @@ components:
           type: string
           minLength: 1
           description: Visible in the URL.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         title:
           type: string
@@ -46217,7 +46228,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         expires:
           type: string
@@ -46281,10 +46291,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -46481,10 +46494,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -46919,10 +46935,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -47187,10 +47206,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -47783,10 +47805,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48018,7 +48043,6 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
@@ -48249,10 +48273,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48696,10 +48723,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -48867,10 +48897,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -51181,10 +51214,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -51401,10 +51437,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -51849,7 +51888,6 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
@@ -52037,7 +52075,6 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
@@ -52728,10 +52765,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -53359,10 +53399,13 @@ components:
         slug:
           type: string
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid
@@ -53522,10 +53565,13 @@ components:
           type: string
           minLength: 1
           description: Internal source name, used in URLs.
-          maxLength: 50
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
         authentication_flow:
           type: string
           format: uuid

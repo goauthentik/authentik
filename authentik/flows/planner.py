@@ -40,6 +40,7 @@ PLAN_CONTEXT_APPLICATION = "application"
 PLAN_CONTEXT_DEVICE = "device"
 PLAN_CONTEXT_SOURCE = "source"
 PLAN_CONTEXT_OUTPOST = "outpost"
+PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
@@ -143,10 +144,12 @@ class FlowPlan:
         self,
         request: HttpRequest,
         flow: Flow,
+        next: str | None = None,
         allowed_silent_types: list["StageView"] | None = None,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
         from authentik.flows.views.executor import (
+            NEXT_ARG_NAME,
             SESSION_KEY_PLAN,
             FlowExecutorView,
         )
@@ -174,6 +177,8 @@ class FlowPlan:
             or request.user.has_perm("authentik_flows.inspect_flow")
         ):
             get_qs["inspector"] = "available"
+        if next:
+            get_qs[NEXT_ARG_NAME] = next
 
         return redirect_with_qs(
             "authentik_core:if-flow",
