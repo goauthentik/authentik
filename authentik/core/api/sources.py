@@ -56,6 +56,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "name",
             "slug",
             "enabled",
+            "promoted",
             "authentication_flow",
             "enrollment_flow",
             "user_property_mappings",

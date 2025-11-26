@@ -40,7 +40,7 @@ class RedirectToAppLaunch(View):
         self.request.session[SESSION_KEY_APPLICATION_PRE] = app
         # otherwise, do a custom flow plan that includes the application that's
         # being accessed, to improve usability
-        flow = ToDefaultFlow(request=request, designation=FlowDesignation.AUTHENTICATION).get_flow()
+        flow = ToDefaultFlow.get_flow(request=request, designation=FlowDesignation.AUTHENTICATION)
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:

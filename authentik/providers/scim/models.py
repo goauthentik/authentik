@@ -108,7 +108,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         blank=True, default=dict, help_text=_("Additional OAuth parameters, such as grant_type")
     )
     auth_oauth_user = models.ForeignKey(
-        "authentik_core.User", on_delete=models.CASCADE, default=None, null=True
+        "authentik_core.User", on_delete=models.SET_NULL, default=None, null=True
     )
 
     verify_certificates = models.BooleanField(default=True)
