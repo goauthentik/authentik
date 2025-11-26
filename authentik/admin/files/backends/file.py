@@ -1,12 +1,12 @@
-from hashlib import sha256
 import os
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from datetime import timedelta
+from hashlib import sha256
 from pathlib import Path
 
 import jwt
-from django.conf import Settings, settings
+from django.conf import settings
 from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
