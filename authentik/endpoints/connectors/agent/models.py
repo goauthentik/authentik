@@ -11,13 +11,14 @@ from authentik.endpoints.models import (
     Connector,
     Device,
     DeviceConnection,
-    DeviceGroup,
+    DeviceTag,
     DeviceUserBinding,
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.controller import AgentConnectorController
@@ -26,17 +27,9 @@ if TYPE_CHECKING:
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
-    auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
         default="minutes=30",
         validators=[timedelta_string_validator],
-    )
-
-    authorization_flow = models.ForeignKey(
-        "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
-    )
-    jwt_federation_providers = models.ManyToManyField(
-        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
     )
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
@@ -113,9 +106,7 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
     name = models.TextField()
     key = models.TextField(default=default_token_key)
     connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
-    device_group = models.ForeignKey(
-        DeviceGroup, on_delete=models.SET_DEFAULT, default=None, null=True
-    )
+    device_tags = models.ManyToManyField(DeviceTag, blank=True)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -150,3 +141,33 @@ class DeviceAuthenticationToken(ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Device authentication token")
         verbose_name_plural = _("Device authentication tokens")
+
+
+class AuthenticationProfile(SerializerModel, PolicyBindingModel):
+
+    name = models.TextField(unique=True)
+    tags = models.ManyToManyField(DeviceTag)
+
+    authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
+    auth_terminate_session_on_expiry = models.BooleanField(default=False)
+
+    jwt_federation_providers = models.ManyToManyField(
+        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.connectors.agent.api.authentication_profiles import (
+            AuthenticationProfileSerializer,
+        )
+
+        return AuthenticationProfileSerializer
+
+    def __str__(self):
+        return f"Authentication profile {self.name}"
+
+    class Meta:
+        verbose_name = _("Authentication profile")
+        verbose_name_plural = _("Authentication profiles")

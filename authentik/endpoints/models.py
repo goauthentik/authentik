@@ -34,7 +34,7 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     name = models.TextField(unique=True)
     identifier = models.TextField(unique=True)
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
-    group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
+    tags = models.ManyToManyField("DeviceTag", blank=True)
 
     @property
     def cache_key_facts(self):
@@ -147,10 +147,6 @@ class Connector(ScheduledModel, SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def stage(self) -> type[StageView] | None:
-        return None
-
-    @property
     def component(self) -> str:
         raise NotImplementedError
 
@@ -173,19 +169,20 @@ class Connector(ScheduledModel, SerializerModel):
         ]
 
 
-class DeviceGroup(PolicyBindingModel):
+class DeviceTag(PolicyBindingModel):
 
     name = models.TextField(unique=True)
+    generated_by = models.ForeignKey(Connector, on_delete=models.CASCADE, null=True, default=None)
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.endpoints.api.device_group import DeviceGroupSerializer
+        from authentik.endpoints.api.device_tags import DeviceTagSerializer
 
-        return DeviceGroupSerializer
+        return DeviceTagSerializer
 
     class Meta:
-        verbose_name = _("Device group")
-        verbose_name_plural = _("Device groups")
+        verbose_name = _("Device tag")
+        verbose_name_plural = _("Device tags")
 
 
 class EndpointStage(Stage):

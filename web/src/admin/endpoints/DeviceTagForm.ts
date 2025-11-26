@@ -6,17 +6,17 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
-import { DeviceGroup, DeviceGroupRequest, EndpointsApi } from "@goauthentik/api";
+import { DeviceTag, DeviceTagRequest, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-@customElement("ak-endpoints-device-groups-form")
-export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, string>) {
-    loadInstance(pk: string): Promise<DeviceGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsRetrieve({
+@customElement("ak-endpoints-device-tags-form")
+export class DeviceTagForm extends WithBrandConfig(ModelForm<DeviceTag, string>) {
+    loadInstance(pk: string): Promise<DeviceTag> {
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceTagsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -27,23 +27,23 @@ export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, stri
             : msg("Successfully created group.");
     }
 
-    async send(data: DeviceGroup): Promise<DeviceGroup> {
+    async send(data: DeviceTag): Promise<DeviceTag> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsPartialUpdate({
+            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceTagsPartialUpdate({
                 pbmUuid: this.instance.pbmUuid,
-                patchedDeviceGroupRequest: data,
+                patchedDeviceTagRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsCreate({
-            deviceGroupRequest: data as unknown as DeviceGroupRequest,
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceTagsCreate({
+            deviceTagRequest: data as unknown as DeviceTagRequest,
         });
     }
 
     renderForm() {
         return html`<ak-text-input
             name="name"
-            placeholder=${msg("Group name...")}
-            label=${msg("Group name")}
+            placeholder=${msg("Tag name...")}
+            label=${msg("Tag name")}
             value=${ifDefined(this.instance?.name)}
             required
         ></ak-text-input>`;
@@ -52,6 +52,6 @@ export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, stri
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-groups-form": DeviceGroupForm;
+        "ak-endpoints-device-tags-form": DeviceTagForm;
     }
 }

@@ -2,24 +2,24 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.endpoints.models import DeviceGroup
+from authentik.endpoints.models import DeviceTag
 
 
-class DeviceGroupSerializer(ModelSerializer):
+class DeviceTagSerializer(ModelSerializer):
 
     class Meta:
-        model = DeviceGroup
+        model = DeviceTag
         fields = [
             "pbm_uuid",
             "name",
         ]
 
 
-class DeviceGroupViewSet(UsedByMixin, ModelViewSet):
-    """DeviceGroup Viewset"""
+class DeviceTagViewSet(UsedByMixin, ModelViewSet):
+    """DeviceTag Viewset"""
 
-    queryset = DeviceGroup.objects.all()
-    serializer_class = DeviceGroupSerializer
+    queryset = DeviceTag.objects.all()
+    serializer_class = DeviceTagSerializer
     search_fields = [
         "pbm_uuid",
         "name",
