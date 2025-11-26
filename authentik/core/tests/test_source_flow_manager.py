@@ -100,7 +100,11 @@ class TestSourceFlowManager(TestCase):
     def test_unauthenticated_link(self):
         """Test un-authenticated user linking"""
         flow_manager = OAuthSourceFlowManager(
-            self.source, self.request_factory.get("/"), self.identifier, {"info": {}}, {}
+            self.source,
+            self.request_factory.get("/", user=get_anonymous_user()),
+            self.identifier,
+            {"info": {}},
+            {},
         )
         action, connection = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)

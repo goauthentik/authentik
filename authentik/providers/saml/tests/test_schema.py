@@ -3,6 +3,7 @@
 from base64 import b64encode
 
 from django.test import TestCase
+from guardian.shortcuts import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
@@ -55,6 +56,7 @@ class TestSchema(TestCase):
     def test_response_schema(self):
         """Test generated AuthNRequest against Schema"""
         http_request = self.request_factory.get("/")
+        http_request.user = get_anonymous_user()
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
