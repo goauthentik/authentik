@@ -4,7 +4,6 @@ import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
@@ -19,10 +18,10 @@ import {
     IdentificationStage,
     Stage,
     StagesApi,
+    StagesAuthenticatorValidateListRequest,
     StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
-    UserVerificationEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -196,49 +195,35 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             </ak-form-group>
             <ak-form-group label="${msg("Passkey settings")}">
                 <div class="pf-c-form">
-                    <ak-switch-input
-                        name="passkeyLogin"
-                        label=${msg("Passkey login")}
-                        ?checked=${(
-                            this.instance as IdentificationStage & { passkeyLogin?: boolean }
-                        )?.passkeyLogin ?? false}
-                        help=${msg(
-                            "When enabled, users can authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.",
-                        )}
-                    ></ak-switch-input>
                     <ak-form-element-horizontal
-                        label=${msg("User verification")}
-                        name="passkeyUserVerification"
+                        label=${msg("WebAuthn Authenticator Validation Stage")}
+                        name="webauthnStage"
                     >
-                        <ak-radio
-                            name="passkeyUserVerification"
-                            .options=${[
-                                {
-                                    label: msg(
-                                        "Preferred: User verification is preferred if available, but not required.",
-                                    ),
-                                    value: UserVerificationEnum.Preferred,
-                                    default: true,
-                                },
-                                {
-                                    label: msg("Required: User verification must occur."),
-                                    value: UserVerificationEnum.Required,
-                                },
-                                {
-                                    label: msg("Discouraged: User verification should not occur."),
-                                    value: UserVerificationEnum.Discouraged,
-                                },
-                            ]}
-                            .value=${(
-                                this.instance as IdentificationStage & {
-                                    passkeyUserVerification?: UserVerificationEnum;
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesAuthenticatorValidateListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
                                 }
-                            )?.passkeyUserVerification}
+                                const stages = await new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesAuthenticatorValidateList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.webauthnStage}
+                            blankable
                         >
-                        </ak-radio>
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Control whether user verification (e.g., biometric or PIN) is required for passkey authentication.",
+                                "When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
