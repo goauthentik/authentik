@@ -10,8 +10,8 @@ from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
-from authentik.endpoints.connectors.agent.models import AgentConnector, AuthenticationProfile, DeviceToken, EnrollmentToken
-from authentik.endpoints.models import Device, DeviceTag
+from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
+from authentik.endpoints.models import Device, DeviceGroup
 from authentik.enterprise.endpoints.connectors.agent.views.auth_interactive import QS_AGENT_IA_TOKEN
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
@@ -72,19 +72,14 @@ class TestConnectorAuthIA(APITestCase):
 
     @reconcile_app("authentik_crypto")
     def test_auth_ia_fulfill_policy(self):
-        device_tag = DeviceTag.objects.create(name=generate_id())
-        self.device.tags.add(device_tag)
+        device_group = DeviceGroup.objects.create(name=generate_id())
+        self.device.group = device_group
         self.device.save()
 
         group = Group.objects.create(name=generate_id())
         group.users.add(self.user)
 
-        profile = AuthenticationProfile.objects.create(
-            name=generate_id()
-        )
-        profile.tags.add(device_tag)
-
-        PolicyBinding.objects.create(target=profile, group=group, order=0)
+        PolicyBinding.objects.create(target=device_group, group=group, order=0)
 
         self.client.force_login(self.user)
         response = self.client.post(
