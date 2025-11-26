@@ -77,6 +77,8 @@ def check_device_policies(device: Device, user: User, request: HttpRequest):
 def check_pbm_policies(pbm: PolicyBindingModel, user: User, request: HttpRequest):
     policy_engine = PolicyEngine(pbm, user, request)
     policy_engine.use_cache = False
+    policy_engine.empty_result = False
+    policy_engine.mode = pbm.policy_engine_mode
     policy_engine.build()
     result = policy_engine.result
     LOGGER.debug("PolicyAccessView user_has_access", user=user.username, result=result, pbm=pbm.pk)
