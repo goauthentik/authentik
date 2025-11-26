@@ -28992,6 +28992,11 @@ paths:
         name: show_source_labels
         schema:
           type: boolean
+      - in: query
+        name: webauthn_stage
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -38821,14 +38826,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
-        passkey_login:
-          type: boolean
-          description: When enabled, provides a WebAuthn challenge to the user in
-            the browser's autofill dropdown, allowing passwordless login with passkeys.
-        passkey_user_verification:
-          allOf:
-          - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for passkey authentication.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - component
       - meta_model_name
@@ -38907,14 +38910,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
-        passkey_login:
-          type: boolean
-          description: When enabled, provides a WebAuthn challenge to the user in
-            the browser's autofill dropdown, allowing passwordless login with passkeys.
-        passkey_user_verification:
-          allOf:
-          - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for passkey authentication.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - name
     IframeLogoutChallenge:
@@ -46142,14 +46143,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
-        passkey_login:
-          type: boolean
-          description: When enabled, provides a WebAuthn challenge to the user in
-            the browser's autofill dropdown, allowing passwordless login with passkeys.
-        passkey_user_verification:
-          allOf:
-          - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for passkey authentication.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer

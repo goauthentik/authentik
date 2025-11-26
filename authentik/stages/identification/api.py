@@ -37,8 +37,7 @@ class IdentificationStageSerializer(StageSerializer):
             "show_source_labels",
             "pretend_user_exists",
             "enable_remember_me",
-            "passkey_login",
-            "passkey_user_verification",
+            "webauthn_stage",
         ]
 
 
@@ -51,6 +50,7 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
         "name",
         "password_stage",
         "captcha_stage",
+        "webauthn_stage",
         "case_insensitive_matching",
         "show_matched_user",
         "enrollment_flow",

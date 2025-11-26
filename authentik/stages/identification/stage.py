@@ -1,7 +1,6 @@
 """Identification stage logic"""
 
 from dataclasses import asdict
-from json import loads
 from random import SystemRandom
 from time import sleep
 from typing import Any
@@ -15,17 +14,9 @@ from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_fiel
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
-from webauthn import options_to_json
-from webauthn.authentication.generate_authentication_options import generate_authentication_options
-from webauthn.authentication.verify_authentication_response import verify_authentication_response
-from webauthn.helpers import parse_authentication_credential_json
-from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
-from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
-from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
 from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
@@ -38,13 +29,14 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
-from authentik.lib.utils.reflection import all_subclasses
+from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.authenticator_validate.models import DeviceClasses
-from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
-from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_validate.challenge import (
+    get_webauthn_challenge_without_user,
+    validate_challenge_webauthn,
+)
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import CaptchaChallenge, verify_captcha_token
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
@@ -125,53 +117,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
         """Validate passkey/WebAuthn response for passwordless authentication"""
-        request = self.stage.request
-        challenge = self.stage.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-        current_stage: IdentificationStage = self.stage.executor.current_stage
-
-        if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
-            # Workaround for Android sign-in
-            # see authenticator_validate.challenge.validate_challenge_webauthn
-            passkey.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
-
-        try:
-            credential = parse_authentication_credential_json(passkey)
-        except InvalidJSONStructure as exc:
-            self.stage.logger.debug("Invalid passkey challenge response", exc=exc)
-            raise ValidationError(_("Invalid passkey response.")) from None
-
-        device = WebAuthnDevice.objects.filter(credential_id=credential.id).first()
-        if not device:
-            raise ValidationError(_("Invalid passkey."))
-
-        try:
-            authentication_verification = verify_authentication_response(
-                credential=credential,
-                expected_challenge=challenge,
-                expected_rp_id=get_rp_id(request),
-                expected_origin=get_origin(request),
-                credential_public_key=base64url_to_bytes(device.public_key),
-                credential_current_sign_count=device.sign_count,
-                require_user_verification=(
-                    current_stage.passkey_user_verification == UserVerification.REQUIRED
-                ),
-            )
-        except InvalidAuthenticationResponse as exc:
-            self.stage.logger.debug("Passkey assertion failed", exc=exc)
-            login_failed.send(
-                sender=__name__,
-                credentials={"username": device.user.username},
-                request=self.stage.request,
-                stage=self.stage.executor.current_stage,
-                device=device,
-                device_class=DeviceClasses.WEBAUTHN.value,
-                device_type=device.device_type,
-            )
-            raise ValidationError(_("Passkey authentication failed.")) from exc
-
-        with audit_ignore():
-            device.set_sign_count(authentication_verification.new_sign_count)
-        return device
+        return validate_challenge_webauthn(passkey, self.stage, self.stage.get_pending_user())
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Validate that user exists, and optionally their password, captcha token, or passkey"""
@@ -184,6 +130,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             device = self._validate_passkey_response(passkey)
             self.passkey_device = device
             self.pre_user = device.user
+            self.pre_user.backend = class_to_path(self)
             return attrs
 
         # Standard username/password flow
@@ -304,23 +251,9 @@ class IdentificationStageView(ChallengeStageView):
     def get_passkey_challenge(self) -> dict | None:
         """Generate a WebAuthn challenge for passkey/conditional UI authentication"""
         current_stage: IdentificationStage = self.executor.current_stage
-        if not current_stage.passkey_login:
+        if not current_stage.webauthn_stage:
             return None
-
-        # Clear any existing challenge
-        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
-
-        authentication_options = generate_authentication_options(
-            rp_id=get_rp_id(self.request),
-            allow_credentials=[],  # Empty for discoverable credentials (passkeys)
-            user_verification=UserVerificationRequirement(current_stage.passkey_user_verification),
-        )
-
-        self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = (
-            authentication_options.challenge
-        )
-
-        return loads(options_to_json(authentication_options))
+        return get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
 
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage

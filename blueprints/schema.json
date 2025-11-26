@@ -15738,20 +15738,10 @@
                     "title": "Enable remember me",
                     "description": "Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password."
                 },
-                "passkey_login": {
-                    "type": "boolean",
-                    "title": "Passkey login",
-                    "description": "When enabled, provides a WebAuthn challenge to the user in the browser's autofill dropdown, allowing passwordless login with passkeys."
-                },
-                "passkey_user_verification": {
-                    "type": "string",
-                    "enum": [
-                        "required",
-                        "preferred",
-                        "discouraged"
-                    ],
-                    "title": "Passkey user verification",
-                    "description": "Enforce user verification for passkey authentication."
+                "webauthn_stage": {
+                    "type": "integer",
+                    "title": "Webauthn stage",
+                    "description": "When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor."
                 }
             },
             "required": []

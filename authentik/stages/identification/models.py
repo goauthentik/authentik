@@ -8,7 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
-from authentik.stages.authenticator_webauthn.models import UserVerification
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
@@ -54,6 +54,19 @@ class IdentificationStage(Stage):
             (
                 "When set, adds functionality exactly like a Captcha stage, but baked into the "
                 "Identification stage."
+            ),
+        ),
+    )
+
+    webauthn_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, and conditional WebAuthn is available, allow the user to use their "
+                "passkey as a first factor."
             ),
         ),
     )
@@ -116,19 +129,6 @@ class IdentificationStage(Stage):
         Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
     )
     show_source_labels = models.BooleanField(default=False)
-
-    passkey_login = models.BooleanField(
-        default=False,
-        help_text=_(
-            "When enabled, provides a WebAuthn challenge to the user in the browser's "
-            "autofill dropdown, allowing passwordless login with passkeys."
-        ),
-    )
-    passkey_user_verification = models.TextField(
-        help_text=_("Enforce user verification for passkey authentication."),
-        choices=UserVerification.choices,
-        default=UserVerification.PREFERRED,
-    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
