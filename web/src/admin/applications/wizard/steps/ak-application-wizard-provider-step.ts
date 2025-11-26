@@ -4,6 +4,7 @@ import "./providers/ak-application-wizard-provider-for-proxy.js";
 import "./providers/ak-application-wizard-provider-for-rac.js";
 import "./providers/ak-application-wizard-provider-for-radius.js";
 import "./providers/ak-application-wizard-provider-for-saml.js";
+import "./providers/ak-application-wizard-provider-for-saml-metadata.js";
 import "./providers/ak-application-wizard-provider-for-scim.js";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
@@ -24,6 +25,7 @@ const providerToTag = new Map([
     ["racprovider", "ak-application-wizard-provider-for-rac"],
     ["radiusprovider", "ak-application-wizard-provider-for-radius"],
     ["samlprovider", "ak-application-wizard-provider-for-saml"],
+    ["samlproviderimportmodel", "ak-application-wizard-provider-for-saml-metadata"],
     ["scimprovider", "ak-application-wizard-provider-for-scim"],
 ]);
 
