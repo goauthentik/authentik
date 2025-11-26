@@ -1,3 +1,4 @@
+from hashlib import sha256
 import os
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
@@ -5,7 +6,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import jwt
-from django.conf import settings
+from django.conf import Settings, settings
 from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
@@ -80,7 +81,7 @@ class FileBackend(ManageableBackend):
                 "exp": now() + expires_in,
                 "nbf": now() - timedelta(seconds=15),
             },
-            key="key",
+            key=sha256(f"{settings.SECRET_KEY}:{self.usage}".encode()).hexdigest(),
             algorithm="HS256",
         )
         url = f"{prefix}/files/{path}?token={token}"

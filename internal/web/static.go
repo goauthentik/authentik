@@ -1,10 +1,13 @@
 package web
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-http-utils/etag"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
 	"goauthentik.io/internal/config"
@@ -12,6 +15,44 @@ import (
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
 )
+
+type StorageClaims struct {
+	jwt.RegisteredClaims
+	Path string `json:"path,omitempty"`
+}
+
+func storageTokenIsValid(usage string, r *http.Request) bool {
+	tokenString := r.URL.Query().Get("token")
+	if tokenString == "" {
+		return false
+	}
+	claims := &StorageClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		return []byte(fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s:%s", config.Get().SecretKey, usage))))), nil
+	})
+	if err != nil || !token.Valid {
+		return false
+	}
+
+	now := time.Now()
+
+	if claims.ExpiresAt != nil && claims.ExpiresAt.Before(now) {
+		return false
+	}
+	if claims.NotBefore != nil && claims.NotBefore.After(now) {
+		return false
+	}
+
+	if claims.Path != fmt.Sprintf("%s/%s", usage, r.URL.Path) {
+		return false
+	}
+
+	return true
+}
 
 func (ws *WebServer) configureStatic() {
 	// Setup routers
@@ -89,6 +130,11 @@ func (ws *WebServer) configureStatic() {
 		fsMedia := http.FileServer(http.Dir(mediaPath))
 		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/media/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if !storageTokenIsValid("media", r) {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
+
 				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsMedia.ServeHTTP(w, r)
 			}),
@@ -106,8 +152,7 @@ func (ws *WebServer) configureStatic() {
 		fsReports := http.FileServer(http.Dir(reportsPath))
 		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/reports/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				token := r.URL.Query().Get("token")
-				if token == "" {
+				if !storageTokenIsValid("reports", r) {
 					http.Error(w, "404 page not found", http.StatusNotFound)
 					return
 				}
