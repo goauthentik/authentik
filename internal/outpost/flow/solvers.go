@@ -8,7 +8,7 @@ import (
 )
 
 func (fe *FlowExecutor) solveChallenge_Identification(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
-	r := api.NewIdentificationChallengeResponseRequest("ak-stage-identification")
+	r := api.NewIdentificationChallengeResponseRequest()
 	r.SetUidField(fe.getAnswer(StageIdentification))
 	r.SetPassword(fe.getAnswer(StagePassword))
 	return api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
