@@ -11,11 +11,10 @@ from authentik.enterprise.endpoints.connectors.agent.auth import (
 )
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
-from authentik.flows.planner import FlowPlanner
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
-from authentik.providers.oauth2.views.device_finish import PLAN_CONTEXT_DEVICE
 
 PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
 
@@ -43,6 +42,12 @@ class AgentInteractiveAuth(PolicyAccessView):
 
     def user_has_access(self, user=None, pbm=None):
         return check_device_policies(self.device, user or self.request.user, self.request)
+
+    def modify_flow_context(self, flow, context):
+        return {
+            PLAN_CONTEXT_DEVICE: self.device,
+            **context,
+        }
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         device_token_hash = request.headers.get("X-Authentik-Platform-Auth-DTH")
