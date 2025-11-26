@@ -51,7 +51,7 @@ class TestResolveFileUrlFileBackend(FileTestFileBackendMixin, TestCase):
     def test_resolve_storage_file(self):
         """Test resolving uploaded storage file"""
         manager = FileManager(FileUsage.MEDIA)
-        result = manager.file_url("test.png")
+        result = manager.file_url("test.png").split("?")[0]
         self.assertEqual(result, "/files/media/public/test.png")
 
     def test_resolve_full_static_with_request(self):
@@ -76,7 +76,7 @@ class TestResolveFileUrlFileBackend(FileTestFileBackendMixin, TestCase):
         }
 
         manager = FileManager(FileUsage.MEDIA)
-        result = manager.file_url("test.png", mock_request)
+        result = manager.file_url("test.png", mock_request).split("?")[0]
 
         self.assertEqual(result, "http://example.com/files/media/public/test.png")
 

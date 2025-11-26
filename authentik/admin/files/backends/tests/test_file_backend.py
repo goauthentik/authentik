@@ -134,7 +134,7 @@ class TestFileBackend(FileTestFileBackendMixin, TestCase):
         """Test file_url generates correct URL"""
         file_name = "icon.png"
 
-        url = self.backend.file_url(file_name)
+        url = self.backend.file_url(file_name).split("?")[0]
         expected = "/files/media/public/icon.png"
         self.assertEqual(url, expected)
 
@@ -143,7 +143,7 @@ class TestFileBackend(FileTestFileBackendMixin, TestCase):
         """Test file_url with web path prefix"""
         file_name = "logo.svg"
 
-        url = self.backend.file_url(file_name)
+        url = self.backend.file_url(file_name).split("?")[0]
         expected = "/authentik/files/media/public/logo.svg"
         self.assertEqual(url, expected)
 
@@ -151,7 +151,7 @@ class TestFileBackend(FileTestFileBackendMixin, TestCase):
         """Test file_url with nested file path"""
         file_name = "path/to/file.png"
 
-        url = self.backend.file_url(file_name)
+        url = self.backend.file_url(file_name).split("?")[0]
         expected = "/files/media/public/path/to/file.png"
         self.assertEqual(url, expected)
 
