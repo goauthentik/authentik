@@ -33,7 +33,7 @@ authentik is primarily a Django application running under gunicorn, proxied by a
 
 Verify that you have a local working repository of authentik and that it is initialized and up-to-date with the [authentik repository](https://github.com/goauthentik/authentik).
 
-To run the following steps, go to the `authentik` directory in your local repository.
+Unless otherwise specified, all commands described below should be run from the project root of your local authentik repository.
 
 ## 2. Set up required services
 
@@ -64,7 +64,7 @@ If using locally installed databases, ensure the PostgreSQL credentials provided
 <Tabs defaultValue="macOS">
 <TabItem value="macOS">
 
-Install the required native dependencies on macOS using Homebrew (you can edit the following command if you already have some of these and want to skip installing them again):
+Install the required native dependencies on macOS using Homebrew. Yyou can edit the following command if you already have some of these and want to skip installing them again, or run `brew install --dry-run` to preview the changes:
 
 ```shell
 brew install \
