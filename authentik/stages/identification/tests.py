@@ -1,11 +1,8 @@
 """identification tests"""
 
-from base64 import b64decode
-
 from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
-from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -20,6 +17,116 @@ from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
+
+
+class TestIdentificationStagePasskey(FlowTestCase):
+    """Passkey authentication tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.webauthn_stage = AuthenticatorValidateStage.objects.create(
+            name="webauthn-validate",
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        self.stage = IdentificationStage.objects.create(
+            name="identification",
+            user_fields=[UserFields.E_MAIL],
+            webauthn_stage=self.webauthn_stage,
+        )
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+        self.device = WebAuthnDevice.objects.create(
+            user=self.user,
+            name="Test Passkey",
+            credential_id="test-credential-id",
+            public_key="test-public-key",
+            sign_count=0,
+            rp_id="testserver",
+        )
+
+    def test_passkey_auth_success(self):
+        """Test passkey sets device, user, backend and updates last_used"""
+        from unittest.mock import patch
+
+        # Get challenge to initialize session
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+
+        with patch(
+            "authentik.stages.identification.stage.validate_challenge_webauthn",
+            return_value=self.device,
+        ):
+            response = self.client.post(
+                url, {"passkey": {"id": "test"}}, content_type="application/json"
+            )
+
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        # Verify device last_used was updated
+        self.device.refresh_from_db()
+        self.assertIsNotNone(self.device.last_used)
+
+    def test_passkey_challenge_disabled(self):
+        """Test that passkey challenge is not included when webauthn_stage is not set"""
+        self.stage.webauthn_stage = None
+        self.stage.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNone(data.get("passkey_challenge"))
+
+    def test_passkey_challenge_enabled(self):
+        """Test that passkey challenge is included when webauthn_stage is set"""
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNotNone(data.get("passkey_challenge"))
+        passkey_challenge = data["passkey_challenge"]
+        self.assertIn("challenge", passkey_challenge)
+        self.assertIn("rpId", passkey_challenge)
+        self.assertEqual(passkey_challenge["allowCredentials"], [])
+
+    def test_passkey_challenge_generation(self):
+        """Test passkey challenge is generated correctly"""
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsNotNone(data.get("passkey_challenge"))
+
+    def test_passkey_no_uid_field_required(self):
+        """Test that uid_field is not required when passkey is provided"""
+        # Get the challenge first to set up the session
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Submit without uid_field but with passkey (invalid passkey will fail validation)
+        form_data = {
+            "passkey": {
+                "id": "invalid",
+                "rawId": "invalid",
+                "type": "public-key",
+                "response": {
+                    "clientDataJSON": "invalid",
+                    "authenticatorData": "invalid",
+                    "signature": "invalid",
+                },
+            }
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("response_errors", data)
+        errors = data.get("response_errors", {})
+        self.assertNotIn("uid_field", errors)
 
 
 class TestIdentificationStage(FlowTestCase):
@@ -472,116 +579,3 @@ class TestIdentificationStage(FlowTestCase):
                     "sources": [],
                 }
             ).is_valid(raise_exception=True)
-
-    def test_passkey_challenge_disabled(self):
-        """Test that passkey challenge is not included when webauthn_stage is not set"""
-        self.stage.webauthn_stage = None
-        self.stage.save()
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertIsNone(data.get("passkey_challenge"))
-
-    def test_passkey_challenge_enabled(self):
-        """Test that passkey challenge is included when webauthn_stage is set"""
-        # Create an AuthenticatorValidateStage for WebAuthn
-        webauthn_stage = AuthenticatorValidateStage.objects.create(
-            name="webauthn-validate",
-            device_classes=[DeviceClasses.WEBAUTHN],
-        )
-        self.stage.webauthn_stage = webauthn_stage
-        self.stage.save()
-
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertIsNotNone(data.get("passkey_challenge"))
-        # Verify the challenge structure
-        passkey_challenge = data["passkey_challenge"]
-        self.assertIn("challenge", passkey_challenge)
-        self.assertIn("rpId", passkey_challenge)
-        self.assertEqual(passkey_challenge["allowCredentials"], [])
-
-    def test_passkey_authentication(self):
-        """Test passkey authentication flow"""
-        # Create an AuthenticatorValidateStage for WebAuthn
-        webauthn_stage = AuthenticatorValidateStage.objects.create(
-            name="webauthn-validate",
-            device_classes=[DeviceClasses.WEBAUTHN],
-        )
-        self.stage.webauthn_stage = webauthn_stage
-        self.stage.save()
-
-        # Create a WebAuthn device for the user
-        device = WebAuthnDevice.objects.create(
-            user=self.user,
-            name="Test Passkey",
-            credential_id="test-credential-id",
-            public_key=bytes_to_base64url(
-                b64decode(
-                    "pQECAyYgASFYIKtcZHPumH37XHs0IM1v3pUBRIqHVV_SE-Lq2zpJAOVXIlgg74Fg_WdB0kuLYqCKbxogkEPaVtR_iR3IyQFIJAXBzds="
-                )
-            ),
-            sign_count=0,
-            rp_id="testserver",
-        )
-
-        # Get the challenge first
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertIsNotNone(data.get("passkey_challenge"))
-
-        # The actual WebAuthn response validation requires cryptographic operations
-        # that are difficult to mock in unit tests. The key verification is that:
-        # 1. The challenge is generated correctly
-        # 2. The stage accepts passkey responses
-        # Full integration testing should be done with browser automation
-
-        device.delete()
-
-    def test_passkey_no_uid_field_required(self):
-        """Test that uid_field is not required when passkey is provided"""
-        # Create an AuthenticatorValidateStage for WebAuthn
-        webauthn_stage = AuthenticatorValidateStage.objects.create(
-            name="webauthn-validate",
-            device_classes=[DeviceClasses.WEBAUTHN],
-        )
-        self.stage.webauthn_stage = webauthn_stage
-        self.stage.save()
-
-        # Get the challenge first to set up the session
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-        self.assertEqual(response.status_code, 200)
-
-        # Submit without uid_field but with passkey (invalid passkey will fail validation)
-        # This tests that the stage doesn't require uid_field when passkey is provided
-        form_data = {
-            "passkey": {
-                "id": "invalid",
-                "rawId": "invalid",
-                "type": "public-key",
-                "response": {
-                    "clientDataJSON": "invalid",
-                    "authenticatorData": "invalid",
-                    "signature": "invalid",
-                },
-            }
-        }
-        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        response = self.client.post(url, form_data, content_type="application/json")
-        # Should fail with passkey validation error, not missing uid_field error
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        # The error should be about invalid passkey, not missing uid_field
-        self.assertIn("response_errors", data)
-        errors = data.get("response_errors", {})
-        self.assertNotIn("uid_field", errors)
