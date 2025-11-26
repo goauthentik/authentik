@@ -94,6 +94,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertIn(
             {
                 "name": "/static/dist/assets/images/flow_background.jpg",
+                "url": "/static/dist/assets/images/flow_background.jpg",
                 "mime_type": "image/jpeg",
             },
             response.data,
@@ -101,6 +102,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertIn(
             {
                 "name": "/static/authentik/sources/ldap.png",
+                "url": "/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
             },
             response.data,
@@ -135,6 +137,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertIn(
             {
                 "name": "/static/dist/assets/images/flow_background.jpg",
+                "url": "/static/dist/assets/images/flow_background.jpg",
                 "mime_type": "image/jpeg",
             },
             response.data,
