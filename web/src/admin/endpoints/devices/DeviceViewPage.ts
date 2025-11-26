@@ -91,6 +91,7 @@ export class DeviceViewPage extends AKElement {
                     ${renderDescriptionList(
                         [
                             [msg("Name"), this.device.name],
+                            [msg("Hostname"), this.device.facts.data.network?.hostname ?? "-"],
                             [msg("Serial number"), this.device.facts.data.hardware?.serial ?? "-"],
                             [
                                 msg("Operating system"),
