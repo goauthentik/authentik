@@ -5,6 +5,7 @@ from base64 import b64encode
 from defusedxml.lxml import fromstring
 from django.http.request import QueryDict
 from django.test import TestCase
+from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
@@ -128,7 +129,7 @@ class TestAuthNRequest(TestCase):
         self.provider.save()
         self.source.encryption_kp = self.cert
         self.source.save()
-        http_request = self.request_factory.get("/")
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -151,7 +152,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
-        http_request = self.request_factory.get("/")
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -178,7 +179,7 @@ class TestAuthNRequest(TestCase):
         self.provider.sign_response = True
         self.provider.save()
         self.source.signed_response = True
-        http_request = self.request_factory.get("/")
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
@@ -218,7 +219,7 @@ class TestAuthNRequest(TestCase):
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
-        http_request = self.request_factory.get("/")
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
 
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
