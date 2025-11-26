@@ -21,6 +21,7 @@ import { AKLabel } from "#components/ak-label";
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 
 import {
+    AdminFileListUsageEnum,
     Application,
     Brand,
     CoreApi,
@@ -100,7 +101,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="brandingLogo"
                         label=${msg("Logo")}
                         value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
-                        .usage=${"media"}
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg("Logo shown in sidebar/header and flow executor.")}
                     ></ak-file-search-input>
 
@@ -109,7 +110,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="brandingFavicon"
                         label=${msg("Favicon")}
                         value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
-                        .usage=${"media"}
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg("Icon shown in the browser tab.")}
                     ></ak-file-search-input>
 
@@ -119,8 +120,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Default flow background")}
                         value="${this.instance?.brandingDefaultFlowBackground ??
                         "/static/dist/assets/images/flow_background.jpg"}"
-                        .usage=${"media"}
-                        .specialUsages=${["static"]}
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg(
                             "Default background used during flow execution. Can be overridden per flow.",
                         )}

@@ -8,7 +8,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "#packages/core/id";
 
-import { AdminApi, AdminFileListUsageEnum, UsageEnum } from "@goauthentik/api";
+import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -20,19 +20,6 @@ interface FileItem {
     mime_type: string;
     size: number;
     usage: string;
-}
-
-interface PaginatedFileResponse {
-    pagination: {
-        next: number;
-        previous: number;
-        count: number;
-        current: number;
-        total_pages: number;
-        start_index: number;
-        end_index: number;
-    };
-    results: FileItem[];
 }
 
 const renderElement = (item: FileItem) => item.name;
@@ -70,7 +57,7 @@ export class AkFileSearchInput extends AKElement {
     help: string | null = null;
 
     @property({ type: String })
-    usage: UsageEnum = UsageEnum.Media;
+    usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
 
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();

@@ -24,6 +24,7 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     AuthorizationCodeAuthMethodEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
@@ -401,9 +402,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                usage="media"
+                .usage=${AdminFileListUsageEnum.Media}
                 blankable
-                .specialUsages=${["static", "passthrough"]}
                 help=${iconHelperText}
             ></ak-file-search-input>
 

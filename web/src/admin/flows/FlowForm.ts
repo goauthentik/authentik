@@ -13,6 +13,7 @@ import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    AdminFileListUsageEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
@@ -308,9 +309,8 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         name="background"
                         label=${msg("Background")}
                         .value=${this.instance?.background}
-                        usage="media"
+                        .usage=${AdminFileListUsageEnum.Media}
                         blankable
-                        .specialUsages=${["static", "passthrough"]}
                         help=${msg("Background shown during execution.")}
                     ></ak-file-search-input>
                 </div>

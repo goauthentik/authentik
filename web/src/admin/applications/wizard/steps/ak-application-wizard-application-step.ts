@@ -17,7 +17,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/t
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { type ApplicationRequest, UsageEnum } from "@goauthentik/api";
+import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
@@ -187,7 +187,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaIcon"
                             label=${msg("Icon")}
                             value=${ifDefined(app.metaIcon)}
-                            .usage=${UsageEnum.Media}
+                            .usage=${AdminFileListUsageEnum.Media}
                             help=${msg(
                                 "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                             )}

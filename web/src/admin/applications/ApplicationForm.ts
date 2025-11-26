@@ -25,7 +25,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
+import { AdminFileListUsageEnum, Application, CoreApi, Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -185,7 +185,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         name="metaIcon"
                         label=${msg("Icon")}
                         value=${ifDefined(this.instance?.metaIcon)}
-                        .usage=${UsageEnum.Media}
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg(
                             "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                         )}
