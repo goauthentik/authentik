@@ -30,10 +30,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
-        const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
+        return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
-        return flow;
     }
 
     getSuccessMessage(): string {
@@ -43,19 +42,16 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     }
 
     async send(data: Flow): Promise<void | Flow> {
-        let flow: Flow;
         if (this.instance) {
-            flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
+            return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
                 slug: this.instance.slug,
                 flowRequest: data,
             });
         } else {
-            flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
+            return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
                 flowRequest: data,
             });
         }
-
-        return flow;
     }
 
     renderForm(): TemplateResult {
