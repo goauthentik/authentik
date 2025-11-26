@@ -2,6 +2,7 @@ import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-file-search-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
@@ -12,15 +13,14 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 
-import { config, DEFAULT_CONFIG } from "#common/api/config";
-
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     KadminTypeEnum,
@@ -31,54 +31,29 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-kerberos-form")
-export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
+export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
     async loadInstance(pk: string): Promise<KerberosSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
+        return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
             slug: pk,
         });
-        this.clearIcon = false;
-        return source;
     }
 
-    @state()
-    clearIcon = false;
-
     async send(data: KerberosSource): Promise<KerberosSource> {
-        let source: KerberosSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
+            return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
         } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+            return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
                 kerberosSourceRequest: data as unknown as KerberosSourceRequest,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("icon");
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
     }
 
     renderForm(): TemplateResult {
@@ -390,52 +365,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         help=${placeholderHelperText}
                     ></ak-text-input>
                 </div>
-                ${this.can(CapabilitiesEnum.CanSaveMedia)
-                    ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                              <input type="file" value="" class="pf-c-form-control" />
-                              ${this.instance?.icon
-                                  ? html`
-                                        <p class="pf-c-form__helper-text">
-                                            ${msg("Currently set to:")} ${this.instance?.icon}
-                                        </p>
-                                    `
-                                  : nothing}
-                          </ak-form-element-horizontal>
-                          ${this.instance?.icon
-                              ? html`
-                                    <ak-form-element-horizontal>
-                                        <label class="pf-c-switch">
-                                            <input
-                                                class="pf-c-switch__input"
-                                                type="checkbox"
-                                                @change=${(ev: Event) => {
-                                                    const target = ev.target as HTMLInputElement;
-                                                    this.clearIcon = target.checked;
-                                                }}
-                                            />
-                                            <span class="pf-c-switch__toggle">
-                                                <span class="pf-c-switch__toggle-icon">
-                                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                                </span>
-                                            </span>
-                                            <span class="pf-c-switch__label">
-                                                ${msg("Clear icon")}
-                                            </span>
-                                        </label>
-                                        <p class="pf-c-form__helper-text">
-                                            ${msg("Delete currently set icon.")}
-                                        </p>
-                                    </ak-form-element-horizontal>
-                                `
-                              : nothing}`
-                    : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input
-                              type="text"
-                              value="${this.instance?.icon ?? ""}"
-                              class="pf-c-form-control"
-                          />
-                          <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                      </ak-form-element-horizontal>`}
+                <ak-file-search-input
+                    name="icon"
+                    label=${msg("Icon")}
+                    .value=${this.instance?.icon}
+                    .usage=${AdminFileListUsageEnum.Media}
+                    blankable
+                    help=${iconHelperText}
+                ></ak-file-search-input>
             </ak-form-group>`;
     }
 }

@@ -15,7 +15,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -71,7 +70,7 @@ const pkceMethodOptions = [
 ];
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
+export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -90,18 +89,16 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
-        let source: OAuthSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
         } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            return await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
                 oAuthSourceRequest: data as unknown as OAuthSourceRequest,
             });
         }
-        return source;
     }
 
     fetchProviderType(v: string | undefined) {
