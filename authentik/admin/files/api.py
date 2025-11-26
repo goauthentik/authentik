@@ -1,5 +1,4 @@
 import mimetypes
-from pathlib import Path, PurePosixPath
 
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
