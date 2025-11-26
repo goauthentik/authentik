@@ -52,7 +52,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @state()
     protected backchannelProviders: Provider[] = [];
 
-    protected override getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")
             : msg("Successfully created application.");
