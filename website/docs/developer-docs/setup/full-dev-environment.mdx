@@ -37,27 +37,17 @@ Unless otherwise specified, all commands described below should be run from the 
 
 ## 2. Set up required services
 
-authentik depends on several external services, which are configured with either Option A or Option B below.
+authentik depends on several external services:
 
 - [PostgreSQL](https://www.postgresql.org/) for database storage
 - [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/) for object storage
 - [Sentry Spotlight](https://spotlightjs.com/) for error tracking and visualization
-
-### Option A: Using Docker Compose (recommended)
 
 The easiest way to set up these services is using the provided Docker Compose configuration:
 
 ```shell
 docker compose -f scripts/docker-compose.yml up -d
 ```
-
-### Option B: Using local installations
-
-Alternatively, you can install and run these services directly on your system.
-
-:::info
-If using locally installed databases, ensure the PostgreSQL credentials provided to authentik have `CREATE DATABASE` and `DROP DATABASE` permissions, because authentik creates temporary databases for testing.
-:::
 
 ## 3. Installing platform-specific dependencies
 
@@ -243,8 +233,8 @@ After your code passes all checks, submit a pull request on [GitHub](https://git
 
 - Provide a clear description of your changes
 - Reference any related issues
-- Follow our code style guidelines
-- Update any related documentation (follow style guide)
+- Update any related documentation
+- Follow our code and documentation [style guidelines](../../contributing/#style-guides)
 - Include tests for your changes where appropriate
 
 Thank you for contributing to authentik!
