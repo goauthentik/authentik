@@ -37,8 +37,6 @@ class WeChatOAuth2Client(OAuth2Client):
         WeChat uses a non-standard GET request for the token exchange,
         unlike the standard OAuth2 POST request. The AppID (client_id)
         and AppSecret (client_secret) are passed as URL query parameters.
-
-        Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 2)  # noqa: E501
         """
         token_url = self.get_access_token_url()
         params = {
@@ -76,8 +74,6 @@ class WeChatOAuth2Client(OAuth2Client):
 
         This API call requires both the 'access_token' and the 'openid'
         (which was returned during the token exchange).
-
-        Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Authorized_Interface_Calling_UnionID.html  # noqa: E501
         """
         profile_url = self.get_profile_url()
         params = {
