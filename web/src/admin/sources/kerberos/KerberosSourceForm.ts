@@ -126,6 +126,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 label=${msg("Enabled")}
             ></ak-switch-input>
             <ak-switch-input
+                name="promoted"
+                ?checked=${this.instance?.promoted ?? false}
+                label=${msg("Promoted")}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
                 name="passwordLoginUpdateInternalPassword"
                 ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
                 label=${msg("Update internal password on login")}

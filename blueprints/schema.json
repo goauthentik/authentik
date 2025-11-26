@@ -424,6 +424,206 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_connectors_agent.enrollmenttoken"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints.deviceuserbinding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints.endpointstage"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_enterprise.license"
                         },
                         "id": {
@@ -4646,9 +4846,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal application name, used in URLs."
                 },
@@ -5078,6 +5276,55 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_endpoints.add_connector",
+                            "authentik_endpoints.add_device",
+                            "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_devicefactsnapshot",
+                            "authentik_endpoints.add_devicegroup",
+                            "authentik_endpoints.add_deviceuserbinding",
+                            "authentik_endpoints.add_endpointstage",
+                            "authentik_endpoints.change_connector",
+                            "authentik_endpoints.change_device",
+                            "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_devicefactsnapshot",
+                            "authentik_endpoints.change_devicegroup",
+                            "authentik_endpoints.change_deviceuserbinding",
+                            "authentik_endpoints.change_endpointstage",
+                            "authentik_endpoints.delete_connector",
+                            "authentik_endpoints.delete_device",
+                            "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_devicefactsnapshot",
+                            "authentik_endpoints.delete_devicegroup",
+                            "authentik_endpoints.delete_deviceuserbinding",
+                            "authentik_endpoints.delete_endpointstage",
+                            "authentik_endpoints.view_connector",
+                            "authentik_endpoints.view_device",
+                            "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_devicefactsnapshot",
+                            "authentik_endpoints.view_devicegroup",
+                            "authentik_endpoints.view_deviceuserbinding",
+                            "authentik_endpoints.view_endpointstage",
+                            "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_devicetoken",
+                            "authentik_endpoints_connectors_agent.add_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_devicetoken",
+                            "authentik_endpoints_connectors_agent.change_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_devicetoken",
+                            "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_devicetoken",
+                            "authentik_endpoints_connectors_agent.view_enrollment_token_key",
+                            "authentik_endpoints_connectors_agent.view_enrollmenttoken",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -5704,6 +5951,426 @@
                 }
             }
         },
+        "model_authentik_endpoints_connectors_agent.agentconnector": {
+            "type": "object",
+            "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "snapshot_expiry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Snapshot expiry"
+                },
+                "nss_uid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss uid offset"
+                },
+                "nss_gid_offset": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Nss gid offset"
+                },
+                "auth_terminate_session_on_expiry": {
+                    "type": "boolean",
+                    "title": "Auth terminate session on expiry"
+                },
+                "refresh_interval": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh interval"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow"
+                },
+                "challenge_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Challenge key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentconnector",
+                            "change_agentconnector",
+                            "delete_agentconnector",
+                            "view_agentconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Policy"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                },
+                "negate": {
+                    "type": "boolean",
+                    "title": "Negate",
+                    "description": "Negates the outcome of the policy. Messages are unaffected."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Timeout",
+                    "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agentdeviceuserbinding",
+                            "change_agentdeviceuserbinding",
+                            "delete_agentdeviceuserbinding",
+                            "view_agentdeviceuserbinding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_agent.enrollmenttoken": {
+            "type": "object",
+            "properties": {
+                "device_group": {
+                    "type": "integer",
+                    "title": "Device group"
+                },
+                "connector": {
+                    "type": "integer",
+                    "title": "Connector"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expiring": {
+                    "type": "boolean",
+                    "title": "Expiring"
+                },
+                "expires": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Expires"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_enrollmenttoken",
+                            "change_enrollmenttoken",
+                            "delete_enrollmenttoken",
+                            "view_enrollment_token_key",
+                            "view_enrollmenttoken"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints.deviceuserbinding": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Policy"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "target": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target"
+                },
+                "negate": {
+                    "type": "boolean",
+                    "title": "Negate",
+                    "description": "Negates the outcome of the policy. Messages are unaffected."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Order"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Timeout",
+                    "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints.deviceuserbinding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_deviceuserbinding",
+                            "change_deviceuserbinding",
+                            "delete_deviceuserbinding",
+                            "view_deviceuserbinding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints.endpointstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "connector": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints.endpointstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_endpointstage",
+                            "change_endpointstage",
+                            "delete_endpointstage",
+                            "view_endpointstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_enterprise.license": {
             "type": "object",
             "properties": {
@@ -6211,9 +6878,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -6345,9 +7010,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -6500,9 +7163,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -7014,9 +7675,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Visible in the URL."
                 },
@@ -7520,6 +8179,8 @@
                         "authentik.api",
                         "authentik.core",
                         "authentik.crypto",
+                        "authentik.endpoints",
+                        "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
                         "authentik.events",
                         "authentik.flows",
@@ -7574,6 +8235,7 @@
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.endpoints.connectors.agent",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
@@ -7602,6 +8264,11 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_endpoints.deviceuserbinding",
+                        "authentik_endpoints.endpointstage",
+                        "authentik_endpoints_connectors_agent.agentconnector",
+                        "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
+                        "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -9889,6 +10556,55 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_endpoints.add_connector",
+                            "authentik_endpoints.add_device",
+                            "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_devicefactsnapshot",
+                            "authentik_endpoints.add_devicegroup",
+                            "authentik_endpoints.add_deviceuserbinding",
+                            "authentik_endpoints.add_endpointstage",
+                            "authentik_endpoints.change_connector",
+                            "authentik_endpoints.change_device",
+                            "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_devicefactsnapshot",
+                            "authentik_endpoints.change_devicegroup",
+                            "authentik_endpoints.change_deviceuserbinding",
+                            "authentik_endpoints.change_endpointstage",
+                            "authentik_endpoints.delete_connector",
+                            "authentik_endpoints.delete_device",
+                            "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_devicefactsnapshot",
+                            "authentik_endpoints.delete_devicegroup",
+                            "authentik_endpoints.delete_deviceuserbinding",
+                            "authentik_endpoints.delete_endpointstage",
+                            "authentik_endpoints.view_connector",
+                            "authentik_endpoints.view_device",
+                            "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_devicefactsnapshot",
+                            "authentik_endpoints.view_devicegroup",
+                            "authentik_endpoints.view_deviceuserbinding",
+                            "authentik_endpoints.view_endpointstage",
+                            "authentik_endpoints_connectors_agent.add_agentconnector",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_devicetoken",
+                            "authentik_endpoints_connectors_agent.add_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.change_agentconnector",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_devicetoken",
+                            "authentik_endpoints_connectors_agent.change_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.delete_agentconnector",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_devicetoken",
+                            "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
+                            "authentik_endpoints_connectors_agent.view_agentconnector",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
+                            "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_devicetoken",
+                            "authentik_endpoints_connectors_agent.view_enrollment_token_key",
+                            "authentik_endpoints_connectors_agent.view_enrollmenttoken",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -10525,15 +11241,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -10876,15 +11595,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -11257,15 +11979,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -11641,15 +12366,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -11943,15 +12671,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -12271,9 +13002,7 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
@@ -12449,15 +13178,18 @@
                 },
                 "slug": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Slug",
                     "description": "Internal source name, used in URLs."
                 },
                 "enabled": {
                     "type": "boolean",
                     "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
                 },
                 "authentication_flow": {
                     "type": "string",
@@ -12690,9 +13422,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -12881,9 +13611,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13110,9 +13838,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13323,9 +14049,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13503,9 +14227,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13679,9 +14401,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -13858,9 +14578,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14069,9 +14787,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14227,9 +14943,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14361,9 +15075,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14484,9 +15196,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14607,9 +15317,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14804,9 +15512,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -14983,9 +15689,7 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 50,
                     "minLength": 1,
-                    "pattern": "^[-a-zA-Z0-9_]+$",
                     "title": "Name"
                 },
                 "expires": {
@@ -15065,9 +15769,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15189,9 +15891,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15445,9 +16145,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15580,9 +16278,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15720,9 +16416,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -15839,9 +16533,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16003,9 +16695,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -16122,9 +16812,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },

@@ -9,18 +9,17 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { rootInterface } from "#common/theme";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { WithSession } from "#elements/mixins/session";
 import { ifPresent } from "#elements/utils/attributes";
 
-import type { UserInterface } from "#user/index.entrypoint";
 import Styles from "#user/user-settings/styles.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
-import { localized, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -36,9 +35,8 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-@localized()
 @customElement("ak-user-settings")
-export class UserSettingsPage extends AKElement {
+export class UserSettingsPage extends WithSession(AKElement) {
     static styles: CSSResult[] = [
         PFPage,
         PFDisplay,
@@ -71,6 +69,9 @@ export class UserSettingsPage extends AKElement {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
+
+        const { currentUser } = this;
+
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
                 <ak-tabs
@@ -111,9 +112,7 @@ export class UserSettingsPage extends AKElement {
                         <div class="pf-c-card">
                             <div class="pf-c-card__body">
                                 <ak-user-session-list
-                                    targetUser=${ifDefined(
-                                        rootInterface<UserInterface>()?.me?.user.username,
-                                    )}
+                                    targetUser=${ifPresent(currentUser?.username)}
                                 ></ak-user-session-list>
                             </div>
                         </div>
@@ -129,7 +128,7 @@ export class UserSettingsPage extends AKElement {
                         <div class="pf-c-card">
                             <div class="pf-c-card__body">
                                 <ak-user-consent-list
-                                    userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                    userId=${ifPresent(currentUser?.pk)}
                                 ></ak-user-consent-list>
                             </div>
                         </div>
@@ -166,7 +165,7 @@ export class UserSettingsPage extends AKElement {
                             </div>
                             <ak-user-settings-source
                                 allow-configuration
-                                user-id=${ifPresent(rootInterface<UserInterface>()?.me?.user.pk)}
+                                userId=${ifPresent(currentUser?.pk)}
                             ></ak-user-settings-source>
                         </div>
                     </div>

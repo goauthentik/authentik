@@ -38,5 +38,5 @@ The following options can be configured:
 
     If there is a mount under `/media` or if [S3 storage](../../sys-mgmt/ops/storage-s3.md) is configured, you'll instead see a field to upload a file.
 
-- _Publisher_: Text shown below the application
-- _Description_: Subtext shown on the application card below the publisher
+- _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
+- _Description_: Text shown in the application card's expandable kebab menu (⋮)

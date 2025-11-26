@@ -170,6 +170,7 @@ class KerberosSource(IncomingSyncSource):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

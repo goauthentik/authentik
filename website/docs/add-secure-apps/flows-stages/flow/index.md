@@ -22,25 +22,27 @@ By default, policies are evaluated dynamically, right before the stage (to which
 
 This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.mdx).
 
-## Permissions
+## Policies and permissions
 
 Flows can have [policies](../stages/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 
-## Import & Export
+## Import or export a flow
 
-Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+Flows can be imported and exported (as [blueprints](../../../customize/blueprints/working_with_blueprints)) to share with other people, the community, and for troubleshooting.
 
-Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
+Flows can be imported to add new functionality to existing flows, or to add a new custom flow.
 
-Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
+You can download our [Example flows](./examples/flows.md) and then import them into your authentik instance, or create a new flow.
+
+Starting with authentik 2022.8, flows are exported as YAML, but legacy JSON-based flows can still be imported.
 
 ## Create a custom flow
 
 To create a flow, follow these steps:
 
-1. Log in as an admin to authentik, and go to the Admin interface.
+1. Log in to authentik as an administrator and open the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Finish**.
 
@@ -88,3 +90,9 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
 - **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands.md#branding-settings).
+
+## Edit or delete a flow
+
+- To edit a flow, navigate to **Flows and Stages > Flows** in the Admin interface, and then click **Edit** for the flow that you want to modify.
+
+- To delete a flow, navigate to **Flows and Stages > Flows** in the Admin interface, select the checkbox in front of the flow that you want to delete, and then click **Delete**. You can retrieve and re-apply that flow by following the steps above to create a new flow.
