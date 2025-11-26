@@ -93,9 +93,9 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 
 ## User credentials recovery
 
-If a user has lost their credentials and need to recover their account, there are two options:
+If a user has lost their credentials and needs to recover their account, there are two available options:
 
-1. Create a recovery link and send this to the user
+1. Create a recovery link and send it to the user
 2. Have authentik send the user a recovery email
 
 Both options require you to configure a recovery flow and set it as the **Default recovery flow** for the active brand.
