@@ -150,7 +150,9 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     @validate(PlexTokenRedeemSerializer)
-    def redeem_token_authenticated(self, request: Request, body: PlexTokenRedeemSerializer) -> Response:
+    def redeem_token_authenticated(
+        self, request: Request, body: PlexTokenRedeemSerializer
+    ) -> Response:
         """Redeem a plex token for an authenticated user, creating a connection"""
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")

@@ -3,7 +3,7 @@
 from typing import Any
 
 from django.utils.timezone import now
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -107,6 +107,10 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         }
 
 
+class TokenSetKeySerializer(PassiveSerializer):
+    key = CharField()
+
+
 class TokenViewSerializer(PassiveSerializer):
     """Show token's current key"""
 
@@ -170,12 +174,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.set_token_key")
     @extend_schema(
-        request=inline_serializer(
-            "TokenSetKey",
-            {
-                "key": CharField(),
-            },
-        ),
+        request=TokenSetKeySerializer(),
         responses={
             204: OpenApiResponse(description="Successfully changed key"),
             400: OpenApiResponse(description="Missing key"),
@@ -183,11 +182,11 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def set_key(self, request: Request, identifier: str) -> Response:
+    def set_key(self, request: Request, identifier: str, body: TokenSetKeySerializer) -> Response:
         """Set token key. Action is logged as event. `authentik_core.set_token_key` permission
         is required."""
         token: Token = self.get_object()
-        key = request.data.get("key")
+        key = body.validated_data.get("key")
         if not key:
             return Response(status=400)
         token.key = key
