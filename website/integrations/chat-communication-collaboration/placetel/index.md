@@ -54,7 +54,7 @@ To support the integration of Placetel with authentik, you need to create an app
 
 To integrate Plactel with authentik, you will need to setup SSO in the Placetel portal.
 
-1. Log in to the [Placetel portal](https://accounts.placetel.com) as an Administrator.
+1. Log in to the [Placetel portal](accounts.webex.placetel.de) as an Administrator.
 2. Click the **Organization Name** in the bottom left corner, and select **Settings**
 3. Scroll to the bottom of the page. Then, next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
 4. Import the **SAML Metadata** file that you downloaded from authentik.
@@ -65,15 +65,21 @@ To integrate Plactel with authentik, you will need to setup SSO in the Placetel 
 6. Ensure that **Activate Single Sign On** is unchecked for now.
 7. Click **Save settings**.
 
-## Configuration verification
+### Test configuration and activate SSO
 
-To confirm that authentik is properly configured with Plactel, log out and log back in using this link (with the appropriate Entity ID): `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=<authentik.company>`
+To test that authentik is properly configured with Plactel, log out and log back in using this link (with the appropriate Entity ID): `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=<authentik.company>`
 
 You should be redirected to authentik and once authenticated, logged in to Placetel.
 
 After confirming that your configuration is correct, return to the Placetel configuration page, check the **Activate Single Sign On** checkbox, and click **Save settings**.
 
-You can now login to the Placetel portal using `accounts.webex.placetel.de`. The default login link on their homepage will not work.
+## Configuration verification
+
+To confirm that authentik is properly configured with Placetel, log out and log back in to the [Placetel portal](accounts.webex.placetel.de). You should be redirected to authentik, and once authenticated, you'll be signed into the Placetel portal.
+
+:::info Login link
+The default login link on the Placetel homepage will not work.
+:::
 
 ## Resources
 
