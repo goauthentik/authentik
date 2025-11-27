@@ -36,19 +36,19 @@ paths:
       description: List files from storage backend.
       parameters:
       - in: query
-        name: manageableOnly
+        name: manageable_only
         schema:
           type: boolean
-        description: Only include manageable files
+          default: false
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: usage
         schema:
-          type: string
           enum:
           - media
+          type: string
           default: media
-        description: Usage type
+          minLength: 1
       tags:
       - admin
       security:
@@ -60,7 +60,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/File'
+                  $ref: '#/components/schemas/FileList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -94,11 +94,11 @@ paths:
       - in: query
         name: usage
         schema:
-          type: string
           enum:
           - media
+          type: string
           default: media
-        description: Usage type
+          minLength: 1
       tags:
       - admin
       security:
@@ -36961,8 +36961,9 @@ components:
           minLength: 1
       required:
       - object_pk
-    File:
+    FileList:
       type: object
+      description: Base serializer class which doesn't implement create/update methods
       properties:
         name:
           type: string

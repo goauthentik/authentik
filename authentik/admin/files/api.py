@@ -1,10 +1,9 @@
 import mimetypes
 
 from django.utils.translation import gettext as _
-from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
-from rest_framework import serializers
+from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, FileField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
@@ -26,12 +25,6 @@ def get_mime_from_filename(filename: str) -> str:
     return mime_type or "application/octet-stream"
 
 
-class FileUploadSerializer(PassiveSerializer):
-    file = serializers.FileField(required=True)
-    name = serializers.CharField(required=False, allow_blank=True)
-    usage = serializers.CharField(required=False, default=FileApiUsage.MEDIA.value)
-
-
 class FileView(APIView):
     pagination_class = None
     parser_classes = [MultiPartParser]
@@ -45,66 +38,58 @@ class FileView(APIView):
             )()
         ]
 
+    class FileListParameters(PassiveSerializer):
+        usage = ChoiceField(choices=list(FileApiUsage), default=FileApiUsage.MEDIA.value)
+        search = CharField(required=False)
+        manageable_only = BooleanField(required=False, default=False)
+
+    class FileListSerializer(PassiveSerializer):
+        name = CharField()
+        mime_type = CharField()
+        url = CharField()
+
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="usage",
-                type=str,
-                enum=list(FileApiUsage),
-                default=FileApiUsage.MEDIA.value,
-                description="Usage type",
-            ),
-            OpenApiParameter(
-                name="search",
-                type=str,
-                required=False,
-                description="Search for files by name (case-insensitive substring match)",
-            ),
-            OpenApiParameter(
-                name="manageableOnly",
-                type=bool,
-                required=False,
-                description="Only include manageable files",
-            ),
-        ],
-        responses={
-            200: inline_serializer(
-                "FileSerializer",
-                {
-                    "name": CharField(required=True),
-                    "mime_type": CharField(required=True),
-                    "url": CharField(required=True),
-                },
-                many=True,
-            )
-        },
+        parameters=[FileListParameters],
+        responses={200: FileListSerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
         """List files from storage backend."""
-        usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
-        search_query = request.query_params.get("search", "").strip().lower()
-        manageable_only = request.query_params.get("manageableOnly", "false").lower() == "true"
+        params = FileView.FileListParameters(data=request.query_params)
+        params.is_valid(raise_exception=True)
+        params = params.validated_data
 
         try:
-            usage = FileApiUsage(usage_param)
+            usage = FileApiUsage(params.get("usage", FileApiUsage.MEDIA.value))
         except ValueError as exc:
-            raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
+            raise ValidationError(
+                f"Invalid usage parameter provided: {params.get('usage')}"
+            ) from exc
 
         # Backend is source of truth - list all files from storage
         manager = FileManager(usage)
-        files = manager.list_files(manageable_only=manageable_only)
+        files = manager.list_files(manageable_only=params.get("manageable_only", False))
+        search_query = params.get("search", "")
         if search_query:
             files = filter(lambda file: search_query in file.lower(), files)
         files = [
-            {
-                "name": file,
-                "url": manager.file_url(file),
-                "mime_type": get_mime_from_filename(file),
-            }
+            FileView.FileListSerializer(
+                {
+                    "name": file,
+                    "url": manager.file_url(file),
+                    "mime_type": get_mime_from_filename(file),
+                }
+            )
             for file in files
         ]
+        for file in files:
+            file.is_valid()
 
-        return Response(files)
+        return Response([file.data for file in files])
+
+    class FileUploadSerializer(PassiveSerializer):
+        file = FileField(required=True)
+        name = CharField(required=False, allow_blank=True)
+        usage = CharField(required=False, default=FileApiUsage.MEDIA.value)
 
     @extend_schema(
         request=FileUploadSerializer,
@@ -112,7 +97,7 @@ class FileView(APIView):
     )
     def post(self, request: Request) -> Response:
         """Upload file to storage backend."""
-        serializer = FileUploadSerializer(data=request.data)
+        serializer = FileView.FileUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         file = serializer.validated_data["file"]
@@ -151,7 +136,6 @@ class FileView(APIView):
             raise ValidationError({"name": ["A file with this name already exists."]})
 
         # Save to backend
-        # TODO: make this work
         with manager.save_file_stream(name) as f:
             f.write(file.read())
 
@@ -164,45 +148,40 @@ class FileView(APIView):
 
         return Response()
 
+    class FileDeleteParameters(PassiveSerializer):
+        name = CharField()
+        usage = ChoiceField(choices=list(FileApiUsage), default=FileApiUsage.MEDIA.value)
+
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="name",
-                type=str,
-                required=True,
-                description="File to delete",
-            ),
-            OpenApiParameter(
-                name="usage",
-                type=str,
-                enum=list(FileApiUsage),
-                default=FileApiUsage.MEDIA.value,
-                description="Usage type",
-            ),
-        ],
+        parameters=[FileDeleteParameters],
         responses={200: None},
     )
     def delete(self, request: Request) -> Response:
         """Delete file from storage backend."""
-        name = request.query_params.get("name", "")
-        usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
+        params = FileView.FileDeleteParameters(data=request.query_params)
+        params.is_valid(raise_exception=True)
+        params = params.validated_data
+        # name = request.query_params.get("name", "")
+        # usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
 
-        validate_upload_file_name(name, ValidationError)
+        validate_upload_file_name(params.get("name", ""), ValidationError)
 
         try:
-            usage = FileApiUsage(usage_param)
+            usage = FileApiUsage(params.get("usage", FileApiUsage.MEDIA.value))
         except ValueError as exc:
-            raise ValidationError(f"Invalid usage parameter provided: {usage_param}") from exc
+            raise ValidationError(
+                f"Invalid usage parameter provided: {params.get('usage')}"
+            ) from exc
 
         manager = FileManager(usage)
 
         # Delete from backend
-        manager.delete_file(name)
+        manager.delete_file(params.get("name"))
 
         # Audit log for file deletion
         Event.new(
             EventAction.FILE_DELETED,
-            name=name,
+            name=params.get("name"),
             usage=usage.value,
         ).from_http(request)
 
