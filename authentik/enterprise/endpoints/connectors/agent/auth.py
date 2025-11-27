@@ -69,7 +69,7 @@ def check_device_policies(device: Device, user: User, request: HttpRequest):
     """Check policies bound to device group and device"""
     if device.access_group:
         result = check_pbm_policies(device.access_group, user, request)
-        if not result.passing:
+        if result.passing:
             return result
     return check_pbm_policies(device, user, request)
 

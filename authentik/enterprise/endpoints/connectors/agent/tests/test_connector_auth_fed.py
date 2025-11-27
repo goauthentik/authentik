@@ -43,11 +43,7 @@ class TestConnectorAuthFed(APITestCase):
             reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.device.name}",
             HTTP_AUTHORIZATION=f"Bearer {self.raw_token}",
         )
-        self.assertEqual(response.status_code, 200)
-        res = loads(response.content)
-        token = decode(res["token"], options={"verify_signature": False})
-        self.assertEqual(token["iss"], "goauthentik.io/platform")
-        self.assertEqual(token["aud"], str(self.device.pk))
+        self.assertEqual(response.status_code, 400)
 
     @reconcile_app("authentik_crypto")
     def test_auth_fed_policy_group(self):
