@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Plactel
 
-> Placetel is a German cloud-communications provider offering businesses a virtual phone system and unified communications platform (VoIP, video-conferencing, chat, etc.).
+> Placetel is a German cloud communications provider, specializing in VoIP-based telephony, unified communications (UCaaS), and collaboration tools for businesses.
 >
 > -- https://www.placetel.de/
 
@@ -29,46 +29,53 @@ To support the integration of Placetel with authentik, you need to create an app
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Take note of the **slug** value as it will be required later.
-    - Set the **ACS URL** to `https://accounts.webex.placetel.de/users/saml/auth`.
-    - Set the **Entity ID** to any descriptive name, e.g. `authentik.company`.
-    - Set the **SLS URL** to `https://accounts.webex.placetel.de/users/saml/idp_sign_out`
-    - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, set an available signing key and make sure **Sign assertions**, as well as **Sign responses** is toggled.
-    - Make sure **no encryption certificate** is selected.
-    - Then, also under **Advanced protocol settings**, make sure **NameID Property Mapping** is set to `authentik default SAML Mapping: Email`.
-    - Remove all other **Property Mappings**
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** value as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://accounts.webex.placetel.de/users/saml/auth`.
+        - Set the **Entity ID** to any descriptive name, e.g. `authentik.company`.
+        - Set the **SLS URL** to `https://accounts.webex.placetel.de/users/saml/idp_sign_out`.
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**, set an available **Signing Certificate** and ensure that **Sign assertions** and **Sign responses** are toggled.
+        - Ensure that **Encryption Certificate** is empty.
+        - Remove all **Property Mappings** except for `authentik default SAML Mapping: Email`.
+        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-4. Select the provider you have just created. Under **Related objects**, download the **Metadata**.
+### Download metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your **SAML Metadata** file and it will be required in the next section.
 
 ## Placetel configuration
 
-1. To integrate Plactel with authentik, log in as an _Administrator_, click the **Organation Name** in the bottom left corner, and select **Settings** from the menu.
-2. Scroll to the bottom of the page. Next to the section heading **Single Sign On (SSO/SAML)** select **Edit**.
-3. Import the **Metadata** you just downloaded from authentik.
-4. Fill out the form with the missing values:
+To integrate Plactel with authentik, you will need to setup SSO in the Placetel portal.
+
+1. Log in to the Placetel portal as an _Administrator_.
+2. Click the **Organation Name** in the bottom left corner, and select **Settings**
+3. Scroll to the bottom of the page. Next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
+4. Import the **SAML Metadata** file that you downloaded from authentik.
+5. Enter the following values:
     - **SP Entity ID**: `https://web.placetel.de`
     - **IDP Entity ID**: `authentik.company`
     - **Domains**: `company.tld`
-5. Make sure **Activate Single Sign On** is unchecked for now.
-6. Select **Save settings**.
+6. Ensure that **Activate Single Sign On** is unchecked for now.
+7. Click **Save settings**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Plactel, log out and log back in via authentik using `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=authentik.company`.
+To confirm that authentik is properly configured with Plactel, log out and log back in using this link (with the appropriate Entity ID): `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=<authentik.company>`
 
-Once you're sure your configuration is correct, go back to the Placetel configuration, select the **Activate Single Sign On** checkbox and hit **Save settings**. 
+You should be redirected to authentik and once authenticated, logged in to Placetel.
 
-You can now login to the Placetel portal using `accounts.webex.placetel.de` (the default login-link on their homepage will not work).
+After confirming that your configuration is correct, return to the Placetel configuration page, check the **Activate Single Sign On** checkbox, and click **Save settings**.
+
+You can now login to the Placetel portal using `accounts.webex.placetel.de`. The default login link on their homepage will not work.
 
 ## Resources
 
-- [Placetel SSO Configuration Documentation](https://www.placetel.de/hilfe/webex-fuer-placetel/sso-saml-webex-fuer-placetel)
+- [Placetel Help - SSO (SAML)](https://www.placetel.de/hilfe/webex-fuer-placetel/sso-saml-webex-fuer-placetel)
 - [Placetel SAML Metadata](https://accounts.webex.placetel.de/users/saml/metadata)
