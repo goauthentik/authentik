@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.8.4"
+version = "2025.8.5"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
@@ -12,7 +12,7 @@ dependencies = [
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.1.13",
+  "django==5.1.14",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",

@@ -3,7 +3,7 @@
 from functools import lru_cache
 from os import environ
 
-VERSION = "2025.8.4"
+VERSION = "2025.8.5"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 
 
