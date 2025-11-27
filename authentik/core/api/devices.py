@@ -87,8 +87,6 @@ class AdminDeviceViewSet(ViewSet):
         responses={200: DeviceSerializer(many=True)},
     )
     @validate(ParamUserSerializer, "query")
-    def list(self, request: Request) -> Response:
+    def list(self, request: Request, query: ParamUserSerializer) -> Response:
         """Get all devices for current user"""
-        args = ParamUserSerializer(data=request.query_params)
-        args.is_valid(raise_exception=True)
-        return Response(DeviceSerializer(self.get_devices(**args.validated_data), many=True).data)
+        return Response(DeviceSerializer(self.get_devices(**query.validated_data), many=True).data)
