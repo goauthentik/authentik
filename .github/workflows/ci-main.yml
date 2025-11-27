@@ -77,8 +77,6 @@ jobs:
       - name: checkout stable
         run: |
           set -e -o pipefail
-          # Copy current, latest config to local
-          cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
           # Previous stable tag
