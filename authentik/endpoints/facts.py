@@ -94,6 +94,8 @@ class ProcessSerializer(Serializer):
 class DeviceUserSerializer(Serializer):
     id = CharField(required=True)
     username = CharField(required=False)
+    name = CharField(required=False)
+    home = CharField(required=False)
 
 
 class DeviceGroupSerializer(Serializer):

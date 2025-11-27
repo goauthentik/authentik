@@ -35813,6 +35813,10 @@ components:
           type: string
         username:
           type: string
+        name:
+          type: string
+        home:
+          type: string
       required:
       - id
     DeviceUserRequest:
@@ -35822,6 +35826,12 @@ components:
           type: string
           minLength: 1
         username:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        home:
           type: string
           minLength: 1
       required:
