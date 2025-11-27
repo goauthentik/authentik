@@ -2,6 +2,7 @@ package web
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"time"
@@ -32,7 +33,10 @@ func storageTokenIsValid(usage string, r *http.Request) bool {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
 		}
-		return []byte(fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%s:%s", config.Get().SecretKey, usage))))), nil
+		key := []byte(fmt.Sprintf("%s:%s", config.Get().SecretKey, usage))
+		hash := sha256.Sum256(key)
+		hexDigest := hex.EncodeToString(hash[:])
+		return []byte(hexDigest), nil
 	})
 	if err != nil || !token.Valid {
 		return false
