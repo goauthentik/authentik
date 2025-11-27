@@ -35719,6 +35719,16 @@ components:
           items:
             $ref: '#/components/schemas/Process'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUser'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroup'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
@@ -35763,9 +35773,59 @@ components:
           items:
             $ref: '#/components/schemas/ProcessRequest'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroupRequest'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
+    DeviceGroup:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+      - id
+    DeviceGroupRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+      required:
+      - id
+    DeviceUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+      required:
+      - id
+    DeviceUserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+      required:
+      - id
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
