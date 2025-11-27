@@ -10,12 +10,14 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector
+from authentik.endpoints.models import Device
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.views.jwks import JWKSView
 
 
 class AgentConfigSerializer(PassiveSerializer):
 
+    device_id = SerializerMethodField()
     refresh_interval = SerializerMethodField()
 
     authorization_flow = CharField()
@@ -26,6 +28,10 @@ class AgentConfigSerializer(PassiveSerializer):
     auth_terminate_session_on_expiry = BooleanField()
 
     system_config = SerializerMethodField()
+
+    def get_device_id(self, instance: AgentConnector) -> str:
+        device: Device = self.context["device"]
+        return device.pk
 
     def get_jwks(self, instance: AgentConnector) -> dict:
         kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()

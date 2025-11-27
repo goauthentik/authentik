@@ -148,7 +148,11 @@ class AgentConnectorViewSet(
     def agent_config(self, request: Request):
         token: DeviceToken = request.auth
         connector: AgentConnector = token.device.connector.agentconnector
-        return Response(AgentConfigSerializer(connector, context={"request": request}).data)
+        return Response(
+            AgentConfigSerializer(
+                connector, context={"request": request, "device": token.device}
+            ).data
+        )
 
     @extend_schema(
         request=DeviceFacts(),
