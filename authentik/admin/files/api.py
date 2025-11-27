@@ -32,9 +32,9 @@ class FileView(APIView):
     def get_permissions(self):
         return [
             HasPermission(
-                "authentik_rbac.view_files"
+                "authentik_rbac.view_media_files"
                 if self.request.method in SAFE_METHODS
-                else "authentik_rbac.manage_files"
+                else "authentik_rbac.manage_media_files"
             )()
         ]
 
