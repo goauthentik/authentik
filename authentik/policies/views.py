@@ -23,7 +23,6 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.views.executor import (
-    SESSION_KEY_APPLICATION_PRE,
     SESSION_KEY_PLAN,
     SESSION_KEY_POST,
     ToDefaultFlow,
@@ -105,7 +104,6 @@ class PolicyAccessView(AccessMixin, View):
         a hint on the Identification Stage what the user should login for."""
         flow_context = {}
         if self.application:
-            self.request.session[SESSION_KEY_APPLICATION_PRE] = self.application
             flow_context[PLAN_CONTEXT_APPLICATION] = self.application
         # Because this view might get hit with a POST request, we need to preserve that data
         # since later views might need it (mostly SAML)

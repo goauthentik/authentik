@@ -263,6 +263,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
+        if not self.target_id and self.stage_id:
+            return f"In-memory Flow-stage binding {self.stage}"
         return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:
