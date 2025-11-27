@@ -93,14 +93,6 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             {
-                "name": "/static/dist/assets/images/flow_background.jpg",
-                "url": "/static/dist/assets/images/flow_background.jpg",
-                "mime_type": "image/jpeg",
-            },
-            response.data,
-        )
-        self.assertIn(
-            {
                 "name": "/static/authentik/sources/ldap.png",
                 "url": "/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
@@ -128,7 +120,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
             reverse(
                 "authentik_api:files",
                 query={
-                    "search": "flow_background.jpg",
+                    "search": "ldap.png",
                 },
             )
         )
@@ -136,9 +128,9 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             {
-                "name": "/static/dist/assets/images/flow_background.jpg",
-                "url": "/static/dist/assets/images/flow_background.jpg",
-                "mime_type": "image/jpeg",
+                "name": "/static/authentik/sources/ldap.png",
+                "url": "/static/authentik/sources/ldap.png",
+                "mime_type": "image/png",
             },
             response.data,
         )
