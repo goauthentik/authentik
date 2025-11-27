@@ -4,13 +4,14 @@ fieldset[name="login-sources"] {
     flex: 1 1 auto;
     display: flex;
     flex-flow: row wrap;
+    justify-content: center;
     gap: var(--pf-global--spacer--sm);
 
     /* compatibility-mode-fix */
 
     & {
         padding-inline: var(--ak-login-sources-padding-inline) !important;
-        padding-block-start: var(--pf-global--spacer--lg) !important;
+        padding-block-start: var(--pf-global--spacer--md) !important;
     }
 
     .source-button {
@@ -18,6 +19,7 @@ fieldset[name="login-sources"] {
         align-items: center;
         justify-content: center;
         gap: var(--pf-global--spacer--sm);
+        flex: 0 1 auto;
 
         &:hover {
             background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
@@ -25,6 +27,16 @@ fieldset[name="login-sources"] {
 
         .pf-c-button__icon {
             line-height: 1;
+        }
+    }
+
+    .source-button-promoted {
+        flex: 1 1 100%;
+        width: 100%;
+        margin-block-end: var(--pf-global--spacer--sm);
+
+        &:last-of-type {
+            margin-block-end: var(--pf-global--spacer--lg);
         }
     }
 

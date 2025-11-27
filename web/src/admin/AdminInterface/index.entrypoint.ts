@@ -18,6 +18,7 @@ import {
 import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
+import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
@@ -31,7 +32,7 @@ import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -136,8 +137,8 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
-        if (changedProperties.has("session")) {
-            if (isAPIResultReady(this.session) && !canAccessAdmin(this.session.user)) {
+        if (changedProperties.has("session") && isAPIResultReady(this.session)) {
+            if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
                 window.location.assign("/if/user/");
             }
         }
@@ -150,7 +151,6 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
-            "pf-m-light": this.activeTheme === UiThemeEnum.Light,
             "pf-m-expanded": this.sidebarOpen,
             "pf-m-collapsed": !this.sidebarOpen,
         };

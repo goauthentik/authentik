@@ -71,7 +71,9 @@ export class AKElement extends LitElement implements AKElementProps {
             this.updated = function (args: PropertyValues) {
                 updatedCallback?.call(this, args);
 
-                const unregisteredElements = this.renderRoot.querySelectorAll(":not(:defined)");
+                const unregisteredElements = this.renderRoot.querySelectorAll(
+                    `:not(:defined):not([data-registration="lazy"])`,
+                );
 
                 if (!unregisteredElements.length) return;
 

@@ -7,6 +7,7 @@ import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
 
 import { resolvePackage } from "@goauthentik/core/paths/node";
 
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vite";
 
 const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
@@ -23,6 +24,7 @@ export default defineConfig({
         // ---
         inlineCSSPlugin(),
     ],
+
     test: {
         dir: "./test",
         exclude: [
@@ -48,7 +50,7 @@ export default defineConfig({
                     name: "browser",
                     browser: {
                         enabled: true,
-                        provider: "playwright",
+                        provider: playwright(),
 
                         instances: [
                             {

@@ -38,7 +38,7 @@ class InvitationStageView(StageView):
         if not token:
             return None
         try:
-            invite: Invitation = Invitation.objects.filter(pk=token).first()
+            invite: Invitation | None = Invitation.filter_not_expired(pk=token).first()
         except ValidationError:
             self.logger.debug("invalid invitation", token=token)
             return None
