@@ -23,10 +23,6 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::note
-ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Domain verification is outside the scope of this guide.
-:::
-
 ## Configuration methods
 
 You can configure ChatGPT to use either OIDC or SAML; this guide explains both options.
@@ -34,8 +30,8 @@ You can configure ChatGPT to use either OIDC or SAML; this guide explains both o
 <Tabs
   defaultValue="oidc"
   values={[
-    { label: "Log in with OIDC", value: "oidc" },
-    { label: "Log in with SAML", value: "saml" },
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
   ]}>
   <TabItem value="oidc">
 
@@ -47,10 +43,10 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Temporarily set a `Strict` redirect URI to `https://temp.temp`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -59,18 +55,22 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 
 ## ChatGPT configuration
 
-1. Log in to ChatGPT as an administrator and go to the [identity page](https://chatgpt.com/admin/identity).
-2. Under **Identity Management**, choose **Manage SSO**, then select **Custom OIDC** as the single sign-on method.
+:::info Domain verification required
+ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details .
+:::
+
+1. Log in to ChatGPT as an administrator and navigate to the [Identity & Access page](https://chatgpt.com/admin/identity).
+2. Under **Identity Management**, click **Manage SSO**, then select **Custom OIDC** as the single sign-on method.
 3. Complete the Custom OIDC wizard:
-    1. **Provide an Identity Provider Name**: enter a descriptive name (for example, `authentik`).
-    2. **Create an Application**: copy the **Login redirect URI** that ChatGPT displays.
-    3. **Add Claims**: confirm ChatGPT lists the required claims (`sub`, `email`, `given_name`, and `family_name`). These are provided by authentik's default OIDC property mappings when the `email` and `profile` scopes are enabled.
-    4. **Provide your OIDC Configuration**:
+    - **Provide an Identity Provider Name**: enter a descriptive name (e.g. `authentik`).
+    - **Create an Application**: copy the **Login redirect URI** that ChatGPT displays.
+    - **Add Claims**: confirm ChatGPT lists the required claims (`sub`, `email`, `given_name`, and `family_name`). These are provided by authentik's default OIDC property mappings when the `email` and `profile` scopes are enabled.
+    - **Provide your OIDC Configuration**:
         - **Client ID**: enter the client ID from authentik.
         - **Client Secret**: enter the client secret from authentik.
         - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-    5. **Configure Application Link**: review the direct sign-in link that ChatGPT generates; share it with users if needed.
-    6. **Test Single Sign-On**: run the built-in test. ChatGPT should redirect you to authentik for authentication and report success.
+    - **Configure Application Link**: review the direct sign-in link that ChatGPT generates; share it with users if needed.
+    - **Test Single Sign-On**: run the built-in test. ChatGPT should redirect you to authentik for authentication and report success.
 
 ## Reconfigure authentik provider
 
@@ -108,18 +108,22 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 
 ## ChatGPT configuration
 
-1. Log in to ChatGPT as an administrator and go to the [identity page](https://chatgpt.com/admin/identity).
-2. Under **Identity Management**, choose **Manage SSO**, then select **Custom SAML** as the single sign-on method.
+:::info Domain verification required
+ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details .
+:::
+
+1. Log in to ChatGPT as an administrator and navigate to the [Identity & Access page](https://chatgpt.com/admin/identity).
+2. Under **Identity Management**, click **Manage SSO**, then select **Custom SAML** as the single sign-on method.
 3. Complete the Custom SAML wizard:
-    1. **Provide an Identity Provider Name**: enter a descriptive name (for example, `authentik`).
-    2. **Provide your SAML Configuration**:
+    - **Provide an Identity Provider Name**: enter a descriptive name (e.g. `authentik`).
+    - **Provide your SAML Configuration**:
         - **Entity ID**: `authentik`
         - **Sign-in URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
         - **Sign-out URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
         - **X.509 Certificate**: paste the contents of your certificate file.
-    3. **Create an Application**: copy the **ACS URL** and **Audience** values that ChatGPT displays.
-    4. **Configure Application Link**: review the direct sign-in link that ChatGPT generates; share it with users if needed.
-    5. **Test Single Sign-On**: run the built-in test. ChatGPT should redirect you to authentik for authentication and report success.
+    - **Create an Application**: copy the **ACS URL** and **Audience** values that ChatGPT displays.
+    - **Configure Application Link**: review the direct sign-in link that ChatGPT generates; share it with users if needed.
+    - **Test Single Sign-On**: run the built-in test. ChatGPT should redirect you to authentik for authentication and report success.
 
 ## Reconfigure authentik provider
 
@@ -135,10 +139,11 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with ChatGPT, log out, then attempt to log back in by entering your email address under **Email address** and clicking **Continue**. You should be redirected to authentik and upon a successful login, redirected back to ChatGPT.
+To verify that authentik is correctly integrated with ChatGPT, log out, then attempt to log back in by entering your email address and clicking **Continue**. You should be redirected to authentik and upon a successful login, redirected back to ChatGPT.
 
 ## References
 
 - [OpenAI Help - Configuring SSO for ChatGPT](https://help.openai.com/en/articles/9534785-configuring-sso-for-chatgpt)
 - [OpenAI Help - SSO for ChatGPT Business - FAQ](https://help.openai.com/en/articles/11489188-sso-for-chatgpt-business-faq)
 - [OpenAI Help - SSO Overview](https://help.openai.com/en/articles/10468051-sso-overview)
+- [OpenAI Help - Domain Verification](https://help.openai.com/en/articles/8871611-domain-verification)
