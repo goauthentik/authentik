@@ -13,6 +13,7 @@ from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
+    FlowAuthenticationRequirement,
     FlowDeniedAction,
     FlowDesignation,
     FlowStageBinding,
@@ -169,6 +170,25 @@ class TestFlowExecutor(FlowTestCase):
     def test_valid_flow_redirect(self):
         """Test valid flow with valid redirect destination"""
         flow = create_test_flow()
+
+        dest = "/unique-string"
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/unique-string")
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_valid_flow_redirect_authenticated(self):
+        """Test valid flow with valid redirect destination, authenticated already"""
+        flow = create_test_flow()
+        flow.designation = FlowDesignation.AUTHENTICATION
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        flow.save()
+        self.client.force_login(create_test_user())
 
         dest = "/unique-string"
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
