@@ -8074,34 +8074,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/import/:
-    post:
-      operationId: flows_instances_import_create
-      description: Import flow from .yaml file
-      tags:
-      - flows
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '204':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /managed/blueprints/:
     get:
       operationId: managed_blueprints_list
@@ -8342,6 +8314,35 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /managed/blueprints/import/:
+    post:
+      operationId: managed_blueprints_import_create
+      description: Import blueprint from .yaml file and apply it once, without creating
+        an instance
+      tags:
+      - managed
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintImportResult'
+          description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
@@ -34200,6 +34201,21 @@ components:
       - last_m
       - meta
       - path
+    BlueprintImportResult:
+      type: object
+      description: Logs of an attempted blueprint import
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+        success:
+          type: boolean
+          readOnly: true
+      required:
+      - logs
+      - success
     BlueprintInstance:
       type: object
       description: Info about a single blueprint instance file
@@ -37236,21 +37252,6 @@ components:
           type: string
       required:
       - request_id
-    FlowImportResult:
-      type: object
-      description: Logs of an attempted flow import
-      properties:
-        logs:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-        success:
-          type: boolean
-          readOnly: true
-      required:
-      - logs
-      - success
     FlowInspection:
       type: object
       description: Serializer for inspect endpoint

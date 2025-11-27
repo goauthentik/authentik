@@ -1,6 +1,7 @@
 import "#admin/blueprints/BlueprintForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
+import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -208,6 +209,12 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 <span slot="header">${msg("Create Blueprint Instance")}</span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit">${msg("Import")}</span>
+                <span slot="header">${msg("Import Flow")}</span>
+                <ak-blueprint-import-form slot="form"> </ak-blueprint-import-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Import")}</button>
             </ak-forms-modal>
         `;
     }
