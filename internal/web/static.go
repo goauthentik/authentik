@@ -156,7 +156,6 @@ func (ws *WebServer) configureStatic() {
 					http.Error(w, "404 page not found", http.StatusNotFound)
 					return
 				}
-				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsReports.ServeHTTP(w, r)
 			}),
 			"files/reports/",
