@@ -9,6 +9,20 @@ from rest_framework.viewsets import ViewSet
 
 
 def validate(serializer_type: type[Serializer], location: Literal["body", "query"] = "body"):
+    """Validate incoming data with the specified serializer. Raw data can either be taken
+    from request body or query string, defaulting to body.
+
+    Validated data is added to the function this decorator is used on with a named parameter
+    based on the location of the data.
+
+    Example:
+
+        @validate(MySerializer)
+        @validate(MyQuerySerializer, location="query")
+        def my_action(self, request, *, body: MySerializer, query: MyQuerySerializer):
+            ...
+
+    """
 
     def wrapper_outer(func: Callable):
 
