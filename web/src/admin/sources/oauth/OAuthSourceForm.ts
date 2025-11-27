@@ -90,12 +90,12 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         if (this.instance) {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
         } else {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
                 oAuthSourceRequest: data as unknown as OAuthSourceRequest,
             });
         }

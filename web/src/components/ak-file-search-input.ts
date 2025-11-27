@@ -6,9 +6,8 @@ import { AKElement } from "#elements/Base";
 
 import { AKLabel } from "#components/ak-label";
 
-import { IDGenerator } from "#packages/core/id";
-
 import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
+import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -39,25 +38,25 @@ export class AkFileSearchInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label: string | null = null;
+    public label: string | null = null;
 
     @property({ type: String })
-    value?: string;
+    public value?: string;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     @property({ type: String })
-    help: string | null = null;
+    public help: string | null = null;
 
-    @property({ type: String })
-    usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    @property({ type: String, useDefault: true })
+    public usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
 
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
@@ -66,7 +65,7 @@ export class AkFileSearchInput extends AKElement {
         return this.value === item.name;
     };
 
-    override firstUpdated() {
+    public override firstUpdated() {
         // If we have a value but it's not in the fetched results (like fa:// or custom URL),
         // the search-select won't show it. We need to add it to the initial fetch.
         if (this.value) {
@@ -132,8 +131,9 @@ export class AkFileSearchInput extends AKElement {
             ${this.help
                 ? html`<p class="pf-c-form__helper-text">${this.help}</p>`
                 : html`<p class="pf-c-form__helper-text">
-                      You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name),
-                      or upload a new file.
+                      ${msg(
+                          "You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.",
+                      )}
                   </p>`}
         </ak-form-element-horizontal>`;
     }

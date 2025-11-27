@@ -38,19 +38,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
     async loadInstance(pk: string): Promise<KerberosSource> {
-        return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
             slug: pk,
         });
     }
 
     async send(data: KerberosSource): Promise<KerberosSource> {
         if (this.instance) {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
         } else {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
                 kerberosSourceRequest: data as unknown as KerberosSourceRequest,
             });
         }

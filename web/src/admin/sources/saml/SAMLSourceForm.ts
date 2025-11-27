@@ -48,19 +48,19 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     }
 
     async loadInstance(pk: string): Promise<SAMLSource> {
-        return await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {
         if (this.instance) {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
         } else {
-            return await new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
                 sAMLSourceRequest: data,
             });
         }

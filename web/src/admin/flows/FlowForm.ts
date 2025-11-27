@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
-        return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
     }
@@ -43,12 +43,12 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
 
     async send(data: Flow): Promise<void | Flow> {
         if (this.instance) {
-            return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
+            return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
                 slug: this.instance.slug,
                 flowRequest: data,
             });
         } else {
-            return await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
+            return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
                 flowRequest: data,
             });
         }
