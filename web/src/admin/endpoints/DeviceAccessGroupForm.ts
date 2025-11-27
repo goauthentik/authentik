@@ -13,7 +13,7 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-@customElement("ak-endpoints-device-groups-form")
+@customElement("ak-endpoints-device-access-groups-form")
 export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {
     loadInstance(pk: string): Promise<DeviceAccessGroup> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
@@ -52,6 +52,6 @@ export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAcces
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-groups-form": DeviceAccessGroupForm;
+        "ak-endpoints-device-access-groups-form": DeviceAccessGroupForm;
     }
 }

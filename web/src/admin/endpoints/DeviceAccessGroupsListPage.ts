@@ -15,7 +15,7 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-endpoints-device-groups-list")
+@customElement("ak-endpoints-device-access-groups-list")
 export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     public pageIcon = "pf-icon pf-icon-server-group	";
     public pageTitle = msg("Device access groups");
@@ -42,8 +42,8 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
             html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Group")}</span>
-                <ak-endpoints-device-groups-form slot="form" pk=${item.pbmUuid}>
-                </ak-endpoints-device-groups-form>
+                <ak-endpoints-device-access-groups-form slot="form" pk=${item.pbmUuid}>
+                </ak-endpoints-device-access-groups-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
@@ -63,7 +63,9 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
         return html`<ak-forms-modal>
             <span slot="submit">${msg("Create")}</span>
             <span slot="header">${msg("Create Device Group")}</span>
-            <ak-endpoints-device-groups-form slot="form"></ak-endpoints-device-groups-form>
+            <ak-endpoints-device-access-groups-form
+                slot="form"
+            ></ak-endpoints-device-access-groups-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
     }
@@ -96,6 +98,6 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-groups-list": DeviceAccessGroupsListPage;
+        "ak-endpoints-device-access-groups-list": DeviceAccessGroupsListPage;
     }
 }
