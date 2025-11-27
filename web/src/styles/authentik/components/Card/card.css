@@ -25,11 +25,16 @@
 /* #region Dark Theme */
 
 [data-theme="dark"] .pf-c-card,
+:host([theme="dark"]) .pf-c-card.pf-m-non-selectable-raised,
 :host([theme="dark"]) .pf-c-card {
-    --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-card--m-non-selectable-raised--BackgroundColor: var(
-        --pf-global--BackgroundColor--dark-200
-    );
+    /** TODO: PF5 uses shadows differently in dark mode, adjust when they are available. */
+    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
+    --pf-c-card--m-hoverable-raised--hover--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--hover--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--focus--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--active--BoxShadow: var(--pf-global--BoxShadow--lg);
+
+    --pf-c-card--m-non-selectable-raised--BackgroundColor: var(--pf-global--BackgroundColor--150);
 
     --pf-c-card--m-non-selectable-raised--before--BackgroundColor: var(
         --pf-global--info-color--100

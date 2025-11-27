@@ -118,7 +118,10 @@ class Command(BaseCommand):
                 model_instance: Model = model()
                 if not isinstance(model_instance, SerializerModel):
                     continue
-                serializer_class = model_instance.serializer
+                try:
+                    serializer_class = model_instance.serializer
+                except NotImplementedError as exc:
+                    raise NotImplementedError(model_instance) from exc
             serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,

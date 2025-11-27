@@ -1,9 +1,11 @@
 """invitation tests"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
@@ -78,6 +80,31 @@ class TestInvitationStage(FlowTestCase):
 
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
+
+    def test_with_invitation_expired(self):
+        """Test with invitation, expired"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        data = {"foo": "bar"}
+        invite = Invitation.objects.create(
+            created_by=get_anonymous_user(),
+            fixed_data=data,
+            expires=now() - timedelta(hours=1),
+        )
+
+        base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
+        response = self.client.get(base_url + f"?query={args}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
+        )
 
     def test_with_invitation_get(self):
         """Test with invitation, check data in session"""

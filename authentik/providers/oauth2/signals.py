@@ -109,7 +109,7 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
     """Revoke tokens upon user logout"""
     LOGGER.debug("Sending back-channel logout notifications signal!", session=instance)
 
-    access_tokens = AccessToken.objects.filter(
+    access_tokens = AccessToken.objects.select_related("provider").filter(
         user=instance.user,
         session__session__session_key=instance.session.session_key,
     )
@@ -128,7 +128,8 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
         and token.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
     ]
 
-    backchannel_logout_notification_dispatch.send(revocations=backchannel_tokens)
+    if backchannel_tokens:
+        backchannel_logout_notification_dispatch.send(revocations=backchannel_tokens)
 
     access_tokens.delete()
 

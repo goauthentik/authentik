@@ -1,0 +1,152 @@
+---
+title: Integrate with FortiMail
+sidebar_label: FortiMail
+support_level: community
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## What is FortiMail
+
+> FortiMail is a secure email gateway from Fortinet that provides protection against phishing, spam, malware, and data loss for on-premises or cloud-hosted email environments.
+>
+> -- https://www.fortinet.com/products/email-security
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `fortimailadmin.company` is the FQDN (or IP) of your FortiMail admin interface.
+- `fortimailuser.company` is the WAN-facing FQDN of your FortiMail user/webmail portal.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Changing settings not mentioned in this guide can prevent single sign-on from working correctly.
+:::
+
+:::info
+FortiMail 7.6.4 and later, allows you to configure separate service providers for the admin and user/webmail portals. If you plan to use the user/webmail portal, avoid importing FortiMail’s auto-generated metadata directly, as you will need to edit the ACS URL in that XML to replace the host with your user-facing FQDN.
+:::
+
+## authentik configuration
+
+To support the integration of the FortiMail with authentik, you need to create an application/provider pair in authentik.
+
+You can configure either Admin Portal SSO or User Portal SSO (or both), depending on the intended user and the desired scope of authentication.
+
+<Tabs
+  defaultValue="admin"
+  values={[
+    { label: "Admin Portal SSO", value: "admin" },
+    { label: "User Portal SSO", value: "user" },
+  ]}>
+  <TabItem value="admin">
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name (e.g. `FortiMail Admin`), an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://fortimailadmin.company/sso/SAML2/POST`.
+        - Set the **Issuer** to `https://fortimailadmin.company/sp`.
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Select any available certificate as the **Signing Certificate** and enable **Sign Assertions**.
+            - Ensure that `authentik default SAML Mapping: Username` is selected as a **Selected User Property Mappings**; other mappings are optional and can be removed if not needed.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to control which administrators see the FortiMail Admin application on the **My Applications** page.
+
+3. Click **Submit** to save the application and provider.
+
+### Download metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for FortiMail Admin`).
+3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your metadata file and it will be required in the next section.
+
+## FortiMail configuration
+
+1. Sign in to the FortiMail admin interface.
+2. Navigate to **System** > **Single Sign On** and select the **Setting** tab.
+3. Enable **Single sign-on** and note the values that FortiMail displays (the ACS field is read-only):
+    - **Entity ID**: `https://fortimailadmin.company/sp`
+    - **Assertion consumer service (ACS) URL**: `https://fortimailadmin.company/sso/SAML2/POST`
+
+Ensure that these values match those configured in authentik. If not, update the values in authentik and re-download the [authentik metadata file](#download-metadata-file).
+
+4. Upload the authentik SAML metadata file that you downloaded in the previous step.
+5. Switch to the **Profile** tab and configure the attribute mapping:
+    - Set **Attribute used to identify email address** to `http://schemas.goauthentik.io/2021/02/saml/username`.
+
+:::info User Provisioning
+FortiMail does not auto-provision administrator accounts via SSO.
+
+You must manually create admin users and, for each account, configure the **Authentication type** as `Single Sign On` to enable authentication through the SAML provider.
+:::
+
+### Enforce SSO-only access (optional)
+
+To require SSO for FortiMail Admin Portal logins:
+
+1. Sign in to the FortiMail admin interface.
+2. Navigate to **System** > **Customization** > **Appearance** > **Webmail Portal** and set **Login page** to `Single Sign On only`.
+
+  </TabItem>
+  <TabItem value="user">
+
+## authentik configuration
+
+To support the integration of the FortiMail User Portal with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name (e.g. `FortiMail User Portal`), an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://fortimailuser.company/sp2/sso/SAML2/POST`.
+        - Set the **Issuer** to `https://fortimailuser.company/sp`.
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**, choose any available certificate as the **Signing Certificate** and enable **Sign Assertions**. Ensure `authentik default SAML Mapping: Email` is selected as a **Selected User Property Mapping**; other mappings are optional and can be removed if not needed.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/flows-stages/bindings/) to control which end users see the FortiMail webmail application on the **My Applications** page.
+
+3. Click **Submit** to save the application and provider.
+
+### Download metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for FortiMail User Portal`).
+3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your metadata file and it will be required in the next section.
+
+## FortiMail configuration
+
+1. Sign in to the FortiMail admin interface.
+2. Navigate to **System** > **Single Sign On** and select the **Setting** tab.
+3. Enable **Use different service provider for admin and webmail access**, and select the **Webmail** service provider.
+4. For the user/webmail service provider, note the values that FortiMail displays (the ACS field is read-only):
+    - **Entity ID**: `https://fortimailuser.company/sp`
+    - **Assertion consumer service (ACS) URL**: replace the host portion with `fortimailuser.company` (for example, `https://fortimailuser.company/sp2/sso/SAML2/POST`)
+
+Ensure that these values match those configured in authentik. If not, update the values in authentik and re-download the [authentik metadata file](#download-metadata-file).
+
+5. Upload the authentik SAML metadata file you downloaded in the previous step.
+6. On the **Profile** tab for the user/webmail provider, set **Attribute used to identify email address** to `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`.
+
+### Enforce SSO-only access (optional)
+
+To require SSO for FortiMail User Portal logins:
+
+1. Sign in to the FortiMail admin interface.
+2. Navigate to **Domain & Users** > **Domain**, edit the domain entry, then open **Advanced Setting** > **Other** and set **Webmail single sign on** to the SSO profile you created for end users.
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+1. Open a new browser session (or private window) and navigate to the relevant FortiMail portal (admin or user).
+2. Initiate the SSO login flow (this happens automatically if you enabled the SSO-only options) and confirm that you are redirected to authentik for authentication. Sign in with an account permitted to use that portal.
+3. After successful authentication, verify that you return to the FortiMail portal without being prompted for additional credentials.
