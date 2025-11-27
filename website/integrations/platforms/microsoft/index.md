@@ -35,11 +35,11 @@ To support the integration of Microsoft365 with authentik, you need to:
 
 Microsoft Entra ID requires a unique and [immutable identifier (called `ImmutableId` or `sourceAnchor`)](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-design-concepts#sourceanchor) for each user during SAML federation. This identifier is sent as the SAML `NameID` attribute and must match the `ImmutableId` value configured in Entra for each user.
 
-**For users synchronized from Active Directory**:
+#### For users synchronized from Active Directory
 
 If you are using an [Active Directory source](/docs/users-sources/sources/directory-sync/active-directory/) in authentik, the immutable identifier is typically the base64-encoded `objectGUID` from Active Directory. You will need to create a property mapping on your Active Directory source in authentik that stores this value in a custom user attribute, for example: `entra_immutable_id`.
 
-**For cloud-only users**:
+#### For cloud-only users
 
 If your users aren't synchronized from Active Directory and only exist in authentik, you can use any unique and stable identifier such as the user's UUID or email address. You will also need to configure the `ImmutableId` in Entra ID to match the identifier that authentik sends.
 
