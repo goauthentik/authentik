@@ -261,7 +261,9 @@ class Prompt(SerializerModel):
 
         return value
 
-    def field(self, default: Any | None, choices: list[Any] | None = None) -> CharField:
+    def field(  # noqa PLR0915
+        self, default: Any | None, choices: list[Any] | None = None
+    ) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
@@ -275,6 +277,7 @@ class Prompt(SerializerModel):
                 field_class = ReadOnlyField
                 # required can't be set for ReadOnlyField
                 kwargs["required"] = False
+                kwargs["allow_blank"] = True
             case FieldTypes.EMAIL:
                 field_class = EmailField
                 kwargs["allow_blank"] = not self.required
