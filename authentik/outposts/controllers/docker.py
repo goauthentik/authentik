@@ -203,6 +203,12 @@ class DockerController(BaseController):
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
                 "network": self.outpost.config.docker_network,
+                "healthcheck": {
+                    "test": ["CMD", f"/{self.outpost.type}", "healthcheck"],
+                    "interval": 5 * 1_000 * 1_000_000,
+                    "retries": 20,
+                    "start_period": 3 * 1_000 * 1_000_000,
+                },
             }
             if self.outpost.config.docker_map_ports:
                 container_args["ports"] = {

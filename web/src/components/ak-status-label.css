@@ -1,0 +1,27 @@
+:host {
+    --pf-c-label--m-gray--BackgroundColor: var(--pf-global--palette--black-100);
+    --pf-c-label--m-gray__icon--Color: var(--pf-global--primary-color--100);
+    --pf-c-label--m-gray__content--Color: var(--pf-global--info-color--200);
+    --pf-c-label--m-gray__content--before--BorderColor: var(--pf-global--palette--black-400);
+    --pf-c-label--m-gray__content--link--hover--before--BorderColor: var(
+        --pf-global--primary-color--100
+    );
+    --pf-c-label--m-gray__content--link--focus--before--BorderColor: var(
+        --pf-global--primary-color--100
+    );
+}
+
+.pf-c-label.pf-m-gray {
+    --pf-c-label--BackgroundColor: var(--pf-c-label--m-gray--BackgroundColor);
+    --pf-c-label__icon--Color: var(--pf-c-label--m-gray__icon--Color);
+    --pf-c-label__content--Color: var(--pf-c-label--m-gray__content--Color);
+    --pf-c-label__content--before--BorderColor: var(
+        --pf-c-label--m-gray__content--before--BorderColor
+    );
+    --pf-c-label__content--link--hover--before--BorderColor: var(
+        --pf-c-label--m-gray__content--link--hover--before--BorderColor
+    );
+    --pf-c-label__content--link--focus--before--BorderColor: var(
+        --pf-c-label--m-gray__content--link--focus--before--BorderColor
+    );
+}

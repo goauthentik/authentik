@@ -20,11 +20,11 @@
         "@docusaurus/theme-mermaid": "^3.8.1",
         "@docusaurus/tsconfig": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.1.2",
+        "@goauthentik/docusaurus-config": "^2.2.1",
         "@goauthentik/docusaurus-theme": "*",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.2.2",
-        "@types/react-dom": "^19.2.2",
+        "@types/react": "^19.2.6",
+        "@types/react-dom": "^19.2.3",
         "prism-react-renderer": "^2.3.0",
         "react": "^19.1.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -32,6 +32,7 @@
         "unist-util-visit": "^5.0.0"
     },
     "engines": {
-        "node": ">=24"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     }
 }

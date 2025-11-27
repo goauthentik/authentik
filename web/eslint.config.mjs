@@ -11,6 +11,7 @@ const ESLintConfig = createESLintPackageConfig({
     ignorePatterns: [
         "**/dist/**",
         "**/out/**",
+        "**/vendored/**",
         "**/.wireit/**",
         "**/node_modules/",
         "**/.storybook/*",
@@ -18,6 +19,7 @@ const ESLintConfig = createESLintPackageConfig({
         "src/locale-codes.ts",
         "storybook-static/",
         "src/locales/",
+        "**/*.min.js",
     ],
 });
 

@@ -30,7 +30,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.run_container(
-            image="library/docker:dind",
+            image="docker.io/library/docker:28.5.2-dind-alpine3.22",
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(

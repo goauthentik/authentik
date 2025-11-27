@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 00:10+0000\n"
+"POT-Creation-Date: 2025-11-25 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
 msgstr ""
 
@@ -446,6 +446,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr ""
 
@@ -478,6 +479,26 @@ msgid "ecdsa"
 msgstr ""
 
 #: authentik/crypto/models.py
+msgid "RSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr ""
 
@@ -497,6 +518,38 @@ msgstr ""
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr ""
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -1099,6 +1152,10 @@ msgstr ""
 msgid "Flow Tokens"
 msgstr ""
 
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
+msgstr ""
+
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr ""
@@ -1471,6 +1528,10 @@ msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
@@ -2029,16 +2090,6 @@ msgid "ACS URL"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid ""
-"Value of the audience restriction field of the assertion. When left empty, "
-"no audience restriction will be added."
-msgstr ""
-
-#: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr ""
-
-#: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
 msgstr ""
 
@@ -2046,6 +2097,16 @@ msgstr ""
 msgid ""
 "This determines how authentik sends the response back to the Service "
 "Provider."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "Also known as EntityID"
 msgstr ""
 
 #: authentik/providers/saml/models.py
