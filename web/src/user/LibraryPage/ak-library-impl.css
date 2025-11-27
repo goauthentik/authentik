@@ -3,7 +3,13 @@
     padding: 3% 5%;
 }
 
+.pf-c-page {
+    --pf-c-page--BackgroundColor: transparent;
+    --pf-c-page__main-section--BackgroundColor: transparent;
+}
+
 .pf-c-page__header {
+    --pf-c-page__header--BackgroundColor: transparent;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

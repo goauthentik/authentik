@@ -16,7 +16,6 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
-import { me } from "#common/users";
 
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -29,7 +28,7 @@ import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
 
-import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
+import { CoreApi, CoreUsersListTypeEnum, Group, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -142,9 +141,6 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     @property({ type: Boolean })
     hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
-    @state()
-    me?: SessionUser;
-
     static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -156,7 +152,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 : undefined,
             includeGroups: false,
         });
-        this.me = await me();
+
         return users;
     }
 
@@ -205,7 +201,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
-            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
+            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.currentUser?.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>

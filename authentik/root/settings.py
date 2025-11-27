@@ -6,6 +6,7 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
+from django.http import response as http_response
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -81,6 +82,8 @@ TENANT_APPS = [
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
+    "authentik.endpoints",
+    "authentik.endpoints.connectors.agent",
     "authentik.enterprise",
     "authentik.events",
     "authentik.flows",
@@ -184,6 +187,7 @@ SPECTACULAR_SETTINGS = {
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -379,9 +383,6 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
-    "lock_purge_interval": timedelta_from_string(
-        CONFIG.get("worker.lock_purge_interval")
-    ).total_seconds(),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -471,6 +472,12 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# Django 5.2.8 and CVE-2025-64458 added a strong enforcement of 2048 characters
+# as the maximum for a URL to redirect to, mostly for running on Windows.
+# However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
+# 8192 should cover most cases.
+http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
 
 
 # Media files

@@ -11,6 +11,7 @@ import {
     CertificateKeyPair,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    KeyTypeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -67,6 +68,30 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public singleton = false;
 
     /**
+     * Set to `true` to include certificate details (fingerprints, expiry, certificate subject, key type)
+     * in the API response.
+     * Each returned certificate's PEM data must be parsed using cryptography library,
+     * public keys extracted, and hashes computed. With large result sets, this can add a lot of time
+     * to responses.
+     * Only enable when you actually need the detailed fields displayed in the UI.
+     * For simple certificate selection dropdowns, leave this as `false` (default).
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "include-details" })
+    public includeDetails = false;
+
+    /**
+     * When allowedKeyTypes is set, only certificates or keypairs with matching
+     * key algorithms will be shown. Since certificates must be parsed to
+     * extract algorithm details, an instance with many certificates may experience
+     * long delays and server performance slowdowns. Avoid setting this field whenever possible.
+     * @attr
+     * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
+     */
+    @property({ type: Array, attribute: "allowed-key-types" })
+    public allowedKeyTypes?: KeyTypeEnum[];
+
+    /**
      * @todo Document this.
      */
     public selectedKeypair?: CertificateKeyPair;
@@ -98,10 +123,13 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: false,
+            includeDetails: this.includeDetails,
         };
         if (query !== undefined) {
             args.search = query;
+        }
+        if (this.allowedKeyTypes?.length) {
+            args.keyType = this.allowedKeyTypes;
         }
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             args,

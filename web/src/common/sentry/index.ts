@@ -1,20 +1,18 @@
 import { globalAK } from "#common/global";
-import { me } from "#common/users";
 
 import { readInterfaceRouteParam } from "#elements/router/utils";
 
 import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 import {
-    type BrowserOptions,
     browserTracingIntegration,
     ErrorEvent,
     EventHint,
     init,
     setTag,
-    setUser,
     spotlightBrowserIntegration,
 } from "@sentry/browser";
+import { type Integration } from "@sentry/core";
 
 /**
  * A generic error that can be thrown without triggering Sentry's reporting.
@@ -24,13 +22,48 @@ export class SentryIgnoredError extends Error {}
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 
-export function configureSentry(canDoPpi = false) {
+function beforeSend(
+    event: ErrorEvent,
+    hint: EventHint,
+): ErrorEvent | PromiseLike<ErrorEvent | null> | null {
+    if (!hint) {
+        return event;
+    }
+    if (hint.originalException instanceof SentryIgnoredError) {
+        return null;
+    }
+    if (
+        hint.originalException instanceof ResponseError ||
+        hint.originalException instanceof DOMException
+    ) {
+        return null;
+    }
+    return event;
+}
+
+export function configureSentry(canDoPpi = false): void {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
+
     if (!cfg.errorReporting?.enabled && !debug) {
-        return cfg;
+        return;
     }
-    const opts = {
+
+    const integrations: Integration[] = [
+        browserTracingIntegration({
+            // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
+            instrumentNavigation: false,
+            instrumentPageLoad: false,
+            traceFetch: false,
+        }),
+    ];
+
+    if (debug) {
+        console.debug("authentik/config: Enabled Sentry Spotlight");
+        integrations.push(spotlightBrowserIntegration());
+    }
+
+    init({
         dsn: cfg.errorReporting.sentryDsn,
         ignoreErrors: [
             /network/gi,
@@ -44,51 +77,18 @@ export function configureSentry(canDoPpi = false) {
             /NS_ERROR_FAILURE/gi,
         ],
         release: `authentik@${import.meta.env.AK_VERSION}`,
-        integrations: [
-            browserTracingIntegration({
-                // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-                instrumentNavigation: false,
-                instrumentPageLoad: false,
-                traceFetch: false,
-            }),
-            debug ? spotlightBrowserIntegration() : null,
-        ].filter((int) => int),
+        integrations,
         tracePropagationTargets: [window.location.origin],
         tracesSampleRate: debug ? 1.0 : cfg.errorReporting.tracesSampleRate,
         environment: cfg.errorReporting.environment,
-        beforeSend: (
-            event: ErrorEvent,
-            hint: EventHint,
-        ): ErrorEvent | PromiseLike<ErrorEvent | null> | null => {
-            if (!hint) {
-                return event;
-            }
-            if (hint.originalException instanceof SentryIgnoredError) {
-                return null;
-            }
-            if (
-                hint.originalException instanceof ResponseError ||
-                hint.originalException instanceof DOMException
-            ) {
-                return null;
-            }
-            return event;
-        },
-    };
-    if (debug) {
-        console.debug("authentik/config: Enabled Sentry Spotlight");
-    }
-    init(opts as BrowserOptions);
+        beforeSend,
+    });
+
     setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
+
     if (window.location.pathname.includes("if/")) {
         setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
     }
-    if (cfg.errorReporting.sendPii && canDoPpi) {
-        me().then((user) => {
-            setUser({ email: user.user.email });
-            console.debug("authentik/config: Sentry with PII enabled.");
-        });
-    } else {
-        console.debug("authentik/config: Sentry enabled.");
-    }
+
+    console.debug("authentik/config: Sentry enabled.");
 }

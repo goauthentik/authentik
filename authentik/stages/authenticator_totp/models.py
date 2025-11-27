@@ -27,7 +27,7 @@ class TOTPDigits(models.TextChoices):
 
 
 class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Enroll a user's device into Time-based OTP."""
+    """Setup Time-based OTP authentication for the user."""
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
 

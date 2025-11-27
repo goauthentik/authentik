@@ -145,7 +145,6 @@ worker:
   consumer_listen_timeout: "seconds=30"
   task_max_retries: 5
   task_default_time_limit: "minutes=10"
-  lock_purge_interval: "minutes=1"
   task_purge_interval: "days=1"
   task_expiration: "days=30"
   scheduler_interval: "seconds=60"

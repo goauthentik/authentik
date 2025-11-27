@@ -1,0 +1,28 @@
+@import "@patternfly/patternfly/base/patternfly-common.css";
+@import "@patternfly/patternfly/base/patternfly-globals.css";
+@import "@patternfly/patternfly/base/patternfly-fa-icons.css";
+@import "@patternfly/patternfly/base/patternfly-pf-icons.css";
+
+a {
+    font-weight: var(--pf-global--link--FontWeight);
+    color: var(--pf-global--link--Color);
+    text-decoration: var(--pf-global--link--TextDecoration);
+
+    &.pf-m-block {
+        display: block;
+    }
+}
+
+a:hover {
+    --pf-global--link--Color: var(--pf-global--link--Color--hover);
+    --pf-global--link--TextDecoration: var(--pf-global--link--TextDecoration--hover);
+}
+
+button,
+a {
+    cursor: pointer;
+}
+
+.pf-m-overpass-font a {
+    font-weight: var(--pf-global--FontWeight--semi-bold);
+}

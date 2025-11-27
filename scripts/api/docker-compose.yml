@@ -1,7 +1,7 @@
 ---
 services:
   diff:
-    image: docker.io/openapitools/openapi-diff:2.1.4
+    image: docker.io/openapitools/openapi-diff:2.1.5
     restart: never
     network_mode: none
     volumes:

@@ -137,6 +137,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
