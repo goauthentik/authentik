@@ -71,7 +71,7 @@ class TestAgentAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         device = Device.objects.filter(identifier=ident).first()
         self.assertIsNotNone(device)
-        self.assertEqual(device.group, device_group)
+        self.assertEqual(device.access_group, device_group)
 
     def test_enroll_expired(self):
         dev_id = generate_id()
