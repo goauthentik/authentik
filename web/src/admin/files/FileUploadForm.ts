@@ -100,7 +100,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                             if (input.files && input.files.length > 0) {
                                 this.selectedFile = input.files[0];
                             } else {
-                                this.selectedFile = undefined;
+                                this.selectedFile = null;
                             }
                         }}
                     />

@@ -10,7 +10,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AdminApi, AdminFileDestroyUsageEnum, AdminFileListUsageEnum } from "@goauthentik/api";
+import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -86,7 +86,7 @@ export class FileListPage extends TablePage<FileItem> {
             .delete=${(item: FileItem) => {
                 return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
                     name: item.name,
-                    usage: item.usage as AdminFileDestroyUsageEnum,
+                    usage: item.usage,
                 });
             }}
         >
