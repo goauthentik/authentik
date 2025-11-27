@@ -19,6 +19,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
+import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
 
 import { Pagination } from "@goauthentik/api";
@@ -410,11 +411,18 @@ export abstract class Table<T extends object>
     }
 
     protected willUpdate(changedProperties: PropertyValues<this>): void {
+        const interactive = isInteractiveElement(this);
+
+        if (!interactive) {
+            return;
+        }
+
         if (changedProperties.has("page")) {
             updateURLParams({
                 [this.#pageParam]: this.page === 1 ? null : this.page,
             });
         }
+
         if (changedProperties.has("search")) {
             updateURLParams({
                 [this.#searchParam]: this.search,
@@ -783,7 +791,6 @@ export abstract class Table<T extends object>
 
         return html`
             <tr
-                @click=${this.rowClickListener.bind(this, item)}
                 aria-selected=${selected.toString()}
                 class="${classMap({
                     "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
