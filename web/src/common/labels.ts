@@ -51,8 +51,6 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.ModelDeleted, msg("Model deleted")],
     [EventActions.EmailSent, msg("Email sent")],
     [EventActions.UpdateAvailable, msg("Update available")],
-    [EventActions.FileUploaded, msg("File uploaded")],
-    [EventActions.FileDeleted, msg("File deleted")],
 ]);
 
 export const actionToLabel = (action?: EventActions): string =>
