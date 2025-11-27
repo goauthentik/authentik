@@ -143,7 +143,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.",
+                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
