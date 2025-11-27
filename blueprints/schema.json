@@ -6267,9 +6267,7 @@
                             },
                             "slug": {
                                 "type": "string",
-                                "maxLength": 50,
                                 "minLength": 1,
-                                "pattern": "^[-a-zA-Z0-9_]+$",
                                 "title": "Slug",
                                 "description": "Visible in the URL."
                             },
@@ -12056,6 +12054,7 @@
                         "okta",
                         "patreon",
                         "reddit",
+                        "slack",
                         "twitch",
                         "twitter"
                     ],

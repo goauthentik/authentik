@@ -133,7 +133,7 @@ class SourceFlowManager:
             if existing := self.user_connection_type.objects.filter(
                 source=self.source, identifier=self.identifier
             ).first():
-                existing = self.update_user_connection(existing)
+                existing = self.update_user_connection(existing, **kwargs)
                 return Action.AUTH, existing
             return Action.LINK, new_connection
 

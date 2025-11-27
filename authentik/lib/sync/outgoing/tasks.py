@@ -138,7 +138,13 @@ class SyncTasks:
             provider.dry_run = False
         try:
             client = provider.client_for_model(_object_type)
-        except TransientSyncException:
+        except TransientSyncException as exc:
+            self.logger.warning(
+                "Failed to create sync client",
+                exc=exc,
+                message=str(exc),
+            )
+            task.warning(f"Failed to create sync client: {exc}. ")
             return
         paginator = Paginator(
             provider.get_object_qs(_object_type).filter(**filter),
