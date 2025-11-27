@@ -9,11 +9,11 @@ from authentik.enterprise.endpoints.connectors.agent.auth import (
     agent_auth_issue_token,
     check_device_policies,
 )
+from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlanner
 from authentik.flows.stage import StageView
-from authentik.policies.views import PolicyAccessView
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 
 PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
@@ -21,7 +21,7 @@ PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  #
 QS_AGENT_IA_TOKEN = "ak-auth-ia-token"  # nosec
 
 
-class AgentInteractiveAuth(PolicyAccessView):
+class AgentInteractiveAuth(EnterprisePolicyAccessView):
     """Agent device authentication"""
 
     auth_token: DeviceAuthenticationToken
@@ -41,6 +41,9 @@ class AgentInteractiveAuth(PolicyAccessView):
         self.connector = auth_token.connector.agentconnector
 
     def user_has_access(self, user=None, pbm=None):
+        enterprise_result = self.check_license()
+        if not enterprise_result.passing:
+            return enterprise_result
         return check_device_policies(self.device, user or self.request.user, self.request)
 
     def modify_flow_context(self, flow, context):
