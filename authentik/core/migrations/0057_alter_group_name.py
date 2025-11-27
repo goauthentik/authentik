@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0054_alter_group_unique_together_alter_group_parents_and_more"),
+        ("authentik_core", "0056_alter_group_unique_together_alter_group_parents_and_more"),
     ]
 
     operations = [

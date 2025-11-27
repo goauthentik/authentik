@@ -5,6 +5,7 @@ from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.core.validators import validate_slug
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -137,7 +138,11 @@ class Flow(SerializerModel, PolicyBindingModel):
     flow_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
-    slug = models.SlugField(unique=True, help_text=_("Visible in the URL."))
+    slug = models.TextField(
+        validators=[validate_slug],
+        unique=True,
+        help_text=_("Visible in the URL."),
+    )
 
     title = models.TextField(help_text=_("Shown as the Title in Flow pages."))
     layout = models.TextField(default=FlowLayout.STACKED, choices=FlowLayout.choices)
@@ -258,6 +263,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
+        if not self.target_id and self.stage_id:
+            return f"In-memory Flow-stage binding {self.stage}"
         return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:

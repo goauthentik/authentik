@@ -141,7 +141,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("guardian", "0004_role_permissions"),
-        ("authentik_core", "0052_groupancestor_groupparentagenode_group_parents"),
+        ("authentik_core", "0054_groupancestor_groupparentagenode_group_parents"),
         ("authentik_rbac", "0007_alter_role_group"),
     ]
 

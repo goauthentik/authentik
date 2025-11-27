@@ -7,12 +7,11 @@ from django.contrib import messages
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
-from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.http import urlencode
 
 from authentik.brands.models import Brand
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -20,7 +19,6 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.stages.consent.stage import SESSION_KEY_CONSENT_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
@@ -410,7 +408,7 @@ class TestEmailStage(FlowTestCase):
         session.save()
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        request = get_request(url, user=self.user)
+        request = self.factory.get(url, user=self.user)
         request.session = session
 
         request.brand = Brand.objects.create(domain="foo-domain.com", default=True)
