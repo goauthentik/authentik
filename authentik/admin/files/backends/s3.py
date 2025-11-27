@@ -77,6 +77,10 @@ class S3Backend(ManageableBackend):
             f"storage.{self.usage.value}.{self.name}.endpoint",
             CONFIG.get(f"storage.{self.name}.endpoint", None),
         )
+        use_ssl = CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.use_ssl",
+            CONFIG.get(f"storage.{self.name}.use_ssl", True),
+        )
         region_name = CONFIG.get(
             f"storage.{self.usage.value}.{self.name}.region",
             CONFIG.get(f"storage.{self.name}.region", None),
@@ -90,6 +94,7 @@ class S3Backend(ManageableBackend):
         return self.session.client(
             "s3",
             endpoint_url=endpoint_url,
+            use_ssl=use_ssl,
             region_name=region_name,
             config=Config(signature_version="s3v4", s3={"addressing_style": addressing_style}),
         )
