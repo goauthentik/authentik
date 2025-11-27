@@ -46,7 +46,7 @@ Now you'll need to add a samlSSO instance.
         - **Strict**: toggled on
         - **JIT user creation**: toggled on
 
-3. Open the **Service Provider** tab and take note of the **Entity ID**, **AcsUrl** and **sloURL**. These values will be required in the next section.
+3. Open the **Service Provider** tab and take note of the **AcsUrl** and **sloURL**. These values will be required in the next section.
 4. Click **Save**.
 
 ## authentik configuration
@@ -61,7 +61,6 @@ To support the integration of GLPI with authentik, you need to create an applica
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to the **AcsURL** value from GLPI.
-        - Set the **Issuer** to the **Entity ID** value from GLPI.
         - Set the **Service Provider Binding** to `Post`.
         - Set the **SLS URL** to the **sloURL** value from GLPI.
         - Under **Advanced protocol settings**:
@@ -82,7 +81,7 @@ To support the integration of GLPI with authentik, you need to create an applica
 1. Log in to GLPI as an administrator and navigate to **Setup** > **samlSSO**.
 2. Click on the **authentik** samlSSO instance and configure the following settings:
     - On the **Identity Provider** tab:
-        - Set the **Entity ID** to same value shown for **Entity ID** on the **Service Provider** tab but without the trailing `/`.
+        - Set the **Entity ID** to `authentik`
         - Set the **SSO URL** to `https://authentik.company/application/saml/<applicaton_slug>/sso/binding/redirect/`.
         - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`.
         - Set **X509 certificate** to the contents of the certificate file that you downloaded from authentik.
