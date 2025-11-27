@@ -278,15 +278,15 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     @validate(CertificateGenerationSerializer)
-    def generate(self, request: Request, instance: CertificateGenerationSerializer) -> Response:
+    def generate(self, request: Request, body: CertificateGenerationSerializer) -> Response:
         """Generate a new, self-signed certificate-key pair"""
-        raw_san = instance.validated_data.get("subject_alt_name", "")
+        raw_san = body.validated_data.get("subject_alt_name", "")
         sans = raw_san.split(",") if raw_san != "" else []
-        builder = CertificateBuilder(instance.validated_data["name"])
-        builder.alg = instance.validated_data["alg"]
+        builder = CertificateBuilder(body.validated_data["name"])
+        builder.alg = body.validated_data["alg"]
         builder.build(
             subject_alt_names=sans,
-            validity_days=int(instance.validated_data["validity_days"]),
+            validity_days=int(body.validated_data["validity_days"]),
         )
         instance = builder.save()
         serializer = self.get_serializer(instance)

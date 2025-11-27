@@ -162,9 +162,9 @@ class TransactionalApplicationView(APIView):
         },
     )
     @validate(TransactionApplicationSerializer)
-    def put(self, request: Request, instance: TransactionApplicationSerializer) -> Response:
+    def put(self, request: Request, body: TransactionApplicationSerializer) -> Response:
         """Convert data into a blueprint, validate it and apply it"""
-        blueprint: Blueprint = instance.validated_data
+        blueprint: Blueprint = body.validated_data
         for entry in blueprint.entries:
             full_model = entry.get_model(blueprint)
             app, __, model = full_model.partition(".")

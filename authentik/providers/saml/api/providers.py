@@ -319,9 +319,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     @validate(SAMLProviderImportSerializer)
-    def import_metadata(self, request: Request, instance: SAMLProviderImportSerializer) -> Response:
+    def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        file = instance.validated_data["file"]
+        file = body.validated_data["file"]
         # Validate syntax first
         try:
             fromstring(file.read())
@@ -331,9 +331,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
             metadata.to_provider(
-                instance.validated_data["name"],
-                instance.validated_data["authorization_flow"],
-                instance.validated_data["invalidation_flow"],
+                body.validated_data["name"],
+                body.validated_data["authorization_flow"],
+                body.validated_data["invalidation_flow"],
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

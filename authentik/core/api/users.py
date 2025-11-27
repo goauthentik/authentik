@@ -531,12 +531,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
     )
     @validate(UserServiceAccountSerializer)
-    def service_account(self, request: Request, instance: UserServiceAccountSerializer) -> Response:
+    def service_account(self, request: Request, body: UserServiceAccountSerializer) -> Response:
         """Create a new user account that is marked as a service account"""
-        expires = instance.validated_data.get("expires", now() + timedelta(days=360))
+        expires = body.validated_data.get("expires", now() + timedelta(days=360))
 
-        username = instance.validated_data["name"]
-        expiring = instance.validated_data["expiring"]
+        username = body.validated_data["name"]
+        expiring = body.validated_data["expiring"]
         with atomic():
             try:
                 user: User = User.objects.create(
@@ -554,7 +554,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     "user_uid": user.uid,
                     "user_pk": user.pk,
                 }
-                if instance.validated_data["create_group"] and self.request.user.has_perm(
+                if body.validated_data["create_group"] and self.request.user.has_perm(
                     "authentik_core.add_group"
                 ):
                     group = Group.objects.create(name=username)
@@ -626,13 +626,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, methods=["POST"], permission_classes=[])
     @validate(UserPasswordSetSerializer)
-    def set_password(
-        self, request: Request, pk: int, instance: UserPasswordSetSerializer
-    ) -> Response:
+    def set_password(self, request: Request, pk: int, body: UserPasswordSetSerializer) -> Response:
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(instance.validated_data["password"], request=request)
+            user.set_password(body.validated_data["password"], request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)

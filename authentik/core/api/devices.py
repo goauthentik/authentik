@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from authentik.api.validation import validate
 from authentik.core.api.users import ParamUserSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
@@ -85,6 +86,7 @@ class AdminDeviceViewSet(ViewSet):
         parameters=[ParamUserSerializer],
         responses={200: DeviceSerializer(many=True)},
     )
+    @validate(ParamUserSerializer, "query")
     def list(self, request: Request) -> Response:
         """Get all devices for current user"""
         args = ParamUserSerializer(data=request.query_params)

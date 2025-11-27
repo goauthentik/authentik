@@ -131,12 +131,12 @@ class PolicyViewSet(
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     @validate(PolicyTestSerializer)
-    def test(self, request: Request, pk: str, instance: PolicyTestSerializer) -> Response:
+    def test(self, request: Request, pk: str, body: PolicyTestSerializer) -> Response:
         """Test policy"""
         policy = self.get_object()
         # User permission check, only allow policy testing for users that are readable
         users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
-            pk=instance.validated_data["user"].pk
+            pk=body.validated_data["user"].pk
         )
         if not users.exists():
             return Response(status=400)
@@ -144,7 +144,7 @@ class PolicyViewSet(
         p_request = PolicyRequest(users.first())
         p_request.debug = True
         p_request.set_http_request(self.request)
-        p_request.context = instance.validated_data.get("context", {})
+        p_request.context = body.validated_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         with capture_logs() as logs:

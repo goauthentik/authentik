@@ -130,7 +130,7 @@ class PropertyMappingViewSet(
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     @validate(PropertyMappingTestSerializer)
-    def test(self, request: Request, pk: str, instance: PropertyMappingTestSerializer) -> Response:
+    def test(self, request: Request, pk: str, body: PropertyMappingTestSerializer) -> Response:
         """Test Property Mapping"""
         _mapping: PropertyMapping = self.get_object()
         # Use `get_subclass` to get correct class and correct `.evaluate` implementation
@@ -139,10 +139,10 @@ class PropertyMappingViewSet(
         # and ones for providers, we need to make the user field optional for the source mapping
         format_result = str(request.GET.get("format_result", "false")).lower() == "true"
 
-        context: dict = instance.validated_data.get("context", {})
+        context: dict = body.validated_data.get("context", {})
         context.setdefault("user", None)
 
-        if user := instance.validated_data.get("user"):
+        if user := body.validated_data.get("user"):
             # User permission check, only allow mapping testing for users that are readable
             users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
                 pk=user.pk
@@ -150,7 +150,7 @@ class PropertyMappingViewSet(
             if not users.exists():
                 raise PermissionDenied()
             context["user"] = user
-        if group := instance.validated_data.get("group"):
+        if group := body.validated_data.get("group"):
             # Group permission check, only allow mapping testing for groups that are readable
             groups = get_objects_for_user(request.user, "authentik_core.view_group").filter(
                 pk=group.pk
