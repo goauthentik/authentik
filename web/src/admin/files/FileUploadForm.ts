@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
+import { PreventFormSubmit } from "#elements/forms/helpers";
 import { showMessage } from "#elements/messages/MessageContainer";
 
 import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
@@ -12,28 +13,28 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
-    @property({ type: String })
-    usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    @property({ type: String, useDefault: true })
+    public usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
 
     @state()
-    selectedFile?: File;
+    protected selectedFile: File | null = null;
 
     private clearFileInput() {
-        this.selectedFile = undefined;
+        this.selectedFile = null;
         const fileInput = this.shadowRoot?.querySelector<HTMLInputElement>("#file-input");
         if (fileInput) {
             fileInput.value = "";
         }
     }
 
-    async send(): Promise<void> {
+    public override async send(): Promise<void> {
         if (!this.selectedFile) {
-            throw new Error(msg("Please select a file"));
+            throw new PreventFormSubmit("Selected file not provided", this);
         }
 
         // Validate filename contains only safe characters (a-zA-Z0-9._-)
-        const safeFilenameRegex = /^[a-zA-Z0-9._-]+$/;
-        if (!safeFilenameRegex.test(this.selectedFile.name)) {
+        const ValidFilenameRegex = /^[a-zA-Z0-9._-]+$/;
+        if (!ValidFilenameRegex.test(this.selectedFile.name)) {
             throw new Error(
                 msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
             );
@@ -47,7 +48,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         // If custom name provided, validate and append original extension
         let finalName = this.selectedFile.name;
         if (customName) {
-            if (!safeFilenameRegex.test(customName)) {
+            if (!ValidFilenameRegex.test(customName)) {
                 throw new Error(
                     msg(
                         "Filename can only contain letters, numbers, dots, hyphens, and underscores",

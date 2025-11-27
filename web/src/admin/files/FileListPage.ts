@@ -30,20 +30,17 @@ export class FileListPage extends TablePage<FileItem> {
     clearOnRefresh = true;
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Files");
-    public pageDescription = msg("Manage uploaded files.");
-    public pageIcon = "pf-icon pf-icon-folder-open";
+    public override pageTitle = msg("Files");
+    public override pageDescription = msg("Manage uploaded files.");
+    public override pageIcon = "pf-icon pf-icon-folder-open";
 
-    @property()
-    order = "name";
-
-    @property()
-    usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    @property({ type: String, useDefault: true })
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
         const api = new AdminApi(DEFAULT_CONFIG);
         const items = (await api.adminFileList({
-            usage: this.usage as AdminFileListUsageEnum,
+            usage: AdminFileListUsageEnum.Media,
             manageableOnly: true,
             ...(this.search ? { search: this.search } : {}),
         })) as unknown as FileItem[];
@@ -70,7 +67,7 @@ export class FileListPage extends TablePage<FileItem> {
     ];
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled = !this.selectedElements.length;
         const count = this.selectedElements.length;
         return html`<ak-forms-delete-bulk
             objectLabel=${count === 1 ? msg("file") : msg("files")}
@@ -102,7 +99,7 @@ export class FileListPage extends TablePage<FileItem> {
     row(item: FileItem): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>`,
-            html`<div>${item.mime_type || "-"}</div>`,
+            html`<div>${item.mime_type || msg("-")}</div>`,
             html`<div>
                 <a
                     class="pf-c-button pf-m-secondary"
@@ -118,12 +115,12 @@ export class FileListPage extends TablePage<FileItem> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit">${msg("Upload")}</span>
                 <span slot="header">${msg("Upload File")}</span>
-                <ak-file-upload-form slot="form" .usage=${this.usage}> </ak-file-upload-form>
+                <ak-file-upload-form slot="form"> </ak-file-upload-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${msg("Upload File")}
                 </button>
