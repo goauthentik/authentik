@@ -187,7 +187,7 @@ class FileView(APIView):
 
         # Audit log for file deletion
         Event.new(
-            EventAction.MODEL_CREATED,
+            EventAction.MODEL_DELETED,
             model={
                 "app": "authentik_admin_files",
                 "model_name": "File",

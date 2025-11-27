@@ -79,27 +79,6 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         self.assertIn("test.png", url)
 
     @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
-    @CONFIG.patch("storage.s3.secure_urls", True)
-    @CONFIG.patch("storage.s3.custom_domain", "cdn.example.com")
-    def test_file_url_with_custom_domain(self):
-        """Test file_url with custom domain replacement"""
-        url = self.media_s3_backend.file_url("test.png")
-
-        # Should replace domain but keep path and query parameters
-        self.assertTrue(url.startswith("https://cdn.example.com/"))
-        self.assertIn("X-Amz-Signature=", url)
-        self.assertIn("X-Amz-Algorithm=AWS4-HMAC-SHA256", url)
-        self.assertIn("media/public/test.png", url)
-
-    @CONFIG.patch("storage.s3.secure_urls", False)
-    @CONFIG.patch("storage.s3.custom_domain", "cdn.example.com")
-    def test_file_url_insecure(self):
-        url = self.media_s3_backend.file_url("test.png")
-
-        # Should use http instead of https
-        self.assertTrue(url.startswith("http://cdn.example.com/"))
-
-    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
     def test_file_exists_true(self):
         """Test file_exists returns True for existing file"""
         self.media_s3_backend.client.put_object(

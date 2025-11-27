@@ -41,13 +41,13 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Verify event was created
-        event = Event.objects.filter(action=EventAction.FILE_UPLOADED).first()
+        event = Event.objects.filter(action=EventAction.MODEL_CREATED).first()
 
         self.assertIsNotNone(event)
         assert event is not None  # nosec
-        self.assertEqual(event.context["name"], file_name)
-        self.assertEqual(event.context["usage"], FileUsage.MEDIA.value)
-        self.assertEqual(event.context["mime_type"], "image/png")
+        self.assertEqual(event.context["model"]["name"], file_name)
+        self.assertEqual(event.context["model"]["usage"], FileUsage.MEDIA.value)
+        self.assertEqual(event.context["model"]["mime_type"], "image/png")
 
         # Verify user is captured
         self.assertEqual(event.user["username"], self.user.username)
@@ -56,7 +56,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         manager.delete_file(file_name)
 
     def test_delete_creates_event(self):
-        """Test that deleting a file creates a FILE_DELETED event"""
+        """Test that deleting a file creates an event"""
         manager = FileManager(FileUsage.MEDIA)
         file_name = "test-delete.png"
         manager.save_file(file_name, b"test content")
@@ -75,12 +75,12 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Verify event was created
-        event = Event.objects.filter(action=EventAction.FILE_DELETED).first()
+        event = Event.objects.filter(action=EventAction.MODEL_DELETED).first()
 
         self.assertIsNotNone(event)
         assert event is not None  # nosec
-        self.assertEqual(event.context["name"], file_name)
-        self.assertEqual(event.context["usage"], FileUsage.MEDIA.value)
+        self.assertEqual(event.context["model"]["name"], file_name)
+        self.assertEqual(event.context["model"]["usage"], FileUsage.MEDIA.value)
 
         # Verify user is captured
         self.assertEqual(event.user["username"], self.user.username)
@@ -120,7 +120,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
-        self.assertIn("Invalid usage", str(response.data))
+        self.assertIn("not a valid choice", str(response.data))
 
     def test_list_files_with_search(self):
         """Test listing files with search query"""
@@ -206,7 +206,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         response = self.client.delete(reverse("authentik_api:files"))
 
         self.assertEqual(response.status_code, 400)
-        self.assertIn("File name cannot be empty", str(response.data))
+        self.assertIn("field is required", str(response.data))
 
 
 class TestGetMimeFromFilename(TestCase):
