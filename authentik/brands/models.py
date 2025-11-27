@@ -8,9 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
-from authentik.admin.files.validation import validate_file_name
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
@@ -33,17 +33,10 @@ class Brand(SerializerModel):
 
     branding_title = models.TextField(default="authentik")
 
-    branding_logo = models.TextField(
-        validators=[validate_file_name],
-        default="/static/dist/assets/icons/icon_left_brand.svg",
-    )
-    branding_favicon = models.TextField(
-        validators=[validate_file_name],
-        default="/static/dist/assets/icons/icon.png",
-    )
+    branding_logo = FileField(default="/static/dist/assets/icons/icon_left_brand.svg")
+    branding_favicon = FileField(default="/static/dist/assets/icons/icon.png")
     branding_custom_css = models.TextField(default="", blank=True)
-    branding_default_flow_background = models.TextField(
-        validators=[validate_file_name],
+    branding_default_flow_background = FileField(
         default="/static/dist/assets/images/flow_background.jpg",
     )
 

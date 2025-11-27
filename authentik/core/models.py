@@ -26,9 +26,9 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
-from authentik.admin.files.validation import validate_file_name
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -556,11 +556,7 @@ class Application(SerializerModel, PolicyBindingModel):
         default=False, help_text=_("Open launch URL in a new browser tab or window.")
     )
 
-    meta_icon = models.TextField(
-        blank=True,
-        default="",
-        validators=[validate_file_name],
-    )
+    meta_icon = FileField(default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 
@@ -742,11 +738,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
     )
 
-    icon = models.TextField(
-        blank=True,
-        default="",
-        validators=[validate_file_name],
-    )
+    icon = FileField(blank=True, default="")
 
     authentication_flow = models.ForeignKey(
         "authentik_flows.Flow",

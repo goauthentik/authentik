@@ -13,9 +13,9 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.usage import FileUsage
-from authentik.admin.files.validation import validate_file_name
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
@@ -159,10 +159,9 @@ class Flow(SerializerModel, PolicyBindingModel):
         ),
     )
 
-    background = models.TextField(
+    background = FileField(
         blank=True,
         default="",
-        validators=[validate_file_name],
         help_text=_("Background shown during execution"),
     )
 
