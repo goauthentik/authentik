@@ -73,7 +73,7 @@ class FileView(APIView):
             files = filter(lambda file: search_query in file.lower(), files)
         files = [
             FileView.FileListSerializer(
-                {
+                data={
                     "name": file,
                     "url": manager.file_url(file),
                     "mime_type": get_mime_from_filename(file),
