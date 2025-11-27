@@ -54,7 +54,7 @@ To support the integration of Placetel with authentik, you need to create an app
 
 To integrate Plactel with authentik, you will need to setup SSO in the Placetel portal.
 
-1. Log in to the [Placetel portal](accounts.webex.placetel.de) as an Administrator.
+1. Log in to the [Placetel portal](https://accounts.webex.placetel.de) as an Administrator.
 2. Click the **Organization Name** in the bottom left corner, and select **Settings**
 3. Scroll to the bottom of the page. Then, next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
 4. In the **Import** section, click on **Choose File** and upload the **SAML Metadata** file that you've just downloaded from authentik.
