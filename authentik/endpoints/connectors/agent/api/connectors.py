@@ -125,7 +125,7 @@ class AgentConnectorViewSet(
             defaults={
                 "name": data.validated_data["device_name"],
                 "expiring": False,
-                "group": token.device_group,
+                "access_group": token.device_group,
             },
         )
         connection, _ = AgentDeviceConnection.objects.update_or_create(
