@@ -15,7 +15,7 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `company.tld` is the domain of your users’ email addresses
+- `company.tld` is the domain of your users' email addresses
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -33,7 +33,7 @@ To support the integration of Placetel with authentik, you need to create an app
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://accounts.webex.placetel.de/users/saml/auth`.
-        - Set the **Entity ID** to any descriptive name, e.g. `authentik.company`.
+        - Set the **Entity ID** to `authentik`.
         - Set the **SLS URL** to `https://accounts.webex.placetel.de/users/saml/idp_sign_out`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing Certificate** and ensure that **Sign assertions** and **Sign responses** are toggled.
@@ -54,7 +54,7 @@ To support the integration of Placetel with authentik, you need to create an app
 
 To integrate Plactel with authentik, you will need to setup SSO in the Placetel portal.
 
-1. Log in to the Placetel portal as an _Administrator_.
+1. Log in to the [Placetel portal](https://accounts.placetel.com) as an Administrator.
 2. Click the **Organation Name** in the bottom left corner, and select **Settings**
 3. Scroll to the bottom of the page. Next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
 4. Import the **SAML Metadata** file that you downloaded from authentik.
