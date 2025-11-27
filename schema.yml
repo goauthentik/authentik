@@ -32524,6 +32524,9 @@ components:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        device_id:
+          type: string
+          readOnly: true
         refresh_interval:
           type: integer
           readOnly: true
@@ -32546,6 +32549,7 @@ components:
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
+      - device_id
       - jwks
       - nss_gid_offset
       - nss_uid_offset
@@ -53874,6 +53878,7 @@ components:
       - identifier
     TokenSetKeyRequest:
       type: object
+      description: Set token's key
       properties:
         key:
           type: string
