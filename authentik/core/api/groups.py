@@ -22,6 +22,7 @@ from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
@@ -289,13 +290,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[],
     )
-    def add_user(self, request: Request, pk: str) -> Response:
+    @validate(UserAccountSerializer)
+    def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
-                pk=request.data.get("pk"),
+                pk=body.validated_data.get("pk"),
             )
             .first()
         )
@@ -319,13 +321,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[],
     )
-    def remove_user(self, request: Request, pk: str) -> Response:
+    @validate(UserAccountSerializer)
+    def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
-                pk=request.data.get("pk"),
+                pk=body.validated_data.get("pk"),
             )
             .first()
         )

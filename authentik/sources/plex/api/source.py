@@ -13,6 +13,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
@@ -90,13 +91,14 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[AllowAny],
     )
-    def redeem_token(self, request: Request) -> Response:
+    @validate(PlexTokenRedeemSerializer)
+    def redeem_token(self, request: Request, body: PlexTokenRedeemSerializer) -> Response:
         """Redeem a plex token, check it's access to resources against what's allowed
         for the source, and redirect to an authentication/enrollment flow."""
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = request.data.get("plex_token", None)
+        plex_token = body.validated_data.get("plex_token", None)
         if not plex_token:
             raise ValidationError("No plex token given")
         auth_api = PlexAuth(source, plex_token)
@@ -147,12 +149,13 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[IsAuthenticated],
     )
-    def redeem_token_authenticated(self, request: Request) -> Response:
+    @validate(PlexTokenRedeemSerializer)
+    def redeem_token_authenticated(self, request: Request, body: PlexTokenRedeemSerializer) -> Response:
         """Redeem a plex token for an authenticated user, creating a connection"""
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = request.data.get("plex_token", None)
+        plex_token = body.validated_data.get("plex_token", None)
         if not plex_token:
             raise ValidationError("No plex token given")
         auth_api = PlexAuth(source, plex_token)
