@@ -73,7 +73,7 @@ After confirming that your configuration is correct, return to the Placetel conf
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Placetel, log out and log back in to the [Placetel portal](accounts.webex.placetel.de). You will need to manually enter the email address of an existing user, as Placetel does not create new users through authentik. After clicking on **Login**, you should be redirected to authentik, and once authenticated, you'll be signed into the Placetel portal.
+To confirm that authentik is properly configured with Placetel, log out and log back in to the [Placetel portal](https://accounts.webex.placetel.de). You will need to manually enter the email address of an existing user, as Placetel does not create new users through authentik. After clicking on **Login**, you should be redirected to authentik, and once authenticated, you'll be signed into the Placetel portal.
 
 :::info Login link
 The default login link on the Placetel homepage will not work.
