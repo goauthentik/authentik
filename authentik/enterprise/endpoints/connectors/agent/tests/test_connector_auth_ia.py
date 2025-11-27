@@ -11,7 +11,7 @@ from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
-from authentik.endpoints.models import Device, DeviceGroup
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.enterprise.endpoints.connectors.agent.views.auth_interactive import QS_AGENT_IA_TOKEN
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
@@ -72,8 +72,8 @@ class TestConnectorAuthIA(APITestCase):
 
     @reconcile_app("authentik_crypto")
     def test_auth_ia_fulfill_policy(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
-        self.device.group = device_group
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.access_group = device_group
         self.device.save()
 
         group = Group.objects.create(name=generate_id())

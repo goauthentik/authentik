@@ -9,7 +9,7 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.facts import OSFamily
-from authentik.endpoints.models import Device, DeviceGroup
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.lib.generators import generate_id
 
 CHECK_IN_DATA_VALID = {
@@ -59,7 +59,7 @@ class TestAgentAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_enroll_group(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
         self.token.device_group = device_group
         self.token.save()
         ident = generate_id()

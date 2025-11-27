@@ -10,8 +10,8 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
     Connector,
     Device,
+    DeviceAccessGroup,
     DeviceConnection,
-    DeviceGroup,
     DeviceUserBinding,
 )
 from authentik.flows.stage import StageView
@@ -114,7 +114,7 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
     key = models.TextField(default=default_token_key)
     connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
     device_group = models.ForeignKey(
-        DeviceGroup, on_delete=models.SET_DEFAULT, default=None, null=True
+        DeviceAccessGroup, on_delete=models.SET_DEFAULT, default=None, null=True
     )
 
     @property

@@ -10,7 +10,7 @@ from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
-from authentik.endpoints.models import Device, DeviceGroup
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
@@ -51,8 +51,8 @@ class TestConnectorAuthFed(APITestCase):
 
     @reconcile_app("authentik_crypto")
     def test_auth_fed_policy_group(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
-        self.device.group = device_group
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.access_group = device_group
         self.device.save()
 
         group = Group.objects.create(name=generate_id())
@@ -72,8 +72,8 @@ class TestConnectorAuthFed(APITestCase):
 
     @reconcile_app("authentik_crypto")
     def test_auth_fed_policy_group_deny(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
-        self.device.group = device_group
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.access_group = device_group
         self.device.save()
 
         group = Group.objects.create(name=generate_id())

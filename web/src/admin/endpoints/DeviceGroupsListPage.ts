@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/endpoints/DeviceGroupForm";
+import "#admin/endpoints/DeviceAccessGroupForm";
 import "#admin/policies/BoundPoliciesList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -9,16 +9,16 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { DeviceGroup, EndpointsApi } from "@goauthentik/api";
+import { DeviceAccessGroup, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-groups-list")
-export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
+export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     public pageIcon = "pf-icon pf-icon-server-group	";
-    public pageTitle = msg("Device groups");
+    public pageTitle = msg("Device access groups");
     public pageDescription = msg("Create groups of devices to manage access.");
 
     protected searchEnabled: boolean = true;
@@ -30,13 +30,13 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
     checkbox = true;
     expandable = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<DeviceGroup>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsList(
+    async apiEndpoint(): Promise<PaginatedResponse<DeviceAccessGroup>> {
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    row(item: DeviceGroup): SlottedTemplateResult[] {
+    row(item: DeviceAccessGroup): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>
@@ -53,7 +53,7 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
         ];
     }
 
-    renderExpanded(item: DeviceGroup) {
+    renderExpanded(item: DeviceAccessGroup) {
         return html`<div class="pf-c-content">
             <ak-bound-policies-list .target=${item.pbmUuid}></ak-bound-policies-list>
         </div>`;
@@ -73,16 +73,16 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: DeviceGroup) => {
+            .metadata=${(item: DeviceAccessGroup) => {
                 return [{ key: msg("Name"), value: item.name }];
             }}
-            .usedBy=${(item: DeviceGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsUsedByList({
+            .usedBy=${(item: DeviceAccessGroup) => {
+                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsUsedByList({
                     pbmUuid: item.pbmUuid,
                 });
             }}
-            .delete=${(item: DeviceGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsDestroy({
+            .delete=${(item: DeviceAccessGroup) => {
+                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsDestroy({
                     pbmUuid: item.pbmUuid,
                 });
             }}
@@ -96,6 +96,6 @@ export class DeviceGroupsListPage extends TablePage<DeviceGroup> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-groups-list": DeviceGroupsListPage;
+        "ak-endpoints-device-groups-list": DeviceAccessGroupsListPage;
     }
 }

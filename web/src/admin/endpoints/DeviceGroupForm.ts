@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
-import { DeviceGroup, DeviceGroupRequest, EndpointsApi } from "@goauthentik/api";
+import { DeviceAccessGroup, DeviceAccessGroupRequest, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -14,9 +14,9 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-device-groups-form")
-export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, string>) {
-    loadInstance(pk: string): Promise<DeviceGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsRetrieve({
+export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {
+    loadInstance(pk: string): Promise<DeviceAccessGroup> {
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -27,15 +27,15 @@ export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, stri
             : msg("Successfully created group.");
     }
 
-    async send(data: DeviceGroup): Promise<DeviceGroup> {
+    async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
         if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsPartialUpdate({
+            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsPartialUpdate({
                 pbmUuid: this.instance.pbmUuid,
-                patchedDeviceGroupRequest: data,
+                patchedDeviceAccessGroupRequest: data,
             });
         }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsCreate({
-            deviceGroupRequest: data as unknown as DeviceGroupRequest,
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsCreate({
+            deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
         });
     }
 
@@ -52,6 +52,6 @@ export class DeviceGroupForm extends WithBrandConfig(ModelForm<DeviceGroup, stri
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-groups-form": DeviceGroupForm;
+        "ak-endpoints-device-groups-form": DeviceAccessGroupForm;
     }
 }

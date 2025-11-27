@@ -34,7 +34,9 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     name = models.TextField(unique=True)
     identifier = models.TextField(unique=True)
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
-    group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
+    access_group = models.ForeignKey(
+        "DeviceAccessGroup", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     @property
     def cache_key_facts(self):
@@ -173,19 +175,19 @@ class Connector(ScheduledModel, SerializerModel):
         ]
 
 
-class DeviceGroup(PolicyBindingModel):
+class DeviceAccessGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.endpoints.api.device_group import DeviceGroupSerializer
+        from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 
-        return DeviceGroupSerializer
+        return DeviceAccessGroupSerializer
 
     class Meta:
-        verbose_name = _("Device group")
-        verbose_name_plural = _("Device groups")
+        verbose_name = _("Device access group")
+        verbose_name_plural = _("Device access groups")
 
 
 class EndpointStage(Stage):
