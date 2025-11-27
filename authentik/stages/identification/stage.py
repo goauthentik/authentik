@@ -37,7 +37,11 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.captcha.stage import CaptchaChallenge, verify_captcha_token
+from authentik.stages.captcha.stage import (
+    PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    CaptchaChallenge,
+    verify_captcha_token,
+)
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import (
@@ -188,7 +192,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
             try:
-                verify_captcha_token(captcha_stage, captcha_token, client_ip)
+                verify_captcha_token(
+                    captcha_stage,
+                    captcha_token,
+                    client_ip,
+                    key=self.stage.executor.plan.context.get(PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY),
+                )
             except ValidationError:
                 raise ValidationError(_("Failed to authenticate.")) from None
 
