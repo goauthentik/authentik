@@ -8,7 +8,6 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 from django.db import connection
 from django.http.request import HttpRequest
-from django.utils.functional import cached_property
 
 from authentik.admin.files.backends.base import ManageableBackend
 from authentik.admin.files.usage import FileUsage
@@ -29,48 +28,60 @@ class S3Backend(ManageableBackend):
     allowed_usages = list(FileUsage)  # All usages
     name = "s3"
 
-    @cached_property
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._config = {}
+        self._session = None
+
+    def _get_config(self, key: str, default: str | None) -> tuple[str | None, bool]:
+        unset = object()
+        current = self._config.get(key, unset)
+        refreshed = CONFIG.refresh(
+            f"storage.{self.usage.value}.{self.name}.{key}",
+            CONFIG.refresh(f"storage.{self.name}.{key}", default),
+        )
+        if current is unset:
+            current = refreshed
+        self._config[key] = refreshed
+        return (refreshed, current != refreshed)
+
+    @property
     def base_path(self) -> str:
         """S3 key prefix: {usage}/{schema}/"""
         return f"{self.usage.value}/{connection.schema_name}"
 
-    @cached_property
+    @property
     def bucket_name(self) -> str:
-        """Get S3 bucket name from configuration."""
         return CONFIG.get(
             f"storage.{self.usage.value}.{self.name}.bucket_name",
             CONFIG.get(f"storage.{self.name}.bucket_name"),
         )
 
-    @cached_property
+    @property
     def session(self) -> boto3.Session:
         """Create boto3 session with configured credentials."""
-        session_profile = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.session_profile",
-            CONFIG.get(f"storage.{self.name}.session_profile", None),
-        )
+        session_profile, session_profile_r = self._get_config("session_profile", None)
         if session_profile is not None:
-            return boto3.Session(profile_name=session_profile)
+            if session_profile_r or self._session is None:
+                self._session = boto3.Session(profile_name=session_profile)
+                return self._session
+            else:
+                return self._session
         else:
-            aws_access_key_id = CONFIG.refresh(
-                f"storage.{self.usage.value}.{self.name}.access_key",
-                CONFIG.refresh(f"storage.{self.name}.access_key", None),
-            )
-            aws_secret_access_key = CONFIG.refresh(
-                f"storage.{self.usage.value}.{self.name}.secret_key",
-                CONFIG.refresh(f"storage.{self.name}.secret_key", None),
-            )
-            aws_session_token = CONFIG.refresh(
-                f"storage.{self.usage.value}.{self.name}.security_token",
-                CONFIG.refresh(f"storage.{self.name}.security_token", None),
-            )
-            return boto3.Session(
-                aws_access_key_id=aws_access_key_id,
-                aws_secret_access_key=aws_secret_access_key,
-                aws_session_token=aws_session_token,
-            )
+            access_key, access_key_r = self._get_config("access_key", None)
+            secret_key, secret_key_r = self._get_config("secret_key", None)
+            session_token, session_token_r = self._get_config("secret_key", None)
+            if access_key_r or secret_key_r or session_token_r or self._session is None:
+                self._session = boto3.Session(
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    aws_session_token=session_token,
+                )
+                return self._session
+            else:
+                return self._session
 
-    @cached_property
+    @property
     def client(self):
         """Create S3 client with configured endpoint and region."""
         endpoint_url = CONFIG.get(
@@ -85,7 +96,6 @@ class S3Backend(ManageableBackend):
             f"storage.{self.usage.value}.{self.name}.region",
             CONFIG.get(f"storage.{self.name}.region", None),
         )
-        # Configure addressing style which needed for R2 and some S3-compatible services
         addressing_style = CONFIG.get(
             f"storage.{self.usage.value}.{self.name}.addressing_style",
             CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
@@ -98,10 +108,6 @@ class S3Backend(ManageableBackend):
             region_name=region_name,
             config=Config(signature_version="s3v4", s3={"addressing_style": addressing_style}),
         )
-
-    @cached_property
-    def bucket(self):
-        return self.client.Bucket(self.bucket_name)
 
     @property
     def manageable(self) -> bool:

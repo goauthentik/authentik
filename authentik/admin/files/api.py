@@ -10,7 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik.admin.files.manager import FileManager
+from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.core.api.utils import PassiveSerializer
@@ -66,7 +66,7 @@ class FileView(APIView):
             ) from exc
 
         # Backend is source of truth - list all files from storage
-        manager = FileManager(usage)
+        manager = get_file_manager(usage)
         files = manager.list_files(manageable_only=params.get("manageable_only", False))
         search_query = params.get("search", "")
         if search_query:
@@ -129,7 +129,7 @@ class FileView(APIView):
         # Sanitize path to prevent directory traversal
         validate_upload_file_name(name, ValidationError)
 
-        manager = FileManager(usage)
+        manager = get_file_manager(usage)
 
         # Check if file already exists
         if manager.file_exists(name):
@@ -176,7 +176,7 @@ class FileView(APIView):
                 f"Invalid usage parameter provided: {params.get('usage')}"
             ) from exc
 
-        manager = FileManager(usage)
+        manager = get_file_manager(usage)
 
         # Delete from backend
         manager.delete_file(params.get("name"))

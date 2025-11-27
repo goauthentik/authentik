@@ -14,7 +14,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.fields import FileField
-from authentik.admin.files.manager import FileManager
+from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
@@ -194,7 +194,7 @@ class Flow(SerializerModel, PolicyBindingModel):
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
 
-        return FileManager(FileUsage.MEDIA).file_url(self.background, request)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

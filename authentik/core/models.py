@@ -27,7 +27,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.fields import FileField
-from authentik.admin.files.manager import FileManager
+from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -577,7 +577,7 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.meta_icon:
             return None
 
-        return FileManager(FileUsage.MEDIA).file_url(self.meta_icon)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
@@ -783,7 +783,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         if not self.icon:
             return None
 
-        return FileManager(FileUsage.MEDIA).file_url(self.icon)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.icon)
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

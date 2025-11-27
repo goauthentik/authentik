@@ -9,7 +9,6 @@ import jwt
 from django.conf import settings
 from django.db import connection
 from django.http.request import HttpRequest
-from django.utils.functional import cached_property
 from django.utils.timezone import now
 
 from authentik.admin.files.backends.base import ManageableBackend
@@ -30,7 +29,7 @@ class FileBackend(ManageableBackend):
     name = "file"
     allowed_usages = list(FileUsage)  # All usages
 
-    @cached_property
+    @property
     def _base_dir(self) -> Path:
         return Path(
             CONFIG.get(
@@ -39,7 +38,7 @@ class FileBackend(ManageableBackend):
             )
         )
 
-    @cached_property
+    @property
     def base_path(self) -> Path:
         """Path structure: {base_dir}/{usage}/{schema}"""
         return self._base_dir / self.usage.value / connection.schema_name

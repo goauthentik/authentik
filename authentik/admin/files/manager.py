@@ -132,3 +132,10 @@ class FileManager:
         self._check_manageable()
         assert self.management_backend is not None  # nosec
         return self.management_backend.file_exists(file_path)
+
+
+MANAGERS = {usage: FileManager(usage) for usage in list(FileUsage)}
+
+
+def get_file_manager(usage: FileUsage) -> FileManager:
+    return MANAGERS[usage]

@@ -17,7 +17,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik.admin.files.manager import FileManager
+from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.context_processors.base import get_context_processors
@@ -66,8 +66,7 @@ class ConfigView(APIView):
     def get_capabilities(self) -> list[Capabilities]:
         """Get all capabilities this server instance supports"""
         caps = []
-        media_manager = FileManager(FileUsage.MEDIA)
-        if media_manager.manageable:
+        if get_file_manager(FileUsage.MEDIA).manageable:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         for processor in get_context_processors():
             if cap := processor.capability():

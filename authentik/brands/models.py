@@ -9,7 +9,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.fields import FileField
-from authentik.admin.files.manager import FileManager
+from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
@@ -85,21 +85,17 @@ class Brand(SerializerModel):
     )
     attributes = models.JSONField(default=dict, blank=True)
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.media_manager = FileManager(FileUsage.MEDIA)
-
     def branding_logo_url(self) -> str:
         """Get branding_logo URL"""
-        return self.media_manager.file_url(self.branding_logo)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_logo)
 
     def branding_favicon_url(self) -> str:
         """Get branding_favicon URL"""
-        return self.media_manager.file_url(self.branding_favicon)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_favicon)
 
     def branding_default_flow_background_url(self) -> str:
         """Get branding_default_flow_background URL"""
-        return self.media_manager.file_url(self.branding_default_flow_background)
+        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_default_flow_background)
 
     @property
     def serializer(self) -> type[Serializer]:
