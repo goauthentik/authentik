@@ -12,6 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
@@ -182,6 +183,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
+    @validate(TokenSetKeySerializer)
     def set_key(self, request: Request, identifier: str, body: TokenSetKeySerializer) -> Response:
         """Set token key. Action is logged as event. `authentik_core.set_token_key` permission
         is required."""
