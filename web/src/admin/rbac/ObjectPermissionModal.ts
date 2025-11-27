@@ -21,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
-    model?: RbacPermissionsAssignedByRolesListModelEnum;
+    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
     objectPk?: string | number;
@@ -57,7 +57,7 @@ export class ObjectPermissionModal extends AKElement {
     ];
 
     @property()
-    public model?: RbacPermissionsAssignedByRolesListModelEnum;
+    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
     public objectPk?: string | number;

@@ -42,10 +42,10 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup: Group | null = null;
 
     @property({ attribute: false })
-    targetRole?: Role;
+    public targetRole: Role | null = null;
 
     //#endregion
 

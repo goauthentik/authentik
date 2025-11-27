@@ -42,10 +42,10 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup: Group | null = null;
 
     @property({ attribute: false })
-    targetRole?: Role;
+    public targetRole: Role | null = null;
 
     @state()
     usersToAdd: User[] = [];
@@ -56,21 +56,21 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
     async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
-            data.users.map((user) => {
+            data.users.map((userPk) => {
                 if (this.targetGroup) {
                     return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                         groupUuid: this.targetGroup.pk,
                         userAccountRequest: {
-                            pk: user,
+                            pk: userPk,
                         },
                     });
                 }
                 if (this.targetRole) {
                     return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
                         uuid: this.targetRole.pk,
-                        // todo: rename this
+                        // TODO: Rename this.
                         userAccountSerializerForRoleRequest: {
-                            pk: user,
+                            pk: userPk,
                         },
                     });
                 }
@@ -188,13 +188,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+        const targetLabel = this.targetGroup?.name || this.targetRole?.name;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
             actionLabel=${msg("Remove User(s)")}
             action=${msg("removed")}
-            actionSubtext=${msg(
-                str`Are you sure you want to remove the selected users from ${this.targetGroup?.name || this.targetRole?.name}?`,
-            )}
+            actionSubtext=${targetLabel
+                ? msg(str`Are you sure you want to remove the selected users from ${targetLabel}?`)
+                : msg("Are you sure you want to remove the selected users?")}
             .objects=${this.selectedElements}
             .metadata=${(item: User) => {
                 return [

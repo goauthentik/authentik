@@ -39,12 +39,12 @@ export class RoleViewPage extends AKElement {
                 uuid: id,
             })
             .then((role) => {
-                this._role = role;
+                this.targetRole = role;
             });
     }
 
     @state()
-    _role?: Role;
+    targetRole?: Role;
 
     static styles = [
         PFBase,
@@ -69,8 +69,8 @@ export class RoleViewPage extends AKElement {
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
-            if (!this._role?.pk) return;
-            this.roleId = this._role?.pk;
+            if (!this.targetRole?.pk) return;
+            this.roleId = this.targetRole?.pk;
         });
     }
 
@@ -86,7 +86,7 @@ export class RoleViewPage extends AKElement {
     }
 
     render() {
-        if (!this._role) {
+        if (!this.targetRole) {
             return nothing;
         }
 
@@ -107,8 +107,8 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Role Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList([
-                                    [msg("Name"), this._role.name],
-                                    [msg("Edit"), this.renderUpdateControl(this._role)],
+                                    [msg("Name"), this.targetRole.name],
+                                    [msg("Edit"), this.renderUpdateControl(this.targetRole)],
                                 ])}
                             </div>
                         </div>
@@ -118,7 +118,7 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
-                                    targetModelPk=${this._role.pk}
+                                    targetModelPk=${this.targetRole.pk}
                                     targetModelApp="authentik_rbac"
                                     targetModelName="role"
                                 >
@@ -137,7 +137,8 @@ export class RoleViewPage extends AKElement {
                 >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-user-related-list .targetRole=${this._role}> </ak-user-related-list>
+                            <ak-user-related-list .targetRole=${this.targetRole}>
+                            </ak-user-related-list>
                         </div>
                     </div>
                 </section>
@@ -148,7 +149,7 @@ export class RoleViewPage extends AKElement {
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
-                    objectPk=${this._role.pk}
+                    objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
@@ -158,7 +159,7 @@ export class RoleViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "fa fa-lock",
-            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
+            header: this.targetRole?.name ? msg(str`Role ${this.targetRole.name}`) : msg("Role"),
         });
     }
 }

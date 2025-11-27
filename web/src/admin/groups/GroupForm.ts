@@ -44,6 +44,33 @@ export class GroupForm extends ModelForm<Group, string> {
         `,
     ];
 
+    #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
+        return new CoreApi(DEFAULT_CONFIG)
+            .coreGroupsList({
+                page: page,
+                search: search,
+            })
+            .then((results) => {
+                return {
+                    pagination: results.pagination,
+                    options: results.results.map(coreGroupPair),
+                };
+            });
+    };
+    #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
+        return new RbacApi(DEFAULT_CONFIG)
+            .rbacRolesList({
+                page: page,
+                search: search,
+            })
+            .then((results) => {
+                return {
+                    pagination: results.pagination,
+                    options: results.results.map(rbacRolePair),
+                };
+            });
+    };
+
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
@@ -93,47 +120,21 @@ export class GroupForm extends ModelForm<Group, string> {
 
             <ak-form-element-horizontal label=${msg("Parents")} name="parents">
                 <ak-dual-select-provider
-                    .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                        return new CoreApi(DEFAULT_CONFIG)
-                            .coreGroupsList({
-                                page: page,
-                                search: search,
-                            })
-                            .then((results) => {
-                                return {
-                                    pagination: results.pagination,
-                                    options: results.results.map(coreGroupPair),
-                                };
-                            });
-                    }}
+                    .provider=${this.#fetchGroups}
                     .selected=${(this.instance?.parentsObj ?? []).map(coreGroupPair)}
-                    available-label="${msg("Available Groups")}"
-                    selected-label="${msg("Selected Groups")}"
+                    available-label=${msg("Available Groups")}
+                    selected-label=${msg("Selected Groups")}
                 ></ak-dual-select-provider>
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Select parent groups. A group inherits every role from its ancestors (recursively).",
-                    )}
+                    ${msg("A group recursively inherits every role from its ancestors.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Roles")} name="roles">
                 <ak-dual-select-provider
-                    .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                        return new RbacApi(DEFAULT_CONFIG)
-                            .rbacRolesList({
-                                page: page,
-                                search: search,
-                            })
-                            .then((results) => {
-                                return {
-                                    pagination: results.pagination,
-                                    options: results.results.map(rbacRolePair),
-                                };
-                            });
-                    }}
+                    .provider=${this.#fetchRoles}
                     .selected=${(this.instance?.rolesObj ?? []).map(rbacRolePair)}
-                    available-label="${msg("Available Roles")}"
-                    selected-label="${msg("Selected Roles")}"
+                    available-label=${msg("Available Roles")}
+                    selected-label=${msg("Selected Roles")}
                 ></ak-dual-select-provider>
                 <p class="pf-c-form__helper-text">
                     ${msg(

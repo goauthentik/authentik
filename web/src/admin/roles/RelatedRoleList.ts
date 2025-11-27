@@ -12,21 +12,21 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { RbacApi, Role, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-related-add")
 export class RelatedRoleAdd extends Form<{ roles: string[] }> {
     @property({ attribute: false })
-    user?: User;
+    public user: User | null = null;
 
     @state()
-    rolesToAdd: Role[] = [];
+    protected rolesToAdd: Role[] = [];
 
     getSuccessMessage(): string {
         return msg("Successfully added user to role(s).");
@@ -53,7 +53,6 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
                 <ak-user-role-select-table
                     .confirm=${(items: Role[]) => {
                         this.rolesToAdd = items;
-                        this.requestUpdate();
                         return Promise.resolve();
                     }}
                 >
@@ -68,11 +67,11 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
                         ${this.rolesToAdd.map((role) => {
                             return html`<ak-chip
                                 removable
-                                value=${ifDefined(role.pk)}
+                                value=${ifPresent(role.pk)}
                                 @remove=${() => {
-                                    const idx = this.rolesToAdd.indexOf(role);
-                                    this.rolesToAdd.splice(idx, 1);
-                                    this.requestUpdate();
+                                    this.rolesToAdd = this.rolesToAdd.filter(
+                                        ($role) => $role === role,
+                                    );
                                 }}
                             >
                                 ${role.name}
@@ -91,11 +90,11 @@ export class RelatedRoleList extends Table<Role> {
     clearOnRefresh = true;
     protected override searchEnabled = true;
 
-    @property()
-    order = "name";
+    @property({ type: String })
+    public order = "name";
 
     @property({ attribute: false })
-    targetUser?: User;
+    public targetUser: User | null = null;
 
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
@@ -110,7 +109,7 @@ export class RelatedRoleList extends Table<Role> {
     ];
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled = !this.selectedElements.length;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Role(s)")}
             actionLabel=${msg("Remove from Role(s)")}

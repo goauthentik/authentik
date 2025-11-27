@@ -46,10 +46,10 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup: Group | null = null;
 
     @property({ attribute: false })
-    targetRole?: Role;
+    public targetRole: Role | null = null;
 
     @property()
     defaultPath: string = "users";
@@ -78,15 +78,15 @@ export class UserForm extends ModelForm<User, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return msg("Successfully updated user.");
+            return msg("User updated.");
         }
         if (this.targetGroup) {
-            return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
+            return msg(str`User created and added to group ${this.targetGroup.name}`);
         }
         if (this.targetRole) {
-            return msg(str`Successfully created user and added to role ${this.targetRole.name}`);
+            return msg(str`User created and added to role ${this.targetRole.name}`);
         }
-        return msg("Successfully created user.");
+        return msg("User created.");
     }
 
     async send(data: User): Promise<User> {

@@ -125,6 +125,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     # which has a required filter that does the heavy lifting
     queryset = Role.objects.all()
     filterset_class = RoleAssignedPermissionFilter
+    search_fields = ["name"]
 
     @permission_required("authentik_rbac.assign_role_permissions")
     @extend_schema(

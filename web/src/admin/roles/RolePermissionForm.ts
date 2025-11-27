@@ -25,8 +25,8 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @state()
     permissionsToAdd: Permission[] = [];
 
-    @property()
-    roleUuid!: string;
+    @property({ type: String, attribute: "role-uuid" })
+    public roleUuid: string | null = null;
 
     async load(): Promise<void> {}
 
@@ -39,6 +39,9 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign) {
+        if (!this.roleUuid) {
+            return;
+        }
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUuid,
             permissionAssignRequest: {
