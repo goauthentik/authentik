@@ -81,6 +81,11 @@ export class FileListPage extends TablePage<FileItem> {
                     { key: msg("Type"), value: item.mime_type },
                 ];
             }}
+            .usedBy=${(item: FileItem) => {
+                return new AdminApi(DEFAULT_CONFIG).adminFileUsedByRetrieve({
+                    name: item.name,
+                });
+            }}
             .delete=${(item: FileItem) => {
                 return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
                     name: item.name,

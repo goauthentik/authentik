@@ -1,5 +1,6 @@
 import mimetypes
 
+from django.db.models import Q
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
@@ -10,11 +11,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.admin.files.fields import FileField as AkFileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
+from authentik.core.api.used_by import DeleteAction, UsedBySerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.reflection import get_apps
 from authentik.rbac.permissions import HasPermission
 
 MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024  # 25MB
@@ -194,3 +198,59 @@ class FileView(APIView):
         ).from_http(request)
 
         return Response()
+
+
+class FileUsedByView(APIView):
+    pagination_class = None
+
+    def get_permissions(self):
+        return [
+            HasPermission(
+                "authentik_rbac.view_media_files"
+                if self.request.method in SAFE_METHODS
+                else "authentik_rbac.manage_media_files"
+            )()
+        ]
+
+    class FileUsedByParameters(PassiveSerializer):
+        name = CharField()
+
+    @extend_schema(
+        parameters=[FileUsedByParameters],
+        responses={200: None},
+    )
+    def get(self, request: Request) -> Response:
+        params = FileUsedByView.FileUsedByParameters(data=request.query_params)
+        params.is_valid(raise_exception=True)
+        params = params.validated_data
+
+        models_and_fields = {}
+        for app in get_apps():
+            for model in app.get_models():
+                if model._meta.abstract:
+                    continue
+                for field in model._meta.get_fields():
+                    if isinstance(field, AkFileField):
+                        models_and_fields.setdefault(model, []).append(field.name)
+
+        used_by = []
+
+        for model, fields in models_and_fields.items():
+            q = Q()
+            for field in fields:
+                q |= Q(**{field: params.get("name")})
+            objs = model.objects.filter(q)
+            for obj in objs:
+                serializer = UsedBySerializer(
+                    data={
+                        "app": model._meta.app_label,
+                        "model_name": model._meta.model_name,
+                        "pk": str(obj.pk),
+                        "name": str(obj),
+                        "action": DeleteAction.NONE,
+                    }
+                )
+                serializer.is_valid()
+                used_by.append(serializer.data)
+
+        return Response(used_by)

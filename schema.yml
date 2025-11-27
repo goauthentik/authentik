@@ -110,6 +110,22 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/used_by/:
+    get:
+      operationId: admin_file_used_by_retrieve
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -53919,6 +53935,7 @@ components:
       - cascade_many
       - set_null
       - set_default
+      - none
       type: string
     User:
       type: object
