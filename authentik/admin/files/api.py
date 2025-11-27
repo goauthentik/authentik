@@ -140,10 +140,15 @@ class FileView(APIView):
             f.write(file.read())
 
         Event.new(
-            EventAction.FILE_UPLOADED,
-            name=name,
-            usage=usage.value,
-            mime_type=get_mime_from_filename(name),
+            EventAction.MODEL_CREATED,
+            model={
+                "app": "authentik_admin_files",
+                "model_name": "File",
+                "pk": name,
+                "name": name,
+                "usage": usage.value,
+                "mime_type": get_mime_from_filename(name),
+            },
         ).from_http(request)
 
         return Response()
@@ -161,8 +166,6 @@ class FileView(APIView):
         params = FileView.FileDeleteParameters(data=request.query_params)
         params.is_valid(raise_exception=True)
         params = params.validated_data
-        # name = request.query_params.get("name", "")
-        # usage_param = request.query_params.get("usage", FileApiUsage.MEDIA.value)
 
         validate_upload_file_name(params.get("name", ""), ValidationError)
 
@@ -180,9 +183,14 @@ class FileView(APIView):
 
         # Audit log for file deletion
         Event.new(
-            EventAction.FILE_DELETED,
-            name=params.get("name"),
-            usage=usage.value,
+            EventAction.MODEL_CREATED,
+            model={
+                "app": "authentik_admin_files",
+                "model_name": "File",
+                "pk": params.get("name"),
+                "name": params.get("name"),
+                "usage": usage.value,
+            },
         ).from_http(request)
 
         return Response()
