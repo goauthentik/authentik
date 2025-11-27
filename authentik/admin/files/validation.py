@@ -20,8 +20,6 @@ ALLOWED_MIME_TYPES = {
 
 
 def validate_file_name(name: str) -> None:
-    if StaticBackend(FileUsage.MEDIA).supports_file(name):
-        return
     if PassthroughBackend(FileUsage.MEDIA).supports_file(name):
         return
     validate_upload_file_name(name)
