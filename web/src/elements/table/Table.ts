@@ -28,7 +28,6 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -263,25 +262,11 @@ export abstract class Table<T extends object>
         }
     }
 
-    /**
-     * Whether the table is currently fetching data.
-     */
     @state()
     protected loading = false;
 
-    /**
-     * A timestamp of the last attempt to refresh the table data.
-     */
     @state()
     protected lastRefreshedAt: Date | null = null;
-
-    /**
-     * A cached grouping of the last fetched results.
-     *
-     * @see {@linkcode Table.fetch}
-     */
-    @state()
-    protected groups: GroupResult<T>[] = [];
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
@@ -333,9 +318,6 @@ export abstract class Table<T extends object>
     @property({ type: Boolean })
     public checkboxChip = false;
 
-    /**
-     * A mapping of the current items to their respective identifiers.
-     */
     #itemKeys = new WeakMap<T, string | number>();
 
     @property({ attribute: false })
@@ -461,8 +443,6 @@ export abstract class Table<T extends object>
                 this.data = data;
                 this.error = null;
 
-                this.groups = this.groupBy(this.data.results);
-
                 this.page = this.data.pagination.current;
                 const nextExpanded = new Set<string | number>();
 
@@ -569,48 +549,34 @@ export abstract class Table<T extends object>
             return this.renderEmpty();
         }
 
-        if (this.groups.length === 1) {
-            const [firstGroup] = this.groups;
+        const groups = this.groupBy(this.data.results);
+
+        if (groups.length === 1) {
+            const [firstGroup] = groups;
             const [groupKey, groupItems] = firstGroup;
 
             if (!groupKey) {
                 return html`<tbody>
                     ${groupItems.map((item, itemIndex) =>
-<<<<<<< HEAD
                         this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
-=======
-                        this.#renderRowGroupItem(item, itemIndex, groupItems, 0),
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                     )}
                 </tbody>`;
             }
         }
 
-<<<<<<< HEAD
         return groups.map(([group, items], groupIndex) => {
-=======
-        return this.groups.map(([groupName, items], groupIndex) => {
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
             const groupHeaderID = `table-group-${groupIndex}`;
 
             return html`<thead>
                     <tr>
                         <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
-<<<<<<< HEAD
                             ${group}
-=======
-                            ${groupName}
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     ${items.map((item, itemIndex) =>
-<<<<<<< HEAD
                         this.#renderRowGroupItem(item, itemIndex, items, groupIndex, groups),
-=======
-                        this.#renderRowGroupItem(item, itemIndex, items, groupIndex),
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                     )}
                 </tbody>`;
         });
@@ -648,17 +614,12 @@ export abstract class Table<T extends object>
         this.requestUpdate("expandedElements");
     };
 
-<<<<<<< HEAD
     #selectItemListener(item: T, event: InputEvent | PointerEvent) {
         const target = event.target as HTMLElement;
 
         if (event instanceof PointerEvent && target.classList.contains("ignore-click")) {
             return;
         }
-=======
-    #selectItemListener(item: T, event?: InputEvent | PointerEvent) {
-        const { target } = event ?? {};
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
 
         const itemKey = this.#itemKeys.get(item);
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
@@ -694,7 +655,6 @@ export abstract class Table<T extends object>
         this.requestUpdate();
     }
 
-<<<<<<< HEAD
     #renderRowGroupItem(
         item: T,
         rowIndex: number,
@@ -703,39 +663,16 @@ export abstract class Table<T extends object>
         groups: GroupResult<T>[],
     ): TemplateResult {
         const groupHeaderID = groups.length > 1 ? `table-group-${groupIndex}` : null;
-=======
-    //#region Grouping
-
-    protected groupBy(items: T[]): GroupResult<T>[] {
-        return [["", items]];
-    }
-
-    #renderRowGroupItem(item: T, rowIndex: number, items: T[], groupIndex: number): TemplateResult {
-        const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
 
         const itemKey = this.#itemKeys.get(item);
         const expanded = !!(itemKey && this.expandedElements.has(itemKey));
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
 
         const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
-<<<<<<< HEAD
 
         const renderCheckbox = () =>
             html`<td class="pf-c-table__check" role="presentation">
                 <label aria-label="${msg(str`Select "${rowLabel}" row`)}" class="ignore-click"
-=======
-
-        const selectItem = this.#selectItemListener.bind(this, item);
-
-        const renderCheckbox = () => {
-            if (!this.checkbox) {
-                return nothing;
-            }
-
-            return html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
-                <label aria-label="${msg(str`Select "${rowLabel}" row`)}"
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                     ><input
                         type="checkbox"
                         class="ignore-click"
@@ -746,13 +683,8 @@ export abstract class Table<T extends object>
                         }}
                 /></label>
             </td>`;
-        };
 
         const renderExpansion = () => {
-            if (!this.expandable) {
-                return nothing;
-            }
-
             return html`<td
                 class="pf-c-table__toggle pf-m-pressable"
                 role="presentation"
@@ -798,19 +730,14 @@ export abstract class Table<T extends object>
             <tr
                 aria-selected=${selected ? "true" : "false"}
                 class="${classMap({
-                    "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
+                    "pf-m-hoverable": this.checkbox || this.clickable,
                 })}"
                 @click=${this.clickable
                     ? this.clickHandler.bind(this, item)
                     : this.#selectItemListener.bind(this, item)}
             >
-<<<<<<< HEAD
                 ${this.checkbox ? renderCheckbox() : nothing}
                 ${this.expandable ? renderExpansion() : nothing}
-=======
-                ${guard([this.checkbox, selected], renderCheckbox)}
-                ${guard([this.expandable, expanded], renderExpansion)}
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                 ${this.row(item).map((cell, columnIndex) => {
                     const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
@@ -819,10 +746,6 @@ export abstract class Table<T extends object>
                         : columnID;
 
                     return html`<td
-<<<<<<< HEAD
-=======
-                        @click=${this.rowClickListener.bind(this, item)}
->>>>>>> 171305ca4 (web: Fix stale table rows (#17940))
                         class=${ifPresent(!columnID, "presentational")}
                         headers=${ifPresent(headers)}
                     >
@@ -1077,7 +1000,7 @@ export abstract class Table<T extends object>
                     ${this.renderRows()}
                 </table>
             </div>
-            ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
+            ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
     render(): TemplateResult {
