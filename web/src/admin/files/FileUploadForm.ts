@@ -1,3 +1,5 @@
+import "#elements/forms/HorizontalFormElement";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
 
@@ -27,7 +29,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         this.#formRef.value?.reset();
     }
 
-    public override async send(): Promise<void> {
+    public override async send(data: Record<string, unknown>): Promise<void> {
         if (!this.selectedFile) {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
@@ -41,9 +43,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         }
 
         const api = new AdminApi(DEFAULT_CONFIG);
-        const customName = this.shadowRoot
-            ?.querySelector<HTMLInputElement>("#file-name")
-            ?.value?.trim();
+        const customName = typeof data.fileName === "string" ? data.fileName.trim() : "";
 
         // If custom name provided, validate and append original extension
         let finalName = this.selectedFile.name;
@@ -59,41 +59,36 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             finalName = customName + ext;
         }
 
-        try {
-            await api.adminFileCreate({
+        return api
+            .adminFileCreate({
                 file: this.selectedFile,
                 name: finalName,
                 usage: this.usage,
-            });
+            })
+            .then(() => {
+                showMessage({
+                    level: MessageLevel.success,
+                    message: msg("File uploaded successfully"),
+                });
 
-            showMessage({
-                level: MessageLevel.success,
-                message: msg("File uploaded successfully"),
+                this.reset();
+            })
+            .catch((error) => {
+                throw error;
+            })
+            .finally(() => {
+                this.clearFileInput();
             });
-
-            // Clear the file input and state on success
-            this.clearFileInput();
-            this.reset();
-        } catch (error) {
-            // Clear the file input on error too
-            this.clearFileInput();
-            throw error;
-        }
     }
 
     renderForm() {
         return html`
             <form ${ref(this.#formRef)} class="pf-c-form pf-m-horizontal">
-                <div class="pf-c-form__group">
-                    <label class="pf-c-form__label" for="file-input">
-                        <span class="pf-c-form__label-text">${msg("File")}</span>
-                        <span class="pf-c-form__label-required" aria-hidden="true">*</span>
-                    </label>
+                <ak-form-element-horizontal label=${msg("File")} required>
                     <input
                         type="file"
                         class="pf-c-form-control"
                         id="file-input"
-                        name="file"
                         required
                         @change=${(e: Event) => {
                             const input = e.target as HTMLInputElement;
@@ -104,25 +99,19 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                             }
                         }}
                     />
-                </div>
-                <div class="pf-c-form__group">
-                    <label class="pf-c-form__label" for="file-name">
-                        <span class="pf-c-form__label-text">${msg("File Name")}</span>
-                    </label>
-                    <div class="pf-c-form__group-control">
-                        <input
-                            type="text"
-                            class="pf-c-form-control"
-                            id="file-name"
-                            placeholder=${msg("Leave empty to use original filename")}
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Optionally rename the file (without extension). Leave empty to keep the original filename.",
-                            )}
-                        </p>
-                    </div>
-                </div>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("File Name")} name="fileName">
+                    <input
+                        type="text"
+                        class="pf-c-form-control"
+                        placeholder=${msg("Leave empty to use original filename")}
+                    />
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Optionally rename the file (without extension). Leave empty to keep the original filename.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </form>
         `;
     }
