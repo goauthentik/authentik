@@ -5,21 +5,18 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
 from authentik.admin.files.backends.passthrough import PassthroughBackend
+from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.usage import FileUsage
 
 # File upload limits
 MAX_FILE_NAME_LENGTH = 1024
 MAX_PATH_COMPONENT_LENGTH = 255
 
-# Allowed MIME types per usage
-ALLOWED_MIME_TYPES = {
-    "media": ["image/"],
-    "reports": None,
-}
-
 
 def validate_file_name(name: str) -> None:
-    if PassthroughBackend(FileUsage.MEDIA).supports_file(name):
+    if PassthroughBackend(FileUsage.MEDIA).supports_file(name) or StaticBackend(
+        FileUsage.MEDIA
+    ).supports_file(name):
         return
     validate_upload_file_name(name)
 
