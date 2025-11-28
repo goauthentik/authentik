@@ -1,6 +1,6 @@
 // TypeScript Project Configuration
 {
-    "extends": "./packages/tsconfig/tsconfig.json",
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         "baseUrl": "."
     },

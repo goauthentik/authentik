@@ -5,6 +5,7 @@ from pathlib import Path
 from django.conf import settings
 from django.db import models
 from django.dispatch import Signal
+from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import (
     BooleanField,
@@ -63,7 +64,8 @@ class ConfigView(APIView):
 
     permission_classes = [AllowAny]
 
-    def get_capabilities(self) -> list[Capabilities]:
+    @staticmethod
+    def get_capabilities(request: HttpRequest) -> list[Capabilities]:
         """Get all capabilities this server instance supports"""
         caps = []
         deb_test = settings.DEBUG or settings.TEST
@@ -76,18 +78,19 @@ class ConfigView(APIView):
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)
-        if self.request.tenant.impersonation:
+        if request.tenant.impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
-        for _, result in capabilities.send(sender=self):
+        for _, result in capabilities.send(sender=ConfigView):
             if result:
                 caps.append(result)
         return caps
 
-    def get_config(self) -> ConfigSerializer:
+    @staticmethod
+    def get_config(request: HttpRequest) -> ConfigSerializer:
         """Get Config"""
         return ConfigSerializer(
             {
@@ -98,7 +101,7 @@ class ConfigView(APIView):
                     "send_pii": CONFIG.get("error_reporting.send_pii"),
                     "traces_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.4)),
                 },
-                "capabilities": self.get_capabilities(),
+                "capabilities": ConfigView.get_capabilities(request),
                 "cache_timeout": CONFIG.get_int("cache.timeout"),
                 "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
                 "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
@@ -108,4 +111,4 @@ class ConfigView(APIView):
     @extend_schema(responses={200: ConfigSerializer(many=False)})
     def get(self, request: Request) -> Response:
         """Retrieve public configuration options"""
-        return Response(self.get_config().data)
+        return Response(ConfigView.get_config(request).data)
