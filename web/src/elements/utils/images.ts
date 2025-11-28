@@ -26,10 +26,13 @@ export function renderImage(
     className: string = "",
 ): TemplateResult {
     // Handle Font Awesome icons (same logic as ak-app-icon)
-    // TODO: I should probably de-duplicate code from there when I have a second
     if (imagePath.startsWith(FontAwesomeProtocol)) {
-        const iconClass = imagePath.slice(FontAwesomeProtocol.length);
-        return html`<i role="img" aria-label=${alt} class="${className} fas ${iconClass}"></i>`;
+        return html`<i
+            part="icon font-awesome"
+            role="img"
+            aria-label=${alt}
+            class="${className} fas ${imagePath.slice(FontAwesomeProtocol.length)}"
+        ></i>`;
     }
 
     // Handle regular images
