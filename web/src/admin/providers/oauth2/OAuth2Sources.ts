@@ -28,10 +28,7 @@ export async function oauth2SourcesProvider(page = 1, search = "") {
 
 export function oauth2SourcesSelector(instanceMappings?: string[]) {
     if (!instanceMappings) {
-        return async (mappings: DualSelectPair<OAuthSource>[]) =>
-            mappings.filter(
-                ([_0, _1, _2, source]: DualSelectPair<OAuthSource>) => source !== undefined,
-            );
+        return async (mappings: DualSelectPair<OAuthSource>[]) => [];
     }
 
     return async () => {

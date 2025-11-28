@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `netbird.company` is the FQDN of the NetBird installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -36,10 +36,10 @@ To support the integration of NetBird with authentik, you need to create an appl
     - Under **Protocol Settings**:
         - Note the **Client ID**, and **slug** values because they will be required later.
         - Set **Client type** to `Public`.
-        - Add two `Strict` redirect URIs: `http://localhost:53000` and `https://<netbird.company>`.
-        - Add a `Regex` redirect: `https://<netbird.company>.*`.
+        - Add a `Strict` redirect: `http://localhost:53000`.
+        - Add a `Regex` redirect: `https://<netbird.company>/.*`.
         - Select any available signing key.
-    - Under **Advanced Protocol Settings**:
+    - Under **Advanced protocol settings**:
         - Set **Access Code Validity** to `minutes=10`.
         - Set **Subject Mode** to be `Based on the User's ID`.
         - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.
@@ -49,7 +49,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 It is important to set a signing key to secure the provider because this is a `Public` client.
 :::
 
-:::note
+:::info
 If an access group is created for the Netbird application, the Netbird service account must be included in the group. Otherwise you will see a 401 error after login.
 :::
 
@@ -92,13 +92,18 @@ NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
-NETBIRD_AUTH_AUDIENCE="<Your Client Secret>"
+NETBIRD_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_MGMT_IDP="authentik"
 NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
 NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
 NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
+NETBIRD_AUTH_REDIRECT_URI="/auth"
+NETBIRD_AUTH_SILENT_REDIRECT_URI="/silent-auth"
+
+# needs disabling due to issue with IdP. Learn more at https://github.com/netbirdio/netbird/issues/3654
+NETBIRD_AUTH_PKCE_DISABLE_PROMPT_LOGIN=true
 ```
 
 Restart the NetBird service for the changes to take effect. If using Docker, redeploy the NetBird container for the changes to take effect.

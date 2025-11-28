@@ -85,7 +85,7 @@ const metadata: Meta<AkFlowSearch<Flow>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) => {
-    return html` <div style="background: #fff; padding: 1.0rem;">
+    return html` <div style="padding: 1.0rem;">
         <style>
             li {
                 display: block;

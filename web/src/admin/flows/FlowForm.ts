@@ -21,7 +21,7 @@ import {
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -214,9 +214,8 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     ${msg("Required authentication level for this flow.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Behavior settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Behavior settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="compatibilityMode">
                         <label class="pf-c-switch">
                             <input
@@ -289,9 +288,8 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Appearance settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Appearance settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Layout")} required name="layout">
                         <select class="pf-c-form-control">
                             <option
@@ -339,7 +337,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                                                 ${this.instance?.background}
                                             </p>
                                         `
-                                      : html``}
+                                      : nothing}
 
                                   <p class="pf-c-form__helper-text">
                                       ${msg("Background shown during execution.")}
@@ -375,7 +373,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                                             </p>
                                         </ak-form-element-horizontal>
                                     `
-                                  : html``}`
+                                  : nothing}`
                         : html`<ak-form-element-horizontal
                               label=${msg("Background")}
                               name="background"

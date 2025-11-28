@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 - `seafile.company` is the FQDN of the Seafile installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -41,8 +41,8 @@ To support the integration of Seafile with authentik, you need to create an appl
 
 To support the integration of Seafile with authentik, you'll need to update the `seahub_settings.py` file of your Seafile deployment (The location may vary depending on your installation and deployment methods):
 
-```yaml showLineNumbers title="seahub_settings.py"
-CSRF_TRUSTED_ORIGINS = ["https://seafile.company"]
+```py showLineNumbers title="seahub_settings.py"
+CSRF_TRUSTED_ORIGINS = ['https://seafile.company']
 
 ENABLE_OAUTH = True
 
@@ -52,23 +52,28 @@ OAUTH_CREATE_UNKNOWN_USER = True
 # Automatically activate Seafile users when they log in for the first time. Defaults to True.
 OAUTH_ACTIVATE_USER_AFTER_CREATION = True
 
-OAUTH_CLIENT_ID = "<client_id_from_authentik>"
-OAUTH_CLIENT_SECRET = "<client_secret_from_authentik>"
+OAUTH_CLIENT_ID = '<client_id>'
+OAUTH_CLIENT_SECRET = '<client_secret>'
 
 OAUTH_REDIRECT_URL = 'https://seafile.company/oauth/callback/'
 
 OAUTH_PROVIDER = 'authentik'
-
-OAUTH_PROVIDER_DOMAIN = 'https:/authentik.company'
+OAUTH_PROVIDER_DOMAIN = 'https://authentik.company'
 OAUTH_AUTHORIZATION_URL = 'https://authentik.company/application/o/authorize/'
 OAUTH_TOKEN_URL = 'https://authentik.company/application/o/token/'
 OAUTH_USER_INFO_URL = 'https://authentik.company/application/o/userinfo/'
-OAUTH_SCOPE = [ "openid", "profile", "email",]
+
+OAUTH_SCOPE = ["openid", "profile", "email"]
 
 OAUTH_ATTRIBUTE_MAP = {
     "email": (True, "email"),
     "name": (False, "name"),
+    "sub": (False, "uid"),
 }
+
+# Optionally set the following variable to automatically redirect users to the login page
+LOGIN_URL = 'https://seafile.company/oauth/login/'
+
 ```
 
 ## Configuration verification

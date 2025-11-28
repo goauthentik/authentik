@@ -67,8 +67,28 @@ The **Web Certificate** option can be used to configure which certificate authen
 
 #### Client Certificates:ak-version[2025.4]
 
-When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this option configures which certificate authorities clients' certificates can be issued by.
+When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this setting specifies which certificate authorities are trusted to issue client certificates.
 
 #### Attributes
 
 Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../users-sources/user/user_ref.mdx#object-properties).
+
+## Image optimization
+
+When you use images and icons for a brand's logo, favicon, etc., be aware of the following optimization tips:
+
+- Use an SVG version of the image.
+
+- Trim excess whitespace from around the logo. You can use an SVG editor such as Inkscape, Sketch, or Adobe Illustrator.
+
+- Adjust the viewBox: Ensure the SVG’s `viewBox` attribute tightly wraps the actual logo content. This helps in scaling the logo appropriately.
+
+- Remove fixed dimensions: delete any fixed width and height attributes from the SVG. This allows the logo to scale responsively within its container.
+
+- Check if your SVG needs `preserveAspectRatio` to retain its shape when resized.
+
+- Wordmark logos: aim for an aspect ratio of approximately 7:1 (width to height).
+
+- Icon logos: use a 1:1 aspect ratio, ensuring the icon fills the entire viewBox and is centered.
+
+- The SVG tool [SVGOMG](https://svgomg.net/) is useful for trimming any excess metadata that might affect how the browser rasterizes the image.

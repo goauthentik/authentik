@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://jellyfin.org
 
-:::note
+:::info
 Jellyfin does not have any native external authentication support as of the writing of this page. Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
 :::
 
@@ -28,7 +28,7 @@ The following placeholders are used in this guide:
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -106,7 +106,7 @@ In authentik under **Providers**, create an OAuth2/OpenID Provider with these se
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 
-:::note
+:::info
 The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
 :::
 
@@ -171,6 +171,6 @@ a.raised.emby-button {
 14. Click **Save** at the bottom & restart the server.
 15. When you are signed out you should now see a **Sign in with SSO** button.
 
-:::note
-If you have problems check your logs which are under the **Administration** -> **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
+:::info
+If you have problems check your logs which are under the **Administration** > **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
 :::

@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://en.wikipedia.org/wiki/OnlyOffice
 
-:::note
+:::info
 This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions may differ between versions.
 :::
 
@@ -29,7 +29,7 @@ Click the _Enable Single Sign-on Authentication_ checkbox to enable SSO.
 
 Scroll down to _ONLYOFFICE SP Metadata_, and copy the _SP Entity ID (link to metadata XML)_ URL. Open this URL in a new tab, and download the XML file.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

@@ -22,7 +22,7 @@ import {
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -132,7 +132,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

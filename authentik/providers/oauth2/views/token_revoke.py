@@ -65,7 +65,7 @@ class TokenRevokeView(View):
 
             return TokenResponse(data={}, status=200)
         except TokenRevocationError as exc:
-            return TokenResponse(exc.create_dict(), status=401)
+            return TokenResponse(exc.create_dict(request), status=401)
         except Http404:
             # Token not found should return a HTTP 200
             # https://datatracker.ietf.org/doc/html/rfc7009#section-2.2

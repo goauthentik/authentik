@@ -4,7 +4,12 @@ import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
-const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
+const providerToSelect = (provider: OAuth2Provider) => [
+    provider.pk,
+    provider.name,
+    provider.name,
+    provider,
+];
 
 export async function oauth2ProvidersProvider(page = 1, search = "") {
     const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
@@ -22,10 +27,7 @@ export async function oauth2ProvidersProvider(page = 1, search = "") {
 
 export function oauth2ProvidersSelector(instanceProviders: number[] | undefined) {
     if (!instanceProviders) {
-        return async (mappings: DualSelectPair<OAuth2Provider>[]) =>
-            mappings.filter(
-                ([_0, _1, _2, source]: DualSelectPair<OAuth2Provider>) => source !== undefined,
-            );
+        return async (mappings: DualSelectPair<OAuth2Provider>[]) => [];
     }
 
     return async () => {

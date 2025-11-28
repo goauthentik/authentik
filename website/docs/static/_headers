@@ -1,0 +1,9 @@
+# Headers for static files
+/*
+  X-Frame-Options: DENY
+
+/releases.gen.json
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Headers: *
+  Cache-Control: public
+  Cache-Control: max-age=3600

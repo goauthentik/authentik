@@ -23,7 +23,7 @@ import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -87,7 +87,7 @@ export class PolicyWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
@@ -96,7 +96,7 @@ export class PolicyWizard extends AKElement {
                 ${this.showBindingPage
                     ? html`<ak-wizard-page-form
                           slot="create-binding"
-                          .sidebarLabel=${() => msg("Create Binding")}
+                          label=${msg("Create Binding")}
                           .activePageCallback=${async (context: FormWizardPage) => {
                               const createSlot = context.host.steps[1];
                               const bindingForm =
@@ -113,7 +113,7 @@ export class PolicyWizard extends AKElement {
                               .targetPk=${this.bindingTarget}
                           ></ak-policy-binding-form>
                       </ak-wizard-page-form>`
-                    : html``}
+                    : nothing}
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;

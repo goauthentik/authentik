@@ -4,6 +4,7 @@ import "#admin/sources/oauth/OAuthSourceForm";
 import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/sources/scim/SCIMSourceForm";
+import "#admin/sources/telegram/TelegramSourceForm";
 import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/Wizard";
@@ -65,7 +66,7 @@ export class SourceWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form
                                 .args=${{

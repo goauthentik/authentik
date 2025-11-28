@@ -1,4 +1,3 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
@@ -17,6 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -31,6 +31,7 @@ export class AuthenticatorStaticStage extends BaseStage<
         PFLogin,
         PFForm,
         PFFormControl,
+        PFInputGroup,
         PFTitle,
         PFButton,
         css`
@@ -64,20 +65,25 @@ export class AuthenticatorStaticStage extends BaseStage<
                         >
                     </div>
                 </ak-form-static>
-                <ak-form-element label="" class="pf-c-form__group">
+                <div class="pf-c-form__group">
                     <ul>
                         ${this.challenge.codes.map((token) => {
                             return html`<li class="pf-m-monospace">${token}</li>`;
                         })}
                     </ul>
-                </ak-form-element>
+                </div>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

@@ -20,8 +20,12 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `bitwarden.company` is the FQDN of the Bitwarden installation (if using self-hosted Bitwarden).
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info
+To enable Single Sign-On (SSO) with Bitwarden, an [enterprise subscription](https://bitwarden.com/help/password-manager-plans/#compare-business-plans) is required.
 :::
 
 ## Configuration methods
@@ -44,7 +48,7 @@ To support the integration of Bitwarden with authentik, you need to create a pro
 
 Bitwarden requires a first and last name for every user. However, authentik, by default, only supplies a full name as a single string. As a result, a property mapping must be created to separate and provide first and last names to Bitwarden.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **Scope Mapping**.
     - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Bitwarden Profile Scope`), and an optional description.
@@ -66,7 +70,7 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -110,7 +114,7 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -146,7 +150,7 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Bitwarden provider.
 3. Under **Protocol settings**, set the following required configurations:
     - **ACS URL**: set to the **Assertion consumer service (ACS) URL** from Bitwarden.
@@ -162,7 +166,7 @@ To confirm that authentik is properly configured with Bitwarden, log out and go 
 
 Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to login, once successful you should be redirected to the Bitwarden dashboard.
 
-:::note
+:::info
 Depending on your `Member decryption options` setting, which is set in Bitwarden via **Admin Console** > **Settings** > **Single sign-on**, you may still be required to enter your master password after signing in via SSO.
 :::
 

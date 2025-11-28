@@ -8,10 +8,12 @@ import { TypeCreate } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -29,7 +31,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     types: TypeCreate[] = [];
 
     @property({ attribute: false })
-    selectedType?: TypeCreate;
+    public selectedType: TypeCreate | null = null;
 
     @property({ type: String })
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
@@ -42,6 +44,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         PFGrid,
         PFRadio,
         PFCard,
+        PFPage,
         css`
             .pf-c-card__header-main img {
                 max-height: 2em;
@@ -49,6 +52,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             }
             :host([theme="dark"]) .pf-c-card__header-main img {
                 filter: invert(1);
+            }
+            .pf-c-page__main-section {
+                margin-bottom: 2rem;
             }
         `,
     ];
@@ -59,25 +65,26 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
-    public sidebarLabel = () => msg("Select type");
+    public override label = msg("Select type");
 
     public reset = () => {
         super.reset();
-        this.selectedType = undefined;
+
+        this.selectedType = null;
         this.formRef.value?.reset();
     };
 
-    activeCallback = (): void => {
+    public override activeCallback = (): void => {
         const form = this.formRef.value;
 
         this.host.isValid = form?.checkValidity() ?? false;
 
         if (this.selectedType) {
-            this.selectDispatch(this.selectedType);
+            this.#selectDispatch(this.selectedType);
         }
     };
 
-    private selectDispatch(type: TypeCreate) {
+    #selectDispatch = (type: TypeCreate) => {
         this.dispatchEvent(
             new CustomEvent("select", {
                 detail: type,
@@ -85,48 +92,57 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 composed: true,
             }),
         );
-    }
+    };
 
-    renderGrid(): TemplateResult {
+    protected renderGrid(): TemplateResult {
         return html`<div
+            role="listbox"
+            aria-label="${msg("Select a provider type")}"
             class="pf-l-grid pf-m-gutter"
             data-ouid-component-type="ak-type-create-grid"
         >
             ${this.types.map((type, idx) => {
-                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+                const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
 
-                // It's valid to pass in a local modelName or the full name with application
-                // part.  If the latter, we only want the part after the dot to appear as our
-                // OUIA tag for test automation.
-                const componentName = type.modelName.includes(".")
-                    ? (type.modelName.split(".")[1] ?? "--unknown--")
-                    : type.modelName;
+                const selected = this.selectedType === type;
+
                 return html`<div
-                    class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
-                        ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"} ${this.selectedType === type
-                        ? "pf-m-selected-raised"
-                        : ""}"
+                    class=${classMap({
+                        "pf-l-grid__item": true,
+                        "pf-m-3-col": true,
+                        "pf-c-card": true,
+                        "pf-m-non-selectable-raised": disabled,
+                        "ak-m-enterprise-only": disabled,
+                        "pf-m-selectable-raised": !disabled,
+                        "pf-m-selected-raised": selected,
+                    })}
                     tabindex=${idx}
-                    data-ouid-component-type="ak-type-create-grid-card"
-                    data-ouid-component-name=${componentName}
+                    role="option"
+                    aria-disabled="${disabled ? "true" : "false"}"
+                    aria-selected="${selected ? "true" : "false"}"
+                    aria-label="${type.name}"
+                    aria-describedby="${type.description}"
                     @click=${() => {
-                        if (requiresEnterprise) return;
+                        if (disabled) return;
 
-                        this.selectDispatch(type);
+                        this.#selectDispatch(type);
                         this.selectedType = type;
                     }}
                 >
                     ${type.iconUrl
-                        ? html`<div class="pf-c-card__header">
-                              <div class="pf-c-card__header-main">
-                                  <img src=${type.iconUrl} alt=${msg(str`${type.name} Icon`)} />
+                        ? html`<div role="presentation" class="pf-c-card__header">
+                              <div role="presentation" class="pf-c-card__header-main">
+                                  <img
+                                      aria-hidden="true"
+                                      src=${type.iconUrl}
+                                      alt=${msg(str`${type.name} Icon`)}
+                                  />
                               </div>
                           </div>`
                         : nothing}
-                    <div class="pf-c-card__title">${type.name}</div>
-                    <div class="pf-c-card__body">${type.description}</div>
-                    ${requiresEnterprise
+                    <div role="heading" aria-level="2" class="pf-c-card__title">${type.name}</div>
+                    <div role="presentational" class="pf-c-card__body">${type.description}</div>
+                    ${disabled
                         ? html`<div class="pf-c-card__footer">
                               <ak-license-notice></ak-license-notice>
                           </div> `
@@ -137,41 +153,47 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderList(): TemplateResult {
-        return html`<form
-            ${ref(this.formRef)}
-            class="pf-c-form pf-m-horizontal"
-            data-ouid-component-type="ak-type-create-list"
-        >
-            ${this.types.map((type) => {
-                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+        return html`${this.hasSlotted("above-form")
+                ? html`<div class="pf-c-page__main-section"><slot name="above-form"></slot></div>`
+                : nothing}
+            <form
+                ${ref(this.formRef)}
+                class="pf-c-form pf-m-horizontal"
+                role="radiogroup"
+                aria-label=${msg("Select a provider type")}
+            >
+                ${this.types.map((type) => {
+                    const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
+                    const inputID = `${type.component}-${type.modelName}`;
+                    const selected = this.selectedType === type;
 
-                return html`<div
-                    class="pf-c-radio"
-                    data-ouid-component-type="ak-type-create-list-card"
-                    data-ouid-component-name=${type.modelName.split(".")[1] ?? "--unknown--"}
-                >
-                    <input
-                        class="pf-c-radio__input"
-                        type="radio"
-                        name="type"
-                        id=${`${type.component}-${type.modelName}`}
-                        @change=${() => {
-                            this.selectDispatch(type);
-                        }}
-                        ?disabled=${requiresEnterprise}
-                    />
-                    <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
-                        >${type.name}</label
-                    >
-                    <span class="pf-c-radio__description"
-                        >${type.description}
-                        ${requiresEnterprise
-                            ? html`<ak-license-notice></ak-license-notice>`
-                            : nothing}
-                    </span>
-                </div>`;
-            })}
-        </form>`;
+                    return html`<div class="pf-c-radio">
+                        <input
+                            class="pf-c-radio__input"
+                            type="radio"
+                            name="type"
+                            id=${`${inputID}`}
+                            aria-label=${type.name}
+                            aria-describedby=${`${inputID}-description`}
+                            @change=${() => {
+                                this.#selectDispatch(type);
+                            }}
+                            ?disabled=${disabled}
+                        />
+                        <label
+                            aria-selected="${selected ? "true" : "false"}"
+                            aria-labelledby="${inputID}"
+                            class="pf-c-radio__label"
+                            for="${inputID}"
+                            >${type.name}</label
+                        >
+                        <span id="${inputID}-description" class="pf-c-radio__description"
+                            >${type.description}
+                            ${disabled ? html`<ak-license-notice></ak-license-notice>` : nothing}
+                        </span>
+                    </div>`;
+                })}
+            </form>`;
     }
 
     render(): TemplateResult {

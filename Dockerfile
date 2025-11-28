@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:45babd1b4ce0349fb12c4e24bf017b90b96d52806db32e001e3013f341bef0fe AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -14,10 +14,11 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+    npm ci
 
 COPY ./package.json /work
 COPY ./web /work/web/
+# TODO: Update this after moving website to docs
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
@@ -25,7 +26,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.4-trixie@sha256:a02d35efc036053fdf0da8c15919276bf777a80cbfda6a35c5e9f087e652adfc AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -62,7 +63,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/authentik ./cmd/server
 
 # Stage 3: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.1 AS geoip
+FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.1@sha256:faecdca22579730ab0b7dea5aa9af350bb3c93cb9d39845c173639ead30346d2 AS geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
 ENV GEOIPUPDATE_VERBOSE="1"
@@ -75,9 +76,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.7.20 AS uv
+FROM ghcr.io/astral-sh/uv:0.9.13@sha256:f07d1bf7b1fb4b983eed2b31320e25a2a76625bdf83d5ff0208fe105d4d8d2f5 AS uv
 # Stage 5: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.13.5-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.13.9-slim-trixie-fips@sha256:700fc8c1e290bd14e5eaca50b1d8e8c748c820010559cbfb4c4f8dfbe2c4c9ff AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -118,10 +119,15 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
+    # https://github.com/rust-lang/rustup/issues/2949
+    # Fixes issues where the rust version in the build cache is older than latest
+    # and rustup tries to update it, which fails
+    RUSTUP_PERMIT_COPY_RENAME="true"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
+    --mount=type=bind,target=packages,src=packages \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
@@ -132,11 +138,17 @@ ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url=https://goauthentik.io
-LABEL org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info."
-LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik server image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 WORKDIR /
 
@@ -167,6 +179,8 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
+COPY ./packages/ /ak-root/packages
+RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/

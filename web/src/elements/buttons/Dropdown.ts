@@ -11,32 +11,39 @@ export class DropdownButton extends AKElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, this.clickHandler);
+        window.addEventListener(EVENT_REFRESH, this.show);
     }
 
-    clickHandler = (): void => {
-        if (!this.menu) {
-            return;
-        }
+    public show = (): void => {
+        if (!this.menu) return;
+
         this.menu.hidden = true;
     };
 
     connectedCallback() {
         super.connectedCallback();
-        this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
+
+        const menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
+
+        if (!menu) {
+            console.warn("authentik/dropdown: No menu found");
+        }
+
+        this.menu = menu;
+
         this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
             btn.addEventListener("click", () => {
-                if (!this.menu) {
-                    return;
-                }
+                if (!this.menu) return;
+
                 this.menu.hidden = !this.menu.hidden;
+                btn.ariaExpanded = (!this.menu.hidden).toString();
             });
         });
     }
 
     disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.clickHandler);
+        window.removeEventListener(EVENT_REFRESH, this.show);
     }
 
     render(): TemplateResult {

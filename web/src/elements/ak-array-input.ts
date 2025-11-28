@@ -15,7 +15,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-type InputCell<T> = (el: T) => TemplateResult | typeof nothing;
+export type InputCell<T> = (el: T, idx: number) => TemplateResult | typeof nothing;
 
 export interface IArrayInput<T> {
     row: InputCell<T>;
@@ -151,7 +151,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
                 (item: Keyed<T>) => item.key,
                 (item: Keyed<T>, idx) =>
                     html` <div class="ak-input-group" @change=${() => this.onChange()}>
-                        ${this.row(item.item)}${this.renderDeleteButton(idx)}
+                        ${this.row(item.item, idx)}${this.renderDeleteButton(idx)}
                     </div>`,
             )}
             <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>

@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ExtraUserObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
@@ -33,14 +34,12 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(msg("Object"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        [msg("Object"), ""],
+        [""],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -72,7 +71,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraUserObjectPermission): TemplateResult[] {
+    row(item: ExtraUserObjectPermission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
@@ -86,7 +85,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

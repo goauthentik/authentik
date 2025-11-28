@@ -1,6 +1,6 @@
 import "#elements/LoadingOverlay";
 
-import AKGlobal from "#common/styles/authentik.css";
+import Styles from "./index.entrypoint.css";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -8,7 +8,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -48,29 +48,11 @@ const RECONNECT_ATTEMPTS = 5;
 @customElement("ak-rac")
 export class RacInterface extends WithBrandConfig(Interface) {
     static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFPage,
         PFContent,
-        AKGlobal,
-        css`
-            :host {
-                cursor: none;
-            }
-            canvas {
-                z-index: unset !important;
-            }
-            .container {
-                overflow: hidden;
-                height: 100vh;
-                background-color: black;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            ak-loading-overlay {
-                z-index: 5;
-            }
-        `,
+        Styles,
     ];
 
     client?: Guacamole.Client;

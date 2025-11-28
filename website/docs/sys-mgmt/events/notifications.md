@@ -3,7 +3,7 @@ title: Notification rules
 sidebar_label: Notification rules
 ---
 
-:::note
+:::info
 To prevent infinite loops of cause and effect (events created by policies which are attached to a notification rule), _any events created by a policy which is attached to any notification rules do not trigger notifications._
 :::
 
@@ -27,13 +27,13 @@ You will need to create a policy (either the **Event Matcher** policy or a custo
 
 ### Event Matcher policy
 
-For simple event matching you can [create and configure](../../customize/policies/working_with_policies.md) a **Event Matcher** policy to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
+For simple event matching you can [create and configure](../../customize/policies/working_with_policies.md) an **Event Matcher policy** to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
 
 Be aware that an event has to match all configured fields in the policy, otherwise the notification rule will not trigger.
 
 ### Expression policy for events
 
-To match events with an "Expression Policy", you can write code like so:
+To match events with an **Expression Policy**, you can write code like so:
 
 ```python
 if "event" not in request.context:
@@ -41,6 +41,8 @@ if "event" not in request.context:
 
 return ip_address(request.context["event"].client_ip) in ip_network('192.0.2.0/24')
 ```
+
+For more code examples, see [notification rule expression policies](./notification_rule_expression_policies.mdx).
 
 ## 3. Create a notification rule and bind it to the policy
 

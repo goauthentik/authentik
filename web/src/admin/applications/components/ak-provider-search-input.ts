@@ -5,6 +5,10 @@ import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 
+import { AKLabel } from "#components/ak-label";
+
+import { IDGenerator } from "#packages/core/id";
+
 import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/api";
 
 import { html, nothing } from "lit";
@@ -38,11 +42,13 @@ export class AkProviderInput extends AKElement {
         return this;
     }
 
+    //#region Properties
+
     @property({ type: String })
     name!: string;
 
     @property({ type: String })
-    label = "";
+    label: string | null = null;
 
     @property({ type: Number })
     value?: number;
@@ -54,26 +60,35 @@ export class AkProviderInput extends AKElement {
     blankable = false;
 
     @property({ type: String })
-    help = "";
+    help: string | null = null;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
 
-    selected(item: Provider) {
-        return this.value !== undefined && this.value === item.pk;
-    }
+    //#endregion
+
+    #selected = (item: Provider) => {
+        return typeof this.value === "number" && this.value === item.pk;
+    };
 
     render() {
-        return html` <ak-form-element-horizontal label=${this.label} name=${this.name}>
+        return html` <ak-form-element-horizontal name=${this.name}>
+            <div slot="label" class="pf-c-form__group-label">
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+            </div>
+
             <ak-search-select
-                .selected=${this.selected}
+                .fieldID=${this.fieldID}
+                .selected=${this.#selected}
                 .fetchObjects=${fetch}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
-                ?blankable=${this.blankable}
+                ?blankable=${!!this.blankable}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

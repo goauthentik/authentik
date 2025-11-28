@@ -1,0 +1,157 @@
+"""Telegram source"""
+
+from typing import Any
+
+from django.db import models
+from django.http import HttpRequest
+from django.templatetags.static import static
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import BaseSerializer, Serializer
+
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.models import Flow
+
+
+class TelegramSource(Source):
+    """Log in with Telegram."""
+
+    bot_username = models.TextField(help_text=_("Telegram bot username"))
+    bot_token = models.TextField(help_text=_("Telegram bot token"))
+
+    request_message_access = models.BooleanField(
+        default=False, help_text=_("Request access to send messages from your bot.")
+    )
+
+    pre_authentication_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.CASCADE,
+        help_text=_("Flow used before authentication."),
+        related_name="telegram_source_pre_authentication",
+    )
+
+    @property
+    def component(self) -> str:
+        return "ak-source-telegram-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        icon = super().icon_url
+        if not icon:
+            icon = static("authentik/sources/telegram.svg")
+        return icon
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.sources.telegram.api.source import TelegramSourceSerializer
+
+        return TelegramSourceSerializer
+
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
+        return UILoginButton(
+            challenge=RedirectChallenge(
+                data={
+                    "to": reverse(
+                        "authentik_sources_telegram:start",
+                        kwargs={"source_slug": self.slug},
+                    ),
+                }
+            ),
+            name=self.name,
+            icon_url=self.icon_url,
+            promoted=self.promoted,
+        )
+
+    def ui_user_settings(self) -> UserSettingSerializer | None:
+        return UserSettingSerializer(
+            data={
+                "title": self.name,
+                "component": "ak-user-settings-source-telegram",
+                "icon_url": self.icon_url,
+            }
+        )
+
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        return TelegramSourcePropertyMapping
+
+    def get_base_user_properties(
+        self, info: dict[str, Any] | None = None, **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        info = info or {}
+        name = info.get("first_name", "")
+        if "last_name" in info:
+            name += " " + info["last_name"]
+        return {
+            "username": info.get("username", None),
+            "email": None,
+            "name": name if name else None,
+        }
+
+    def get_base_group_properties(self, group_id: str, **kwargs):
+        return {
+            "name": group_id,
+        }
+
+    class Meta:
+        verbose_name = _("Telegram Source")
+        verbose_name_plural = _("Telegram Sources")
+
+
+class TelegramSourcePropertyMapping(PropertyMapping):
+    """Map Telegram properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-telegram-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.property_mappings import (
+            TelegramSourcePropertyMappingSerializer,
+        )
+
+        return TelegramSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("Telegram Source Property Mapping")
+        verbose_name_plural = _("Telegram Source Property Mappings")
+
+
+class UserTelegramSourceConnection(UserSourceConnection):
+    """Connect user and Telegram source"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.source_connection import (
+            UserTelegramSourceConnectionSerializer,
+        )
+
+        return UserTelegramSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User Telegram Source Connection")
+        verbose_name_plural = _("User Telegram Source Connections")
+
+
+class GroupTelegramSourceConnection(GroupSourceConnection):
+    """Group-source connection for Telegram"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.source_connection import (
+            GroupTelegramSourceConnectionSerializer,
+        )
+
+        return GroupTelegramSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group Telegram Source Connection")
+        verbose_name_plural = _("Group Telegram Source Connections")

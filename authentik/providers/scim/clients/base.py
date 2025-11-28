@@ -35,7 +35,6 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     """SCIM Client"""
 
     base_url: str
-    token: str
 
     _session: Session
     _config: ServiceProviderConfiguration
@@ -45,12 +44,12 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider
+        self.auth = provider.scim_auth()
         # Remove trailing slashes as we assume the URL doesn't have any
         base_url = provider.url
         if base_url.endswith("/"):
             base_url = base_url[:-1]
         self.base_url = base_url
-        self.token = provider.token
         self._config = self.get_service_provider_config()
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
@@ -62,8 +61,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
                 method,
                 f"{self.base_url}{path}",
                 **kwargs,
+                auth=self.auth,
                 headers={
-                    "Authorization": f"Bearer {self.token}",
                     "Accept": "application/scim+json",
                     "Content-Type": "application/scim+json",
                 },
@@ -89,10 +88,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
+        path = "/ServiceProviderConfig"
+        if self.provider.compatibility_mode == SCIMCompatibilityMode.SALESFORCE:
+            path = "/ServiceProviderConfigs"
         try:
-            config = ServiceProviderConfiguration.model_validate(
-                self._request("GET", "/ServiceProviderConfig")
-            )
+            config = ServiceProviderConfiguration.model_validate(self._request("GET", path))
             if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
                 config.patch.supported = False
             if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:

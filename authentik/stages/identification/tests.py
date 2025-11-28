@@ -95,6 +95,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -130,6 +131,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -194,7 +196,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=False,
             primary_action="Log in",
             response_errors={
-                "non_field_errors": [{"code": "invalid", "string": "Invalid captcha response"}]
+                "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
             },
             sources=[
                 {
@@ -204,6 +206,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -247,7 +250,7 @@ class TestIdentificationStage(FlowTestCase):
                 "non_field_errors": [
                     {
                         "code": "invalid",
-                        "string": "Invalid captcha response. Retrying may solve this issue.",
+                        "string": "Failed to authenticate.",
                     }
                 ]
             },
@@ -259,6 +262,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -321,6 +325,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             user_fields=[],
@@ -369,6 +374,7 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": "/source/oauth/login/test/",
                     },
+                    "promoted": False,
                 }
             ],
         )
@@ -406,6 +412,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
         )
@@ -433,6 +440,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
         )

@@ -10,13 +10,13 @@ import { fileURLToPath } from "node:url";
 import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
-} from "@goauthentik/docusaurus-theme/releases/utils";
-
-import apiReference from "./developer-docs/api/reference/sidebar.ts";
+    prepareReleaseEnvironment,
+} from "@goauthentik/docusaurus-theme/releases/node";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const releases = collectReleaseFiles(path.join(__dirname));
+const releaseEnvironment = prepareReleaseEnvironment();
 
 /**
  * @type {SidebarItemConfig[]}
@@ -83,10 +83,12 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
             "install-config/reverse-proxy",
             "install-config/automated-install",
+            "install-config/high-availability",
             "install-config/air-gapped",
         ],
     },
@@ -129,6 +131,15 @@ const items = [
                             id: "add-secure-apps/providers/property-mappings/index",
                         },
                         items: ["add-secure-apps/providers/property-mappings/expression"],
+                    },
+                    {
+                        type: "category",
+                        label: "Single Logout",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/single-logout/index",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
@@ -175,6 +186,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
+                            "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },
@@ -218,7 +230,18 @@ const items = [
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
-                    "add-secure-apps/providers/saml/index",
+                    {
+                        type: "category",
+                        label: "SAML Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/saml/index",
+                        },
+                        items: [
+                            "add-secure-apps/providers/saml/create-saml-provider",
+                            "add-secure-apps/providers/saml/saml_single_logout",
+                        ],
+                    },
                     "add-secure-apps/providers/scim/index",
                     {
                         type: "category",
@@ -342,8 +365,6 @@ const items = [
                             "add-secure-apps/outposts/upgrading",
                         ],
                     },
-                    "add-secure-apps/outposts/manual-deploy-docker-compose",
-                    "add-secure-apps/outposts/manual-deploy-kubernetes",
                 ],
             },
         ],
@@ -382,8 +403,9 @@ const items = [
                         },
                         items: [
                             "customize/policies/expression/unique_email",
-                            "customize/policies/expression/whitelist_email",
                             "customize/policies/expression/managing_flow_context_keys",
+                            "customize/policies/expression/source_switch",
+                            "customize/policies/expression/whitelist_email",
                         ],
                     },
                     "customize/policies/unique_password",
@@ -412,6 +434,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
@@ -452,6 +475,7 @@ const items = [
                     "users-sources/user/user_basic_operations",
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
+                    "users-sources/user/password_reset_on_login",
                 ],
             },
             {
@@ -552,8 +576,19 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
-                            "users-sources/sources/social-logins/azure-ad/index",
                             "users-sources/sources/social-logins/discord/index",
+                            {
+                                type: "category",
+                                label: "Entra ID",
+                                link: {
+                                    type: "doc",
+                                    id: "users-sources/sources/social-logins/entra-id/index",
+                                },
+                                items: [
+                                    "users-sources/sources/social-logins/entra-id/oauth/index",
+                                    "users-sources/sources/social-logins/entra-id/scim/index",
+                                ],
+                            },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
                             {
@@ -569,8 +604,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
-                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/telegram/index",
+                            "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
                         ],
                     },
@@ -586,6 +622,7 @@ const items = [
         label: "System Management",
         collapsed: true,
         items: [
+            "sys-mgmt/background-tasks",
             "sys-mgmt/brands",
             {
                 //#endregion
@@ -596,6 +633,7 @@ const items = [
                 collapsed: true,
                 items: [
                     "sys-mgmt/ops/monitoring",
+                    "sys-mgmt/ops/worker",
                     "sys-mgmt/ops/storage-s3",
                     "sys-mgmt/ops/geoip",
                     "sys-mgmt/ops/backup-restore",
@@ -614,6 +652,7 @@ const items = [
                 },
                 items: [
                     "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/notification_rule_expression_policies",
                     "sys-mgmt/events/transports",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
@@ -637,32 +676,16 @@ const items = [
         },
         items: [
             {
-                type: "category",
-                label: "API",
-                link: {
-                    type: "doc",
-                    id: "developer-docs/api/api",
-                },
-                items: [
-                    "developer-docs/api/flow-executor",
-                    "developer-docs/api/making-schema-changes",
-                    "developer-docs/api/websocket",
-                    {
-                        type: "category",
-                        label: "Reference",
-                        items: apiReference,
-                    },
-                    "developer-docs/api/clients",
-                ],
+                type: "link",
+                href: releaseEnvironment.apiReferenceOrigin,
+                label: "API Overview",
+                className: "api-overview",
             },
-
-            // TODO: Enable when API docs are ready
-            // {
-            //     type: "link",
-            //     href: process.env.API_DOCS_URL || "https://api.goauthentik.io",
-            //     label: "API Overview",
-            //     className: "api-overview",
-            // },
+            {
+                type: "doc",
+                id: "developer-docs/contributing",
+                label: "Contributing",
+            },
 
             {
                 //#endregion
@@ -670,10 +693,13 @@ const items = [
                 //#region Development environment
                 type: "category",
                 label: "Development environment",
+                link: {
+                    type: "doc",
+                    id: "developer-docs/setup/index",
+                },
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
                     "developer-docs/setup/debugging",
                 ],
             },
@@ -697,10 +723,10 @@ const items = [
                             id: "developer-docs/docs/templates/index",
                         },
                         items: [
+                            "developer-docs/docs/templates/combo",
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],
@@ -748,7 +774,13 @@ const items = [
                     {
                         type: "category",
                         label: "2025",
-                        items: ["security/cves/CVE-2025-52553", "security/cves/CVE-2025-29928"],
+                        items: [
+                            "security/cves/CVE-2025-64708",
+                            "security/cves/CVE-2025-64521",
+                            "security/cves/CVE-2025-53942",
+                            "security/cves/CVE-2025-52553",
+                            "security/cves/CVE-2025-29928",
+                        ],
                     },
                     {
                         type: "category",

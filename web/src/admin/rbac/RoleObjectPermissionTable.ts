@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     PaginatedPermissionList,
@@ -50,22 +51,25 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             return value.codename !== `add_${this.model?.split(".")[1]}`;
         });
         this.modelPermissions = modelPermissions;
+        this.requestUpdate("columns");
         return perms;
     }
 
-    columns(): TableColumn[] {
-        const baseColumns = [new TableColumn(msg("User"), "user")];
-        // We don't check pagination since models shouldn't need to have that many permissions?
-        this.modelPermissions?.results.forEach((perm) => {
-            baseColumns.push(new TableColumn(perm.name, perm.codename));
-        });
-        return baseColumns;
+    @state()
+    protected get columns(): TableColumn[] {
+        const permissions = this.modelPermissions?.results ?? [];
+
+        return [
+            [msg("User"), "user"],
+            // We don't check pagination since models shouldn't need to have that many permissions?
+            ...permissions.map(({ name, codename }): TableColumn => [name, codename]),
+        ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
-            <span slot="submit"> ${msg("Assign")} </span>
-            <span slot="header"> ${msg("Assign permission to role")} </span>
+            <span slot="submit">${msg("Assign")}</span>
+            <span slot="header">${msg("Assign permission to role")}</span>
             <ak-rbac-role-object-permission-form
                 model=${ifDefined(this.model)}
                 objectPk=${ifDefined(this.objectPk)}
@@ -107,7 +111,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): TemplateResult[] {
+    row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
         const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =
@@ -115,9 +119,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             baseRow.push(
                 html`${granted
                     ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                          ><i class="fas fa-check pf-m-success"></i
+                          ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
                       ></pf-tooltip>`
-                    : html`<i class="fas fa-times pf-m-danger"></i>`} `,
+                    : html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`} `,
             );
         });
         return baseRow;

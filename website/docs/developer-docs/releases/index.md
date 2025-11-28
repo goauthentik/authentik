@@ -31,7 +31,7 @@
 
         If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
 
-    - Run `make website`
+    - Run `make docs`
 
     #### For subsequent releases:
     - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
@@ -40,7 +40,7 @@
 
     - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
 
-    - Run `make website`
+    - Run `make docs`
 
 - Run `bumpversion` on the version branch with the new version (i.e. `bumpversion --new-version 2022.12.2 minor --verbose`)
 - Push the tag and commit
@@ -50,13 +50,13 @@
     - Add the following to the release notes
 
         ```
-        See https://goauthentik.io/docs/releases/2022.12
+        See https://docs.goauthentik.io/releases/2022.12
         ```
 
         Or if creating a subsequent release
 
         ```
-        See https://goauthentik.io/docs/releases/2022.12#fixed-in-2022121
+        See https://docs.goauthentik.io/releases/2022.12#fixed-in-2022121
         ```
 
     - Auto-generate the full release notes using the GitHub _Generate Release Notes_ feature
@@ -124,7 +124,7 @@ If you have any questions or comments about this advisory:
 Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
 
 ```markdown
-We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
 ```
 
 </details>
@@ -133,7 +133,7 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 <summary>Discord template</summary>
 
 ```markdown
-@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
 ```
 
 </details>

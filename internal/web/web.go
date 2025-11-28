@@ -12,7 +12,6 @@ import (
 	"path"
 	"time"
 
-	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/pires/go-proxyproto"
@@ -60,7 +59,7 @@ func NewWebServer() *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
 	mainHandler.Use(web.ProxyHeaders())
-	mainHandler.Use(handlers.CompressHandler)
+	mainHandler.Use(web.NewCompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
@@ -242,9 +241,7 @@ func (ws *WebServer) listenPlain() {
 }
 
 func (ws *WebServer) serve(listener net.Listener) {
-	srv := &http.Server{
-		Handler: ws.mainRouter,
-	}
+	srv := web.Server(ws.mainRouter)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

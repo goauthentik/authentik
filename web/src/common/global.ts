@@ -1,10 +1,16 @@
-import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
+import {
+    Config,
+    ConfigFromJSON,
+    CurrentBrand,
+    CurrentBrandFromJSON,
+    FlowLayoutEnum,
+} from "@goauthentik/api";
 
 export interface GlobalAuthentik {
     _converted?: boolean;
     locale?: string;
     flow?: {
-        layout: string;
+        layout: FlowLayoutEnum;
     };
     config: Config;
     brand: CurrentBrand;
@@ -28,7 +34,7 @@ export function globalAK(): GlobalAuthentik {
         ak.brand = CurrentBrandFromJSON(ak.brand);
         ak.config = ConfigFromJSON(ak.config);
     }
-    const apiBase = new URL(process.env.AK_API_BASE_PATH || window.location.origin);
+    const apiBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
     if (!ak) {
         return {
             config: ConfigFromJSON({
@@ -49,11 +55,10 @@ export function globalAK(): GlobalAuthentik {
     return ak;
 }
 
-export function docLink(path: string): string {
-    const ak = globalAK();
-    // Default case or beta build which should always point to latest
-    if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
-    }
-    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
+export function docLink(urlLike: string | URL, base = import.meta.env.AK_DOCS_URL): string {
+    const url = new URL(urlLike, base);
+
+    url.searchParams.append("utm_source", "authentik");
+
+    return url.href;
 }

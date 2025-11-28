@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main-daily
+name: CI - Main daily
 
 on:
   workflow_dispatch:
@@ -9,7 +9,6 @@ on:
 
 jobs:
   test-container:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,7 +18,7 @@ jobs:
           - version-2025-4
           - version-2025-2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"

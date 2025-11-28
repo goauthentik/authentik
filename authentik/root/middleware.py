@@ -296,7 +296,7 @@ class ChannelsLoggingMiddleware:
         except DenyConnection:
             return await send({"type": "websocket.close"})
         except Exception as exc:
-            if settings.DEBUG:
+            if settings.DEBUG or settings.TEST:
                 raise exc
             LOGGER.warning("Exception in ASGI application", exc=exc)
             return await send({"type": "websocket.close"})

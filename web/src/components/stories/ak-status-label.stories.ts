@@ -21,17 +21,16 @@ const metadata: Meta<AkStatusLabel> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
-        <style>
-            dl {
-                display: grid;
-                grid-template-columns: 22ch 1fr;
-                gap: 0.5rem;
-            }
-        </style>
-        ${testItem}
-    </div>`;
+const container = (testItem: TemplateResult) => html`
+    <style>
+        dl {
+            display: grid;
+            grid-template-columns: 22ch 1fr;
+            gap: 0.5rem;
+        }
+    </style>
+    ${testItem}
+`;
 
 export const AppIcon = () => {
     // prettier-ignore

@@ -3,7 +3,6 @@ import "#admin/flows/FlowDiagram";
 import "#admin/flows/FlowForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
@@ -12,13 +11,16 @@ import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -67,25 +69,23 @@ export class FlowViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.flow) {
-            return html``;
+            return nothing;
         }
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-process-automation"
-                header=${this.flow.name}
-                description=${this.flow.title}
-            >
-            </ak-page-header>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs exportparts="container:tabs">
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-overview"
-                    data-tab-title="${msg("Flow Overview")}"
+                    id="page-overview"
+                    aria-label="${msg("Flow Overview")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Flow Info")}</div>
                             <div class="pf-c-card__body">
@@ -155,6 +155,9 @@ export class FlowViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" normally`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
                                                         const finalURL = `${
@@ -168,6 +171,9 @@ export class FlowViewPage extends AKElement {
                                                     ${msg("Normal")}
                                                 </button>
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" as current user`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
@@ -175,18 +181,19 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }${AndNext(
+                                                                const finalURL = `${link.link}${AndNext(
                                                                     `${window.location.pathname}#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
                                                 >
-                                                    ${msg("with current user")}
+                                                    ${msg("Current user")}
                                                 </button>
                                                 <button
+                                                    aria-label=${msg(
+                                                        str`Execute "${this.flow.name}" with inspector`,
+                                                    )}
                                                     class="pf-c-button pf-m-block pf-m-secondary"
                                                     @click=${() => {
                                                         new FlowsApi(DEFAULT_CONFIG)
@@ -194,9 +201,7 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }?${encodeURI(
+                                                                const finalURL = `${link.link}?${encodeURI(
                                                                     `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
@@ -213,7 +218,7 @@ export class FlowViewPage extends AKElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${msg("with inspector")}
+                                                    ${msg("Use inspector")}
                                                 </button>
                                             </div>
                                         </dd>
@@ -237,7 +242,7 @@ export class FlowViewPage extends AKElement {
                             </div>
                         </div>
                         <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                         >
                             <div class="pf-c-card__title">${msg("Diagram")}</div>
                             <div class="pf-c-card__body">
@@ -260,8 +265,11 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-stage-bindings"
-                    data-tab-title="${msg("Stage Bindings")}"
+                    id="page-stage-bindings"
+                    aria-label="${msg("Stage Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -271,8 +279,11 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-policy-bindings"
-                    data-tab-title="${msg("Policy / Group / User Bindings")}"
+                    id="page-policy-bindings"
+                    aria-label="${msg("Policy / Group / User Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -289,12 +300,28 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-permissions"
-                    data-tab-title="${msg("Permissions")}"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
-            </ak-tabs>`;
+            </ak-tabs>
+        </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+
+        if (changed.has("flow")) {
+            setPageDetails({
+                icon: "pf-icon pf-icon-process-automation",
+                header: this.flow?.name,
+                description: this.flow?.title,
+            });
+        }
     }
 }
 

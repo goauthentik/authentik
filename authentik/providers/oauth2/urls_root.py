@@ -6,6 +6,7 @@ from django.urls import include, path
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.device_init import DeviceEntryView
 from authentik.providers.oauth2.views.github import GitHubUserTeamsView, GitHubUserView
+from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.oauth2.views.token import TokenView
 
 github_urlpatterns = [
@@ -39,5 +40,10 @@ urlpatterns = [
             DeviceEntryView.as_view(),
         ),
         name="device-login",
+    ),
+    path(
+        ".well-known/oauth-authorization-server/application/o/<slug:application_slug>/",
+        ProviderInfoView.as_view(),
+        name="providers-oauth2-authorization-server-metadata",
     ),
 ]

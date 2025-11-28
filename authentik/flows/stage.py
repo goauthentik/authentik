@@ -160,7 +160,7 @@ class ChallengeStageView(StageView):
                 "user": self.get_pending_user(for_display=True),
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
 
@@ -286,6 +286,12 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        if not self.request.user.is_authenticated:
+            return RedirectChallenge(
+                data={
+                    "to": reverse("authentik_core:root-redirect"),
+                },
+            )
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {
             "component": "ak-stage-session-end",
@@ -301,6 +307,7 @@ class SessionEndStage(ChallengeStageView):
                     "flow_slug": self.request.brand.flow_invalidation.slug,
                 },
             )
+
         return SessionEndChallenge(data=data)
 
     # This can never be reached since this challenge is created on demand and only the

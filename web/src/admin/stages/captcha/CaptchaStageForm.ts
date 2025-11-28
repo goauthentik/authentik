@@ -49,9 +49,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Public Key")}
                         required
@@ -76,8 +75,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="privateKey"
                         label=${msg("Private Key")}
                         input-hint="code"
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
                         )}
@@ -106,31 +105,18 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         value="${ifDefined(this.instance?.scoreMaxThreshold || -1)}"
                         help=${msg("Maximum allowed score to allow continuing")}
                     ></ak-number-input>
-                    <ak-form-element-horizontal name="errorOnInvalidScore">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.errorOnInvalidScore ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Error on invalid score")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        ?checked=${!!(this.instance?.errorOnInvalidScore ?? true)}
+                        name="errorOnInvalidScore"
+                        label=${msg("Error on invalid score")}
+                        help=${msg(
+                            "When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
                         <input
                             type="url"

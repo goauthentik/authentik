@@ -10,7 +10,8 @@ coverage
 dist
 out
 .docusaurus
-website/docs/developer-docs/api/**/*
+# TODO Replace after moving website to docs
+website/api/reference
 
 ## Environment
 *.env
@@ -24,6 +25,10 @@ website/docs/developer-docs/api/**/*
 ## Node
 node_modules
 coverage
+
+## Vendored files
+vendored
+*.min.js
 
 ## Configs
 *.log

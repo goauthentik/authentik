@@ -1,8 +1,10 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 import { isCausedByAbortError } from "#common/errors/network";
+import { isGuest } from "#common/users";
 
 import { LicenseContext, LicenseMixin } from "#elements/mixins/license";
+import { SessionMixin } from "#elements/mixins/session";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
@@ -14,7 +16,7 @@ export class LicenseContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/license`);
     #abortController: null | AbortController = null;
 
-    #host: ReactiveElementHost<LicenseMixin>;
+    #host: ReactiveElementHost<SessionMixin & LicenseMixin>;
     #context: ContextProvider<LicenseContext>;
 
     constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
@@ -27,8 +29,6 @@ export class LicenseContextController implements ReactiveController {
 
     #fetch = () => {
         this.#log("Fetching license summary...");
-
-        this.#abortController?.abort();
 
         this.#abortController = new AbortController();
 
@@ -57,22 +57,30 @@ export class LicenseContextController implements ReactiveController {
             });
     };
 
-    public hostConnected() {
-        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
+    #refreshListener = (event: Event) => {
+        this.#abortController?.abort(event.type);
         this.#fetch();
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.#refreshListener);
     }
 
     public hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
-        this.#abortController?.abort();
+        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.#refreshListener);
     }
 
     public hostUpdate() {
-        // If the Interface changes its config information, we should notify all
-        // users of the context of that change, without creating an infinite
-        // loop of resets.
-        if (this.#host.licenseSummary && this.#host.licenseSummary !== this.#context.value) {
-            this.#context.setValue(this.#host.licenseSummary);
+        const { currentUser } = this.#host;
+
+        if (currentUser && !isGuest(currentUser) && !this.#abortController) {
+            this.#fetch();
+
+            return;
+        }
+
+        if (!currentUser && this.#abortController) {
+            this.#abortController.abort("session-invalidated");
         }
     }
 }

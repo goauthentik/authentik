@@ -3,7 +3,7 @@
 from dataclasses import asdict
 from time import sleep
 
-from pyrad.client import Client
+from pyrad.client import Client, Timeout
 from pyrad.dictionary import Dictionary
 from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
@@ -27,7 +27,7 @@ class TestProviderRadius(SeleniumTestCase):
         """Start radius container based on outpost created"""
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-radius"),
-            ports={"1812/udp": "1812/udp"},
+            ports={"1812/udp": 1812},
             environment={
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
@@ -41,7 +41,7 @@ class TestProviderRadius(SeleniumTestCase):
             shared_secret=self.shared_secret,
         )
         # we need to create an application to actually access radius
-        Application.objects.create(name="radius", slug=generate_id(), provider=radius)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.RADIUS,
@@ -51,19 +51,10 @@ class TestProviderRadius(SeleniumTestCase):
 
         self.start_radius(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
         return outpost
 
-    @retry()
+    @retry(exceptions=[Timeout])
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
@@ -85,7 +76,7 @@ class TestProviderRadius(SeleniumTestCase):
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessAccept)
 
-    @retry()
+    @retry(exceptions=[Timeout])
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",

@@ -1,7 +1,10 @@
-import { LocalhostAliases, ProductionURL, useHostname } from "#components/VersionPicker/utils.ts";
+import { useHostname } from "#components/VersionPicker/utils.ts";
 import { VersionDropdown } from "#components/VersionPicker/VersionDropdown.tsx";
 
-import { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/plugin";
+import type {
+    AKReleaseFrontMatter,
+    AKReleasesPluginData,
+} from "@goauthentik/docusaurus-theme/releases/common";
 
 import useIsBrowser from "@docusaurus/useIsBrowser";
 import React, { useEffect, useMemo, useState } from "react";
@@ -18,24 +21,34 @@ export interface VersionPickerLoaderProps {
  * @client
  */
 export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ pluginData }) => {
-    const [releases, setReleases] = useState(pluginData.releases);
+    const { preReleaseOrigin } = pluginData.env;
+
+    const [releases, setReleases] = useState(() =>
+        pluginData.releases.map((release) => release.name),
+    );
+
+    const frontMatterRecord = useMemo(() => {
+        const record: Record<string, AKReleaseFrontMatter> = {};
+
+        for (const release of pluginData.releases) {
+            if (!release.frontMatter) {
+                continue;
+            }
+
+            record[release.name] = release.frontMatter;
+        }
+
+        return record;
+    }, [pluginData.releases]);
 
     const browser = useIsBrowser();
     const hostname = useHostname();
 
-    const prereleaseOrigin = useMemo(() => {
-        if (browser && LocalhostAliases.has(window.location.hostname)) {
-            return window.location.origin;
-        }
-
-        return ProductionURL.href;
-    }, [browser]);
-
     useEffect(() => {
-        if (!browser || !prereleaseOrigin) return;
+        if (!browser || !preReleaseOrigin) return;
 
         const controller = new AbortController();
-        const updateURL = new URL(pluginData.publicPath, prereleaseOrigin);
+        const updateURL = new URL(pluginData.publicPath, preReleaseOrigin);
 
         fetch(updateURL, {
             signal: controller.signal,
@@ -64,7 +77,14 @@ export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ plugin
 
         // eslint-disable-next-line consistent-return
         return () => controller.abort("unmount");
-    }, [browser, pluginData.publicPath, prereleaseOrigin]);
+    }, [browser, pluginData.publicPath, preReleaseOrigin]);
 
-    return <VersionDropdown hostname={hostname} branch={pluginData.branch} releases={releases} />;
+    return (
+        <VersionDropdown
+            hostname={hostname}
+            releases={releases}
+            frontMatterRecord={frontMatterRecord}
+            environment={pluginData.env}
+        />
+    );
 };

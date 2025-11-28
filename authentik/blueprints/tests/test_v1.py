@@ -1,9 +1,11 @@
 """Test blueprints v1"""
 
-from os import environ
+from os import chmod, environ, unlink, write
+from tempfile import mkstemp
 
 from django.test import TransactionTestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
@@ -126,102 +128,119 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
         environ["foo"] = generate_id()
-        importer = Importer.from_string(load_fixture("fixtures/tags.yaml"), {"bar": "baz"})
+        file, file_name = mkstemp()
+        write(file, b"foo")
+        _, file_default_name = mkstemp()
+        chmod(file_default_name, 0o000)  # Remove all permissions so we can't read the file
+        importer = Importer.from_string(
+            load_fixture(
+                "fixtures/tags.yaml",
+                file_name=file_name,
+                file_default_name=file_default_name,
+            ),
+            {"bar": "baz"},
+        )
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
         self.assertTrue(policy)
-        self.assertTrue(
-            Group.objects.filter(
-                attributes={
-                    "policy_pk1": str(policy.pk) + "-suffix",
-                    "policy_pk2": str(policy.pk) + "-suffix",
-                    "boolAnd": True,
-                    "boolNand": False,
-                    "boolOr": True,
-                    "boolNor": False,
-                    "boolXor": True,
-                    "boolXnor": False,
-                    "boolComplex": True,
-                    "if_true_complex": {
-                        "dictionary": {
-                            "with": {"keys": "and_values"},
-                            "and_nested_custom_tags": "foo-bar",
-                        }
+        group = Group.objects.filter(name="test").first()
+        self.assertIsNotNone(group)
+        self.assertEqual(
+            group.attributes,
+            {
+                "policy_pk1": str(policy.pk) + "-suffix",
+                "policy_pk2": str(policy.pk) + "-suffix",
+                "boolAnd": True,
+                "boolNand": False,
+                "boolOr": True,
+                "boolNor": False,
+                "boolXor": True,
+                "boolXnor": False,
+                "boolComplex": True,
+                "if_true_complex": {
+                    "dictionary": {
+                        "with": {"keys": "and_values"},
+                        "and_nested_custom_tags": "foo-bar",
+                    }
+                },
+                "if_false_complex": ["list", "with", "items", "foo-bar"],
+                "if_true_simple": True,
+                "if_short": True,
+                "if_false_simple": 2,
+                "enumerate_mapping_to_mapping": {
+                    "prefix-key1": "other-prefix-value",
+                    "prefix-key2": "other-prefix-2",
+                },
+                "enumerate_mapping_to_sequence": [
+                    "prefixed-pair-key1-value",
+                    "prefixed-pair-key2-2",
+                ],
+                "enumerate_sequence_to_sequence": [
+                    "prefixed-items-0-foo",
+                    "prefixed-items-1-bar",
+                ],
+                "enumerate_sequence_to_mapping": {"index: 0": "foo", "index: 1": "bar"},
+                "nested_complex_enumeration": {
+                    "0": {
+                        "key1": [
+                            ["prefixed-f", "prefixed-o", "prefixed-o"],
+                            {
+                                "outer_value": "foo",
+                                "outer_index": 0,
+                                "middle_value": "value",
+                                "middle_index": "key1",
+                            },
+                        ],
+                        "key2": [
+                            ["prefixed-f", "prefixed-o", "prefixed-o"],
+                            {
+                                "outer_value": "foo",
+                                "outer_index": 0,
+                                "middle_value": 2,
+                                "middle_index": "key2",
+                            },
+                        ],
                     },
-                    "if_false_complex": ["list", "with", "items", "foo-bar"],
-                    "if_true_simple": True,
-                    "if_short": True,
-                    "if_false_simple": 2,
-                    "enumerate_mapping_to_mapping": {
-                        "prefix-key1": "other-prefix-value",
-                        "prefix-key2": "other-prefix-2",
+                    "1": {
+                        "key1": [
+                            ["prefixed-b", "prefixed-a", "prefixed-r"],
+                            {
+                                "outer_value": "bar",
+                                "outer_index": 1,
+                                "middle_value": "value",
+                                "middle_index": "key1",
+                            },
+                        ],
+                        "key2": [
+                            ["prefixed-b", "prefixed-a", "prefixed-r"],
+                            {
+                                "outer_value": "bar",
+                                "outer_index": 1,
+                                "middle_value": 2,
+                                "middle_index": "key2",
+                            },
+                        ],
                     },
-                    "enumerate_mapping_to_sequence": [
-                        "prefixed-pair-key1-value",
-                        "prefixed-pair-key2-2",
-                    ],
-                    "enumerate_sequence_to_sequence": [
-                        "prefixed-items-0-foo",
-                        "prefixed-items-1-bar",
-                    ],
-                    "enumerate_sequence_to_mapping": {"index: 0": "foo", "index: 1": "bar"},
-                    "nested_complex_enumeration": {
-                        "0": {
-                            "key1": [
-                                ["prefixed-f", "prefixed-o", "prefixed-o"],
-                                {
-                                    "outer_value": "foo",
-                                    "outer_index": 0,
-                                    "middle_value": "value",
-                                    "middle_index": "key1",
-                                },
-                            ],
-                            "key2": [
-                                ["prefixed-f", "prefixed-o", "prefixed-o"],
-                                {
-                                    "outer_value": "foo",
-                                    "outer_index": 0,
-                                    "middle_value": 2,
-                                    "middle_index": "key2",
-                                },
-                            ],
-                        },
-                        "1": {
-                            "key1": [
-                                ["prefixed-b", "prefixed-a", "prefixed-r"],
-                                {
-                                    "outer_value": "bar",
-                                    "outer_index": 1,
-                                    "middle_value": "value",
-                                    "middle_index": "key1",
-                                },
-                            ],
-                            "key2": [
-                                ["prefixed-b", "prefixed-a", "prefixed-r"],
-                                {
-                                    "outer_value": "bar",
-                                    "outer_index": 1,
-                                    "middle_value": 2,
-                                    "middle_index": "key2",
-                                },
-                            ],
-                        },
-                    },
-                    "nested_context": "context-nested-value",
-                    "env_null": None,
-                    "json_parse": {"foo": "bar"},
-                    "at_index_sequence": "foo",
-                    "at_index_sequence_default": "non existent",
-                    "at_index_mapping": 2,
-                    "at_index_mapping_default": "non existent",
-                }
-            ).exists()
+                },
+                "nested_context": "context-nested-value",
+                "env_null": None,
+                "file_content": "foo",
+                "file_default": "default",
+                "file_non_existent": None,
+                "json_parse": {"foo": "bar"},
+                "at_index_sequence": "foo",
+                "at_index_sequence_default": "non existent",
+                "at_index_mapping": 2,
+                "at_index_mapping_default": "non existent",
+                "find_object": "goauthentik.io/providers/oauth2/scope-openid",
+            },
         )
         self.assertTrue(
             OAuthSource.objects.filter(
@@ -229,6 +248,8 @@ class TestBlueprintsV1(TransactionTestCase):
                 consumer_key=environ["foo"],
             )
         )
+        unlink(file_name)
+        unlink(file_default_name)
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""

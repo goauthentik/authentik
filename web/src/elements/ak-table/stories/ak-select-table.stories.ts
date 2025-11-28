@@ -5,7 +5,7 @@ import { TableSortEvent } from "../TableColumn.js";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -42,7 +42,7 @@ export default metadata;
 type Story = StoryObj;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -56,7 +56,7 @@ const container = (testItem: TemplateResult) =>
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
 const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => ({
-    key: slug(name),
+    key: kebabCase(name),
     content: [name, calories, protein, fiber, sugar].map((a) => html`${a}`),
 }));
 
@@ -104,7 +104,7 @@ export class SimpleTableSortTest extends LitElement {
 
         // Return the content, processed to comply with the format expected by a selectable table.
         return content.map(({ name, calories, sugar, fiber, protein }) => ({
-            key: slug(name),
+            key: kebabCase(name),
             content: [name, calories, protein, fiber, sugar].map((a) => html`${a}`),
         }));
     }

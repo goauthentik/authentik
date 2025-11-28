@@ -312,7 +312,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-available-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                        name="ak-dual-list-available-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
@@ -346,7 +349,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-selected-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                        name="ak-dual-list-selected-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"

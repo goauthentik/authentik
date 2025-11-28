@@ -20,4 +20,4 @@ You can also always reach out to us via email, using hello@goauthentik.io email 
 
 ### Product version support
 
-We [support](../security/policy#supported-versions) the current, released version of authentik and one version back (including all major, minor, and patch versions).
+We [support](../security/policy.mdx#supported-versions) the current, released version of authentik and one version back (including all major, minor, and patch versions).

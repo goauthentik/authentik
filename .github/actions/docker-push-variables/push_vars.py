@@ -1,19 +1,29 @@
 """Helper script to get the actual branch name, docker safe"""
 
-import configparser
 import os
 from json import dumps
+from sys import exit as sysexit
 from time import time
 
-parser = configparser.ConfigParser()
-parser.read(".bumpversion.cfg")
+from authentik import authentik_version
+
+
+def must_or_fail(input: str | None, error: str) -> str:
+    if not input:
+        print(f"::error::{error}")
+        sysexit(1)
+    return input
+
 
 # Decide if we should push the image or not
 should_push = True
 if len(os.environ.get("DOCKER_USERNAME", "")) < 1:
     # Don't push if we don't have DOCKER_USERNAME, i.e. no secrets are available
     should_push = False
-if os.environ.get("GITHUB_REPOSITORY").lower() == "goauthentik/authentik-internal":
+if (
+    must_or_fail(os.environ.get("GITHUB_REPOSITORY"), "Repo required").lower()
+    == "goauthentik/authentik-internal"
+):
     # Don't push on the internal repo
     should_push = False
 
@@ -22,16 +32,19 @@ if os.environ.get("GITHUB_HEAD_REF", "") != "":
     branch_name = os.environ["GITHUB_HEAD_REF"]
 safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-").replace("'", "-")
 
-image_names = os.getenv("IMAGE_NAME").split(",")
+image_names = must_or_fail(os.getenv("IMAGE_NAME"), "Image name required").split(",")
 image_arch = os.getenv("IMAGE_ARCH") or None
 
 is_pull_request = bool(os.getenv("PR_HEAD_SHA"))
 is_release = "dev" not in image_names[0]
 
-sha = os.environ["GITHUB_SHA"] if not is_pull_request else os.getenv("PR_HEAD_SHA")
+sha = must_or_fail(
+    os.environ["GITHUB_SHA"] if not is_pull_request else os.getenv("PR_HEAD_SHA"),
+    "could not determine SHA",
+)
 
 # 2042.1.0 or 2042.1.0-rc1
-version = parser.get("bumpversion", "current_version")
+version = authentik_version()
 # 2042.1
 version_family = ".".join(version.split("-", 1)[0].split(".")[:-1])
 prerelease = "-" in version
@@ -60,7 +73,7 @@ else:
 image_main_tag = image_tags[0].split(":")[-1]
 
 
-def get_attest_image_names(image_with_tags: list[str]):
+def get_attest_image_names(image_with_tags: list[str]) -> str:
     """Attestation only for GHCR"""
     image_tags = []
     for image_name in set(name.split(":")[0] for name in image_with_tags):
@@ -84,7 +97,6 @@ if os.getenv("RELEASE", "false").lower() == "true":
     image_build_args = [f"VERSION={os.getenv('REF')}"]
 else:
     image_build_args = [f"GIT_BUILD_HASH={sha}"]
-image_build_args = "\n".join(image_build_args)
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldPush={str(should_push).lower()}", file=_output)
@@ -97,4 +109,4 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
     print(f"cacheTo={cache_to}", file=_output)
-    print(f"imageBuildArgs={image_build_args}", file=_output)
+    print(f"imageBuildArgs={"\n".join(image_build_args)}", file=_output)

@@ -12,13 +12,17 @@ import { digestAlgorithmOptions, signatureAlgorithmOptions } from "./SAMLProvide
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { RadioOption } from "#elements/forms/Radio";
+
 import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
+    SAMLBindingsEnum,
+    SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
-    SpBindingEnum,
+    SAMLProviderLogoutMethodEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -26,23 +30,22 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const serviceProviderBindingOptions = [
+const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Redirect"),
-        value: SpBindingEnum.Redirect,
-        default: true,
+        value: SAMLBindingsEnum.Redirect,
     },
     {
         label: msg("Post"),
-        value: SpBindingEnum.Post,
+        value: SAMLBindingsEnum.Post,
     },
 ];
 
-function renderHasSigningKp(provider?: Partial<SAMLProvider>) {
+function renderHasSigningKp(provider: Partial<SAMLProvider>) {
     return html` <ak-switch-input
             name="signAssertion"
             label=${msg("Sign assertions")}
-            ?checked=${provider?.signAssertion ?? true}
+            ?checked=${provider.signAssertion ?? true}
             help=${msg("When enabled, the assertion element of the SAML response will be signed.")}
         >
         </ak-switch-input>
@@ -50,24 +53,95 @@ function renderHasSigningKp(provider?: Partial<SAMLProvider>) {
         <ak-switch-input
             name="signResponse"
             label=${msg("Sign responses")}
-            ?checked=${provider?.signResponse ?? false}
+            ?checked=${provider.signResponse ?? false}
             help=${msg("When enabled, the SAML response will be signed.")}
+        >
+        </ak-switch-input>
+        <ak-switch-input
+            name="signLogoutRequest"
+            label=${msg("Sign logout requests")}
+            ?checked=${provider?.signLogoutRequest ?? false}
+            help=${msg("When enabled, SAML logout requests will be signed.")}
         >
         </ak-switch-input>`;
 }
 
-export function renderForm(
-    provider: Partial<SAMLProvider> = {},
-    errors: ValidationError,
-    setHasSigningKp: (ev: InputEvent) => void,
-    hasSigningKp: boolean,
+function renderHasSlsUrl(
+    provider: Partial<SAMLProvider>,
+    hasPostBinding: boolean = false,
+    setSlsBinding: (ev: Event) => void,
+    logoutMethod: string,
+    setLogoutMethod?: (ev: Event) => void,
 ) {
+    const logoutMethodOptions: RadioOption<string>[] = [
+        {
+            label: msg("Front-channel (Iframe)"),
+            value: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+            default: true,
+        },
+        {
+            label: msg("Front-channel (Native)"),
+            value: SAMLProviderLogoutMethodEnum.FrontchannelNative,
+        },
+        {
+            label: msg("Back-channel (POST)"),
+            value: SAMLProviderLogoutMethodEnum.Backchannel,
+            disabled: !hasPostBinding,
+        },
+    ];
+
+    return html`<ak-radio-input
+            label=${msg("SLS Binding")}
+            name="slsBinding"
+            .options=${serviceProviderBindingOptions}
+            .value=${provider?.slsBinding ?? SAMLBindingsEnum.Redirect}
+            help=${msg(
+                "Determines how authentik sends the logout response back to the Service Provider.",
+            )}
+            @change=${setSlsBinding}
+        >
+        </ak-radio-input>
+        <ak-radio-input
+            label=${msg("Logout Method")}
+            name="logoutMethod"
+            .options=${logoutMethodOptions}
+            .value=${logoutMethod}
+            help=${msg("Method to use for logout when SLS URL is configured.")}
+            @change=${setLogoutMethod}
+        >
+        </ak-radio-input>`;
+}
+export interface SAMLProviderFormProps {
+    provider?: Partial<SAMLProvider>;
+    errors?: ValidationError;
+    setHasSigningKp: (ev: InputEvent) => void;
+    hasSigningKp: boolean;
+    setHasSlsUrl: (ev: Event) => void;
+    hasSlsUrl: boolean;
+    setSlsBinding: (ev: Event) => void;
+    hasPostBinding: boolean;
+    logoutMethod: string;
+    setLogoutMethod?: (ev: Event) => void;
+}
+
+export function renderForm({
+    provider = {},
+    errors = {},
+    setHasSigningKp,
+    hasSigningKp,
+    setHasSlsUrl,
+    hasSlsUrl,
+    setSlsBinding,
+    hasPostBinding,
+    logoutMethod,
+    setLogoutMethod,
+}: SAMLProviderFormProps) {
     return html` <ak-text-input
             name="name"
-            value=${ifDefined(provider?.name)}
+            value=${ifDefined(provider.name)}
             label=${msg("Name")}
             required
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors.name}
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
@@ -76,63 +150,89 @@ export function renderForm(
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                .currentFlow=${provider?.authorizationFlow}
+                .currentFlow=${provider.authorizationFlow}
+                .errorMessages=${errors.authorizationFlow}
                 required
-                .errorMessages=${errors?.authorizationFlow ?? []}
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
                 ${msg("Flow used when authorizing this provider.")}
             </p>
         </ak-form-element-horizontal>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
-                    value="${ifDefined(provider?.acsUrl)}"
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
+                    value="${ifDefined(provider.acsUrl)}"
                     required
-                    .errorMessages=${errors?.acsUrl ?? []}
-                ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    name="issuer"
-                    value="${provider?.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors?.issuer ?? []}
-                    help=${msg("Also known as EntityID.")}
+                    .errorMessages=${errors.acsUrl}
                 ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Service Provider Binding")}
                     name="spBinding"
                     required
                     .options=${serviceProviderBindingOptions}
-                    .value=${provider?.spBinding}
+                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
                     help=${msg(
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
-                >
-                </ak-radio-input>
+                ></ak-radio-input>
+                <ak-text-input
+                    label=${msg("Issuer")}
+                    input-hint="code"
+                    name="issuer"
+                    value="${provider.issuer || "authentik"}"
+                    required
+                    .errorMessages=${errors.issuer}
+                    help=${msg("Also known as Entity ID.")}
+                ></ak-text-input>
                 <ak-text-input
                     name="audience"
                     label=${msg("Audience")}
-                    value="${ifDefined(provider?.audience)}"
-                    .errorMessages=${errors?.audience ?? []}
+                    placeholder="https://..."
+                    input-hint="code"
+                    input-mode="url"
+                    value="${ifDefined(provider.audience)}"
+                    .errorMessages=${errors.audience}
                 ></ak-text-input>
+                <ak-text-input
+                    name="slsUrl"
+                    label=${msg("SLS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
+                    value="${ifDefined(provider.slsUrl)}"
+                    .errorMessages=${errors.slsUrl}
+                    help=${msg(
+                        "Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.",
+                    )}
+                    @input=${setHasSlsUrl}
+                ></ak-text-input>
+                ${hasSlsUrl
+                    ? renderHasSlsUrl(
+                          provider,
+                          hasPostBinding,
+                          setSlsBinding,
+                          logoutMethod,
+                          setLogoutMethod,
+                      )
+                    : nothing}
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider?.authenticationFlow}
+                        .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -147,7 +247,7 @@ export function renderForm(
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${provider?.invalidationFlow}
+                        .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required
                     ></ak-flow-search>
@@ -158,13 +258,13 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
                     <ak-crypto-certificate-search
-                        .certificate=${provider?.signingKp}
+                        .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
+                        singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -179,7 +279,7 @@ export function renderForm(
                     name="verificationKp"
                 >
                     <ak-crypto-certificate-search
-                        .certificate=${provider?.verificationKp}
+                        .certificate=${provider.verificationKp}
                         nokey
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
@@ -193,7 +293,7 @@ export function renderForm(
                     name="encryptionKp"
                 >
                     <ak-crypto-certificate-search
-                        .certificate=${provider?.encryptionKp}
+                        .certificate=${provider.encryptionKp}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -205,7 +305,7 @@ export function renderForm(
                 >
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
-                        .selector=${propertyMappingsSelector(provider?.propertyMappings)}
+                        .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available User Property Mappings")}
                         selected-label=${msg("Selected User Property Mappings")}
                     ></ak-dual-select-dynamic-selected>
@@ -215,6 +315,7 @@ export function renderForm(
                     name="nameIdMapping"
                 >
                     <ak-search-select
+                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
@@ -234,7 +335,7 @@ export function renderForm(
                             return item?.pk;
                         }}
                         .selected=${(item: SAMLPropertyMapping): boolean => {
-                            return provider?.nameIdMapping === item.pk;
+                            return provider.nameIdMapping === item.pk;
                         }}
                         blankable
                     >
@@ -250,6 +351,7 @@ export function renderForm(
                     name="authnContextClassRefMapping"
                 >
                     <ak-search-select
+                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
@@ -269,7 +371,7 @@ export function renderForm(
                             return item?.pk;
                         }}
                         .selected=${(item: SAMLPropertyMapping): boolean => {
-                            return provider?.authnContextClassRefMapping === item.pk;
+                            return provider.authnContextClassRefMapping === item.pk;
                         }}
                         blankable
                     >
@@ -284,45 +386,93 @@ export function renderForm(
                 <ak-text-input
                     name="assertionValidNotBefore"
                     label=${msg("Assertion valid not before")}
-                    value="${provider?.assertionValidNotBefore || "minutes=-5"}"
+                    value="${provider.assertionValidNotBefore || "minutes=-5"}"
                     required
-                    .errorMessages=${errors?.assertionValidNotBefore ?? []}
+                    .errorMessages=${errors.assertionValidNotBefore}
                     help=${msg("Configure the maximum allowed time drift for an assertion.")}
                 ></ak-text-input>
 
                 <ak-text-input
                     name="assertionValidNotOnOrAfter"
                     label=${msg("Assertion valid not on or after")}
-                    value="${provider?.assertionValidNotOnOrAfter || "minutes=5"}"
+                    value="${provider.assertionValidNotOnOrAfter || "minutes=5"}"
                     required
-                    .errorMessages=${errors?.assertionValidNotBefore ?? []}
+                    .errorMessages=${errors.assertionValidNotBefore}
                     help=${msg("Assertion not valid on or after current time + this value.")}
                 ></ak-text-input>
 
                 <ak-text-input
                     name="sessionValidNotOnOrAfter"
                     label=${msg("Session valid not on or after")}
-                    value="${provider?.sessionValidNotOnOrAfter || "minutes=86400"}"
+                    value="${provider.sessionValidNotOnOrAfter || "minutes=86400"}"
                     required
-                    .errorMessages=${errors?.sessionValidNotOnOrAfter ?? []}
+                    .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg("Session not valid on or after current time + this value.")}
                 ></ak-text-input>
 
                 <ak-text-input
                     name="defaultRelayState"
                     label=${msg("Default relay state")}
-                    value="${provider?.defaultRelayState || ""}"
-                    .errorMessages=${errors?.sessionValidNotOnOrAfter ?? []}
+                    value="${provider.defaultRelayState || ""}"
+                    .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
                     )}
                 ></ak-text-input>
+                <ak-form-element-horizontal
+                    label=${msg("Default NameID Policy")}
+                    required
+                    name="defaultNameIdPolicy"
+                >
+                    <select class="pf-c-form-control">
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                        >
+                            ${msg("Persistent")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                        >
+                            ${msg("Email address")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                        >
+                            ${msg("Windows")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                        >
+                            ${msg("X509 Subject")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                        >
+                            ${msg("Transient")}
+                        </option>
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
 
                 <ak-radio-input
                     name="digestAlgorithm"
                     label=${msg("Digest algorithm")}
                     .options=${digestAlgorithmOptions}
-                    .value=${provider?.digestAlgorithm}
+                    .value=${provider.digestAlgorithm}
                     required
                 >
                 </ak-radio-input>
@@ -331,7 +481,7 @@ export function renderForm(
                     name="signatureAlgorithm"
                     label=${msg("Signature algorithm")}
                     .options=${signatureAlgorithmOptions}
-                    .value=${provider?.signatureAlgorithm}
+                    .value=${provider.signatureAlgorithm}
                     required
                 >
                 </ak-radio-input>

@@ -1,0 +1,36 @@
+name: GH - Cherry-pick
+
+on:
+  pull_request_target:
+    types: [closed, labeled]
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        if: ${{ env.GH_APP_ID != '' }}
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        env:
+          GH_APP_ID: ${{ secrets.GH_APP_ID }}
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+        if: ${{ steps.app-token.outcome != 'skipped' }}
+        with:
+          fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
+      - id: get-user-id
+        if: ${{ steps.app-token.outcome != 'skipped' }}
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: ./.github/actions/cherry-pick
+        if: ${{ steps.app-token.outcome != 'skipped' }}
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          git_user: ${{ steps.app-token.outputs.app-slug }}[bot]
+          git_user_email: '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'

@@ -41,7 +41,7 @@ In authentik, roles are assigned to [groups](../groups/index.mdx), not to indivi
 In authentik, each role can only be applied to a single group at a time.
 :::
 
-1. To assign the role to a group, navigate to **Directory -> Groups**.
+1. To assign the role to a group, navigate to **Directory > Groups**.
 2. Click the name of the group to which you want to add a role.
 3. On the group's detail page, on the Overview tab, click **Edit** in the **Group Info** area.
 4. On the **Update Group** box, in the **Roles** field, select the roles you want to assign to the group from the list of **Available Roles** in the left box (you can select multiple roles at once by holding the Shift key while selecting the roles), and then click the appropriate arrow icon to move them into the **Selected Roles** box.

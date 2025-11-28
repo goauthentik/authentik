@@ -49,6 +49,6 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
 
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
-    search_fields = ["group__name"]
-    ordering = ["group__name"]
-    filterset_fields = ["group__name"]
+    search_fields = ["name"]
+    ordering = ["name"]
+    filterset_fields = ["name"]

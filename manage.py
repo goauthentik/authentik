@@ -17,9 +17,7 @@ if __name__ == "__main__":
     if (
         len(sys.argv) > 1
         # Explicitly only run migrate for server and worker
-        # `bootstrap_tasks` is a special case as that command might be triggered by the `ak`
-        # script to pre-run certain tasks for an automated install
-        and sys.argv[1] in ["dev_server", "worker", "bootstrap_tasks"]
+        and sys.argv[1] in ["dev_server", "worker"]
         # and don't run if this is the child process of a dev_server
         and os.environ.get(DJANGO_AUTORELOAD_ENV, None) is None
     ):

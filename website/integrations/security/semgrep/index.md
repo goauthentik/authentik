@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `devcompany` is the organization name on Semgrep Cloud platform.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -25,7 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 1. Log in to your authentik instance as an administrator.
 2. Go to the admin interface.
-3. Navigate to **Customization** -> **Property mappings**.
+3. Navigate to **Customization** > **Property mappings**.
 4. Create a new SAML property mapping with these parameters:
     - **Name**: `semgrep-name`
     - **SAML Attribute name**: `name`
@@ -34,23 +34,23 @@ This documentation lists only the settings that you need to change from their de
     - **Name**: `semgrep-email`
     - **SAML Attribute name**: `email`
     - **Expression**: `return request.user.email`
-6. Navigate to **System** -> **Certificates**.
+6. Navigate to **System** > **Certificates**.
 7. Generate a new RSA certificate.
 8. Download the generated certificate, as you will need it later.
-9. Create a new SAML provider under **Applications** -> **Providers** using the following settings:
+9. Create a new SAML provider under **Applications** > **Providers** using the following settings:
     - **ACS URL**: `https://semgrep.dev/api/auth/saml/devcompany/`
     - **Issuer**: `https://authentik.company`
     - **Audience**: `semgrep-dev`
     - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Choose the RSA certificate you generated earlier.
     - **Property mappings**: `semgrep-name` and `semgrep-email`
-10. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you just created.
+10. Create a new application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you just created.
 
 ## Semgrep configuration
 
 1. Log in to Semgrep Cloud platform as an administrator.
 2. Click **Settings** on bottom left corner.
-3. Navigate to **Access** -> **Login methods**.
+3. Navigate to **Access** > **Login methods**.
 4. Locate Single sign-on entry, click **Add SSO configuration**, select **SAML2 SSO** from the drop down.
 5. Fill in the following:
     - **Display name**: Anything you like.

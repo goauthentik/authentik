@@ -1,17 +1,27 @@
-import eslint from "@eslint/js";
-import * as litconf from "eslint-plugin-lit";
-import * as wcconf from "eslint-plugin-wc";
-import tseslint from "typescript-eslint";
+/**
+ * @file ESLint Configuration Entry Point
+ *
+ * @import { Config } from "eslint/config";
+ * @import { ParserOptions } from "@typescript-eslint/parser";
+ */
 
 import { javaScriptConfig } from "./lib/javascript-config.js";
 import { reactConfig } from "./lib/react-config.js";
 import { typescriptConfig } from "./lib/typescript-config.js";
 
+import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
+
 // @ts-check
+
+const litconf = await import("eslint-plugin-lit").catch(() => null);
+const wcconf = await import("eslint-plugin-wc").catch(() => null);
 
 /**
  * @typedef ESLintPackageConfigOptions Options for creating package ESLint configuration.
  * @property {string[]} [ignorePatterns] Override ignore patterns for ESLint.
+ * @property {ParserOptions} [parserOptions] Override options for TypeScript ESLint's parser.
  */
 
 /**
@@ -23,8 +33,9 @@ export const DefaultIgnorePatterns = [
     "**/out",
     "**/dist",
     "**/.wireit",
-    "website/build/**",
-    "website/.docusaurus/**",
+    // TODO: Replace after moving to `docs` directory.
+    "website/**/build/**",
+    "website/**/.docusaurus/**",
     "**/node_modules",
     "**/coverage",
     "**/storybook-static",
@@ -38,19 +49,28 @@ export const DefaultIgnorePatterns = [
  *
  * @param {ESLintPackageConfigOptions} options The preferred package configuration options.
  *
- * @returns The ESLint configuration object.
+ * @returns {Config[]} The ESLint configuration object.
  */
-export function createESLintPackageConfig({ ignorePatterns = DefaultIgnorePatterns } = {}) {
-    return tseslint.config(
+export function createESLintPackageConfig({
+    ignorePatterns = DefaultIgnorePatterns,
+    parserOptions = {},
+} = {}) {
+    return defineConfig(
         {
             ignores: ignorePatterns,
+        },
+
+        {
+            languageOptions: {
+                parserOptions,
+            },
         },
 
         eslint.configs.recommended,
         javaScriptConfig,
 
-        wcconf.configs["flat/recommended"],
-        litconf.configs["flat/recommended"],
+        wcconf?.configs["flat/recommended"] ?? [{}],
+        litconf?.configs["flat/recommended"] ?? [{}],
 
         ...tseslint.configs.recommended,
 

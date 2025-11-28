@@ -54,7 +54,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
+                <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
@@ -74,7 +74,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
+                <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
@@ -128,11 +128,16 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     ? this.renderAdditional()
                     : this.renderNoPrevious()}
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

@@ -11,7 +11,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-token-form")
@@ -23,7 +23,7 @@ export class TokenForm extends ModelForm<Token, string> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
-        this.showExpiry = token.expiring || true;
+        this.showExpiry = token.expiring ?? true;
         return token;
     }
 
@@ -151,7 +151,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.showExpiry ? this.renderExpiry() : html``}`;
+            ${this.showExpiry ? this.renderExpiry() : nothing}`;
     }
 }
 

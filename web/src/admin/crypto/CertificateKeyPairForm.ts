@@ -53,15 +53,15 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 name="certificateData"
                 input-hint="code"
                 placeholder="-----BEGIN CERTIFICATE-----"
-                required
-                ?revealed=${this.instance === undefined}
+                ?required=${!this.instance}
+                ?revealed=${!this.instance}
                 help=${msg("PEM-encoded Certificate data.")}
             ></ak-secret-textarea-input>
             <ak-secret-textarea-input
                 label=${msg("Private Key")}
                 name="keyData"
                 input-hint="code"
-                ?revealed=${this.instance === undefined}
+                ?revealed=${!this.instance}
                 help=${msg(
                     "Optional Private Key. If this is set, you can use this keypair for encryption.",
                 )}

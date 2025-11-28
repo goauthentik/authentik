@@ -125,6 +125,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         return html`<input
+            id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
             value=${ifDefined(this.value)}

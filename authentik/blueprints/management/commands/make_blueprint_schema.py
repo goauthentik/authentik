@@ -11,7 +11,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
             "type": "object",
-            "title": f"authentik {__version__} Blueprint schema",
+            "title": f"authentik {authentik_version()} Blueprint schema",
             "required": ["version", "entries"],
             "properties": {
                 "version": {
@@ -118,7 +118,10 @@ class Command(BaseCommand):
                 model_instance: Model = model()
                 if not isinstance(model_instance, SerializerModel):
                     continue
-                serializer_class = model_instance.serializer
+                try:
+                    serializer_class = model_instance.serializer
+                except NotImplementedError as exc:
+                    raise NotImplementedError(model_instance) from exc
             serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,

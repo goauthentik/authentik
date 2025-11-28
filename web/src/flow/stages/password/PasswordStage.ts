@@ -1,7 +1,8 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
+
+import { ErrorProp } from "#components/ak-field-errors";
 
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
@@ -9,7 +10,7 @@ import { PasswordManagerPrefill } from "#flow/stages/identification/Identificati
 import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -33,9 +34,10 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         PFTitle,
     ];
 
-    hasError(field: string): boolean {
-        const errors = (this.challenge?.responseErrors || {})[field];
-        return (errors || []).length > 0;
+    #errors(field: string): ErrorProp[] | undefined {
+        const errors = this.challenge?.responseErrors?.[field];
+
+        return errors;
     }
 
     render(): TemplateResult {
@@ -65,24 +67,35 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     required
                     grab-focus
                     class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {}).password}
+                    .errors=${this.#errors("password")}
                     ?allow-show-password=${this.challenge.allowShowPassword}
-                    invalid=${this.hasError("password").toString()}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
             ${this.challenge.recoveryUrl
-                ? html`<div slot="footer-band" class="pf-c-login__main-footer-band">
-                      <p class="pf-c-login__main-footer-band-item">
-                          <a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>
-                      </p>
-                  </div>`
-                : nothing}
+                ? html`<fieldset
+                      slot="footer-band"
+                      part="additional-actions"
+                      class="pf-c-login__main-footer-band"
+                  >
+                      <legend class="sr-only">${msg("Additional actions")}</legend>
+                      <div class="pf-c-login__main-footer-band-item">
+                          <a name="forgot-password" href="${this.challenge.recoveryUrl}"
+                              >${msg("Forgot password?")}</a
+                          >
+                      </div>
+                  </fieldset>`
+                : null}
         </ak-flow-card>`;
     }
 }

@@ -1,96 +1,60 @@
 """Error Response schema, from https://github.com/axnsan12/drf-yasg/issues/224"""
 
-from django.utils.translation import gettext_lazy as _
+from collections.abc import Callable
+from typing import Any
+
 from drf_spectacular.generators import SchemaGenerator
-from drf_spectacular.plumbing import (
-    ResolvedComponent,
-    build_array_type,
-    build_basic_type,
-    build_object_type,
-)
+from drf_spectacular.plumbing import ResolvedComponent
+from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
-from drf_spectacular.types import OpenApiTypes
-from rest_framework.settings import api_settings
+from structlog.stdlib import get_logger
 
 from authentik.api.apps import AuthentikAPIConfig
-from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
-
-
-def build_standard_type(obj, **kwargs):
-    """Build a basic type with optional add owns."""
-    schema = build_basic_type(obj)
-    schema.update(kwargs)
-    return schema
-
-
-GENERIC_ERROR = build_object_type(
-    description=_("Generic API Error"),
-    properties={
-        "detail": build_standard_type(OpenApiTypes.STR),
-        "code": build_standard_type(OpenApiTypes.STR),
-    },
-    required=["detail"],
-)
-VALIDATION_ERROR = build_object_type(
-    description=_("Validation Error"),
-    properties={
-        api_settings.NON_FIELD_ERRORS_KEY: build_array_type(build_standard_type(OpenApiTypes.STR)),
-        "code": build_standard_type(OpenApiTypes.STR),
-    },
-    required=[],
-    additionalProperties={},
+from authentik.api.v3.schema.query import QUERY_PARAMS
+from authentik.api.v3.schema.response import (
+    GENERIC_ERROR,
+    GENERIC_ERROR_RESPONSE,
+    PAGINATION,
+    VALIDATION_ERROR,
+    VALIDATION_ERROR_RESPONSE,
 )
 
-
-def create_component(generator: SchemaGenerator, name, schema, type_=ResolvedComponent.SCHEMA):
-    """Register a component and return a reference to it."""
-    component = ResolvedComponent(
-        name=name,
-        type=type_,
-        schema=schema,
-        object=name,
-    )
-    generator.registry.register_on_missing(component)
-    return component
+LOGGER = get_logger()
 
 
-def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
-    """Workaround to set a default response for endpoints.
-    Workaround suggested at
-    <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>
-    for the missing drf-spectacular feature discussed in
-    <https://github.com/tfranzel/drf-spectacular/issues/101>.
-    """
+def preprocess_schema_exclude_non_api(endpoints: list[tuple[str, Any, Any, Callable]], **kwargs):
+    """Filter out all API Views which are not mounted under /api"""
+    return [
+        (path, path_regex, method, callback)
+        for path, path_regex, method, callback in endpoints
+        if path.startswith("/" + AuthentikAPIConfig.mountpoint)
+    ]
 
-    create_component(generator, PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA)
 
-    generic_error = create_component(generator, "GenericError", GENERIC_ERROR)
-    validation_error = create_component(generator, "ValidationError", VALIDATION_ERROR)
+def postprocess_schema_register(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Register custom schema components"""
+    LOGGER.debug("Registering custom schemas")
+    generator.registry.register_on_missing(PAGINATION)
+    generator.registry.register_on_missing(GENERIC_ERROR)
+    generator.registry.register_on_missing(GENERIC_ERROR_RESPONSE)
+    generator.registry.register_on_missing(VALIDATION_ERROR)
+    generator.registry.register_on_missing(VALIDATION_ERROR_RESPONSE)
+    for query in QUERY_PARAMS.values():
+        generator.registry.register_on_missing(query)
+    return result
 
+
+def postprocess_schema_responses(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Default error responses"""
+    LOGGER.debug("Adding default error responses")
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"].setdefault(
-                "400",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": validation_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
-            method["responses"].setdefault(
-                "403",
-                {
-                    "content": {
-                        "application/json": {
-                            "schema": generic_error.ref,
-                        }
-                    },
-                    "description": "",
-                },
-            )
+            method["responses"].setdefault("400", VALIDATION_ERROR_RESPONSE.ref)
+            method["responses"].setdefault("403", GENERIC_ERROR_RESPONSE.ref)
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
@@ -104,10 +68,36 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
     return result
 
 
-def preprocess_schema_exclude_non_api(endpoints, **kwargs):
-    """Filter out all API Views which are not mounted under /api"""
-    return [
-        (path, path_regex, method, callback)
-        for path, path_regex, method, callback in endpoints
-        if path.startswith("/" + AuthentikAPIConfig.mountpoint)
-    ]
+def postprocess_schema_query_params(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
+    declare them globally and refer to them"""
+    LOGGER.debug("Deduplicating query parameters")
+    for path in result["paths"].values():
+        for method in path.values():
+            for idx, param in enumerate(method.get("parameters", [])):
+                if param["name"] not in QUERY_PARAMS:
+                    continue
+                method["parameters"][idx] = QUERY_PARAMS[param["name"]].ref
+    return result
+
+
+def postprocess_schema_remove_unused(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Remove unused components"""
+    # To check if the schema is used, render it to JSON and then substring check that
+    # less efficient than walking through the tree but a lot simpler and no
+    # possibility that we miss something
+    raw = OpenApiJsonRenderer().render(result, renderer_context={}).decode()
+    count = 0
+    for key in result["components"][ResolvedComponent.SCHEMA].keys():
+        schema_usages = raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}")
+        if schema_usages >= 1:
+            continue
+        del generator.registry[(key, ResolvedComponent.SCHEMA)]
+        count += 1
+    LOGGER.debug("Removing unused components", count=count)
+    result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
+    return result

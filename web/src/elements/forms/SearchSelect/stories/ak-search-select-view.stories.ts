@@ -5,7 +5,7 @@ import { groupedSampleData, sampleData } from "./sampleData.js";
 import { SearchSelectView } from "#elements/forms/SearchSelect/ak-search-select-view";
 
 import { Meta } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import { html, TemplateResult } from "lit";
 
@@ -24,7 +24,7 @@ const metadata: Meta<SearchSelectView> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -41,7 +41,7 @@ const container = (testItem: TemplateResult) =>
 
 const longGoodForYouPairs = {
     grouped: false,
-    options: sampleData.map(({ produce }) => [slug(produce), produce]),
+    options: sampleData.map(({ produce }) => [kebabCase(produce), produce]),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,15 +1,14 @@
 import "#elements/EmptyState";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/LoadingOverlay.css";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface ILoadingOverlay {
     /**
@@ -25,7 +24,7 @@ export interface ILoadingOverlay {
     /**
      * Icon name to display instead of the default loading spinner
      */
-    icon?: string;
+    icon?: string | null;
 }
 
 /**
@@ -43,40 +42,21 @@ export interface ILoadingOverlay {
  */
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
+    static styles = [Styles];
+
     // Do not camelize: https://www.merriam-webster.com/dictionary/topmost
     @property({ type: Boolean, attribute: "topmost" })
-    topmost = false;
+    public topmost = false;
 
-    @property({ type: Boolean, attribute: "no-spinner" })
-    noSpinner = false;
+    @property({ type: Boolean, attribute: "no-spinner", useDefault: true })
+    public noSpinner = false;
 
-    @property({ type: String })
-    icon?: string;
-
-    static styles = [
-        PFBase,
-        css`
-            :host {
-                top: 0;
-                left: 0;
-                display: flex;
-                height: 100%;
-                width: 100%;
-                justify-content: center;
-                align-items: center;
-                position: absolute;
-                background-color: var(--pf-global--BackgroundColor--dark-transparent-200);
-                z-index: 1;
-            }
-            :host([topmost]) {
-                z-index: 999;
-            }
-        `,
-    ];
+    @property({ type: String, useDefault: true })
+    public icon: string | null = null;
 
     render() {
         // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...
-        return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifDefined(this.icon)}>
+        return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifPresent(this.icon)}>
             ${this.hasSlotted(null) ? html`<span><slot></slot></span>` : nothing}
             ${this.hasSlotted("body")
                 ? html`<span slot="body"><slot name="body"></slot></span>`
@@ -103,7 +83,7 @@ type ContentValue = SlottedTemplateResult | undefined;
  */
 export function akLoadingOverlay(
     properties: ILoadingOverlay = {},
-    content: ILoadingOverlayContent = {},
+    content: string | ILoadingOverlayContent = {},
 ) {
     // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete
     // slot-name.

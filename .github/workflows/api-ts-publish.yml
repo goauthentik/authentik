@@ -1,24 +1,31 @@
-name: authentik-api-ts-publish
+---
+name: API - Publish Typescript client
+
 on:
   push:
     branches: [main]
     paths:
       - "schema.yml"
   workflow_dispatch:
+
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   build:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
         with:
           node-version-file: web/package.json
           registry-url: "https://registry.npmjs.org"
@@ -29,8 +36,6 @@ jobs:
         run: |
           npm i
           npm publish --tag generated
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
         working-directory: web
         run: |
@@ -41,7 +46,7 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
@@ -54,7 +59,7 @@ jobs:
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
           labels: dependencies
-      - uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
         with:
           token: ${{ steps.generate_token.outputs.token }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}

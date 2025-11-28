@@ -8,7 +8,7 @@ import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -46,9 +46,8 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     }
 
     renderStaticRules(): TemplateResult {
-        return html` <ak-form-group>
-            <span slot="header"> ${msg("Static rules")} </span>
-            <div slot="body" class="pf-c-form">
+        return html` <ak-form-group label="${msg("Static rules")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Minimum length")}
                     required
@@ -144,9 +143,8 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderHIBP(): TemplateResult {
         return html`
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("HaveIBeenPwned settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Allowed count")}
                         required
@@ -169,9 +167,8 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderZxcvbn(): TemplateResult {
         return html`
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("zxcvbn settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("zxcvbn settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Score threshold")}
                         required
@@ -334,9 +331,9 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
                 </p>
             </ak-form-element-horizontal>
-            ${this.showStatic ? this.renderStaticRules() : html``}
-            ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
+            ${this.showStatic ? this.renderStaticRules() : nothing}
+            ${this.showHIBP ? this.renderHIBP() : nothing}
+            ${this.showZxcvbn ? this.renderZxcvbn() : nothing}`;
     }
 }
 

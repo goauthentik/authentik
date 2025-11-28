@@ -2,9 +2,9 @@
 title: Expression Policies
 ---
 
-Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. With Expression polices, you can provide Python code to enforce custom checks and validation.
+Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. When you [create](./working_with_policies.md#create-a-policy) an expression policy, you provide your own custom Python code to enforce custom checks and validation.
 
-The passing of the policy is determined by the return value of the code.
+The passing of the policy is determined by the return value of the code: `True` or `False`.
 
 To pass a policy, use:
 
@@ -27,9 +27,18 @@ if request.context["pending_user"].username == "marie":
 return False
 ```
 
-If the return is `True` that means Yes, use this stage (i.e. the user will get the MFA prompt). A return of `False` means remove this stage from the plan.
+When the policy returns `True`, the MFA validation stage is enforced. When it returns `False`, the MFA validation stage is skipped.
 
-## Available Functions
+## Sample expression policies
+
+Expressions policies with sample Python that we have documented:
+
+- [Source-switching based on email address](./expression/source_switch.md)
+- [Managing flow context keys](./expression/managing_flow_context_keys.md)
+- [Unique email addresses](./expression/unique_email.md)
+- [Create an email address allow list](./expression/whitelist_email.md)
+
+## Available functions
 
 ### `ak_message(message: str)`
 
@@ -56,7 +65,7 @@ import Objects from "../../expressions/_objects.md";
     - `request.user`: The current user, against which the policy is applied. See [User](../../users-sources/user/index.mdx)
 
         :::caution
-        When a policy is executed in the context of a flow, this will be set to the user initiaing request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
+        When a policy is executed in the context of a flow, this will be set to the user initiating the request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
 
         If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User) (authentik uses django-guardian for per-object permissions, [see](https://django-guardian.readthedocs.io/en/stable/)).
         :::

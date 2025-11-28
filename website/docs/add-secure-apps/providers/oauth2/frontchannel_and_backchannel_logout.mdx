@@ -1,0 +1,118 @@
+---
+title: OAuth2/OpenID Connect front-channel and back-channel logout
+description: Configure front-channel and back-channel logout for OAuth2/OpenID Connect providers
+authentik_version: "2025.8.0"
+authentik_preview: true
+---
+
+## Overview
+
+OAuth2/OIDC logout is a security feature defined in the OpenID Connect specification. It allows an OIDC Provider (OP), such as authentik, to notify Relying Parties (RPs) when a user session ends. This ensures that all associated applications can properly terminate the user's session.
+
+For more information about single logout across all providers, see the [Single Logout (SLO) Overview](../single-logout/index.md).
+
+:::warning
+Your OAuth application (Relying Party) must explicitly support OpenID Connect front-channel logout or back-channel logout to properly handle logout requests. Not all OAuth applications support these features, so compatibility should be verified.
+:::
+
+## Requirements
+
+Your OAuth application (Relying Party) must:
+
+    - **HTTPS**: Use HTTPS in production.
+    - **Accessible**: Be reachable from authentik.
+    - **Logout endpoint**: Have a defined endpoint to handle OP logout requests (front-channel, back-channel, or both).
+
+## Configuration
+
+### Set up single logout
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers**.
+3. Edit or create an OAuth2 provider.
+4. In the **Logout URI** field, enter the logout endpoint provided by your RP, if supported.
+5. Select the **Logout Method** to choose **Front-channel** or **Back-channel** based on RP support.
+6. Click **Finish** to save your changes.
+
+:::info
+Back-channel logout is the only way to ensure that users are logged out of the provider when their session is administratively terminated (e.g., when a user is deactivated or their session is deleted).
+:::
+
+### Logout URI format
+
+The **Logout URI** should be a single URL provided by your Relying Party application, for example:
+
+#### Back-channel
+
+```
+https://app.example.com/oauth/backchannel-logout
+https://api.service.com/logout/backchannel
+https://client.example.org/backchannel-logout
+```
+
+#### Front-channel
+
+```
+https://app.example.com/oauth/logout
+https://api.service.com/logout
+```
+
+## How OpenID Connect single logout works
+
+### Back-channel logout
+
+With back-channel logout, authentik sends logout requests directly from the server to the RP’s logout endpoint via HTTP POST. The logout request includes a signed JWT logout token that contains the following JWT claims:
+
+    - `iss` (issuer): The authentik issuer URL
+    - `sub` (subject): The user's unique identifier
+    - `aud` (audience): The client ID
+    - `iat` (issued at): Token creation timestamp
+    - `jti` (JWT ID): Unique token identifier
+    - `events`: Logout event claim
+    - `sid` (session ID): The session identifier (if available)
+
+Example back-channel logout request:
+
+```http
+POST /backchannel-logout HTTP/1.1
+Host: client.example.org
+Content-Type: application/x-www-form-urlencoded
+
+logout_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+Back-channel logout is triggered when:
+
+    - A user logs out through a logout flow
+    - An administrator deletes a user's session
+    - A user account is deactivated
+    - A session expires or is revoked
+
+### Front-channel logout
+
+With front-channel logout, authentik injects an iframe logout stage into the logout flow. This stage loads the RP's (relying party) front-channel logout URL in a hidden iframe within the user's browser. The logout URL includes session information as query parameters, such as:
+
+    - `iss`: The authentik issuer URL
+    - `sid`: The session identifier
+
+Example front-channel logout iframe:
+
+```html
+<iframe
+    src="https://app.example.com/oauth/logout?iss=https://authentik.company&sid=session_id"
+></iframe>
+```
+
+The RP processes the logout request and terminates the user's session. After all iframes complete their requests, the user continues through the authentik logout flow.
+
+:::info
+Front-channel logout only works for user-initiated logouts through a logout flow. It cannot be used for administrative session termination since it requires an active browser session.
+:::
+
+## Resources
+
+- [Single Logout (SLO) Overview](../single-logout/index.md)
+- [User Logout Stage](../../flows-stages/stages/user_logout.md)
+- [OAuth2 Provider Configuration](./index.mdx)
+- [OpenID Connect Back-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-backchannel-1_0.html)
+- [OpenID Connect Front-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-frontchannel-1_0.html)

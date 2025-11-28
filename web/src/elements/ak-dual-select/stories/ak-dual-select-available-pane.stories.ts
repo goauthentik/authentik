@@ -5,7 +5,7 @@ import "./sb-host-provider.js";
 import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import { html, TemplateResult } from "lit";
 
@@ -38,7 +38,7 @@ const metadata: Meta<AkDualSelectAvailablePane> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -88,7 +88,7 @@ const goodForYou = [
     "Cauliflower",
 ];
 
-const goodForYouPairs = goodForYou.map((key) => [slug(key), key]);
+const goodForYouPairs = goodForYou.map((key) => [kebabCase(key), key]);
 
 export const Default: Story = {
     render: () =>

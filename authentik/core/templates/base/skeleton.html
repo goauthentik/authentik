@@ -3,8 +3,10 @@
 {% load authentik_core %}
 
 <!DOCTYPE html>
-
-<html>
+<html
+    data-theme="{% if ui_theme == "dark" %}dark{% else %}light{% endif %}"
+    data-theme-choice="{% if ui_theme == "dark" %}dark{% elif ui_theme == "light" %}light{% else %}auto{% endif %}"
+>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,10 +17,11 @@
         <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
         {% block head_before %}
         {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
-        <style>{{ brand_css }}</style>
+
+        {% include "base/theme.html" %}
+
+        <style data-id="brand-css">{{ brand_css }}</style>
         <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
-        <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
         {% for key, value in html_meta.items %}

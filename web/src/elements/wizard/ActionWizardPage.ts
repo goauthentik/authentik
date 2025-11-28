@@ -6,7 +6,7 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -58,7 +58,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public label = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -105,7 +105,7 @@ export class ActionWizardPage extends WizardPage {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">
-                    <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
+                    <i class="fas fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
                     <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
                     <div class="pf-c-empty-state__body">
                         <ol class="pf-c-progress-stepper pf-m-vertical">
@@ -144,7 +144,7 @@ export class ActionWizardPage extends WizardPage {
                                               >
                                                   ${state.action.subText}
                                               </div>`
-                                            : html``}
+                                            : nothing}
                                     </div>
                                 </li>`;
                             })}

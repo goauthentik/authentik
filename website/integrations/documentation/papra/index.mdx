@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `papra.company` is the FQDN of the Papra installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -47,7 +47,7 @@ To support the integration of Papra with authentik, you'll need to add the follo
 AUTH_PROVIDERS_CUSTOMS=[{"providerId": "authentik","providerName": "authentik","providerIconUrl": "https://authentik.company/static/dist/assets/icons/icon.png","clientId": "<client_id>","clientSecret": "<client_secret>","type": "oidc","discoveryUrl": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","scopes": ["openid", "profile", "email"]}]
 ```
 
-:::note
+:::info
 The JSON needs to be inline (single line) because various `.env` parsers, such as the one used by Docker Compose, do not support multiline environment variables.
 :::
 

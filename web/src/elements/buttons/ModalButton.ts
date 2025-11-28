@@ -1,3 +1,5 @@
+import { SlottedTemplateResult } from "../types.js";
+
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
@@ -24,6 +26,10 @@ export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
+
+        /* Fixes issue where browser inherits from modal parent with more restrictive style. */
+        cursor: initial;
+        user-select: text;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;
@@ -35,21 +41,15 @@ export const MODAL_BUTTON_STYLES = css`
 `;
 
 @customElement("ak-modal-button")
-export class ModalButton extends AKElement {
-    //#region Properties
-
+export abstract class ModalButton extends AKElement {
     @property()
-    size: PFSize = PFSize.Large;
+    public size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    open = false;
+    public open = false;
 
     @property({ type: Boolean })
-    locked = false;
-
-    //#endregion
-
-    handlerBound = false;
+    public locked = false;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -74,50 +74,63 @@ export class ModalButton extends AKElement {
         `,
     ];
 
-    closeModal() {
-        this.resetForms();
-        this.open = false;
-    }
-
-    resetForms(): void {
-        for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
+    public resetForms(): void {
+        this.querySelectorAll<Form>("[slot=form]").forEach((form) => {
             form.reset?.();
-        }
-    }
-
-    onClick(): void {
-        this.open = true;
-        this.dispatchEvent(new ModalShowEvent(this));
-        this.querySelectorAll("*").forEach((child) => {
-            if ("requestUpdate" in child) {
-                (child as AKElement).requestUpdate();
-            }
         });
     }
 
-    //#region Render
+    /**
+     * Close the modal.
+     */
+    public close = () => {
+        this.resetForms();
+        this.open = false;
+    };
 
-    renderModalInner(): TemplateResult | typeof nothing {
+    /**
+     * Show the modal.
+     */
+    public show = (): void => {
+        this.open = true;
+
+        this.dispatchEvent(new ModalShowEvent(this));
+
+        this.querySelectorAll<AKElement>("*").forEach((child) => {
+            child.requestUpdate?.();
+        });
+    };
+
+    #closeListener = () => {
+        this.dispatchEvent(new ModalHideEvent(this));
+    };
+
+    #backdropListener = (event: PointerEvent) => {
+        event.stopPropagation();
+    };
+
+    /**
+     * @abstract
+     */
+    protected renderModalInner(): SlottedTemplateResult {
         return html`<slot name="modal"></slot>`;
     }
 
-    renderModal(): TemplateResult {
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-            }}
-        >
-            <div class="pf-l-bullseye">
+    /**
+     * @abstract
+     */
+    protected renderModal(): SlottedTemplateResult {
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
+            <div class="pf-l-bullseye" role="presentation">
                 <div
                     class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
                     aria-modal="true"
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
                 >
                     <button
-                        @click=${() => {
-                            this.dispatchEvent(new ModalHideEvent(this));
-                        }}
+                        @click=${this.#closeListener}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-label=${msg("Close dialog")}
@@ -131,7 +144,7 @@ export class ModalButton extends AKElement {
     }
 
     render(): TemplateResult {
-        return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
+        return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }
 

@@ -1,0 +1,86 @@
+---
+name: Release - Branch-off
+
+on:
+  workflow_dispatch:
+    inputs:
+      next_version:
+        description: Next major version (for example, if releasing 2042.2, this is 2042.4)
+        required: true
+        type: string
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  check-inputs:
+    name: Check inputs validity
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ inputs.next_version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}$"
+  branch-off:
+    name: Branch-off
+    needs:
+      - check-inputs
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - name: Checkout main
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+        with:
+          ref: main
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: python
+      - name: Create version branch
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+        run: |
+          current_major_version="$(uv version --short | grep -oE "^[0-9]{4}\.[0-9]{1,2}")"
+          git checkout -b "version-${current_major_version}"
+          git push origin "version-${current_major_version}"
+          gh label create "backport/version-${current_major_version}" --description "Add this label to PRs to backport changes to version-${current_major_version}" --color "fbca04"
+  bump-version-pr:
+    name: Open version bump PR
+    needs:
+      - branch-off
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate_token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - name: Checkout main
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+        with:
+          ref: main
+          token: ${{ steps.generate_token.outputs.token }}
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Run migrations
+        run: make migrate
+      - name: Bump version
+        run: "make bump version=${{ inputs.next_version }}.0-rc1"
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          branch: release-bump-${{ inputs.next_version }}
+          commit-message: "root: bump version to ${{ inputs.next_version }}.0-rc1"
+          title: "root: bump version to ${{ inputs.next_version }}.0-rc1"
+          body: "root: bump version to ${{ inputs.next_version }}.0-rc1"
+          delete-branch: true
+          signoff: true
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>

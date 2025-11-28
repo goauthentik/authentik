@@ -70,9 +70,8 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
                         required
@@ -88,9 +87,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink(
-                                    "/docs/customize/policies/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink("/customize/policies/expression")}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

@@ -1,39 +1,197 @@
 ---
-name: authentik-on-tag
+name: Release - Tag new version
 
 on:
-  push:
-    tags:
-      - "version/*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+        type: string
+      release_reason:
+        description: Release reason
+        required: true
+        type: choice
+        options:
+          - bugfix
+          - feature
+          - security
+          - other
+          - prerelease
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 jobs:
-  build:
-    name: Create Release from Tag
+  check-inputs:
+    name: Check inputs validity
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Pre-release test
+      - id: check
         run: |
-          make test-docker
-      - id: generate_token
-        uses: tibdex/github-app-token@v2
+          echo "${{ inputs.version }}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
+          echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+      - id: changelog-url
+        run: |
+          if [ "${{ inputs.release_reason }}" = "feature" ]; then
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          else
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
+          fi
+          echo "changelog_url=${changelog_url}" >> "$GITHUB_OUTPUT"
+    outputs:
+      major_version: "${{ steps.check.outputs.major_version }}"
+      changelog_url: "${{ steps.changelog-url.outputs.changelog_url }}"
+  test:
+    name: Pre-release test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+      - run: make test-docker
+  bump-authentik:
+    name: Bump authentik version
+    needs:
+      - check-inputs
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
-          image-name: ghcr.io/goauthentik/server
+          ref: "version-${{ needs.check-inputs.outputs.major_version }}"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Run migrations
+        run: make migrate
+      - name: Bump version
+        run: "make bump version=${{ inputs.version }}"
+      - name: Commit and push
+        run: |
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+          git commit -a -m "release: ${{ inputs.version }}" --allow-empty
+          git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
+          git push --follow-tags
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.ev.outputs.version }}
+          token: "${{ steps.app-token.outputs.token }}"
+          tag_name: "version/${{ inputs.version }}"
+          name: Release ${{ inputs.version }}
           draft: true
-          prerelease: ${{ steps.ev.outputs.prerelease == 'true' }}
+          prerelease: ${{ inputs.release_reason == 'prerelease' }}
+          generate_release_notes: true
+          body: |
+            See ${{ needs.check-inputs.outputs.changelog_url }}
+  bump-helm:
+    name: Bump Helm version
+    if: ${{ inputs.release_reason != 'prerelease' }}
+    needs:
+      - bump-authentik
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          repositories: helm
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+        with:
+          repository: "${{ github.repository_owner }}/helm"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Bump version
+        run: |
+          sed -i 's/^version: .*/version: ${{ inputs.version }}/' charts/authentik/Chart.yaml
+          sed -i 's/^appVersion: .*/appVersion: ${{ inputs.version }}/' charts/authentik/Chart.yaml
+          sed -i 's/upgrade to authentik .*/upgrade to authentik ${{ inputs.version }}/' charts/authentik/Chart.yaml
+          sed -E -i 's/[0-9]{4}\.[0-9]{1,2}\.[0-9]+$/${{ inputs.version }}/' charts/authentik/Chart.yaml
+          ./scripts/helm-docs.sh
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          branch: bump-${{ inputs.version }}
+          commit-message: "charts/authentik: bump to ${{ inputs.version }}"
+          title: "charts/authentik: bump to ${{ inputs.version }}"
+          body: "charts/authentik: bump to ${{ inputs.version }}"
+          delete-branch: true
+          signoff: true
+          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+  bump-version:
+    name: Bump version repository
+    if: ${{ inputs.release_reason != 'prerelease' }}
+    needs:
+      - check-inputs
+      - bump-authentik
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          repositories: version
+      - id: get-user-id
+        name: Get GitHub app user ID
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}"
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
+        with:
+          repository: "${{ github.repository_owner }}/version"
+          token: "${{ steps.app-token.outputs.token }}"
+      - name: Bump version
+        if: "${{ inputs.release_reason == 'feature' }}"
+        run: |
+          changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}"
+          jq \
+            --arg version "${{ inputs.version }}" \
+            --arg changelog "See ${changelog_url}" \
+            --arg changelog_url "${changelog_url}" \
+            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
+          mv version.new.json version.json
+      - name: Bump version
+        if: "${{ inputs.release_reason != 'feature' }}"
+        run: |
+          changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version}} | sed 's/\.//g')"
+          jq \
+            --arg version "${{ inputs.version }}" \
+            --arg changelog "See ${changelog_url}" \
+            --arg changelog_url "${changelog_url}" \
+            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
+          mv version.new.json version.json
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
+          branch: bump-${{ inputs.version }}
+          commit-message: "version: bump to ${{ inputs.version }}"
+          title: "version: bump to ${{ inputs.version }}"
+          body: "version: bump to ${{ inputs.version }}"
+          delete-branch: true
+          signoff: true
+          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"

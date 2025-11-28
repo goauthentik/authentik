@@ -7,16 +7,15 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
-import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -29,18 +28,11 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
     supportsQL = true;
 
-    pageTitle(): string {
-        return msg("Event Log");
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-catalog";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Event Log");
+    public pageDescription = "";
+
+    public pageIcon = "pf-icon pf-icon-catalog";
+    protected override searchEnabled = true;
 
     @property()
     order = "-created";
@@ -59,19 +51,21 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "user"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-            new TableColumn(msg("Brand"), "brand_name"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "user"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+        [msg("Brand"), "brand_name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override rowLabel(item: Event): string | null {
+        return actionToLabel(item.action);
     }
 
     renderSectionBefore(): TemplateResult {
-        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.hasEnterpriseLicense) {
             return html`<div
                 class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
             >
@@ -109,28 +103,20 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            html`<div>${formatElapsedTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            Timestamp(item.created),
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>
-                    <i class="fas fa-share-square"></i>
+                    <i class="fas fa-share-square" aria-hidden="true"></i>
                 </pf-tooltip>
             </a>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="5">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 }
 

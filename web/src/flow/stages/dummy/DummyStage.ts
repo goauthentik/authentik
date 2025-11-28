@@ -24,11 +24,16 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

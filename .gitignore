@@ -72,7 +72,7 @@ unittest.xml
 
 # Translations
 # Have to include binary mo files as they are annoying to compile at build time
-# since a full postgres and redis instance are required
+# since a full postgres instance is required
 # *.mo
 
 # Django stuff:
@@ -99,9 +99,6 @@ ipython_config.py
 
 # pyenv
 .python-version
-
-# celery beat schedule file
-celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
@@ -165,8 +162,6 @@ dmypy.json
 # IPython
 
 # pyenv
-
-# celery beat schedule file
 
 # SageMath parsed files
 

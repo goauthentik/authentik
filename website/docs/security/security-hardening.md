@@ -25,7 +25,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 - `/api/v3/propertymappings*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file). Take care to restrict access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
@@ -35,7 +35,7 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.mdx#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.mdx#as-a-local-file).
 
 ### CAPTCHA Stage
 
@@ -46,7 +46,7 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 - `/api/v3/stages/captcha*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file).
 
 ### Content Security Policy (CSP)
 
@@ -64,15 +64,16 @@ authentik requires at least the following allowed locations:
 
 ```
 default-src 'self';
-img-src https: http: data:;
+img-src https: data:;
 object-src 'none';
 style-src 'self' 'unsafe-inline';    # Required due to Lit/ShadowDOM
 script-src 'self' 'unsafe-inline';   # Required for generated scripts
 ```
 
-Your use case might require more allowed locations for various directives, e.g.
+Your use case might require more allowed locations for various directives, for example:
 
 - when using a CAPTCHA service
 - when using Sentry
 - when using any custom JavaScript in a prompt stage
 - when using Spotlight Sidecar for development
+- when using images hosted via HTTP

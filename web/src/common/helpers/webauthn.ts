@@ -10,7 +10,7 @@ export function b64RawEnc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-export function u8arr(input: string): Uint8Array {
+export function u8arr(input: string): Uint8Array<ArrayBuffer> {
     return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
         c.charCodeAt(0),
     );

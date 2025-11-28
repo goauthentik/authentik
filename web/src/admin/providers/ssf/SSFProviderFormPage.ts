@@ -9,6 +9,8 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -55,21 +57,21 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
 
         return html`<ak-text-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Provider Name")}
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Signing Key")}
                         name="signingKey"
                         required
                     >
-                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
-                            certificate=${ifDefined(provider?.signingKey ?? undefined)}
+                            certificate=${ifPresent(provider?.signingKey)}
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
@@ -95,9 +97,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header">${msg("Authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Authentication settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("OIDC Providers")}
                         name="oidcAuthProviders"

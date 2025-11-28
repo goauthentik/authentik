@@ -25,22 +25,21 @@ const metadata: Meta<AkSwitchInput> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
-        <style>
-                        li {
+const container = (testItem: TemplateResult) => html`
+    <style>
+        li {
             display: block;
-            }
-            p {
+        }
+        p {
             margin-top: 1em;
-            }
-                        ${PFSwitch};
-        </style>
+        }
+        ${PFSwitch};
+    </style>
 
-        ${testItem}
+    ${testItem}
 
-        <ul id="switch-message-pad" style="margin-top: 1em"></ul>
-    </div>`;
+    <ul id="switch-message-pad" style="margin-top: 1em"></ul>
+`;
 
 export const SwitchInput = () => {
     const result = "";

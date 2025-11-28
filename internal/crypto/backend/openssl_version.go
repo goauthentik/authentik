@@ -6,7 +6,7 @@ import (
 )
 
 func OpensslVersion() string {
-	cmd := exec.Command("openssl", "version")
+	cmd := exec.Command("/usr/bin/openssl", "version")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()

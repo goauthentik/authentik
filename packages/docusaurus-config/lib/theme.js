@@ -5,10 +5,11 @@
  * @import { UserThemeConfig as UserThemeConfigAlgolia } from "@docusaurus/theme-search-algolia";
  * @import { NavbarItemOverrides } from "./navbar.js"
  */
-import { deepmerge } from "deepmerge-ts";
-import { themes as prismThemes } from "prism-react-renderer";
 
 import { createNavbarItems } from "./navbar.js";
+
+import { deepmerge } from "deepmerge-ts";
+import { themes as prismThemes } from "prism-react-renderer";
 
 //#region Types
 
@@ -58,6 +59,7 @@ export function createPrismConfig(overrides = {}) {
             "nginx",
             "python",
             "bash",
+            "powershell",
         ],
     };
 
@@ -84,6 +86,7 @@ export function createThemeConfig({ prism, navbarReplacements, ...overrides } = 
             respectPrefersColorScheme: true,
         },
         algolia: {
+            indexName: "goauthentik",
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
         },

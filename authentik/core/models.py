@@ -11,11 +11,12 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
-from django.utils.functional import SimpleLazyObject, cached_property
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_cte import CTE, with_cte
@@ -29,6 +30,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -43,18 +45,19 @@ from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGT
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
-USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
-USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
-USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
-USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
-USER_ATTRIBUTE_SOURCES = "goauthentik.io/user/sources"
-USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
-USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = "goauthentik.io/user/token-maximum-lifetime"  # nosec
-USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
-USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
-USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
-USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
+_USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
+USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
+USER_ATTRIBUTE_GENERATED = f"{_USER_ATTR_PREFIX}/generated"
+USER_ATTRIBUTE_EXPIRES = f"{_USER_ATTR_PREFIX}/expires"
+USER_ATTRIBUTE_DELETE_ON_LOGOUT = f"{_USER_ATTR_PREFIX}/delete-on-logout"
+USER_ATTRIBUTE_SOURCES = f"{_USER_ATTR_PREFIX}/sources"
+USER_ATTRIBUTE_TOKEN_EXPIRING = f"{_USER_ATTR_PREFIX}/token-expires"  # nosec
+USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME = f"{_USER_ATTR_PREFIX}/token-maximum-lifetime"  # nosec
+USER_ATTRIBUTE_CHANGE_USERNAME = f"{_USER_ATTR_PREFIX}/can-change-username"
+USER_ATTRIBUTE_CHANGE_NAME = f"{_USER_ATTR_PREFIX}/can-change-name"
+USER_ATTRIBUTE_CHANGE_EMAIL = f"{_USER_ATTR_PREFIX}/can-change-email"
+USER_PATH_SERVICE_ACCOUNT = f"{USER_PATH_SYSTEM_PREFIX}/service-accounts"
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # used_by API that allows models to specify if they shadow an object
@@ -114,15 +117,21 @@ class AttributesMixin(models.Model):
 
     def update_attributes(self, properties: dict[str, Any]):
         """Update fields and attributes, but correctly by merging dicts"""
+        needs_update = False
         for key, value in properties.items():
             if key == "attributes":
                 continue
-            setattr(self, key, value)
+            if getattr(self, key, None) != value:
+                setattr(self, key, value)
+                needs_update = True
         final_attributes = {}
         MERGE_LIST_UNIQUE.merge(final_attributes, self.attributes)
         MERGE_LIST_UNIQUE.merge(final_attributes, properties.get("attributes", {}))
-        self.attributes = final_attributes
-        self.save()
+        if self.attributes != final_attributes:
+            self.attributes = final_attributes
+            needs_update = True
+        if needs_update:
+            self.save()
 
     @classmethod
     def update_or_create_attributes(
@@ -200,7 +209,10 @@ class Group(SerializerModel, AttributesMixin):
                 "parent",
             ),
         )
-        indexes = [models.Index(fields=["name"])]
+        indexes = (
+            models.Index(fields=["name"]),
+            models.Index(fields=["is_superuser"]),
+        )
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
         permissions = [
@@ -274,6 +286,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
+    last_updated = models.DateTimeField(auto_now=True)
+
     objects = UserManager()
 
     class Meta:
@@ -293,6 +307,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
+            models.Index(fields=["date_joined"]),
+            models.Index(fields=["last_updated"]),
         ]
 
     def __str__(self):
@@ -393,10 +409,12 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
+        if request and hasattr(request, "LANGUAGE_CODE"):
+            return request.LANGUAGE_CODE
         try:
             return self.attributes.get("settings", {}).get("locale", "")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
             return request.brand.locale
@@ -517,7 +535,11 @@ class Application(SerializerModel, PolicyBindingModel):
     add custom fields and other properties"""
 
     name = models.TextField(help_text=_("Application's display Name."))
-    slug = models.SlugField(help_text=_("Internal application name, used in URLs."), unique=True)
+    slug = models.TextField(
+        validators=[validate_slug],
+        help_text=_("Internal application name, used in URLs."),
+        unique=True,
+    )
     group = models.TextField(blank=True, default="")
 
     provider = models.OneToOneField(
@@ -544,6 +566,9 @@ class Application(SerializerModel, PolicyBindingModel):
 
     objects = ApplicationQuerySet.as_manager()
 
+    # Reserved slugs that would clash with OAuth2 provider endpoints
+    reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.applications import ApplicationSerializer
@@ -556,25 +581,27 @@ class Application(SerializerModel, PolicyBindingModel):
         it is returned as-is"""
         if not self.meta_icon:
             return None
-        if "://" in self.meta_icon.name or self.meta_icon.name.startswith("/static"):
+        if self.meta_icon.name.startswith("http"):
             return self.meta_icon.name
+        if self.meta_icon.name.startswith("fa://"):
+            return self.meta_icon.name
+        if self.meta_icon.name.startswith("/"):
+            return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
         return self.meta_icon.url
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+        from authentik.core.api.users import UserSerializer
+
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
         if user and url:
-            if isinstance(user, SimpleLazyObject):
-                user._setup()
-                user = user._wrapped
             try:
-                return url % user.__dict__
-
-            except Exception as exc:
+                return url % UserSerializer(instance=user).data
+            except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
@@ -698,11 +725,22 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     MANAGED_INBUILT = "goauthentik.io/sources/inbuilt"
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
+    slug = models.TextField(
+        validators=[validate_slug],
+        help_text=_("Internal source name, used in URLs."),
+        unique=True,
+    )
 
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
+    promoted = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, this source will be displayed as a prominent button on the "
+            "login page, instead of a small icon."
+        ),
+    )
     user_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
     )
@@ -759,8 +797,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         starts with http it is returned as-is"""
         if not self.icon:
             return None
-        if "://" in self.icon.name or self.icon.name.startswith("/static"):
+        if self.icon.name.startswith("http"):
             return self.icon.name
+        if self.icon.name.startswith("fa://"):
+            return self.icon.name
+        if self.icon.name.startswith("/"):
+            return CONFIG.get("web.path", "/")[:-1] + self.icon.name
         return self.icon.url
 
     def get_user_path(self) -> str:
@@ -770,7 +812,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                 "slug": self.slug,
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
 
@@ -903,7 +945,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
+    def filter_not_expired(cls, **kwargs) -> QuerySet["Self"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):

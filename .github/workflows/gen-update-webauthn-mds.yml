@@ -1,4 +1,6 @@
-name: authentik-gen-update-webauthn-mds
+---
+name: Gen - Webauthn MDS
+
 on:
   workflow_dispatch:
   schedule:
@@ -11,21 +13,20 @@ env:
 
 jobs:
   build:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - run: uv run ak update_webauthn_mds
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
@@ -38,7 +39,7 @@ jobs:
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
           labels: dependencies
-      - uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
         with:
           token: ${{ steps.generate_token.outputs.token }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}

@@ -50,7 +50,7 @@ To support the integration of authentik with Active Directory, you will need to 
     Under **Connection Settings**:
     - **Server URI**: `ldap://ad.company`
 
-    :::note
+    :::info
     For authentik to be able to write passwords back to Active Directory, make sure to use `ldaps://` as a prefix. You can verify that LDAPS is working by opening the `ldp.exe` tool on a domain controller and attempting a connection to the server via port 636. If a connection can be established, LDAPS is functioning as expected. More information can be found in the [Microsoft LDAPS documentation](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/ldap-over-ssl-connection-issues).
 
     Multiple servers can be specified by separating URIs with a comma (e.g. `ldap://dc1.ad.company,ldap://dc2.ad.company`). If a DNS entry with multiple records is used, authentik will select a random entry when first connecting.

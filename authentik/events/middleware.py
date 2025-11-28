@@ -20,7 +20,7 @@ from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.lib.sentry import should_ignore_exception
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = tuple(
@@ -170,14 +170,16 @@ class AuditMiddleware:
             thread = EventNewThread(
                 EventAction.SUSPICIOUS_REQUEST,
                 request,
-                message=exception_to_string(exception),
+                message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
         elif not should_ignore_exception(exception):
             thread = EventNewThread(
                 EventAction.SYSTEM_EXCEPTION,
                 request,
-                message=exception_to_string(exception),
+                message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
 
@@ -195,7 +197,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -210,7 +213,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -237,7 +241,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 

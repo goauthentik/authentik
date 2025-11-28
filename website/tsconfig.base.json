@@ -13,16 +13,14 @@
         "allowJs": true,
         "composite": true,
         "esModuleInterop": true,
-        "moduleResolution": "nodenext",
-        "module": "nodenext",
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "baseUrl": "${configDir}",
         "rootDir": "${configDir}"
-    },
-    "paths": {
-        "@site/*": ["./*"]
     },
     "exclude": [
         // ---

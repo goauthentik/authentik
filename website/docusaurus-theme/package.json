@@ -7,11 +7,16 @@
     "exports": {
         "./package.json": "./package.json",
         ".": "./index.js",
+        "./custom.css": "./custom.css",
         "./config": "./config.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
+        "./redirects/plugin": "./redirects/plugin.mjs",
+        "./redirects/node": "./redirects/node.mjs",
+        "./redirects": "./redirects/index.mjs",
+        "./releases/common": "./releases/common.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
-        "./releases/utils": "./releases/utils.mjs"
+        "./releases/node": "./releases/node.mjs"
     },
     "imports": {
         "#remark": "./remark/index.mjs",
@@ -19,5 +24,17 @@
         "#components/*": "./components/*",
         "#hooks/*": "./hooks/*",
         "#theme/*": "./theme/*"
+    },
+    "dependencies": {
+        "@docusaurus/preset-classic": "^3.8.1",
+        "@goauthentik/docusaurus-config": "^2.2.1",
+        "@types/semver": "^7.7.1",
+        "clsx": "^2.1.1",
+        "fast-glob": "^3.3.3",
+        "remark-directive": "^4.0.0",
+        "remark-github": "^12.0.0",
+        "semver": "^7.7.3",
+        "typescript": "^5.9.3",
+        "unist-util-visit": "^5.0.0"
     }
 }

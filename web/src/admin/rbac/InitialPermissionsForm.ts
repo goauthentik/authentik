@@ -74,8 +74,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                        return users.results;
+                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                        return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
                         return role.name;

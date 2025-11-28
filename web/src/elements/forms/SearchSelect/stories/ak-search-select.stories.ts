@@ -47,7 +47,7 @@ const metadata: Meta<SearchSelect<Sample>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -95,7 +95,7 @@ export const GroupedAndEz = () => {
     const config: ISearchSelectApi<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
-        value: (sample: Sample | undefined) => sample?.pk ?? "",
+        value: (sample: Sample | null) => sample?.pk ?? "",
         groupBy: (samples: Sample[]) =>
             groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
     };

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.4-trixie@sha256:a02d35efc036053fdf0da8c15919276bf777a80cbfda6a35c5e9f087e652adfc AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,17 +31,23 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/beryju/guacd:1.5.5-fips
+FROM ghcr.io/goauthentik/guacd:v1.6.0-fips@sha256:1d99572b0260924149b8c923c021a32016f885fcea6d5cc8d58f718dfdc7a2dd
 
 ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url=https://goauthentik.io
-LABEL org.opencontainers.image.description="goauthentik.io RAC outpost, see https://goauthentik.io for more info."
-LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io RAC outpost, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik RAC outpost image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 USER root
 RUN apt-get update && \

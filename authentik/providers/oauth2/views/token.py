@@ -1,10 +1,9 @@
 """authentik OAuth2 Token views"""
 
-from base64 import b64decode, urlsafe_b64encode
+from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
-from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -62,7 +61,12 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
     ScopeMapping,
 )
-from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    cors_allow,
+    extract_client_auth,
+    pkce_s256_challenge,
+)
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -220,11 +224,7 @@ class TokenParams:
             if not self.code_verifier:
                 raise TokenError("invalid_grant")
             if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
-                new_code_challenge = (
-                    urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
-                    .decode("utf-8")
-                    .replace("=", "")
-                )
+                new_code_challenge = pkce_s256_challenge(self.code_verifier)
             else:
                 new_code_challenge = self.code_verifier
 
@@ -336,11 +336,11 @@ class TokenParams:
         self, request: HttpRequest, username: str, password: str
     ):
         # Authenticate user based on credentials
-        user = User.objects.filter(username=username).first()
+        user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
-            key=password, intent=TokenIntents.INTENT_APP_PASSWORD
+            key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
             raise TokenError("invalid_grant")
@@ -378,9 +378,11 @@ class TokenParams:
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"]["kid"]
-        fallback_alg = decode_unvalidated["header"]["alg"]
+        expected_kid = decode_unvalidated["header"].get("kid")
+        fallback_alg = decode_unvalidated["header"].get("alg")
         token = source = None
+        if not expected_kid or not fallback_alg:
+            return None, None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
@@ -602,9 +604,9 @@ class TokenView(View):
                     return TokenResponse(self.create_device_code_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
-            return TokenResponse(error.create_dict(), status=400)
+            return TokenResponse(error.create_dict(request), status=400)
         except UserAuthError as error:
-            return TokenResponse(error.create_dict(), status=403)
+            return TokenResponse(error.create_dict(request), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
@@ -688,32 +690,8 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.refresh_token.user,
-            scope=self.params.refresh_token.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.refresh_token.id_token.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Mark old token as revoked
-        self.params.refresh_token.revoked = True
-        self.params.refresh_token.save()
-
-        return {
+        res = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
@@ -721,6 +699,37 @@ class TokenView(View):
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        if (
+            refresh_token_threshold.total_seconds() == 0
+            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+        ):
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.refresh_token.user,
+                scope=self.params.refresh_token.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.refresh_token.auth_time,
+                session=self.params.refresh_token.session,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+
+            # Mark old token as revoked
+            self.params.refresh_token.revoked = True
+            self.params.refresh_token.save()
+            res["refresh_token"] = refresh_token.token
+
+        return res
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""

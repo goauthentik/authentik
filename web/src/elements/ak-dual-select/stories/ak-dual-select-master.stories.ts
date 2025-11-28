@@ -7,7 +7,7 @@ import { DualSelectEventType, type DualSelectPair } from "../types.js";
 import { Pagination } from "@goauthentik/api";
 
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -25,7 +25,7 @@ Rosemary, Rutabaga, Shallot, Soybeans, Spinach, Squash, Strawberries, Sweet pota
 Thyme, Tomatillo, Tomato, Turnip, Waterchestnut, Watercress, Watermelon, Yams
 `;
 
-const keyToPair = (key: string): DualSelectPair => [slug(key), key, key];
+const keyToPair = (key: string): DualSelectPair => [kebabCase(key), key, key];
 
 const goodForYou: DualSelectPair[] = goodForYouRaw
     .split("\n")
@@ -126,7 +126,7 @@ export class AkSbFruity extends LitElement {
 }
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

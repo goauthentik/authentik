@@ -6,6 +6,7 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     CoreApi,
@@ -17,7 +18,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 interface UserAssignData {
@@ -66,9 +67,9 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    renderForm(): TemplateResult {
+    renderForm(): SlottedTemplateResult {
         if (!this.modelPermissions) {
-            return html``;
+            return nothing;
         }
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("User")} name="user">

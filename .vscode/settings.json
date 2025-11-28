@@ -1,4 +1,16 @@
 {
+    "[css]": {
+        "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\*/$"
+    },
+    "[makefile]": {
+        "editor.minimap.markSectionHeaderRegex": "^#{25}\n##\\s\\s*(?<separator>-?)\\s*(?<label>[^\n]*)\n#{25}$"
+    },
+    "[dockerfile]": {
+        "editor.minimap.markSectionHeaderRegex": "\\bStage\\s*\\d:(?<separator>-?)\\s*(?<label>.*)$"
+    },
+    "[jsonc]": {
+        "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)$"
+    },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
@@ -7,7 +19,10 @@
         "!Enumerate sequence",
         "!Env scalar",
         "!Env sequence",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
+        "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
@@ -31,6 +46,13 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": ["-count=1"],
-    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
+    "go.testFlags": [
+        "-count=1"
+    ],
+    "go.testEnvVars": {
+        "WORKSPACE_DIR": "${workspaceFolder}"
+    },
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/ci-main.yml"
+    ]
 }

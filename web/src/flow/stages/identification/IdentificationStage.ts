@@ -1,14 +1,17 @@
 import "#elements/Divider";
 import "#elements/EmptyState";
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
 import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+import Styles from "#flow/stages/identification/styles.css";
 
 import {
     FlowDesignationEnum,
@@ -18,10 +21,13 @@ import {
     UserFieldsEnum,
 } from "@goauthentik/api";
 
+import { kebabCase } from "change-case";
+
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -57,35 +63,16 @@ export class IdentificationStage extends BaseStage<
         PFTitle,
         PFButton,
         ...AkRememberMeController.styles,
-        css`
-            /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
-                background-color: transparent;
-                border: 0;
-                display: flex;
-                align-items: stretch;
-            }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-            }
-
-            .captcha-container {
-                position: relative;
-
-                .faux-input {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    opacity: 0;
-                    pointer-events: none;
-                }
-            }
-        `,
+        Styles,
     ];
+
+    /**
+     * The ID of the input field.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "input-id" })
+    public inputID = "ak-identifier-input";
 
     #form?: HTMLFormElement;
 
@@ -121,6 +108,8 @@ export class IdentificationStage extends BaseStage<
     //#region Lifecycle
 
     public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.#autoRedirect();
             this.#createHelperForm();
@@ -242,6 +231,12 @@ export class IdentificationStage extends BaseStage<
     }
 
     onSubmitFailure(): void {
+        const captchaInput = this.#captchaInputRef.value;
+
+        if (captchaInput) {
+            captchaInput.value = "";
+        }
+
         this.captchaRefreshedAt = new Date();
     }
 
@@ -249,40 +244,72 @@ export class IdentificationStage extends BaseStage<
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
-        return html`<li class="pf-c-login__main-footer-links-item">
-            <button
+        const isPromoted = source.promoted ?? false;
+
+        // Promoted source
+        if (isPromoted) {
+            return html`<button
                 type="button"
                 @click=${() => {
                     if (!this.host) return;
                     this.host.challenge = source.challenge;
                 }}
-                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
+                part="source-item source-item-promoted"
+                name=${`source-${kebabCase(source.name)}`}
+                class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+                aria-label=${msg(str`Continue with ${source.name}`)}
             >
-                <span class="pf-c-button__icon pf-m-start">${icon}</span>
-                ${this.challenge.showSourceLabels ? source.name : ""}
-            </button>
-        </li>`;
+                ${msg(str`Continue with ${source.name}`)}
+            </button>`;
+        }
+
+        // Non-promoted sources (the default one)
+        return html`<button
+            type="button"
+            @click=${() => {
+                if (!this.host) return;
+                this.host.challenge = source.challenge;
+            }}
+            part="source-item"
+            name=${`source-${kebabCase(source.name)}`}
+            class="pf-c-button source-button"
+            aria-label=${msg(str`Continue with ${source.name}`)}
+        >
+            <span class="pf-c-button__icon pf-m-start">${icon}</span>
+            ${this.challenge.showSourceLabels ? source.name : ""}
+        </button>`;
     }
 
     renderFooter() {
-        if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
+        const { enrollUrl, recoveryUrl } = this.challenge || {};
+
+        const enrollmentItem = enrollUrl
+            ? html`<div class="pf-c-login__main-footer-band-item">
+                  ${msg("Need an account?")}
+                  <a name="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+              </div>`
+            : null;
+
+        const recoveryItem = recoveryUrl
+            ? html`<div class="pf-c-login__main-footer-band-item">
+                  <a name="recovery" href="${recoveryUrl}"
+                      >${msg("Forgot username or password?")}</a
+                  >
+              </div>`
+            : null;
+
+        if (!enrollmentItem && !recoveryItem) {
             return nothing;
         }
-        return html`<div slot="footer-band" class="pf-c-login__main-footer-band">
-            ${this.challenge.enrollUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      ${msg("Need an account?")}
-                      <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
-                  </p>`
-                : nothing}
-            ${this.challenge.recoveryUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
-                      <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${msg("Forgot username or password?")}</a
-                      >
-                  </p>`
-                : nothing}
-        </div>`;
+
+        return html`<fieldset
+            slot="footer-band"
+            part="additional-actions"
+            class="pf-c-login__main-footer-band"
+        >
+            <legend class="sr-only">${msg("Additional actions")}</legend>
+            ${enrollmentItem} ${recoveryItem}
+        </fieldset>`;
     }
 
     renderInput(): TemplateResult {
@@ -301,6 +328,7 @@ export class IdentificationStage extends BaseStage<
             [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
+
         return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
                 ? html`
                       <p>
@@ -310,13 +338,10 @@ export class IdentificationStage extends BaseStage<
                       </p>
                   `
                 : nothing}
-            <ak-form-element
-                label=${label}
-                required
-                class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {}).uid_field}
-            >
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: this.inputID }, label)}
                 <input
+                    id=${this.inputID}
                     type=${type}
                     name="uidField"
                     placeholder=${label}
@@ -328,15 +353,16 @@ export class IdentificationStage extends BaseStage<
                     required
                 />
                 ${this.#rememberMe.render()}
-            </ak-form-element>
+                ${AKFormErrors({ errors: this.challenge.responseErrors?.uid_field })}
+            </div>
             ${this.challenge.passwordFields
                 ? html`
                       <ak-flow-input-password
                           label=${msg("Password")}
-                          inputId="ak-stage-identification-password"
+                          input-id="ak-stage-identification-password"
                           required
                           class="pf-c-form__group"
-                          .errors=${(this.challenge?.responseErrors || {}).password}
+                          .errors=${this.challenge?.responseErrors?.password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
                           prefill=${PasswordManagerPrefill.password ?? ""}
                       ></ak-flow-input-password>
@@ -355,6 +381,7 @@ export class IdentificationStage extends BaseStage<
                           >
                           </ak-stage-captcha>
                           <input
+                              aria-hidden="true"
                               class="faux-input"
                               ${ref(this.#captchaInputRef)}
                               name="captchaToken"
@@ -368,7 +395,9 @@ export class IdentificationStage extends BaseStage<
 
             <div class="pf-c-form__group ${this.challenge.captchaStage ? "" : "pf-m-action"}">
                 <button
-                    ?disabled=${this.challenge.captchaStage && !this.captchaLoaded}
+                    ?disabled=${this.challenge.captchaStage &&
+                    this.challenge.captchaStage.interactive &&
+                    !this.captchaLoaded}
                     type="submit"
                     class="pf-c-button pf-m-primary pf-m-block"
                 >
@@ -381,7 +410,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<ak-flow-card .challenge=${this.challenge}>
+        return html`<ak-flow-card .challenge=${this.challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre
                     ? html`<p>
@@ -390,25 +419,38 @@ export class IdentificationStage extends BaseStage<
                     : nothing}
                 ${this.renderInput()}
                 ${this.challenge.passwordlessUrl
-                    ? html`
-                          <div>
-                              <a
-                                  href=${this.challenge.passwordlessUrl}
-                                  class="pf-c-button pf-m-secondary pf-m-block"
-                              >
-                                  ${msg("Use a security key")}
-                              </a>
-                          </div>
-                      `
+                    ? html`<a
+                          name="passwordless"
+                          href=${this.challenge.passwordlessUrl}
+                          class="pf-c-button pf-m-secondary pf-m-block"
+                      >
+                          ${msg("Use a security key")}
+                      </a> `
                     : nothing}
             </form>
-            ${(this.challenge.sources || []).length > 0
-                ? html`<ul slot="footer" class="pf-c-login__main-footer-links">
-                      ${(this.challenge.sources || []).map((source) => {
-                          return this.renderSource(source);
-                      })}
-                  </ul> `
-                : nothing}
+            ${this.challenge.sources?.length
+                ? html`<fieldset
+                      slot="footer"
+                      part="source-list"
+                      role="group"
+                      name="login-sources"
+                      class="pf-c-form__group"
+                  >
+                      <legend class="sr-only">${msg("Login sources")}</legend>
+                      ${repeat(
+                          [...this.challenge.sources].sort((a, b) => {
+                              // Sort promoted sources first
+                              const aPromoted = a.promoted ?? false;
+                              const bPromoted = b.promoted ?? false;
+                              if (aPromoted && !bPromoted) return -1;
+                              if (!aPromoted && bPromoted) return 1;
+                              return 0;
+                          }),
+                          (source, idx) => source.name + idx,
+                          (source) => this.renderSource(source),
+                      )}
+                  </fieldset> `
+                : null}
             ${this.renderFooter()}
         </ak-flow-card>`;
     }

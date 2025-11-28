@@ -134,3 +134,50 @@ For example:
       permissions:
           - authentik_blueprints.view_blueprintinstance
 ```
+
+## `authentik_stages_invitation.invitation`:ak-version[2025.12]
+
+The `created_by` field can be set to a user. If no value is given, the internal hidden anonymous user is used.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_stages_invitation.invitation
+  identifiers:
+      name: test-invitation
+  attrs:
+      created_by: !Find [authentik_core.user, [username, "my-admin-user"]]
+```
+
+## `authentik_policies.policybinding`
+
+### Required fields
+
+Each PolicyBinding entry must have **exactly one** of the following set in `attrs`:
+
+- `policy`: Reference to a Policy object
+- `group`: Reference to a Group object
+- `user`: Reference to a User object
+
+Setting none or multiple in a single binding will cause validation errors. However, you can create multiple separate bindings to the same target with different `order` values.
+
+Example with multiple bindings to the same application:
+
+```yaml
+# Bind a policy
+- model: authentik_policies.policybinding
+  identifiers:
+      target: !Find [authentik_core.application, [slug, my-app]]
+      order: 0
+  attrs:
+      policy: !Find [authentik_policies.expression.expressionpolicy, [name, my-policy]]
+
+# Bind a group to the same application
+- model: authentik_policies.policybinding
+  identifiers:
+      target: !Find [authentik_core.application, [slug, my-app]]
+      order: 1
+  attrs:
+      group: !Find [authentik_core.group, [name, admins]]
+```

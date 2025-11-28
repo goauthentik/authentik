@@ -82,9 +82,8 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Duo Auth API")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Duo Auth API")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
                         required
@@ -101,20 +100,18 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="clientSecret"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Duo Admin API (optional)")}</span>
-                <span slot="description">
-                    ${msg(
-                        `When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.`,
-                    )}
-                </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group
+                label=${msg("Duo Admin API (optional)")}
+                description="${msg(
+                    `When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.`,
+                )}"
+            >
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
                         name="adminIntegrationKey"
@@ -131,13 +128,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="adminSecretKey"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"

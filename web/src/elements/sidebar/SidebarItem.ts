@@ -1,98 +1,62 @@
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/sidebar/SidebarItem.css";
+import { ifPresent } from "#elements/utils/attributes";
 
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+export interface SidebarItemProperties {
+    path?: string | null;
+    activeWhen?: string[];
+    expanded?: boolean | null;
+}
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
+        // ---
         PFPage,
         PFNav,
-        css`
-            :host {
-                z-index: 100;
-                box-shadow: none !important;
-            }
-            :host([highlight]) .pf-c-nav__item {
-                background-color: var(--ak-accent);
-                margin: 16px;
-            }
-            :host([highlight]) .pf-c-nav__item .pf-c-nav__link {
-                padding-left: 0.5rem;
-            }
-            .pf-c-nav__link.pf-m-current::after,
-            .pf-c-nav__link.pf-m-current:hover::after,
-            .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-                --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
-            }
-
-            .pf-c-nav__section + .pf-c-nav__section {
-                --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
-            }
-            .pf-c-nav__list .sidebar-brand {
-                max-height: 82px;
-                margin-bottom: -0.5rem;
-            }
-            nav {
-                display: flex;
-                flex-direction: column;
-                max-height: 100vh;
-                height: 100%;
-                overflow-y: hidden;
-            }
-            .pf-c-nav__list {
-                flex-grow: 1;
-                overflow-y: auto;
-            }
-
-            .pf-c-nav__link {
-                --pf-c-nav__link--PaddingTop: 0.5rem;
-                --pf-c-nav__link--PaddingRight: 0.5rem;
-                --pf-c-nav__link--PaddingBottom: 0.5rem;
-            }
-            .pf-c-nav__section-title {
-                font-size: 12px;
-            }
-            .pf-c-nav__item {
-                --pf-c-nav__item--MarginTop: 0px;
-            }
-        `,
+        Styles,
     ];
 
-    @property()
-    path?: string;
+    @property({ type: String })
+    public path: string | null = null;
+
+    @property({ type: String })
+    public label: string | null = null;
 
     activeMatchers: RegExp[] = [];
 
-    @property({ type: Boolean })
-    expanded = false;
+    @property({ type: Boolean, useDefault: false })
+    public expanded = false;
 
-    @property({ type: Boolean })
-    isActive = false;
+    @property({ type: Boolean, useDefault: false })
+    public current = false;
 
-    @property({ type: Boolean })
-    isAbsoluteLink = false;
+    @property({ type: Boolean, attribute: "absolute-link", useDefault: false })
+    public isAbsoluteLink = false;
 
-    @property({ type: Boolean })
-    highlight = false;
+    @property({ type: Boolean, useDefault: false })
+    public highlight = false;
 
-    parent?: SidebarItem;
+    public parent?: SidebarItem;
 
-    get childItems(): SidebarItem[] {
+    public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
         children.forEach((child) => (child.parent = this));
         return children;
     }
 
     @property({ attribute: false })
-    set activeWhen(regexp: string[]) {
+    public set activeWhen(regexp: string[]) {
         regexp.forEach((r) => {
             this.activeMatchers.push(new RegExp(r));
         });
@@ -103,12 +67,37 @@ export class SidebarItem extends AKElement {
         window.addEventListener("hashchange", () => this.onHashChange());
     }
 
+    public updated(changedProperties: PropertyValues): void {
+        const previousExpanded = changedProperties.get("expanded");
+
+        if (typeof previousExpanded !== "boolean") return;
+
+        if (this.expanded && this.expanded !== previousExpanded) {
+            cancelAnimationFrame(this.#scrollAnimationFrame);
+
+            this.#scrollAnimationFrame = requestAnimationFrame(this.#scrollIntoView);
+        }
+    }
+
+    #listRef = createRef<HTMLLIElement>();
+    #scrollBehavior?: ScrollBehavior;
+    #scrollAnimationFrame = -1;
+
+    #scrollIntoView = (): void => {
+        this.#listRef.value?.scrollIntoView({
+            behavior: this.#scrollBehavior ?? "instant",
+            block: "nearest",
+        });
+
+        this.#scrollBehavior ??= "smooth";
+    };
+
     onHashChange(): void {
         const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
-        this.isActive = this.matchesPath(activePath);
+        this.current = this.matchesPath(activePath);
     }
 
     private matchesPath(path: string): boolean {
@@ -136,38 +125,62 @@ export class SidebarItem extends AKElement {
 
     renderWithChildren() {
         return html`<li
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+            part="list-item-expandable"
+            aria-label=${ifPresent(this.label)}
+            role="heading"
+            ${ref(this.#listRef)}
+            class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
             <button
+                part="button button-with-children"
                 class="pf-c-nav__link"
-                aria-expanded="true"
+                aria-label=${this.expanded
+                    ? msg(str`Collapse ${this.label}`)
+                    : msg(str`Expand ${this.label}`)}
+                aria-expanded=${this.expanded ? "true" : "false"}
+                aria-controls="subnav-${this.path}"
+                type="button"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
             >
-                <slot name="label"></slot>
+                ${this.label}
                 <span class="pf-c-nav__toggle">
                     <span class="pf-c-nav__toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </span>
             </button>
-            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
-                <ul class="pf-c-nav__list">
-                    <slot></slot>
+            <div class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
+                <ul
+                    id="subnav-${this.path}"
+                    role="navigation"
+                    aria-label=${msg(str`${this.label} navigation`)}
+                    class="pf-c-nav__list"
+                    ?hidden=${!this.expanded}
+                >
+                    ${this.expanded ? html`<slot></slot>` : nothing}
                 </ul>
-            </section>
+            </div>
         </li>`;
     }
 
     renderWithPathAndChildren() {
         return html`<li
-            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+            part="list-item"
+            role="presentation"
+            aria-label=${ifPresent(this.label)}
+            class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
-            <slot name="label"></slot>
+            ${this.label}
             <button
+                aria-label=${this.expanded
+                    ? msg(str`Collapse ${this.label}`)
+                    : msg(str`Expand ${this.label}`)}
+                part="button button-with-path-and-children"
                 class="pf-c-nav__link"
-                aria-expanded="true"
+                aria-expanded=${this.expanded ? "true" : "false"}
+                type="button"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
@@ -178,31 +191,30 @@ export class SidebarItem extends AKElement {
                     </span>
                 </span>
             </button>
-            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
+            <div class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
                 <ul class="pf-c-nav__list">
                     <slot></slot>
                 </ul>
-            </section>
+            </div>
         </li>`;
     }
 
     renderWithPath() {
         return html`
             <a
+                part="link ${this.current ? "current" : ""}"
+                id="sidebar-nav-link-${this.path}"
                 href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
-                class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
+                class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
+                aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
-                <slot name="label"></slot>
+                ${this.label}
             </a>
         `;
     }
 
     renderWithLabel() {
-        return html`
-            <span class="pf-c-nav__link">
-                <slot name="label"></slot>
-            </span>
-        `;
+        return html` <span class="pf-c-nav__link"> ${this.label}</span> `;
     }
 
     renderInner() {
@@ -210,7 +222,12 @@ export class SidebarItem extends AKElement {
             return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }
 
-        return html`<li class="pf-c-nav__item">
+        return html`<li
+            part="list-item"
+            role="presentation"
+            aria-label=${ifPresent(this.label)}
+            class="pf-c-nav__item"
+        >
             ${this.path ? this.renderWithPath() : this.renderWithLabel()}
         </li>`;
     }

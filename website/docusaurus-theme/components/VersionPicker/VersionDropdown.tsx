@@ -2,6 +2,11 @@ import "./styles.css";
 
 import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/utils.ts";
 
+import type {
+    AKReleaseFrontMatter,
+    AKReleasesPluginEnvironment,
+} from "@goauthentik/docusaurus-theme/releases/common";
+
 import clsx from "clsx";
 import React, { memo } from "react";
 
@@ -10,22 +15,29 @@ export interface VersionDropdownProps {
      * The hostname of the client.
      */
     hostname: string | null;
-    /**
-     * The branch of the documentation.
-     */
-    branch?: string;
+
+    environment: AKReleasesPluginEnvironment;
+
     /**
      * The available versions of the documentation.
      *
      * @format semver
      */
     releases: string[];
+
+    /**
+     * A possible record of parsed front-matter for each release.
+     */
+    frontMatterRecord: Record<string, AKReleaseFrontMatter>;
 }
 
 /**
  * A dropdown that shows the available versions of the documentation.
  */
-export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases }) => {
+export const VersionDropdown = memo<VersionDropdownProps>((props) => {
+    const { environment, releases, frontMatterRecord } = props;
+
+    const { branch, preReleaseOrigin } = environment;
     const parsedSemVer = parseBranchSemVer(branch);
 
     const currentLabel = parsedSemVer || "Pre-release";
@@ -50,7 +62,7 @@ export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases })
                     <>
                         <li>
                             <a
-                                href="https://docs.goauthentik.io"
+                                href={preReleaseOrigin}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="dropdown__link menu__link"
@@ -63,12 +75,16 @@ export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases })
                 ) : null}
 
                 {visibleReleases.map((semVer, idx) => {
-                    const label = semVer;
+                    let label = semVer;
+                    const frontmatter = frontMatterRecord[semVer];
 
-                    // TODO: Flesh this out after we settle on versioning strategy.
-                    // if (idx === 0) {
-                    //     label += " (Current Release)";
-                    // }
+                    if (frontmatter?.unlisted || frontmatter?.draft) {
+                        return null;
+                    }
+
+                    if (idx === 0) {
+                        label += " (Current Release)";
+                    }
 
                     return (
                         <li key={idx}>

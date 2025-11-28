@@ -110,7 +110,7 @@ if ldap.get("cn") == "doNotSync":
 
 By default, authentik doesn't update the password it stores for a user when they log in using their LDAP credentials. That means that if the LDAP server is not reachable by authentik, users will not be able to log in. This behavior can be turned on with the **Update internal password on login** setting on the LDAP source.
 
-:::note
+:::info
 Sources created prior to the 2024.2 release have this setting turned on by default.
 :::
 

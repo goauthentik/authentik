@@ -1,7 +1,6 @@
 import "#admin/groups/GroupForm";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/ak-page-header";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -9,16 +8,20 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -70,143 +73,156 @@ export class GroupViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-users"
-                header=${msg(str`Group ${this.group?.name || ""}`)}
-                description=${this.group?.name || ""}
-            >
-            </ak-page-header>
-            ${this.renderBody()}`;
+    render(): SlottedTemplateResult {
+        if (!this.group) {
+            return nothing;
+        }
+        return html`<main>
+            <ak-tabs>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Group Info")}</div>
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Name")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.group.name}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Superuser")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ak-status-label
+                                                    type="neutral"
+                                                    ?good=${this.group.isSuperuser}
+                                                ></ak-status-label>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Roles")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <ul class="pf-c-list">
+                                                    ${this.group.rolesObj.map((role) => {
+                                                        return html`<li>
+                                                            <a href=${`#/identity/roles/${role.pk}`}
+                                                                >${role.name}
+                                                            </a>
+                                                        </li>`;
+                                                    })}
+                                                </ul>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-forms-modal>
+                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="header">${msg("Update Group")}</span>
+                                    <ak-group-form slot="form" .instancePk=${this.group.pk}>
+                                    </ak-group-form>
+                                    <button slot="trigger" class="pf-m-primary pf-c-button">
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Notes")}</div>
+                            <div class="pf-c-card__body">
+                                ${this.group?.attributes?.notes
+                                    ? html`<ak-mdx
+                                          .content=${this.group.attributes.notes}
+                                      ></ak-mdx>`
+                                    : html`
+                                          <p>
+                                              ${msg(
+                                                  "Edit the notes attribute of this group to add notes here.",
+                                              )}
+                                          </p>
+                                      `}
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Changelog")}</div>
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this.group.pk}
+                                    targetModelApp="authentik_core"
+                                    targetModelName="group"
+                                >
+                                </ak-object-changelog>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-related-list .targetGroup=${this.group}>
+                            </ak-user-related-list>
+                        </div>
+                    </div>
+                </section>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
+                    objectPk=${this.group.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
-    renderBody(): TemplateResult {
-        if (!this.group) {
-            return html``;
-        }
-        return html`<ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Group Info")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.group.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Superuser")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ak-status-label
-                                                type="info"
-                                                ?good=${this.group.isSuperuser}
-                                            ></ak-status-label>
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Roles")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ul class="pf-c-list">
-                                                ${this.group.rolesObj.map((role) => {
-                                                    return html`<li>
-                                                        <a href=${`#/identity/roles/${role.pk}`}
-                                                            >${role.name}
-                                                        </a>
-                                                    </li>`;
-                                                })}
-                                            </ul>
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update Group")} </span>
-                                <ak-group-form slot="form" .instancePk=${this.group.pk}>
-                                </ak-group-form>
-                                <button slot="trigger" class="pf-m-primary pf-c-button">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Notes")}</div>
-                        <div class="pf-c-card__body">
-                            ${Object.hasOwn(this.group?.attributes || {}, "notes")
-                                ? html`${this.group.attributes?.notes}`
-                                : html`
-                                      <p>
-                                          ${msg(
-                                              "Edit the notes attribute of this group to add notes here.",
-                                          )}
-                                      </p>
-                                  `}
-                        </div>
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Changelog")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.group.pk}
-                                targetModelApp="authentik_core"
-                                targetModelName="group"
-                            >
-                            </ak-object-changelog>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-users"
-                data-tab-title="${msg("Users")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-user-related-list .targetGroup=${this.group}> </ak-user-related-list>
-                    </div>
-                </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
-                objectPk=${this.group.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-users",
+            header: this.group?.name ? msg(str`Group ${this.group.name}`) : msg("Group"),
+            description: this.group?.name,
+        });
     }
 }
 

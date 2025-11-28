@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -24,6 +25,12 @@ if TYPE_CHECKING:
 class AuthorizationCodeAuthMethod(models.TextChoices):
     BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
+
+
+class PKCEMethod(models.TextChoices):
+    NONE = "none", _("No PKCE")
+    PLAIN = "plain", _("Plain")
+    S256 = "S256", _("S256")
 
 
 class OAuthSource(NonCreatableType, Source):
@@ -66,6 +73,9 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    pkce = models.TextField(
+        choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
+    )
     authorization_code_auth_method = models.TextField(
         choices=AuthorizationCodeAuthMethod.choices,
         default=AuthorizationCodeAuthMethod.BASIC_AUTH,
@@ -127,6 +137,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -311,6 +322,11 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    expires = models.DateTimeField(default=now)
+
+    @property
+    def is_valid(self):
+        return self.expires > now()
 
     @property
     def serializer(self) -> type[Serializer]:

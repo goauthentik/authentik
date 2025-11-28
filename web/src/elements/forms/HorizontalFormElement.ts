@@ -1,8 +1,11 @@
+import { AkControlElement, isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
-import { FormGroup } from "#elements/forms/FormGroup";
+import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 
-import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -10,41 +13,19 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
- *
  * Horizontal Form Element Container.
  *
  * This element provides the interface between elements of our forms and the
  * form itself.
  * @custom-element ak-form-element-horizontal
- */
-
-/* TODO
-
- * 1. Replace the "probe upward for a parent object to event" with an event handler on the parent
- *    group.
- * 2. Updated() has a lot of that slug code again. Really, all you want is for the slug input object
+ *
+ * @TODO
+ * 1. Updated() has a lot of that slug code again. Really, all you want is for the slug input object
  *    to update itself if its content seems to have been tracking some other key element.
- * 3. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
+ * 2. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
  *    it being written on-demand when the child is written? Because it's slotted... despite there
  *    being very few unique uses.
  */
-
-const isAkControl = (el: unknown): boolean =>
-    el instanceof HTMLElement &&
-    "dataset" in el &&
-    el.dataset instanceof DOMStringMap &&
-    "akControl" in el.dataset;
-
-const nameables = new Set([
-    "input",
-    "textarea",
-    "select",
-    "ak-codemirror",
-    "ak-chip-group",
-    "ak-search-select",
-    "ak-radio",
-]);
-
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
@@ -58,97 +39,116 @@ export class HorizontalFormElement extends AKElement {
                     var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
                     var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
             }
-            .pf-c-form__group-label {
-                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-            }
         `,
     ];
 
-    @property()
-    label = "";
+    //#region Properties
 
-    @property({ type: Boolean })
-    required = false;
+    /**
+     * A unique ID to associate with the input and label.
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string;
+
+    /**
+     * The label for the input control
+     * @property
+     * @attribute
+     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label` element instead.
+     */
+    @property({ type: String })
+    public label?: string;
+
+    @property({ type: Boolean, reflect: false })
+    public required?: boolean;
 
     @property({ attribute: false })
-    errorMessages: string[] | string[][] = [];
+    public errorMessages?: ErrorProp[];
 
-    _invalid = false;
+    @property({ type: String })
+    public name?: string;
 
-    /* If this property changes, we want to make sure the parent control is "opened" so
-     * that users can see the change.[1]
+    //#endregion
+
+    #controlledElement: AkControlElement | NamedElement | null = null;
+
+    /**
+     * The element that should be focused when the form is submitted.
      */
-    @property({ type: Boolean })
-    set invalid(v: boolean) {
-        this._invalid = v;
-        // check if we're in a form group, and expand that form group
-        const parent = this.parentElement?.parentElement;
-        if (parent && "expanded" in parent) {
-            (parent as FormGroup).expanded = true;
+    public get focusTarget(): AkControlElement | NamedElement<HTMLElement> | null {
+        if (!(this.#controlledElement instanceof HTMLElement)) {
+            return null;
+        }
+
+        if (!this.#controlledElement.checkVisibility()) return null;
+
+        return this.#controlledElement;
+    }
+
+    //#region Lifecycle
+
+    public override firstUpdated(): void {
+        this.#synchronizeAttributes();
+    }
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("errorMessages") && this.#controlledElement) {
+            this.#controlledElement.setAttribute(
+                "aria-invalid",
+                this.errorMessages?.length ? "true" : "false",
+            );
         }
     }
-    get invalid(): boolean {
-        return this._invalid;
-    }
 
-    @property()
-    name = "";
+    /**
+     * Ensure that all inputs have a name attribute.
+     *
+     * TODO: Swap with `HTMLElement.prototype.attachInternals`.
+     */
+    #synchronizeAttributes(): void {
+        // If we don't have a name, we can't do anything.
+        if (!this.name) return;
 
-    firstUpdated(): void {
-        this.updated();
-    }
+        for (const element of this.querySelectorAll("*")) {
+            // Is this element capable of being named?
+            if (!isControlElement(element) && !isNameableElement(element)) continue;
 
-    updated(): void {
-        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
-            input.focus();
-        });
-        this.querySelectorAll("*").forEach((input) => {
-            if (isAkControl(input) && !input.getAttribute("name")) {
-                input.setAttribute("name", this.name);
-                return;
+            this.#controlledElement = element;
+
+            if (element.getAttribute("name") !== this.name) {
+                element.setAttribute("name", this.name);
             }
 
-            if (nameables.has(input.tagName.toLowerCase())) {
-                input.setAttribute("name", this.name);
-            } else {
-                return;
-            }
-        });
+            break;
+        }
     }
+
+    //#endregion
+
+    //#region Rendering
 
     render(): TemplateResult {
-        this.updated();
+        this.#synchronizeAttributes();
+
         return html`<div class="pf-c-form__group">
             <div class="pf-c-form__group-label">
-                <label class="pf-c-form__label">
-                    <span class="pf-c-form__label-text">${this.label}</span>
-                    ${this.required
-                        ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
-                        : html``}
-                </label>
+                ${this.label
+                    ? html`
+                      ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+                  </div>`
+                    : html`<slot name="label"></slot>`}
             </div>
+
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.errorMessages.map((message) => {
-                        if (message instanceof Object) {
-                            return html`${Object.entries(message).map(([field, errMsg]) => {
-                                return html`<p
-                                    class="pf-c-form__helper-text pf-m-error"
-                                    aria-live="polite"
-                                >
-                                    ${msg(str`${field}: ${errMsg}`)}
-                                </p>`;
-                            })}`;
-                        }
-                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${message}
-                        </p>`;
-                    })}
+                    ${AKFormErrors({ errors: this.errorMessages })}
                 </div>
             </div>
         </div>`;
     }
+
+    //#endregion
 }
 
 declare global {

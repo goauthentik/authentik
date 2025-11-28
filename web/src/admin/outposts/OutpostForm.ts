@@ -217,7 +217,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="${docLink("/docs/add-secure-apps/outposts?utm_source=authentik")}"
+                        href=${docLink("/add-secure-apps/outposts")}
                         >${msg("See documentation")}</a
                     >.
                 </p>
@@ -234,9 +234,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     selected-label="${msg("Selected Applications")}"
                 ></ak-dual-select-provider>
             </ak-form-element-horizontal>
-            <ak-form-group aria-label=${msg("Advanced settings")}>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Configuration")} name="config">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}
@@ -252,9 +251,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="${docLink(
-                                    "/docs/add-secure-apps/outposts?utm_source=authentik#configuration",
-                                )}"
+                                href=${docLink("/add-secure-apps/outposts#configuration")}
                                 >${msg("Documentation")}</a
                             >
                         </p>

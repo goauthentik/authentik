@@ -8,8 +8,8 @@ add brief description of the feature/functionality
 
 In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
 
-:::info
-if needed, use this syntax to add a note (info) or warning (warning).
+:::info Add a title here
+If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
 :::
 
 ### More info about the feature, a sub-category of info

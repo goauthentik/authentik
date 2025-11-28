@@ -13,7 +13,7 @@ from paramiko.ssh_exception import SSHException
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.docker_ssh import DockerInlineSSH, SSHManagedExternallyException
@@ -185,7 +185,7 @@ class DockerController(BaseController):
         try:
             self.client.images.pull(image)
         except DockerException:  # pragma: no cover
-            image = f"ghcr.io/goauthentik/{self.outpost.type}:{__version__}"
+            image = f"ghcr.io/goauthentik/{self.outpost.type}:{authentik_version()}"
             self.client.images.pull(image)
         return image
 
@@ -203,6 +203,12 @@ class DockerController(BaseController):
                 "labels": self._get_labels(),
                 "restart_policy": {"Name": "unless-stopped"},
                 "network": self.outpost.config.docker_network,
+                "healthcheck": {
+                    "test": ["CMD", f"/{self.outpost.type}", "healthcheck"],
+                    "interval": 5 * 1_000 * 1_000_000,
+                    "retries": 20,
+                    "start_period": 3 * 1_000 * 1_000_000,
+                },
             }
             if self.outpost.config.docker_map_ports:
                 container_args["ports"] = {

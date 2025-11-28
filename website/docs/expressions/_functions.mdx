@@ -62,12 +62,16 @@ return ak_is_group_member(request.user, name="test_group")
 
 Fetch a user matching `**filters`.
 
-Returns "None" if no user was found, otherwise returns the [User](/docs/users-sources/user) object.
+Returns "None" if no user was found, otherwise returns the [User](../users-sources/user/index.mdx) object.
 
 Example:
 
 ```python
+# Find user by username
 other_user = ak_user_by(username="other_user")
+
+# Find user by custom attribute
+other_user = ak_user_by(attributes__<custom_attribute_name>="<value>")
 ```
 
 ### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool`
@@ -125,6 +129,61 @@ Example:
 jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile", "email"])
 ```
 
+### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
+
+Send an email using authentik's email system.
+
+The `address` parameter specifies the recipient email address(es). It can be:
+
+- A single email address as a string: `"user@example.com"`
+- A list of email addresses: `["user1@example.com", "user2@example.com"]`
+
+:::info
+When using multiple recipients, all email addresses will be visible in the "To:" field of the email. If you need to send to multiple recipients without revealing all addresses to each other, send individual emails instead.
+:::
+
+The `subject` parameter sets the email subject line.
+
+You must provide either `body` (for plain text/HTML content) or `template` (for template rendering), but not both.
+
+The `stage` parameter can be an `EmailStage` instance for custom email settings. If `None`, global email settings are used.
+
+The `template` parameter specifies a template name to render. When using templates, you can pass additional context variables via the `context` parameter.
+
+If the email is queued successfully, the function returns `True`; otherwise, it returns `False`.
+
+Examples:
+
+```python
+# Send email with plain body to single recipient
+ak_send_email("user@example.com", "Welcome!", body="Welcome to our platform!")
+
+# Send email to multiple recipients
+ak_send_email(
+    ["user1@example.com", "user2@example.com", "admin@example.com"],
+    "System Maintenance",
+    body="Scheduled maintenance will occur tonight."
+)
+
+# Send email using a template
+ak_send_email("user@example.com", "Password Reset", template="email/password_reset.html")
+
+# Send email with custom context for template to multiple recipients
+ak_send_email(
+    ["user@example.com", "admin@example.com"],
+    "Account Update",
+    template="email/event_notification.html",
+    context={
+        "title": "Profile Updated",
+        "body": "Your account profile has been successfully updated.",
+        "key_value": {"Updated Field": "Email Address", "Date": "2025-01-01"}
+    }
+)
+
+# Send email with custom email stage
+ak_send_email("admin@example.com", "Report", body="Daily report", stage=my_custom_stage)
+```
+
 ## Comparing IP Addresses
 
 To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
@@ -144,7 +203,7 @@ To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(
 resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
 resolve_dns("google.com", 4)  # return a list of only IP4 addresses
 resolve_dns("google.com", 6)  # return a list of only IP6 addresses
-```
+:::info
 
 You can also do reverse DNS lookups.
 
@@ -158,3 +217,4 @@ To perform a reverse DNS lookup use `reverse_dns("192.0.2.0")`. If no DNS record
 :::info
 DNS resolving results are cached in memory. The last 32 unique queries are cached for up to 3 minutes.
 :::
+```

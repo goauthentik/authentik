@@ -7,11 +7,12 @@ import { MessageLevel } from "#common/messages";
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -20,7 +21,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<T> extends Table<T> {
+export class DeleteObjectsTable<T extends object> extends Table<T> {
     paginated = false;
 
     @property({ attribute: false })
@@ -51,21 +52,25 @@ export class DeleteObjectsTable<T> extends Table<T> {
             results: this.objects,
         });
     }
+    protected override rowLabel(item: T): string | null {
+        const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
 
-    columns(): TableColumn[] {
-        return this.metadata(this.objects[0]).map((element) => {
-            return new TableColumn(element.key);
-        });
+        return name || null;
     }
 
-    row(item: T): TemplateResult[] {
+    @state()
+    protected get columns(): TableColumn[] {
+        return this.metadata(this.objects[0]).map((element) => [element.key]);
+    }
+
+    row(item: T): SlottedTemplateResult[] {
         return this.metadata(item).map((element) => {
             return html`${element.value}`;
         });
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
     firstUpdated(): void {
@@ -80,13 +85,9 @@ export class DeleteObjectsTable<T> extends Table<T> {
             }
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
-        return html`<td role="cell" colspan="2">
-            <div class="pf-c-table__expandable-row-content">
-                ${this.usedBy
-                    ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-                    : html``}
-            </div>
-        </td>`;
+        return html`${this.usedBy
+            ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
+            : nothing}`;
     }
 
     renderUsedBy(usedBy: UsedBy[]): TemplateResult {
@@ -246,7 +247,7 @@ export class DeleteBulkForm<T> extends ModalButton {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-delete-objects-table": DeleteObjectsTable<unknown>;
-        "ak-forms-delete-bulk": DeleteBulkForm<unknown>;
+        "ak-delete-objects-table": DeleteObjectsTable<object>;
+        "ak-forms-delete-bulk": DeleteBulkForm<object>;
     }
 }

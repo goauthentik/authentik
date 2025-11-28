@@ -65,9 +65,8 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("General settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("General settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Username")}
                         name="staticSettings.username"
@@ -76,7 +75,6 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="text"
                             value="${ifDefined(this.instance?.staticSettings.username)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -87,14 +85,12 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="password"
                             value="${ifDefined(this.instance?.staticSettings.password)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("RDP settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("RDP settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Ignore server certificate")}
                         name="staticSettings.ignore-cert"
@@ -137,14 +133,9 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Expression")}
-                        required
-                        name="expression"
-                    >
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
                             mode=${CodeMirrorMode.Python}
                             value="${ifDefined(this.instance?.expression)}"
@@ -155,9 +146,9 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="${docLink(
-                                    "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink(
+                                    "/add-secure-apps/providers/property-mappings/expression",
+                                )}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

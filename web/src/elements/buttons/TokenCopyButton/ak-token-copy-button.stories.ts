@@ -23,7 +23,7 @@ function makeid(length: number) {
 // a styled wrapper for the return messages, and a styled wrapper for each message.
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

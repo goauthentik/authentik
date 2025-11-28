@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `fortimanager.company` is the FQDN of the FortiManager installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 

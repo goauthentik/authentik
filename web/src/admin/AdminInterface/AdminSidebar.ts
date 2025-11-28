@@ -1,17 +1,20 @@
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
+import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
 // commonplace and singular enough to merit its own handler.
-type SidebarEntry = [
+export type SidebarEntry = [
     path: string | null,
     label: string,
-    attributes?: Record<string, any> | string[] | null, // eslint-disable-line
+    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
     children?: SidebarEntry[],
 ];
 
@@ -32,8 +35,11 @@ export function renderSidebarItem([
         properties.path = path;
     }
 
-    return html`<ak-sidebar-item ${spread(properties)}>
-        ${label ? html`<span slot="label">${label}</span>` : nothing}
+    return html`<ak-sidebar-item
+        exportparts="list-item, link"
+        label=${ifDefined(label)}
+        ${spread(properties)}
+    >
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
 }
@@ -46,7 +52,7 @@ export function renderSidebarItems(entries: readonly SidebarEntry[]) {
 }
 
 // prettier-ignore
-export const AdminSidebarEntries: readonly SidebarEntry[] = [
+export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
@@ -57,6 +63,11 @@ export const AdminSidebarEntries: readonly SidebarEntry[] = [
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
         ["/outpost/outposts", msg("Outposts")]]
     ],
+    [null, msg("Endpoint Devices"), null, [
+        ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
+        ["/endpoints/groups", msg("Device groups")],
+        ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`]],
+    ]],
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
         ["/events/rules", msg("Notification Rules")],
@@ -91,7 +102,7 @@ export const AdminSidebarEntries: readonly SidebarEntry[] = [
 ];
 
 // prettier-ignore
-export const AdminSidebarEnterpriseEntries: readonly SidebarEntry[] = [
+export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
     [null, msg("Enterprise"), null, [
         ["/enterprise/licenses", msg("Licenses"), null]
     ],

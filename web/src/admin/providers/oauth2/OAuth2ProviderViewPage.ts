@@ -1,9 +1,11 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#components/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionsPage";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
+import "#elements/tasks/TaskList";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
@@ -12,6 +14,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
 
@@ -19,18 +22,21 @@ import {
     ClientTypeEnum,
     CoreApi,
     CoreUsersListRequest,
+    ModelEnum,
     OAuth2Provider,
+    OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
+import { IDGenerator } from "@goauthentik/core/id";
 
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -113,65 +119,80 @@ export class OAuth2ProviderViewPage extends AKElement {
             .then((preview) => (this.preview = preview));
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
-        return html` <ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersOauth2SetupUrlsRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((prov) => {
-                            this.providerUrls = prov;
-                        });
-                }}
-            >
-                ${this.renderTabOverview()}
-            </section>
-            <section
-                slot="page-preview"
-                data-tab-title="${msg("Preview")}"
-                @activate=${() => {
-                    this.fetchPreview();
-                }}
-            >
-                ${this.renderTabPreview()}
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    @activate=${() => {
+                        new ProvidersApi(DEFAULT_CONFIG)
+                            .providersOauth2SetupUrlsRetrieve({
+                                id: this.provider?.pk || 0,
+                            })
+                            .then((prov) => {
+                                this.providerUrls = prov;
+                            });
+                    }}
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-preview"
+                    id="page-preview"
+                    aria-label="${msg("Preview")}"
+                    @activate=${() => {
+                        this.fetchPreview();
+                    }}
+                >
+                    ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
         return html` ${this.provider?.assignedApplicationName
-                ? html``
+                ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
@@ -246,12 +267,40 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Logout URI")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text pf-m-monospace">
+                                        ${this.provider.logoutUri}
+                                    </div>
+                                </dd>
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Logout Method")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.logoutMethod ===
+                                        OAuth2ProviderLogoutMethodEnum.Backchannel
+                                            ? msg("Back-channel")
+                                            : this.provider.logoutMethod ===
+                                                OAuth2ProviderLogoutMethodEnum.Frontchannel
+                                              ? msg("Front-channel")
+                                              : msg("")}
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update OAuth2 Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update OAuth2 Provider")}</span>
                             <ak-provider-oauth2-form
                                 slot="form"
                                 .instancePk=${this.provider.pk || 0}
@@ -267,12 +316,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                     <div class="pf-c-card__body">
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("providerInfo")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("OpenID Configuration URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("providerInfo")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -280,12 +333,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("issuer")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("OpenID Configuration Issuer")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("issuer")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -294,12 +351,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                             <hr class="pf-c-divider" />
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("authorize")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("Authorize URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("authorize")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -307,10 +368,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("token")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("Token URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("token")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -318,12 +383,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("userInfo")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("Userinfo URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("userInfo")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -331,10 +400,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("logout")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("Logout URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("logout")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -342,10 +415,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("jwks")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("JWKS URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("jwks")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -353,6 +430,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                         </form>
+                    </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                >
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+                        <div class="pf-c-card__title">${msg("Tasks")}</div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
                 <div
@@ -378,9 +467,9 @@ export class OAuth2ProviderViewPage extends AKElement {
             </div>`;
     }
 
-    renderTabPreview(): TemplateResult {
+    renderTabPreview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
@@ -391,9 +480,12 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${renderDescriptionList(
                         [
                             [
-                                msg("Preview for user"),
+                                html`<label for="${IDGenerator.elementID("preview-user")}"
+                                    >${msg("Preview for user")}</label
+                                >`,
                                 html`
                                     <ak-search-select
+                                        id="${IDGenerator.elementID("preview-user")}"
                                         .fetchObjects=${async (query?: string): Promise<User[]> => {
                                             const args: CoreUsersListRequest = {
                                                 ordering: "username",

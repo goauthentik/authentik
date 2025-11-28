@@ -2,11 +2,15 @@ import "#admin/users/GroupSelectModal";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 
 import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
@@ -17,6 +21,28 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
+    {
+        label: msg("Internal"),
+        value: UserTypeEnum.Internal,
+        default: true,
+        description: html`${msg(
+            "Company employees with access to the full enterprise feature set.",
+        )}`,
+    },
+    {
+        label: msg("External"),
+        value: UserTypeEnum.External,
+        description: html`${msg(
+            "External consultants or B2C customers without access to enterprise features.",
+        )}`,
+    },
+    {
+        label: msg("Service account"),
+        value: UserTypeEnum.ServiceAccount,
+        description: html`${msg("Machine-to-machine authentication or other automations.")}`,
+    },
+];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
@@ -85,106 +111,92 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("User's primary identifier. 150 characters or fewer.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Name")} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User type")} required name="type">
-                <ak-radio
-                    .options=${[
-                        {
-                            label: msg("Internal"),
-                            value: UserTypeEnum.Internal,
-                            default: true,
-                            description: html`${msg(
-                                "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
-                            )}`,
-                        },
-                        {
-                            label: msg("External"),
-                            value: UserTypeEnum.External,
-                            description: html`${msg(
-                                "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
-                            )}`,
-                        },
-                        {
-                            label: msg("Service account"),
-                            value: UserTypeEnum.ServiceAccount,
-                            description: html`${msg(
-                                "Service accounts should be used for machine-to-machine authentication or other automations.",
-                            )}`,
-                        },
-                        {
-                            label: msg("Internal Service account"),
-                            value: UserTypeEnum.InternalServiceAccount,
-                            disabled: true,
-                            description: html`${msg(
-                                "Internal Service accounts are created and managed by authentik and cannot be created manually.",
-                            )}`,
-                        },
-                    ]}
-                    .value=${this.instance?.type}
-                >
-                </ak-radio>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Email")} name="email">
-                <input
-                    type="email"
-                    autocomplete="off"
-                    value="${ifDefined(this.instance?.email)}"
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="isActive">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.isActive ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Is active")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Path")} required name="path">
-                <input
-                    type="text"
-                    value="${this.instance?.path ?? this.defaultPath}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
+        return html` <ak-text-input
+                name="username"
+                label=${msg("Username")}
+                placeholder=${msg("Type a username for the user...")}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.username)}"
+                input-hint="code"
+                required
+                maxlength=${150}
+                help=${msg(
+                    "The user's primary identifier used for authentication. 150 characters or fewer.",
+                )}
+            ></ak-text-input>
+
+            <ak-text-input
+                name="name"
+                label=${msg("Display Name")}
+                placeholder=${msg("Type an optional display name...")}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.name)}"
+                input-hint="code"
+                help=${msg("The user's display name.")}
+            ></ak-text-input>
+
+            <ak-radio-input
+                label=${msg("User type")}
+                required
+                name="type"
+                .value=${this.instance?.type}
+                .options=${[
+                    ...UserTypeOptions,
+                    ...(this.instance
+                        ? [
+                              {
+                                  label: msg("Internal Service account"),
+                                  value: UserTypeEnum.InternalServiceAccount,
+                                  disabled: true,
+                                  description: html`${msg(
+                                      "Managed by authentik and cannot be assigned manually.",
+                                  )}`,
+                              },
+                          ]
+                        : []),
+                ] satisfies RadioOption<UserTypeEnum>[]}
             >
+            </ak-radio-input>
+            <ak-text-input
+                name="email"
+                label=${msg("Email Address")}
+                placeholder=${msg("Type an optional email address...")}
+                autocomplete="off"
+                value="${ifDefined(this.instance?.email)}"
+                input-hint="code"
+            ></ak-text-input>
+
+            <ak-switch-input
+                name="isActive"
+                label=${msg("Active")}
+                ?checked=${this.instance?.isActive ?? true}
+                help=${msg(
+                    "Whether this user is active and allowed to authenticate. Setting this to inactive can be used to temporarily disable a user without deleting their account.",
+                )}
+            >
+            </ak-switch-input>
+
+            <ak-text-input
+                name="path"
+                label=${msg("Path")}
+                placeholder=${msg("Type a path for the user...")}
+                autocomplete="off"
+                value="${this.instance?.path ?? this.defaultPath}"
+                input-hint="code"
+                required
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Paths can be used to organize users into folders depending on which source created them or organizational structure.",
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.",
+                        )}
+                    </p>`}
+            ></ak-text-input>
+
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(

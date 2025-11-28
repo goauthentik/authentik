@@ -5,9 +5,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "tsc -p .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "build": "tsc -p ."
     },
     "main": "index.js",
     "type": "module",
@@ -44,16 +42,16 @@
             "import": "./*/index.js"
         }
     },
-    "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.5",
+    "dependencies": {
         "@goauthentik/tsconfig": "^1.0.4",
-        "@types/node": "^22.15.21",
-        "prettier": "^3.3.3",
-        "typescript": "^5.6.3"
+        "@types/node": "^24.10.1",
+        "@types/semver": "^7.7.1",
+        "semver": "^7.7.3",
+        "typescript": "^5.9.3"
     },
     "engines": {
-        "node": ">=20.11"
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
-    "types": "./out/index.d.ts",
-    "prettier": "@goauthentik/prettier-config"
+    "types": "./out/index.d.ts"
 }

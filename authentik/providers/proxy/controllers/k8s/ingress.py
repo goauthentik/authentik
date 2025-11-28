@@ -127,6 +127,9 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                 and self.controller.outpost.config.kubernetes_ingress_secret_name
             ):
                 tls_hosts.append(external_host_name.hostname)
+            path_type = "Prefix"
+            if self.controller.outpost.config.kubernetes_ingress_path_type:
+                path_type = self.controller.outpost.config.kubernetes_ingress_path_type
             if proxy_provider.mode in [
                 ProxyMode.FORWARD_SINGLE,
                 ProxyMode.FORWARD_DOMAIN,
@@ -143,7 +146,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                     ),
                                 ),
                                 path="/outpost.goauthentik.io",
-                                path_type="Prefix",
+                                path_type=path_type,
                             )
                         ]
                     ),
@@ -161,7 +164,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                                     ),
                                 ),
                                 path="/",
-                                path_type="Prefix",
+                                path_type=path_type,
                             )
                         ]
                     ),

@@ -1,0 +1,158 @@
+:host {
+    z-index: 100;
+    --pf-c-page__sidebar--Transition: 0 !important;
+}
+
+.pf-c-nav {
+    --ak-c-nav__item--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-nav__subnav__link--hover--after--BorderColor: var(--pf-global--palette--orange-400);
+
+    --pf-c-nav__link--xl--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-nav__link--hover--before--BorderBottomWidth: 1px;
+    --pf-c-nav__link--before--BorderColor: transparent;
+
+    --pf-c-nav__link--PaddingTop: var(--pf-global--spacer--sm);
+    --pf-c-nav__link--PaddingRight: var(--pf-global--spacer--sm);
+    --pf-c-nav__link--PaddingBottom: var(--pf-global--spacer--sm);
+
+    --pf-c-nav__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-nav__subnav--PaddingBottom: var(--pf-global--spacer--sm);
+    --pf-c-nav__item--before--BorderColor: transparent;
+    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-nav__link--m-current--Color: var(--ak-accent);
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: hidden;
+    padding-block-start: var(--pf-global--spacer--sm);
+}
+
+.pf-c-nav__section + .pf-c-nav__section {
+    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+}
+
+.pf-c-nav__list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.pf-c-nav__link.pf-m-current::after,
+.pf-c-nav__link.pf-m-current:hover::after,
+.pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
+    --pf-c-nav__link--m-current--after--BorderColor: var(--ak-accent);
+}
+
+/* #region Light Theme */
+
+:host([theme="light"]) {
+    border-right-color: transparent !important;
+}
+
+/**
+ * We must invert the nav colors for light theme, as PatternFly assumes
+ * a dark sidebar on light themes. Only minor changes are needed for the dark mode.
+ * @see PatternFly's nav.css for reference:
+ */
+:host([theme="light"]) .pf-c-nav {
+    --pf-c-nav__item--m-current--not--m-expanded__link--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-400
+    );
+    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__link--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav--m-tertiary__link--Color: var(--pf-global--Color--light-100);
+    --pf-c-nav--m-tertiary__scroll-button--Color: var(--pf-global--Color--light-100);
+    --pf-c-nav--m-horizontal-subnav__link--hover--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--m-horizontal-subnav__link--focus--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--m-horizontal-subnav__link--active--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--m-horizontal-subnav__link--m-current--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-400
+    );
+    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav__item--m-flyout--hover__link--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav__item--m-flyout--focus__link--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav__item--m-flyout--active__link--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav__item--m-flyout--c-menu--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--c-menu--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
+    --pf-c-nav--c-menu__list-item--hover--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--c-menu__list-item--focus-within--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--c-menu__item--before--BorderBottomColor: var(
+        --pf-global--BackgroundColor--light-300
+    );
+    --pf-c-nav--c-menu__item--m-current--BackgroundColor: var(
+        --pf-global--BackgroundColor--light-400
+    );
+    --pf-c-nav__link--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__link--hover--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__link--focus--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__link--active--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--m-horizontal__link--Color: var(--pf-global--Color--dark-300);
+    --pf-c-nav--m-horizontal-subnav__link--Color: var(--pf-global--Color--dark-200);
+    --pf-c-nav--m-horizontal-subnav__link--hover--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--m-horizontal-subnav__link--focus--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--m-horizontal-subnav__link--active--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--m-horizontal-subnav__link--m-current--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__section-title--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__scroll-button--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav__item--m-flyout--c-menu__item-description--Color: var(--pf-global--Color--dark-200);
+    --pf-c-nav--c-menu__list-item--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--c-menu__list-item--hover--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--c-menu__list-item--active--Color: var(--pf-global--Color--dark-100);
+    --pf-c-nav--c-menu__list-item--focus-within--Color: var(--pf-global--Color--dark-100);
+}
+
+/* #endregion */
+
+/* #region Dark Theme */
+
+/**
+ * @see PatternFly's nav.css for reference:
+ */
+:host([theme="dark"]) .pf-c-nav {
+    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--150);
+
+    /**
+     * We override this to maintain a color that fits our original
+     * "partially themed" appearance where the current item is more prominently
+     * highlighted.
+     */
+    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--400);
+
+    --pf-c-nav__item--item__link--after--Top: -1px;
+    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--300);
+    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--300);
+
+    --pf-c-nav--m-tertiary__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
+
+    --pf-c-nav__section-title--Color: var(--pf-global--Color--200);
+    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BorderColor--100);
+
+    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
+
+    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BorderColor--100);
+}
+
+/* #endregion */

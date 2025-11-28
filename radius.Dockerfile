@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.4-trixie@sha256:a02d35efc036053fdf0da8c15919276bf777a80cbfda6a35c5e9f087e652adfc AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,17 +31,23 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/radius ./cmd/radius
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:ac4c80b43351a3a10c0307d191fe6a6386359bc36e2aa3ccb1b23abd1f0a9e4f
 
 ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url=https://goauthentik.io
-LABEL org.opencontainers.image.description="goauthentik.io Radius outpost, see https://goauthentik.io for more info."
-LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io Radius outpost, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik RADIUS outpost image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 RUN apt-get update && \
     apt-get upgrade -y && \

@@ -13,23 +13,14 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
-class EmailTemplates(models.TextChoices):
-    """Templates used for rendering the Email"""
-
-    EMAIL_OTP = (
-        "email/email_otp.html",
-        _("Email OTP"),
-    )  # nosec
-
-
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Use Email-based authentication instead of authenticator-based."""
+    """Setup Email-based authentication for the user."""
 
     use_global_settings = models.BooleanField(
         default=False,
@@ -160,9 +151,8 @@ class EmailDevice(SerializerModel, SideChannelDevice):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                error=exception_to_string(exc),
                 template=stage.template,
-            ).from_http(self.request)
+            ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 
     def __str__(self):

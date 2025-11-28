@@ -23,12 +23,13 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
@@ -167,12 +168,22 @@ class SAMLProviderSerializer(ProviderSerializer):
                         "and 'Sign Response' must be selected."
                     )
                 )
+
+        # Validate logout_method - backchannel is only available with POST SLS binding
+        if (
+            attrs.get("logout_method") == SAMLLogoutMethods.BACKCHANNEL
+            and attrs.get("sls_binding") == SAML_BINDING_REDIRECT
+        ):
+            # Auto-correct to frontchannel_iframe
+            attrs["logout_method"] = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
+
         return super().validate(attrs)
 
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
+            "sls_url",
             "audience",
             "issuer",
             "assertion_valid_not_before",
@@ -188,8 +199,12 @@ class SAMLProviderSerializer(ProviderSerializer):
             "encryption_kp",
             "sign_assertion",
             "sign_response",
+            "sign_logout_request",
             "sp_binding",
+            "sls_binding",
+            "logout_method",
             "default_relay_state",
+            "default_name_id_policy",
             "url_download_metadata",
             "url_sso_post",
             "url_sso_redirect",
@@ -303,12 +318,10 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    def import_metadata(self, request: Request) -> Response:
+    @validate(SAMLProviderImportSerializer)
+    def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        data = SAMLProviderImportSerializer(data=request.data)
-        if not data.is_valid():
-            raise ValidationError(data.errors)
-        file = data.validated_data["file"]
+        file = body.validated_data["file"]
         # Validate syntax first
         try:
             fromstring(file.read())
@@ -318,9 +331,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
             metadata.to_provider(
-                data.validated_data["name"],
-                data.validated_data["authorization_flow"],
-                data.validated_data["invalidation_flow"],
+                body.validated_data["name"],
+                body.validated_data["authorization_flow"],
+                body.validated_data["invalidation_flow"],
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

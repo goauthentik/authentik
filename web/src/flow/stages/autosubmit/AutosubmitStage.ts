@@ -6,7 +6,7 @@ import { BaseStage } from "#flow/stages/base";
 import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -26,7 +26,9 @@ export class AutosubmitStage extends BaseStage<
 
     static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
-    updated(): void {
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
         if (this.challenge.url !== undefined) {
             this.form?.submit();
         }

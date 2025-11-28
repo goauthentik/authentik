@@ -16,6 +16,7 @@ import { MessageLevel } from "#common/messages";
 import { AKElement } from "#elements/Base";
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
 
@@ -32,7 +33,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -71,10 +72,10 @@ export class SAMLProviderViewPage extends AKElement {
     metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier?: CertificateKeyPair;
+    verifier: CertificateKeyPair | null = null;
 
     @state()
     previewUser?: User;
@@ -97,7 +98,7 @@ export class SAMLProviderViewPage extends AKElement {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            this.providerID = this.provider?.pk;
+            this.fetchProvider(this.provider.pk);
         });
     }
 
@@ -117,20 +118,32 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchSigningCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.signer = kp;
+            this.requestUpdate("signer");
+        });
     }
 
     fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.verifier = kp;
+            this.requestUpdate("verifier");
+        });
     }
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
-            if (this.provider.signingKp) {
+            // Clear existing signing certificate if the provider has none
+            if (!this.provider.signingKp) {
+                this.signer = null;
+            } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
-            if (this.provider.verificationKp) {
+            // Clear existing verification certificate if the provider has none
+            if (!this.provider.verificationKp) {
+                this.verifier = null;
+            } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
@@ -212,55 +225,72 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
-        return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                ${this.renderTabOverview()}
-            </section>
-            ${this.renderTabMetadata()}
-            <section
-                slot="page-preview"
-                data-tab-title="${msg("Preview")}"
-                @activate=${() => {
-                    this.fetchPreview();
-                }}
-            >
-                ${this.renderTabPreview()}
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                ${this.renderTabMetadata()}
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-preview"
+                    id="page-preview"
+                    aria-label="${msg("Preview")}"
+                    @activate=${() => {
+                        this.fetchPreview();
+                    }}
+                >
+                    ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`${
             this.provider?.assignedApplicationName
-                ? html``
+                ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
@@ -333,8 +363,8 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update SAML Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update SAML Provider")}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -431,21 +461,24 @@ export class SAMLProviderViewPage extends AKElement {
                                   </form>
                               </div>
                           </div>`
-                        : html``
+                        : nothing
                 }
             </div>
         </div>`;
     }
 
-    renderTabMetadata(): TemplateResult {
+    renderTabMetadata(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`
             ${this.provider.assignedApplicationName
-                ? html` <section
+                ? html` <div
+                      role="tabpanel"
+                      tabindex="0"
                       slot="page-metadata"
-                      data-tab-title="${msg("Metadata")}"
+                      id="page-metadata"
+                      aria-label="${msg("Metadata")}"
                       @activate=${() => {
                           new ProvidersApi(DEFAULT_CONFIG)
                               .providersSamlMetadataRetrieve({
@@ -490,18 +523,18 @@ export class SAMLProviderViewPage extends AKElement {
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
                                       mode=${CodeMirrorMode.XML}
-                                      readOnly
+                                      readonly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
                           </div>
                       </div>
-                  </section>`
-                : html``}
+                  </div>`
+                : nothing}
         `;
     }
 
-    renderTabPreview(): TemplateResult {
+    renderTabPreview(): SlottedTemplateResult {
         if (!this.preview) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }

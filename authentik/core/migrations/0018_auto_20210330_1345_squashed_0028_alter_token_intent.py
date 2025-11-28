@@ -13,14 +13,6 @@ import authentik.core.models
 import authentik.lib.models
 
 
-def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from django.contrib.sessions.backends.cache import KEY_PREFIX
-    from django.core.cache import cache
-
-    session_keys = cache.keys(KEY_PREFIX + "*")
-    cache.delete_many(session_keys)
-
-
 def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     Token = apps.get_model("authentik_core", "token")
@@ -150,9 +142,6 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-        ),
-        migrations.RunPython(
-            code=migrate_sessions,
         ),
         migrations.AlterField(
             model_name="application",

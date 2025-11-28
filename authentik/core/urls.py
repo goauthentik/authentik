@@ -30,6 +30,7 @@ from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
+from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
     path(
@@ -97,7 +98,9 @@ api_urlpatterns = [
 websocket_urlpatterns = [
     path(
         "ws/client/",
-        ChannelsLoggingMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi())),
+        ChannelsLoggingMiddleware(
+            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
+        ),
     ),
 ]
 

@@ -31,10 +31,10 @@ export class TopApplicationsTable extends AKElement {
     }
 
     renderRow(event: EventTopPerUser): TemplateResult {
-        return html`<tr role="row">
-            <td role="cell">${event.application.name}</td>
-            <td role="cell">${event.countedEvents}</td>
-            <td role="cell">
+        return html`<tr>
+            <td>${event.application.name}</td>
+            <td>${event.countedEvents}</td>
+            <td>
                 <progress
                     value="${event.countedEvents}"
                     max="${this.topN ? this.topN[0].countedEvents : 0}"
@@ -44,12 +44,12 @@ export class TopApplicationsTable extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<table class="pf-c-table pf-m-compact" role="grid">
+        return html`<table class="pf-c-table pf-m-compact">
             <thead>
-                <tr role="row">
-                    <th role="columnheader" scope="col">${msg("Application")}</th>
-                    <th role="columnheader" scope="col">${msg("Logins")}</th>
-                    <th role="columnheader" scope="col"></th>
+                <tr>
+                    <th scope="col">${msg("Application")}</th>
+                    <th scope="col">${msg("Logins")}</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody role="rowgroup">
