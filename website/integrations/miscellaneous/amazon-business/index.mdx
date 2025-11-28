@@ -71,7 +71,7 @@ To support the integration of Amazon Business with authentik, you need to create
 
 1. Log in to the Amazon Business admin console as an administrator and click **Business Settings** under **Hello, "Your Name"**.
 2. Under **System integrations**, select **Single Sign-On (SSO)**. You will be redirected to the Amazon Business SSO setup workflow (for example, `https://www.amazon.com/ab/sso/setup/edit/select-idp`; your domain may use a different TLD such as `.de` or `.co.uk`).
-3. In **Change IDP selection**, select **Other** and provide a descriptive name for your identity provider (for example, `authentik`).
+3. In **Change IdP selection**, select **Other** and provide a descriptive name for your identity provider (for example, `authentik`).
 4. Set **Encrypted SAML assertions** to **Off**.
 5. In **New user account defaults**, enable **Select a default group** and select the default buying role (Amazon Business sets `Buyer` unless you specify custom roles).
 6. In **Connection data**, upload the authentik metadata file (`metadata.xml`) that you downloaded.
