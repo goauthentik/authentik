@@ -25,7 +25,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @state()
     permissionsToAdd: Permission[] = [];
 
-    @property({ type: String, attribute: "role-uuid" })
+    @property({ type: String })
     public roleUuid: string | null = null;
 
     async load(): Promise<void> {}
