@@ -4814,10 +4814,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeviceRegistrationRequest'
+              $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
         required: true
-      security:
-      - authentik: []
       responses:
         '204':
           description: Device registered
@@ -4834,10 +4832,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRegistrationRequest'
+              $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
         required: true
-      security:
-      - authentik: []
       responses:
         '200':
           content:
@@ -32700,6 +32696,44 @@ components:
             type: integer
       required:
       - name
+    AgentPSSODeviceRegistrationRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        client_id:
+          type: string
+          minLength: 1
+        device_signing_key:
+          type: string
+          minLength: 1
+        device_encryption_key:
+          type: string
+          minLength: 1
+        sign_key_id:
+          type: string
+          minLength: 1
+        enc_key_id:
+          type: string
+          minLength: 1
+      required:
+      - client_id
+      - device_encryption_key
+      - device_signing_key
+      - enc_key_id
+      - sign_key_id
+    AgentPSSOUserRegistrationRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        user_secure_enclave_key:
+          type: string
+          minLength: 1
+        enclave_key_id:
+          type: string
+          minLength: 1
+      required:
+      - enclave_key_id
+      - user_secure_enclave_key
     AgentTokenResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -35856,35 +35890,6 @@ components:
           minLength: 1
       required:
       - id
-    DeviceRegistrationRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        identifier:
-          type: string
-          minLength: 1
-        client_id:
-          type: string
-          minLength: 1
-        device_signing_key:
-          type: string
-          minLength: 1
-        device_encryption_key:
-          type: string
-          minLength: 1
-        sign_key_id:
-          type: string
-          minLength: 1
-        enc_key_id:
-          type: string
-          minLength: 1
-      required:
-      - client_id
-      - device_encryption_key
-      - device_signing_key
-      - enc_key_id
-      - identifier
-      - sign_key_id
     DeviceUser:
       type: object
       properties:
@@ -54860,23 +54865,6 @@ components:
       - plex_token
       - source
       - user
-    UserRegistrationRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        identifier:
-          type: string
-          minLength: 1
-        user_secure_enclave_key:
-          type: string
-          minLength: 1
-        enclave_key_id:
-          type: string
-          minLength: 1
-      required:
-      - enclave_key_id
-      - identifier
-      - user_secure_enclave_key
     UserRequest:
       type: object
       description: User Serializer

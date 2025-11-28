@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views import View
@@ -16,7 +16,6 @@ from authentik.endpoints.connectors.agent.models import (
     AgentDeviceConnection,
     AgentDeviceUserBinding,
 )
-from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
@@ -31,7 +30,7 @@ LOGGER = get_logger()
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
 
-    device: Device
+    device_connection: AgentDeviceConnection
     connector: AgentConnector
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -44,23 +43,23 @@ class TokenView(View):
         LOGGER.debug(decode_unvalidated["header"])
         expected_kid = decode_unvalidated["header"]["kid"]
 
-        self.device_connection = AgentDeviceConnection.objects.filter(
-            sign_key_id=expected_kid
-        ).first()
-        if not self.device:
-            raise Http404
-        self.device = self.device_connection.device
-        if not self.device:
-            raise Http404
+        self.device_connection = (
+            AgentDeviceConnection.objects.filter(sign_key_id=expected_kid)
+            .select_related("device")
+            .first()
+        )
         self.connector = self.device_connection.connector
 
         # Properly decode the JWT with the key from the device
         decoded = decode(
-            assertion, self.device.signing_key, algorithms=["ES256"], options={"verify_aud": False}
+            assertion,
+            self.device_connection.apple_signing_key,
+            algorithms=["ES256"],
+            options={"verify_aud": False},
         )
         LOGGER.debug(decoded)
 
-        LOGGER.debug("got device", device=self.device)
+        LOGGER.debug("got device", device=self.device_connection.device)
 
         # Check that the nonce hasn't been used before
         nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
@@ -80,19 +79,21 @@ class TokenView(View):
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler(decoded)
 
-    def validate_device_user_response(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict] | None:
+    def validate_device_user_response(
+        self, assertion: str
+    ) -> tuple[AgentDeviceUserBinding, dict] | None:
         """Decode an embedded assertion and validate it by looking up the matching device user"""
         decode_unvalidated = PyJWT().decode_complete(assertion, options={"verify_signature": False})
         expected_kid = decode_unvalidated["header"]["kid"]
 
         device_user = AgentDeviceUserBinding.objects.filter(
-            device=self.device, enclave_key_id=expected_kid
+            device=self.device_connection.device, apple_enclave_key_id=expected_kid
         ).first()
         if not device_user:
             return None
         return device_user, decode(
             assertion,
-            device_user.secure_enclave_key,
+            device_user.apple_secure_enclave_key,
             audience="apple-platform-sso",
             algorithms=["ES256"],
         )
@@ -120,12 +121,12 @@ class TokenView(View):
             user=user.user,
             scope=decoded["scope"],
             expires=now() + timedelta(hours=8),
-            provider=self.provider,
+            # provider=self.provider,
             auth_time=now(),
             session=None,
         )
         id_token = IDToken.new(
-            self.provider,
+            # self.provider,
             refresh_token,
             self.request,
         )
