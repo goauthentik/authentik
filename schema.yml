@@ -38758,8 +38758,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     HardwareRequest:
       type: object
@@ -38772,6 +38770,7 @@ components:
           minLength: 1
         serial:
           type: string
+          minLength: 1
         cpu_name:
           type: string
           minLength: 1
@@ -38781,8 +38780,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     IdentificationChallenge:
       type: object
