@@ -86,7 +86,7 @@ class FileView(APIView):
             for file in files
         ]
         for file in files:
-            file.is_valid()
+            file.is_valid(raise_exception=True)
 
         return Response([file.data for file in files])
 

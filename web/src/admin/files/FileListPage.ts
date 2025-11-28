@@ -19,9 +19,7 @@ import { customElement, property } from "lit/decorators.js";
 interface FileItem {
     name: string;
     url: string;
-    mime_type: string;
-    size: number;
-    usage: AdminFileListUsageEnum;
+    mimeType: string;
 }
 
 @customElement("ak-files-list")
@@ -75,7 +73,7 @@ export class FileListPage extends TablePage<FileItem> {
             .metadata=${(item: FileItem) => {
                 return [
                     { key: msg("Name"), value: item.name },
-                    { key: msg("Type"), value: item.mime_type },
+                    { key: msg("Type"), value: item.mimeType },
                 ];
             }}
             .usedBy=${(item: FileItem) => {
@@ -86,7 +84,7 @@ export class FileListPage extends TablePage<FileItem> {
             .delete=${(item: FileItem) => {
                 return new AdminApi(DEFAULT_CONFIG).adminFileDestroy({
                     name: item.name,
-                    usage: item.usage,
+                    usage: AdminFileListUsageEnum.Media,
                 });
             }}
         >
@@ -99,7 +97,7 @@ export class FileListPage extends TablePage<FileItem> {
     row(item: FileItem): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>`,
-            html`<div>${item.mime_type || msg("-")}</div>`,
+            html`<div>${item.mimeType || msg("-")}</div>`,
             html`<div>
                 <a
                     class="pf-c-button pf-m-secondary"
