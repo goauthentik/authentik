@@ -138,6 +138,28 @@ class PartialUserSerializer(ModelSerializer):
     attributes = JSONDictField(required=False)
     uid = CharField(read_only=True)
 
+    def to_representation(self, instance):
+        """Override to use request-level cache for serialized users.
+
+        When the same user appears in multiple groups, we cache their serialized
+        representation to avoid redundant serialization work.
+        """
+        request = self.context.get('request')
+        cache = getattr(request, '_user_serialization_cache', None) if request else None
+        
+        if cache is not None:
+            # Check if already serialized
+            if instance.pk in cache:
+                return cache[instance.pk]
+            
+            # Serialize and cache
+            result = super().to_representation(instance)
+            cache[instance.pk] = result
+            return result
+        
+        # No cache available, serialize normally
+        return super().to_representation(instance)
+
     class Meta:
         model = User
         fields = PARTIAL_USER_SERIALIZER_MODEL_FIELDS + ["uid"]
@@ -209,7 +231,8 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
-        return PartialUserSerializer(instance.users, many=True).data
+        # Use .all() to access prefetched data and pass context for cache
+        return PartialUserSerializer(instance.users.all(), many=True, context=self.context).data
 
     @extend_schema_field(RelatedGroupSerializer(many=True))
     def get_children_obj(self, instance: Group) -> list[RelatedGroupSerializer] | None:
@@ -369,6 +392,15 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         SessionAuthentication,
         AgentAuth,
     ]
+
+    def initialize_request(self, request, *args, **kwargs):
+        """Initialize request with a cache for serialized users.
+        This cache prevents re-serializing the same user when they appear in
+        multiple groups within the same request."""
+
+        request = super().initialize_request(request, *args, **kwargs)
+        request._user_serialization_cache = {}
+        return request
 
     def get_ql_fields(self):
         return [
