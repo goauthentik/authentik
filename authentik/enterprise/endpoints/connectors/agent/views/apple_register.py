@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.api.validation import validate
+from authentik.core.api.users import UserSelfSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.endpoints.connectors.agent.models import (
@@ -21,7 +22,6 @@ class RegisterDeviceView(APIView):
 
     class AgentPSSODeviceRegistration(PassiveSerializer):
 
-        client_id = CharField()
         device_signing_key = CharField()
         device_encryption_key = CharField()
         sign_key_id = CharField()
@@ -67,7 +67,7 @@ class RegisterUserView(APIView):
 
     @extend_schema(
         responses={
-            204: OpenApiResponse(description="User successfully registered"),
+            200: UserSelfSerializer(),
         }
     )
     @validate(AgentPSSOUserRegistration)
@@ -92,4 +92,6 @@ class RegisterUserView(APIView):
                 "apple_enclave_key_id": body.validated_data["enclave_key_id"],
             },
         )
-        return Response(status=204)
+        return Response(
+            UserSelfSerializer(instance=request.user, context={"request": request}).data
+        )

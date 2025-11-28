@@ -32700,9 +32700,6 @@ components:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
-        client_id:
-          type: string
-          minLength: 1
         device_signing_key:
           type: string
           minLength: 1
@@ -32716,7 +32713,6 @@ components:
           type: string
           minLength: 1
       required:
-      - client_id
       - device_encryption_key
       - device_signing_key
       - enc_key_id
@@ -32725,6 +32721,9 @@ components:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        user_auth:
+          type: string
+          minLength: 1
         user_secure_enclave_key:
           type: string
           minLength: 1
@@ -32733,6 +32732,7 @@ components:
           minLength: 1
       required:
       - enclave_key_id
+      - user_auth
       - user_secure_enclave_key
     AgentTokenResponse:
       type: object
