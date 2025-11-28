@@ -10,6 +10,7 @@ import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
@@ -19,12 +20,11 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
     @state()
     protected selectedFile: File | null = null;
 
-    private clearFileInput() {
+    #formRef = createRef<HTMLFormElement>();
+
+    protected clearFileInput() {
         this.selectedFile = null;
-        const fileInput = this.shadowRoot?.querySelector<HTMLInputElement>("#file-input");
-        if (fileInput) {
-            fileInput.value = "";
-        }
+        this.#formRef.value?.reset();
     }
 
     public override async send(): Promise<void> {
@@ -83,7 +83,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
     renderForm() {
         return html`
-            <form class="pf-c-form pf-m-horizontal">
+            <form ${ref(this.#formRef)} class="pf-c-form pf-m-horizontal">
                 <div class="pf-c-form__group">
                     <label class="pf-c-form__label" for="file-input">
                         <span class="pf-c-form__label-text">${msg("File")}</span>
