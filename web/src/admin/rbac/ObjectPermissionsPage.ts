@@ -43,12 +43,12 @@ export class ObjectPermissionPage extends AKElement {
             tabindex="0"
             slot="page-object-role"
             id="page-object-role"
-            aria-label="${msg("Role Object Permissions")}"
+            aria-label="${msg("Role Permissions")}"
             class="pf-c-page__main-section pf-m-no-padding-mobile"
         >
             <div class="pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
+                    <div class="pf-c-card__title">${msg("Role Permissions")}</div>
                     <div class="pf-c-card__body">
                         ${msg("Permissions set on roles which affect this object.")}
                     </div>
