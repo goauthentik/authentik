@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 00:11+0000\n"
+"POT-Creation-Date: 2025-11-25 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
 "Language-Team: Spanish (https://app.transifex.com/authentik/teams/119923/es/)\n"
@@ -426,7 +426,7 @@ msgstr "Token"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
 msgstr "Ver llave del token"
 
@@ -498,6 +498,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr "Eliminar usuarios temporales creados por SAML Sources."
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "Ir al inicio"
 
@@ -530,6 +531,26 @@ msgid "ecdsa"
 msgstr "ecdsa"
 
 #: authentik/crypto/models.py
+msgid "RSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "Datos de certificados codificados en PEM"
 
@@ -553,6 +574,38 @@ msgstr "Pares Certificado-Clave"
 msgid "Discover, import and update certificates from the filesystem."
 msgstr ""
 "Descubra, importe y actualice certificados desde el sistema de archivos."
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr ""
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
+msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -1211,9 +1264,21 @@ msgstr "Token de flujo"
 msgid "Flow Tokens"
 msgstr "Tokens de flujo"
 
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
+msgstr ""
+
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "Siguiente URL invalida"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
@@ -1614,6 +1679,10 @@ msgstr "Avatar del usuario"
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr "¿No eres tú?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "Error"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
@@ -2246,6 +2315,17 @@ msgid "ACS URL"
 msgstr "URL"
 
 #: authentik/providers/saml/models.py
+msgid "Service Provider Binding"
+msgstr "Vinculación de Proveedor de Servicio"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the response back to the Service "
+"Provider."
+msgstr ""
+"Esto determina cómo authentik envía la respuesta al Proveedor de Servicios."
+
+#: authentik/providers/saml/models.py
 msgid ""
 "Value of the audience restriction field of the assertion. When left empty, "
 "no audience restriction will be added."
@@ -2256,17 +2336,6 @@ msgstr ""
 #: authentik/providers/saml/models.py
 msgid "Also known as EntityID"
 msgstr "También conocido como EntityID"
-
-#: authentik/providers/saml/models.py
-msgid "Service Provider Binding"
-msgstr "Vinculación de Proveedor de Servicio"
-
-#: authentik/providers/saml/models.py
-msgid ""
-"This determines how authentik sends the response back to the Service "
-"Provider."
-msgstr ""
-"Esto determina cómo authentik envía la respuesta al Proveedor de Servicios."
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
