@@ -53725,6 +53725,7 @@ components:
       - identifier
     TokenSetKeyRequest:
       type: object
+      description: Base serializer class which doesn't implement create/update methods
       properties:
         key:
           type: string

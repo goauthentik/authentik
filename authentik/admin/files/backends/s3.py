@@ -70,7 +70,7 @@ class S3Backend(ManageableBackend):
         else:
             access_key, access_key_r = self._get_config("access_key", None)
             secret_key, secret_key_r = self._get_config("secret_key", None)
-            session_token, session_token_r = self._get_config("secret_key", None)
+            session_token, session_token_r = self._get_config("session_token", None)
             if access_key_r or secret_key_r or session_token_r or self._session is None:
                 self._session = boto3.Session(
                     aws_access_key_id=access_key,
