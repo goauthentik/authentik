@@ -75,7 +75,7 @@ OAUTH_ATTRIBUTE_MAP = {
 LOGIN_URL = 'https://seafile.company/oauth/login/'
 
 # Enable client to open an external browser for single sign on
-# When it is false, the old buitin browser is opened for single sign on
+# When it is false, the old builtin browser is opened for single sign on
 # When it is true, the default browser of the operation system is opened
 # The benefit of using system browser is that it can support hardware 2FA
 # Since 11.0.0, and sync client 9.0.5, drive client 3.0.8
