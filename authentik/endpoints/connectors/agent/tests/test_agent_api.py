@@ -90,7 +90,7 @@ class TestAgentAPI(APITestCase):
     def test_config(self):
         response = self.client.get(
             reverse("authentik_api:agentconnector-agent-config"),
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -98,7 +98,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 204)
 
@@ -109,7 +109,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -120,7 +120,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 403)
 
