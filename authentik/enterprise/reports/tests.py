@@ -104,7 +104,7 @@ class TestExportPermissions(APITestCase):
     def test_export_with_permission(self):
         """Test User export endpoint with view_user and add_dataexport permission"""
         self._add_perm("view_user", "authentik_core")
-        self._add_perm("add_dataexport", "authentik_enterprise_reports")
+        self._add_perm("add_dataexport", "authentik_reports")
         response = self.client.post(
             reverse("authentik_api:user-export"),
         )
@@ -113,7 +113,7 @@ class TestExportPermissions(APITestCase):
     def test_export_access(self):
         """Test that data export access is restricted to the user who created it"""
         self._add_perm("view_user", "authentik_core")
-        self._add_perm("add_dataexport", "authentik_enterprise_reports")
+        self._add_perm("add_dataexport", "authentik_reports")
         response = self.client.post(
             reverse("authentik_api:user-export"),
         )
@@ -123,7 +123,7 @@ class TestExportPermissions(APITestCase):
         self.assertEqual(response.status_code, 200)
         other_user = create_test_user()
         self._add_perm("view_user", "authentik_core", other_user)
-        self._add_perm("add_dataexport", "authentik_enterprise_reports", other_user)
+        self._add_perm("add_dataexport", "authentik_reports", other_user)
         self.client.logout()
         self.client.force_login(other_user)
         response = self.client.get(export_url)
@@ -132,8 +132,8 @@ class TestExportPermissions(APITestCase):
     def test_export_access_no_datatype_permission(self):
         """Test that data export access requires view permission on the data type"""
         self._add_perm("view_user", "authentik_core")
-        self._add_perm("add_dataexport", "authentik_enterprise_reports")
-        self._add_perm("view_dataexport", "authentik_enterprise_reports")
+        self._add_perm("add_dataexport", "authentik_reports")
+        self._add_perm("view_dataexport", "authentik_reports")
         response = self.client.post(
             reverse("authentik_api:user-export"),
         )
@@ -153,7 +153,7 @@ class TestExportPermissions(APITestCase):
 
     def test_export_access_owner(self):
         self._add_perm("view_user", "authentik_core")
-        self._add_perm("add_dataexport", "authentik_enterprise_reports")
+        self._add_perm("add_dataexport", "authentik_reports")
         response = self.client.post(
             reverse("authentik_api:user-export"),
         )

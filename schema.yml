@@ -19717,7 +19717,6 @@ paths:
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
-          - authentik_enterprise_reports.dataexport
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -19757,6 +19756,7 @@ paths:
           - authentik_providers_ssf.ssfprovider
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
+          - authentik_reports.dataexport
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -19932,7 +19932,6 @@ paths:
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_enterprise.license
-          - authentik_enterprise_reports.dataexport
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -19972,6 +19971,7 @@ paths:
           - authentik_providers_ssf.ssfprovider
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
+          - authentik_reports.dataexport
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -32991,7 +32991,6 @@ components:
       - authentik.endpoints
       - authentik.endpoints.connectors.agent
       - authentik.enterprise
-      - authentik.enterprise.reports
       - authentik.events
       - authentik.flows
       - authentik.outposts
@@ -33052,6 +33051,7 @@ components:
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
+      - authentik.enterprise.reports
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -41213,7 +41213,6 @@ components:
       - authentik_endpoints_connectors_agent.agentdeviceuserbinding
       - authentik_endpoints_connectors_agent.enrollmenttoken
       - authentik_enterprise.license
-      - authentik_enterprise_reports.dataexport
       - authentik_events.event
       - authentik_events.notificationtransport
       - authentik_events.notification
@@ -41311,6 +41310,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
+      - authentik_reports.dataexport
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage

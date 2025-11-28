@@ -904,7 +904,7 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_enterprise_reports.dataexport"
+                            "const": "authentik_reports.dataexport"
                         },
                         "id": {
                             "type": "string"
@@ -926,13 +926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport_permissions"
+                            "$ref": "#/$defs/model_authentik_reports.dataexport_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport"
+                            "$ref": "#/$defs/model_authentik_reports.dataexport"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_enterprise_reports.dataexport"
+                            "$ref": "#/$defs/model_authentik_reports.dataexport"
                         }
                     }
                 },
@@ -5377,10 +5377,6 @@
                             "authentik_enterprise.delete_licenseusage",
                             "authentik_enterprise.view_license",
                             "authentik_enterprise.view_licenseusage",
-                            "authentik_enterprise_reports.add_dataexport",
-                            "authentik_enterprise_reports.change_dataexport",
-                            "authentik_enterprise_reports.delete_dataexport",
-                            "authentik_enterprise_reports.view_dataexport",
                             "authentik_events.add_event",
                             "authentik_events.add_notification",
                             "authentik_events.add_notificationrule",
@@ -5638,6 +5634,10 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_reports.add_dataexport",
+                            "authentik_reports.change_dataexport",
+                            "authentik_reports.delete_dataexport",
+                            "authentik_reports.view_dataexport",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -6911,7 +6911,7 @@
                 }
             }
         },
-        "model_authentik_enterprise_reports.dataexport": {
+        "model_authentik_reports.dataexport": {
             "type": "object",
             "properties": {
                 "query_params": {
@@ -6922,7 +6922,7 @@
             },
             "required": []
         },
-        "model_authentik_enterprise_reports.dataexport_permissions": {
+        "model_authentik_reports.dataexport_permissions": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -8291,7 +8291,6 @@
                         "authentik.endpoints",
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
-                        "authentik.enterprise.reports",
                         "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
@@ -8352,6 +8351,7 @@
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
+                        "authentik.enterprise.reports",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
@@ -8380,7 +8380,6 @@
                         "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
                         "authentik_endpoints_connectors_agent.enrollmenttoken",
                         "authentik_enterprise.license",
-                        "authentik_enterprise_reports.dataexport",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -8478,6 +8477,7 @@
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
+                        "authentik_reports.dataexport",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
@@ -10728,10 +10728,6 @@
                             "authentik_enterprise.delete_licenseusage",
                             "authentik_enterprise.view_license",
                             "authentik_enterprise.view_licenseusage",
-                            "authentik_enterprise_reports.add_dataexport",
-                            "authentik_enterprise_reports.change_dataexport",
-                            "authentik_enterprise_reports.delete_dataexport",
-                            "authentik_enterprise_reports.view_dataexport",
                             "authentik_events.add_event",
                             "authentik_events.add_notification",
                             "authentik_events.add_notificationrule",
@@ -10989,6 +10985,10 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_reports.add_dataexport",
+                            "authentik_reports.change_dataexport",
+                            "authentik_reports.delete_dataexport",
+                            "authentik_reports.view_dataexport",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",

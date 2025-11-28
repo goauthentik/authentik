@@ -96,7 +96,7 @@ class ExportMixin:
     @action(
         detail=False,
         methods=["POST"],
-        permission_classes=[HasPermission("authentik_enterprise_reports.add_dataexport")],
+        permission_classes=[HasPermission("authentik_reports.add_dataexport")],
     )
     def export(self: GenericViewSet, request: Request) -> Response:
         """
