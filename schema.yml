@@ -32532,6 +32532,8 @@ components:
           readOnly: true
         authorization_flow:
           type: string
+          nullable: true
+          readOnly: true
         jwks:
           type: object
           additionalProperties: {}

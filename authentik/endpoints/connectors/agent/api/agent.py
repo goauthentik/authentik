@@ -36,7 +36,9 @@ class AgentConfigSerializer(PassiveSerializer):
     def get_refresh_interval(self, instance: AgentConnector) -> int:
         return int(timedelta_from_string(instance.refresh_interval).total_seconds())
 
-    def get_authorization_flow(self, instance: AgentConnector) -> str:
+    def get_authorization_flow(self, instance: AgentConnector) -> str | None:
+        if not instance.authorization_flow:
+            return None
         return instance.authorization_flow.slug
 
     def get_jwks(self, instance: AgentConnector) -> dict:
