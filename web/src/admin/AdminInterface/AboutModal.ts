@@ -31,11 +31,11 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
             .pf-c-about-modal-box__hero {
                 background-image: url("/static/dist/assets/images/flow_background.jpg");
             }
-            .pf-c-about-modal-box__brand-image {
-                max-height: 100px;
+            .pf-c-about-modal-box__brand {
+                --pf-c-about-modal-box__brand-image--Height: 6.25rem;
             }
             .pf-c-about-modal-box__brand i {
-                font-size: 100px;
+                font-size: var(--pf-c-about-modal-box__brand-image--Height);
             }
         `,
     ];

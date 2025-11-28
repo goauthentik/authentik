@@ -33,13 +33,13 @@
 }
 
 .pf-c-brand {
-    min-height: 32px;
-    height: 32px;
+    min-height: 2rem;
+    height: 2rem;
 }
 
 .pf-c-brand i {
-    font-size: 32px;
-    line-height: 32px;
+    font-size: 2rem;
+    line-height: 2rem;
 }
 
 .has-notifications {
