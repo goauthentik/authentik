@@ -1,16 +1,17 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.api.validation import validate
-from authentik.core.api.users import UserSelfSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.endpoints.connectors.agent.models import (
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    DeviceAuthenticationToken,
     DeviceToken,
 )
 from authentik.lib.generators import generate_key
@@ -54,6 +55,7 @@ class RegisterUserView(APIView):
 
     class AgentPSSOUserRegistration(PassiveSerializer):
 
+        user_auth = CharField()
         user_secure_enclave_key = CharField()
         enclave_key_id = CharField()
 
@@ -65,23 +67,29 @@ class RegisterUserView(APIView):
 
     @extend_schema(
         responses={
-            200: UserSelfSerializer(),
+            204: OpenApiResponse(description="User successfully registered"),
         }
     )
     @validate(AgentPSSOUserRegistration)
     def post(self, request: Request, body: AgentPSSOUserRegistration) -> Response:
         device_token: DeviceToken = request.auth
         conn: AgentDeviceConnection = device_token.device
+        user_token = DeviceAuthenticationToken.filter_not_expired(
+            device=conn.device, token=body.validated_data["user_auth"]
+        ).first()
+        if not user_token:
+            raise ValidationError("Invalid user authentication")
         AgentDeviceUserBinding.objects.update_or_create(
             device=conn.device,
-            user=request.user,
+            user=user_token.user,
+            connector=conn.connector,
             create_defaults={
                 "is_primary": True,
+                "order": 0,
             },
             defaults={
                 "apple_secure_enclave_key": body.validated_data["user_secure_enclave_key"],
                 "apple_enclave_key_id": body.validated_data["enclave_key_id"],
             },
         )
-        context = {"request": request}
-        return Response(UserSelfSerializer(instance=request.user, context=context).data)
+        return Response(status=204)

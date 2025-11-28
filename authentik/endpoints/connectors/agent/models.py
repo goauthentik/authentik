@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel, default_token_key
+from authentik.core.models import ExpiringModel, User, default_token_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
     Connector,
@@ -142,6 +142,7 @@ class DeviceAuthenticationToken(ExpiringModel):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
     connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     token = models.TextField()
 
     def __str__(self):
