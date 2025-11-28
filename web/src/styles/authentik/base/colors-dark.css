@@ -39,7 +39,12 @@ html[data-theme="dark"] {
 /* #region Blue */
 
 html[data-theme="dark"] {
-    --pf-global--palette--blue-300: #1fa7f8;
+    /* We diverge from PF4's lighter shade to align closer to the contrast in light mode. */
+    --pf-v4-global--palette--blue-300: oklab(70.367% -0.07498 -0.139);
+
+    --ak-global--palette--blue-300: oklab(67.552% -0.05374 -0.16817);
+
+    --pf-global--palette--blue-300: var(--pf-v4-global--palette--blue-300);
 }
 
 /* #endregion */
@@ -86,7 +91,7 @@ html[data-theme="dark"] {
 /* #region Active */
 
 html[data-theme="dark"] {
-    --pf-global--active-color--100: #1fa7f8;
+    --pf-global--active-color--100: var(--pf-v4-global--palette--blue-300);
 }
 
 /* #endregion */
@@ -95,7 +100,6 @@ html[data-theme="dark"] {
 
 html[data-theme="dark"] {
     --pf-global--primary-color--300: #06c;
-    /* --pf-global--primary-color--100: #1fa7f8; */
     --pf-global--primary-color--100: var(--pf-global--primary-color--300);
 }
 
@@ -104,7 +108,7 @@ html[data-theme="dark"] {
 /* #region Link */
 
 html[data-theme="dark"] {
-    --pf-global--link--Color: #1fa7f8;
+    --pf-global--link--Color: var(--pf-v4-global--palette--blue-300);
     --pf-global--link--Color--hover: #73bcf7;
     --pf-global--link--Color--visited: #a18fff;
 }
@@ -161,8 +165,8 @@ html[data-theme="dark"] {
 /* #region Primary */
 
 html[data-theme="dark"] {
-    --pf-global--primary-color--light-100: #1fa7f8;
-    --pf-global--primary-color--dark-100: #1fa7f8;
+    --pf-global--primary-color--light-100: oklab(67.552% -0.05374 -0.16817);
+    --pf-global--primary-color--dark-100: oklab(67.552% -0.05374 -0.16817);
 }
 
 /* #endregion */
@@ -170,10 +174,10 @@ html[data-theme="dark"] {
 /* #region Link */
 
 html[data-theme="dark"] {
-    --pf-global--link--Color--light: #1fa7f8;
-    --pf-global--link--Color--light--hover: #73bcf7;
-    --pf-global--link--Color--dark: #1fa7f8;
-    --pf-global--link--Color--dark--hover: #73bcf7;
+    --pf-global--link--Color--light: var(--pf-v4-global--palette--blue-300);
+    --pf-global--link--Color--light--hover: var(--pf-global--palette--blue-200);
+    --pf-global--link--Color--dark: var(--pf-v4-global--palette--blue-300);
+    --pf-global--link--Color--dark--hover: var(--pf-global--palette--blue-200);
 }
 
 /* #endregion */
