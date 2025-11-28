@@ -9,4 +9,5 @@ class AuthentikEnterpriseEndpointsConnectorAgentAppConfig(EnterpriseConfig):
     default = True
     mountpoints = {
         "authentik.enterprise.endpoints.connectors.agent.urls_root": "",
+        "authentik.enterprise.endpoints.connectors.agent.urls": "endpoints/agent/",
     }

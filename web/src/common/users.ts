@@ -15,15 +15,15 @@ export interface ClientSessionPermissions {
 /**
  * The display name of the current user, according to their UI config settings.
  */
-export function formatUserDisplayName(user: UserSelf | null, uiConfig: UIConfig): string {
+export function formatUserDisplayName(user: UserSelf | null, uiConfig?: UIConfig): string {
     if (!user) return "";
 
-    const label = match(uiConfig.navbar.userDisplay)
+    const label = match(uiConfig?.navbar.userDisplay)
         .with(UserDisplay.username, () => user.username)
         .with(UserDisplay.name, () => user.name)
         .with(UserDisplay.email, () => user.email)
         .with(UserDisplay.none, () => null)
-        .otherwise(() => user.username);
+        .otherwise(() => user.name || user.username);
 
     return label || "";
 }
@@ -63,6 +63,8 @@ let memoizedSession: SessionUser | null = null;
 
 /**
  * Refresh the current user session.
+ *
+ * @deprecated This should be moved to the WithSession mixin.
  */
 export function refreshMe(): Promise<SessionUser> {
     memoizedSession = null;
@@ -75,6 +77,8 @@ export function refreshMe(): Promise<SessionUser> {
  * This is a memoized function, so it will only make one request per page load.
  *
  * @see {@linkcode refreshMe} to force a refresh.
+ *
+ * @category Session
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
     if (memoizedSession) return memoizedSession;
@@ -103,16 +107,7 @@ export async function me(requestInit?: RequestInit): Promise<SessionUser> {
                 const { response } = error;
 
                 if (response.status === 401 || response.status === 403) {
-                    const { pathname, search, hash } = window.location;
-
-                    const authFlowRedirectURL = new URL(
-                        `/flows/-/default/authentication/`,
-                        window.location.origin,
-                    );
-
-                    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
-
-                    window.location.assign(authFlowRedirectURL);
+                    redirectToAuthFlow();
                 }
             }
 
@@ -124,4 +119,32 @@ export async function me(requestInit?: RequestInit): Promise<SessionUser> {
             memoizedSession = nextSession;
             return nextSession;
         });
+}
+
+let pendingRedirect = false;
+
+/**
+ * Redirect to the default authentication flow, preserving the current URL as "next" parameter.
+ *
+ * @category Session
+ */
+export function redirectToAuthFlow(nextPathname = "/flows/-/default/authentication/"): void {
+    if (pendingRedirect) {
+        console.debug("authentik/users: Redirect already pending, ");
+        return;
+    }
+
+    const { pathname, search, hash } = window.location;
+
+    const authFlowRedirectURL = new URL(nextPathname, window.location.origin);
+
+    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
+
+    pendingRedirect = true;
+
+    console.debug(
+        `authentik/users: Redirecting to authentication flow at ${authFlowRedirectURL.href}`,
+    );
+
+    window.location.assign(authFlowRedirectURL);
 }

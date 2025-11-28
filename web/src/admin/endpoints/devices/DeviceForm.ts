@@ -48,7 +48,7 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
             ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Device Group")} name="group">
                 <ak-endpoints-device-group-search
-                    .group=${this.instance?.group}
+                    .group=${this.instance?.accessGroup}
                 ></ak-endpoints-device-group-search>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">

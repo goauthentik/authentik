@@ -12,8 +12,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 )
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import Encoding
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.views import View
 from jwt.utils import base64url_encode
 
@@ -115,8 +114,20 @@ class JWKSView(View):
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
-        application = get_object_or_404(Application, slug=application_slug)
-        provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
+        provider_ids = Application.objects.filter(
+            slug=application_slug,
+        ).values_list(
+            "provider_id",
+            flat=True,
+        )
+        provider = (
+            OAuth2Provider.objects.select_related("signing_key", "encryption_key")
+            .filter(pk__in=provider_ids)
+            .first()
+        )
+
+        if provider is None:
+            raise Http404()
 
         response_data = {}
 
