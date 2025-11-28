@@ -109,6 +109,8 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 
 
 class TokenSetKeySerializer(PassiveSerializer):
+    """Set token's key"""
+
     key = CharField()
 
 
