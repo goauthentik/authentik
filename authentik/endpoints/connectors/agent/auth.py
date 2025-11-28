@@ -30,7 +30,9 @@ class AgentAuth(BaseAuthentication):
 
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request)
-        key = validate_auth(auth)
+        key = validate_auth(auth, format="bearer+agent")
+        if not key:
+            return None
         device_token = DeviceToken.filter_not_expired(key=key).first()
         if not device_token:
             raise PermissionDenied()

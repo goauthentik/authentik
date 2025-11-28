@@ -31,6 +31,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from guardian.shortcuts import get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -52,6 +53,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authentication import TokenAuthentication
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
@@ -76,6 +78,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -433,6 +436,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+        AgentAuth,
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
