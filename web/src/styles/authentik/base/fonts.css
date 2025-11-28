@@ -28,10 +28,10 @@
 
 :root {
     --pf-global--FontFamily--sans-serif: var(--ak-font-family-sans-serif);
-    --pf-global--FontFamily--heading--sans-serif: var(--ak-font-family-heading);
+    --pf-global--FontFamily--heading--sans-serif: var(--ak-generic-display);
     --pf-global--FontFamily--monospace: var(--ak-font-family-monospace);
     --pf-global--FontFamily--redhat-updated--sans-serif: var(--ak-font-family-sans-serif);
-    --pf-global--FontFamily--redhat-updated--heading--sans-serif: var(--ak-font-family-heading);
+    --pf-global--FontFamily--redhat-updated--heading--sans-serif: var(--ak-generic-display);
 }
 
 /* #endregion */
