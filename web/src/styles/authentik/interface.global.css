@@ -1,9 +1,10 @@
-@import "@patternfly/patternfly/base/patternfly-fonts.css";
+@import "@patternfly/patternfly/base/patternfly-common.css";
 @import "@patternfly/patternfly/base/patternfly-globals.css";
 @import "@patternfly/patternfly/base/patternfly-themes.css";
 @import "@patternfly/patternfly/base/patternfly-fa-icons.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "#fonts/RedHat/faces.css";
 @import "./base/fonts.css";
 @import "./base/variables.css";
 @import "./base/scrollbars.css";
