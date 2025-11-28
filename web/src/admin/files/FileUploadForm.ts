@@ -24,6 +24,15 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
     #formRef = createRef<HTMLFormElement>();
 
+    #fileChangeListener = (e: Event) => {
+        const input = e.target as HTMLInputElement;
+        if (input.files?.length) {
+            this.selectedFile = input.files[0];
+        } else {
+            this.selectedFile = null;
+        }
+    };
+
     protected clearFileInput() {
         this.selectedFile = null;
         this.#formRef.value?.reset();
@@ -90,14 +99,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                         class="pf-c-form-control"
                         id="file-input"
                         required
-                        @change=${(e: Event) => {
-                            const input = e.target as HTMLInputElement;
-                            if (input.files && input.files.length > 0) {
-                                this.selectedFile = input.files[0];
-                            } else {
-                                this.selectedFile = null;
-                            }
-                        }}
+                        @change=${this.#fileChangeListener}
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${msg("File Name")} name="fileName">

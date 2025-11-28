@@ -1,6 +1,7 @@
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
@@ -75,40 +76,44 @@ export class AkFileSearchInput extends AKElement {
     }
 
     async #fetch(query?: string): Promise<FileItem[]> {
-        try {
-            const api = new AdminApi(DEFAULT_CONFIG);
-            const response = (await api.adminFileList({
+        const api = new AdminApi(DEFAULT_CONFIG);
+        return api
+            .adminFileList({
                 usage: this.usage as AdminFileListUsageEnum,
                 ...(query ? { search: query } : {}),
-            })) as unknown as FileItem[];
+            })
+            .then((response) => {
+                const fileResponse = response as unknown as FileItem[];
 
-            if (!response || !Array.isArray(response)) {
-                console.error("Invalid response format from files API", response);
+                if (!fileResponse || !Array.isArray(fileResponse)) {
+                    console.error("Invalid response format from files API", fileResponse);
+                    return [];
+                }
+
+                let results = fileResponse;
+
+                // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
+                // add it as a synthetic item so it shows up as selected
+                if (this.value && !results.find((item) => item.name === this.value)) {
+                    results = [
+                        {
+                            name: this.value,
+                            url: this.value,
+                            mime_type: "",
+                            size: 0,
+                            usage: this.usage,
+                        },
+                        ...results,
+                    ];
+                }
+
+                return results;
+            })
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
+                console.error(msg("Failed to fetch files"), pluckErrorDetail(parsedError));
                 return [];
-            }
-
-            let results = response;
-
-            // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
-            // add it as a synthetic item so it shows up as selected
-            if (this.value && !results.find((item) => item.name === this.value)) {
-                results = [
-                    {
-                        name: this.value,
-                        url: this.value,
-                        mime_type: "",
-                        size: 0,
-                        usage: this.usage,
-                    },
-                    ...results,
-                ];
-            }
-
-            return results;
-        } catch (error) {
-            console.error(msg("Failed to fetch files"), error);
-            return [];
-        }
+            });
     }
 
     render() {

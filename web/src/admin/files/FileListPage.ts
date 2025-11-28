@@ -10,7 +10,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
+import { AdminApi, AdminFileListUsageEnum, UsedBy } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
