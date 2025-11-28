@@ -8,12 +8,12 @@ from rest_framework.views import APIView
 from authentik.api.authentication import TokenAuthentication
 from authentik.core.api.users import UserSelfSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.apple_psso.models import (
-    AppleDeviceConnection,
-    AppleDeviceUser,
-    ApplePlatformSSOConnector,
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    AgentDeviceConnection,
+    AgentDeviceUserBinding,
 )
+from authentik.endpoints.models import Device
 from authentik.lib.generators import generate_key
 
 
@@ -42,11 +42,11 @@ class RegisterDeviceView(APIView):
     def post(self, request: Request) -> Response:
         data = self.DeviceRegistration(data=request.data)
         data.is_valid(raise_exception=True)
-        connector = get_object_or_404(ApplePlatformSSOConnector, token__user__in=[request.user])
+        connector = get_object_or_404(AgentConnector, token__user__in=[request.user])
         device, _ = Device.objects.get_or_create(
             identifier=data.validated_data["identifier"],
         )
-        AppleDeviceConnection.objects.update_or_create(
+        AgentDeviceConnection.objects.update_or_create(
             device=device,
             connector=connector,
             defaults={
@@ -83,7 +83,7 @@ class RegisterUserView(APIView):
         data = self.UserRegistration(data=request.data)
         data.is_valid(raise_exception=True)
         device = get_object_or_404(Device, identifier=data.validated_data["identifier"])
-        AppleDeviceUser.objects.update_or_create(
+        AgentDeviceUserBinding.objects.update_or_create(
             device=device,
             user=request.user,
             create_defaults={

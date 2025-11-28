@@ -11,14 +11,13 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
-from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.apple_psso.http import JWEResponse
-from authentik.enterprise.endpoints.apple_psso.models import (
-    AppleDeviceConnection,
-    AppleDeviceUser,
-    AppleNonce,
-    ApplePlatformSSOConnector,
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    AgentDeviceConnection,
+    AgentDeviceUserBinding,
 )
+from authentik.endpoints.models import Device
+from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.providers.oauth2.constants import TOKEN_TYPE
@@ -33,7 +32,7 @@ LOGGER = get_logger()
 class TokenView(View):
 
     device: Device
-    connector: ApplePlatformSSOConnector
+    connector: AgentConnector
 
     def post(self, request: HttpRequest) -> HttpResponse:
         version = request.POST.get("platform_sso_version")
@@ -45,7 +44,7 @@ class TokenView(View):
         LOGGER.debug(decode_unvalidated["header"])
         expected_kid = decode_unvalidated["header"]["kid"]
 
-        self.device_connection = AppleDeviceConnection.objects.filter(
+        self.device_connection = AgentDeviceConnection.objects.filter(
             sign_key_id=expected_kid
         ).first()
         if not self.device:
@@ -81,12 +80,12 @@ class TokenView(View):
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler(decoded)
 
-    def validate_device_user_response(self, assertion: str) -> tuple[AppleDeviceUser, dict] | None:
+    def validate_device_user_response(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict] | None:
         """Decode an embedded assertion and validate it by looking up the matching device user"""
         decode_unvalidated = PyJWT().decode_complete(assertion, options={"verify_signature": False})
         expected_kid = decode_unvalidated["header"]["kid"]
 
-        device_user = AppleDeviceUser.objects.filter(
+        device_user = AgentDeviceUserBinding.objects.filter(
             device=self.device, enclave_key_id=expected_kid
         ).first()
         if not device_user:

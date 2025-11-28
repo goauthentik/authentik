@@ -4805,6 +4805,50 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agent/psso/register/device/:
+    post:
+      operationId: endpoints_agent_psso_register_device_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Device registered
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agent/psso/register/user/:
+    post:
+      operationId: endpoints_agent_psso_register_user_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelf'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
@@ -35812,6 +35856,35 @@ components:
           minLength: 1
       required:
       - id
+    DeviceRegistrationRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        identifier:
+          type: string
+          minLength: 1
+        client_id:
+          type: string
+          minLength: 1
+        device_signing_key:
+          type: string
+          minLength: 1
+        device_encryption_key:
+          type: string
+          minLength: 1
+        sign_key_id:
+          type: string
+          minLength: 1
+        enc_key_id:
+          type: string
+          minLength: 1
+      required:
+      - client_id
+      - device_encryption_key
+      - device_signing_key
+      - enc_key_id
+      - identifier
+      - sign_key_id
     DeviceUser:
       type: object
       properties:
@@ -54787,6 +54860,23 @@ components:
       - plex_token
       - source
       - user
+    UserRegistrationRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        identifier:
+          type: string
+          minLength: 1
+        user_secure_enclave_key:
+          type: string
+          minLength: 1
+        enclave_key_id:
+          type: string
+          minLength: 1
+      required:
+      - enclave_key_id
+      - identifier
+      - user_secure_enclave_key
     UserRequest:
       type: object
       description: User Serializer
