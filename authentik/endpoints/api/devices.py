@@ -12,7 +12,7 @@ from authentik.endpoints.models import Device
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    access_group_obj = DeviceAccessGroupSerializer(source="access_group")
+    access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
     facts = SerializerMethodField()
 

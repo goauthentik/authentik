@@ -36515,7 +36515,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - access_group_obj
       - facts
       - name
       - pbm_uuid
@@ -36567,7 +36566,6 @@ components:
             format: uuid
           readOnly: true
       required:
-      - access_group_obj
       - connections
       - connections_obj
       - facts
@@ -36599,7 +36597,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - access_group_obj
       - name
     EndpointRequest:
       type: object
