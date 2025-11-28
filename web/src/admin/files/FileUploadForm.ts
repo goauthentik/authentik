@@ -43,8 +43,8 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        // Validate filename contains only safe characters (a-zA-Z0-9._-)
-        const ValidFilenameRegex = /^[a-zA-Z0-9._-]+$/;
+        // Same regex is used in the backend as well
+        const ValidFilenameRegex = /^[a-zA-Z0-9._/-]+$/;
         if (!ValidFilenameRegex.test(this.selectedFile.name)) {
             throw new Error(
                 msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),

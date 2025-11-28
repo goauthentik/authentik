@@ -39,7 +39,7 @@ def validate_upload_file_name(
     if not name:
         raise ValidationError(_("File name cannot be empty"))
 
-    # Allow alphanumeric, dots, hyphens, underscores, and forward slashes
+    # Same regex is used in the frontend as well
     if not re.match(r"^[a-zA-Z0-9._/-]+$", name):
         raise ValidationError(
             _(
