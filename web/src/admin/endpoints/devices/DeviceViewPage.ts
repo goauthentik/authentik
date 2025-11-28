@@ -1,7 +1,9 @@
 import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
+import "#admin/endpoints/devices/ProcessTable";
 import "#admin/endpoints/devices/DeviceForm";
 import "#elements/forms/ModalForm";
+import "#elements/Tabs";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
@@ -70,149 +72,184 @@ export class DeviceViewPage extends AKElement {
         });
     }
 
-    render() {
+    renderOverview() {
         if (!this.device) {
             return nothing;
         }
-        const _rootDisk = this.device.facts.data.disks?.filter((d) => d.mountpoint === "/") || [];
+        const _rootDisk =
+            this.device.facts.data.disks?.filter(
+                (d) => d.mountpoint === "/" || d.mountpoint === "C:",
+            ) || [];
         let rootDisk: Disk | undefined = undefined;
         if (_rootDisk?.length > 0) {
             rootDisk = _rootDisk[0];
         }
-        return html`<section class="pf-c-page__main-section">
-            <div class="pf-l-grid pf-m-gutter">
-                <div class="pf-l-grid__item pf-m-4-col pf-c-card">
-                    <div class="pf-c-card__title">${msg("Device details")}</div>
-                    <div class="pf-c-card__body">
-                        ${renderDescriptionList(
+        return html`<div class="pf-l-grid pf-m-gutter">
+            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+                <div class="pf-c-card__title">${msg("Device details")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList(
+                        [
+                            [msg("Name"), this.device.name],
+                            [msg("Hostname"), this.device.facts.data.network?.hostname ?? "-"],
+                            [msg("Serial number"), this.device.facts.data.hardware?.serial ?? "-"],
                             [
-                                [msg("Name"), this.device.name],
-                                [
-                                    msg("Serial number"),
-                                    this.device.facts.data.hardware?.serial ?? "-",
-                                ],
-                                [
-                                    msg("Operating system"),
-                                    this.device.facts.data.os
-                                        ? [
-                                              this.device.facts.data.os?.name,
-                                              this.device.facts.data.os?.version,
-                                          ].join(" ")
-                                        : "-",
-                                ],
-                                [
-                                    msg("Disk encryption"),
-                                    html`<ak-status-label
-                                        ?good=${rootDisk?.encryptionEnabled}
-                                    ></ak-status-label>`,
-                                ],
-                                [
-                                    msg("Firewall enabled"),
-                                    html`<ak-status-label
-                                        ?good=${this.device.facts.data.network?.firewallEnabled}
-                                    ></ak-status-label>`,
-                                ],
-                                [
-                                    msg("Actions"),
-                                    html`<ak-forms-modal>
-                                        <span slot="submit">${msg("Update")}</span>
-                                        <span slot="header">${msg("Update Device")}</span>
-                                        <ak-endpoints-device-form
-                                            slot="form"
-                                            .instancePk=${this.device.deviceUuid}
-                                        >
-                                        </ak-endpoints-device-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-primary">
-                                            ${msg("Edit")}
-                                        </button>
-                                    </ak-forms-modal>`,
-                                ],
+                                msg("Operating system"),
+                                this.device.facts.data.os
+                                    ? [
+                                          this.device.facts.data.os?.name,
+                                          this.device.facts.data.os?.version,
+                                      ].join(" ")
+                                    : "-",
                             ],
-                            { horizontal: true },
-                        )}
-                    </div>
-                </div>
-                <div class="pf-l-grid__item pf-m-4-col pf-c-card">
-                    <div class="pf-c-card__title">${msg("Hardware")}</div>
-                    <div class="pf-c-card__body">
-                        ${renderDescriptionList(
                             [
-                                [
-                                    msg("Manufacturer"),
-                                    this.device.facts.data.hardware?.manufacturer ?? "-",
-                                ],
-                                [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
-                                [
-                                    msg("CPU"),
-                                    this.device.facts.data.hardware
-                                        ? msg(
-                                              str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
-                                          )
-                                        : "-",
-                                ],
-                                [
-                                    msg("Memory"),
-                                    this.device.facts.data.hardware?.memoryBytes
-                                        ? getSize(this.device.facts.data.hardware?.memoryBytes)
-                                        : "-",
-                                ],
-                                [
-                                    msg("Disk size"),
-                                    rootDisk?.capacityTotalBytes
-                                        ? getSize(rootDisk.capacityTotalBytes)
-                                        : "-",
-                                ],
-                                [
-                                    msg("Disk usage"),
-                                    rootDisk?.capacityTotalBytes && rootDisk.capacityUsedBytes
-                                        ? html`<progress
-                                                  value="${rootDisk.capacityUsedBytes}"
-                                                  max="${rootDisk.capacityTotalBytes}"
-                                              ></progress>
-                                              ${Math.round(
-                                                  (rootDisk.capacityUsedBytes * 100) /
-                                                      rootDisk.capacityTotalBytes,
-                                              )}%`
-                                        : "-",
-                                ],
+                                msg("Disk encryption"),
+                                html`<ak-status-label
+                                    ?good=${rootDisk?.encryptionEnabled}
+                                ></ak-status-label>`,
                             ],
-                            { horizontal: true },
-                        )}
-                    </div>
-                </div>
-                <div class="pf-l-grid__item pf-m-4-col pf-c-card">
-                    <div class="pf-c-card__title">${msg("Connections")}</div>
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-horizontal">
-                            ${this.device.connectionsObj.map((conn) => {
-                                return html`<div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${conn.connectorObj.name}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${conn.latestSnapshot?.created
-                                                ? Timestamp(conn.latestSnapshot.created)
-                                                : html`-`}
-                                        </div>
-                                    </dd>
-                                </div>`;
-                            })}
-                        </dl>
-                    </div>
-                </div>
-                <div class="pf-l-grid__item pf-m-6-col pf-c-card">
-                    <div class="pf-c-card__title">${msg("Users / Groups")}</div>
-                    <div class="pf-c-card__body">
-                        <ak-bound-device-users-list
-                            .target=${this.device.pbmUuid}
-                        ></ak-bound-device-users-list>
-                    </div>
+                            [
+                                msg("Firewall enabled"),
+                                html`<ak-status-label
+                                    ?good=${this.device.facts.data.network?.firewallEnabled}
+                                ></ak-status-label>`,
+                            ],
+                            [
+                                msg("Actions"),
+                                html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="header">${msg("Update Device")}</span>
+                                    <ak-endpoints-device-form
+                                        slot="form"
+                                        .instancePk=${this.device.deviceUuid}
+                                    >
+                                    </ak-endpoints-device-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>`,
+                            ],
+                        ],
+                        { horizontal: true },
+                    )}
                 </div>
             </div>
-        </section>`;
+            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+                <div class="pf-c-card__title">${msg("Hardware")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList(
+                        [
+                            [
+                                msg("Manufacturer"),
+                                this.device.facts.data.hardware?.manufacturer ?? "-",
+                            ],
+                            [msg("Model"), this.device.facts.data.hardware?.model ?? "-"],
+                            [
+                                msg("CPU"),
+                                this.device.facts.data.hardware
+                                    ? msg(
+                                          str`${this.device.facts.data.hardware?.cpuCount} x ${this.device.facts.data.hardware?.cpuName}`,
+                                      )
+                                    : "-",
+                            ],
+                            [
+                                msg("Memory"),
+                                this.device.facts.data.hardware?.memoryBytes
+                                    ? getSize(this.device.facts.data.hardware?.memoryBytes)
+                                    : "-",
+                            ],
+                            [
+                                msg("Disk size"),
+                                rootDisk?.capacityTotalBytes
+                                    ? getSize(rootDisk.capacityTotalBytes)
+                                    : "-",
+                            ],
+                            [
+                                msg("Disk usage"),
+                                rootDisk?.capacityTotalBytes && rootDisk.capacityUsedBytes
+                                    ? html`<progress
+                                              value="${rootDisk.capacityUsedBytes}"
+                                              max="${rootDisk.capacityTotalBytes}"
+                                          ></progress>
+                                          ${Math.round(
+                                              (rootDisk.capacityUsedBytes * 100) /
+                                                  rootDisk.capacityTotalBytes,
+                                          )}%`
+                                    : "-",
+                            ],
+                        ],
+                        { horizontal: true },
+                    )}
+                </div>
+            </div>
+            <div class="pf-l-grid__item pf-m-4-col pf-c-card">
+                <div class="pf-c-card__title">${msg("Connections")}</div>
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list pf-m-horizontal">
+                        ${this.device.connectionsObj.map((conn) => {
+                            return html`<div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${conn.connectorObj.name}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${conn.latestSnapshot?.created
+                                            ? Timestamp(conn.latestSnapshot.created)
+                                            : html`-`}
+                                    </div>
+                                </dd>
+                            </div>`;
+                        })}
+                    </dl>
+                </div>
+            </div>
+            <div class="pf-l-grid__item pf-m-6-col pf-c-card">
+                <div class="pf-c-card__title">${msg("Users / Groups")}</div>
+                <div class="pf-c-card__body">
+                    <ak-bound-device-users-list
+                        .target=${this.device.pbmUuid}
+                    ></ak-bound-device-users-list>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    renderProcesses() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-process-table
+            .device=${this.device}
+        ></ak-endpoints-device-process-table>`;
+    }
+
+    render() {
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderOverview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-processes"
+                    id="page-processes"
+                    aria-label="${msg("Processes")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderProcesses()}
+                </div>
+            </ak-tabs>
+        </main>`;
     }
 }
 

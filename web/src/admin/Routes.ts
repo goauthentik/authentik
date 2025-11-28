@@ -58,8 +58,8 @@ export const ROUTES: Route[] = [
         ></ak-endpoints-connector-view>`;
     }),
     new Route(new RegExp("^/endpoints/groups$"), async () => {
-        await import("#admin/endpoints/DeviceGroupsListPage");
-        return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
+        await import("#admin/endpoints/DeviceAccessGroupsListPage");
+        return html`<ak-endpoints-device-access-groups-list></ak-endpoints-device-access-groups-list>`;
     }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");

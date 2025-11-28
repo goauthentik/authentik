@@ -91,6 +91,18 @@ class ProcessSerializer(Serializer):
     user = CharField(required=False)
 
 
+class DeviceUserSerializer(Serializer):
+    id = CharField(required=True)
+    username = CharField(required=False)
+    name = CharField(required=False)
+    home = CharField(required=False)
+
+
+class DeviceGroupSerializer(Serializer):
+    id = CharField(required=True)
+    name = CharField(required=False)
+
+
 class DeviceFacts(Serializer):
     os = OperatingSystemSerializer(required=False, allow_null=True)
     disks = ListField(child=DiskSerializer(), required=False, allow_null=True)
@@ -98,4 +110,6 @@ class DeviceFacts(Serializer):
     hardware = HardwareSerializer(required=False, allow_null=True)
     software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
     processes = ListField(child=ProcessSerializer(), required=False, allow_null=True)
+    users = ListField(child=DeviceUserSerializer(), required=False, allow_null=True)
+    groups = ListField(child=DeviceGroupSerializer(), required=False, allow_null=True)
     vendor = JSONDictField(required=False)
