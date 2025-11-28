@@ -38504,8 +38504,6 @@ components:
         name:
           type: string
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid
@@ -38519,16 +38517,10 @@ components:
             $ref: '#/components/schemas/Permission'
           readOnly: true
       required:
-      - mode
       - name
       - permissions_obj
       - pk
       - role
-    InitialPermissionsModeEnum:
-      enum:
-      - user
-      - role
-      type: string
     InitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -38537,8 +38529,6 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid
@@ -38547,7 +38537,6 @@ components:
           items:
             type: integer
       required:
-      - mode
       - name
       - role
     InstallID:
@@ -45652,8 +45641,6 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid

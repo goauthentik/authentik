@@ -97,20 +97,10 @@ class Role(SerializerModel, ManagedModel):
                 remove_perm(perm, self, obj)
 
 
-class InitialPermissionsMode(models.TextChoices):
-    """Determines which entity the initial permissions are assigned to."""
-
-    USER = "user", _("User")
-    ROLE = "role", _("Role")
-
-
 class InitialPermissions(SerializerModel):
     """Assigns permissions for newly created objects."""
 
     name = models.TextField(max_length=150, unique=True)
-    # `mode` is deprecated, as it does nothing. InitialPermissions can now only take effect
-    # as if `mode == "role"` was selected.
-    mode = models.CharField(choices=InitialPermissionsMode.choices)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     permissions = models.ManyToManyField(Permission, blank=True)
 
@@ -121,7 +111,7 @@ class InitialPermissions(SerializerModel):
         return InitialPermissionsSerializer
 
     def __str__(self) -> str:
-        return f"Initial Permissions for Role #{self.role_id}, applying to #{self.mode}"
+        return f"Initial Permissions for Role #{self.role_id}."
 
     class Meta:
         verbose_name = _("Initial Permissions")
