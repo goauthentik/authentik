@@ -4805,50 +4805,6 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agent/psso/register/device/:
-    post:
-      operationId: endpoints_agent_psso_register_device_create
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/agent/psso/register/user/:
-    post:
-      operationId: endpoints_agent_psso_register_user_create
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserSelf'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
     get:
       operationId: endpoints_agents_connectors_list
@@ -5417,6 +5373,50 @@ paths:
           description: ''
         '404':
           description: Token not found or expired
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/device/:
+    post:
+      operationId: endpoints_agents_psso_register_device_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/user/:
+    post:
+      operationId: endpoints_agents_psso_register_user_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelf'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':

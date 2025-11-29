@@ -15,6 +15,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleNonce,
 )
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction

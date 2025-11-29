@@ -151,3 +151,11 @@ class DeviceAuthenticationToken(ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Device authentication token")
         verbose_name_plural = _("Device authentication tokens")
+
+
+class AppleNonce(ExpiringModel):
+    nonce = models.TextField()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Nonce")
+        verbose_name_plural = _("Apple Nonces")

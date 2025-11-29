@@ -69,7 +69,9 @@ class RegisterDeviceView(APIView):
                 "jwks_endpoint": request.build_absolute_uri(
                     reverse("authentik_enterprise_endpoints_connectors_agent:psso-jwks")
                 ),
-                "nonce_endpoint": "",
+                "nonce_endpoint": request.build_absolute_uri(
+                    reverse("authentik_enterprise_endpoints_connectors_agent:psso-nonce")
+                ),
             }
         )
 

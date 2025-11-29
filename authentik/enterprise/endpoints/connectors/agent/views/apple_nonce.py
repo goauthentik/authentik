@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from authentik.enterprise.endpoints.apple_psso.models import AppleNonce
+from authentik.endpoints.connectors.agent.models import AppleNonce
 
 
 @method_decorator(csrf_exempt, name="dispatch")

@@ -1,6 +1,7 @@
 from django.urls import path
 
 from authentik.enterprise.endpoints.connectors.agent.views.apple_jwks import AppleJWKSView
+from authentik.enterprise.endpoints.connectors.agent.views.apple_nonce import NonceView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_register import (
     RegisterDeviceView,
     RegisterUserView,
@@ -18,6 +19,7 @@ urlpatterns = [
     ),
     path("psso/token/", TokenView.as_view(), name="psso-token"),
     path("psso/jwks/", AppleJWKSView.as_view(), name="psso-jwks"),
+    path("psso/nonce/", NonceView.as_view(), name="psso-nonce"),
 ]
 
 api_urlpatterns = [
