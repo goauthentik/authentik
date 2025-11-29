@@ -103,16 +103,14 @@ export class DeviceViewPage extends AKElement {
                                     : "-",
                             ],
                             [
-                                msg("Disk encryption"),
-                                html`<ak-status-label
-                                    ?good=${rootDisk?.encryptionEnabled}
-                                ></ak-status-label>`,
-                            ],
-                            [
                                 msg("Firewall enabled"),
                                 html`<ak-status-label
                                     ?good=${this.device.facts.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
+                            ],
+                            [
+                                msg("Group"),
+                                this.device.accessGroupObj?.name ?? "-",
                             ],
                             [
                                 msg("Actions"),
@@ -157,6 +155,12 @@ export class DeviceViewPage extends AKElement {
                                 this.device.facts.data.hardware?.memoryBytes
                                     ? getSize(this.device.facts.data.hardware?.memoryBytes)
                                     : "-",
+                            ],
+                            [
+                                msg("Disk encryption"),
+                                html`<ak-status-label
+                                    ?good=${rootDisk?.encryptionEnabled}
+                                ></ak-status-label>`,
                             ],
                             [
                                 msg("Disk size"),
