@@ -150,7 +150,7 @@ class AgentConnectorViewSet(
         connector: AgentConnector = token.device.connector.agentconnector
         return Response(
             AgentConfigSerializer(
-                connector, context={"request": request, "device": token.device}
+                connector, context={"request": request, "device": token.device.device}
             ).data
         )
 
