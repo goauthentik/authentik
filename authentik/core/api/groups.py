@@ -17,10 +17,12 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.validators import UniqueValidator
+from rest_framework.views import View
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import TokenAuthentication
@@ -118,33 +120,6 @@ class GroupSerializer(ModelSerializer):
             raise ValidationError(_("Cannot set group as parent of itself."))
         return parent
 
-    def validate_is_superuser(self, superuser: bool):
-        """Ensure that the user creating this group has permissions to set the superuser flag"""
-        request: Request = self.context.get("request", None)
-        if not request:
-            return superuser
-        # If we're updating an instance, and the state hasn't changed, we don't need to check perms
-        if self.instance and superuser == self.instance.is_superuser:
-            return superuser
-        user: User = request.user
-        perm = (
-            "authentik_core.enable_group_superuser"
-            if superuser
-            else "authentik_core.disable_group_superuser"
-        )
-        if self.instance or superuser:
-            has_perm = user.has_perm(perm) or user.has_perm(perm, self.instance)
-            if not has_perm:
-                raise ValidationError(
-                    _(
-                        (
-                            "User does not have permission to set "
-                            "superuser status to {superuser_status}."
-                        ).format_map({"superuser_status": superuser})
-                    )
-                )
-        return superuser
-
     class Meta:
         model = Group
         fields = [
@@ -218,6 +193,36 @@ class GroupFilter(FilterSet):
         fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
 
 
+class SuperuserSetter(BasePermission):
+    """Check for enable_group_superuser or disable_group_superuser permissions"""
+
+    message = _("User does not have permission to set the given superuser status.")
+    enable_perm = "authentik_core.enable_group_superuser"
+    disable_perm = "authentik_core.disable_group_superuser"
+
+    def has_permission(self, request: Request, view: View):
+        if request.method != "POST":
+            return True
+
+        is_superuser = request.data.get("is_superuser", False)
+        if not is_superuser:
+            return True
+
+        return request.user.has_perm(self.enable_perm)
+
+    def has_object_permission(self, request: Request, view: View, object: Group):
+        if request.method in SAFE_METHODS:
+            return True
+
+        new_value = request.data.get("is_superuser")
+        old_value = object.is_superuser
+        if new_value is None or new_value == old_value:
+            return True
+
+        perm = self.enable_perm if new_value else self.disable_perm
+        return request.user.has_perm(perm) or request.user.has_perm(perm, object)
+
+
 class GroupViewSet(UsedByMixin, ModelViewSet):
     """Group Viewset"""
 
@@ -230,6 +235,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
+    permission_classes = [SuperuserSetter]
     ordering = ["name"]
     authentication_classes = [
         TokenAuthentication,
