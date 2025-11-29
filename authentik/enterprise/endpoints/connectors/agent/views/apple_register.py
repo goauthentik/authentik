@@ -1,4 +1,5 @@
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from django.urls import reverse
+from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 from rest_framework.request import Request
@@ -15,6 +16,7 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceAuthenticationToken,
     DeviceToken,
 )
+from authentik.enterprise.endpoints.connectors.agent.auth import PLATFORM_ISSUER
 from authentik.lib.generators import generate_key
 
 
@@ -27,6 +29,14 @@ class RegisterDeviceView(APIView):
         sign_key_id = CharField()
         enc_key_id = CharField()
 
+    class AgentPSSODeviceRegistrationResponse(PassiveSerializer):
+        client_id = CharField()
+        issuer = CharField()
+        token_endpoint = CharField()
+        jwks_endpoint = CharField()
+        audience = CharField()
+        nonce_endpoint = CharField()
+
     permission_classes = []
     pagination_class = None
     filter_backends = []
@@ -35,7 +45,7 @@ class RegisterDeviceView(APIView):
 
     @extend_schema(
         responses={
-            204: OpenApiResponse(description="Device registered"),
+            200: AgentPSSODeviceRegistrationResponse(),
         }
     )
     @validate(AgentPSSODeviceRegistration)
@@ -48,7 +58,20 @@ class RegisterDeviceView(APIView):
         conn.apple_enc_key_id = body.validated_data["enc_key_id"]
         conn.apple_key_exchange_key = generate_key()
         conn.save()
-        return Response(status=204)
+        return Response(
+            data={
+                "client_id": str(conn.connector.pk),
+                "issuer": PLATFORM_ISSUER,
+                "audience": str(conn.device.pk),
+                "token_endpoint": request.build_absolute_uri(
+                    reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
+                ),
+                "jwks_endpoint": request.build_absolute_uri(
+                    reverse("authentik_enterprise_endpoints_connectors_agent:psso-jwks")
+                ),
+                "nonce_endpoint": "",
+            }
+        )
 
 
 class RegisterUserView(APIView):

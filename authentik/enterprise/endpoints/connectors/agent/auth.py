@@ -16,6 +16,7 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.providers.oauth2.models import AccessToken, JWTAlgorithms, OAuth2Provider
 
 LOGGER = get_logger()
+PLATFORM_ISSUER = "goauthentik.io/platform"
 
 
 def agent_auth_issue_token(device: Device, user: User, **kwargs):
@@ -26,7 +27,7 @@ def agent_auth_issue_token(device: Device, user: User, **kwargs):
     exp = now() + timedelta(days=3)
     token = encode(
         {
-            "iss": "goauthentik.io/platform",
+            "iss": PLATFORM_ISSUER,
             "aud": str(device.pk),
             "iat": int(now().timestamp()),
             "exp": int(exp.timestamp()),

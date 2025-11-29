@@ -1,5 +1,6 @@
 from django.urls import path
 
+from authentik.enterprise.endpoints.connectors.agent.views.apple_jwks import AppleJWKSView
 from authentik.enterprise.endpoints.connectors.agent.views.apple_register import (
     RegisterDeviceView,
     RegisterUserView,
@@ -15,14 +16,15 @@ urlpatterns = [
         AgentInteractiveAuth.as_view(),
         name="authenticate",
     ),
-    path("psso/token/", TokenView.as_view(), name="token"),
+    path("psso/token/", TokenView.as_view(), name="psso-token"),
+    path("psso/jwks/", AppleJWKSView.as_view(), name="psso-jwks"),
 ]
 
 api_urlpatterns = [
     path(
-        "endpoints/agent/psso/register/device/",
+        "endpoints/agents/psso/register/device/",
         RegisterDeviceView.as_view(),
         name="register-device",
     ),
-    path("endpoints/agent/psso/register/user/", RegisterUserView.as_view(), name="register-user"),
+    path("endpoints/agents/psso/register/user/", RegisterUserView.as_view(), name="register-user"),
 ]

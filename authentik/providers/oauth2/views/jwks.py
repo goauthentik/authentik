@@ -1,6 +1,8 @@
 """authentik OAuth2 JWKS Views"""
 
 from base64 import b64encode, urlsafe_b64encode
+from collections.abc import Generator
+from typing import Literal
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -64,7 +66,7 @@ class JWKSView(View):
     """Show RSA Key data for Provider"""
 
     @staticmethod
-    def get_jwk_for_key(key: CertificateKeyPair, use: str) -> dict | None:
+    def get_jwk_for_key(key: CertificateKeyPair, use: Literal["sig", "enc"]) -> dict | None:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
         key_data = None
@@ -112,10 +114,9 @@ class JWKSView(View):
         )
         return key_data
 
-    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        """Show JWK Key data for Provider"""
+    def get_keys(self) -> Generator[dict | None]:
         provider_ids = Application.objects.filter(
-            slug=application_slug,
+            slug=self.kwargs["application_slug"],
         ).values_list(
             "provider_id",
             flat=True,
@@ -129,18 +130,21 @@ class JWKSView(View):
         if provider is None:
             raise Http404()
 
-        response_data = {}
-
         if signing_key := provider.signing_key:
             jwk = JWKSView.get_jwk_for_key(signing_key, "sig")
             if jwk:
-                response_data.setdefault("keys", [])
-                response_data["keys"].append(jwk)
+                yield jwk
         if encryption_key := provider.encryption_key:
             jwk = JWKSView.get_jwk_for_key(encryption_key, "enc")
             if jwk:
-                response_data.setdefault("keys", [])
-                response_data["keys"].append(jwk)
+                yield
+
+    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        """Show JWK Key data for Provider"""
+        response_data = {}
+        for jwk in self.get_keys():
+            response_data.setdefault("keys", [])
+            response_data["keys"].append(jwk)
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"
