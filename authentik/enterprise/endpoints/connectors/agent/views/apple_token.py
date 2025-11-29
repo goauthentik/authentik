@@ -45,7 +45,7 @@ class TokenView(View):
         expected_kid = decode_unvalidated["header"]["kid"]
 
         self.device_connection = (
-            AgentDeviceConnection.objects.filter(sign_key_id=expected_kid)
+            AgentDeviceConnection.objects.filter(apple_sign_key_id=expected_kid)
             .select_related("device")
             .first()
         )
