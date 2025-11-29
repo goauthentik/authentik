@@ -105,7 +105,7 @@ class RegisterUserView(APIView):
         if not user_token:
             raise ValidationError("Invalid user authentication")
         AgentDeviceUserBinding.objects.update_or_create(
-            device=conn.device,
+            target=conn.device,
             user=user_token.user,
             connector=conn.connector,
             create_defaults={
@@ -118,5 +118,5 @@ class RegisterUserView(APIView):
             },
         )
         return Response(
-            UserSelfSerializer(instance=request.user, context={"request": request}).data
+            UserSelfSerializer(instance=user_token.user, context={"request": request}).data
         )
