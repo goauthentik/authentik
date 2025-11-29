@@ -262,7 +262,15 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         base_qs = Group.objects.all().prefetch_related("roles")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
-            base_qs = base_qs.prefetch_related("users")
+            # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation time
+            base_qs = base_qs.prefetch_related(
+                Prefetch(
+                    "users",
+                    queryset=User.objects.all().only(
+                        "id", "username", "name", "is_active", "last_login", "email", "attributes"
+                    )
+                )
+            )
         else:
             base_qs = base_qs.prefetch_related(
                 Prefetch("users", queryset=User.objects.all().only("id"))
