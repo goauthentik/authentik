@@ -131,20 +131,17 @@ class JWKSView(View):
             raise Http404()
 
         if signing_key := provider.signing_key:
-            jwk = JWKSView.get_jwk_for_key(signing_key, "sig")
-            if jwk:
-                yield jwk
+            yield JWKSView.get_jwk_for_key(signing_key, "sig")
         if encryption_key := provider.encryption_key:
-            jwk = JWKSView.get_jwk_for_key(encryption_key, "enc")
-            if jwk:
-                yield
+            yield JWKSView.get_jwk_for_key(encryption_key, "enc")
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
         response_data = {}
         for jwk in self.get_keys():
-            response_data.setdefault("keys", [])
-            response_data["keys"].append(jwk)
+            if jwk:
+                response_data.setdefault("keys", [])
+                response_data["keys"].append(jwk)
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"
