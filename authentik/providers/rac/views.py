@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
@@ -124,7 +124,9 @@ class RACFinalStage(RedirectStage):
             provider=self.provider,
             endpoint=self.endpoint,
             settings=settings or {},
-            session=self.request.session["authenticatedsession"],
+            session=AuthenticatedSession.objects.filter(
+                session_key=self.request.session.session_key
+            ).first(),
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )
