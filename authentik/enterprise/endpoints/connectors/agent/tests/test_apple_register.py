@@ -1,4 +1,5 @@
 from json import loads
+from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -13,6 +14,9 @@ from authentik.endpoints.connectors.agent.models import (
     EnrollmentToken,
 )
 from authentik.endpoints.models import Device
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import License
+from authentik.enterprise.tests.test_license import expiry_valid
 from authentik.lib.generators import generate_id
 
 
@@ -32,8 +36,21 @@ class TestAppleRegister(APITestCase):
         self.user = create_test_user()
         self.device_token = DeviceToken.objects.create(device=self.connection)
 
+    @patch(
+        "authentik.enterprise.license.LicenseKey.validate",
+        MagicMock(
+            return_value=LicenseKey(
+                aud="",
+                exp=expiry_valid,
+                name=generate_id(),
+                internal_users=100,
+                external_users=100,
+            )
+        ),
+    )
     @reconcile_app("authentik_crypto")
     def test_register_device(self):
+        License.objects.create(key=generate_id())
         response = self.client.post(
             reverse("authentik_api:psso-register-device"),
             data={
@@ -57,8 +74,21 @@ class TestAppleRegister(APITestCase):
             },
         )
 
+    @patch(
+        "authentik.enterprise.license.LicenseKey.validate",
+        MagicMock(
+            return_value=LicenseKey(
+                aud="",
+                exp=expiry_valid,
+                name=generate_id(),
+                internal_users=100,
+                external_users=100,
+            )
+        ),
+    )
     @reconcile_app("authentik_crypto")
     def test_register_user(self):
+        License.objects.create(key=generate_id())
         device_auth = DeviceAuthenticationToken.objects.create(
             device=self.device,
             device_token=self.device_token,

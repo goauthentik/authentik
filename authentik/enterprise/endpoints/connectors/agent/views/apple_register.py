@@ -17,12 +17,13 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceAuthenticationToken,
     DeviceToken,
 )
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.lib.generators import generate_key
 
 
 class RegisterDeviceView(APIView):
 
-    class AgentPSSODeviceRegistration(PassiveSerializer):
+    class AgentPSSODeviceRegistration(EnterpriseRequiredMixin, PassiveSerializer):
 
         device_signing_key = CharField()
         device_encryption_key = CharField()
@@ -80,7 +81,7 @@ class RegisterDeviceView(APIView):
 
 class RegisterUserView(APIView):
 
-    class AgentPSSOUserRegistration(PassiveSerializer):
+    class AgentPSSOUserRegistration(EnterpriseRequiredMixin, PassiveSerializer):
 
         user_auth = CharField()
         user_secure_enclave_key = CharField()
