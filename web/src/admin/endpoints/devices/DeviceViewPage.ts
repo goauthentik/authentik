@@ -108,10 +108,7 @@ export class DeviceViewPage extends AKElement {
                                     ?good=${this.device.facts.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
                             ],
-                            [
-                                msg("Group"),
-                                this.device.accessGroupObj?.name ?? "-",
-                            ],
+                            [msg("Group"), this.device.accessGroupObj?.name ?? "-"],
                             [
                                 msg("Actions"),
                                 html`<ak-forms-modal>
