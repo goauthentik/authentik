@@ -21,7 +21,6 @@ from authentik.endpoints.connectors.agent.models import (
     AppleNonce,
     DeviceAuthenticationToken,
 )
-from authentik.enterprise.endpoints.connectors.agent.auth import PLATFORM_ISSUER
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
@@ -129,10 +128,13 @@ class TokenView(View):
         return session
 
     def create_id_token(self, user: User, **kwargs):
+        issuer = self.request.build_absolute_uri(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
+        )
         id_token = IDToken(
-            iss=PLATFORM_ISSUER,
+            iss=issuer,
             sub=user.username,
-            aud=str(self.device_connection.device.pk),
+            aud=str(self.connector.pk),
             exp=int(default_token_duration().timestamp()),
             iat=int(now().timestamp()),
             **kwargs,

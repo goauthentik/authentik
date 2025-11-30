@@ -16,7 +16,6 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceAuthenticationToken,
     DeviceToken,
 )
-from authentik.enterprise.endpoints.connectors.agent.auth import PLATFORM_ISSUER
 from authentik.lib.generators import generate_key
 
 
@@ -61,7 +60,9 @@ class RegisterDeviceView(APIView):
         return Response(
             data={
                 "client_id": str(conn.connector.pk),
-                "issuer": PLATFORM_ISSUER,
+                "issuer": self.request.build_absolute_uri(
+                    reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
+                ),
                 "audience": str(conn.device.pk),
                 "token_endpoint": request.build_absolute_uri(
                     reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
