@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.http import Http404, HttpRequest
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, encode
@@ -11,6 +9,7 @@ from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import AgentConnector
 from authentik.endpoints.models import Device
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBindingModel
 from authentik.providers.oauth2.models import AccessToken, JWTAlgorithms, OAuth2Provider
@@ -19,12 +18,11 @@ LOGGER = get_logger()
 PLATFORM_ISSUER = "goauthentik.io/platform"
 
 
-def agent_auth_issue_token(device: Device, user: User, **kwargs):
+def agent_auth_issue_token(device: Device, connector: AgentConnector, user: User, **kwargs):
     kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
     if not kp:
         return None, None
-    # TODO: Configurable expiry
-    exp = now() + timedelta(days=3)
+    exp = now() + timedelta_from_string(connector.auth_session_duration)
     token = encode(
         {
             "iss": PLATFORM_ISSUER,
@@ -43,8 +41,11 @@ def agent_auth_issue_token(device: Device, user: User, **kwargs):
     return token, exp
 
 
-def agent_auth_fed_validate(raw_token: str, device: Device):
+def agent_auth_fed_validate(
+    raw_token: str, device: Device
+) -> tuple[AccessToken, AgentConnector | None]:
     connectors_for_device = AgentConnector.objects.filter(device__in=[device])
+    connector = connectors_for_device.first()
     providers = OAuth2Provider.objects.filter(agentconnector__in=connectors_for_device)
     federated_token = AccessToken.objects.filter(token=raw_token, provider__in=providers).first()
     if not federated_token:
@@ -60,7 +61,7 @@ def agent_auth_fed_validate(raw_token: str, device: Device):
                 "verify_aud": False,
             },
         )
-        return federated_token
+        return federated_token, connector
     except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
         LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
         raise ValidationError() from None

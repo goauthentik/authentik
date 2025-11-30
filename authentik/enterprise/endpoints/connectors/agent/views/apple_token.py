@@ -10,7 +10,7 @@ from jwt import PyJWTError, decode, encode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession, Session, User, default_token_duration
+from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
@@ -24,6 +24,7 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import JWTAlgorithms
@@ -42,7 +43,7 @@ class TokenView(View):
         assertion = request.POST.get("assertion", request.POST.get("request"))
         if not assertion:
             return HttpResponse(status=400)
-
+        self.now = now()
         try:
             self.jwt_request = self.validate_request_token(assertion)
         except PyJWTError as exc:
@@ -129,6 +130,7 @@ class TokenView(View):
         store[SESSION_LOGIN_EVENT] = event
         store.save()
         session = Session.objects.filter(session_key=store.session_key).first()
+        session.expires = self.now + timedelta_from_string(self.connector.auth_session_duration)
         AuthenticatedSession.objects.create(session=session, user=user)
         session = SessionMiddleware.encode_session(store.session_key, user)
         return session
@@ -141,7 +143,9 @@ class TokenView(View):
             iss=issuer,
             sub=user.username,
             aud=str(self.connector.pk),
-            exp=int(default_token_duration().timestamp()),
+            exp=int(
+                (self.now + timedelta_from_string(self.connector.auth_session_duration)).timestamp()
+            ),
             iat=int(now().timestamp()),
             **kwargs,
         )

@@ -26,12 +26,15 @@ if TYPE_CHECKING:
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
-    auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
         default="minutes=30",
         validators=[timedelta_string_validator],
     )
 
+    auth_session_duration = models.TextField(
+        default="hours=8", validators=[timedelta_string_validator]
+    )
+    auth_terminate_session_on_expiry = models.BooleanField(default=False)
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )

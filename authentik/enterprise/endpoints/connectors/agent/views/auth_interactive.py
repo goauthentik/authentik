@@ -90,7 +90,12 @@ class AgentAuthFulfillmentStage(StageView):
             PLAN_CONTEXT_DEVICE_AUTH_TOKEN
         )
 
-        token, exp = agent_auth_issue_token(device, request.user, jti=str(auth_token.identifier))
+        token, exp = agent_auth_issue_token(
+            device,
+            auth_token.connector.agentconnector,
+            request.user,
+            jti=str(auth_token.identifier),
+        )
         if not token or not exp:
             return self.executor.stage_invalid("Failed to generate token")
         auth_token.user = request.user
