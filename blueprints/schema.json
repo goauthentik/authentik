@@ -5981,6 +5981,11 @@
                     "minLength": 1,
                     "title": "Snapshot expiry"
                 },
+                "auth_session_duration": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Auth session duration"
+                },
                 "auth_terminate_session_on_expiry": {
                     "type": "boolean",
                     "title": "Auth terminate session on expiry"

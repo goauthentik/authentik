@@ -32629,6 +32629,8 @@ components:
           readOnly: true
         snapshot_expiry:
           type: string
+        auth_session_duration:
+          type: string
         auth_terminate_session_on_expiry:
           type: boolean
         refresh_interval:
@@ -32671,6 +32673,9 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
+          type: string
+          minLength: 1
+        auth_session_duration:
           type: string
           minLength: 1
         auth_terminate_session_on_expiry:
@@ -45123,6 +45128,9 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
+          type: string
+          minLength: 1
+        auth_session_duration:
           type: string
           minLength: 1
         auth_terminate_session_on_expiry:
