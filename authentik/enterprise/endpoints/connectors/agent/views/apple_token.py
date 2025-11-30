@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from jwt import decode, encode, get_unverified_header
+from jwt import PyJWTError, decode, encode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
@@ -43,8 +43,11 @@ class TokenView(View):
         if not assertion:
             return HttpResponse(status=400)
 
-        self.jwt_request = self.validate_request_token(assertion)
-
+        try:
+            self.jwt_request = self.validate_request_token(assertion)
+        except PyJWTError as exc:
+            LOGGER.warning("failed to parse JWT", exc=exc)
+            raise ValidationError("Invalid request") from None
         version = request.POST.get("platform_sso_version")
         grant_type = request.POST.get("grant_type")
         handler_func = (
@@ -77,6 +80,9 @@ class TokenView(View):
         expected_aud = self.request.build_absolute_uri(
             reverse("authentik_enterprise_endpoints_connectors_agent:psso-token")
         )
+        if not self.device_connection.apple_signing_key:
+            LOGGER.warning("Failed to issue token for device, no apple_signing_key")
+            raise ValidationError("Invalid request")
         # Properly decode the JWT with the key from the device
         decoded = decode(
             assertion,
@@ -150,7 +156,11 @@ class TokenView(View):
         )
 
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
-        user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
+        try:
+            user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
+        except PyJWTError as exc:
+            LOGGER.warning("failed to validate inner assertion", exc=exc)
+            raise ValidationError("Invalid request") from None
         id_token = self.create_id_token(user.user)
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,

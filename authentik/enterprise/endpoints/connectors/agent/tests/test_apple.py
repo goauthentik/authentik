@@ -4,6 +4,7 @@ from urllib.parse import quote
 from django.test import TestCase
 from django.urls import reverse
 
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.tests.utils import create_test_user
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
@@ -33,6 +34,11 @@ class TestAppleViews(TestCase):
 
     def test_apple_site_association(self):
         res = self.client.get(reverse("authentik_enterprise_endpoints_connectors_agent_root:asa"))
+        self.assertEqual(res.status_code, 200)
+
+    @reconcile_app("authentik_crypto")
+    def test_apple_jwks(self):
+        res = self.client.get(reverse("authentik_enterprise_endpoints_connectors_agent:psso-jwks"))
         self.assertEqual(res.status_code, 200)
 
     def test_apple_nonce(self):

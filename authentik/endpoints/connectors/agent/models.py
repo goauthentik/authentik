@@ -77,11 +77,11 @@ class AgentConnector(Connector):
 
 class AgentDeviceConnection(DeviceConnection):
 
-    apple_signing_key = models.TextField()
-    apple_encryption_key = models.TextField()
     apple_key_exchange_key = models.TextField()
-    apple_sign_key_id = models.TextField()
+    apple_encryption_key = models.TextField()
     apple_enc_key_id = models.TextField()
+    apple_signing_key = models.TextField()
+    apple_sign_key_id = models.TextField()
 
 
 class AgentDeviceUserBinding(DeviceUserBinding):
