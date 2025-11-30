@@ -1,10 +1,14 @@
 """User client"""
 
+from typing import Any
+
 from django.db import transaction
 from django.utils.http import urlencode
+from orjson import dumps
 from pydantic import ValidationError
 
 from authentik.core.models import User
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
@@ -92,17 +96,30 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     provider=self.provider, user=user, scim_id=scim_id, attributes=response
                 )
 
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+        """Check if a user is different than what we last wrote to the remote system.
+        Returns true if there is a difference in data."""
+        local_known = connection.attributes
+        local_updated = {}
+        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        MERGE_LIST_UNIQUE.merge(local_updated, local_created)
+        return dumps(local_updated) != dumps(local_known)
+
     def update(self, user: User, connection: SCIMProviderUser):
         """Update existing user"""
         scim_user = self.to_schema(user, connection)
         scim_user.id = connection.scim_id
+        payload = scim_user.model_dump(
+            mode="json",
+            exclude_unset=True,
+        )
+        if not self.diff(payload, connection):
+            self.logger.debug("Skipping user write as data has not changed")
+            return
         response = self._request(
             "PUT",
             f"/Users/{connection.scim_id}",
-            json=scim_user.model_dump(
-                mode="json",
-                exclude_unset=True,
-            ),
+            json=payload,
         )
         connection.attributes = response
         connection.save()
