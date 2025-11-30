@@ -113,6 +113,8 @@ class JWEResponse(HttpResponse):
         apv: str,
     ):
         super().__init__(
-            content=encrypt_token_with_a256_gcm(data, device.encryption_key, base64url_decode(apv)),
+            content=encrypt_token_with_a256_gcm(
+                data, device.apple_encryption_key, base64url_decode(apv)
+            ),
             content_type="application/platformsso-login-response+jwt",
         )

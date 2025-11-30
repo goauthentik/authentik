@@ -135,7 +135,7 @@ class JWKSView(View):
         if encryption_key := provider.encryption_key:
             yield JWKSView.get_jwk_for_key(encryption_key, "enc")
 
-    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Show JWK Key data for Provider"""
         response_data = {}
         for jwk in self.get_keys():

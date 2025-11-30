@@ -155,6 +155,7 @@ class DeviceAuthenticationToken(ExpiringModel):
 
 class AppleNonce(ExpiringModel):
     nonce = models.TextField()
+    device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")

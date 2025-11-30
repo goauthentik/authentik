@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.db.models.functions import SHA256
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -21,7 +20,6 @@ from authentik.endpoints.connectors.agent.models import (
     AgentDeviceUserBinding,
     AppleNonce,
     DeviceAuthenticationToken,
-    DeviceToken,
 )
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
@@ -73,7 +71,7 @@ class TokenView(View):
             .select_related("device")
             .first()
         )
-        self.connector = self.device_connection.connector
+        self.connector = AgentConnector.objects.get(pk=self.device_connection.connector.pk)
         LOGGER.debug("got device", device=self.device_connection.device)
 
         expected_aud = self.request.build_absolute_uri(
@@ -93,6 +91,7 @@ class TokenView(View):
         nonce = AppleNonce.filter_not_expired(nonce=decoded["request_nonce"]).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
+        self.nonce = nonce
         nonce.delete()
         return decoded
 
@@ -102,7 +101,7 @@ class TokenView(View):
         expected_kid = decode_unvalidated["kid"]
 
         device_user = AgentDeviceUserBinding.objects.filter(
-            device=self.device_connection.device, apple_enclave_key_id=expected_kid
+            target=self.device_connection.device, apple_enclave_key_id=expected_kid
         ).first()
         if not device_user:
             LOGGER.warning("Could not find device user binding for user")
@@ -110,7 +109,7 @@ class TokenView(View):
         decoded: dict[str, Any] = decode(
             assertion,
             device_user.apple_secure_enclave_key,
-            audience=str(self.device_connection.pk),
+            audience=str(self.device_connection.device.pk),
             algorithms=["ES256"],
         )
         if decoded.get("nonce") != self.jwt_request.get("nonce"):
@@ -152,22 +151,11 @@ class TokenView(View):
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
         user, inner = self.validate_embedded_assertion(self.jwt_request["assertion"])
         id_token = self.create_id_token(user.user)
-        device_auth_token = (
-            DeviceToken.filter_not_expired(
-                device=self.device_connection.device,
-            )
-            .annotate(key_hash=SHA256("key"))
-            .filter(key_hash=self.jwt_request["x-ak-dti"])
-            .first()
-        )
-        if not device_auth_token:
-            LOGGER.warning("failed to find device token")
-            raise ValidationError("Invalid request")
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
             connector=self.connector,
             user=user.user,
-            device_token=device_auth_token,
+            device_token=self.nonce.device_token,
         )
         return JWEResponse(
             {
