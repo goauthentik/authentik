@@ -26,7 +26,11 @@ api_urlpatterns = [
     path(
         "endpoints/agents/psso/register/device/",
         RegisterDeviceView.as_view(),
-        name="register-device",
+        name="psso-register-device",
     ),
-    path("endpoints/agents/psso/register/user/", RegisterUserView.as_view(), name="register-user"),
+    path(
+        "endpoints/agents/psso/register/user/",
+        RegisterUserView.as_view(),
+        name="psso-register-user",
+    ),
 ]

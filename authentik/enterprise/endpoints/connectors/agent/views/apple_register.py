@@ -2,6 +2,7 @@ from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -36,7 +37,7 @@ class RegisterDeviceView(APIView):
         audience = CharField()
         nonce_endpoint = CharField()
 
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     pagination_class = None
     filter_backends = []
     serializer_class = AgentPSSODeviceRegistration
@@ -85,7 +86,7 @@ class RegisterUserView(APIView):
         user_secure_enclave_key = CharField()
         enclave_key_id = CharField()
 
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     pagination_class = None
     filter_backends = []
     serializer_class = AgentPSSOUserRegistration
@@ -101,7 +102,9 @@ class RegisterUserView(APIView):
         device_token: DeviceToken = request.auth
         conn: AgentDeviceConnection = device_token.device
         user_token = DeviceAuthenticationToken.filter_not_expired(
-            device=conn.device, token=body.validated_data["user_auth"]
+            device=conn.device,
+            token=body.validated_data["user_auth"],
+            device_token=device_token,
         ).first()
         if not user_token:
             raise ValidationError("Invalid user authentication")
