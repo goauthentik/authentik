@@ -49670,6 +49670,7 @@ components:
       - okta
       - patreon
       - reddit
+      - slack
       - twitch
       - twitter
       type: string
