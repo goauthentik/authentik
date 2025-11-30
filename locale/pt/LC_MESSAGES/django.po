@@ -35,7 +35,7 @@ msgstr "Atualizar informações da versão mais recente."
 #: authentik/admin/tasks.py
 #, python-brace-format
 msgid "New version {version} available!"
-msgstr "Nova versão {versão} disponível!"
+msgstr "Nova versão {version} disponível!"
 
 #: authentik/api/v3/schema/query.py
 msgid "Which field to use when ordering the results."
