@@ -32707,7 +32707,7 @@ components:
       - name
     AgentPSSODeviceRegistrationRequest:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: Register Apple device via Platform SSO
       properties:
         device_signing_key:
           type: string
@@ -32728,7 +32728,7 @@ components:
       - sign_key_id
     AgentPSSODeviceRegistrationResponse:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: authentik settings for Platform SSO tokens
       properties:
         client_id:
           type: string
@@ -32751,7 +32751,7 @@ components:
       - token_endpoint
     AgentPSSOUserRegistrationRequest:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: Register Apple device user via Platform SSO
       properties:
         user_auth:
           type: string

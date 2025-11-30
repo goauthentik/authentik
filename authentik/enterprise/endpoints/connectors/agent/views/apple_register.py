@@ -24,6 +24,7 @@ from authentik.lib.generators import generate_key
 class RegisterDeviceView(APIView):
 
     class AgentPSSODeviceRegistration(EnterpriseRequiredMixin, PassiveSerializer):
+        """Register Apple device via Platform SSO"""
 
         device_signing_key = CharField()
         device_encryption_key = CharField()
@@ -31,6 +32,8 @@ class RegisterDeviceView(APIView):
         enc_key_id = CharField()
 
     class AgentPSSODeviceRegistrationResponse(PassiveSerializer):
+        """authentik settings for Platform SSO tokens"""
+
         client_id = CharField()
         issuer = CharField()
         token_endpoint = CharField()
@@ -82,6 +85,7 @@ class RegisterDeviceView(APIView):
 class RegisterUserView(APIView):
 
     class AgentPSSOUserRegistration(EnterpriseRequiredMixin, PassiveSerializer):
+        """Register Apple device user via Platform SSO"""
 
         user_auth = CharField()
         user_secure_enclave_key = CharField()
