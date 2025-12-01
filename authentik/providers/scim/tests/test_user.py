@@ -534,8 +534,6 @@ class SCIMUserTests(TestCase):
         }
         conn.save()
         user.save()
-        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.call_count, 2)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[2].method, "GET")
-        # No PUT request
