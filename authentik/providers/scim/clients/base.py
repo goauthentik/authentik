@@ -112,7 +112,6 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             self.logger.warning(
                 "failed to get ServiceProviderConfig, using default",
                 exc=exc,
-                provider=self.provider.name,
             )
             config = default_config
 
