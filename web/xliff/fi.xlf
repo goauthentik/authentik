@@ -498,6 +498,7 @@
 </trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
+  <target>Hae</target>
 </trans-unit>
 <trans-unit id="sbe3756d568bb048e">
   <source>Query suggestions</source>
@@ -553,6 +554,7 @@
 </trans-unit>
 <trans-unit id="s15a7e4227737b7c4">
   <source>Column actions</source>
+  <target>Sarakkeen toiminnot</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
@@ -595,6 +597,7 @@
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Järjestelmän tila</target>
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
@@ -1090,6 +1093,7 @@
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
   <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <target>Avaa &amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot;-käyttöoikeuksien ikkuna</target>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
   <source>Permissions</source>
@@ -1174,6 +1178,7 @@
 </trans-unit>
 <trans-unit id="sac44b0f4dc14c227">
   <source>Current execution logs</source>
+  <target>Tämänhetkiset suorituslokit</target>
 </trans-unit>
 <trans-unit id="s5e13dff03b580216">
   <source>Previous executions logs</source>
@@ -1207,6 +1212,7 @@
 </trans-unit>
 <trans-unit id="sc797fd9076cc136d">
   <source>Tasks</source>
+  <target>Tehtävät</target>
 </trans-unit>
 <trans-unit id="sf2d616b20d62240d">
   <source>Schedules</source>
@@ -1918,6 +1924,7 @@
 </trans-unit>
 <trans-unit id="sdff424992223a264">
   <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
+  <target>Päivitystunnusta uusittaessa, jos olemassa olevan päivitystunnuksen vanheneminen on tämän raja-arvon sisällä, tunnus uusitaan. Aseta arvoon seconds=0 niin tunnus uusitaan aina.</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
   <source>Scopes</source>
@@ -2837,9 +2844,11 @@
 </trans-unit>
 <trans-unit id="s0c9d1c885a69abe8">
   <source>Provider Search</source>
+  <target>Palveluntarjoajan haku</target>
 </trans-unit>
 <trans-unit id="s9db1679f3b234d4e">
   <source>Search for providers…</source>
+  <target>Etsi palveluntarjoajia...</target>
 </trans-unit>
 <trans-unit id="s10929ca568ae10bc">
   <source>Provider(s)</source>
@@ -3262,6 +3271,7 @@
 </trans-unit>
 <trans-unit id="s2d9356347ff7c77f">
   <source>Group Name</source>
+  <target>Ryhmän nimi</target>
 </trans-unit>
 <trans-unit id="sf45dac7c571f18bd">
   <source>Superuser Privileges</source>
@@ -3405,6 +3415,7 @@
 </trans-unit>
 <trans-unit id="s207e6f8a8b3515fd">
   <source>Check historical distance of logins</source>
+  <target>Tarkista aiempien kirjautumisten etäisyys</target>
 </trans-unit>
 <trans-unit id="s8158f4b3e5c869be">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
@@ -3876,6 +3887,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Ulkoiset sovellukset, jotka käyttävät palvelua <x id="0" equiv-text="${this.brandingTitle}"/> tunnistautumispalveluntarjoajana protokollien, kuten OAuth2 ja SAML kanssa. Kaikki sovellukset näytetään tässä, myös ne, joihin sinulla ei ole pääsyä.</target>
 </trans-unit>
 <trans-unit id="sb564f81eb057342e">
   <source>Application Icon</source>
@@ -4021,6 +4033,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s64330d6dc06337c9">
   <source>Loading application...</source>
+  <target>Ladataan sovellusta...</target>
 </trans-unit>
 <trans-unit id="sea2f00b34b385a43">
   <source>Successfully updated device.</source>
@@ -4784,6 +4797,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s435805a99af456d3">
   <source>When enabled, authentik will look for a Signature inside of the Response element.</source>
+  <target>Kun tämä on käytössä, authentik etsii allekirjoitusta vastauselementin sisältä.</target>
 </trans-unit>
 <trans-unit id="s31d7f3ba04d306a5">
   <source>SSO URL</source>
@@ -5228,6 +5242,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s8e56764914a939d2">
   <source>Default flow background</source>
+  <target>Prosessin oletustaustakuva</target>
 </trans-unit>
 <trans-unit id="sea64900dbcf879c8">
   <source>Default background used during flow execution. Can be overridden per flow.</source>
@@ -5324,6 +5339,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sdbf6b484fa1436b0">
   <source>Selected Certificates</source>
+  <target>Valitut sertifikaatit</target>
 </trans-unit>
 <trans-unit id="s17260b71484b307f">
   <source>Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.</source>
@@ -5509,6 +5525,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s1fd02f07e4fa3312">
   <source>Impersonating user...</source>
+  <target>Esiinnytään käyttäjänä...</target>
 </trans-unit>
 <trans-unit id="s12928f97c99f88db">
   <source>This may take a few seconds.</source>
@@ -5559,6 +5576,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="se040a9c3444c727c">
   <source>Group Users</source>
+  <target>Ryhmän käyttäjät</target>
 </trans-unit>
 <trans-unit id="s7d499be3b781a3ca">
   <source>User(s)</source>
@@ -5709,9 +5727,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
   <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Sulje &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
   <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <target>Avaa &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
   <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
@@ -8482,6 +8502,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
   <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <target>Muokkaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;-suunnitelmaa</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
   <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
@@ -8732,6 +8753,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s1381314790b50b1f">
   <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+  <target>Uudempi versio (<x id="0" equiv-text="${this.version.versionCurrent}"/>) käyttöliittymästä on saatavilla.</target>
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
@@ -8843,6 +8865,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s76ea993fdc8503d8">
   <source>Click the button below to start.</source>
+  <target>Napauta alla olevaa painiketta aloittaaksesi.</target>
 </trans-unit>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
@@ -9175,6 +9198,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf0ceaf3116e31fd4">
   <source>An unknown device class was provided.</source>
+  <target>Tuntematon laiteluokka annettiin.</target>
 </trans-unit>
 <trans-unit id="s610fced3957d0471">
   <source>Select an authentication method</source>
@@ -9350,9 +9374,11 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
   <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <target><x id="0" equiv-text="${count}"/> sovellusta löytyi kohteelle &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
   <source><x id="0" equiv-text="${count}"/> application available</source>
+  <target><x id="0" equiv-text="${count}"/> sovellus saatavilla</target>
 </trans-unit>
 <trans-unit id="sddbc2a3be190464b">
   <source><x id="0" equiv-text="${count}"/> applications available</source>
@@ -9406,6 +9432,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
+  <target>Muokkaa laitetta</target>
 </trans-unit>
 <trans-unit id="s3a135682bd30bdbb">
   <source>Create App password</source>
