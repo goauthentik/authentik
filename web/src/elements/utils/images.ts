@@ -1,6 +1,7 @@
 import { resolveUITheme, rootInterface } from "#common/theme";
 
 import type { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { html, TemplateResult } from "lit";
 
@@ -30,7 +31,7 @@ export function renderImage(
         return html`<i
             part="icon font-awesome"
             role="img"
-            aria-label=${alt}
+            aria-label=${ifPresent(alt)}
             class="${className} fas ${imagePath.slice(FontAwesomeProtocol.length)}"
         ></i>`;
     }
