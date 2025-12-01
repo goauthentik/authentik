@@ -17,6 +17,14 @@ import { createRef, ref } from "lit/directives/ref.js";
 // Same regex is used in the backend as well
 const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
 
+function assertValidFileName(fileName: string): void {
+    if (!VALID_FILE_NAME_PATTERN.test(fileName)) {
+        throw new Error(
+            msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
+        );
+    }
+}
+
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
@@ -46,11 +54,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        if (!VALID_FILE_NAME_PATTERN.test(this.selectedFile.name)) {
-            throw new Error(
-                msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
-            );
-        }
+        assertValidFileName(this.selectedFile.name);
 
         const api = new AdminApi(DEFAULT_CONFIG);
         const customName = typeof data.fileName === "string" ? data.fileName.trim() : "";
@@ -58,13 +62,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         // If custom name provided, validate and append original extension
         let finalName = this.selectedFile.name;
         if (customName) {
-            if (!VALID_FILE_NAME_PATTERN.test(customName)) {
-                throw new Error(
-                    msg(
-                        "Filename can only contain letters, numbers, dots, hyphens, and underscores",
-                    ),
-                );
-            }
+            assertValidFileName(customName);
             const ext = this.selectedFile.name.substring(this.selectedFile.name.lastIndexOf("."));
             finalName = customName + ext;
         }
