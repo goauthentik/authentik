@@ -24,8 +24,8 @@ export interface FileItem {
 
 @customElement("ak-files-list")
 export class FileListPage extends TablePage<FileItem> {
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     protected override searchEnabled = true;
     public override pageTitle = msg("Files");
