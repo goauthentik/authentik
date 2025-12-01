@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 00:11+0000\n"
+"POT-Creation-Date: 2025-12-01 15:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: 刘松, 2025\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/authentik/teams/119923/zh_TW/)\n"
@@ -358,6 +358,12 @@ msgid "Internal source name, used in URLs."
 msgstr "用於網址的內部來源名稱。"
 
 #: authentik/core/models.py
+msgid ""
+"When enabled, this source will be displayed as a prominent button on the "
+"login page, instead of a small icon."
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
 msgstr "認證已存在使用者時所使用的流程。"
 
@@ -385,7 +391,7 @@ msgstr "權杖"
 msgid "Tokens"
 msgstr "權杖"
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
 msgstr "檢視權杖金鑰"
 
@@ -455,6 +461,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "回到首頁"
 
@@ -487,6 +494,26 @@ msgid "ecdsa"
 msgstr "ecdsa"
 
 #: authentik/crypto/models.py
+msgid "RSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "PEM 編碼的憑證資料"
 
@@ -506,6 +533,104 @@ msgstr "憑證金鑰對"
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "裝置權杖"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "裝置權杖"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication tokens"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonce"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonces"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device"
+msgstr "设备"
+
+#: authentik/endpoints/models.py
+msgid "Devices"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device User binding"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device User bindings"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device connection"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device connections"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshot"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshots"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device access group"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device access groups"
+msgstr ""
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -1112,9 +1237,21 @@ msgstr "流程權杖"
 msgid "Flow Tokens"
 msgstr "流程權杖"
 
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
+msgstr ""
+
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "無效的下一步網址"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
@@ -1481,6 +1618,10 @@ msgid "Not you?"
 msgstr "不是您嗎？"
 
 #: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "错误"
+
+#: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
 msgstr "請求被拒。"
 
@@ -1828,14 +1969,6 @@ msgstr "OAuth2 更新權杖"
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 更新權杖"
 
-#: authentik/providers/oauth2/models.py
-msgid "Device Token"
-msgstr "裝置權杖"
-
-#: authentik/providers/oauth2/models.py
-msgid "Device Tokens"
-msgstr "裝置權杖"
-
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
 msgstr ""
@@ -2049,16 +2182,6 @@ msgid "ACS URL"
 msgstr "ACS 網址"
 
 #: authentik/providers/saml/models.py
-msgid ""
-"Value of the audience restriction field of the assertion. When left empty, "
-"no audience restriction will be added."
-msgstr "斷言的目標對象來源限制欄位的值。當未設定時將不會對任何目標對象進行限制。"
-
-#: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr "也稱為 EntityID"
-
-#: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
 msgstr "服務供應商附加"
 
@@ -2067,6 +2190,16 @@ msgid ""
 "This determines how authentik sends the response back to the Service "
 "Provider."
 msgstr "這決定了 authentik 如何將回應發送回服務供應商。"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr "斷言的目標對象來源限制欄位的值。當未設定時將不會對任何目標對象進行限制。"
+
+#: authentik/providers/saml/models.py
+msgid "Also known as EntityID"
+msgstr "也稱為 EntityID"
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
