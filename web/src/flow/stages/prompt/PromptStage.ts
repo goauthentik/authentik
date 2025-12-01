@@ -1,7 +1,8 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { LOCALES } from "#elements/ak-locale-context/definitions";
+import { formatLocaleOptions } from "#common/ui/locale/definitions";
+
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -214,16 +215,16 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const locales = this.can(CapabilitiesEnum.CanDebug)
-                    ? LOCALES
-                    : LOCALES.filter((locale) => locale.code !== "debug");
-                const options = locales.map(
-                    (locale) =>
-                        html`<option
-                            value=${locale.code}
-                            ?selected=${locale.code === prompt.initialValue}
-                        >
-                            ${locale.code.toUpperCase()} - ${locale.label()}
+                let localeOptions = formatLocaleOptions();
+
+                if (!this.can(CapabilitiesEnum.CanDebug)) {
+                    localeOptions = localeOptions.filter(([, code]) => code !== "pseudo-LOCALE");
+                }
+
+                const options = localeOptions.map(
+                    ([label, code]) =>
+                        html`<option value=${code} ?selected=${code === prompt.initialValue}>
+                            ${label}
                         </option> `,
                 );
 

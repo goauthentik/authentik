@@ -1,9 +1,11 @@
 import type { APIResult } from "#common/api/responses";
 import { EVENT_WS_MESSAGE } from "#common/constants";
 import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
 
 import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
+import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
 import { SessionContext, SessionMixin } from "#elements/mixins/session";
 import type { ReactiveElementHost } from "#elements/types";
 
@@ -23,7 +25,7 @@ export class SessionContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/session`);
     #abortController: null | AbortController = null;
 
-    #host: ReactiveElementHost<SessionMixin & AKConfigMixin>;
+    #host: ReactiveElementHost<LocaleMixin & SessionMixin & AKConfigMixin>;
     #context: ContextProvider<SessionContext>;
 
     constructor(
@@ -49,6 +51,14 @@ export class SessionContextController implements ReactiveController {
             signal: this.#abortController.signal,
         })
             .then((session) => {
+                const localeHint: string | undefined = session.user.settings.locale;
+
+                if (localeHint) {
+                    const locale = autoDetectLanguage(localeHint);
+                    this.#log(`Activating user's configured locale '${locale}'`);
+                    this.#host[kAKLocale]?.setLocale(locale);
+                }
+
                 const config = this.#host[kAKConfig];
 
                 if (config?.errorReporting.sendPii) {

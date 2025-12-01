@@ -1,5 +1,4 @@
 import "#components/ak-nav-buttons";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/messages/MessageContainer";
@@ -124,8 +123,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
 
         const backgroundStyles = this.uiConfig.theme.background;
 
-        return html`<ak-locale-context>
-            <ak-enterprise-status interface="user"></ak-enterprise-status>
+        return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
                 <div class="background-wrapper" style=${ifPresent(backgroundStyles)}>
                     ${!backgroundStyles
@@ -179,8 +177,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                         </div>
                     </div>
                 </div>
-            </div>
-        </ak-locale-context>`;
+            </div>`;
     }
 }
 

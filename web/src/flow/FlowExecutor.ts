@@ -1,5 +1,4 @@
 import "#elements/LoadingOverlay";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
