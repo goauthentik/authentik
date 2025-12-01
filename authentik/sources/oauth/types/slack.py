@@ -117,8 +117,7 @@ class SlackOAuth2Callback(OAuthCallback):
 
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from Slack profile info."""
-        # Slack uses 'id'/'user_id' for standard OAuth
-        return info.get("id") or info.get("bot_user_id")
+        return info.get("sub")
 
 
 @registry.register()

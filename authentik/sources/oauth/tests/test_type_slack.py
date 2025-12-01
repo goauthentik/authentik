@@ -69,11 +69,9 @@ class TestTypeSlack(TestCase):
 
     def setUp(self):
         self.source = OAuthSource.objects.create(
-            name="slack-test",
-            slug="slack-test",
+            name="test",
+            slug="test",
             provider_type="slack",
-            consumer_key="test-client-id",
-            consumer_secret="test-client-secret",
         )
 
     def test_enroll_context(self):
@@ -88,10 +86,12 @@ class TestTypeSlack(TestCase):
     def test_get_user_id(self):
         """Test Slack user ID extraction from profile info"""
         callback = SlackOAuth2Callback()
-        # Test with 'id' field
+        # Test with 'sub' field (OIDC userinfo response)
+        self.assertEqual(callback.get_user_id({"sub": "U12345"}), "U12345")
+        # Test with 'id' field (standard OAuth)
         self.assertEqual(callback.get_user_id({"id": "U12345"}), "U12345")
-        # Test with 'bot_user_id' field
-        self.assertEqual(callback.get_user_id({"bot_user_id": "B12345"}), "B12345")
+        # Test priority: sub takes precedence
+        self.assertEqual(callback.get_user_id({"sub": "U11111", "id": "U22222"}), "U11111")
         # Test with neither
         self.assertIsNone(callback.get_user_id({}))
 
