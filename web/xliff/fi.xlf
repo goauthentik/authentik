@@ -52,6 +52,7 @@
 </trans-unit>
 <trans-unit id="s6abb1cd87fe0114e">
   <source>Home</source>
+  <target>Koti</target>
 </trans-unit>
 <trans-unit id="s91ae4b6bf981682b">
   <source>authentik Logo</source>
@@ -518,6 +519,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <target>Järjestä kentän &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot; mukaan</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
   <source>No objects found.</source>
@@ -659,6 +661,7 @@
 </trans-unit>
 <trans-unit id="s82cced87e15e0665">
   <source>Worker with incorrect version connected.</source>
+  <target>Taustaprosessi väärällä versiolla otti yhteyden.</target>
 </trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
@@ -1113,6 +1116,7 @@
 </trans-unit>
 <trans-unit id="s2f06038e5cfd09df">
   <source>Consumed</source>
+  <target>Kulutettu</target>
 </trans-unit>
 <trans-unit id="s556a7cc7c0c9f032">
   <source>Pre-processing</source>
@@ -1123,6 +1127,7 @@
 </trans-unit>
 <trans-unit id="sb37a630168e1e0e5">
   <source>Post-processing</source>
+  <target>Jälkikäsitellään</target>
 </trans-unit>
 <trans-unit id="sbe9a51f29a4a2c5b">
   <source>Successful</source>
@@ -1157,6 +1162,7 @@
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
+  <target>Uudelleenyritykset</target>
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
@@ -1216,6 +1222,7 @@
 </trans-unit>
 <trans-unit id="s6492593d534108e1">
   <source>Update Schedule</source>
+  <target>Päivitä ajastettu toiminto</target>
 </trans-unit>
 <trans-unit id="s64ef2a6c2dd1d3d1">
   <source>Edit</source>
@@ -1441,6 +1448,7 @@
 </trans-unit>
 <trans-unit id="s5eba8fa19126f70a">
   <source>Learn more about the enterprise license.</source>
+  <target>Lue lisää enterprise-lisenssistä.</target>
 </trans-unit>
 <trans-unit id="s7181a5504472e856">
   <source>Apply changes</source>
@@ -1876,6 +1884,7 @@
 </trans-unit>
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
+  <target>Valitse allekirjoitusavain...</target>
 </trans-unit>
 <trans-unit id="sc6c57419ad3a01a8">
   <source>Key used to sign the tokens.</source>
@@ -1939,6 +1948,7 @@
 </trans-unit>
 <trans-unit id="s3e80c199c9e45456">
   <source>Refresh Token threshold</source>
+  <target>Päivitystunnuksien raja-arvo</target>
 </trans-unit>
 <trans-unit id="sdff424992223a264">
   <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
@@ -2049,6 +2059,7 @@
 </trans-unit>
 <trans-unit id="sfc238215103c6162">
   <source>An error occurred while updating the provider.</source>
+  <target>Palveluntarjoajan päivittämisessä tapahtui virhe.</target>
 </trans-unit>
 <trans-unit id="sc055fffc26e97237">
   <source>An error occurred while creating the provider.</source>
@@ -2280,6 +2291,7 @@
 </trans-unit>
 <trans-unit id="sa4bd902fbc432ab8">
   <source>Sign logout requests</source>
+  <target>Allekirjoita uloskirjautumispyynnöt</target>
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
@@ -2324,6 +2336,7 @@
 </trans-unit>
 <trans-unit id="sd4fd64791f73d37b">
   <source>Also known as Entity ID.</source>
+  <target>Tunnetaan myös nimellä Entity ID.</target>
 </trans-unit>
 <trans-unit id="sd5a4b41c6c883b03">
   <source>Audience</source>
@@ -2504,6 +2517,7 @@
 </trans-unit>
 <trans-unit id="se7195530fa981896">
   <source>Default behavior.</source>
+  <target>Oletustoimintamalli.</target>
 </trans-unit>
 <trans-unit id="sfa5ba219a0991116">
   <source>AWS</source>
@@ -2958,6 +2972,7 @@
 </trans-unit>
 <trans-unit id="sd1eb8f8acdbcd1d3">
   <source>No successful sync found.</source>
+  <target>Onnistunutta synkronointia ei löytynyt.</target>
 </trans-unit>
 <trans-unit id="s6b0eeb3de1789c6e">
   <source>Last sync status</source>
@@ -3271,6 +3286,7 @@
 </trans-unit>
 <trans-unit id="sd416adae573583d5">
   <source>Select Users</source>
+  <target>Valitse käyttäjiä</target>
 </trans-unit>
 <trans-unit id="sa45a194b58837e4f">
   <source>Active</source>
@@ -3470,9 +3486,11 @@
 </trans-unit>
 <trans-unit id="s9ea9cdabd74f8f97">
   <source>Historical Login Count</source>
+  <target>Aiempien kirjautumisten määrä</target>
 </trans-unit>
 <trans-unit id="s27aec4c2de1ae777">
   <source>Amount of previous login events to check against.</source>
+  <target>Tarkistettavien aiempien kirjautumisten määrä.</target>
 </trans-unit>
 <trans-unit id="s48611ce6e85874dc">
   <source>Check impossible travel</source>
@@ -3688,6 +3706,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sf4ad4d9f8a5c868b">
   <source>Machine-to-machine authentication or other automations.</source>
+  <target>Koneiden välinen todennus tai muut automaatiot.</target>
 </trans-unit>
 <trans-unit id="scab2900019953050">
   <source>Successfully updated user.</source>
@@ -3735,6 +3754,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s9fd0516c9193c73e">
   <source>Type an optional email address...</source>
+  <target>Kirjoita valinnainen sähköpostiosoite...</target>
 </trans-unit>
 <trans-unit id="s4c5000e84bc2189a">
   <source>Whether this user is active and allowed to authenticate. Setting this to inactive can be used to temporarily disable a user without deleting their account.</source>
@@ -4787,6 +4807,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4fca384c634e1a92">
   <source>Authorization code authentication method</source>
+  <target>Valtuutuskoodi-todennustapa</target>
 </trans-unit>
 <trans-unit id="sdc02c276ed429008">
   <source>How to perform authentication during an authorization_code token request flow</source>
@@ -4946,6 +4967,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="saf5316edc3679fef">
   <source>Bot token</source>
+  <target>Botin tunniste</target>
 </trans-unit>
 <trans-unit id="s64b935d223a99731">
   <source>Request access to send messages from your bot</source>
@@ -6126,6 +6148,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s83fa005829a65be9">
   <source>Create Initial Permissions</source>
+  <target>Luo alustavat käyttöoikeudet</target>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
@@ -7101,6 +7124,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
   <source>Enable &quot;Remember me on this device&quot;</source>
+  <target>Ota käyttöön &quot;Muista minut tällä laitteella&quot;</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -7155,6 +7179,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s9300147e327fd8f6">
   <source>Client-certificate/mTLS authentication/enrollment.</source>
+  <target>Asiakassertifikaatti/mTLS-todentaminen/rekisteröityminen.</target>
 </trans-unit>
 <trans-unit id="sbf990ec848470f5c">
   <source>Certificate optional</source>
@@ -8172,6 +8197,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
                             docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+  <target>Voi olla muodossa <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> yhdistettäessä paikalliseen
+                            docker-daemoniin, ssh://<x id="3" equiv-text="&lt;/code&gt;"/> yhdistettäessä SSH:lla tai
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> yhdistettäessä etäjärjestelmään.</target>
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
   <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
@@ -8751,6 +8779,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s3fbe63b7fcfe3e91">
   <source>OpenSSL</source>
+  <target>OpenSSL</target>
 </trans-unit>
 <trans-unit id="s7be2df39f727faa2">
   <source>Enterprise</source>
@@ -8870,6 +8899,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>Sinulla ei ole tällä hetkellä notifikaatioita.</target>
 </trans-unit>
 <trans-unit id="sc0064c91ad2aa90b">
   <source>Notification drawer</source>
@@ -8890,6 +8920,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
+  <target>Avaa tietoikkuna</target>
 </trans-unit>
 <trans-unit id="s95b96d7ead27527f">
   <source>Product name</source>
@@ -9130,6 +9161,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc091f75b942ec081">
   <source>QR-Code to setup a time-based one-time password</source>
+  <target>QR-koodi, jolla määritellään aikaperusteinen kertakäyttösalasana</target>
 </trans-unit>
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
@@ -9286,6 +9318,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s76d21e163887ddd1">
   <source>Unknown device</source>
+  <target>Tuntematon laite</target>
 </trans-unit>
 <trans-unit id="sf0ceaf3116e31fd4">
   <source>An unknown device class was provided.</source>
@@ -9413,6 +9446,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sfc2c3bd345c0128a">
   <source>Disconnected</source>
+  <target>Yhteys katkaistu</target>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
