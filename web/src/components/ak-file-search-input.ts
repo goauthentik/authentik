@@ -13,6 +13,7 @@ import { IDGenerator } from "@goauthentik/core/id";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 interface FileItem {
     name: string;
@@ -118,7 +119,7 @@ export class AKFileSearchInput extends AKElement {
     }
 
     render() {
-        return html` <ak-form-element-horizontal name=${this.name}>
+        return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
             <div slot="label" class="pf-c-form__group-label">
                 ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
             </div>
