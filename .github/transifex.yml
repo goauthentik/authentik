@@ -4,14 +4,14 @@ git:
     - filter_type: file
       # all supported i18n types: https://docs.transifex.com/formats
       file_format: XLIFF
-      source_language: en-US
-      source_file: web/xliff/en-US.xlf
+      source_language: en_US
+      source_file: web/xliff/en_US.xlf
       # path expression to translation files, must contain <lang> placeholder
       translation_files_expression: "web/xliff/<lang>.xlf"
     - filter_type: file
       # all supported i18n types: https://docs.transifex.com/formats
       file_format: PO
-      source_language: en-US
-      source_file: locale/en-US/LC_MESSAGES/django.po
+      source_language: en_US
+      source_file: locale/en_US/LC_MESSAGES/django.po
       # path expression to translation files, must contain <lang> placeholder
       translation_files_expression: "locale/<lang>/LC_MESSAGES/django.po"

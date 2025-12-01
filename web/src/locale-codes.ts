@@ -4,48 +4,48 @@
 /**
  * The locale code that templates in this source code are written in.
  */
-export const sourceLocale = `en-US`;
+export const sourceLocale = `en_US`;
 
 /**
  * The other locale codes that this application is localized into. Sorted
  * lexicographically.
  */
 export const targetLocales = [
-  `cs-CZ`,
-  `de-DE`,
-  `en-US`,
-  `es-ES`,
-  `fr-FR`,
-  `it-IT`,
-  `ja-JP`,
-  `ko-KR`,
-  `nl-NL`,
-  `pl-PL`,
-  `pseudo-LOCALE`,
-  `ru-RU`,
-  `tr-TR`,
-  `zh-Hans`,
-  `zh-Hant`,
+  `cs_CZ`,
+  `de_DE`,
+  `en_US`,
+  `es_ES`,
+  `fr_FR`,
+  `it_IT`,
+  `ja_JP`,
+  `ko_KR`,
+  `nl_NL`,
+  `pl_PL`,
+  `pseudo_LOCALE`,
+  `ru_RU`,
+  `tr_TR`,
+  `zh_Hans`,
+  `zh_Hant`,
 ] as const;
 
 /**
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
-  `cs-CZ`,
-  `de-DE`,
-  `en-US`,
-  `en-US`,
-  `es-ES`,
-  `fr-FR`,
-  `it-IT`,
-  `ja-JP`,
-  `ko-KR`,
-  `nl-NL`,
-  `pl-PL`,
-  `pseudo-LOCALE`,
-  `ru-RU`,
-  `tr-TR`,
-  `zh-Hans`,
-  `zh-Hant`,
+  `cs_CZ`,
+  `de_DE`,
+  `en_US`,
+  `en_US`,
+  `es_ES`,
+  `fr_FR`,
+  `it_IT`,
+  `ja_JP`,
+  `ko_KR`,
+  `nl_NL`,
+  `pl_PL`,
+  `pseudo_LOCALE`,
+  `ru_RU`,
+  `tr_TR`,
+  `zh_Hans`,
+  `zh_Hant`,
 ] as const;
