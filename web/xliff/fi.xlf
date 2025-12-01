@@ -11,6 +11,7 @@
 </trans-unit>
 <trans-unit id="sdaecc3c29a27c5c5">
   <source>An unknown error occurred</source>
+  <target>Tapahtui tuntematon virhe</target>
 </trans-unit>
 <trans-unit id="se84ba7f105934495">
   <source>Please check the browser console for more details.</source>
@@ -443,6 +444,7 @@
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Koodi on lähetetty sähköpostiosoitteeseesi.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
@@ -482,6 +484,7 @@
 </trans-unit>
 <trans-unit id="s3633ffed92acaecb">
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+  <target><x id="0" equiv-text="${this.label || &quot;&quot;}"/>-taulukon sivutus</target>
 </trans-unit>
 <trans-unit id="s04c5a637328c9b67">
   <source><x id="0" equiv-text="${startIndex}"/> - <x id="1" equiv-text="${endIndex}"/> of <x id="2" equiv-text="${pageCount}"/></source>
@@ -511,6 +514,7 @@
 </trans-unit>
 <trans-unit id="sbe3756d568bb048e">
   <source>Query suggestions</source>
+  <target>Kyselyn ehdotukset</target>
 </trans-unit>
 <trans-unit id="sf6e7447df476939f">
   <source>Query input</source>
@@ -538,6 +542,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <target>Valitse rivi &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -966,6 +971,7 @@
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
+  <target>Lähetä-toiminto</target>
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
@@ -1179,6 +1185,7 @@
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
+  <target>Tehtävä</target>
 </trans-unit>
 <trans-unit id="sc7637275f670c938">
   <source>Queue</source>
@@ -1295,6 +1302,7 @@
 </trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
+  <target>Luo uusi sovellus ja määritä sille palveluntarjoaja.</target>
 </trans-unit>
 <trans-unit id="s1a0e95458b44d7f8">
   <source>Any policy must match to grant access</source>
@@ -1328,6 +1336,7 @@
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
+  <target>Sovelluskirjastossa näytettävä nimi</target>
 </trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
@@ -1819,6 +1828,7 @@
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
+  <target>Etukanava</target>
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
@@ -1906,6 +1916,7 @@
 </trans-unit>
 <trans-unit id="s145480489b87a109">
   <source>Logout URI</source>
+  <target>Uloskirjautumis-URI</target>
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
@@ -2302,6 +2313,7 @@
 </trans-unit>
 <trans-unit id="sd5746b2550ac4852">
   <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+  <target>Sertifikaatti, jota käytetään EAP-TLS:ssä. Vaatii Mutual TLS-vaiheen todennusprosessissa.</target>
 </trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
@@ -2575,6 +2587,7 @@
 </trans-unit>
 <trans-unit id="s44e80dc905ab2ecc">
   <source>Altered behavior for usage with Amazon Web Services.</source>
+  <target>Poikkeava toimintamalli Amazon Web Servicesin kanssa.</target>
 </trans-unit>
 <trans-unit id="s2f5e2bcd583fbc27">
   <source>Slack</source>
@@ -2656,6 +2669,7 @@
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
+  <target>Sivun aikakatkaisu</target>
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
@@ -3020,6 +3034,7 @@
 </trans-unit>
 <trans-unit id="s3f63421908094590">
   <source>Current status</source>
+  <target>Tämänhetkinen tila</target>
 </trans-unit>
 <trans-unit id="s4412853e1655ebb3">
   <source>Sync is currently running.</source>
@@ -3392,6 +3407,7 @@
 </trans-unit>
 <trans-unit id="sf45dac7c571f18bd">
   <source>Superuser Privileges</source>
+  <target>Pääkäyttäjän oikeudet</target>
 </trans-unit>
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
@@ -3813,6 +3829,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
   <source>The user's display name.</source>
+  <target>Käyttäjän näytettävä nimi.</target>
 </trans-unit>
 <trans-unit id="s9f9492d30a96b9c6">
   <source>User type</source>
@@ -3849,6 +3866,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
+  <target>Polut eivät voi alkaa eivätkä päättyä kauttaviivaan, mutta ne voivat sisältää mitä tahansa muita merkkejä polkusegmenteissään. Polkuja käytetään pelkästään organisointiin, ne eivät vaikuta käyttöoikeuksiin, ryhmien jäsenyyksiin tai mihinkään muuhun.</target>
 </trans-unit>
 <trans-unit id="s50c312bea93b6925">
   <source>Edit Policy</source>
@@ -4070,6 +4088,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s8fec035fa1737294">
   <source>Create with Provider</source>
+  <target>Luo palveluntarjoajalla</target>
 </trans-unit>
 <trans-unit id="s34661765d81e7340">
   <source>Successfully cleared application cache</source>
@@ -4760,6 +4779,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s04bb32ec9f359507">
   <source>Additional Group DN</source>
+  <target>Ryhmien lisä-DN</target>
 </trans-unit>
 <trans-unit id="sfae9f4ea5749a36b">
   <source>Additional group DN, prepended to the Base DN.</source>
@@ -4799,6 +4819,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
+  <target>Etsi käyttäjän attribuutilla</target>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
@@ -5194,6 +5215,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4014853299a8bb20">
   <source>Update Telegram Source</source>
+  <target>Päivitä Telegram-lähde</target>
 </trans-unit>
 <trans-unit id="s643d8f2e5e5e930d">
   <source>Successfully updated mapping.</source>
@@ -5651,6 +5673,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
   <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Katso ryhmän &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; tiedot</target>
 </trans-unit>
 <trans-unit id="s416a540b16275f2e">
   <source>Create Group</source>
@@ -5851,6 +5874,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sac6c67e92bd30229">
   <source>Assign Additional Users</source>
+  <target>Liitä lisää käyttäjiä</target>
 </trans-unit>
 <trans-unit id="s4c41f3f4c23e8eaa">
   <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
@@ -6812,6 +6836,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s3c619d54c995d4ab">
   <source>Modify the payload sent to the provider.</source>
+  <target>Muokkaa tietosisältöä, joka lähetetään palveluntarjoajalle.</target>
 </trans-unit>
 <trans-unit id="s0ae0072614320ae2">
   <source>Hash phone number</source>
@@ -7333,6 +7358,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s8069037a865037c9">
   <source>Configure the attribute of the certificate used to look for a user.</source>
+  <target>Määritä se sertifikaatin attribuutti, jota käytetään käyttäjän etsimiseen.</target>
 </trans-unit>
 <trans-unit id="sc185a8ad96f8eaa2">
   <source>User attribute</source>
@@ -7498,6 +7524,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+  <target>Jos tähän asetettu kesto on suurempi kuin 0, tallennetaan eväste määritellyllä kestolla, jonka perusteella authentik tietää, kirjautuuko käyttäjä uudelta laitteelta.</target>
 </trans-unit>
 <trans-unit id="s663ccbfdf27e8dd0">
   <source>Network binding</source>
@@ -7988,6 +8015,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
+  <target>Nykyinen käyttäjä</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
@@ -8616,6 +8644,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s862986ce8e70edd7">
   <source>Reputation: upper limit</source>
+  <target>Maine: yläraja</target>
 </trans-unit>
 <trans-unit id="sdd04913b3b46cf30">
   <source>Reputation cannot increase higher than this value. Zero or positive.</source>
@@ -8675,6 +8704,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf0b34d32a602aee8">
   <source>Modify flags to opt into new authentik behaviours early.</source>
+  <target>Muokkaa lippuja ottaaksesi uudet authentikin toiminnallisuudet käyttöön aikaisin.</target>
 </trans-unit>
 <trans-unit id="s33f85f24c0f5f008">
   <source>Save</source>
@@ -9020,6 +9050,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
+  <target>Rajapintalokero</target>
 </trans-unit>
 <trans-unit id="s32a3efa23718e713">
   <source>API Requests</source>
