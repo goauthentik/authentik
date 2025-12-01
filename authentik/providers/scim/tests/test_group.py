@@ -9,7 +9,7 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderGroup
 
 
 class SCIMGroupTests(TestCase):
@@ -106,6 +106,7 @@ class SCIMGroupTests(TestCase):
                 "displayName": group.name,
             },
         )
+        group.name = generate_id()
         group.save()
         self.assertEqual(mock.call_count, 4)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -148,3 +149,56 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[3].method, "DELETE")
         self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
+
+    @Mocker()
+    def test_group_create_update_noop(self, mock: Mocker):
+        """Test group creation and update"""
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        mock.put(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        body = loads(mock.request_history[1].body)
+        with open("schemas/scim-group.schema.json", encoding="utf-8") as schema:
+            validate(body, loads(schema.read()))
+        self.assertEqual(
+            body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
+        )
+        conn = SCIMProviderGroup.objects.filter(group=group).first()
+        conn.attributes = {
+            "id": scim_id,
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+            "externalId": str(group.pk),
+            "displayName": group.name,
+        }
+        conn.save()
+        group.save()
+        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "GET")
+        self.assertEqual(mock.request_history[2].method, "GET")
