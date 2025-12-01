@@ -81,9 +81,6 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
                 this.reset();
             })
-            .catch((error) => {
-                throw error;
-            })
             .finally(() => {
                 this.clearFileInput();
             });
