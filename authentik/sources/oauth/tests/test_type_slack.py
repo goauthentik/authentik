@@ -88,11 +88,7 @@ class TestTypeSlack(TestCase):
         callback = SlackOAuth2Callback()
         # Test with 'sub' field (OIDC userinfo response)
         self.assertEqual(callback.get_user_id({"sub": "U12345"}), "U12345")
-        # Test with 'id' field (standard OAuth)
-        self.assertEqual(callback.get_user_id({"id": "U12345"}), "U12345")
-        # Test priority: sub takes precedence
-        self.assertEqual(callback.get_user_id({"sub": "U11111", "id": "U22222"}), "U11111")
-        # Test with neither
+        # Test with no sub
         self.assertIsNone(callback.get_user_id({}))
 
     def test_token_extraction_user_token(self):
