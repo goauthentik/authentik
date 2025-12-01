@@ -4116,6 +4116,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
 </trans-unit>
 <trans-unit id="s3687049d1af562c4">
   <source>Copy</source>
+  <target>Copia</target>
 </trans-unit>
 <trans-unit id="sd1dc37bdc04758eb">
   <source>Download the latest package from here:</source>
