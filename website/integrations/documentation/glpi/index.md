@@ -6,7 +6,7 @@ support_level: community
 
 ## What is GLPI
 
-> GLPI (Gestionnaire Libre de Parc Informatique) is an open-source IT asset management and service desk software. It helps organizations manage hardware, software, tickets, users, and IT services in a centralized platform.
+> GLPI (Gestionnaire Libre de Parc Informatique) is an open-source IT asset management and service desk software. It helps organizations manage hardware, software, tickets, users, and IT services in a centralized environment.
 >
 > -- https://www.glpi-project.org
 
@@ -23,19 +23,19 @@ This documentation lists only the settings that you need to change from their de
 
 ## GLPI samlSSO plugin configuration
 
-By default, GLPI only offers OAuth to subscribers. This guide instead describes how to integrate authentik with GLPI via SAML using a community plugin named [samlSSO](https://github.com/DonutsNL/samlsso) by [DonutsNL](https://github.com/DonutsNL).
+:::info
+By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSO](https://github.com/DontsNL/samlsso).
+:::
 
 ### Install the samlSSO plugin
 
 1. Download latest release from the [samlSSO GitHub project](https://github.com/DonutsNL/samlsso).
-2. Unpack the release ZIP file in the `glpi/data/marketplace` directory of your GLPI installation.
+2. Unpack the release ZIP file into the `glpi/data/marketplace` directory of your GLPI installation.
 3. Log in to GLPI as an administrator and navigate to **Setup** > **Plugins**.
-4. Click the install icon (folder with a + symbol) next to the **samlSSO** plugin.
-5. In the pop-up window that opens, click **enable**.
+4. Click the Install icon (folder with a `+` symbol) next to the **samlSSO** plugin.
+5. In the pop-up window that opens, click **Enable**.
 
 ### Add a samlSSO instance
-
-Now you'll need to add a samlSSO instance.
 
 1. Navigate to **Setup** > **samlSSO**.
 2. Click the **Add** button and configure the following required settings:
@@ -73,7 +73,7 @@ To support the integration of GLPI with authentik, you need to create an applica
 ### Download certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for GLPI`).
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
 ## GLPI configuration
@@ -82,7 +82,7 @@ To support the integration of GLPI with authentik, you need to create an applica
 2. Click on the **authentik** samlSSO instance and configure the following settings:
     - On the **Identity Provider** tab:
         - Set the **Entity ID** to `authentik`
-        - Set the **SSO URL** to `https://authentik.company/application/saml/<applicaton_slug>/sso/binding/redirect/`.
+        - Set the **SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
         - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`.
         - Set **X509 certificate** to the contents of the certificate file that you downloaded from authentik.
 
@@ -92,17 +92,17 @@ To support the integration of GLPI with authentik, you need to create an applica
 
 It's possible to auto assign profiles and groups when a user is created in GLPI.
 
-1. Log in to GLPI as an administrator, navigate to **Setup** > **samlSSO** > **JIT import rules**, and click **Add**
+1. Log in to GLPI as an administrator, navigate to **Setup** > **samlSSO** > **JIT import rules**, and click **Add**.
 2. Provide a **Name**, **Logical operator** type, set **Active** to `Yes`, and then click **Add**.
 3. Configure the following settings:
-    - On the **Criteria** tab create creiterion to match against users.
-    - On the **Actions** tab exists create actions to perform on matches users.
+    - On the **Criteria** tab, create a criterion to match users.
+    - On the **Actions** tab, create actions to apply to matched users.
         - You may want to add `recursive=yes` as an action, so that matched users have access to all entities.
 4. Once finished, return to the **Rule** tab and click **Save**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with GLPI, log out and click the new button on the right side. You will be redirected to authentik and once authenticated, you will be signed in to GLPI.
+To confirm that authentik is properly configured with GLPI, log out and click the new authentik login button on the right side. You should be redirected to authentik and once authenticated, you will be signed in to GLPI.
 
 ## Resources
 
