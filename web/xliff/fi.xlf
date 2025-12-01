@@ -446,6 +446,7 @@
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Kertakäyttöinen koodi on lähetetty sinulle tekstiviestinä.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
@@ -683,6 +684,7 @@
 </trans-unit>
 <trans-unit id="s7b58d033cc5112ab">
   <source>Event volume chart</source>
+  <target>Tapahtumavolyymikaavio</target>
 </trans-unit>
 <trans-unit id="s11bc220e8fa9d797">
   <source>Authorizations</source>
@@ -819,6 +821,7 @@
 </trans-unit>
 <trans-unit id="s85a488cacb57688b">
   <source>Welcome, <x id="0" equiv-text="${displayName}"/></source>
+  <target>Tervetuloa, <x id="0" equiv-text="${displayName}"/></target>
 </trans-unit>
 <trans-unit id="scdb1bac161852c73">
   <source>Welcome</source>
@@ -966,6 +969,7 @@
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
+  <target>Peruuta-toiminto</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
@@ -1206,6 +1210,7 @@
 </trans-unit>
 <trans-unit id="s911c2c952e64b223">
   <source>Show only standalone tasks</source>
+  <target>Näytä vain itsenäiset tehtävät</target>
 </trans-unit>
 <trans-unit id="s14053a4609676b8b">
   <source>Exclude successful tasks</source>
@@ -1877,6 +1882,7 @@
 </trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
+  <target>Valitse valtuutusprosessi...</target>
 </trans-unit>
 <trans-unit id="sfbaeb0de54fbfdbb">
   <source>Flow used when authorizing this provider.</source>
@@ -1907,6 +1913,7 @@
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
+  <target>Uloskirjautumismenetelmä</target>
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
@@ -2564,6 +2571,7 @@
 </trans-unit>
 <trans-unit id="sfa5ba219a0991116">
   <source>AWS</source>
+  <target>AWS</target>
 </trans-unit>
 <trans-unit id="s44e80dc905ab2ecc">
   <source>Altered behavior for usage with Amazon Web Services.</source>
@@ -2812,6 +2820,7 @@
 </trans-unit>
 <trans-unit id="sa9a4ce20b507b232">
   <source>New Provider</source>
+  <target>Uusi palveluntarjoaja</target>
 </trans-unit>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
@@ -2927,6 +2936,7 @@
 </trans-unit>
 <trans-unit id="s1aa62e1bf258e88a">
   <source>OIDC Providers</source>
+  <target>OIDC-palveluntarjoajat</target>
 </trans-unit>
 <trans-unit id="sb0b86b8ca6ab13bd">
   <source>Providers</source>
@@ -3338,6 +3348,7 @@
 </trans-unit>
 <trans-unit id="s65f6a2f5e2b848e1">
   <source>Search Users</source>
+  <target>Hae käyttäjiä</target>
 </trans-unit>
 <trans-unit id="sd416adae573583d5">
   <source>Select Users</source>
@@ -3353,6 +3364,7 @@
 </trans-unit>
 <trans-unit id="s85a91d843c3eb4ad">
   <source>Show inactive users</source>
+  <target>Näytä passiiviset käyttäjät</target>
 </trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
@@ -3761,6 +3773,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sb3087c7347bed341">
   <source>Company employees with access to the full enterprise feature set.</source>
+  <target>Yrityksen työntekijät, joilla on pääsy kaikkiin enterprise-toimintoihin.</target>
 </trans-unit>
 <trans-unit id="sc7266f960c466de6">
   <source>External consultants or B2C customers without access to enterprise features.</source>
@@ -4001,6 +4014,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s5a1fc8f3b2e072d0">
   <source>No assigned application</source>
+  <target>Ei linkitettyä sovellusta</target>
 </trans-unit>
 <trans-unit id="s78302d097a608b99">
   <source>Update SSF Provider</source>
@@ -4800,6 +4814,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4d5cb134999b50df">
   <source>HTTP Basic Auth</source>
+  <target>HTTP Basic Auth</target>
 </trans-unit>
 <trans-unit id="s6927635d1c339cfc">
   <source>Include the client ID and secret as request parameters</source>
@@ -4877,6 +4892,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sa9afb0f84a3c380d">
   <source>Configure Proof Key for Code Exchange for this source.</source>
+  <target>Määritä Proof Key tämän lähteen Code Exchangelle.</target>
 </trans-unit>
 <trans-unit id="s4fca384c634e1a92">
   <source>Authorization code authentication method</source>
@@ -5039,6 +5055,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sd5d9adfcbd8abdfe">
   <source>Bot username</source>
+  <target>Botin käyttäjänimi</target>
 </trans-unit>
 <trans-unit id="saf5316edc3679fef">
   <source>Bot token</source>
@@ -5651,6 +5668,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s0137933e117f2092">
   <source>Whether the token will expire. Upon expiration, the token will be rotated.</source>
+  <target>Jos tämä on valittu, tunniste vanhenee. Vanhennuttuaan tunniste uusitaan.</target>
 </trans-unit>
 <trans-unit id="s6b6e6eb037aef7da">
   <source>Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.</source>
@@ -5844,6 +5862,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sf6aec5a09661fe61">
   <source>Add new user</source>
+  <target>Lisää uusi käyttäjä</target>
 </trans-unit>
 <trans-unit id="s53ad3455d9523b54">
   <source>Create User</source>
@@ -6204,6 +6223,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sfddf7896ab5938b6">
   <source>Successfully created initial permissions.</source>
+  <target>Alustavien käyttöoikeuksien luonti onnistui.</target>
 </trans-unit>
 <trans-unit id="s5c5f240cbb6d0bae">
   <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
@@ -6223,6 +6243,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s0ea71d53764d781c">
   <source>Permissions to grant when a new object is created.</source>
+  <target>Käyttöoikeudet, jotka myönnetään uutta objektia luotaessa.</target>
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
@@ -7005,6 +7026,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
+  <target>Rekisteröintiyritysten enimmäismäärä</target>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
@@ -8240,6 +8262,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>Viimeksi nähty: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5e169e1bac20b4a6">
   <source>Outposts</source>
@@ -8883,6 +8906,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s5937938934a777ab">
   <source>UI Version</source>
+  <target>Käyttöliittymäversio</target>
 </trans-unit>
 <trans-unit id="s3fe3ff490adaaa63">
   <source>Build</source>
@@ -9007,6 +9031,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf3b5b13c6b55eb4c">
   <source>Close API drawer</source>
+  <target>Sulje rajapintalokero</target>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
   <source>View details for <x id="0" equiv-text="${label}"/></source>
@@ -9021,6 +9046,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Notifikaatioita ei löytynyt.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
@@ -9210,6 +9236,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s8d6236ad153d42c0">
   <source>CAPTCHA challenge</source>
+  <target>CAPTCHA-haaste</target>
 </trans-unit>
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
@@ -9303,6 +9330,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s43e859bf711e3599">
   <source>Copy TOTP Config</source>
+  <target>Kopioi TOTP-konfiguraatio</target>
 </trans-unit>
 <trans-unit id="s90064dd5c4dde2c6">
   <source>Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.</source>
@@ -9667,6 +9695,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+  <target>Sovelluslista</target>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
