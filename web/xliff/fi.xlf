@@ -947,6 +947,7 @@
 </trans-unit>
 <trans-unit id="s95bc8722b2708f8b">
   <source>Paused</source>
+  <target>Keskeytetty</target>
 </trans-unit>
 <trans-unit id="se41af830054194bc">
   <source>Pause this schedule</source>
@@ -1135,6 +1136,7 @@
 </trans-unit>
 <trans-unit id="sc7637275f670c938">
   <source>Queue</source>
+  <target>Jono</target>
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
@@ -1170,6 +1172,7 @@
 </trans-unit>
 <trans-unit id="s5e13dff03b580216">
   <source>Previous executions logs</source>
+  <target>Edelliset suorituslokit</target>
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
@@ -1422,6 +1425,7 @@
 </trans-unit>
 <trans-unit id="s48a2e97afd62c35e">
   <source>Close wizard</source>
+  <target>Sulje avustetoiminto</target>
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
@@ -2250,6 +2254,7 @@
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target>Etukanava (natiivi)</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
@@ -2805,6 +2810,7 @@
 </trans-unit>
 <trans-unit id="sd760b123cced4675">
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+  <target>Määrittää, kuinka kauan tapahtumia säilytetään. Jos tapahtumaa ei voitu lähettää oikein, sen vanhenemista pidennetään tämän verran.</target>
 </trans-unit>
 <trans-unit id="s1aa62e1bf258e88a">
   <source>OIDC Providers</source>
@@ -2837,6 +2843,7 @@
 </trans-unit>
 <trans-unit id="s0fb31bb136cc353a">
   <source>Provider not assigned to any application.</source>
+  <target>Palveluntarjoajaa ei ole liitetty mihinkään sovellukseen.</target>
 </trans-unit>
 <trans-unit id="sc9175cb129fdc306">
   <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
@@ -3238,6 +3245,7 @@
 </trans-unit>
 <trans-unit id="s9436f1bf4400f6a6">
   <source>Type a group name...</source>
+  <target>Kirjoita ryhmän nimi...</target>
 </trans-unit>
 <trans-unit id="s2d9356347ff7c77f">
   <source>Group Name</source>
@@ -3613,6 +3621,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sc7266f960c466de6">
   <source>External consultants or B2C customers without access to enterprise features.</source>
+  <target>Ulkoiset konsultit tai B2C-asiakkaat, joilla ei ole pääsyä enterprise-ominaisuuksiin.</target>
 </trans-unit>
 <trans-unit id="sf4ad4d9f8a5c868b">
   <source>Machine-to-machine authentication or other automations.</source>
@@ -4690,6 +4699,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s311c22ee852736e9">
   <source>PKCE Method</source>
+  <target>PKCD-menetelmä</target>
 </trans-unit>
 <trans-unit id="sa9afb0f84a3c380d">
   <source>Configure Proof Key for Code Exchange for this source.</source>
@@ -4855,6 +4865,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s64b935d223a99731">
   <source>Request access to send messages from your bot</source>
+  <target>Pyydä pääsyä lähettää viestejä botiltasi</target>
 </trans-unit>
 <trans-unit id="s500a041b1fab7aac">
   <source>Telegram Attribute mapping</source>
@@ -5207,9 +5218,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sf16aa54bf77362e1">
   <source>Custom CSS</source>
+  <target>Mukautettu CSS</target>
 </trans-unit>
 <trans-unit id="s6171ded034da4e96">
   <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>Mukautettu CSS, joka lisätään sivuille, kun tämä brändi on aktiivinen.</target>
 </trans-unit>
 <trans-unit id="sd61a4f736ac0a98e">
   <source>External user settings</source>
@@ -5332,6 +5345,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sb4661b2d2c2b3564">
   <source>New Brand</source>
+  <target>Uusi brändi</target>
 </trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
@@ -5650,6 +5664,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sc47c8364ef524c1d">
   <source>New Service Account</source>
+  <target>Uusi palvelutili</target>
 </trans-unit>
 <trans-unit id="s384699f614f39071">
   <source>New service account...</source>
@@ -7044,6 +7059,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sb8fdf5a09a969870">
   <source>Certificate attribute</source>
+  <target>Sertifikaatin attribuutti</target>
 </trans-unit>
 <trans-unit id="sd4ac926e4ebb1cd7">
   <source>Common Name</source>
@@ -7831,6 +7847,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Kun tämä on käytössä, notifikaatio lähetetään sille käyttäjälle, joka laukaisi tapahtuman, niiden käyttäjien lisäksi, jotka ovat yllä olevan ryhmän jäseniä. Tapahtuman käyttäjä on aina ensimmäinen käyttäjä. Lähettääksesi notifikaation vain tapahtuman käyttäjälle, valitse 'Lähetä kerran' notifikaation väylän asetuksissa.</target>
 </trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
@@ -8801,6 +8818,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf376ae7e9ef41c1a">
   <source>Authenticating with Telegram...</source>
+  <target>Todennetaan Telegramilla...</target>
 </trans-unit>
 <trans-unit id="s76ea993fdc8503d8">
   <source>Click the button below to start.</source>
@@ -8813,6 +8831,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sb0dbcf3bb1127907">
   <source>User avatar</source>
+  <target>Käyttäjän avatar</target>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -8904,6 +8923,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s1c336c2d6cef77b3">
   <source>Remember me on this device</source>
+  <target>Muista minut tällä laitteella</target>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
   <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
@@ -8997,6 +9017,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s40f44c0d88807fd5">
   <source>TOTP Code</source>
+  <target>TOTP-koodi</target>
 </trans-unit>
 <trans-unit id="s95474cc8c73dd9c0">
   <source>Type your TOTP code...</source>
@@ -9125,6 +9146,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+  <target>Tunnisteet lähetetty sähköpostina.</target>
 </trans-unit>
 <trans-unit id="s76d21e163887ddd1">
   <source>Unknown device</source>
@@ -9312,6 +9334,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sddbc2a3be190464b">
   <source><x id="0" equiv-text="${count}"/> applications available</source>
+  <target><x id="0" equiv-text="${count}"/> sovellusta saatavilla</target>
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
