@@ -3,7 +3,7 @@ import { AkLocale, LocaleRow } from "./types.js";
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
-export const DEFAULT_FALLBACK = "en";
+export const DEFAULT_FALLBACK = "en-US";
 
 export const enLocale: LocaleModule = {
     templates: {},
@@ -35,24 +35,23 @@ export const enLocale: LocaleModule = {
 
 // prettier-ignore
 const debug: LocaleRow = [
-    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  () => import("#locales/pseudo-LOCALE"),
+    "pseudo-LOCALE", /^pseudo/i, () => msg("Pseudolocale (for testing)"), () => import("#locales/pseudo-LOCALE"),
 ];
 
 // prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
-    ["de",      /^de([_-]|$)/i,      () => msg("German"),                () => import("#locales/de")],
-    ["en",      /^en([_-]|$)/i,      () => msg("English"),               () => Promise.resolve(enLocale)],
-    ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               () => import("#locales/es")],
-    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                () => import("#locales/fr")],
-    ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               () => import("#locales/it")],
-    ["ja",      /^ja([_-]|$)/i,      () => msg("Japanese"),              () => import("#locales/ja")],
-    ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                () => import("#locales/ko")],
-    ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 () => import("#locales/nl")],
-    ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                () => import("#locales/pl")],
-    ["ru",      /^ru([_-]|$)/i,      () => msg("Russian"),               () => import("#locales/ru")],
-    ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               () => import("#locales/tr")],
-    ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    () => import("#locales/zh_TW")],
-    ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  () => import("#locales/zh-Hans")],
+    ["de-DE", /^de([_-]|$)/i, () => msg("German"), () => import("#locales/de-DE")],
+    ["en-US", /^en([_-]|$)/i, () => msg("English"), () => Promise.resolve(enLocale)],
+    ["es-ES", /^es([_-]|$)/i, () => msg("Spanish"), () => import("#locales/es-ES")],
+    ["fr-FR", /^fr([_-]|$)/i, () => msg("French"), () => import("#locales/fr-FR")],
+    ["it-IT", /^it([_-]|$)/i, () => msg("Italian"), () => import("#locales/it-IT")],
+    ["ja-JP", /^ja([_-]|$)/i, () => msg("Japanese"), () => import("#locales/ja-JP")],
+    ["ko-KR", /^ko([_-]|$)/i, () => msg("Korean"), () => import("#locales/ko-KR")],
+    ["nl-NL", /^nl([_-]|$)/i, () => msg("Dutch"), () => import("#locales/nl-NL")],
+    ["pl-PL", /^pl([_-]|$)/i, () => msg("Polish"), () => import("#locales/pl-PL")],
+    ["ru-RU", /^ru([_-]|$)/i, () => msg("Russian"), () => import("#locales/ru-RU")],
+    ["tr-TR", /^tr([_-]|$)/i, () => msg("Turkish"), () => import("#locales/tr-TR")],
+    ["zh-Hans", /^zh(\b|_)/i, () => msg("Chinese (simplified)"), () => import("#locales/zh-Hans")],
     ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh-Hant")],
     debug
 ];

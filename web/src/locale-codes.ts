@@ -4,28 +4,26 @@
 /**
  * The locale code that templates in this source code are written in.
  */
-export const sourceLocale = `en`;
+export const sourceLocale = `en-US`;
 
 /**
  * The other locale codes that this application is localized into. Sorted
  * lexicographically.
  */
 export const targetLocales = [
-  `cs_CZ`,
-  `de`,
-  `en`,
-  `es`,
-  `fr`,
-  `it`,
-  `ja`,
-  `ko`,
-  `nl`,
-  `pl`,
+  `cs-CZ`,
+  `de-DE`,
+  `en-US`,
+  `es-ES`,
+  `fr-FR`,
+  `it-IT`,
+  `ja-JP`,
+  `ko-KR`,
+  `nl-NL`,
+  `pl-PL`,
   `pseudo-LOCALE`,
-  `ru`,
-  `tr`,
-  `zh_TW`,
-  `zh-CN`,
+  `ru-RU`,
+  `tr-TR`,
   `zh-Hans`,
   `zh-Hant`,
 ] as const;
@@ -34,22 +32,20 @@ export const targetLocales = [
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
-  `cs_CZ`,
-  `de`,
-  `en`,
-  `en`,
-  `es`,
-  `fr`,
-  `it`,
-  `ja`,
-  `ko`,
-  `nl`,
-  `pl`,
+  `cs-CZ`,
+  `de-DE`,
+  `en-US`,
+  `en-US`,
+  `es-ES`,
+  `fr-FR`,
+  `it-IT`,
+  `ja-JP`,
+  `ko-KR`,
+  `nl-NL`,
+  `pl-PL`,
   `pseudo-LOCALE`,
-  `ru`,
-  `tr`,
-  `zh_TW`,
-  `zh-CN`,
+  `ru-RU`,
+  `tr-TR`,
   `zh-Hans`,
   `zh-Hant`,
 ] as const;
