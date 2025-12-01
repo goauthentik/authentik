@@ -23,7 +23,7 @@ export class TokenForm extends ModelForm<Token, string> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
-        this.showExpiry = token.expiring || true;
+        this.showExpiry = token.expiring ?? true;
         return token;
     }
 

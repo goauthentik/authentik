@@ -109,7 +109,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 <div>${item.facts.data.network?.hostname || item.name}</div>
             </a>`,
             html`${osFamilyToLabel(item.facts.data.os?.family)} ${item.facts.data.os?.version}`,
-            html`${item.group || "-"}`,
+            html`${item.accessGroupObj?.name || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
             html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>

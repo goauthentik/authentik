@@ -31,7 +31,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         ).endpointsAgentsEnrollmentTokensRetrieve({
             tokenUuid: pk,
         });
-        this.showExpiry = token.expiring || true;
+        this.showExpiry = token.expiring ?? true;
         return token;
     }
 
