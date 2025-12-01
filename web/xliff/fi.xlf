@@ -445,6 +445,7 @@
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
+  <target>Avaa todennussovellus hakeaksesi kertakäyttöisen koodin.</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
@@ -508,6 +509,7 @@
 </trans-unit>
 <trans-unit id="sf6e7447df476939f">
   <source>Query input</source>
+  <target>Kyselyn syöttö</target>
 </trans-unit>
 <trans-unit id="s5638954badbd5b21">
   <source>Table Search</source>
@@ -534,6 +536,7 @@
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
+  <target>Sulje rivi</target>
 </trans-unit>
 <trans-unit id="s73f51a3532f29159">
   <source>Expand row</source>
@@ -691,6 +694,7 @@
 </trans-unit>
 <trans-unit id="s0914f91b3f985f0f">
   <source>Synchronization status chart</source>
+  <target>Synkronoinnin tila -kaavio</target>
 </trans-unit>
 <trans-unit id="s477de089b505a6ea">
   <source>SCIM Provider</source>
@@ -763,6 +767,7 @@
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
   <source>Skip to content</source>
+  <target>Jatka sisältöön</target>
 </trans-unit>
 <trans-unit id="sfd13ca8ebd857c2e">
   <source>Create a new application</source>
@@ -1152,6 +1157,7 @@
 </trans-unit>
 <trans-unit id="s0787cd9eab5aa6e3">
   <source>Error tasks</source>
+  <target>Virheelliset tehtävät</target>
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
@@ -1170,6 +1176,7 @@
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
+  <target>Viimeksi päivitetty</target>
 </trans-unit>
 <trans-unit id="sad3e3c8146fc920f">
   <source>Status</source>
@@ -1206,6 +1213,7 @@
 </trans-unit>
 <trans-unit id="sf92789320708efed">
   <source>Next run</source>
+  <target>Seuraava suoritus</target>
 </trans-unit>
 <trans-unit id="s1aecc6c0d6cbf4ed">
   <source>Last status</source>
@@ -1311,6 +1319,7 @@
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>esim. Yhteistyö, Viestintä, Sisäinen, jne.</target>
 </trans-unit>
 <trans-unit id="sdae55084f6cb2662">
   <source>Optionally enter a group name. Applications with identical groups are shown grouped together.</source>
@@ -1877,6 +1886,7 @@
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>Uloskirjautumisen menetelmä määrää, miten uloskirjautumisen URIa kutsutaan - taustakanavassa (palvelinten välinen) vai etukanavassa (selaimen iframe).</target>
 </trans-unit>
 <trans-unit id="s55787f4dfcdce52b">
   <source>Signing Key</source>
@@ -2307,6 +2317,7 @@
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>Taustakanava (POST)</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
@@ -2344,9 +2355,11 @@
 </trans-unit>
 <trans-unit id="sc71892084574cf32">
   <source>SLS URL</source>
+  <target>SLS URL</target>
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>Valinnainen kertauloskirjautumispalvelun (Single Logout Service) URL johon uloskirjautumisvastaukset lähetetään. Jos tätä ei ole määritelty, uloskirjautumisvastauksia ei lähetetä.</target>
 </trans-unit>
 <trans-unit id="sc741d9ebe07ad103">
   <source>Signing Certificate</source>
@@ -2393,6 +2406,7 @@
 </trans-unit>
 <trans-unit id="sd7ba1793c3abf4fe">
   <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>Määritä, kuinka AuthnContextClassRef-arvo luodaan. Kun tämä jätetään tyhjäksi, AuthnContextClassRef asetetaan käyttäjän todennuksessa käyttämien tunnistautumismenetelmien mukaan.</target>
 </trans-unit>
 <trans-unit id="s9f91cc8bcfabb40f">
   <source>Assertion valid not before</source>
@@ -3023,6 +3037,7 @@
 </trans-unit>
 <trans-unit id="s5e0c81c05565bf42">
   <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+  <target>Tällä lomakkeella luodaan vain sovellus. Jotta voit todentaa sovelluksella, sinun täytyy manuaalisesti kytkeä se palveluntarjoajaan.</target>
 </trans-unit>
 <trans-unit id="s350a616ff5e145ec">
   <source>Select a provider that this application should use.</source>
@@ -3502,6 +3517,7 @@
 </trans-unit>
 <trans-unit id="sa963d05af436770b">
   <source>Impossible travel tolerance</source>
+  <target>Mahdottoman matkustamisen toleranssi</target>
 </trans-unit>
 <trans-unit id="s5760cd97ca42a238">
   <source>Static rule settings</source>
@@ -3722,6 +3738,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s67ba000e66cdbd0d">
   <source>Type a username for the user...</source>
+  <target>Kirjoita käyttäjänimi käyttäjälle...</target>
 </trans-unit>
 <trans-unit id="s7819072445baceee">
   <source>The user's primary identifier used for authentication. 150 characters or fewer.</source>
@@ -4701,6 +4718,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>Kenttä, joka sisältää ryhmän jäsenet. Tämän kentän arvoa vertataan käyttäjän jäsenyysattribuuttiin.</target>
 </trans-unit>
 <trans-unit id="s6478025f3e0174fa">
   <source>User membership attribute</source>
@@ -4843,6 +4861,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4f820625804ed29b">
   <source>Re-authenticate with Plex</source>
+  <target>Todenna uudelleen Plexillä</target>
 </trans-unit>
 <trans-unit id="sc297b2e13c28ecf9">
   <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
@@ -5308,6 +5327,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s98d6b06b0fb7da64">
   <source>Logo shown in sidebar/header and flow executor.</source>
+  <target>Kuvake, joka näytetään sivupalkissa/yläosassa ja prosessisuorittimessa.</target>
 </trans-unit>
 <trans-unit id="s3626433940124897">
   <source>Favicon</source>
@@ -5656,6 +5676,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s362bf0ff6d7db6c9">
   <source>Group User Search</source>
+  <target>Ryhmän käyttäjähaku</target>
 </trans-unit>
 <trans-unit id="se040a9c3444c727c">
   <source>Group Users</source>
@@ -5835,6 +5856,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s3ef09dfdd0568b6e">
   <source>Search by username, email, etc...</source>
+  <target>Hae käyttäjänimellä, sähköpostilla, jne...</target>
 </trans-unit>
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
@@ -6123,6 +6145,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sbf27294eef56ac81">
   <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+  <target>Alustavat käyttöoikeudet voidaan asettaa joko käyttäjälle, joka luo objektin, tai edellisessä kentässä valitulle roolille.</target>
 </trans-unit>
 <trans-unit id="s93f04537efda1b24">
   <source>Available Permissions</source>
@@ -6591,6 +6614,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s24a8fdfc73e8137f">
   <source>Stage used to configure an email-based authenticator.</source>
+  <target>Vaihe, jolla määritellään sähköpostipohjainen todentaja.</target>
 </trans-unit>
 <trans-unit id="sea0da186a814a212">
   <source>Use global connection settings</source>
@@ -6620,6 +6644,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s6891d230751dd7bf">
   <source>Template used for the verification email.</source>
+  <target>Vahvistussähköpostissa käytettävä malli.</target>
 </trans-unit>
 <trans-unit id="s3baf512851453712">
   <source>Twilio Account SID</source>
@@ -7217,6 +7242,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+  <target>Määritä käyttäjän attribuutti, jota käytetään käyttäjän etsimiseen.</target>
 </trans-unit>
 <trans-unit id="sba42248f3f27955c">
   <source>User database + standard password</source>
@@ -7850,6 +7876,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <target>Suorita &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; normaalisti</target>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
   <source>Normal</source>
@@ -7863,6 +7890,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <target>Suorita &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; tarkastajalla</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -7945,12 +7973,14 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
+  <target>Webhookin otsikkotietojen kykennät</target>
 </trans-unit>
 <trans-unit id="sf1fc82d7ae3f4d81">
   <source>Email Subject Prefix</source>
 </trans-unit>
 <trans-unit id="s66401e0b2526acab">
   <source>Email Template</source>
+  <target>Sähköpostimalli</target>
 </trans-unit>
 <trans-unit id="s819509c33a7534ac">
   <source>Notification Transports</source>
@@ -8773,6 +8803,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s5c67b6c66029e5b2">
   <source>Platform</source>
+  <target>Alusta</target>
 </trans-unit>
 <trans-unit id="se8574bce64d9c1f8">
   <source>Kernel</source>
@@ -9057,6 +9088,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s857cf5aa8955cf5c">
   <source>Flow inspector loading</source>
+  <target>Prosessin tarkastajaa ladataan</target>
 </trans-unit>
 <trans-unit id="sa11e92683c5860c7">
   <source>Request has been denied.</source>
@@ -9189,6 +9221,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s168d0c138b63286d">
   <source>Type your time-based one-time password code.</source>
+  <target>Kirjoita aikaperusteinen kertakäyttösalasanasi.</target>
 </trans-unit>
 <trans-unit id="sc2ec367e3108fe65">
   <source>Duo activation QR code</source>
@@ -9303,6 +9336,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s8bb0a1b672b52954">
   <source>In case you lose access to your primary authenticators.</source>
+  <target>Siltä varalta, että menetät pääsyn ensisijaisiin todentajiisi.</target>
 </trans-unit>
 <trans-unit id="s97f2dc19fa556a6a">
   <source>SMS</source>
@@ -9393,6 +9427,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+  <target>Kertauloskirjautuminen</target>
 </trans-unit>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
