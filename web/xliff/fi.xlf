@@ -715,6 +715,7 @@
 </trans-unit>
 <trans-unit id="s3f01dbc864d2a8b9">
   <source>Outpost status chart</source>
+  <target>Tukikohdan tila -kaavio</target>
 </trans-unit>
 <trans-unit id="sfeb82261bcf99edd">
   <source>Healthy outposts</source>
@@ -797,6 +798,7 @@
 </trans-unit>
 <trans-unit id="scdb1bac161852c73">
   <source>Welcome</source>
+  <target>Tervetuloa</target>
 </trans-unit>
 <trans-unit id="s41e035c4bb8d15f2">
   <source>General system status</source>
@@ -951,6 +953,7 @@
 </trans-unit>
 <trans-unit id="se41af830054194bc">
   <source>Pause this schedule</source>
+  <target>Keskeytä tämä ajastettu toiminto</target>
 </trans-unit>
 <trans-unit id="sfefce784ec55868f">
   <source>Select an object.</source>
@@ -1143,6 +1146,7 @@
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
+  <target>Suunniteltu suoritusaika</target>
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
@@ -1163,6 +1167,7 @@
 </trans-unit>
 <trans-unit id="s14053a4609676b8b">
   <source>Exclude successful tasks</source>
+  <target>Rajaa pois onnistuneet tehtävät</target>
 </trans-unit>
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
@@ -1740,6 +1745,7 @@
 </trans-unit>
 <trans-unit id="sa3056b3252b4b52c">
   <source>Back-channel</source>
+  <target>Taustakanava</target>
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
@@ -1862,6 +1868,7 @@
 </trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
+  <target>Valitse todennusprosessi...</target>
 </trans-unit>
 <trans-unit id="sa72a3bd1e7e89926">
   <source>Flow used when a user access this provider and is not authenticated.</source>
@@ -2248,6 +2255,7 @@
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
+  <target>Kun tämä on käytössä, SAML-uloskirjautumispyynnöt allekirjoitetaan.</target>
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
@@ -2261,6 +2269,7 @@
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
+  <target>SLS-liitos</target>
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
@@ -2419,6 +2428,7 @@
 </trans-unit>
 <trans-unit id="seb250c3885733522">
   <source>Token to authenticate with.</source>
+  <target>Todennuksessa käytettävä tunniste.</target>
 </trans-unit>
 <trans-unit id="scdafec223d3840e9">
   <source>OAuth Source</source>
@@ -2431,6 +2441,7 @@
 </trans-unit>
 <trans-unit id="sc5ca1b55a5391535">
   <source>Additional OAuth parameters, such as grant_type.</source>
+  <target>OAuth-lisäparametrit, kuten grant_type.</target>
 </trans-unit>
 <trans-unit id="sb21f33b039c86322">
   <source>SCIM base url, usually ends in /v2.</source>
@@ -2543,6 +2554,7 @@
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+  <target>Yhden sivun synkronoinnin aikakatkaisu.</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
@@ -2863,6 +2875,7 @@
 </trans-unit>
 <trans-unit id="sc4bf1a365af696eb">
   <source>Override dry-run mode</source>
+  <target>Ohita testiajotila</target>
 </trans-unit>
 <trans-unit id="s94a5233931be4110">
   <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
@@ -3416,6 +3429,7 @@
 </trans-unit>
 <trans-unit id="s48611ce6e85874dc">
   <source>Check impossible travel</source>
+  <target>Tarkista mahdoton matkustaminen</target>
 </trans-unit>
 <trans-unit id="s8cf926e8311f8065">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
@@ -3666,6 +3680,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s1e2e135dac5ba993">
   <source>Email Address</source>
+  <target>Sähköpostiosoite</target>
 </trans-unit>
 <trans-unit id="s9fd0516c9193c73e">
   <source>Type an optional email address...</source>
@@ -4759,6 +4774,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s2e7448caf3df574a">
   <source>Verify Assertion Signature</source>
+  <target>Vahvista väitteen allekirjoitus</target>
 </trans-unit>
 <trans-unit id="s0069939a0fcc3986">
   <source>When enabled, authentik will look for a Signature inside of the Assertion element.</source>
@@ -5275,6 +5291,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s1fe26d2eb791caec">
   <source>Select a user settings flow...</source>
+  <target>Valitse käyttäjäasetusten prosessi...</target>
 </trans-unit>
 <trans-unit id="s523160b433311521">
   <source>If set, users are able to configure details of their profile.</source>
@@ -5658,6 +5675,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s0051b0d8e6decea6">
   <source>New user...</source>
+  <target>Uusi käyttäjä...</target>
 </trans-unit>
 <trans-unit id="s7d620371caea15e1">
   <source>Create Service Account</source>
@@ -5668,6 +5686,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s384699f614f39071">
   <source>New service account...</source>
+  <target>Uusi palvelukäyttäjä...</target>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -5982,6 +6001,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sedb57bf4b42a8e40">
   <source>Unknown Initial Permissions mode</source>
+  <target>Tuntematon alustavien käyttöoikeuksien tila</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -8613,6 +8633,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s3fe3ff490adaaa63">
   <source>Build</source>
+  <target>Koontiversio</target>
 </trans-unit>
 <trans-unit id="s42aea5c6d3d1fce7">
   <source>Python version</source>
@@ -9050,6 +9071,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
+  <target>Kirjoita sähköpostiosoitteesi.</target>
 </trans-unit>
 <trans-unit id="s3643189d1abbb7f4">
   <source>Code</source>
