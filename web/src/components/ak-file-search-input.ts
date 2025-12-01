@@ -23,7 +23,7 @@ interface FileItem {
 }
 
 const renderElement = (item: FileItem) => item.name;
-const renderValue = (item: FileItem | undefined) => item?.name;
+const renderValue = (item?: FileItem | null) => item?.name;
 
 /**
  * File Search Input Component
@@ -32,20 +32,20 @@ const renderValue = (item: FileItem | undefined) => item?.name;
  * Supports uploaded files, static files, and external URLs/Font Awesome icons via PassthroughBackend.
  */
 @customElement("ak-file-search-input")
-export class AkFileSearchInput extends AKElement {
+export class AKFileSearchInput extends AKElement {
     // Render into the lightDOM
     protected createRenderRoot() {
         return this;
     }
 
     @property({ type: String })
-    public name!: string;
+    public name: string | null = null;
 
     @property({ type: String })
     public label: string | null = null;
 
     @property({ type: String })
-    public value?: string;
+    public value: string = "";
 
     @property({ type: Boolean })
     public required = false;
@@ -146,6 +146,6 @@ export class AkFileSearchInput extends AKElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-file-search-input": AkFileSearchInput;
+        "ak-file-search-input": AKFileSearchInput;
     }
 }
