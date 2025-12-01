@@ -80,7 +80,7 @@ export class FileListPage extends TablePage<FileItem> {
                 ];
             }}
             .usedBy=${(item: FileItem) => {
-                return new AdminApi(DEFAULT_CONFIG).adminFileUsedByRetrieve({
+                return new AdminApi(DEFAULT_CONFIG).adminFileUsedByList({
                     name: item.name,
                 });
             }}

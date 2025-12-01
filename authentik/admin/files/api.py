@@ -218,7 +218,7 @@ class FileUsedByView(APIView):
 
     @extend_schema(
         parameters=[FileUsedByParameters],
-        responses={200: None},
+        responses={200: UsedBySerializer(many=True)},
     )
     def get(self, request: Request) -> Response:
         params = FileUsedByView.FileUsedByParameters(data=request.query_params)

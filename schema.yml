@@ -112,7 +112,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
   /admin/file/used_by/:
     get:
-      operationId: admin_file_used_by_retrieve
+      operationId: admin_file_used_by_list
       parameters:
       - $ref: '#/components/parameters/QueryName'
       tags:
@@ -121,7 +121,13 @@ paths:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
