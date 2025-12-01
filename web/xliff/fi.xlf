@@ -13,6 +13,7 @@
 </trans-unit>
 <trans-unit id="se84ba7f105934495">
   <source>Please check the browser console for more details.</source>
+  <target>Katso lisätietoja selaimen konsolista.</target>
 </trans-unit>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
@@ -59,6 +60,7 @@
 </trans-unit>
 <trans-unit id="se58e6ed983bf34b0">
   <source>Collapse navigation</source>
+  <target>Sulje valikko</target>
 </trans-unit>
 <trans-unit id="sc6ef25894ed00175">
   <source>Expand navigation</source>
@@ -575,6 +577,7 @@
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Todennettu käyttäjänä <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="s2152f3482784705f">
   <source>Recent events</source>
@@ -951,6 +954,7 @@
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Lomakkeen toiminnot</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
@@ -964,6 +968,7 @@
 </trans-unit>
 <trans-unit id="sd372fe5b712f6b30">
   <source>Crontab</source>
+  <target>Crontab</target>
 </trans-unit>
 <trans-unit id="s95bc8722b2708f8b">
   <source>Paused</source>
@@ -1047,6 +1052,7 @@
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>Liitetty rooliin</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
@@ -1129,6 +1135,7 @@
 </trans-unit>
 <trans-unit id="s85994a70cd39166c">
   <source>Running</source>
+  <target>Suoritetaan</target>
 </trans-unit>
 <trans-unit id="sb37a630168e1e0e5">
   <source>Post-processing</source>
@@ -1148,6 +1155,7 @@
 </trans-unit>
 <trans-unit id="s94f08f46277af7d6">
   <source>Running tasks</source>
+  <target>Suoritettavat tehtävät</target>
 </trans-unit>
 <trans-unit id="s8b551364b894d1ee">
   <source>Queued tasks</source>
@@ -1198,6 +1206,7 @@
 </trans-unit>
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
+  <target>Yritä tehtävää uudelleen</target>
 </trans-unit>
 <trans-unit id="sac44b0f4dc14c227">
   <source>Current execution logs</source>
@@ -1220,6 +1229,7 @@
 </trans-unit>
 <trans-unit id="s6089c283e28012fb">
   <source>Show only standalone schedules</source>
+  <target>Näytä vain itsenäiset ajastetut toiminnot</target>
 </trans-unit>
 <trans-unit id="s48006fb6e0b1860a">
   <source>Run scheduled task now</source>
@@ -1491,6 +1501,7 @@
 </trans-unit>
 <trans-unit id="s7d4ec232535a36f0">
   <source>Choose a Provider</source>
+  <target>Valitse palveluntarjoaja</target>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
@@ -1994,6 +2005,7 @@
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+  <target>authentik tukee vain RSA-OAEP-256-salausta.</target>
 </trans-unit>
 <trans-unit id="s26bf2730430efbea">
   <source>Subject mode</source>
@@ -2466,6 +2478,7 @@
 </trans-unit>
 <trans-unit id="s0c48c5f754275796">
   <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+  <target>Määritä NameID-oletuskäytäntö, jota käytetään IDP-lähtöisissä kirjautumisissa ja kun saapuva väite ei määritä NameID-käytäntöä (käytetään myös silloin, kun käytössä on mukautettu NameID-kytkentä).</target>
 </trans-unit>
 <trans-unit id="s2a0f60e74b478804">
   <source>Digest algorithm</source>
@@ -2544,6 +2557,7 @@
 </trans-unit>
 <trans-unit id="s7f40ef46b7f213ea">
   <source>Altered behavior for usage with Slack.</source>
+  <target>Poikkeava toimintamalli Slackin kanssa.</target>
 </trans-unit>
 <trans-unit id="s2ce58eab7841b342">
   <source>Salesforce</source>
@@ -2603,6 +2617,7 @@
 </trans-unit>
 <trans-unit id="s25afe36fa73d2e5b">
   <source>Sync settings</source>
+  <target>Synkronoinnin asetukset</target>
 </trans-unit>
 <trans-unit id="s2c859e13e182be6b">
   <source>Page size</source>
@@ -2610,6 +2625,7 @@
 </trans-unit>
 <trans-unit id="sb984354bb46c8bed">
   <source>Controls the number of objects synced in a single task.</source>
+  <target>Säätää yhdessä tehtävässä synkronoitavien objektien määrää.</target>
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
@@ -2780,6 +2796,7 @@
 </trans-unit>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
+  <target>Avaa avustetoiminto luodaksesi uuden palveluntarjoajan.</target>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
@@ -2979,6 +2996,7 @@
 </trans-unit>
 <trans-unit id="s08661004803c26b0">
   <source>Sync is not currently running.</source>
+  <target>Synkronointi ei ole käynnissä.</target>
 </trans-unit>
 <trans-unit id="s81d16aa9ec62262c">
   <source>Last successful sync</source>
@@ -3316,6 +3334,7 @@
 </trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
+  <target>Valitse käyttäjiä</target>
 </trans-unit>
 <trans-unit id="sb85774dc5d18ff0f">
   <source>Confirm</source>
@@ -3746,6 +3765,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s11b2e9ecce28690c">
   <source>Display Name</source>
+  <target>Näytettävä nimi</target>
 </trans-unit>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
@@ -3981,6 +4001,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
+  <target>Sovellusten dokumentaatio</target>
 </trans-unit>
 <trans-unit id="sd20f6cd02c90867f">
   <source>Application(s)</source>
@@ -4020,9 +4041,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s754153d9e524ffce">
   <source>Clear Application cache</source>
+  <target>Tyhjennä sovellusvälimuisti</target>
 </trans-unit>
 <trans-unit id="sea5092df2c72b064">
   <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+  <target>Haluatko varmasti tyhjentää sovellusvälimuistin? Tämä aiheuttaa kaikkien käytäntöjen uudelleensuorittamisen niiden seuraavalla käyttökerralla.</target>
 </trans-unit>
 <trans-unit id="sd9b556a84ae25690">
   <source>Successfully sent test-request.</source>
@@ -4065,6 +4088,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <target>Sovelluksen &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot; haku epäonnistui.</target>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
@@ -4684,6 +4708,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sfa6b7b105640e457">
   <source>Additional User DN</source>
+  <target>Käyttäjien lisä-DN</target>
 </trans-unit>
 <trans-unit id="s9ae089fd248e72db">
   <source>Additional user DN, prepended to the Base DN.</source>
@@ -4885,6 +4910,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s0069939a0fcc3986">
   <source>When enabled, authentik will look for a Signature inside of the Assertion element.</source>
+  <target>Kun tämä on käytössä, authentik etsii allekirjoitusta väite-elementin sisältä.</target>
 </trans-unit>
 <trans-unit id="s6bf8b26e6e8a7059">
   <source>Verify Response Signature</source>
@@ -5416,6 +5442,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s70d02f31fd256eff">
   <source>Select a device code flow...</source>
+  <target>Valitse laitekoodiprosessi...</target>
 </trans-unit>
 <trans-unit id="s7b298427bdea81ae">
   <source>If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.</source>
@@ -5631,6 +5658,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s12928f97c99f88db">
   <source>This may take a few seconds.</source>
+  <target>Tämä saattaa kestää muutaman sekunnin.</target>
 </trans-unit>
 <trans-unit id="saa29a2ac03cd9d19">
   <source>Reason</source>
@@ -5829,6 +5857,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sb26035b596566abf">
   <source>Unnamed</source>
+  <target>Nimetön</target>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
   <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
@@ -5872,6 +5901,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
+  <target>Nimeä ei asetettu</target>
 </trans-unit>
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
@@ -6036,6 +6066,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sfb95ad8c25db95ba">
   <source>Last password change</source>
+  <target>Viimeisin salasanan muutos</target>
 </trans-unit>
 <trans-unit id="s64a33dcdaf90af26">
   <source>User Info</source>
@@ -6160,6 +6191,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
+  <target>Alustavat käyttöoikeudet</target>
 </trans-unit>
 <trans-unit id="s06fc21a40f5d7de1">
   <source>Set initial permissions for newly created objects.</source>
@@ -6622,9 +6654,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+  <target>Kun tämä on käytössä, käytetään yleisiä sähköpostiyhteysasetuksia, ja alla olevat yhteysasetukset ohitetaan.</target>
 </trans-unit>
 <trans-unit id="s7e2bcca51126ec9c">
   <source>Subject of the verification email.</source>
+  <target>Vahvistussähköpostin otsikko</target>
 </trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
@@ -7221,6 +7255,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sbe9da6dad795aa39">
   <source>Certificate authorities</source>
+  <target>Sertifikaattien myöntäjät</target>
 </trans-unit>
 <trans-unit id="se3a6aa4f0ab7568e">
   <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
@@ -7397,6 +7432,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
+  <target>Muista laite</target>
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
@@ -7894,6 +7930,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
+  <target>Käytä tarkastajaa</target>
 </trans-unit>
 <trans-unit id="s3576aead3e68c5c9">
   <source>Export flow</source>
@@ -8015,9 +8052,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>Jos ryhmää ei ole valittu ja 'Lähetä notifikaatiot tapahtuman käyttäjälle' on pois käytöstä, tämä sääntö ei ole käytössä.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
+  <target>Lähetä notifikaatiot tapahtuman käyttäjälle</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
@@ -8512,6 +8551,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sdd04913b3b46cf30">
   <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+  <target>Maine ei voi kasvaa tätä arvoa korkeammaksi. Nolla tai positiivinen.</target>
 </trans-unit>
 <trans-unit id="s57b52b60ed5e2bc7">
   <source>Footer links</source>
@@ -8597,6 +8637,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sa556d7b744364dcf">
   <source>OCI URL</source>
+  <target>OCI URL</target>
 </trans-unit>
 <trans-unit id="h3b1f38bb34f8b1b6">
   <source> A valid OCI manifest URL, prefixed with the protocol
@@ -8604,6 +8645,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc19e397bee1e67f7">
   <source>Read more about</source>
+  <target>Lue lisää aiheesta</target>
 </trans-unit>
 <trans-unit id="sa777a614e18a35cd">
   <source>OCI Support</source>
@@ -8733,6 +8775,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
   <source>Estimated user count one year from now based on <x id="0" equiv-text="${internalUsers}"/> current internal users and <x id="1" equiv-text="${forecastedInternalUsers}"/> forecasted internal users.</source>
+  <target>Arvioitu käyttäjämäärä vuoden kuluttua <x id="0" equiv-text="${internalUsers}"/> tämänhetkisen sisäisen käyttäjän ja <x id="1" equiv-text="${forecastedInternalUsers}"/> ennustetun sisäisen käyttäjän perusteella.</target>
 </trans-unit>
 <trans-unit id="s531571491deb239a">
   <source>Approximately</source>
@@ -8818,6 +8861,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sd51d6a39208696cc">
   <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+  <target>Sulje <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="scce64bcfb0a73ad7">
   <source>Expand <x id="0" equiv-text="${this.label}"/></source>
@@ -8825,6 +8869,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sfe1fb536cab6c0f5">
   <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+  <target><x id="0" equiv-text="${this.label}"/>-valikko</target>
 </trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
@@ -8980,6 +9025,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sa4be93eb7f4e51e3">
   <source>Site links</source>
+  <target>Sivuston linkit</target>
 </trans-unit>
 <trans-unit id="s6fe64b4625517333">
   <source>Powered by authentik</source>
@@ -9022,6 +9068,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s4607a8246d0d6265">
   <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
+  <target>Käyttäjän <x id="0" equiv-text="${this.user}"/> avatar</target>
 </trans-unit>
 <trans-unit id="sb0dbcf3bb1127907">
   <source>User avatar</source>
@@ -9197,6 +9244,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
+  <target>Kopioi aikaperusteisen kertakäyttösalasanan konfiguraatio</target>
 </trans-unit>
 <trans-unit id="sdc323c6af4ae9f01">
   <source>Successfully copied TOTP Config.</source>
@@ -9540,6 +9588,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
   <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <target><x id="0" equiv-text="${count}"/> sovellus löytyi kohteelle &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
   <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
@@ -9633,6 +9682,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="ellipsis">
   <source>...</source>
+  <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
 </body>
