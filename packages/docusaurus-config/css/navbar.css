@@ -130,7 +130,7 @@
     }
 }
 
-@media (max-width: 998px) {
+@media (width < 998px) {
     .navbar__item.navbar__link {
         display: none;
     }
