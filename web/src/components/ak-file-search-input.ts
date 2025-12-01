@@ -83,6 +83,7 @@ export class AKFileSearchInput extends AKElement {
                 ...(query ? { search: query } : {}),
             })
             .then((response) => {
+                // Cast necessary: API returns File objects but we only use name, url, mime_type, size, and usage properties
                 const fileResponse = response as unknown as FileItem[];
 
                 if (!fileResponse || !Array.isArray(fileResponse)) {
