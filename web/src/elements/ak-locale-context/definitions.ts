@@ -3,7 +3,7 @@ import { AkLocale, LocaleRow } from "./types.js";
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
-export const DEFAULT_FALLBACK = "en-US";
+export const DEFAULT_FALLBACK = "en_US";
 
 export const enLocale: LocaleModule = {
     templates: {},
