@@ -16,6 +16,7 @@ from authentik.core.models import BackchannelProvider, Group, PropertyMapping, U
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 LOGGER = get_logger()
@@ -127,6 +128,13 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name=_("SCIM Compatibility Mode"),
         help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
     )
+    service_provider_config_cache_timeout = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable."
+        ),
+    )
 
     def scim_auth(self) -> AuthBase:
         if self.auth_mode == SCIMAuthenticationMode.OAUTH:
@@ -188,6 +196,13 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     @property
     def component(self) -> str:
         return "ak-provider-scim-form"
+
+    @property
+    def service_provider_config_cache_timeout_seconds(self) -> int:
+        return max(
+            0,
+            int(timedelta_from_string(self.service_provider_config_cache_timeout).total_seconds()),
+        )
 
     @property
     def serializer(self) -> type[Serializer]:

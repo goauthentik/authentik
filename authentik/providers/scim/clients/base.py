@@ -29,8 +29,6 @@ if TYPE_CHECKING:
     from django.db.models import Model
     from pydantic import BaseModel
 
-SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT = 3600
-
 
 class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     BaseOutgoingSyncClient[TModel, TConnection, TSchema, SCIMProvider]
@@ -91,10 +89,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def get_service_provider_config(self):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
+        timeout_seconds = self.provider.service_provider_config_cache_timeout_seconds
         cache_key = f"goauthentik.io/providers/scim/{self.provider.pk}/service_provider_config"
 
         # Check cache first
-        cached_config = cache.get(cache_key)
+        cached_config = cache.get(cache_key) if timeout_seconds > 0 else None
         if cached_config is not None:
             return cached_config
 
@@ -118,5 +117,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             config = default_config
 
         # Cache the config (either successfully fetched or default)
-        cache.set(cache_key, config, SERVICE_PROVIDER_CONFIG_CACHE_TIMEOUT)
+        if timeout_seconds > 0:
+            cache.set(cache_key, config, timeout_seconds)
+        else:
+            cache.delete(cache_key)
         return config
