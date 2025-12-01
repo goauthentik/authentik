@@ -61,7 +61,7 @@ class TestEndpointStage(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.post(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-                data={"component": "ak-stage-endpoint-agent", "response" :response},
+                data={"component": "ak-stage-endpoint-agent", "response": response},
             )
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
         plan = plan()
