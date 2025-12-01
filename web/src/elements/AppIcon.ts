@@ -8,6 +8,8 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
+
 export interface IAppIcon {
     name?: string | null;
     icon?: string | null;
@@ -18,14 +20,7 @@ export interface IAppIcon {
 export class AppIcon extends AKElement implements IAppIcon {
     public static readonly FontAwesomeProtocol = FontAwesomeProtocol;
 
-    static styles: CSSResult[] = [Styles];
-
-    // Render to light DOM so Font Awesome fonts (loaded globally) work correctly.
-    // This avoids the issue where @font-face rules with relative paths in PatternFly's
-    // FA icons CSS don't resolve correctly in Shadow DOM.
-    protected override createRenderRoot() {
-        return this;
-    }
+    static styles: CSSResult[] = [PFFAIcons, Styles];
 
     @property({ type: String })
     public name: string | null = null;
