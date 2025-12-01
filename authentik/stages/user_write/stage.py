@@ -13,7 +13,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.events.utils import sanitize_item
+from authentik.events.utils import sanitize_dict, sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
@@ -116,10 +116,9 @@ class UserWriteStageView(StageView):
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
                 if isinstance(value, dict):
-                    sanitized_values = {k: sanitize_item(v) for k, v in value.items()}
-                    user.attributes.update(sanitized_values)
+                    user.attributes.update(sanitize_dict(value))
                 else:
-                    user.attributes.update(value)
+                    raise ValidationError("Attempt to overwrite complete attributes")
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
