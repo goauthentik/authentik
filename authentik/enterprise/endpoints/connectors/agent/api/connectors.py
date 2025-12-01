@@ -79,7 +79,7 @@ class AgentConnectorViewSetMixin:
         if not raw_token:
             LOGGER.warning("Missing token")
             return HttpResponseBadRequest()
-        device = Device.objects.filter(name=request.query_params.get("device")).first()
+        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
         if not device:
             LOGGER.warning("Couldn't find device")
             raise Http404
