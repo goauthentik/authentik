@@ -22,6 +22,8 @@ export interface FileItem {
     mimeType: string;
 }
 
+export type FileListOrderKey = "name" | "mimeType";
+
 @customElement("ak-files-list")
 export class FileListPage extends TablePage<FileItem> {
     public override checkbox = true;
@@ -33,7 +35,7 @@ export class FileListPage extends TablePage<FileItem> {
     public override pageIcon = "pf-icon pf-icon-folder-open";
 
     @property({ type: String, useDefault: true })
-    public order = "name";
+    public order: FileListOrderKey = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
         const api = new AdminApi(DEFAULT_CONFIG);
