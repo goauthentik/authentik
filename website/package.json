@@ -30,8 +30,10 @@
         "netlify-plugin-cache": "^1.0.3",
         "netlify-redirect-parser": "^14.4.0",
         "npm-run-all": "^4.1.5",
+        "postman-code-generators": "2.1.0",
         "prettier": "^3.7.3",
         "prettier-plugin-packagejson": "^2.5.20",
+        "shelljs": "0.10.0",
         "typescript-eslint": "^8.48.0"
     },
     "optionalDependencies": {
@@ -60,6 +62,17 @@
     ],
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
+        "@goauthentik/api-docs": {
+            "js-yaml": "^4.1.1",
+            "openapi-to-postmanv2": "^5.0.0",
+            "postman-collection": "^5.0.2",
+            "postman-code-generators": {
+                "shelljs": "0.10.0"
+            },
+            "docusaurus-theme-openapi-docs": {
+                "postman-code-generators": "^2.1.0"
+            }
+        },
         "format-imports": {
             "eslint": "^9.31.0"
         }
