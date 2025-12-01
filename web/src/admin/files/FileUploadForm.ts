@@ -16,6 +16,9 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 // Same regex is used in the backend as well
 const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/source
+// This is perfect for the "pattern" attribute
+const VALID_FILE_NAME_PATTERN_STRING = VALID_FILE_NAME_PATTERN.source;
 
 function assertValidFileName(fileName: string): void {
     if (!VALID_FILE_NAME_PATTERN.test(fileName)) {
@@ -102,6 +105,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                     <input
                         type="text"
                         class="pf-c-form-control"
+                        pattern=${VALID_FILE_NAME_PATTERN_STRING}
                         placeholder=${msg("Type an optional custom file name...")}
                     />
                     <p class="pf-c-form__helper-text">
