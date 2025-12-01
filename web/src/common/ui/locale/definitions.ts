@@ -23,7 +23,7 @@ const sourceTargetModule: LocaleModule = {
  * These are thunked functions to allow for localization via `msg()`.
  */
 export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
-    [sourceLocale]: () => msg("English"), // American English
+    [sourceLocale]: () => msg("English"),
     pseudo_LOCALE: () => msg("Pseudolocale (for testing)"),
     cs_CZ: () => msg("Czech"),
     de_DE: () => msg("German"),
