@@ -8,8 +8,6 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
-
 export interface IAppIcon {
     name?: string | null;
     icon?: string | null;
@@ -20,7 +18,14 @@ export interface IAppIcon {
 export class AppIcon extends AKElement implements IAppIcon {
     public static readonly FontAwesomeProtocol = FontAwesomeProtocol;
 
-    static styles: CSSResult[] = [PFFAIcons, Styles];
+    static styles: CSSResult[] = [Styles];
+
+    // Render to light DOM so Font Awesome fonts (loaded globally) work correctly.
+    // This avoids the issue where @font-face rules with relative paths in PatternFly's
+    // FA icons CSS don't resolve correctly in Shadow DOM.
+    protected override createRenderRoot() {
+        return this;
+    }
 
     @property({ type: String })
     public name: string | null = null;
@@ -31,21 +36,24 @@ export class AppIcon extends AKElement implements IAppIcon {
     @property({ reflect: true })
     public size: PFSize = PFSize.Medium;
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         const applicationName = this.name ?? msg("Application");
         const label = msg(str`${applicationName} Icon`);
 
+        // Check for Font Awesome icons (fa://fa-icon-name)
         if (this.icon?.startsWith(AppIcon.FontAwesomeProtocol)) {
+            const iconClass = this.icon.slice(AppIcon.FontAwesomeProtocol.length);
             return html`<i
                 part="icon font-awesome"
                 role="img"
                 aria-label=${label}
-                class="icon fas ${this.icon.slice(AppIcon.FontAwesomeProtocol.length)}"
+                class="icon fas ${iconClass}"
             ></i>`;
         }
 
         const insignia = this.name?.charAt(0).toUpperCase() ?? "�";
 
+        // Check for image URLs (http://, https://, or file paths)
         if (this.icon) {
             return html`<img
                 part="icon image"
@@ -57,6 +65,7 @@ export class AppIcon extends AKElement implements IAppIcon {
             />`;
         }
 
+        // Fallback to first letter insignia
         return html`<span part="icon insignia" role="img" aria-label=${label} class="icon"
             >${insignia}</span
         >`;
