@@ -346,7 +346,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
 
         return UserOAuthSourceConnectionSerializer
 
-
     class Meta:
         verbose_name = _("User OAuth Source Connection")
         verbose_name_plural = _("User OAuth Source Connections")
