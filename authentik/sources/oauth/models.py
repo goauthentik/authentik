@@ -346,10 +346,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
 
         return UserOAuthSourceConnectionSerializer
 
-    def save(self, *args, **kwargs):
-        self.access_token = self.access_token or None
-        self.refresh_token = self.refresh_token or None
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("User OAuth Source Connection")
