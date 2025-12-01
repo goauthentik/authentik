@@ -24,7 +24,7 @@ class DeleteAction(Enum):
     CASCADE_MANY = "cascade_many"
     SET_NULL = "set_null"
     SET_DEFAULT = "set_default"
-    NONE = "none"
+    LEFT_DANGLING = "left_dangling"
 
 
 class UsedBySerializer(PassiveSerializer):

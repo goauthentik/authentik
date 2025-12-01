@@ -3,6 +3,7 @@ import mimetypes
 from django.db.models import Q
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, FileField
 from rest_framework.parsers import MultiPartParser
@@ -236,10 +237,15 @@ class FileUsedByView(APIView):
         used_by = []
 
         for model, fields in models_and_fields.items():
+            app = model._meta.app_label
+            model_name = model._meta.model_name
+
             q = Q()
             for field in fields:
                 q |= Q(**{field: params.get("name")})
-            objs = model.objects.filter(q)
+
+            objs = get_objects_for_user(request.user, f"{app}.view_{model_name}", model)
+            objs = objs.filter(q)
             for obj in objs:
                 serializer = UsedBySerializer(
                     data={
@@ -247,7 +253,7 @@ class FileUsedByView(APIView):
                         "model_name": model._meta.model_name,
                         "pk": str(obj.pk),
                         "name": str(obj),
-                        "action": DeleteAction.NONE,
+                        "action": DeleteAction.LEFT_DANGLING,
                     }
                 )
                 serializer.is_valid()

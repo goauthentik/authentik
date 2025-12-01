@@ -54195,7 +54195,7 @@ components:
       - cascade_many
       - set_null
       - set_default
-      - none
+      - left_dangling
       type: string
     User:
       type: object
