@@ -703,6 +703,7 @@
 </trans-unit>
 <trans-unit id="s334b3924d2bd5d55">
   <source>Kerberos Source</source>
+  <target>Kerberos-lähde</target>
 </trans-unit>
 <trans-unit id="s8a75e83497a183a2">
   <source>Healthy</source>
@@ -934,6 +935,7 @@
 </trans-unit>
 <trans-unit id="s059358bf402de018">
   <source>Element inside the form slot is not a Form</source>
+  <target>Elementti lomakkeen paikassa ei ole lomake-tyyppinen</target>
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
@@ -946,6 +948,7 @@
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
+  <target>Ajastetun toiminnon päivitys onnistui.</target>
 </trans-unit>
 <trans-unit id="sd372fe5b712f6b30">
   <source>Crontab</source>
@@ -1043,6 +1046,7 @@
 </trans-unit>
 <trans-unit id="s4dcbef0770f0b649">
   <source>Assigned to user</source>
+  <target>Liitetty käyttäjään</target>
 </trans-unit>
 <trans-unit id="s1455753daa00f1bc">
   <source>User doesn't have view permission so description cannot be retrieved.</source>
@@ -1090,6 +1094,7 @@
 </trans-unit>
 <trans-unit id="sc08c153234510246">
   <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <target>Päivitä &amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot;-käyttöoikeudet</target>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
   <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
@@ -1186,6 +1191,7 @@
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
+  <target>Ajastettu toiminto</target>
 </trans-unit>
 <trans-unit id="sf92789320708efed">
   <source>Next run</source>
@@ -1761,6 +1767,7 @@
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>Selaimen iframe-uloskirjautumisnotifikaatiot</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
   <source>Based on the User's hashed ID</source>
@@ -1846,6 +1853,7 @@
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>URI, johon uloskirjautumisnotifikaatiot lähetetään, kun käyttäjät kirjautuvat ulos. Vaaditaan OpenID Connectin uloskirjautumistoiminnallisuutta varten.</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
@@ -1886,6 +1894,7 @@
 </trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
+  <target>Valitse mitätöintiprosessi...</target>
 </trans-unit>
 <trans-unit id="s0159c800f16ee1a5">
   <source>Flow used when logging out of this provider.</source>
@@ -2445,6 +2454,7 @@
 </trans-unit>
 <trans-unit id="s1876401267e31dd0">
   <source>OAuth Parameters</source>
+  <target>OAuth-parametrit</target>
 </trans-unit>
 <trans-unit id="sc5ca1b55a5391535">
   <source>Additional OAuth parameters, such as grant_type.</source>
@@ -2506,6 +2516,7 @@
 </trans-unit>
 <trans-unit id="s8c9ca09b5eeb5ae9">
   <source>When enabled, mutating requests will be dropped and logged instead.</source>
+  <target>Kun tämä on valittu, muuntautuvat pyynnöt estetään ja kirjataan lokiin.</target>
 </trans-unit>
 <trans-unit id="sfc8bb104e2c05af8">
   <source>User filtering</source>
@@ -2930,6 +2941,7 @@
 </trans-unit>
 <trans-unit id="s6b0eeb3de1789c6e">
   <source>Last sync status</source>
+  <target>Viimeisimmän synkronoinnin tila</target>
 </trans-unit>
 <trans-unit id="s6c3daaac4eed12f9">
   <source>Changelog</source>
@@ -3422,6 +3434,7 @@
 </trans-unit>
 <trans-unit id="sb8b7450c8515894c">
   <source>Maximum distance</source>
+  <target>Enimmäisetäisyys</target>
 </trans-unit>
 <trans-unit id="s40cdbaa532bc9899">
   <source>Maximum distance a login attempt is allowed from in kilometers.</source>
@@ -3674,6 +3687,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s237e9858014b1205">
   <source>Type an optional display name...</source>
+  <target>Kirjoita valinnainen näytettävä nimi...</target>
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
   <source>The user's display name.</source>
@@ -3746,6 +3760,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s775f81ca91aa2d0c">
   <source>Policy actions</source>
+  <target>Käytännön toiminnot</target>
 </trans-unit>
 <trans-unit id="s911a27022aba349f">
   <source>Create and bind Policy</source>
@@ -3871,6 +3886,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sc83697908e3e2b46">
   <source>SSF URL</source>
+  <target>SSF URL</target>
 </trans-unit>
 <trans-unit id="s5a1fc8f3b2e072d0">
   <source>No assigned application</source>
@@ -3880,6 +3896,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sa412f34efd88e962">
   <source>Streams</source>
+  <target>Streamit</target>
 </trans-unit>
 <trans-unit id="s6ba50bb0842ba1e2">
   <source>Applications</source>
@@ -3913,9 +3930,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
   <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Muokkaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
   <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Avaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
@@ -4644,6 +4663,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>Kenttä, joka sisältää käyttäjän ryhmien DN:t. Tätä kenttää käytetään etsimään käyttäjien ryhmäjäsenyyksiä, eli 'memberOf'. Active Directory -ympäristössä sisäkkäisten ryhmien etsinnässä käytä muotoa 'memberOf:1.2.840.113556.1.4.1941:'.</target>
 </trans-unit>
 <trans-unit id="s026555347e589f0e">
   <source>Object uniqueness field</source>
@@ -4661,6 +4681,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s139200afa0695967">
   <source>Plain</source>
+  <target>Plain</target>
 </trans-unit>
 <trans-unit id="s7a316723c6bb33eb">
   <source>S256</source>
@@ -5021,6 +5042,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s463491b90193d86b">
   <source>Telegram bot</source>
+  <target>Telegram-botti</target>
 </trans-unit>
 <trans-unit id="s4014853299a8bb20">
   <source>Update Telegram Source</source>
@@ -5347,6 +5369,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s4270ebcf645b9df5">
   <source>Search by domain or brand name...</source>
+  <target>Hae verkkotunnuksella tai brändin nimellä...</target>
 </trans-unit>
 <trans-unit id="s79fc990a2b58f27f">
   <source>Brands</source>
@@ -5447,6 +5470,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sf0d94539428a0900">
   <source>Search for a group by name…</source>
+  <target>Hae ryhmää nimellä...</target>
 </trans-unit>
 <trans-unit id="s77ec9e27e9ae81b8">
   <source>Group Search</source>
@@ -5540,6 +5564,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sbc4f2320a13d4dfd">
   <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
+  <target>Lyhyt selitys, miksi esiinnyt käyttäjänä. Tämä kirjataan auditointilokeihin.</target>
 </trans-unit>
 <trans-unit id="s8563c5a14e9a42f2">
   <source>New Password</source>
@@ -6499,6 +6524,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sea0da186a814a212">
   <source>Use global connection settings</source>
+  <target>Käytä yleisiä yhteysasetuksia</target>
 </trans-unit>
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
@@ -6508,9 +6534,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
+  <target>Tunnisteen vanheneminen</target>
 </trans-unit>
 <trans-unit id="sc264a82f9c710f14">
   <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+  <target>Aika, jonka lähtetty tunniste on voimassa (Muoto: hours=3,minutes=17,seconds=300).</target>
 </trans-unit>
 <trans-unit id="se47baf2fd16b9d2b">
   <source>Template</source>
@@ -6813,6 +6841,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>Rekisteröitymisyritysten enimmäismäärä. Kun tämä on asetettu nollaksi, yrityksiä ei rajoiteta.</target>
 </trans-unit>
 <trans-unit id="sa64fb483becc9c2c">
   <source>Device type restrictions</source>
@@ -7096,6 +7125,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="se3a6aa4f0ab7568e">
   <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+  <target>Määritä sertifikaattien myöntäjä, joka validoi asiakassertifikaatit. Sertifikaattien myöntäjä voidaan myös määritellä brändille, joka mahdollistaa eri sertifikaattimyöntäjien käytön eri verkkotunnuksilla.</target>
 </trans-unit>
 <trans-unit id="sb8fdf5a09a969870">
   <source>Certificate attribute</source>
@@ -8596,6 +8626,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s531571491deb239a">
   <source>Approximately</source>
+  <target>Noin</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
   <source>Forecast external users</source>
@@ -8787,6 +8818,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc0064c91ad2aa90b">
   <source>Notification drawer</source>
+  <target>Notifikaatiolokero</target>
 </trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
@@ -8957,6 +8989,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s6bb30c61df4cf486">
   <source>Caps Lock is enabled.</source>
+  <target>Caps Lock on päällä.</target>
 </trans-unit>
 <trans-unit id="s8d6236ad153d42c0">
   <source>CAPTCHA challenge</source>
@@ -9091,6 +9124,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s3f8a07912545e72e">
   <source>Configure your email</source>
+  <target>Määritä sähköpostisi</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
@@ -9202,6 +9236,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s610fced3957d0471">
   <source>Select an authentication method</source>
+  <target>Valitse todennustapa</target>
 </trans-unit>
 <trans-unit id="s1213df84313e1937">
   <source>No authentication methods available.</source>
@@ -9440,6 +9475,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+  <target>Käyttäjän asetukset</target>
 </trans-unit>
 <trans-unit id="s588796ee929a2e4c">
   <source>User details</source>
