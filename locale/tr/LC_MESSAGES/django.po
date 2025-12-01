@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 00:11+0000\n"
+"POT-Creation-Date: 2025-11-25 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/authentik/teams/119923/tr/)\n"
@@ -413,7 +413,7 @@ msgstr "Jeton"
 msgid "Tokens"
 msgstr "Jetonlar"
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
 msgstr "Jetonun anahtarını görüntüle"
 
@@ -485,6 +485,7 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr ""
 
 #: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "Başa dön"
 
@@ -517,6 +518,26 @@ msgid "ecdsa"
 msgstr "ecdsa"
 
 #: authentik/crypto/models.py
+msgid "RSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "PEM kodlu Sertifika verileri"
 
@@ -538,6 +559,38 @@ msgstr "Sertifika-Anahtar Çiftleri"
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr ""
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -1169,9 +1222,21 @@ msgstr "Akış Jetonu"
 msgid "Flow Tokens"
 msgstr "Akış Jetonları"
 
+#: authentik/flows/templates/if/flow.html
+msgid "Site footer"
+msgstr ""
+
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "Sonraki URL geçersiz"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
@@ -1561,6 +1626,10 @@ msgstr "Kullanıcının avatarı"
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr "Sen değil miydin?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "Hata"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
@@ -2184,18 +2253,6 @@ msgid "ACS URL"
 msgstr "ACS URL"
 
 #: authentik/providers/saml/models.py
-msgid ""
-"Value of the audience restriction field of the assertion. When left empty, "
-"no audience restriction will be added."
-msgstr ""
-"Onaylamadaki izleyici kısıtlaması alanının değeri. Boş bırakıldığında, "
-"herhangi bir hedef kitle kısıtlaması eklenmez."
-
-#: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr "EntityID olarak da bilinir"
-
-#: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
 msgstr "Servis Sağlayıcı Bağlama"
 
@@ -2206,6 +2263,18 @@ msgid ""
 msgstr ""
 "Bu, authentik'in yanıtı Servis Sağlayıcıya nasıl geri göndereceğini "
 "belirler."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+"Onaylamadaki izleyici kısıtlaması alanının değeri. Boş bırakıldığında, "
+"herhangi bir hedef kitle kısıtlaması eklenmez."
+
+#: authentik/providers/saml/models.py
+msgid "Also known as EntityID"
+msgstr "EntityID olarak da bilinir"
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
