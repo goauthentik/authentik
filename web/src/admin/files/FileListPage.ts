@@ -39,6 +39,7 @@ export class FileListPage extends TablePage<FileItem> {
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
         const api = new AdminApi(DEFAULT_CONFIG);
+        // Cast necessary: API returns File objects but we only use name, url, and mimeType properties
         const items = (await api.adminFileList({
             usage: AdminFileListUsageEnum.Media,
             manageableOnly: true,
