@@ -33,7 +33,7 @@ export class AppIcon extends AKElement implements IAppIcon {
 
     #wrap(icon: TemplateResult): TemplateResult {
         // PatternFly's font awesome rules use descendant selectors (`* .fa-*`),
-        // so the icon needs at least one ancestor inside the shadow DOM.
+        // so the icon needs at least one ancestor inside the shadow DOM to pick up those styles.
         return html`<span class="icon-wrapper">${icon}</span>`;
     }
 
