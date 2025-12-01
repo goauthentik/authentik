@@ -4955,11 +4955,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>选择用于测试密码的后端。</target>
         
       </trans-unit>
-      <trans-unit id="s482ae78809a6822b">
-        <source>Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.</source>
-        <target>经过身份验证的用户用来配置其密码的流程。如果为空，用户将无法配置更改其密码。</target>
-        
-      </trans-unit>
       <trans-unit id="s77994108c886b965">
         <source>Failed attempts before cancel</source>
         <target>取消前的的尝试失败</target>
@@ -10837,6 +10832,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+</trans-unit>
+<trans-unit id="sfdd447bcde2c13ba">
+  <source>Processes</source>
+</trans-unit>
+<trans-unit id="s44200a04fda1fa29">
+  <source>Flow used for users to authorize.</source>
+</trans-unit>
+<trans-unit id="s5567310faa112bc6">
+  <source>Configure how long an authenticated session is valid for.</source>
+</trans-unit>
+<trans-unit id="sc522b30adb9ff289">
+  <source>Update Enrollment token</source>
+</trans-unit>
+<trans-unit id="s3a38fceae14534dd">
+  <source>Device access groups</source>
+</trans-unit>
+<trans-unit id="s8bf373b1a2bfefed">
+  <source>Promoted</source>
+</trans-unit>
+<trans-unit id="s4a600d70e4348810">
+  <source>When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.</source>
+</trans-unit>
+<trans-unit id="s69bc087c166b4177">
+  <source>Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.</source>
 </trans-unit>
     </body>
   </file>
