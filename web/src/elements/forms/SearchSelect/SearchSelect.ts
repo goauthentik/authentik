@@ -171,6 +171,27 @@ export abstract class SearchSelectBase<T>
 
             throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
+
+        // When the user types a value and submits the form without explicitly selecting
+        // an option (e.g., typing "fa://fa-shield-alt" and clicking Update without pressing Enter),
+        // the selectedObject may not be synced with the current input value.
+        // So, on form submission, check if the current input value differs from selectedObject
+        // and if so, create a synthetic object with the current value.
+        if (this.creatable) {
+            const view = this.renderRoot.querySelector("ak-search-select-view") as SearchSelectView;
+            const currentValue = view?.rawValue;
+
+            if (currentValue) {
+                // Check if the current input value matches what we have selected
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
+                if (selectedValue !== currentValue) {
+                    // Input has changed but hasn't been committed yet so create synthetic object
+                    this.selectedObject = { name: currentValue } as T;
+                }
+            }
+        }
+
         return this.value(this.selectedObject) || "";
     }
 
