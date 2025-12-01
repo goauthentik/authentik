@@ -14,6 +14,9 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
+// Same regex is used in the backend as well
+const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
+
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
@@ -43,9 +46,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        // Same regex is used in the backend as well
-        const ValidFilenameRegex = /^[a-zA-Z0-9._/-]+$/;
-        if (!ValidFilenameRegex.test(this.selectedFile.name)) {
+        if (!VALID_FILE_NAME_PATTERN.test(this.selectedFile.name)) {
             throw new Error(
                 msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
             );
@@ -57,7 +58,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         // If custom name provided, validate and append original extension
         let finalName = this.selectedFile.name;
         if (customName) {
-            if (!ValidFilenameRegex.test(customName)) {
+            if (!VALID_FILE_NAME_PATTERN.test(customName)) {
                 throw new Error(
                     msg(
                         "Filename can only contain letters, numbers, dots, hyphens, and underscores",
