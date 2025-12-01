@@ -15,7 +15,7 @@ import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -55,6 +55,20 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
             await this.defaultEndpointConfig(),
         );
+    }
+
+    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(html`
+                    ${inner
+                        ? inner
+                        : html`<ak-empty-state icon=${this.pageIcon}
+                              ><span>${msg("No objects found.")}</span>
+                              <div slot="body">
+                                  ${this.search ? this.renderEmptyClearSearch() : nothing}
+                                  <p>${msg("No connectors configured. Navigate to Connectors in the sidebar and first create a connector.")}</p>
+                              </div>
+                          </ak-empty-state>`}
+                `);
     }
 
     renderSectionBefore() {
@@ -123,12 +137,6 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 </button>
             </ak-forms-modal>`,
         ];
-    }
-
-    renderObjectCreate() {
-        return html`<ak-endpoints-device-add>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Setup")}</button>
-        </ak-endpoints-device-add>`;
     }
 
     renderToolbarSelected() {
