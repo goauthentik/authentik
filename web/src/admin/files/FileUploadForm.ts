@@ -102,7 +102,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                     <input
                         type="text"
                         class="pf-c-form-control"
-                        placeholder=${msg("Leave empty to use original filename")}
+                        placeholder=${msg("Type an optional custom file name...")}
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
