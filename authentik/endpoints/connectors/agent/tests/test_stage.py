@@ -11,7 +11,7 @@ from authentik.endpoints.connectors.agent.models import (
     EnrollmentToken,
 )
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE
-from authentik.endpoints.models import Device, EndpointStage
+from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.flows.tests import FlowTestCase
@@ -67,3 +67,78 @@ class TestEndpointStage(FlowTestCase):
         plan = plan()
         self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
         self.assertEqual(plan.context[PLAN_CONTEXT_DEVICE], self.device)
+
+    def test_endpoint_stage_optional(self):
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector, mode=StageMode.OPTIONAL)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertStageResponse(res, flow=flow, component="ak-stage-endpoint-agent")
+
+        challenge = loads(res.content.decode())["challenge"]
+
+        response = encode(
+            {
+                "iss": self.device.identifier,
+                "atc": challenge,
+            },
+            key=self.device_token.key,
+            algorithm="HS512",
+        )
+
+        with self.assertFlowFinishes() as plan:
+            res = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                data={"component": "ak-stage-endpoint-agent", "response": response},
+            )
+            self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+        plan = plan()
+        self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
+        self.assertEqual(plan.context[PLAN_CONTEXT_DEVICE], self.device)
+
+    def test_endpoint_stage_optional_none(self):
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector, mode=StageMode.OPTIONAL)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertStageResponse(res, flow=flow, component="ak-stage-endpoint-agent")
+
+        with self.assertFlowFinishes() as plan:
+            res = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                data={"component": "ak-stage-endpoint-agent", "response": None},
+            )
+            self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+        plan = plan()
+        self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
+        self.assertNotIn(PLAN_CONTEXT_DEVICE, plan.context)
+
+    def test_endpoint_stage_required_none(self):
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector, mode=StageMode.REQUIRED)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertStageResponse(res, flow=flow, component="ak-stage-endpoint-agent")
+
+        res = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={"component": "ak-stage-endpoint-agent", "response": None},
+        )
+        self.assertStageResponse(
+            res,
+            flow=flow,
+            component="ak-stage-access-denied",
+            error_message="Could not validate device",
+        )

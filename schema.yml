@@ -36811,9 +36811,8 @@ components:
           default: ak-stage-endpoint-agent
         response:
           type: string
+          nullable: true
           minLength: 1
-      required:
-      - response
     EndpointAuthModeEnum:
       enum:
       - static
@@ -37006,6 +37005,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/Connector'
           readOnly: true
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
       required:
       - component
       - connector
@@ -37029,6 +37030,8 @@ components:
         connector:
           type: string
           format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
       required:
       - connector
       - name
@@ -41385,7 +41388,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -41408,11 +41411,6 @@ components:
       - user_attribute
       - verbose_name
       - verbose_name_plural
-    MutualTLSStageModeEnum:
-      enum:
-      - optional
-      - required
-      type: string
     MutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -41425,7 +41423,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -46207,6 +46205,8 @@ components:
         connector:
           type: string
           format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
     PatchedEnrollmentTokenRequest:
       type: object
       properties:
@@ -47204,7 +47204,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -53495,6 +53495,11 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    StageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
     StagePrompt:
       type: object
       description: Serializer for a single Prompt field

@@ -1,5 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#elements/forms/FormGroup";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -10,6 +11,7 @@ import {
     EndpointsApi,
     EndpointsConnectorsListRequest,
     EndpointStage,
+    StageModeEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -50,35 +52,63 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Connector")} required name="connector">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Connector[]> => {
-                        const args: EndpointsConnectorsListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const users = await new EndpointsApi(
-                            DEFAULT_CONFIG,
-                        ).endpointsConnectorsList(args);
-                        return users.results;
-                    }}
-                    .renderElement=${(connector: Connector): string => {
-                        return connector.name;
-                    }}
-                    .renderDescription=${(connector: Connector): TemplateResult => {
-                        return html`${connector.verboseName}`;
-                    }}
-                    .value=${(connector: Connector | undefined): string | undefined => {
-                        return connector?.connectorUuid;
-                    }}
-                    .selected=${(connector: Connector): boolean => {
-                        return connector.connectorUuid === this.instance?.connector;
-                    }}
-                >
-                </ak-search-select>
-            </ak-form-element-horizontal>`;
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Connector")} required name="connector">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Connector[]> => {
+                                const args: EndpointsConnectorsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const users = await new EndpointsApi(
+                                    DEFAULT_CONFIG,
+                                ).endpointsConnectorsList(args);
+                                return users.results;
+                            }}
+                            .renderElement=${(connector: Connector): string => {
+                                return connector.name;
+                            }}
+                            .renderDescription=${(connector: Connector): TemplateResult => {
+                                return html`${connector.verboseName}`;
+                            }}
+                            .value=${(connector: Connector | undefined): string | undefined => {
+                                return connector?.connectorUuid;
+                            }}
+                            .selected=${(connector: Connector): boolean => {
+                                return connector.connectorUuid === this.instance?.connector;
+                            }}
+                        >
+                        </ak-search-select>
+                    </ak-form-element-horizontal>
+
+                    <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Device optional"),
+                                    value: StageModeEnum.Optional,
+                                    default: true,
+                                    description: html`${msg(
+                                        "If no device was provided, this stage will succeed and continue to the next stage.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("Device required"),
+                                    value: StageModeEnum.Required,
+                                    description: html`${msg(
+                                        "If no device was provided, this stage will stop flow execution.",
+                                    )}`,
+                                },
+                            ]}
+                            .value=${this.instance?.mode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>`;
     }
 }
 

@@ -1,5 +1,4 @@
 from hmac import compare_digest
-from typing import Any
 
 from django.http import HttpResponse
 from jwt import PyJWTError, decode, encode
@@ -8,7 +7,7 @@ from rest_framework.fields import CharField
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.models import DeviceToken
-from authentik.endpoints.models import Device, EndpointStage
+from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -34,15 +33,17 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
     """Response to signed challenge"""
 
     component = CharField(default="ak-stage-endpoint-agent")
-    response = CharField()
+    response = CharField(required=False, allow_null=True)
 
-    def validate_response(self, response: str) -> dict[str, Any]:
+    def validate_response(self, response: str | None) -> Device | None:
+        if not response:
+            return None
         raw = decode(
             response, options={"verify_signature": False}, issuer="goauthentik.io/platform/endpoint"
         )
         device = Device.filter_not_expired(identifier=raw["iss"]).first()
         if not device:
-            raise ValidationError("Device not found")
+            raise ValidationError("Invalid challenge response")
         try:
             for token in DeviceToken.filter_not_expired(
                 device__device=device,
@@ -59,8 +60,7 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
                     self.stage.executor.plan.context[PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE],
                 ):
                     raise ValidationError("Invalid challenge response")
-                self.stage.executor.plan.context[PLAN_CONTEXT_DEVICE] = device
-                return decoded
+                return device
         except PyJWTError as exc:
             self.stage.logger.warning("failed to validate device challenge response", exc=exc)
             raise ValidationError("Invalid challenge response") from None
@@ -93,4 +93,8 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         self.executor.plan.context.pop(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, None)
+        if device := response.validated_data.get("response"):
+            self.executor.plan.context[PLAN_CONTEXT_DEVICE] = device
+        elif self.executor.current_stage.mode == StageMode.REQUIRED:
+            return self.executor.stage_invalid("Invalid challenge response")
         return self.executor.stage_ok()
