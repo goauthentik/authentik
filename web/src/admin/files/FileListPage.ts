@@ -16,7 +16,7 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-interface FileItem {
+export interface FileItem {
     name: string;
     url: string;
     mimeType: string;
