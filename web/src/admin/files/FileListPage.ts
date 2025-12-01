@@ -103,7 +103,7 @@ export class FileListPage extends TablePage<FileItem> {
             html`<div>${item.mimeType || msg("-")}</div>`,
             html`<div>
                 <a
-                    class="pf-c-button pf-m-secondary"
+                    class="pf-c-button pf-m-plain"
                     target="_blank"
                     href=${item.url}
                     rel="noopener noreferrer"
