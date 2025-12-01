@@ -54405,6 +54405,9 @@ components:
         requires_enterprise:
           type: boolean
           default: false
+        deprecated:
+          type: boolean
+          default: false
       required:
       - component
       - description
