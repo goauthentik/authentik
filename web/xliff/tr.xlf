@@ -3949,6 +3949,7 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 </trans-unit>
 <trans-unit id="s3687049d1af562c4">
   <source>Copy</source>
+  <target>Kopya</target>
 </trans-unit>
 <trans-unit id="sd1dc37bdc04758eb">
   <source>Download the latest package from here:</source>
