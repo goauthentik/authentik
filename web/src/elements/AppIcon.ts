@@ -31,6 +31,12 @@ export class AppIcon extends AKElement implements IAppIcon {
     @property({ reflect: true })
     public size: PFSize = PFSize.Medium;
 
+    #wrap(icon: TemplateResult): TemplateResult {
+        // PatternFly's font awesome rules use descendant selectors (`* .fa-*`),
+        // so the icon needs at least one ancestor inside the shadow DOM.
+        return html`<span class="icon-wrapper">${icon}</span>`;
+    }
+
     override render(): TemplateResult {
         const applicationName = this.name ?? msg("Application");
         const label = msg(str`${applicationName} Icon`);
@@ -38,32 +44,36 @@ export class AppIcon extends AKElement implements IAppIcon {
         // Check for Font Awesome icons (fa://fa-icon-name)
         if (this.icon?.startsWith(AppIcon.FontAwesomeProtocol)) {
             const iconClass = this.icon.slice(AppIcon.FontAwesomeProtocol.length);
-            return html`<i
+            return this.#wrap(html`<i
                 part="icon font-awesome"
                 role="img"
                 aria-label=${label}
                 class="icon fas ${iconClass}"
-            ></i>`;
+            ></i>`);
         }
 
         const insignia = this.name?.charAt(0).toUpperCase() ?? "�";
 
         // Check for image URLs (http://, https://, or file paths)
         if (this.icon) {
-            return html`<img
+            return this.#wrap(html`<img
                 part="icon image"
                 role="img"
                 aria-label=${label}
                 class="icon"
                 src=${this.icon}
                 alt=${insignia}
-            />`;
+            />`);
         }
 
         // Fallback to first letter insignia
-        return html`<span part="icon insignia" role="img" aria-label=${label} class="icon"
+        return this.#wrap(html`<span
+            part="icon insignia"
+            role="img"
+            aria-label=${label}
+            class="icon"
             >${insignia}</span
-        >`;
+        >`);
     }
 }
 
