@@ -4,15 +4,15 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
 from authentik.endpoints.api.device_fact_snapshots import DeviceFactSnapshotSerializer
-from authentik.endpoints.api.device_group import DeviceGroupSerializer
 from authentik.endpoints.models import Device
 
 
 class EndpointDeviceSerializer(ModelSerializer):
 
-    group_obj = DeviceGroupSerializer(source="group")
+    access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
     facts = SerializerMethodField()
 
@@ -25,8 +25,8 @@ class EndpointDeviceSerializer(ModelSerializer):
             "device_uuid",
             "pbm_uuid",
             "name",
-            "group",
-            "group_obj",
+            "access_group",
+            "access_group_obj",
             "expiring",
             "expires",
             "facts",
@@ -58,7 +58,7 @@ class DeviceViewSet(
     GenericViewSet,
 ):
 
-    queryset = Device.objects.all().select_related("group")
+    queryset = Device.objects.all().select_related("access_group")
     serializer_class = EndpointDeviceSerializer
     search_fields = [
         "name",

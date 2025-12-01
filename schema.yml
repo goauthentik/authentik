@@ -5056,6 +5056,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/auth_fed/:
+    post:
+      operationId: endpoints_agents_connectors_auth_fed_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: device
+        schema:
+          type: string
+        required: true
+      tags:
+      - endpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentTokenResponse'
+          description: ''
+        '404':
+          description: Device not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/auth_ia/:
+    post:
+      operationId: endpoints_agents_connectors_auth_ia_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentAuthenticationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/check_in/:
     post:
       operationId: endpoints_agents_connectors_check_in_create
@@ -5093,7 +5137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnrollResponse'
+                $ref: '#/components/schemas/AgentTokenResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5333,6 +5377,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/device/:
+    post:
+      operationId: endpoints_agents_psso_register_device_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/user/:
+    post:
+      operationId: endpoints_agents_psso_register_user_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelf'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/connectors/:
     get:
       operationId: endpoints_connectors_list
@@ -5456,6 +5544,201 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/:
+    get:
+      operationId: endpoints_device_access_groups_list
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDeviceAccessGroupList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_device_access_groups_create
+      description: DeviceAccessGroup Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAccessGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/{pbm_uuid}/:
+    get:
+      operationId: endpoints_device_access_groups_retrieve
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_device_access_groups_update
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAccessGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_device_access_groups_partial_update
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceAccessGroupRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_device_access_groups_destroy
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/{pbm_uuid}/used_by/:
+    get:
+      operationId: endpoints_device_access_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/device_bindings/:
     get:
       operationId: endpoints_device_bindings_list
@@ -5549,7 +5832,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5575,7 +5858,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5607,7 +5890,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5638,7 +5921,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5661,202 +5944,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/:
-    get:
-      operationId: endpoints_device_groups_list
-      description: DeviceGroup Viewset
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedDeviceGroupList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: endpoints_device_groups_create
-      description: DeviceGroup Viewset
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/{pbm_uuid}/:
-    get:
-      operationId: endpoints_device_groups_retrieve
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: endpoints_device_groups_update
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: endpoints_device_groups_partial_update
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDeviceGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: endpoints_device_groups_destroy
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/{pbm_uuid}/used_by/:
-    get:
-      operationId: endpoints_device_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5916,7 +6004,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -5943,7 +6031,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -5976,7 +6064,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6008,7 +6096,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6031,7 +6119,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -32468,33 +32556,65 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AgentAuthenticationResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        url:
+          type: string
+      required:
+      - url
     AgentConfig:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        device_id:
+          type: string
+          readOnly: true
+        refresh_interval:
+          type: integer
+          readOnly: true
+        authorization_flow:
+          type: string
+          nullable: true
+          readOnly: true
+        jwks:
+          type: object
+          additionalProperties: {}
+          readOnly: true
         nss_uid_offset:
           type: integer
         nss_gid_offset:
           type: integer
-        authentication_flow:
-          type: string
         auth_terminate_session_on_expiry:
           type: boolean
-        refresh_interval:
-          type: integer
+        system_config:
+          allOf:
+          - $ref: '#/components/schemas/Config'
           readOnly: true
       required:
       - auth_terminate_session_on_expiry
-      - authentication_flow
+      - authorization_flow
+      - device_id
+      - jwks
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
+      - system_config
     AgentConnector:
       type: object
       properties:
         connector_uuid:
           type: string
           format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -32507,16 +32627,18 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        name:
-          type: string
-        enabled:
-          type: boolean
         snapshot_expiry:
           type: string
+        auth_session_duration:
+          type: string
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32525,18 +32647,14 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - component
       - meta_model_name
@@ -32557,6 +32675,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        auth_session_duration:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32565,21 +32695,87 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - name
+    AgentPSSODeviceRegistrationRequest:
+      type: object
+      description: Register Apple device via Platform SSO
+      properties:
+        device_signing_key:
+          type: string
+          minLength: 1
+        device_encryption_key:
+          type: string
+          minLength: 1
+        sign_key_id:
+          type: string
+          minLength: 1
+        enc_key_id:
+          type: string
+          minLength: 1
+      required:
+      - device_encryption_key
+      - device_signing_key
+      - enc_key_id
+      - sign_key_id
+    AgentPSSODeviceRegistrationResponse:
+      type: object
+      description: authentik settings for Platform SSO tokens
+      properties:
+        client_id:
+          type: string
+        issuer:
+          type: string
+        token_endpoint:
+          type: string
+        jwks_endpoint:
+          type: string
+        audience:
+          type: string
+        nonce_endpoint:
+          type: string
+      required:
+      - audience
+      - client_id
+      - issuer
+      - jwks_endpoint
+      - nonce_endpoint
+      - token_endpoint
+    AgentPSSOUserRegistrationRequest:
+      type: object
+      description: Register Apple device user via Platform SSO
+      properties:
+        user_auth:
+          type: string
+          minLength: 1
+        user_secure_enclave_key:
+          type: string
+          minLength: 1
+        enclave_key_id:
+          type: string
+          minLength: 1
+      required:
+      - enclave_key_id
+      - user_auth
+      - user_secure_enclave_key
+    AgentTokenResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        token:
+          type: string
+        expires_in:
+          type: integer
+      required:
+      - token
     AlgEnum:
       enum:
       - rsa
@@ -35494,6 +35690,26 @@ components:
       - type
       - verbose_name
       - verbose_name_plural
+    DeviceAccessGroup:
+      type: object
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+      required:
+      - name
+      - pbm_uuid
+    DeviceAccessGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     DeviceChallenge:
       type: object
       description: Single device challenge
@@ -35619,6 +35835,16 @@ components:
           items:
             $ref: '#/components/schemas/Process'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUser'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroup'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
@@ -35663,29 +35889,69 @@ components:
           items:
             $ref: '#/components/schemas/ProcessRequest'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroupRequest'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
     DeviceGroup:
       type: object
       properties:
-        pbm_uuid:
+        id:
           type: string
-          format: uuid
-          readOnly: true
         name:
           type: string
       required:
-      - name
-      - pbm_uuid
+      - id
     DeviceGroupRequest:
       type: object
       properties:
+        id:
+          type: string
+          minLength: 1
         name:
           type: string
           minLength: 1
       required:
-      - name
+      - id
+    DeviceUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        home:
+          type: string
+      required:
+      - id
+    DeviceUserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        home:
+          type: string
+          minLength: 1
+      required:
+      - id
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -36341,12 +36607,12 @@ components:
           readOnly: true
         name:
           type: string
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroup'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -36362,7 +36628,6 @@ components:
           additionalProperties: {}
       required:
       - facts
-      - group_obj
       - name
       - pbm_uuid
     EndpointDeviceDetails:
@@ -36377,12 +36642,12 @@ components:
           readOnly: true
         name:
           type: string
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroup'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -36416,7 +36681,6 @@ components:
       - connections
       - connections_obj
       - facts
-      - group_obj
       - name
       - pbm_uuid
       - policies
@@ -36429,12 +36693,12 @@ components:
         name:
           type: string
           minLength: 1
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -36445,7 +36709,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - group_obj
       - name
     EndpointRequest:
       type: object
@@ -36494,14 +36757,6 @@ components:
       required:
       - device_name
       - device_serial
-    EnrollResponse:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        token:
-          type: string
-      required:
-      - token
     EnrollmentToken:
       type: object
       properties:
@@ -36515,7 +36770,7 @@ components:
           nullable: true
         device_group_obj:
           allOf:
-          - $ref: '#/components/schemas/DeviceGroup'
+          - $ref: '#/components/schemas/DeviceAccessGroup'
           readOnly: true
         connector:
           type: string
@@ -38615,8 +38870,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     HardwareRequest:
       type: object
@@ -38629,6 +38882,7 @@ components:
           minLength: 1
         serial:
           type: string
+          minLength: 1
         cpu_name:
           type: string
           minLength: 1
@@ -38638,8 +38892,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     IdentificationChallenge:
       type: object
@@ -42496,7 +42748,7 @@ components:
       - pagination
       - results
       - autocomplete
-    PaginatedDeviceGroupList:
+    PaginatedDeviceAccessGroupList:
       type: object
       properties:
         pagination:
@@ -42504,7 +42756,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/DeviceGroup'
+            $ref: '#/components/schemas/DeviceAccessGroup'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -44878,6 +45130,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        auth_session_duration:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -44886,19 +45150,14 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -45414,7 +45673,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
-    PatchedDeviceGroupRequest:
+    PatchedDeviceAccessGroupRequest:
       type: object
       properties:
         name:
@@ -45586,12 +45845,12 @@ components:
         name:
           type: string
           minLength: 1
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -53728,6 +53987,7 @@ components:
       - identifier
     TokenSetKeyRequest:
       type: object
+      description: Set token's key
       properties:
         key:
           type: string

@@ -34,7 +34,7 @@
         "@goauthentik/tsconfig": "^1.0.5",
         "@mdx-js/react": "^3.1.1",
         "@types/postman-collection": "^3.5.11",
-        "@types/react": "^19.2.6",
+        "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "docusaurus-plugin-openapi-docs": "^4.5.1",
         "docusaurus-theme-openapi-docs": "^4.5.1",

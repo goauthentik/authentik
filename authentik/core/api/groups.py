@@ -14,6 +14,7 @@ from drf_spectacular.utils import (
     extend_schema_field,
 )
 from guardian.shortcuts import get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
@@ -22,9 +23,12 @@ from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.authentication import TokenAuthentication
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
+from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -227,6 +231,11 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+        AgentAuth,
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
@@ -289,13 +298,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[],
     )
-    def add_user(self, request: Request, pk: str) -> Response:
+    @validate(UserAccountSerializer)
+    def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
-                pk=request.data.get("pk"),
+                pk=body.validated_data.get("pk"),
             )
             .first()
         )
@@ -319,13 +329,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         permission_classes=[],
     )
-    def remove_user(self, request: Request, pk: str) -> Response:
+    @validate(UserAccountSerializer)
+    def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")
             .filter(
-                pk=request.data.get("pk"),
+                pk=body.validated_data.get("pk"),
             )
             .first()
         )
