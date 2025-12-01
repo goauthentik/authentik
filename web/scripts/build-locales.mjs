@@ -12,7 +12,6 @@
  * summary of how many strings are missing with respect to the source locale.
  *
  * @import { Stats } from "node:fs";
- * @import { RuntimeOutputConfig } from "@lit/localize-tools/lib/types/modes.js"
  */
 
 import * as fs from "node:fs/promises";
@@ -32,11 +31,16 @@ const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_-]+)\sis\smissing/;
 const logger = ConsoleLogger.child({ name: "Locales" });
 
 const localizeRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
-
 if (localizeRules.interchange.format !== "xliff") {
     logger.error("Unsupported interchange type, expected 'xliff'");
     process.exit(1);
 }
+
+const { sourceLocale } = localizeRules;
+
+localizeRules.targetLocales = localizeRules.targetLocales.filter((locale) => {
+    return locale !== sourceLocale;
+});
 
 const XLIFFPath = resolve(PackageRoot, localizeRules.interchange.xliffDir);
 
