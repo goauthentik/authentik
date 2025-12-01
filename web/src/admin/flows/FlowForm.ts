@@ -47,11 +47,10 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 slug: this.instance.slug,
                 flowRequest: data,
             });
-        } else {
-            return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
-                flowRequest: data,
-            });
         }
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
+            flowRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
