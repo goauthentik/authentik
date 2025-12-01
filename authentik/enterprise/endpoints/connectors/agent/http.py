@@ -5,7 +5,9 @@ from secrets import token_bytes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.ciphers import Cipher
+from cryptography.hazmat.primitives.ciphers.algorithms import AES
+from cryptography.hazmat.primitives.ciphers.modes import GCM
 from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from django.http import HttpResponse
 from jwcrypto.common import base64url_decode, base64url_encode
@@ -75,22 +77,21 @@ def encrypt_token_with_a256_gcm(body: dict, device_encryption_key: str, apv: byt
 
     derived_key = ckdf.derive(shared_secret_z)
 
-    nonce = token_bytes(12)
+    nonce = token_bytes(96)
 
     header_json = dumps(jwe_header, separators=(",", ":")).encode()
     aad = urlsafe_b64encode(header_json).rstrip(b"=")
 
-    aesgcm = AESGCM(derived_key)
-    ciphertext = aesgcm.encrypt(nonce, dumps(body).encode(), aad)
-
-    ciphertext_body = ciphertext[:-16]
-    tag = ciphertext[-16:]
+    cipher = Cipher(AES(derived_key), GCM(nonce))
+    encryptor = cipher.encryptor()
+    encryptor.authenticate_additional_data(aad)
+    ciphertext = encryptor.update(dumps(body).encode()) + encryptor.finalize()
 
     # base64url encoding
     protected_b64 = urlsafe_b64encode(header_json).rstrip(b"=")
     iv_b64 = urlsafe_b64encode(nonce).rstrip(b"=")
-    ciphertext_b64 = urlsafe_b64encode(ciphertext_body).rstrip(b"=")
-    tag_b64 = urlsafe_b64encode(tag).rstrip(b"=")
+    ciphertext_b64 = urlsafe_b64encode(ciphertext).rstrip(b"=")
+    tag_b64 = urlsafe_b64encode(encryptor.tag).rstrip(b"=")
 
     jwe_compact = b".".join(
         [

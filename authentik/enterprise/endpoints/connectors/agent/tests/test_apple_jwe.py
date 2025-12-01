@@ -1,3 +1,5 @@
+from base64 import urlsafe_b64decode
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from django.test import TestCase
@@ -34,3 +36,4 @@ class TestAppleJWE(TestCase):
         self.assertEqual(payload, b'{"foo": "bar"}')
         self.assertEqual(parsed.jose_header["apv"], apv)
         self.assertEqual(parsed.jose_header["typ"], "platformsso-login-response+jwt")
+        self.assertIn(b"APPLE", urlsafe_b64decode(parsed.jose_header["apu"]))
