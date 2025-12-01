@@ -97,7 +97,7 @@ core-i18n-extract:
 		--ignore ${GEN_API_TS} \
 		--ignore ${GEN_API_GO} \
 		--ignore website \
-		-l en_US
+		-l en
 
 install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 

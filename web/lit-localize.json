@@ -1,10 +1,10 @@
 {
     "$schema": "https://raw.githubusercontent.com/lit/lit/main/packages/localize-tools/config.schema.json",
-    "sourceLocale": "en_US",
+    "sourceLocale": "en",
     "targetLocales": [
         "cs_CZ",
         "de_DE",
-        "en_US",
+        "en",
         "es_ES",
         "fr_FR",
         "it_IT",

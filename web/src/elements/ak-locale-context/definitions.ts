@@ -3,7 +3,7 @@ import { AkLocale, LocaleRow } from "./types.js";
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
-export const DEFAULT_FALLBACK = "en_US";
+export const DEFAULT_FALLBACK = "en";
 
 export const enLocale: LocaleModule = {
     templates: {},
@@ -41,7 +41,7 @@ const debug: LocaleRow = [
 // prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
     ["de_DE", /^de([_-]|$)/i, () => msg("German"), () => import("#locales/de_DE")],
-    ["en_US", /^en([_-]|$)/i, () => msg("English"), () => Promise.resolve(enLocale)],
+    ["en", /^en([_-]|$)/i, () => msg("English"), () => Promise.resolve(enLocale)],
     ["es_ES", /^es([_-]|$)/i, () => msg("Spanish"), () => import("#locales/es_ES")],
     ["fr_FR", /^fr([_-]|$)/i, () => msg("French"), () => import("#locales/fr_FR")],
     ["it_IT", /^it([_-]|$)/i, () => msg("Italian"), () => import("#locales/it_IT")],
