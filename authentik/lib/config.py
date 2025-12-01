@@ -237,12 +237,12 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_value = self.get(path)
+        original_config = deepcopy(self.__config)
         self.set(path, value)
         try:
             yield
         finally:
-            self.set(path, original_value)
+            self.__config = original_config
 
     @property
     def raw(self) -> dict:

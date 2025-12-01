@@ -10,14 +10,11 @@ from django.conf import settings
 from django.db import connection
 from django.http.request import HttpRequest
 from django.utils.timezone import now
-from structlog.stdlib import get_logger
 
 from authentik.admin.files.backends.base import ManageableBackend
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
-
-LOGGER = get_logger()
 
 
 class FileBackend(ManageableBackend):
@@ -34,12 +31,12 @@ class FileBackend(ManageableBackend):
 
     @property
     def _base_dir(self) -> Path:
-        b = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.path",
-            CONFIG.get(f"storage.{self.name}.path", "./data"),
+        return Path(
+            CONFIG.get(
+                f"storage.{self.usage.value}.{self.name}.path",
+                CONFIG.get(f"storage.{self.name}.path", "./data"),
+            )
         )
-        LOGGER.warning(f"File base dir is {b}")
-        return Path(b)
 
     @property
     def base_path(self) -> Path:
