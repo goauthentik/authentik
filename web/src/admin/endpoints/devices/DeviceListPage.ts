@@ -59,16 +59,20 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     protected renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
-                    ${inner
-                        ? inner
-                        : html`<ak-empty-state icon=${this.pageIcon}
-                              ><span>${msg("No objects found.")}</span>
-                              <div slot="body">
-                                  ${this.search ? this.renderEmptyClearSearch() : nothing}
-                                  <p>${msg("No connectors configured. Navigate to Connectors in the sidebar and first create a connector.")}</p>
-                              </div>
-                          </ak-empty-state>`}
-                `);
+            ${inner
+                ? inner
+                : html`<ak-empty-state icon=${this.pageIcon}
+                      ><span>${msg("No objects found.")}</span>
+                      <div slot="body">
+                          ${this.search ? this.renderEmptyClearSearch() : nothing}
+                          <p>
+                              ${msg(
+                                  "No connectors configured. Navigate to Connectors in the sidebar and first create a connector.",
+                              )}
+                          </p>
+                      </div>
+                  </ak-empty-state>`}
+        `);
     }
 
     renderSectionBefore() {

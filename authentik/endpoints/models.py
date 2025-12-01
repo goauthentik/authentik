@@ -191,6 +191,7 @@ class DeviceAccessGroup(PolicyBindingModel):
 
 
 class EndpointStage(Stage):
+    """Stage which associates the currently used device with the current session."""
 
     connector = InheritanceForeignKey(Connector, on_delete=models.CASCADE)
 
@@ -208,4 +209,8 @@ class EndpointStage(Stage):
 
     @property
     def component(self) -> str:
-        return "ak-endpoints-stage"
+        return "ak-endpoints-stage-form"
+
+    class Meta(PolicyBinding.Meta):
+        verbose_name = _("Endpoint Stage")
+        verbose_name_plural = _("Endpoint Stages")
