@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-25 00:09+0000\n"
+"POT-Creation-Date: 2025-11-10 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Teffen Ellis, 2025\n"
 "Language-Team: Japanese (https://app.transifex.com/authentik/teams/119923/ja/)\n"
@@ -391,7 +391,7 @@ msgstr "トークン"
 msgid "Tokens"
 msgstr "トークン"
 
-#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
+#: authentik/core/models.py
 msgid "View token's key"
 msgstr "トークンのキーを表示"
 
@@ -461,7 +461,6 @@ msgid "Remove temporary users created by SAML Sources."
 msgstr "SAMLで作成された一時ユーザを削除。"
 
 #: authentik/core/templates/if/error.html
-#: authentik/policies/templates/policies/denied.html
 msgid "Go home"
 msgstr "ホームに戻る"
 
@@ -534,38 +533,6 @@ msgstr "証明書とキーのペア"
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
 msgstr "証明書をファイルシステムから検出、インポート、更新する。"
-
-#: authentik/endpoints/connectors/agent/api/connectors.py
-msgid "Selected platform not supported"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/api/connectors.py
-msgid "Token is expired"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/api/connectors.py
-msgid "Invalid token for connector"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Agent Connector"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Agent Connectors"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Enrollment Token"
-msgstr ""
-
-#: authentik/endpoints/connectors/agent/models.py
-msgid "Enrollment Tokens"
-msgstr ""
-
-#: authentik/endpoints/tasks.py
-msgid "Sync endpoints."
-msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -1176,10 +1143,6 @@ msgstr "フロートークン"
 msgid "Flow Tokens"
 msgstr "フロートークン"
 
-#: authentik/flows/templates/if/flow.html
-msgid "Site footer"
-msgstr ""
-
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "無効なネクスト URL"
@@ -1558,10 +1521,6 @@ msgstr "アバター"
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
 msgstr "あなたではありませんか？"
-
-#: authentik/policies/templates/policies/denied.html
-msgid "Error"
-msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
