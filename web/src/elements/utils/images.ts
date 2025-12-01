@@ -33,11 +33,19 @@ export function renderImage(
 
     // Handle Font Awesome icons (same logic as ak-app-icon)
     if (imagePath.startsWith(FontAwesomeProtocol)) {
+        const classes = [
+            className,
+            "font-awesome",
+            "fas",
+            imagePath.slice(FontAwesomeProtocol.length),
+        ]
+            .filter(Boolean)
+            .join(" ");
         return html`<i
             part="icon font-awesome"
             role="img"
             aria-label=${ifPresent(alt)}
-            class="${className} fas ${imagePath.slice(FontAwesomeProtocol.length)}"
+            class=${classes}
         ></i>`;
     }
 
