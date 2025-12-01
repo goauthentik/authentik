@@ -23,7 +23,7 @@ import { makeFormatter } from "@lit/localize-tools/lib/formatters/index.js";
 import { sortProgramMessages } from "@lit/localize-tools/lib/messages.js";
 import { TransformLitLocalizer } from "@lit/localize-tools/lib/modes/transform.js";
 
-const pseudoLocale = /** @type {Locale} */ ("pseudo-LOCALE");
+const pseudoLocale = /** @type {Locale} */ ("pseudo_LOCALE");
 const targetLocales = [pseudoLocale];
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

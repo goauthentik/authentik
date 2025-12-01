@@ -4,14 +4,15 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Jiří P., 2022
-# Zdeněk B., 2023
-# Jakub Procházka, 2024
-# Jan Kasal <jankasal@protonmail.com>, 2025
-# Bohuslav šín, 2025
-# Martin Kloz, 2025
-# klasyc, 2025
-# Václav Nováček <waclaw661@gmail.com>, 2025
+# Yu, 2023
+# NavyStack, 2023
+# Hiroki Nakano, 2024
+# Kohta Ozaki <ozmachine@gmail.com>, 2024
+# Azusa Takemae, 2025
+# ume <bungoume@gmail.com>, 2025
+# sweetfish, 2025
+# Rintan, 2025
+# Teffen Ellis, 2025
 # 
 #, fuzzy
 msgid ""
@@ -20,66 +21,66 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-01 15:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Václav Nováček <waclaw661@gmail.com>, 2025\n"
-"Language-Team: Czech (Czech Republic) (https://app.transifex.com/authentik/teams/119923/cs_CZ/)\n"
+"Last-Translator: Teffen Ellis, 2025\n"
+"Language-Team: Japanese (https://app.transifex.com/authentik/teams/119923/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs_CZ\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: authentik/admin/models.py
 msgid "Version history"
-msgstr "Historie verzí"
+msgstr "バージョン履歴"
 
 #: authentik/admin/tasks.py
 msgid "Update latest version info."
-msgstr "Upravit informace o poslední verzi."
+msgstr "最新バージョン情報を更新。"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
 msgid "New version {version} available!"
-msgstr "Je dostupná nová verze - {version}!"
+msgstr "新バージョン {version} が利用可能です!"
 
 #: authentik/api/v3/schema/query.py
 msgid "Which field to use when ordering the results."
-msgstr "Které pole se má použít pro řazení výsledků."
+msgstr "結果の並べ替えに使用するフィールド。"
 
 #: authentik/api/v3/schema/query.py
 msgid "A page number within the paginated result set."
-msgstr "Číslo stránky ve stránkované sadě výsledků."
+msgstr "ページネーション結果セット内のページ番号。"
 
 #: authentik/api/v3/schema/query.py
 msgid "Number of results to return per page."
-msgstr "Počet výsledků vrácených na jedné stránce."
+msgstr "ページあたりの結果数。"
 
 #: authentik/api/v3/schema/query.py
 msgid "A search term."
-msgstr "Hledaný výraz."
+msgstr "検索用語。"
 
 #: authentik/api/v3/schema/response.py
 msgid "Generic API Error"
-msgstr "Obecná chyba API"
+msgstr "一般的なAPIエラー"
 
 #: authentik/api/v3/schema/response.py
 msgid "Validation Error"
-msgstr "Chyba validace"
+msgstr "検証エラー"
 
 #: authentik/blueprints/api.py
 msgid "Blueprint file does not exist"
-msgstr "Soubor s konfigurační šablonou neexistuje"
+msgstr "ブループリントファイルがありません"
 
 #: authentik/blueprints/api.py
 msgid "Failed to validate blueprint"
-msgstr "Ověřování konfigurační šablony selhalo"
+msgstr "ブループリントの検証に失敗しました"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
-msgstr "Musí být nastavena buď cesta, nebo obsah."
+msgstr "パスかコンテンツの設定は必須です。"
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
-msgstr "Spravuje authentik"
+msgstr "Managed by authentik"
 
 #: authentik/blueprints/models.py
 msgid ""
@@ -88,88 +89,77 @@ msgid ""
 "by migrations. You can still modify the objects via the API, but expect "
 "changes to be overwritten in a later update."
 msgstr ""
-"Objekty, které jsou spravovány authentikem. Tyto objekty jsou vytvářeny a "
-"aktualizovány automaticky. Tato značka pouze naznačuje, že objekt může být "
-"přepsán migracemi. Stále můžete upravovat objekty prostřednictvím API, ale "
-"očekávejte, že změny budou v pozdější aktualizaci přepsány."
+"authentikによって管理されるオブジェクト。これらのオブジェクトは自動的に作成および更新されます。このフラグは、オブジェクトがマイグレーションで上書きされる可能性があることを示しています。APIを通じてオブジェクトを変更できますが、将来のアップデートで変更が上書きされることが予想されます。authentikによって管理されるオブジェクトです。これらのオブジェクトは自動的に作成、アップデートされます。このフラグはオブジェクトがマイグレーションによって上書きされる可能性があることだけを示しています。APIを通してオブジェクトを編集することはできますが、将来のアップデートで変更が上書きされることが予想されます。"
 
 #: authentik/blueprints/models.py
 msgid "Blueprint Instance"
-msgstr "Instance konfigurační šablony"
+msgstr "ブループリントインスタンス"
 
 #: authentik/blueprints/models.py
 msgid "Blueprint Instances"
-msgstr "Instance konfiguračních šablon"
+msgstr "ブループリントインスタンス"
 
 #: authentik/blueprints/v1/exporter.py
 #, python-brace-format
 msgid "authentik Export - {date}"
-msgstr "authentik Export - {date}"
+msgstr "authentik エクスポート - {date}"
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
-msgstr ""
-"Najít konfigurační šablony stejně jako `blueprints_find`, ale nevracet "
-"bezpečný slovník."
+msgstr "ブループリント検索と同様に安全な辞書を返す。"
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Find blueprints and check if they need to be created in the database."
-msgstr ""
-"Najít konfiugrační šablony a zkontrolovat, jestli potřebují být vytvořeny v "
-"databázi."
+msgstr "ブループリントを検索し、データベースでの作成が必要かを確認。"
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Apply single blueprint."
-msgstr "Aplikovat jednu konfigurační šablonu."
+msgstr "単一のブループリントを適用。"
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Remove blueprints which couldn't be fetched."
-msgstr "Odstranit konfigurační šablony, které nemohly být načteny."
+msgstr "取得に失敗したブループリントを削除。"
 
 #: authentik/brands/models.py
 msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
-msgstr ""
-"Doména aktivující tuto značku. Může to být nadmnožina, např. `a.b` pro "
-"`aa.b` a `ba.b`"
+msgstr "このブランドをアクティベートするドメイン。スーパーセットが可能（例：`aa.b`と`ba.b`に対して`a.b`）"
 
 #: authentik/brands/models.py
 msgid ""
 "When set, external users will be redirected to this application after "
 "authenticating."
-msgstr ""
-"Pokud je nastaveno, externí uživatelé budou po přihlášení přesměrováni do "
-"této aplikace"
+msgstr "設定すると、外部ユーザーは認証後このアプリにリダイレクトされます。"
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
-msgstr "Webový certifikát používaný webovým serverem v jádře authentiku. "
+msgstr "authentik コア Web サーバーによって使用される Web 証明書。"
 
 #: authentik/brands/models.py
 msgid "Certificates used for client authentication."
-msgstr "Certifikáty používané pro ověření klienta."
+msgstr "クライアント認証に使用される証明書。"
 
 #: authentik/brands/models.py
 msgid "Brand"
-msgstr "Značka"
+msgstr "ブランド"
 
 #: authentik/brands/models.py
 msgid "Brands"
-msgstr "Značky"
+msgstr "ブランド"
 
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
-msgstr "Uživatel nemá přístup k aplikaci."
+msgstr "ユーザーはアプリへのアクセス権がありません。"
 
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
-msgstr "Slug '{slug}' je rezervovaný a nelze jej použít pro aplikace."
+msgstr "スラッグ '{slug}' は予約されており、アプリに使用できません。"
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
-msgstr "Nelze nastavit skupinu jako nadřazenou sobě samé."
+msgstr "グループを自身の親として設定することはできません。"
 
 #: authentik/core/api/providers.py
 msgid ""
@@ -177,219 +167,201 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr ""
-"Pokud není nastaveno, vrátí všechny poskytovatele. Pokud je zapnuto, vrátí "
-"pouze poskytovatele backchannel. Pokud je vypnuto, backchannel poskytovatelé"
-" nejsou zahrnuti."
+"設定されていない場合、すべてのプロバイダーが返されます。trueに設定すると、バックチャネルプロバイダーのみが返されます。falseに設定すると、バックチャネルプロバイダーは除外されます"
 
 #: authentik/core/api/transactional_applications.py
 #, python-brace-format
 msgid "User lacks permission to create {model}"
-msgstr "Uživatel nemá oprávnění vytvořit {model}"
+msgstr "ユーザーは {model} を作成するための権限がありません"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
-msgstr "Lomítka na začátku ani konci nejsou povoleny"
+msgstr "先頭や末尾でスラッシュを使用することはできません。"
 
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
-msgstr "Mezery v cestě k uživateli nejsou povoleny."
+msgstr "ユーザーパスに空の部分を含めることはできません。"
 
 #: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
-msgstr "Uživatel/skupina s těmito detaily již existuje"
+msgstr "これらの詳細を持つユーザー/グループは既に存在します"
 
 #: authentik/core/api/users.py
 msgid "Unable to create user"
-msgstr "Nepodařilo se vytvořit uživatele"
+msgstr "ユーザーを作成できません"
 
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
-msgstr "Došlo k neznámé chybě"
+msgstr "不明なエラーが発生しました"
 
 #: authentik/core/api/users.py
 msgid "This field is required."
-msgstr "Toto pole je povinné."
+msgstr "このフィールドは必須です。"
 
 #: authentik/core/models.py
 msgid "name"
-msgstr "Jméno"
+msgstr "名前"
 
 #: authentik/core/models.py
 msgid "Users added to this group will be superusers."
-msgstr "Uživatelé přidáni do této skupiny budou správci."
+msgstr "このグループに追加したユーザーはスーパーユーザーになります。"
 
 #: authentik/core/models.py
 msgid "Group"
-msgstr "Skupina"
+msgstr "グループ"
 
 #: authentik/core/models.py
 msgid "Groups"
-msgstr "Skupiny"
+msgstr "グループ"
 
 #: authentik/core/models.py
 msgid "Add user to group"
-msgstr "Přidat uživatele do skupiny"
+msgstr "ユーザーをグループに追加"
 
 #: authentik/core/models.py
 msgid "Remove user from group"
-msgstr "Odebrat uživatele ze skupiny"
+msgstr "グループからユーザーを削除"
 
 #: authentik/core/models.py
 msgid "Enable superuser status"
-msgstr "Povolit status superuživatele"
+msgstr "スーパーユーザーを有効にする"
 
 #: authentik/core/models.py
 msgid "Disable superuser status"
-msgstr "Zakázat status superuživatele"
+msgstr "スーパーユーザーを無効にする"
 
 #: authentik/core/models.py
 msgid "User's display name."
-msgstr "Zobrazované jméno uživatele."
+msgstr "ユーザーの表示名。"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
 #: authentik/providers/saml/models.py authentik/rbac/models.py
 msgid "User"
-msgstr "Uživatel"
+msgstr "ユーザー"
 
 #: authentik/core/models.py
 msgid "Users"
-msgstr "Uživatelé"
+msgstr "ユーザー"
 
 #: authentik/core/models.py
 #: authentik/stages/email/templates/email/password_reset.html
 msgid "Reset Password"
-msgstr "Obnovit heslo"
+msgstr "パスワードをリセット"
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr "Může se vydávat za jiné uživatele"
+msgstr "他のユーザーになりすますことができます"
 
 #: authentik/core/models.py
 msgid "Can assign permissions to users"
-msgstr "Může uživatelům přidělovat oprávnění"
+msgstr "ユーザーに権限を付与することができます"
 
 #: authentik/core/models.py
 msgid "Can unassign permissions from users"
-msgstr "Může odebírat oprávnění uživatelů"
+msgstr "ユーザーから権限を剥奪することができます"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
-msgstr "Může zobrazit náhled uživatelských dat odeslaných poskytovatelům"
+msgstr "プロバイダーに送信されたユーザーデータをプレビューできます"
 
 #: authentik/core/models.py
 msgid "View applications the user has access to"
-msgstr "Zobrazení aplikací, ke kterým má uživatel přístup"
+msgstr "アクセス権のあるアプリを見る"
 
 #: authentik/core/models.py
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
-msgstr ""
-"Tok používaný pro ověření, když k přidružené aplikaci přistoupí nepřihlášený"
-" uživatel."
+msgstr "このフローは、連携したアプリに認証されていないユーザーがアクセスした場合の認証に使用されます。"
 
 #: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
-msgstr "Tok použitý při autorizaci tohoto poskytovatele."
+msgstr "フローはこのプロバイダーを承認するときに使用されます。"
 
 #: authentik/core/models.py
 msgid "Flow used ending the session from a provider."
-msgstr "Tok použitý při ukončení spojení s poskytovatelem."
+msgstr "プロバイダーからのセッション終了に使用されるフロー。"
 
 #: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
-msgstr ""
-"Přístup z aplikací; volitelní backchannel poskytovatelé pro protokoly jako "
-"je LDAP a SCIM. "
+msgstr "アプリからアクセス可能。LDAPやSCIMなどのプロトコル用のオプショナルバックチャネルプロバイダー。"
 
 #: authentik/core/models.py
 msgid "Application's display Name."
-msgstr "Zobrazovaný název aplikace."
+msgstr "アプリの表示名。"
 
 #: authentik/core/models.py
 msgid "Internal application name, used in URLs."
-msgstr "Interní název aplikace, používaný v URI."
+msgstr "URLで使用される内部アプリ名。"
 
 #: authentik/core/models.py
 msgid "Open launch URL in a new browser tab or window."
-msgstr "Otevřít úvodní URL v novém okně nebo kartě prohlížeče."
+msgstr "ブラウザーの新しいタブまたはウィンドウで起動URLを開きます。"
 
 #: authentik/core/models.py
 msgid "Application"
-msgstr "Aplikace"
+msgstr "アプリ"
 
 #: authentik/core/models.py
 msgid "Applications"
-msgstr "Aplikace"
+msgstr "アプリ"
 
 #: authentik/core/models.py
 msgid "Application Entitlement"
-msgstr "Oprávnění aplikace"
+msgstr "アプリの権限"
 
 #: authentik/core/models.py
 msgid "Application Entitlements"
-msgstr "Oprávnění aplikace"
+msgstr "アプリの権限"
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
-msgstr "Použít identifikátor specifický pro zdroj"
+msgstr "ソースに固有の識別子を使用する"
 
 #: authentik/core/models.py
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
-"Propojit na uživatele s identickou emailovou adresou. Toto může mít "
-"bezpečnostní dopady, pokud zdroj neověřuje emailové adresy."
+"同一のメールアドレスを持つユーザーにリンク。ソースがメールアドレスを検証しない場合、セキュリティ上の影響がある可能性があります一致するメールアドレスを持つユーザーにリンクします。送信元がメールアドレスの検証を行わない場合、セキュリティ上の問題が発生する可能性があります。"
 
 #: authentik/core/models.py
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
-msgstr ""
-"Použít uživatelův email, ale zakázat zápis v případě, že adresa již "
-"existuje."
+msgstr "ユーザーのEメールアドレスを使用しますが、メールアドレスがすでに存在する場合は登録を拒否します。"
 
 #: authentik/core/models.py
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
-msgstr ""
-"Propojit na uživatele s identickým uživatelským jménem. Toto může mít "
-"bezpečnostní dopady, pokud pokud je uživatelské jméno použito s jiným "
-"zdrojem."
+msgstr "一致するユーザー名を持つユーザーにリンクします。ユーザー名が別のソースで使用された場合、セキュリティ上の問題が発生する可能性があります。"
 
 #: authentik/core/models.py
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
-msgstr ""
-"Použít uživatelské jméno, ale zakázat zápis, pokud už uživatelské jméno "
-"existuje."
+msgstr "ユーザーのユーザー名を使用しますが、ユーザー名がすでに存在する場合は登録を拒否します。"
 
 #: authentik/core/models.py
 msgid ""
 "Link to a group with identical name. Can have security implications when a "
 "group name is used with another source."
-msgstr ""
-"Propojit na skupinu s identickým jménem. Toto může mít bezpečnostní dopady, "
-"pokud je název skupiny použit s jiným zdrojem."
+msgstr "同一の名前を持つグループにリンク。グループ名が別のソースで使用される場合、セキュリティ上の影響がある可能性があります。"
 
 #: authentik/core/models.py
 msgid "Use the group name, but deny enrollment when the name already exists."
-msgstr ""
-"Použít jméno skupiny, ale zakázat zápis, pokud skupina s tímto názvem již "
-"existuje."
+msgstr "グループ名を使用しますが、名前が既に存在する場合は登録を拒否。"
 
 #: authentik/core/models.py
 msgid "Source's display Name."
-msgstr "Zobrazované jméno zdroje."
+msgstr "ソースの表示名。"
 
 #: authentik/core/models.py
 msgid "Internal source name, used in URLs."
-msgstr "Interní jméno zdroje, používané v URL."
+msgstr "URLで使用される内部ソース名。"
 
 #: authentik/core/models.py
 msgid ""
@@ -399,111 +371,105 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
-msgstr "Tok používaný při ověřování existujících uživatelů."
+msgstr "フローは既存のユーザーを認証するときに使用されます。"
 
 #: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
-msgstr "Tok používaný při zapisování nových uživatelů."
+msgstr "フローは新規ユーザーの登録時に使用されます。"
 
 #: authentik/core/models.py
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
-msgstr ""
-"Jak zdroj určuje, jestli má být ověřen existující, nebo zapsán nový "
-"uživatel."
+msgstr "既存のユーザーを認証する必要があるのか、新しいユーザーを登録する必要があるのかをソースが決定する方法。"
 
 #: authentik/core/models.py
 msgid ""
 "How the source determines if an existing group should be used or a new group"
 " created."
-msgstr ""
-"Jak zdroj určuje, jestli má být použita existující skupina, nebo vytvořena "
-"nová."
+msgstr "ソースが既存のグループを使用するか、新しいグループを作成するかを決定する方法。"
 
 #: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
-msgstr "Token"
+msgstr "トークン"
 
 #: authentik/core/models.py
 msgid "Tokens"
-msgstr "Tokeny"
+msgstr "トークン"
 
 #: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
-msgstr "Zobrazit klíč tokenu"
+msgstr "トークンのキーを表示"
 
 #: authentik/core/models.py
 msgid "Set a token's key"
-msgstr "Nastavit klíč tokenu"
+msgstr "トークンのキーを設定"
 
 #: authentik/core/models.py
 msgid "Property Mapping"
-msgstr "Mapování vlastností"
+msgstr "プロパティマッピング"
 
 #: authentik/core/models.py
 msgid "Property Mappings"
-msgstr "Mapování vlastností"
+msgstr "プロパティマッピング"
 
 #: authentik/core/models.py
 msgid "session data"
-msgstr "relační data"
+msgstr "セッションデータ"
 
 #: authentik/core/models.py
 msgid "Session"
-msgstr "Relace"
+msgstr "セッション"
 
 #: authentik/core/models.py
 msgid "Sessions"
-msgstr "Relace"
+msgstr "セッション"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
-msgstr "Ověřená relace"
+msgstr "認証済みセッション"
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
-msgstr "Ověřené relace"
+msgstr "認証済みセッション"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
 "with the source you've previously signed up with."
-msgstr ""
-"Požadavek na ověření zdrojem {source} byl zakázán. Prosím, ověřte se pomocí "
-"zdroje, přes který jste si zakládali Váš účet."
+msgstr "ソースでの認証要求 {source} が拒否されました。以前に登録したソースで認証してください。"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Configured flow does not exist."
-msgstr "Nastavený tok neexistuje."
+msgstr "構成済みのフローがありません。"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully authenticated with {source}!"
-msgstr "Úspěšně ověřeno pomocí {source}!"
+msgstr "{source}での認証に成功しました！"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully linked {source}!"
-msgstr "Úspěšně připojeno ke zdroji {source}!"
+msgstr "{source}とのリンクに成功しました！"
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
-msgstr "Zdroj není nastaven pro zapisování nových uživatelů."
+msgstr "ソースは登録用に構成されていません。"
 
 #: authentik/core/tasks.py
 msgid "Remove expired objects."
-msgstr "Odstranit objekty po vypršení platnosti."
+msgstr "失効したオブジェクトを削除。"
 
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
-msgstr "Odstranit dočasné uživatele vytvořené zdroji SAML."
+msgstr "SAMLで作成された一時ユーザを削除。"
 
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
 msgid "Go home"
-msgstr "Přejít domů"
+msgstr "ホームに戻る"
 
 #: authentik/core/templates/login/base_full.html
 #: authentik/flows/templates/if/flow-sfe.html
@@ -515,15 +481,15 @@ msgstr "Powered by authentik"
 #: authentik/providers/saml/views/sso.py
 #, python-format
 msgid "You're about to sign into %(application)s."
-msgstr "Přihlašujete se do %(application)s"
+msgstr "%(application)sにサインインしようとしています。"
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
-msgstr "Rozhraní je dostupné pouze pro interní uživatele."
+msgstr "このインターフェースは内部ユーザーのみアクセス可能です。"
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
-msgstr "Alternativní jméno subjektu"
+msgstr "サブジェクト代替名"
 
 #: authentik/crypto/builder.py
 msgid "rsa"
@@ -535,47 +501,45 @@ msgstr "ecdsa"
 
 #: authentik/crypto/models.py
 msgid "RSA"
-msgstr ""
+msgstr "RSA"
 
 #: authentik/crypto/models.py
 msgid "Elliptic Curve"
-msgstr ""
+msgstr "楕円曲線"
 
 #: authentik/crypto/models.py
 msgid "DSA"
-msgstr ""
+msgstr "DSA"
 
 #: authentik/crypto/models.py
 msgid "Ed25519"
-msgstr ""
+msgstr "Ed25519"
 
 #: authentik/crypto/models.py
 msgid "Ed448"
-msgstr ""
+msgstr "Ed448"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
-msgstr "Certifikát v kódování PEM "
+msgstr "PEMでエンコードされた証明書データ"
 
 #: authentik/crypto/models.py
 msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
-msgstr ""
-"Volitelný privátní klíč. Pokud je nastaven, můžete tento pár klíčů použít "
-"pro šifrování."
+msgstr "オプションのプライベートキーです。これを設定すると、このキーペアを暗号化に使用できます。"
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
-msgstr "Pár Certifikát-Klič"
+msgstr "証明書とキーのペア"
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
-msgstr "Páry Certifikát-Klíč"
+msgstr "証明書とキーのペア"
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
-msgstr "Objevit, importovat a aktualizovat certifikáty na souborovém systému."
+msgstr "証明書をファイルシステムから検出、インポート、更新する。"
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Selected platform not supported"
@@ -600,12 +564,12 @@ msgstr ""
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Device Token"
-msgstr "Token zařízení"
+msgstr "デバイストークン"
 
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Device Tokens"
-msgstr "Tokeny zařízení"
+msgstr "デバイストークン"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Token"
@@ -677,285 +641,266 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
-msgstr ""
-"Pro vytvoření/aktualizaci tohoto objektu je vyžadována Enterprise licence."
+msgstr "このオブジェクトの作成/更新にはエンタープライズ契約が必要です。"
 
 #: authentik/enterprise/models.py
 msgid "License"
-msgstr "Licence"
+msgstr "ライセンス"
 
 #: authentik/enterprise/models.py
 msgid "Licenses"
-msgstr "Licence"
+msgstr "ライセンス"
 
 #: authentik/enterprise/models.py
 msgid "License Usage"
-msgstr "Využití licence"
+msgstr "ライセンスの使用状況"
 
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
-msgstr "Záznamy o využití licence"
+msgstr "ライセンスの使用状況記録"
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-"Klíč pole ke kontrole, klíče polí definované v krocích Výzvy jsou k "
-"dispozici."
+msgstr "確認するフィールドキー。プロンプトステージで定義されたフィールドキーが利用可能です。"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Number of passwords to check against."
-msgstr "Počet hesel, proti kterým se ověřuje."
+msgstr "チェックするパスワードの数。"
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
-msgstr "Heslo není nastaveno v kontextu "
+msgstr "コンテキストにパスワードが設定されていません"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "This password has been used previously. Please choose a different one."
-msgstr "Toto heslo již v minulosti bylo použito. Prosím zvolte jiné."
+msgstr "このパスワードは以前使用されたことがあります。別のパスワードを選択してください。"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policy"
-msgstr "Zásada jedinečnosti hesel"
+msgstr "パスワードの一意性ポリシー"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policies"
-msgstr "Zásady jedinečnosti hesel"
+msgstr "パスワードの一意性ポリシー"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "User Password History"
-msgstr "Historie hesel uživatele"
+msgstr "パスワード履歴"
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid ""
 "Check if any UniquePasswordPolicy exists, and if not, purge the password "
 "history table."
-msgstr ""
-"Zkontrolovat, jestli existuje nějaká zásada jedinečnosti hesel a pokud ne, "
-"vymazat tabulku historie hesel."
+msgstr "一意のパスワードポリシーが存在するか確認し、存在しない場合はパスワード履歴テーブルを削除する。"
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid "Remove user password history that are too old."
-msgstr "Vymazat z historie uživatelská hesla, která jsou příliš stará."
+msgstr "古いパスワード履歴を削除する。"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
-msgstr "Pro přístup k této funkci je potřeba Enterprise licence."
+msgstr "この機能にはエンタープライズ契約が必要です。"
 
 #: authentik/enterprise/policy.py
 msgid "Feature only accessible for internal users."
-msgstr "Funkce je dostupná pouze interním uživatelům"
+msgstr "内部ユーザーのみがアクセスできる機能です。"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider User"
-msgstr "Uživatel poskytovatele Google Workspace"
+msgstr "Google Workspace プロバイダー ユーザー"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Users"
-msgstr "Uživatelé poskytovatele Google Workspace"
+msgstr "Google Workspace プロバイダー ユーザー"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Group"
-msgstr "Skupina poskytovatele Google Workspace"
+msgstr "Google Workspace プロバイダーグループ"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Groups"
-msgstr "Skupiny poskytovatele Google Workspace"
+msgstr "Google Workspace プロバイダーグループ"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
-msgstr "Mapování vlastností použitá pro vytváření/úpravu skupin."
+msgstr "グループの作成/更新に使用されるプロパティマッピング。"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider"
-msgstr "Poskytovatel Google Workspace"
+msgstr "Google Workspace プロバイダー"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
-msgstr "Poskytovatelé Google Workspace"
+msgstr "Google Workspace プロバイダー"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mapping"
-msgstr "Mapování poskytovatele Google Workspace"
+msgstr "Google Workspace プロバイダーマッピング"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mappings"
-msgstr "Mapování poskytovatelů Google Workspace"
+msgstr "Google Workspace プロバイダーマッピング"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync Google Workspace provider objects."
-msgstr "Synchronizovat objekty poskytovatele Google Workspace."
+msgstr "Google Workspace プロバイダー オブジェクトを同期する。"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Full sync for Google Workspace provider."
-msgstr "Plná synchronizace poskytovatele Google Workspace."
+msgstr "Google Workspace プロバイダーの完全同期。"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a direct object (user, group) for Google Workspace provider."
-msgstr ""
-"Synchronizovat objekt (uživatel, skupina) poskytovatele Google Workspace "
-"přímo."
+msgstr "Google Workspaceプロバイダー用の直接オブジェクト（ユーザー、グループ）を同期。"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
-msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů "
-"Google Workspace."
+msgstr "Google Workspace プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a related object (memberships) for Google Workspace provider."
-msgstr ""
-"Synchronizovat příbuzný objekt (členství) poskytovatele Google Workspace."
+msgstr "Google Workspace プロバイダーの関連オブジェクト（メンバーシップ）を同期します。"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
 "Dispatch syncs for a related object (memberships) for Google Workspace "
 "providers."
-msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů Google "
-"Workspace."
+msgstr "Google Workspace プロバイダー向けの関連オブジェクト（メンバーシップ）のディスパッチ同期。"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider User"
-msgstr "Uživatel poskytovatele Microsoft Entra"
+msgstr "Microsoft Entra プロバイダーユーザー"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Group"
-msgstr "Skupina poskytovatele Microsoft Entra"
+msgstr "Microsoft Entra プロバイダーグループ"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Groups"
-msgstr "Skupiny poskytovatele Microsoft Entra"
+msgstr "Microsoft Entra プロバイダーグループ"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider"
-msgstr "Poskytovatel Microsoft Entra"
+msgstr "Microsoft Entra プロバイダー"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
-msgstr "Poskytovatelé Microsoft Entra"
+msgstr "Microsoft Entra プロバイダー"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mapping"
-msgstr "Mapování poskytovatele Microsoft Entra"
+msgstr "Microsoft Entra プロバイダーマッピング"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
-msgstr "Mapování poskytovatelů Microsoft Entra"
+msgstr "Microsoft Entra プロバイダーマッピング"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync Microsoft Entra provider objects."
-msgstr "Synchronizovat objekty poskytovatele Microsoft Entra."
+msgstr "Microsoft Entra プロバイダーオブジェクトと同期する。"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Full sync for Microsoft Entra provider."
-msgstr "Plná synchronizace poskytovatele Microsoft Entra."
+msgstr "Microsoft Entra プロバイダーオブジェクトと完全同期する。"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a direct object (user, group) for Microsoft Entra provider."
-msgstr ""
-"Synchronizovat objekt (uživatel, skupina) poskytovatele Microsoft Entra "
-"přímo."
+msgstr "Microsoft Entraプロバイダー用の直接オブジェクト（ユーザー、グループ）を同期。"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
-msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů "
-"Microsoft Entra."
+msgstr "Microsoft Entra プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
-msgstr ""
-"Synchronizovat příbuzný objekt (členství) poskytovatele Microsoft Entra."
+msgstr "Microsoft Entra プロバイダーの関連オブジェクト（メンバーシップ）を同期します。"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch syncs for a related object (memberships) for Microsoft Entra "
 "providers."
-msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů Microsoft "
-"Entra."
+msgstr "Microsoft Entra プロバイダーの関連オブジェクト（メンバーシップ）をディスパッチ同期します。"
 
 #: authentik/enterprise/providers/radius/api.py
 msgid "Enterprise is required to use EAP-TLS."
-msgstr "Pro použití EAP-TLS je nutná Enterprise licence."
+msgstr "EAP-TLSを使用するにはエンタープライズが必要です。"
 
 #: authentik/enterprise/providers/scim/api.py
 msgid "Enterprise is required to use the OAuth mode."
-msgstr "Pro použití OAuth režimu je vyžadována Enterprise licence."
+msgstr "OAuthモードを使用するにはエンタープライズが必要です。"
 
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
-msgstr "Podepisovací klíč"
+msgstr "署名キー"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Key used to sign the SSF Events."
-msgstr "Klíč používaný pro podpis SSF událostí."
+msgstr "SSFイベントに署名するために使用されるキー。"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Provider"
-msgstr "Poskytovatel Shared Signals Framework"
+msgstr "共有シグナルフレームワークプロバイダー"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Providers"
-msgstr "Poskytovatelé Shared Signals Framework"
+msgstr "共有シグナルフレームワークプロバイダー"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
-msgstr "Přidat stream do poskytovatele SSF"
+msgstr "SSFプロバイダーにストリームを追加"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
-msgstr "Stream SSF"
+msgstr "SSFストリーム"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr "Streamy SSF"
+msgstr "SSFストリーム"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
-msgstr "Událost SSF Stream"
+msgstr "SSFストリームイベント"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Events"
-msgstr "Události SSF Stream"
+msgstr "SSFストリームイベント"
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Dispatch SSF events."
-msgstr "Odbavit události SSF."
+msgstr "SSFイベントをディスパッチ。"
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
-msgstr "Odeslat událost SSF."
+msgstr "SSFイベントを送信。"
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
-msgstr "Fáze konektoru Endpoint Authenticator Google Device Trust"
+msgstr "エンドポイント認証器Google Device Trust Connectorステージ"
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stages"
-msgstr "Fáze konektorů Endpoint Authenticator Google Device Trust"
+msgstr "エンドポイント認証器Google Device Trust Connectorステージ"
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Device"
-msgstr "Koncové zařízení"
+msgstr "エンドポイントデバイス"
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Devices"
-msgstr "Koncová zařízení"
+msgstr "エンドポイントデバイス"
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
-msgstr "Ověřuji Váš prohlížeč..."
+msgstr "ブラウザの確認中...。"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid ""
@@ -963,332 +908,313 @@ msgid ""
 "option has a higher priority than the `client_certificate` option on "
 "`Brand`."
 msgstr ""
-"Nastavte certifikační autority, vůči nimž se budou ověřovat certifikáty. "
-"Toto nastavení má vyšší prioritu než  volba `client_certificate` v `Značka`."
+"証明書を検証するための認証局を設定します。このオプションは `Brand` の `client_certificate` オプションより優先度が高い。"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stage"
-msgstr "Fáze vzájemné TLS"
+msgstr "相互TLSステージ"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stages"
-msgstr "Fáze vzájemné TLS"
+msgstr "相互TLSステージ"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
-msgstr "Oprávnění předávat certifikáty outpostům."
+msgstr "アウトポストへの証明書発行権限。"
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "Certificate required but no certificate was given."
-msgstr "Je vyžadován certifikát, ale žádný nebyl dodán."
+msgstr "証明書が必要でしたが、証明書は発行されませんでした。"
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
-msgstr "Pro certifikát nebyl nalezen žádný uživatel."
+msgstr "証明書に該当するユーザーが見つかりませんでした。"
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
 "flow (Format: hours=-1;minutes=-2;seconds=-3)"
-msgstr ""
-"Čas, který může uživatel strávit návratem ze zdroje, aby tok pokračoval "
-"(Formát: hodiny=-1;minuty=-2;sekundy=-3)"
+msgstr "ユーザーがソースから戻り、フローを継続できるまでの時間（形式: hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
-msgstr "Fáze zdroje"
+msgstr "ソースステージ"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stages"
-msgstr "Fáze zdroje"
+msgstr "ソースステージ"
 
 #: authentik/enterprise/tasks.py
 msgid "Update enterprise license status."
-msgstr "Aktualizovat stav Enterprise licence."
+msgstr "エンタープライズライセンスの状態を更新。"
 
 #: authentik/events/models.py
 msgid "Event"
-msgstr "Událost"
+msgstr "イベント"
 
 #: authentik/events/models.py
 msgid "Events"
-msgstr "Události"
+msgstr "イベント"
 
 #: authentik/events/models.py
 msgid "authentik inbuilt notifications"
-msgstr "vestavěná oznámení authentiku"
+msgstr "authentik内蔵の通知"
 
 #: authentik/events/models.py
 msgid "Generic Webhook"
-msgstr "Obecný webhook"
+msgstr "一般的なWebhook"
 
 #: authentik/events/models.py
 msgid "Slack Webhook (Slack/Discord)"
-msgstr "Webhook Slack (Slack/Discord)"
+msgstr "Slack Webhook (Slack/Discord)"
 
 #: authentik/events/models.py
 #: authentik/stages/authenticator_validate/models.py
 msgid "Email"
-msgstr "E-mail"
+msgstr "メール"
 
 #: authentik/events/models.py
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
-msgstr ""
-"Odeslat oznámení pouze jednou, například při posílání webhooku do kanálu "
-"chatu."
+msgstr "チャットチャンネルにWebhookを送るときのような場合に、一度だけ通知を送信します。"
 
 #: authentik/events/models.py
 msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
-msgstr ""
-"Přizpůsobit tělo požadavku. Mapování by mělo vrátit data serializovatelná do"
-" JSON."
+msgstr "リクエストの本体をカスタマイズ。マッピングは JSON シリアライズ可能なデータを返す必要があります。"
 
 #: authentik/events/models.py
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
-msgstr ""
-"Nastavit odeslání dodatečných hlaviček. Mapování by mělo vrátit slovník párů"
-" klíč-hodnota."
+msgstr "送信する追加ヘッダーを設定。マッピングはキーと値のペアの辞書を返す必要があります"
 
 #: authentik/events/models.py
 msgid "Severity"
-msgstr "Závažnost"
+msgstr "重大性"
 
 #: authentik/events/models.py
 msgid "Dispatched for user"
-msgstr "Odbaveno pro uživatele"
+msgstr "ユーザーに対してディスパッチされました"
 
 #: authentik/events/models.py
 msgid "Event user"
-msgstr "Dotčený uživatel"
+msgstr "イベントユーザー"
 
 #: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Transport oznámení"
+msgstr "通知トランスポート"
 
 #: authentik/events/models.py
 msgid "Notification Transports"
-msgstr "Transporty oznámení"
+msgstr "通知トランスポート"
 
 #: authentik/events/models.py
 msgid "Notice"
-msgstr "Poznámka"
+msgstr "お知らせ"
 
 #: authentik/events/models.py
 msgid "Warning"
-msgstr "Upozornění"
+msgstr "警告"
 
 #: authentik/events/models.py
 msgid "Alert"
-msgstr "Výstraha"
+msgstr "アラート"
 
 #: authentik/events/models.py
 msgid "Notification"
-msgstr "Oznámení"
+msgstr "通知"
 
 #: authentik/events/models.py
 msgid "Notifications"
-msgstr "Oznámení"
+msgstr "通知"
 
 #: authentik/events/models.py
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
-msgstr ""
-"Vyberte, jaké transporty se mají použít pro upozornění uživatele. Pokud není"
-" vybrán žádný, oznámení se zobrazí pouze v rozhraní authentiku."
+msgstr "ユーザーに通知するために使用するトランスポートを選択します。何も選択されていない場合、通知はauthentikのUI にのみ表示されます。"
 
 #: authentik/events/models.py
 msgid "Controls which severity level the created notifications will have."
-msgstr "Určuje, jakou závažnost budou mít vytvořená upozornění."
+msgstr "作成された通知の重大度レベルを制御します。"
 
 #: authentik/events/models.py
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
-msgstr ""
-"Definujte uživatelskou skupinu, které se má oznámení odeslat a zobrazit. "
-"Pokud je pole prázdné, oznámení se nepošle vůbec."
+msgstr "この通知を送信して表示するユーザーグループを定義します。空のままにすると、通知は送信されません。"
 
 #: authentik/events/models.py
 msgid ""
 "When enabled, notification will be sent to user the user that triggered the "
 "event.When destination_group is configured, notification is sent to both."
 msgstr ""
-"Pokud je povoleno, upozornění bude zasláno uživateli, který událost "
-"způsobil. Pokud je nakonfigurován destination_group, upozornění se zašle "
-"oběma.."
+"有効にするとイベントをトリガーしたユーザーに通知が送信されます。destination_group が設定されている場合、両方に送信されます。"
 
 #: authentik/events/models.py
 msgid "Notification Rule"
-msgstr "Pravidlo upozornění"
+msgstr "通知のルール"
 
 #: authentik/events/models.py
 msgid "Notification Rules"
-msgstr "Pravidla upozornění"
+msgstr "通知ルール"
 
 #: authentik/events/models.py
 msgid "Webhook Mapping"
-msgstr "Mapování webhooku"
+msgstr "Webhookのマッピング"
 
 #: authentik/events/models.py
 msgid "Webhook Mappings"
-msgstr "Mapování webhooků"
+msgstr "Webhookのマッピング"
 
 #: authentik/events/tasks.py
 msgid "Dispatch new event notifications."
-msgstr "Odbavit nová upozornění."
+msgstr "新しいイベント通知を配信する。"
 
 #: authentik/events/tasks.py
 msgid ""
 "Check if policies attached to NotificationRule match event and dispatch "
 "notification tasks."
-msgstr ""
-"Ověřit, jestli zásady připojené k pravidlu upozornění odpovídají této "
-"události a odesílají upozornění."
+msgstr "NotificationRule に接続されたポリシーがイベントにマッチするかを確認し、通知タスクをディスパッチ。"
 
 #: authentik/events/tasks.py
 msgid "Send notification."
-msgstr "Odeslat upozornění."
+msgstr "通知を送信する。"
 
 #: authentik/events/tasks.py
 msgid "Cleanup events for GDPR compliance."
-msgstr "Vymazat události pro soulad s GDPR."
+msgstr "GDPR準拠のためのクリーンアップイベント。"
 
 #: authentik/events/tasks.py
 msgid "Cleanup seen notifications and notifications whose event expired."
-msgstr ""
-"Vymazat přečtená upozornění a upozornění, jejichž události již vypršely."
+msgstr "表示済み通知と期限切れのイベントを持つ通知をクリーンアップ。"
 
 #: authentik/flows/api/flows.py
 #, python-brace-format
 msgid "Flow not applicable to current user/request: {messages}"
-msgstr "Tok není aplikovatelný na aktuálního uživatele/požadavek: {messages}"
+msgstr "フローは現在のユーザー/リクエストに適用できません: {messages}"
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Policy ({type})"
-msgstr "Zásada ({type})"
+msgstr "ポリシー({type})"
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Binding {order}"
-msgstr "Vazba {order}"
+msgstr "バインド{order}"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy passed"
-msgstr "Řízeno zásadami"
+msgstr "ポリシーが許可されました"
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Stage ({type})"
-msgstr "Fáze ({type})"
+msgstr "ステージ({type})"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy denied"
-msgstr "Zakázano zásadami"
+msgstr "ポリシーが拒否されました"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "End of the flow"
-msgstr "Konec toku"
+msgstr "フローの最後"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Requirement not fulfilled"
-msgstr "Požadavek nesplněn"
+msgstr "必要事項が入力されていません"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Flow authentication requirement"
-msgstr "Ověřovací požadavek toku"
+msgstr "フロー認証の要件"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Requirement fulfilled"
-msgstr "Požadavek splněn"
+msgstr "必要事項が入力されました"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Pre-flow policies"
-msgstr "Zásady před tokem"
+msgstr "事前フローのポリシー"
 
 #: authentik/flows/api/flows_diagram.py authentik/flows/models.py
 msgid "Flow"
-msgstr "Tok"
+msgstr "フロー"
 
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
-msgstr "Tok se nevztahuje na aktuálního uživatele."
+msgstr "フローは現在のユーザーに適用されません。"
 
 #: authentik/flows/models.py
 #, python-brace-format
 msgid "Dynamic In-memory stage: {doc}"
-msgstr "Dynamická fáze v paměti: {doc}"
+msgstr "動的メモリ内ステージ: {doc}"
 
 #: authentik/flows/models.py
 msgid "Visible in the URL."
-msgstr "Viditelný v URL."
+msgstr "URL に表示されます。"
 
 #: authentik/flows/models.py
 msgid "Shown as the Title in Flow pages."
-msgstr "Zobrazený jako Název na stránkách Toků."
+msgstr "フローページのタイトルとして表示されます。"
 
 #: authentik/flows/models.py
 msgid ""
 "Decides what this Flow is used for. For example, the Authentication flow is "
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
-"Rozhoduje, na co se Tok používá. Například přesměrování na Autentizační tok "
-"proběhne, pokud nepřihlášený uživatel navštíví authentik. "
+"このフローの用途を決定します。例えば認証フローは未認証ユーザーが authentik "
+"にアクセスするときにリダイレクト先になります\"\"このフローの用途を決定します。たとえば、認証されていないユーザーが authentik "
+"にアクセスすると、認証フローがリダイレクトされます。"
 
 #: authentik/flows/models.py
 msgid "Background shown during execution"
-msgstr "Během provádění se zobrazí úlohy na pozadí"
+msgstr "実行中に表示される背景"
 
 #: authentik/flows/models.py
 msgid ""
 "Enable compatibility mode, increases compatibility with password managers on"
 " mobile devices."
-msgstr ""
-"Povolit režim kompatibility, zvyšuje kompatibilitu s manažery hesel na "
-"mobilních zařízeních."
+msgstr "互換モードを有効にすると、モバイル デバイスのパスワード マネージャーとの互換性が向上します。"
 
 #: authentik/flows/models.py
 msgid "Configure what should happen when a flow denies access to a user."
-msgstr "Nastavte, co se má stát, když tok zamezí přístup uživateli."
+msgstr "フローがユーザーへのアクセスを拒否した場合に何が起こるかを設定します。"
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
-msgstr "Požadovaná úroveň autentizace a autorizace pro přístup k toku."
+msgstr "フローにアクセスするために必要な認証および承認のレベル。"
 
 #: authentik/flows/models.py
 msgid "Flows"
-msgstr "Toky"
+msgstr "フロー"
 
 #: authentik/flows/models.py
 msgid "Can export a Flow"
-msgstr "Může exportovat Tok"
+msgstr "フローをエクスポート可能"
 
 #: authentik/flows/models.py
 msgid "Can inspect a Flow's execution"
-msgstr "Může prohlížet provádění Toku"
+msgstr "フローの実行を検査できます"
 
 #: authentik/flows/models.py
 msgid "View Flow's cache metrics"
-msgstr "Zobrazit metriky cache Toku"
+msgstr "フローのキャッシュメトリクスを表示"
 
 #: authentik/flows/models.py
 msgid "Clear Flow's cache metrics"
-msgstr "Vymazat metriky cache Toku"
+msgstr "フローのキャッシュメトリクスをクリア"
 
 #: authentik/flows/models.py
 msgid "Evaluate policies during the Flow planning process."
-msgstr "Vyhodnocovat zásady během procesu plánování Toku."
+msgstr "フロー計画プロセス中にポリシーを評価。"
 
 #: authentik/flows/models.py
 msgid "Evaluate policies when the Stage is presented to the user."
-msgstr "Vyhodnocovat zásady, když je Fáze prezentována uživateli."
+msgstr "ステージがユーザーに提示されるときにポリシーを評価。"
 
 #: authentik/flows/models.py
 msgid ""
@@ -1297,34 +1223,30 @@ msgid ""
 "executor. RESTART restarts the flow from the beginning, and "
 "RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
 msgstr ""
-"Konfigurovat,  jak má provádění toku řešit neplatnou odpověď na výzvu. RETRY"
-" vrací chybové hlášení a obdobnou výzvu pošle znovu. RESTART spustí tok "
-"znovu od začátku a  RESTART_WITH_CONTEXT spustí tok znovu se zachováním "
-"aktuálního kontextu."
+"フロー実行者がチャレンジへの無効なレスポンスを処理する方法を設定。RETRY はエラーメッセージと同様のチャレンジを実行者に返す。RESTART "
+"はフローを最初から再開し、RESTART_WITH_CONTEXT は現在のコンテキストを保持しながらフローを再開。"
 
 #: authentik/flows/models.py
 msgid "Flow Stage Binding"
-msgstr "Vazba Fáze toku"
+msgstr "ステージバインディング"
 
 #: authentik/flows/models.py
 msgid "Flow Stage Bindings"
-msgstr "Vazby Fází toků"
+msgstr "ステージバインディング"
 
 #: authentik/flows/models.py
 msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
-msgstr ""
-"Tok používaný přihlášeným uživatelem pro konfiguraci této Fáze. Pokud je "
-"prázdný, uživatel nebude schopen tuto fázi konfigurovat."
+msgstr "認証されたユーザーがこのステージを構成するために使用するフロー。空の場合、ユーザーはこのステージを構成できません。"
 
 #: authentik/flows/models.py
 msgid "Flow Token"
-msgstr "Token Toku"
+msgstr "フロートークン"
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
-msgstr "Tokeny Toků"
+msgstr "フロートークン"
 
 #: authentik/flows/templates/if/flow.html
 msgid "Site footer"
@@ -1332,173 +1254,159 @@ msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
-msgstr "Neplatná cílová URL"
+msgstr "無効なネクスト URL"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
-msgstr ""
+msgstr "単一タスクで同期されるオブジェクト数を制御"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
-msgstr ""
+msgstr "単一ページの同期タイムアウト"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
 "When enabled, provider will not modify or create objects in the remote "
 "system."
-msgstr ""
-"Pokud je povoleno, poskytovatel nebude měnit, ani vytvářet nové objekty v "
-"cílovém systému."
+msgstr "有効にすると、プロバイダーはリモートシステムのオブジェクトを変更または作成しません。"
 
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr "%(value)s není ve správném formátu 'hours=3;minutes=1'."
+msgstr "%(value)s は 'hours=3;minutes=1' の正しい形式ではありません。"
 
 #: authentik/lib/validators.py
 #, python-brace-format
 msgid "The fields {field_names} must be used together."
-msgstr "Pole {field_names} musí být použita společně."
+msgstr "{field_names} フィールドは一緒に使用する必要があります。"
 
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
-msgstr ""
-"Během připojování do lokálního clusteru můžete použít pouze prázdný "
-"kubeconfig."
+msgstr "ローカルクラスターに接続するときのみ、空の kubeconfig を使用できます。"
 
 #: authentik/outposts/api/service_connections.py
 msgid "Invalid kubeconfig"
-msgstr "Neplatný kubeconfig"
+msgstr "無効なkubeconfig"
 
 #: authentik/outposts/models.py
 msgid ""
 "If enabled, use the local connection. Required Docker socket/Kubernetes "
 "Integration"
-msgstr ""
-"Pokud je povoleno, použije se lokální spojení. Vyžaduje integraci Docker "
-"socket/Kubernetes"
+msgstr "有効にするとローカル接続を使用。Docker ソケット/Kubernetes 統合が必要"
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connection"
-msgstr "Servisní spojení Outpostu"
+msgstr "Outpostサービス接続"
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connections"
-msgstr "Servisní spojení Outpostů"
+msgstr "Outpostサービス接続"
 
 #: authentik/outposts/models.py
 msgid ""
 "Can be in the format of 'unix://<path>' when connecting to a local docker "
 "daemon, or 'https://<hostname>:2376' when connecting to a remote system."
 msgstr ""
-"Může být ve formátu 'unix://<path>', pokud se připojujete k lokálnímu "
-"démonovi, nebo 'https://<hostname>:2376' pokud se jedná o vzdálený systém."
+"ローカル docker デーモンに接続するときは 'unix://<path>' の形式、リモートシステムに接続するときは "
+"'https://<hostname>:2376' の形式。"
 
 #: authentik/outposts/models.py
 msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
-msgstr ""
-"CA, proti které se ověřuje koncový certifikát. Můžete nechat prázdné pro "
-"přeskočení validace."
+msgstr "エンドポイントの証明書を検証する CA。検証なしの場合は空のままにできます。"
 
 #: authentik/outposts/models.py
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
-msgstr ""
-"Certifikát/Klíč použitý pro autentizaci. Ponechte prázdné pro vypnutí "
-"autentizace."
+msgstr "認証に使用される証明書/キー。認証なしの場合は空のままにできます。"
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connection"
-msgstr "Servisní spojení Dockeru"
+msgstr "Dockerサービス接続"
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connections"
-msgstr "Servisní spojení Dockerů"
+msgstr "Dockerサービス接続"
 
 #: authentik/outposts/models.py
 msgid ""
 "Paste your kubeconfig here. authentik will automatically use the currently "
 "selected context."
-msgstr ""
-"Sem vložte Váš kubeconfig. authentik automaticky použije právě vybraný "
-"kontext."
+msgstr "kubeconfig をここに貼り付けます。authentik は現在選択されているコンテキストを自動的に使用します。"
 
 #: authentik/outposts/models.py
 msgid "Verify SSL Certificates of the Kubernetes API endpoint"
-msgstr "Ověřit SSL certifikáty koncového bodu Kubernetes API"
+msgstr "Kubernetes API エンドポイントの SSL 証明書を検証"
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connection"
-msgstr "Servisní spojení Kubernetes"
+msgstr "Kubernetesサービス接続"
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connections"
-msgstr "Servisní spojení Kubernetes"
+msgstr "Kubernetesサービス接続"
 
 #: authentik/outposts/models.py
 msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave"
 " empty if authentik should not handle the deployment."
 msgstr ""
-"Vyberte servisní spojení, které má authentik používat pro správu tohoto "
-"Outpostu. Ponechte prázdné, pokud se authentik nemá starat o nasazení."
+"authentik がこの Outpost を管理するために使用するサービス接続を選択。authentik "
+"がデプロイメントを処理しない場合は空のままにします。"
 
 #: authentik/outposts/models.py
 msgid "Outpost"
-msgstr "Outpost"
+msgstr "アウトポスト"
 
 #: authentik/outposts/models.py
 msgid "Outposts"
-msgstr "Outposty"
+msgstr "アウトポスト"
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
-msgstr "Aktualizovat mezipaměť stavu servisního spojení."
+msgstr "サービス接続のキャッシュ状態を更新。"
 
 #: authentik/outposts/tasks.py
 msgid "Create/update/monitor/delete the deployment of an Outpost."
-msgstr "Vytvořit/upravit/monitorovat/vymazat nasazení Outpostu."
+msgstr "Outpostの展開を作成/更新/監視/削除。"
 
 #: authentik/outposts/tasks.py
 msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
-msgstr "Ujistěte se, že všechny Outposty mají platné servisní účty a tokeny."
+msgstr "すべてのOutpostが有効なサービスアカウントとトークンを持っていることを確認。"
 
 #: authentik/outposts/tasks.py
 msgid "Send update to outpost"
-msgstr "Poslat aktualizaci do outpostu"
+msgstr "Outpostに更新を送信"
 
 #: authentik/outposts/tasks.py
 msgid "Checks the local environment and create Service connections."
-msgstr "Zkontroluje lokální prostředí a vytvoří servisní spojení."
+msgstr "ローカル環境をチェックしてサービス接続を作成。"
 
 #: authentik/outposts/tasks.py
 msgid "Terminate session on all outposts."
-msgstr "Ukončit relace na všech outpostech."
+msgstr "すべてのOutpostのセッションを終了。"
 
 #: authentik/policies/denied.py
 msgid "Access denied"
-msgstr "Přístup zamítnut"
+msgstr "アクセスが拒否されました"
 
 #: authentik/policies/dummy/models.py
 msgid "Dummy Policy"
-msgstr "Testovací zásada"
+msgstr "ダミーポリシー"
 
 #: authentik/policies/dummy/models.py
 msgid "Dummy Policies"
-msgstr "Testovací zásady"
+msgstr "ダミーポリシー"
 
 #: authentik/policies/event_matcher/api.py
 #: authentik/policies/event_matcher/models.py
 msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
-msgstr ""
-"Filtrovat události vytvořené zvolenou aplikací. Pokud ponecháte prázdné, "
-"budou zobrazeny všechny aplikace."
+msgstr "選択したアプリによって作成されたイベントと一致します。空のままにすると、すべてのアプリが一致します。"
 
 #: authentik/policies/event_matcher/api.py
 #: authentik/policies/event_matcher/models.py
@@ -1506,235 +1414,222 @@ msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
 msgstr ""
-"Filtrovat události vytvořené vybraným modelem. Pokud je prázdné, zobrazí se "
-"všechny modely. Pokud je vybrána aplikace, zobrazí se všechny modely zvolené"
-" aplikace."
+"選択されたモデルで作成されたイベントを照合。空の場合、すべてのモデルが照合されます。アプリが選択されている場合、そのアプリのすべてのモデルが照合されます\"\"選択したモデルによって作成されたイベントと一致します。空のままにすると、すべてのモデルが一致します。アプリを選択すると、アプリのすべてのモデルが一致します。"
 
 #: authentik/policies/event_matcher/api.py
 msgid "At least one criteria must be set."
-msgstr "Musí být zadáno alespoň jedno kritérium."
+msgstr "少なくとも1つの条件を設定する必要があります。"
 
 #: authentik/policies/event_matcher/models.py
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
-msgstr ""
-"Filtrovat události s tímto typem aplikace. Pokud je prázdné, budou se "
-"zobrazovat všechny typy aplikací."
+msgstr "作成されたイベントをこのアクションタイプに一致させます。空のままにすると、すべてのアクションタイプが一致します。"
 
 #: authentik/policies/event_matcher/models.py
 msgid ""
 "Matches Event's Client IP (strict matching, for network matching use an "
 "Expression Policy)"
-msgstr ""
-"Filtrovat události podle IP adresy klienta (přesná shoda, pro síťové "
-"porovnání použijte zásadu typu Výraz)"
+msgstr "イベントのクライアント IP にマッチ（厳密なマッチング、ネットワークマッチングは式ポリシーを使用）"
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
-msgstr "Zásada porovnávání událostí"
+msgstr "イベントマッチャーポリシー"
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policies"
-msgstr "Zásady porovnávání událostí"
+msgstr "イベントマッチャーポリシー"
 
 #: authentik/policies/expiry/models.py
 #, python-brace-format
 msgid "Password expired {days} days ago. Please update your password."
-msgstr ""
-"Platnost hesla vypršela před {days} dny. Prosím, aktualizujte si heslo."
+msgstr "パスワードは {days} 日前に有効期限切れになりました。パスワードを更新してください。"
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
-msgstr "Heslu vypršela platnost."
+msgstr "パスワードの有効期限が切れています。"
 
 #: authentik/policies/expiry/models.py
 msgid "Password Expiry Policy"
-msgstr "Zásada vypršení hesla"
+msgstr "パスワード有効期限ポリシー"
 
 #: authentik/policies/expiry/models.py
 msgid "Password Expiry Policies"
-msgstr "Zásady vypršení hesel"
+msgstr "パスワード有効期限ポリシー"
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policy"
-msgstr "Zásada typu Výraz"
+msgstr "式ポリシー"
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policies"
-msgstr "Zásady typu Výraz"
+msgstr "式ポリシー"
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP: client IP not found in ASN database."
-msgstr "GeoIP: IP adresa klienta nebyla nalezena v databázi ASN."
+msgstr "GeoIP: クライアント IP が ASN データベースに見つかりません。"
 
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not part of an allowed autonomous system."
-msgstr "IP adresa klienta není součástí povoleného autonomního systému."
+msgstr "クライアント IP は許可されている自律システムに含まれていません。"
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP: client IP address not found in City database."
-msgstr "GeoIP: IP adresa klienta nebyla nalezena v databázi měst."
+msgstr "GeoIP: クライアント IP アドレスが都市データベースに見つかりません。"
 
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not in an allowed country."
-msgstr "IP adresa klienta není v povolené zemi."
+msgstr "クライアント IP は許可されている国にありません。"
 
 #: authentik/policies/geoip/models.py
 msgid "Distance from previous authentication is larger than threshold."
-msgstr "Vzdálenost od předchozího místa ověření je delší než povolená mez."
+msgstr "前回の認証からの距離がしきい値を超えています。"
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
-msgstr "Vzdálenost je příliš daleká."
+msgstr "距離が可能な範囲より遠いです。"
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policy"
-msgstr "Zásada GeoIP"
+msgstr "GeoIPポリシー"
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policies"
-msgstr "Zásady GeoIP"
+msgstr "GeoIPポリシー"
 
 #: authentik/policies/models.py
 msgid "all, all policies must pass"
-msgstr "vše, splnit všechny zásady"
+msgstr "すべてのポリシーが成功する必要があります"
 
 #: authentik/policies/models.py
 msgid "any, any policy must pass"
-msgstr "libovolná, splnit alespoň jednu zásadu"
+msgstr "いずれかのポリシーが成功する必要があります"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
-msgstr "Model vazby zásady"
+msgstr "ポリシーバインディングモデル"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
-msgstr "Modely vazeb zásad"
+msgstr "ポリシーバインディングモデル"
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
-msgstr "Neguje výstup ze zásady. Výstupní hlášení nejsou změněna."
+msgstr "ポリシーの結果を反転。メッセージは影響を受けません。"
 
 #: authentik/policies/models.py
 msgid "Timeout after which Policy execution is terminated."
-msgstr "Časový limit, po němž je zpracování zásady ukončeno."
+msgstr "ポリシー実行がタイムアウトする時間。"
 
 #: authentik/policies/models.py
 msgid "Result if the Policy execution fails."
-msgstr "Výsledek, pokud zpracování zásady selže."
+msgstr "ポリシー実行が失敗した場合の結果。"
 
 #: authentik/policies/models.py
 msgid "Policy Binding"
-msgstr "Vazba zásady"
+msgstr "ポリシーバインディング"
 
 #: authentik/policies/models.py
 msgid "Policy Bindings"
-msgstr "Vazby zásad"
+msgstr "ポリシーバインディング"
 
 #: authentik/policies/models.py
 msgid ""
 "When this option is enabled, all executions of this policy will be logged. "
 "By default, only execution errors are logged."
-msgstr ""
-"Pokud je povoleno, všechna provádění této zásady budou zaznamenána. "
-"Standardně se ukládají pouze chybná provedení."
+msgstr "このオプションが有効な場合、このポリシーのすべての実行がログに記録されます。デフォルトでは実行エラーのみがログに記録されます。"
 
 #: authentik/policies/models.py
 msgid "Policy"
-msgstr "Zásada"
+msgstr "ポリシー"
 
 #: authentik/policies/models.py
 msgid "Policies"
-msgstr "Zásady"
+msgstr "ポリシー"
 
 #: authentik/policies/models.py
 msgid "View Policy's cache metrics"
-msgstr "Zobrazit metriky mezipaměti zásady"
+msgstr "ポリシーのキャッシュメトリクスを表示"
 
 #: authentik/policies/models.py
 msgid "Clear Policy's cache metrics"
-msgstr "Vymazat metriky mezipaměti zásady"
+msgstr "ポリシーのキャッシュメトリクスをクリア"
 
 #: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
-msgstr "Kolikrát může být otisk hesla na haveibeenpwned."
+msgstr "パスワードハッシュがhaveibeenpwnedに存在することが許可される回数"
 
 #: authentik/policies/password/models.py
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
-msgstr ""
-"Pokud je skóre na zxcvbn menší nebo rovno této hodnotě, zásada nebude "
-"uznána."
+msgstr "zxcvbnスコアがこの値以下の場合、ポリシーは失敗します。"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
-msgstr "Neplatné heslo."
+msgstr "無効なパスワード。"
 
 #: authentik/policies/password/models.py
 #, python-brace-format
 msgid "Password exists on {count} online lists."
-msgstr "Heslo existuje na {count} online seznamech."
+msgstr "パスワードは {count} オンラインリストに存在します。"
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
-msgstr "Heslo je příliš slabé."
+msgstr "パスワードが脆弱です。"
 
 #: authentik/policies/password/models.py
 msgid "Password Policy"
-msgstr "Zásady hesla"
+msgstr "パスワードポリシー"
 
 #: authentik/policies/password/models.py
 msgid "Password Policies"
-msgstr "Zásady hesel"
+msgstr "パスワードポリシー"
 
 #: authentik/policies/reputation/api.py
 msgid "Either IP or Username must be checked"
-msgstr "Musí se zkontrolovat buď IP nebo uživatelské jméno"
+msgstr "IP またはユーザー名のいずれかを確認する必要があります"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policy"
-msgstr "Zásada reputace"
+msgstr "評判ポリシー"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policies"
-msgstr "Zásady reputace"
+msgstr "評判ポリシー"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Score"
-msgstr "Reputační skóre"
+msgstr "評判スコア"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
-msgstr "Reputační skóre"
+msgstr "評判スコア"
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Waiting for authentication..."
-msgstr "Čeká se na ověření..."
+msgstr "認証を待機中...。"
 
 #: authentik/policies/templates/policies/buffer.html
 msgid ""
 "You're already authenticating in another tab. This page will refresh once "
 "authentication is completed."
-msgstr ""
-"Už se přihlašujete na jiné záložce. Stránka se obnoví, jakmile bude ověření "
-"dokončeno."
+msgstr "別のタブで既に認証中です。認証が完了するとこのページが更新されます。"
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Authenticate in this tab"
-msgstr "Ověřit na této záložce"
+msgstr "このタブで認証"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
-msgstr "Nedostatečná oprávnění"
+msgstr "権限がありません"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
-msgstr "Uživatelův avatar"
+msgstr "アバター"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
-msgstr "Nejste to vy?"
+msgstr "あなたではありませんか？"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Error"
@@ -1742,15 +1637,15 @@ msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
-msgstr "Požadavek byl zamítnut."
+msgstr "リクエストは拒否されました。"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Messages:"
-msgstr "Zprávy:"
+msgstr "メッセージ:"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Explanation:"
-msgstr "Vysvětlení:"
+msgstr "説明:"
 
 #: authentik/policies/templates/policies/denied.html
 #, python-format
@@ -1760,16 +1655,16 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    Vazba zásady '%(name)s' vrátila výsledek '%(result)s'\n"
+"                    ポリシーバインディング '%(name)s' は結果 '%(result)s' を返しました\n"
 "                    "
 
 #: authentik/policies/views.py
 msgid "Failed to resolve application"
-msgstr "Nepodařilo se dohledat aplikaci"
+msgstr "アプリの解決に失敗しました"
 
 #: authentik/providers/ldap/models.py
 msgid "DN under which objects are accessible."
-msgstr "DN pod kterým jsou objekty dostupné."
+msgstr "オブジェクトがアクセス可能な DN。"
 
 #: authentik/providers/ldap/models.py
 msgid ""
@@ -1777,9 +1672,8 @@ msgid ""
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"Začátek pro uidNumbers, toto číslo se přidává k user.Pk, aby se zajistilo, "
-"že čísla nebudou pro uživatele POSIX příliš nízká. Výchozí hodnota je 2000, "
-"aby se zajistilo, že nebudeme kolidovat s místními uživateli uidNumber"
+"uidNumbers の開始値、この数値は user.pk に追加されて POSIX ユーザーに対して数値が低すぎないことを確認。デフォルトは 2000"
+" でローカルユーザーの uidNumber と衝突しないことを保証"
 
 #: authentik/providers/ldap/models.py
 msgid ""
@@ -1788,10 +1682,9 @@ msgid ""
 "Default is 4000 to ensure that we don't collide with local groups or users "
 "primary groups gidNumber"
 msgstr ""
-"Začátek pro gidNumbers, toto číslo se přičte k číslu vygenerovanému z "
-"group.Pk, aby se zajistilo, že čísla nebudou příliš nízká pro skupiny POSIX."
-" Výchozí hodnota je 4000, aby se zajistilo, že nebudeme kolidovat s místními"
-" skupinami nebo primárními skupinami uživatelů gidNumber"
+"gidNumbers の開始値、この数値は group.pk から生成された数値に追加されて POSIX "
+"グループに対して数値が低すぎないことを確認。デフォルトは 4000 でローカルグループまたはユーザーのプライマリグループの gidNumber "
+"と衝突しないことを保証"
 
 #: authentik/providers/ldap/models.py authentik/providers/radius/models.py
 msgid ""
@@ -1801,223 +1694,206 @@ msgid ""
 "configured, as otherwise a password may incorrectly be rejected if it "
 "contains a semicolon."
 msgstr ""
-"Pokud je tato funkce povolena, lze vícefaktorové ověřování založené na kódu "
-"použít tak, že se k heslu připojí středník a kód TOTP. Tato funkce by měla "
-"být povolena pouze v případě, že všichni uživatelé, kteří se budou vázat k "
-"tomuto poskytovateli, mají nakonfigurované zařízení TOTP, protože jinak může"
-" být heslo nesprávně odmítnuto, pokud obsahuje středník."
+"有効にするとセミコロンと TOTP "
+"コードをパスワードに追加することでコードベースの多要素認証が使用できます。このプロバイダーにバインドするすべてのユーザーが TOTP "
+"デバイスを設定している場合のみ有効化すべきです。そうしないとセミコロンを含むパスワードが誤って拒否される場合があります。"
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Provider"
-msgstr "Poskytovatel LDAP"
+msgstr "LDAPプロバイダー"
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
-msgstr "Poskytovatelé LDAP"
+msgstr "LDAPプロバイダー"
 
 #: authentik/providers/ldap/models.py
 msgid "Search full LDAP directory"
-msgstr "Prohledat celý adresář LDAP"
+msgstr "完全な LDAP ディレクトリを検索"
 
 #: authentik/providers/oauth2/api/providers.py
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
-msgstr "Neplatný regulární výraz: {url}"
+msgstr "無効な正規表現パターン: {url}"
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
-msgstr "Na základě otisku uživatelského ID"
+msgstr "ハッシュされたユーザー ID に基づく"
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on user ID"
-msgstr "Na základě uživatelského ID"
+msgstr "ユーザー ID に基づく"
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on user UUID"
-msgstr "Na základě uživatelského UUID"
+msgstr "ユーザー UUID に基づく"
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the username"
-msgstr "Na základě uživatelského jména"
+msgstr "ユーザー名に基づく"
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-"Na základě uživatelova emailu. Toto je doporučeno více než metoda UPN."
+msgstr "ユーザーのメールアドレスに基づいています。これはUPNによる方法よりも推奨されます。"
 
 #: authentik/providers/oauth2/constants.py
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
 msgstr ""
-"Na základě uživatelova UPN, funguje pouze pokud má uživatel nastaven atribut"
-" 'upn'. Použijte tuto metodu pouze pokud máte rozdílné UPN a emailové "
-"domény."
+"ユーザーの UPN に基づいて、ユーザーが 'upn' 属性を設定している場合のみ機能。異なる UPN "
+"とメールドメインがある場合のみこのメソッドを使用。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
-msgstr "Důvěrné"
+msgstr "機密"
 
 #: authentik/providers/oauth2/models.py
 msgid "Public"
-msgstr "Veřejný"
+msgstr "パブリック"
 
 #: authentik/providers/oauth2/models.py
 msgid "Same identifier is used for all providers"
-msgstr "Pro všechny poskytovatele se používá stejný identifikátor"
+msgstr "すべてのプロバイダーに同じ識別子を使用"
 
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
-msgstr ""
-"Každý poskytovatel má jiného vydavatele v závislosti na slugu aplikace."
+msgstr "各プロバイダーは、アプリスラッグに基づいて異なる発行者を持ちます。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Strict URL comparison"
-msgstr "Striktní porovnání URL"
+msgstr "厳密な URL 比較"
 
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
-msgstr "Porovnání URL regulárním výrazem"
+msgstr "正規表現 URL マッチング"
 
 #: authentik/providers/oauth2/models.py
 msgid "Back-channel"
-msgstr "Back-channel"
+msgstr "バックチャネル"
 
 #: authentik/providers/oauth2/models.py
 msgid "Front-channel"
-msgstr "Front-channel"
+msgstr "フロントチャネル"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
-msgstr "kód (tok autorizačního kódu)"
+msgstr "code (認可コードフロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "id_token (Implicit Flow)"
-msgstr "id_token (implicitní tok)"
+msgstr "id_token (暗黙的フロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "id_token token (Implicit Flow)"
-msgstr "id_token token (implicitní tok)"
+msgstr "id_token token (暗黙的フロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "code token (Hybrid Flow)"
-msgstr "code token (hybridní tok)"
+msgstr "code token (ハイブリッドフロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "code id_token (Hybrid Flow)"
-msgstr "code id_token (hybridní tok)"
+msgstr "コード id_token (Hybrid フロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "code id_token token (Hybrid Flow)"
-msgstr "code id_token token (hybridní tok)"
+msgstr "コード id_token token (Hybrid フロー)"
 
 #: authentik/providers/oauth2/models.py
 msgid "HS256 (Symmetric Encryption)"
-msgstr "HS256 (symetrické šifrování)"
+msgstr "HS256 (共通鍵暗号化)"
 
 #: authentik/providers/oauth2/models.py
 msgid "RS256 (Asymmetric Encryption)"
-msgstr "RS256 (asymetrické šifrování)"
+msgstr "RS256 (非対称暗号化)"
 
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "ES256 (asymetrické šifrování)"
+msgstr "ES256 (非対称暗号化)"
 
 #: authentik/providers/oauth2/models.py
 msgid "ES384 (Asymmetric Encryption)"
-msgstr "ES384 (asymetrické šifrování)"
+msgstr "ES384 (非対称暗号化)"
 
 #: authentik/providers/oauth2/models.py
 msgid "ES512 (Asymmetric Encryption)"
-msgstr "ES512 (asymetrické šifrování)"
+msgstr "ES512 (非対称暗号化)"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
-msgstr "Scope používaný klientem"
+msgstr "クライアントが使用するスコープ"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Description shown to the user when consenting. If left empty, the user won't"
 " be informed."
-msgstr ""
-"Popis zobrazený uživateli při udělování souhlasu. Pokud je ponecháno "
-"prázdné, uživatel nebude informován."
+msgstr "同意時にユーザーに表示される説明。空のままにすると、ユーザーには通知されません。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope Mapping"
-msgstr "Mapování scope"
+msgstr "スコープマッピング"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope Mappings"
-msgstr "Mapování scope"
+msgstr "スコープマッピング"
 
 #: authentik/providers/oauth2/models.py
 msgid "Client Type"
-msgstr "Typ klienta"
+msgstr "クライアントタイプ"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Confidential clients are capable of maintaining the confidentiality of their"
 " credentials. Public clients are incapable"
-msgstr ""
-"Důvěrní klienti jsou schopni zachovávat důvěrnost svých údajů. Veřejní "
-"klienti toto neumí"
+msgstr "機密クライアントは認証情報の機密性を維持できます。パブリッククライアントは維持できません"
 
 #: authentik/providers/oauth2/models.py
 msgid "Client ID"
-msgstr "ID klienta"
+msgstr "クライアントID"
 
 #: authentik/providers/oauth2/models.py
 msgid "Client Secret"
-msgstr "Secret klienta"
+msgstr "クライアントシークレット"
 
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
-msgstr "URI pro přesměrování"
+msgstr "リダイレクトURI"
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout URI"
-msgstr "Odhlašovací URI"
+msgstr "ログアウト URI"
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout Method"
-msgstr "Metoda odhlášení"
+msgstr "ログアウト方法"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Backchannel logs out with server to server calls. Frontchannel uses iframes "
 "in your browser"
-msgstr ""
-"Backchannel se odhlašuje pomocí volání mezi servery. Frontchannel používá "
-"iframe ve vašem prohlížeči."
+msgstr "バックチャネルはサーバー間呼び出しでログアウト。フロントチャネルはブラウザの iframe を使用"
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
-msgstr "Zahrnout \"claims\" do id_token"
+msgstr "id_token にクレームを含める"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
-msgstr ""
-"Zahrnout \"claims\" uživatele ze \"scopes\" do id_tokenu pro aplikace, které"
-" nepřistupují k userinfo endpointu."
+msgstr "id_token にスコープからのユーザークレームを含める、userinfo エンドポイントにアクセスしないアプリ用。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr ""
-"Přístupové kódy nejsou platné po aktuálním čase + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
+msgstr "アクセスコードは現在時刻 + この値以降は無効（形式: hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Tokens not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr ""
-"Tokeny nejsou platné po aktuálním čase + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
+msgstr "トークンは現在時刻 + この値以降は無効（形式: hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2025,282 +1901,264 @@ msgid ""
 "duration, it will be renewed. When set to seconds=0, token will always be "
 "renewed. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Pokud je při obnovování tokenu jeho platnost nižší než zde stanovená doba, "
-"bude token obnoven. Pokud je nastavena doba seconds=0, token bude obnoven "
-"vždy. (Formát: hours=1;minutes=2;seconds=3)."
+"トークンをリフレッシュするときリフレッシュトークンがこの期間より短い場合、更新されます。seconds=0 "
+"に設定するとトークンは常に更新されます（形式: hours=1;minutes=2;seconds=3）"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
-msgstr ""
-"Nastavte, jaké údaje mají být použity jako unikátní identifikátor uživatele."
-" Ve většině případů by výchozí hodnota měla být v pořádku."
+msgstr "一意のユーザー識別子として使用するデータを構成します。ほとんどの場合、デフォルトで問題ありません。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
-msgstr "Konfigurace, jak má být vyplněno pole vydavatele v ID Tokenu."
+msgstr "ID トークンの発行者フィールドの入力方法を設定します。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
-msgstr "Klíč používaný k podepisování tokenů."
+msgstr "トークンに署名するために使用されるキー。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Encryption Key"
-msgstr "Šifrovací klíč"
+msgstr "暗号化キー"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Key used to encrypt the tokens. When set, tokens will be encrypted and "
 "returned as JWEs."
-msgstr ""
-"Klíč použitý k šifrování tokenů. Pokud je nastaven, tokeny budou šifrovány a"
-" vráceny jako JWE."
+msgstr "トークンの暗号化に使用されるキー。設定されるとトークンは暗号化されて JWE として返されます。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Any JWT signed by the JWK of the selected source can be used to "
 "authenticate."
-msgstr ""
-"Jakýkoliv JWT podepsaný JWK zvoleného zdroje může být použit pro "
-"autentizaci."
+msgstr "選択したソースの JWK によって署名された任意の JWT を認証に使用できます。"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Provider"
-msgstr "Poskytovatel OAuth2/OpenID"
+msgstr "OAuth2/OpenID プロバイダー"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Providers"
-msgstr "Poskytovatelé OAuth2/OpenID"
+msgstr "OAuth2/OpenID プロバイダー"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scopes"
-msgstr "Scopes"
+msgstr "スコープ"
 
 #: authentik/providers/oauth2/models.py
 msgid "Code"
-msgstr "Kód"
+msgstr "コード"
 
 #: authentik/providers/oauth2/models.py
 msgid "Nonce"
-msgstr "Nonce"
+msgstr "ノンス"
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge"
-msgstr "Výzvový kód"
+msgstr "コードチャレンジ"
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
-msgstr "Metoda výzvového kódu"
+msgstr "コードチャレンジ方式"
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization Code"
-msgstr "Autorizační kód"
+msgstr "認証コード"
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization Codes"
-msgstr "Autorizační kódy"
+msgstr "認証コード"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Access Token"
-msgstr "OAuth2 přístupový token"
+msgstr "OAuth2 アクセストークン"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Access Tokens"
-msgstr "OAuth2 přístupové tokeny"
+msgstr "OAuth2 アクセストークン"
 
 #: authentik/providers/oauth2/models.py
 msgid "ID Token"
-msgstr "ID token"
+msgstr "IDトークン"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Token"
-msgstr "Obnovovací token OAuth2"
+msgstr "OAuth2 リフレッシュトークン"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
-msgstr "Obnovovací tokeny OAuth2"
+msgstr "OAuth2 リフレッシュトークン"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
-msgstr ""
-"Odeslat registrovanému klientovi odhlašovací požadavek přes back-channel "
+msgstr "登録されたクライアントにバックチャネルログアウトリクエストを送信"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
-msgstr "Zpracovávat upozornění o back-channel odhlášení odbavené přes signály"
+msgstr "シグナルを介してディスパッチされたバックチャネルログアウト通知を処理"
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
 msgid "Redirecting to {app}..."
-msgstr "Přesměrování na {app}..."
+msgstr "{app} にリダイレクトしています...。"
 
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
-msgstr "Neplatný kód"
+msgstr "無効なコード"
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your User Information"
-msgstr "GitHub Compatibility: Přístup k vašim informacím o uživateli"
+msgstr "GitHub 互換性: ユーザー情報にアクセス"
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access you Email addresses"
-msgstr "GitHub Compatibility: Přístup k vašim emailovým adresám"
+msgstr "GitHub 互換性: メールアドレスにアクセス"
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your Groups"
-msgstr "GitHub Compatibility: Přístup k vašim skupinám"
+msgstr "GitHub 互換性: グループにアクセス"
 
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
-msgstr ""
-"Atributy Uživatel a Heslo musí být nastaveny, pokud je basic autentizace "
-"povolena."
+msgstr "基本認証が有効な場合、ユーザーとパスワード属性を設定する必要があります。"
 
 #: authentik/providers/proxy/api.py
 msgid "Internal host cannot be empty when forward auth is disabled."
-msgstr "Interní hostitel nemůže být prázdný, pokud je forward auth vypnutý."
+msgstr "Internal host cannot be 空 when forward auth is disabled.。"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Session"
-msgstr "Relace proxy"
+msgstr "プロキシセッション"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Sessions"
-msgstr "Relace proxy"
+msgstr "プロキシセッション"
 
 #: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
-msgstr "Ověřovat SSL certifikáty upstream serverů"
+msgstr "アップストリームサーバーの SSL 証明書を検証"
 
 #: authentik/providers/proxy/models.py
 msgid "Internal host SSL Validation"
-msgstr "Validace SSL interního hostitele"
+msgstr "内部ホスト SSL 検証"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
 msgstr ""
-"Povolit podporu pro forwardAuth v traefik a auth_request v nginx. Vylučuje "
-"se s internal_host."
+"traefik と nginx auth_request での forwardAuth サポートを有効化。internal_host と相互排他的。"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Regular expressions for which authentication is not required. Each new line "
 "is interpreted as a new Regular Expression."
-msgstr ""
-"Regulární výrazy pro které není vyžadovaná autentikace. Každý nový řádek je "
-"interpretovaný jako nový regulární výraz."
+msgstr "認証が不要な正規表現。各新しい行は新しい正規表現として解釈されます。"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "When enabled, this provider will intercept the authorization header and "
 "authenticate requests based on its value."
-msgstr ""
-"Pokud je povoleno, tento poskytovatel bude zachytávat hlavičku Authorization"
-" a ověří požadavky na základě její hodnoty."
+msgstr "有効にするとこのプロバイダーは認可ヘッダーをインターセプトしその値に基づいてリクエストを認証。"
 
 #: authentik/providers/proxy/models.py
 msgid "Set HTTP-Basic Authentication"
-msgstr "Nastavit autentizace HTTP-Basic"
+msgstr "HTTP-Basic 認証を設定"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from "
 "authentik."
-msgstr "Nastavit vlastní HTTP-Basic hlavičku na základě hodnot z authentiku."
+msgstr "authentikからの値に基づいたHTTP Basic認証のカスタムヘッダーを設定する。"
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Username Key"
-msgstr "Klíč uživatelského jména HTTP-Basic"
+msgstr "HTTP-Basic ユーザー名キー"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
 " set, the user's Email address is used."
-msgstr ""
-"Atribut Uživatele/Skupiny použitý pro uživatelskou část HTTP-Basic hlavičky."
-" Pokud není nastaven, použije se e-mailová adresa uživatele."
+msgstr "HTTP-Basic ヘッダーのユーザー部分に使用されるユーザー/グループ属性。設定されない場合はユーザーのメールアドレスが使用される。"
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Password Key"
-msgstr "Klíč hesla HTTP-Basic"
+msgstr "HTTP-Basic パスワードキー"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "User/Group Attribute used for the password part of the HTTP-Basic Header."
-msgstr ""
-"Atribut Uživatele/Skupiny použitý pro část s heslem HTTP-Basic hlavičky."
+msgstr "ユーザー/グループ属性はHTTPのBasicヘッダーの一部のパスワード部分に使用されます。"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Provider"
-msgstr "Poskytovatel proxy"
+msgstr "プロキシプロバイダー"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Providers"
-msgstr "Poskytovatelé proxy"
+msgstr "プロキシプロバイダー"
 
 #: authentik/providers/proxy/tasks.py
 msgid "Terminate session on Proxy outpost."
-msgstr "Ukončit relaci na outpostu proxy."
+msgstr "Proxy Outpost でセッションを終了。"
 
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
 "lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Určuje, jak dlouho relace trvá. Výchozí 0 znamená, že relace trvá, dokud "
-"není zavřen prohlížeč. (formát: hours=-1;minutes=-2;seconds=-3)"
+"セッションの長さを決定。デフォルト 0 はセッションがブラウザを閉じるまで継続することを意味（形式: "
+"hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/providers/rac/models.py
 msgid "When set to true, connection tokens will be deleted upon disconnect."
-msgstr "Pokud je povoleno, tokeny spojení budou smazány při odpojení."
+msgstr "true に設定すると、切断時に接続トークンが削除されます。"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider"
-msgstr "Poskytovatel RAC"
+msgstr "RAC プロバイダー"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Providers"
-msgstr "Poskytovatelé RAC"
+msgstr "RAC プロバイダー"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoint"
-msgstr "Endpoint RAC"
+msgstr "RAC エンドポイント"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoints"
-msgstr "Endpointy RAC"
+msgstr "RAC エンドポイント"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele RAC"
+msgstr "RAC プロバイダープロパティマッピング"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatele RAC"
+msgstr "RAC プロバイダープロパティマッピング"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection token"
-msgstr "Token připojení RAC"
+msgstr "RAC 接続トークン"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection tokens"
-msgstr "Tokeny připojení RAC"
+msgstr "RAC 接続トークン"
 
 #: authentik/providers/rac/views.py
 msgid "Maximum connection limit reached."
-msgstr "Dosažen maximální limit počtu spojení."
+msgstr "最大接続数の制限を超えました。"
 
 #: authentik/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
-msgstr "(Už jste připojeni v jiné záložce/okně)"
+msgstr "(別のタブ/ウィンドウで既に接続されています)"
 
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
-msgstr "Sdílené tajemství mezi klienty a serverem pro hashování paketů."
+msgstr "パケットをハッシュするためのクライアントとサーバー間の共有シークレット。"
 
 #: authentik/providers/radius/models.py
 msgid ""
@@ -2308,42 +2166,41 @@ msgid ""
 "specific CIDR will match before a looser one. Clients connecting from a non-"
 "specified CIDR will be dropped."
 msgstr ""
-"Seznam CIDR adres (oddělených čárkami), ze kterých se mohou klienti "
-"připojit. Specifičtější CIDR se shoduje dříve než obecné. Klienti "
-"připojující se z neurčeného CIDR budou odmítnuti."
+"クライアントが接続可能な CIDR のリスト（カンマ区切り）。より具体的な CIDR がより緩い CIDR より先にマッチ。指定されていない CIDR "
+"から接続するクライアントは削除されます\"\"クライアントが接続できる CIDR のリスト (カンマ区切り)。より具体的な CIDR は、より緩い "
+"CIDR よりも先に一致します。指定されていない CIDR から接続するクライアントはドロップされます。"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider"
-msgstr "Poskytovatel Radius"
+msgstr "Radiusプロバイダー"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Providers"
-msgstr "Poskytovatelé Radius"
+msgstr "Radius プロバイダー"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele Radius"
+msgstr "Radius プロバイダープロパティマッピング"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatelů Radius"
+msgstr "Radius プロバイダープロパティマッピング"
 
 #: authentik/providers/saml/api/providers.py
 msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
 msgstr ""
-"Pokud je vybrán pár podepisovacích klíčů, musí být vybrána alespoň jedna z "
-"voleb 'Podepsat tvrzení' a 'Podepsat odpoovědi'."
+"署名キーペアが選択されている場合、'Sign assertion' と 'Sign Response' の少なくとも 1 つを選択する必要があります。"
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
-msgstr "Neplatná syntaxe XML"
+msgstr "無効な XML 構文"
 
 #: authentik/providers/saml/api/providers.py
 #, python-brace-format
 msgid "Failed to import Metadata: {messages}"
-msgstr "Nepodařilo se importovat metadata: {messages}"
+msgstr "メタデータのインポートに失敗しました: {messages}"
 
 #: authentik/providers/saml/models.py
 msgid "ACS URL"
@@ -2351,26 +2208,23 @@ msgstr "ACS URL"
 
 #: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
-msgstr "Vazba na poskytovatele služby"
+msgstr "サービスプロバイダーバインディング"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "This determines how authentik sends the response back to the Service "
 "Provider."
-msgstr ""
-"Určuje, jakým způsobem authentik posílá odpověď zpět Poskytovateli služby."
+msgstr "authentik がレスポンスをサービスプロバイダーに送信する方法を決定します。"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Value of the audience restriction field of the assertion. When left empty, "
 "no audience restriction will be added."
-msgstr ""
-"Hodnota pole Omezení publika nastavovaného Tvrzení. Pokud je prázdné, žádné "
-"omezení publika nebude přidáno."
+msgstr "アサーションのオーディエンス制限フィールドの値。空の場合、オーディエンス制限は追加されません。"
 
 #: authentik/providers/saml/models.py
 msgid "Also known as EntityID"
-msgstr "Také známé jako EntityID."
+msgstr "EntityID とも呼ばれる"
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
@@ -2378,18 +2232,17 @@ msgstr "SLS URL"
 
 #: authentik/providers/saml/models.py
 msgid "Single Logout Service URL where the logout response should be sent."
-msgstr "URL Single Logout Service, kam se pošle odhlašovací odpověď."
+msgstr "ログアウト レスポンスを送信するシングルログアウト サービス URL。"
 
 #: authentik/providers/saml/models.py
 msgid "SLS Binding"
-msgstr "Vazby SLS"
+msgstr "SLS バインディング"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "This determines how authentik sends the logout response back to the Service "
 "Provider."
-msgstr ""
-"Určuje, jak authentik posílá odhlašovací odpověď zpět poskytovateli služeb."
+msgstr "authentik がログアウトレスポンスをサービスプロバイダーに送信する方法を決定します。"
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2399,27 +2252,23 @@ msgid ""
 "sends logout requests directly from the server without user interaction "
 "(requires POST SLS binding)."
 msgstr ""
-"Odhlašovací metoda. Front-channel načte všechna odhlašovací URL najednou do "
-"skrytých iframe. Front-channel používá aktivní záložku prohlížeče k odeslání"
-" požadavků typu POST a přesměrování na poskytovatele. Back-channel posílá "
-"odhlašovacíí požadavky přímo ze serveru bez uživatelské interakce (vyžaduje "
-"vazbu POST SLS)."
+"ログアウトに使用する方法。フロントチャネル iframe は非表示 iframe ですべてのログアウト URL "
+"を同時にロード。フロントチャネルネイティブはアクティブなブラウザタブを使用してポストリクエストを送信しプロバイダーにリダイレクト。バックチャネルはサーバーからログアウトリクエストを直接送信（POST"
+" SLS バインディングが必須）"
 
 #: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
-msgstr "Mapování vlastnosti NameID"
+msgstr "NameID プロパティマッピング"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Configure how the NameID value will be created. When left empty, the "
 "NameIDPolicy of the incoming request will be considered"
-msgstr ""
-"Nakonfigurujte, jak bude vytvořena hodnota NameID. Pokud je ponecháno "
-"prázdné, bude zvážena NameIDPolicy příchozího požadavku."
+msgstr "NameID 値の作成方法を設定。空の場合、受信リクエストの NameIDPolicy が考慮されます"
 
 #: authentik/providers/saml/models.py
 msgid "AuthnContextClassRef Property Mapping"
-msgstr "Mapování vlastnosti AuthnContextClassRef"
+msgstr "AuthnContextClassRef プロパティマッピング"
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2427,33 +2276,26 @@ msgid ""
 "empty, the AuthnContextClassRef will be set based on which authentication "
 "methods the user used to authenticate."
 msgstr ""
-"Nastaví, jak bude hodnota AuthnContextClassRef vytvořena. Pokud je ponecháno"
-" prázdné, bude AuthnContextClassRef nastavena na základě toho, které metody "
-"ověřování uživatel použil k ověření."
+"AuthnContextClassRef 値の作成方法を設定。空の場合、AuthnContextClassRef "
+"はユーザーが認証に使用した認証方法に基づいて設定されます。"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Assertion valid not before current time + this value (Format: "
 "hours=-1;minutes=-2;seconds=-3)."
-msgstr ""
-"Tvrzení nebude platné před aktuálním časem + tato hodnota (formát: "
-"hours=-1;minutes=-2;seconds=-3)."
+msgstr "アサーション有効期限開始は現在時刻 + この値（形式: hours=-1;minutes=-2;seconds=-3）。"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Assertion not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr ""
-"Tvrzení není platné po aktuálním času + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
+msgstr "現在時刻+この値以上のアサーションは無効です(形式: hours=1;minutes=2;seconds=3)。"
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Session not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
-msgstr ""
-"Relace není platná po aktuálním času + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
+msgstr "セッション有効期限は現在時刻 + この値以降（形式: hours=1;minutes=2;seconds=3）。"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA1"
@@ -2512,22 +2354,19 @@ msgid ""
 "When selected, incoming assertion's Signatures will be validated against "
 "this certificate. To allow unsigned Requests, leave on default."
 msgstr ""
-"Je-li vybráno, budou podpisy příchozích Tvrzení ověřeny proti tomuto "
-"certifikátu. Chcete-li povolit nepodepsané Požadavky, ponechte výchozí "
-"nastavení."
+"選択すると受信アサーションの署名がこの証明書に対して検証されます。未署名のリクエストを許可するにはデフォルトのままにします\"\"選択すると、受信アサーションの署名がこの証明書に対して検証されます。署名されていないリクエストを許可するには、デフォルトのままにしておきます。"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Verification Certificate"
-msgstr "Ověřovací certifikát"
+msgstr "検証済み証明書"
 
 #: authentik/providers/saml/models.py
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
-msgstr ""
-"Pár klíčů používaný pro podpis Odpovědí jdoucích Poskytovateli služeb."
+msgstr "サービスプロバイダーに送信される応答に署名するために使用されるキー ペア。"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
-msgstr "Podepisovací pár klíčů"
+msgstr "署名キーペア"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid ""
@@ -2535,66 +2374,63 @@ msgid ""
 " key of the encryption keypair. The assertion is decrypted by the SP using "
 "the the private key."
 msgstr ""
-"Pokud je vybráno, příchozí tvrzení jsou zašifrována poskytovatelem identit "
-"pomocí veřejného klíče z páru šifrovacích klíčů. Tvrzení si dešifruje "
-"Poskytovatel služeb svým privátním klíčem."
+"選択すると受信アサーションは IdP によって暗号化キーペアの公開鍵で暗号化されます。アサーションは SP によって秘密鍵で復号化されます。"
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Encryption Keypair"
-msgstr "Šifrovací pár klíčů"
+msgstr "暗号化キーペア"
 
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
-msgstr ""
-"Výchozí hodnota relay_state pro přihlášení iniciovaná poskytovatelem identit"
+msgstr "IDP-initiated ログインのデフォルトの relay_state 値"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider"
-msgstr "Poskytovatel SAML"
+msgstr "SAMLプロバイダー"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
-msgstr "Poskytovatelé SAML"
+msgstr "SAMLプロバイダー"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele SAML"
+msgstr "SAML プロバイダープロパティマッピング"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatele SAML"
+msgstr "SAML プロバイダープロパティマッピング"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider from Metadata"
-msgstr "Poskytovatel SAML z metadat"
+msgstr "メタデータからSAMLプロバイダーを作成"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers from Metadata"
-msgstr "Poskytovatelé SAML z metadat"
+msgstr "メタデータから SAML プロバイダー"
 
 #: authentik/providers/saml/models.py
 msgid "Link to the user's authenticated session"
-msgstr "Okaz na uživatelovu přihlášenou relaci"
+msgstr "ユーザーの認証済みセッションへのリンク"
 
 #: authentik/providers/saml/models.py
 msgid "SAML SessionIndex for this session"
-msgstr "SAML SessionIndex pro tuto relaci"
+msgstr "このセッションの SAML SessionIndex"
 
 #: authentik/providers/saml/models.py
 msgid "SAML NameID value for this session"
-msgstr "Hodnota SAML NameID pro tuto relaci"
+msgstr "このセッションの SAML NameID 値"
 
 #: authentik/providers/saml/models.py
 msgid "SAML NameID format"
-msgstr "Formát SAML NameID"
+msgstr "SAML NameID フォーマット"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Session"
-msgstr "Relace SAML"
+msgstr "SAML セッション"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
-msgstr "Relace SAML"
+msgstr "SAML セッション"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth"
@@ -2602,7 +2438,7 @@ msgstr "OAuth"
 
 #: authentik/providers/scim/models.py
 msgid "Default"
-msgstr "Výchozí"
+msgstr "デフォルト"
 
 #: authentik/providers/scim/models.py
 msgid "AWS"
@@ -2614,130 +2450,127 @@ msgstr "Slack"
 
 #: authentik/providers/scim/models.py
 msgid "Salesforce"
-msgstr ""
+msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
-msgstr "Základní URL na požadavky SCIM obvykle končí /v2"
+msgstr "SCIM リクエストへの Base URL、通常は /v2 で終わります"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
-msgstr "Autentizační token"
+msgstr "認証トークン"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
-msgstr "Zdroj OAuth použitý pro přihlášení"
+msgstr "認証に使用される OAuth ソース"
 
 #: authentik/providers/scim/models.py
 msgid "Additional OAuth parameters, such as grant_type"
-msgstr "Dodatečné parametry OAuth, například grant_type"
+msgstr "grant_type などの追加 OAuth パラメーター"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Compatibility Mode"
-msgstr "Režim kompatibility SCIM"
+msgstr "SCIM 互換モード"
 
 #: authentik/providers/scim/models.py
 msgid "Alter authentik behavior for vendor-specific SCIM implementations."
-msgstr ""
-"Upravit chování authentiku pro implementace SCIM specifické pro dodavatele."
+msgstr "ベンダー固有の SCIM 実装に対して authentik の動作を変更。"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
-msgstr "Poskytovatel SCIM"
+msgstr "SCIMプロバイダー"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Providers"
-msgstr "Poskytovatelé SCIM"
+msgstr "SCIMプロバイダー"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider Mapping"
-msgstr "Mapování poskytovatele SCIM"
+msgstr "SCIM プロバイダーマッピング"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider Mappings"
-msgstr "Mapování poskytovatelů SCIM"
+msgstr "SCIM プロバイダーマッピング"
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync SCIM provider objects."
-msgstr "Synchronizovat objekty poskytovatele SCIM."
+msgstr "SCIM プロバイダーオブジェクトを同期。"
 
 #: authentik/providers/scim/tasks.py
 msgid "Full sync for SCIM provider."
-msgstr "Plná synchronizace poskytovatele SCIM."
+msgstr "SCIM プロバイダーの完全同期。"
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a direct object (user, group) for SCIM provider."
-msgstr "Synchronizovat objekt (uživatel, skupina) poskytovatele SCIM přímo."
+msgstr "SCIM プロバイダー用の直接オブジェクト（ユーザー、グループ）を同期。"
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
-msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů SCIM."
+msgstr "SCIM プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
-msgstr "Synchronizovat příbuzný objekt (členství) poskytovatele SCIM."
+msgstr "SCIM プロバイダー用の関連オブジェクト（メンバーシップ）を同期。"
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
-msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů SCIM."
+msgstr "SCIM プロバイダー用の関連オブジェクト（メンバーシップ）の同期をディスパッチ。"
 
 #: authentik/rbac/models.py
 msgid "Role"
-msgstr "Role"
+msgstr "ロール"
 
 #: authentik/rbac/models.py
 msgid "Roles"
-msgstr "Role"
+msgstr "ロール"
 
 #: authentik/rbac/models.py
 msgid "Can assign permissions to roles"
-msgstr "Může přiřazovat oprávnění rolím"
+msgstr "ロールに権限を割り当てできます"
 
 #: authentik/rbac/models.py
 msgid "Can unassign permissions from roles"
-msgstr "Může odebírat oprávnění rolím"
+msgstr "ロールから権限を割り当て解除できます"
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
-msgstr "Počáteční oprávnění"
+msgstr "初期権限"
 
 #: authentik/rbac/models.py
 msgid "System permission"
-msgstr "Systémové oprávnění"
+msgstr "システム権限"
 
 #: authentik/rbac/models.py
 msgid "System permissions"
-msgstr "Systémová oprávnění"
+msgstr "システム権限"
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
-msgstr "Může zobrazovat systémové informace"
+msgstr "システム情報を表示できます"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
-msgstr "Může přistupovat k administračnímu rozhraní"
+msgstr "管理者インターフェースにアクセスできます"
 
 #: authentik/rbac/models.py
 msgid "Can view system settings"
-msgstr "Může zobrazovat systémová nastavení"
+msgstr "システム設定を表示できます"
 
 #: authentik/rbac/models.py
 msgid "Can edit system settings"
-msgstr "Může upravovat systémová nastavení"
+msgstr "システム設定を編集できます"
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
-msgstr "Vytvořit administrátorskou skupinu, pokud je výchozí skupina smazána."
+msgstr "デフォルトグループが削除された場合は、管理者グループを作成します。"
 
 #: authentik/recovery/management/commands/create_recovery_key.py
 msgid "Create a Key which can be used to restore access to authentik."
-msgstr "Vytvořit Klíč, který lze použít k obnovení přístupu do authentiku."
+msgstr "authentik へのアクセスを復元するために使用できるキーを作成します。"
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Použit obnovovací odkaz pro přihlášení."
+msgstr "リカバリーリンクを使用して認証しました。"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos realm"
@@ -2745,112 +2578,103 @@ msgstr "Kerberos realm"
 
 #: authentik/sources/kerberos/models.py
 msgid "Custom krb5.conf to use. Uses the system one by default"
-msgstr "Použít vlastní krb5.conf. Standardně se používá systémový"
+msgstr "使用するカスタム krb5.conf。デフォルトではシステムのものを使用"
 
 #: authentik/sources/kerberos/models.py
 msgid "KAdmin server type"
-msgstr "Typ serveru KAdmin"
+msgstr "KAdmin サーバー タイプ"
 
 #: authentik/sources/kerberos/models.py
 msgid "Sync users from Kerberos into authentik"
-msgstr "Synchronizovat uživatele Kerberos do authentiku"
+msgstr "Kerberos のユーザーを authentik に同期"
 
 #: authentik/sources/kerberos/models.py
 msgid "When a user changes their password, sync it back to Kerberos"
-msgstr "Pokud si uživatel změní heslo, synchronizovat ho zpět do Kerberosu"
+msgstr "ユーザーがパスワードを変更するとき、Kerberos に同期"
 
 #: authentik/sources/kerberos/models.py
 msgid "Principal to authenticate to kadmin for sync."
-msgstr "Entita používaná k ověření u kadmin pro synchronizaci."
+msgstr "同期のための kadmin に認証するためのプリンシパル。"
 
 #: authentik/sources/kerberos/models.py
 msgid "Password to authenticate to kadmin for sync"
-msgstr "Heslo pro ověření u kadmin pro synchronizaci"
+msgstr "同期のための kadmin に認証するためのパスワード"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
 "form TYPE:residual"
-msgstr ""
-"Keytab pro ověření u kadmin pro synchronizaci. Musí být v kódování base64 "
-"nebo ve formátu TYPE:residual"
+msgstr "同期のための kadmin に認証する keytab。base64 エンコードまたは TYPE:residual 形式である必要があります"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Credentials cache to authenticate to kadmin for sync. Must be in the form "
 "TYPE:residual"
-msgstr ""
-"Mezipaměť přihlašovacích údajů kadmin pro synchronizaci. Musí být ve formátu"
-" TYPE:residual"
+msgstr "同期のための kadmin に認証する認証情報キャッシュ。TYPE:residual 形式である必要があります"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Force the use of a specific server name for SPNEGO. Must be in the form "
 "HTTP@hostname"
-msgstr ""
-"Vynutit použití konkrétního názvu serveru pro SPNEGO. Musí být ve formátu "
-"HTTP@hostitel"
+msgstr "SPNEGO に特定のサーバー名を強制します。HTTP@hostname 形式である必要があります"
 
 #: authentik/sources/kerberos/models.py
 msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
-msgstr ""
-"Keytab pro SPNEGO v base64 nebo cesta ke keytab souboru ve formátu FILE:path"
+msgstr "SPNEGO keytab base64 エンコードまたは FILE:path 形式の keytab へのパス"
 
 #: authentik/sources/kerberos/models.py
 msgid "Credential cache to use for SPNEGO in form type:residual"
-msgstr "Mezipaměť přihlašovacích údajů pro SPNEGO ve formátu TYPE:residual"
+msgstr "SPNEGO に使用する認証情報キャッシュ（type:residual 形式）"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "If enabled, the authentik-stored password will be updated upon login with "
 "the Kerberos password backend"
-msgstr ""
-"Pokud je zapnuto, uložené heslo v authentiku se po přihlášení aktualizuje "
-"heslem z Kerberos password backend"
+msgstr "有効にするとログイン時に authentik で保存されたパスワードが Kerberos パスワードバックエンドで更新されます"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source"
-msgstr "Zdroj Kerberos"
+msgstr "Kerberos ソース"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Sources"
-msgstr "Zdroje Kerberos"
+msgstr "Kerberos ソース"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mapping"
-msgstr "Mapování vlastností zdroje Kerberos"
+msgstr "Kerberos ソースプロパティマッピング"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mappings"
-msgstr "Mapování vlastností zdroje Kerberos"
+msgstr "Kerberos ソースプロパティマッピング"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connection"
-msgstr "Uživatelské spojení zdroje Kerberos"
+msgstr "ユーザー Kerberos ソース接続"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connections"
-msgstr "Uživatelská spojení zdroje Kerberos"
+msgstr "ユーザー Kerberos ソース接続"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connection"
-msgstr "Skupinové spojení zdroje Kerberos"
+msgstr "グループ Kerberos ソース接続"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connections"
-msgstr "Skupinová spojení zdroje Kerberos"
+msgstr "グループ Kerberos ソース接続"
 
 #: authentik/sources/kerberos/tasks.py
 msgid "Check connectivity for Kerberos sources."
-msgstr "Zkonotrolovat připojení pro zdroje Kerberos."
+msgstr "Kerberos ソースの接続性を確認。"
 
 #: authentik/sources/kerberos/tasks.py
 msgid "Sync Kerberos source."
-msgstr "Synchronizovat zdroj Kerberos."
+msgstr "Kerberos ソースを同期。"
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
-msgstr "Vyžadováno ověření SPNEGO"
+msgstr "SPNEGO 認証が必須"
 
 #: authentik/sources/kerberos/views.py
 msgid ""
@@ -2861,96 +2685,91 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"                    Ujistěte se, že máte platné tikety (získatelné přes kinit)\n"
-"                    a správně nastavený prohlížeč.\n"
-"                    Prosím, kontaktujte správce.\n"
+"                    有効なチケットがあることを確認してください (kinit で取得可能)\n"
+"                    およびブラウザが正しく構成されています。\n"
+"                    管理者に連絡してください。\n"
 "                "
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
-msgstr "Je dovolen pouze jeden zdroj LDAP se synchronizací hesel"
+msgstr "パスワード同期を備えた単一の LDAP ソースのみが許可されます"
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
-msgstr "URI serveru"
+msgstr "サーバーURI"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this"
 " keypair."
-msgstr ""
-"Volitelně ověřit certifikát LDAP serveru proti řetězci certifikačních "
-"autorit v tomto páru klíčů."
+msgstr "オプションで LDAP サーバーの証明書をこのキーペアの CA チェーンに対して検証。"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Client certificate to authenticate against the LDAP Server's Certificate."
-msgstr "Klientský certifikát pro ověření proti certifikátu LDAP serveru."
+msgstr "LDAP サーバーの証明書に対して認証するためのクライアント証明書。"
 
 #: authentik/sources/ldap/models.py
 msgid "Bind CN"
-msgstr "Vazební CN"
+msgstr "バインド CN"
 
 #: authentik/sources/ldap/models.py
 msgid "Enable Start TLS"
-msgstr "Povolit Start TLS"
+msgstr "Start TLS を有効"
 
 #: authentik/sources/ldap/models.py
 msgid "Use Server URI for SNI verification"
-msgstr "Použít URI serveru pro ověření SNI"
+msgstr "SNI 検証に Server URI を使用"
 
 #: authentik/sources/ldap/models.py
 msgid "Base DN"
-msgstr "Základní DN"
+msgstr "Base DN"
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for User-queries."
-msgstr "Přidáno před Základní DN pro uživatelské dotazy."
+msgstr "ユーザークエリの Base DN の前に付加されます。"
 
 #: authentik/sources/ldap/models.py
 msgid "Addition User DN"
-msgstr "Dodatečné DN uživatele"
+msgstr "追加ユーザーDN"
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for Group-queries."
-msgstr "Přidáno před Základní DN pro skupinové dotazy."
+msgstr "グループクエリの Base DN の前に付加されます。"
 
 #: authentik/sources/ldap/models.py
 msgid "Addition Group DN"
-msgstr "Dodatečné DN skupiny"
+msgstr "追加グループDN"
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
-msgstr "Považovat objekty odpovídající tomuto filtru za uživatele."
+msgstr "このフィルターに一致するオブジェクトをユーザーと見なします。"
 
 #: authentik/sources/ldap/models.py
 msgid "Attribute which matches the value of `group_membership_field`."
-msgstr "Atribut odpovídající hodnotě `group_membership_field`."
+msgstr "`group_membership_field` の値に一致する属性。"
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
-msgstr "Pole, které obsahuje členy skupiny."
+msgstr "グループのメンバーを含むフィールド。"
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Groups."
-msgstr "Považovat objekty odpovídající tomuto filtru za skupiny."
+msgstr "このフィルターに一致するオブジェクトをグループと見なします。"
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains a unique Identifier."
-msgstr "Pole, které obsahuje jedinečný identifikátor."
+msgstr "一意の識別子を含むフィールド。"
 
 #: authentik/sources/ldap/models.py
 msgid "Update internal authentik password when login succeeds with LDAP"
-msgstr ""
-"Aktualizovat interní heslo authentiku, když přihlášení přes LDAP uspěje."
+msgstr "LDAP でのログイン成功時に内部 authentik パスワードを更新"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
-msgstr ""
-"Pokud si uživatel změní heslo, synchronizovat změnu zpět do LDAPu. Toto může"
-" být povoleno pouze pro jeden zdroj LDAP."
+msgstr "ユーザーがパスワードを変更するとき、LDAP に同期。単一の LDAP ソースでのみ有効化可能。"
 
 #: authentik/sources/ldap/models.py
 msgid ""
@@ -2958,91 +2777,87 @@ msgid ""
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
 msgstr ""
-"Vyhledat členství ve skupině na základě uživatelského atributu namísto "
-"skupinového atributu. Toto umožňuje rozlišovat vnořené skupiny v systémech, "
-"jako je FreeIPA a Active Directory"
+"グループ属性ではなくユーザー属性に基づいてグループメンバーシップを検索。FreeIPA や Active Directory "
+"などのシステムでネストされたグループ解決を許可"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Delete authentik users and groups which were previously supplied by this "
 "source, but are now missing from it."
-msgstr ""
-"Smazat uživatele a skupiny authentiku, které byly dříve poskytovány tímto "
-"zdrojem, ale nyní v něm chybí."
+msgstr "以前このソースから提供されたが、現在は存在しない authentik ユーザーとグループを削除。"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
-msgstr "LDAP zdroj"
+msgstr "LDAPソース"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Sources"
-msgstr "LDAP zdroje"
+msgstr "LDAPソース"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mapping"
-msgstr "Mapování vlastností zdroje LDAP"
+msgstr "LDAP ソースプロパティマッピング"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
-msgstr "Mapování vlastností zdroje LDAP"
+msgstr "LDAP ソースプロパティマッピング"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Unique ID used while checking if this object still exists in the directory."
-msgstr ""
-"Jedinečné ID použité při kontrole, jestli objekt v adresáři stále existuje."
+msgstr "ディレクトリにこのオブジェクトがまだ存在するかどうかを確認するときに使用される一意の ID。"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
-msgstr "Uživatelské spojení zdroje LDAP"
+msgstr "ユーザー LDAP ソース接続"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connections"
-msgstr "Uživatelská spojené zdrojů LDAP"
+msgstr "ユーザー LDAP ソース接続"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connection"
-msgstr "Skupinové spojení zdroje LDAP"
+msgstr "グループ LDAP ソース接続"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connections"
-msgstr "Skupinová spojení zdrojů LDAP"
+msgstr "グループ LDAP ソース接続"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
-msgstr "Heslo nesplňuje požadavky na složitost v Active Directory."
+msgstr "パスワードが Active Directory 複雑性要件に一致しません。"
 
 #: authentik/sources/ldap/tasks.py
 msgid "Check connectivity for LDAP source."
-msgstr "Zkontrolovat připojení pro zdroj LDAP."
+msgstr "LDAP ソースの接続性を確認。"
 
 #: authentik/sources/ldap/tasks.py
 msgid "Sync LDAP source."
-msgstr "Synchronizovat zdroj LDAP."
+msgstr "LDAP ソースを同期。"
 
 #: authentik/sources/ldap/tasks.py
 msgid "Sync page for LDAP source."
-msgstr "Synchronizovat stránku zdroje LDAP."
+msgstr "LDAP ソースのページを同期。"
 
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
-msgstr "Nebyl přijat žádný token."
+msgstr "トークンを受信しませんでした。"
 
 #: authentik/sources/oauth/models.py
 msgid "HTTP Basic Authentication"
-msgstr "HTTP Basic Authentication"
+msgstr "HTTP 基本認証"
 
 #: authentik/sources/oauth/models.py
 msgid "Include the client ID and secret as request parameters"
-msgstr "Zahrnout ID klienta a tajný klíč jako parametry požadavku"
+msgstr "リクエストパラメーターにクライアント ID とシークレットを含める"
 
 #: authentik/sources/oauth/models.py
 msgid "No PKCE"
-msgstr "Bez PKCE"
+msgstr "PKCE なし"
 
 #: authentik/sources/oauth/models.py
 msgid "Plain"
-msgstr ""
+msgstr "Plain"
 
 #: authentik/sources/oauth/models.py
 msgid "S256"
@@ -3050,44 +2865,41 @@ msgstr "S256"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
-msgstr "URL tokenu požadavku"
+msgstr "トークンURLをリクエスト"
 
 #: authentik/sources/oauth/models.py
 msgid ""
 "URL used to request the initial token. This URL is only required for OAuth "
 "1."
-msgstr ""
-"URL používaná k vyžádání počátečního tokenu. Tato URL je vyžadována pouze "
-"pro OAuth 1."
+msgstr "初期トークンを要求するために使用される URL。この URL は OAuth 1 でのみ必須。"
 
 #: authentik/sources/oauth/models.py
 msgid "Authorization URL"
-msgstr "URL autorizace"
+msgstr "認可 URL"
 
 #: authentik/sources/oauth/models.py
 msgid "URL the user is redirect to to conest the flow."
-msgstr ""
-"URL na kterou je uživatel přesměrován pro udělení souhlasu k autorizaci."
+msgstr "フローを続行するためにユーザーがリダイレクトされる URL。"
 
 #: authentik/sources/oauth/models.py
 msgid "Access Token URL"
-msgstr "URL přístupového tokenu"
+msgstr "アクセストークンURL"
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
-msgstr "URL používané systémem authentik k získání tokenů."
+msgstr "authentik がトークンを取得するために使用する URL。"
 
 #: authentik/sources/oauth/models.py
 msgid "Profile URL"
-msgstr "URL profilu"
+msgstr "プロフィール URL"
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to get user information."
-msgstr "URL používané systémem authentik k získání informací o uživateli."
+msgstr "authentik がユーザー情報を取得するために使用する URL。"
 
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
-msgstr "Dodatečné Scopes"
+msgstr "追加スコープ"
 
 #: authentik/sources/oauth/models.py
 msgid "PKCE"
@@ -3097,260 +2909,257 @@ msgstr "PKCE"
 msgid ""
 "How to perform authentication during an authorization_code token request "
 "flow"
-msgstr "Jak provést ověření během toku požadavku na token authorization_code"
+msgstr ""
+"How to perform authentication during an authorization_コード token request フロー"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
-msgstr "Zdroj OAuth"
+msgstr "OAuthソース"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Sources"
-msgstr "Zdroje OAuth"
+msgstr "OAuthソース"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Source"
-msgstr "Zdroj GitHub OAuth"
+msgstr "GitHub OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
-msgstr "Zdroje GitHub OAuth"
+msgstr "GitHub OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Source"
-msgstr "Zdroj GitLab OAuth"
+msgstr "GitLab OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Sources"
-msgstr "Zdroje GitLab OAuth"
+msgstr "GitLab OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
-msgstr "Zdroj Twich OAuth"
+msgstr "Twitch OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Sources"
-msgstr "Zdroje Twitch OAuth"
+msgstr "Twitch OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Source"
-msgstr "Zdroj Mailcow OAuth"
+msgstr "Mailcow OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Sources"
-msgstr "Zdroje Mailcow OAuth"
+msgstr "Mailcow OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Source"
-msgstr "Zdroj Twitter OAuth"
+msgstr "Twitter OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Sources"
-msgstr "Zdroje Twitter OAuth"
+msgstr "Twitter OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Source"
-msgstr "Zdroj Facebook OAuth"
+msgstr "Facebook OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Sources"
-msgstr "Zdroje Facebook OAuth"
+msgstr "Facebook OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Source"
-msgstr "Zdroj Discord OAuth"
+msgstr "Discord OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Sources"
-msgstr "Zdroje Discord OAuth"
+msgstr "Discord OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
-msgstr "Zdroj Patreon OAuth"
+msgstr "Patreon OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Sources"
-msgstr "Zdroje Patreon OAuth"
+msgstr "Patreon OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Source"
-msgstr "Zdroj Goole OAuth"
+msgstr "Google OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Sources"
-msgstr "Zdroj Goole OAuth"
+msgstr "Google OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Source"
-msgstr "Zdroj Azure AD OAuth"
+msgstr "Azure AD OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
-msgstr "Zdroje Azure AD OAuth"
+msgstr "Azure AD OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Source"
-msgstr "Zdroj Entra ID OAuth"
+msgstr "Entra ID OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Sources"
-msgstr "Zdroje Entra ID OAuth"
+msgstr "Entra ID OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
-msgstr "Zdroj OpenID OAuth"
+msgstr "OpenID OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Sources"
-msgstr "Zdroje OpenID OAuth"
+msgstr "OpenID OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Source"
-msgstr "Zdroj Apple OAuth"
+msgstr "Apple OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Sources"
-msgstr "Zdroje Apple OAuth"
+msgstr "Apple OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Source"
-msgstr "Zdroj Okta OAuth"
+msgstr "Okta OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Sources"
-msgstr "Zdroje Okta OAuth"
+msgstr "Okta OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Source"
-msgstr "Zdroj Reddit OAuth"
+msgstr "Reddit OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
-msgstr "Zdroje Reddit OAuth"
+msgstr "Reddit OAuth ソース"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
-msgstr "Mapování vlastností zdroje OAuth"
+msgstr "OAuth ソースプロパティマッピング"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mappings"
-msgstr "Mapování vlastností zdroje OAuth"
+msgstr "OAuth ソースプロパティマッピング"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
-msgstr "Uživatelské spojení zdroje OAuth"
+msgstr "ユーザー OAuth ソース接続"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
-msgstr "Uživatelská spojení zdrojů OAuth"
+msgstr "ユーザー OAuth ソース接続"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connection"
-msgstr "Skupinové spojení zdroje OAuth"
+msgstr "グループ OAuth ソース接続"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
-msgstr "Skupinová spojení zdrojů OAuth"
+msgstr "グループ OAuth ソース接続"
 
 #: authentik/sources/oauth/tasks.py
 msgid ""
 "Update OAuth sources' config from well_known, and JWKS info from the "
 "configured URL."
-msgstr ""
-"Aktualizovat konfiguraci zdroje OAuth z well_known a JKWS informací z "
-"nastaveného URL."
+msgstr "OAuth ソース設定を well_known から更新し、JWKS 情報を設定された URL から取得。"
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
 msgid "Authentication failed: {reason}"
-msgstr "Ověření selhaho: {reason}"
+msgstr "認証に失敗しました: {reason}"
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
-msgstr "Identifikátor klienta používaný pro komunikaci s Plex."
+msgstr "Plex と通信するために使用されるクライアント識別子。"
 
 #: authentik/sources/plex/models.py
 msgid ""
 "Which servers a user has to be a member of to be granted access. Empty list "
 "allows every server."
-msgstr ""
-"Seznam serverů, jichž musí být uživatel členem, aby mu byl udělen přístup. "
-"Prázdný seznam povoluje libovolný server."
+msgstr "ユーザーがアクセスを許可されるためにメンバーである必要があるサーバー。空のリストはすべてのサーバーを許可。"
 
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
-msgstr "Povolit ověření přátelům, i když spolu nesdílíte žádný server."
+msgstr "サーバーを共有していなくても、友人の認証を許可。"
 
 #: authentik/sources/plex/models.py
 msgid "Plex token used to check friends"
-msgstr "Plex token používaný pro kontrolu přátel"
+msgstr "友人を確認するために使用される Plex トークン"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source"
-msgstr "Zdroj Plex"
+msgstr "Plexソース"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Sources"
-msgstr "Zdroje Plex"
+msgstr "Plexソース"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mapping"
-msgstr "Mapování vlastností zdroje Plex"
+msgstr "Plex ソースプロパティマッピング"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mappings"
-msgstr "Mapování vlastností zdroje Plex"
+msgstr "Plex ソースプロパティマッピング"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
-msgstr "Uživatelské spojení zdroje Plex"
+msgstr "ユーザー Plex ソース接続"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
-msgstr "Uživatelská spojení zdrojů Plex"
+msgstr "ユーザー Plex ソース接続"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connection"
-msgstr "Skupinové spojení zdroje Plex"
+msgstr "グループ Plex ソース接続"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
-msgstr "Skupinová spojení zdrojů Plex"
+msgstr "グループ Plex ソース接続"
 
 #: authentik/sources/plex/tasks.py
 msgid "Check the validity of a Plex source."
-msgstr "Zkontrolovat platnost zdroje Plex."
+msgstr "Plex ソースの有効性を確認。"
 
 #: authentik/sources/saml/api/source.py
 msgid ""
 "With a Verification Certificate selected, at least one of 'Verify Assertion "
 "Signature' or 'Verify Response Signature' must be selected."
 msgstr ""
-"Pokud je vybrán Ověřovací certifikát, musí být vybrána alespoň jedna z voleb"
-" 'Ověřit podpis Tvrzení a 'Ověřit podpis odpoovědi'."
+"検証証明書が選択されている場合、'Verify Assertion Signature' または 'Verify Response Signature'"
+" の少なくとも 1 つを選択する必要があります。"
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
-msgstr "Přiřazení přesměrování"
+msgstr "リダイレクト バインディング"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "Vazba POST"
+msgstr "POST バインディング"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
-msgstr "Vazba POST s automatickým potvrzením"
+msgstr "自動確認を備えた POST バインディング"
 
 #: authentik/sources/saml/models.py authentik/sources/telegram/models.py
 msgid "Flow used before authentication."
-msgstr "Tok používaný před ověřením."
+msgstr "認証前に使用されるフロー。"
 
 #: authentik/sources/saml/models.py
 msgid "Issuer"
-msgstr "Vydavatel"
+msgstr "Issuer"
 
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults the Metadata URL."
-msgstr "Také známý jako Entity ID. Výchozí je Metadata URL."
+msgstr "エンティティ ID とも呼ばれます。メタデータ URL がデフォルトになります。"
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"
@@ -3358,7 +3167,7 @@ msgstr "SSO URL"
 
 #: authentik/sources/saml/models.py
 msgid "URL that the initial Login request is sent to."
-msgstr "URL, na kterou je odeslán počáteční požadavek na přihlášení."
+msgstr "最初のログイン要求が送信される URL。"
 
 #: authentik/sources/saml/models.py
 msgid "SLO URL"
@@ -3366,27 +3175,23 @@ msgstr "SLO URL"
 
 #: authentik/sources/saml/models.py
 msgid "Optional URL if your IDP supports Single-Logout."
-msgstr "Volitelná URL, pokud IDP podporuje Single-Logout."
+msgstr "IDP がシングルログアウトをサポートしている場合のオプション URL。"
 
 #: authentik/sources/saml/models.py
 msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
-msgstr ""
-"Povolit autentikační tok iniciovaný Identity Providerem. Může představovat "
-"bezpečnostní riziko, protože se nekontroluje request ID."
+msgstr "IdP によって開始される認証フローを許可します。リクエスト ID の検証が行われないため、セキュリティリスクになる可能性があります。"
 
 #: authentik/sources/saml/models.py
 msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
 "sent."
-msgstr ""
-"Zásada NameID odesílaná poskytovateli. Pokud je prázdná, žádná zásada se "
-"nepošle."
+msgstr "NameID ポリシーが IdP に送信されます。設定解除することもできます。その場合、ポリシーは送信されません。"
 
 #: authentik/sources/saml/models.py
 msgid "Delete temporary users after"
-msgstr "Smazat dočasné uživatele po"
+msgstr "一時ユーザーを削除してから"
 
 #: authentik/sources/saml/models.py
 msgid ""
@@ -3394,188 +3199,182 @@ msgid ""
 "your IDP uses the NameID Format 'transient', and the user doesn't log out "
 "manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Doba, po jejímž uplynutí se smažou dočasní uživatelé. Uplatní se jen tehdy, "
-"pokud poskytovatel používá formát NameID 'transient' a uživatel se neodhlásí"
-" ručně. (Formát: hours=1;minutes=2;seconds=3)."
+"一時ユーザーを削除するときのタイムオフセット。IDP が NameID Format 'transient' "
+"を使用し、ユーザーが手動でログアウトしない場合のみ適用（形式: hours=1;minutes=2;seconds=3）"
 
 #: authentik/sources/saml/models.py
 msgid ""
 "Keypair used to sign outgoing Responses going to the Identity Provider."
-msgstr ""
-"Pár klíčů používaný pro podpis Odpovědí jdoucích Poskytovateli identit."
+msgstr "Identity Provider に送信する発信レスポンスに署名するために使用されるキーペア。"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source"
-msgstr "Zdroj SAML"
+msgstr "SAMLソース"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Sources"
-msgstr "Zdroje SAML"
+msgstr "SAMLソース"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mapping"
-msgstr "Mapování vlastností zdroje SAML"
+msgstr "SAML ソースプロパティマッピング"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mappings"
-msgstr "Mapování vlastností zdroje SAML"
+msgstr "SAML ソースプロパティマッピング"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
-msgstr "Uživatelská spojení zdroje SAML"
+msgstr "ユーザー SAML ソース接続"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
-msgstr "Uživatelská spojení zdrojů SAML"
+msgstr "ユーザー SAML ソース接続"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connection"
-msgstr "Skupinové spojení zdroje SAML"
+msgstr "グループ SAML ソース接続"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connections"
-msgstr "Skupinová spojení zdrojů SAML"
+msgstr "グループ SAML ソース接続"
 
 #: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
-msgstr "Pokračovat na {source_name}"
+msgstr "{source_name} に続行"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
-msgstr "Zdroj SCIM"
+msgstr "SCIM ソース"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
-msgstr "Zdroje SCIM"
+msgstr "SCIM ソース"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mapping"
-msgstr "Mapování vlastností zdroje SCIM"
+msgstr "SCIM ソースプロパティマッピング"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mappings"
-msgstr "Mapování vlastností zdroje SCIM"
+msgstr "SCIM ソースプロパティマッピング"
 
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
-msgstr "Uživateldké jméno Telegram bota"
+msgstr "Telegram ボットユーザー名"
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram bot token"
-msgstr "Token Telegram bota"
+msgstr "Telegram ボット トークン"
 
 #: authentik/sources/telegram/models.py
 msgid "Request access to send messages from your bot."
-msgstr "Požádat o přístup pro zasílání zpráv z vašeho bota."
+msgstr "ボットからメッセージを送信するためのアクセスを要求。"
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source"
-msgstr "Zdroj Telegram"
+msgstr "Telegram ソース"
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Sources"
-msgstr "Zdroje Telegram"
+msgstr "Telegram ソース"
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source Property Mapping"
-msgstr "Mapování vlastností zdroje Telegram"
+msgstr "Telegram ソースプロパティマッピング"
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source Property Mappings"
-msgstr "Mapování flastností zdroje Telegram"
+msgstr "Telegram ソースプロパティマッピング"
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connection"
-msgstr "Uživatelské spojení zdroje Telegram"
+msgstr "ユーザー Telegram ソース接続"
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connections"
-msgstr "Uživatelská spojení zdroje Telegram"
+msgstr "ユーザー Telegram ソース接続"
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connection"
-msgstr "Skupinové spojení zdroje Telegram"
+msgstr "グループ Telegram ソース接続"
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connections"
-msgstr "Skupinová spojení zdroje Telegram"
+msgstr "グループ Telegram ソース接続"
 
 #: authentik/sources/telegram/stage.py
 msgid "Authentication date is too old"
-msgstr "Datum ověření je příliš staré"
+msgstr "認証日が古すぎます"
 
 #: authentik/sources/telegram/stage.py
 msgid "Invalid hash"
-msgstr "Neplatný hash"
+msgstr "無効なハッシュ"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
-msgstr "Krok nastavení autentikátoru Duo"
+msgstr "Duo 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stages"
-msgstr "Kroky nastavení autentikátoru Duo"
+msgstr "Duo 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Device"
-msgstr "Zařízení Duo"
+msgstr "Duo デバイス"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
-msgstr "Zařízení Duo"
+msgstr "Duo デバイス"
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
 "settings below will be ignored."
-msgstr ""
-"Když je povoleno, budou použita globální nastavení e-mailového spojení a "
-"níže uvedená nastavení spojení budou ignorována."
+msgstr "有効にするとグローバルメール接続設定が使用され、以下の接続設定は無視されます。"
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
-msgstr ""
-"Čas, po který je odeslaný token platný (Formát: "
-"hours=3,minutes=17,seconds=300)."
+msgstr "送信されたトークンが有効な時間（形式: hours=3,minutes=17,seconds=300）。"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
-msgstr "Krok nastavení emailového autentikátoru"
+msgstr "メール認証器セットアップステージ"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stages"
-msgstr "Kroky nastavení emailového autentikátoru"
+msgstr "メール認証器セットアップステージ"
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/email/stage.py
 msgid "Exception occurred while rendering E-mail template"
-msgstr "Při vykreslování E-mailové šablony došlo k chybě"
+msgstr "メール テンプレートのレンダリング中に例外が発生しました"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Device"
-msgstr "Emailové zařízení"
+msgstr "メール デバイス"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Devices"
-msgstr "Emailová zařízení"
+msgstr "メール デバイス"
 
 #: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/authenticator_sms/stage.py
 #: authentik/stages/authenticator_totp/stage.py
 msgid "Code does not match"
-msgstr "Kód nesouhlasí"
+msgstr "コードが一致しません"
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "Invalid email"
-msgstr "Neplatný email"
+msgstr "無効なメール"
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "The user already has an email address registered for MFA."
-msgstr "Uživatel už má emailovou adresu registrovanou pro MFA."
+msgstr "ユーザーは既に MFA 用に登録されたメールアドレスを持っています。"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
@@ -3586,7 +3385,7 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"      Ahoj %(username)s,\n"
+"      こんにちは %(username)s,\n"
 "      "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
@@ -3596,7 +3395,7 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Emailový kód MFA.\n"
+"          メール MFA コード。\n"
 "          "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
@@ -3607,14 +3406,14 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Pokud jste nepožádali o tento kód, tento email prosím ignorujte. Kód je platný po dobu %(expires)s.\n"
-" "
+"    このコードを要求していない場合は、このメールを無視してください。上記のコードは %(expires)s まで有効です。\n"
+"    "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
 msgid "Hi %(username)s,"
-msgstr "Ahoj %(username)s,"
+msgstr "こんにちは %(username)s,"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 msgid ""
@@ -3622,7 +3421,7 @@ msgid ""
 "Email MFA code\n"
 msgstr ""
 "\n"
-"Emailový kód MFA\n"
+"メール MFA コード\n"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #, python-format
@@ -3631,112 +3430,107 @@ msgid ""
 "If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
 msgstr ""
 "\n"
-"Pokud jste tento kód nepožadovali, prosím, ignorujte tento email. Kód uvedený výše je platný po dobu %(expires)s.\n"
+"このコードを要求していない場合は、このメールを無視してください。上記のコードは %(expires)s まで有効です。\n"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
 "users authenticity. Only a hash of the phone number is saved to ensure it is"
 " not reused in the future."
-msgstr ""
-"Pokud je povoleno, telefonní číslo se použije pouze při registraci uživatele"
-" na  ověření autentičnosti. Následně se uloží pouze otisk telefonního čísla,"
-" aby nešlo použít v budoucnu."
+msgstr "有効にするとスマートフォン番号は登録中のみ使用されてユーザーの真正性を検証。電話番号のハッシュのみ保存されて将来の再利用を防ぎます。"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "Optionally modify the payload being sent to custom providers."
-msgstr "Volitelně upravit data odesílaná vlastním poskytovatelům."
+msgstr "必要に応じて、カスタムプロバイダーに送信されるペイロードを変更します。"
 
 #: authentik/stages/authenticator_sms/models.py
 #, python-brace-format
 msgid "Use this code to authenticate in authentik: {token}"
-msgstr "Pro ověření v authentiku použijte tento kód: {token}"
+msgstr "authentik での認証にこのコードを使用してください: {token}"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"
-msgstr "Krok nastavení SMS autentikátoru"
+msgstr "SMS 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stages"
-msgstr "Kroky nastavení SMS autentikátoru"
+msgstr "SMS 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Device"
-msgstr "SMS zařízení"
+msgstr "SMS デバイス"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Devices"
-msgstr "SMS zařízení"
+msgstr "SMS デバイス"
 
 #: authentik/stages/authenticator_sms/stage.py
 msgid "Invalid phone number"
-msgstr "Neplatné telefonní číslo"
+msgstr "無効な電話番号"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Authenticator Setup Stage"
-msgstr "Krok nastavení statického autentikátoru"
+msgstr "静的認証器セットアップステージ"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Authenticator Setup Stages"
-msgstr "Kroky nastavení statického autentikátoru"
+msgstr "静的認証器セットアップステージ"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Device"
-msgstr "Statické zařízení"
+msgstr "静的デバイス"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Devices"
-msgstr "Statická zařízení"
+msgstr "静的デバイス"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Token"
-msgstr "Statický token"
+msgstr "静的トークン"
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Tokens"
-msgstr "Statické tokeny"
+msgstr "静的トークン"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "6 digits, widely compatible"
-msgstr "6 číslic, široce kompatibilní"
+msgstr "6桁、広く対応しています"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "8 digits, not compatible with apps like Google Authenticator"
-msgstr "8 číslic, není kompatibilní s aplikacemi jako Google Authenticator"
+msgstr "8桁、Google 認証システムのようなアプリには対応していません"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stage"
-msgstr "Krok nastavení TOTP autentikátoru"
+msgstr "TOTP 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stages"
-msgstr "Kroky nastavení TOTP autentikátoru"
+msgstr "TOTP 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Device"
-msgstr "TOTP zařízení"
+msgstr "TOTP デバイス"
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Devices"
-msgstr "TOTP zařízení"
+msgstr "TOTP デバイス"
 
 #: authentik/stages/authenticator_validate/challenge.py
 msgid ""
 "Invalid Token. Please ensure the time on your device is accurate and try "
 "again."
-msgstr ""
-"Neplatný token. Prosím, ověřte si nastavení času na zařízení a zkuste to "
-"znovu."
+msgstr "無効なトークン。デバイスの時刻が正確であることを確認して、もう一度試してください。"
 
 #: authentik/stages/authenticator_validate/challenge.py
 #: authentik/stages/authenticator_webauthn/stage.py
 #, python-brace-format
 msgid "Invalid device type. Contact your {brand} administrator for help."
-msgstr "Neplatný typ zařízení. Požádejte o pomoc správce značky {brand}."
+msgstr "無効なデバイスタイプです。サポートについては {brand} 管理者にお問い合わせください。"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
-msgstr "Statický"
+msgstr "静的"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "TOTP"
@@ -3760,75 +3554,70 @@ msgid ""
 " devices. After this configuration Stage passes, the user is not prompted "
 "again."
 msgstr ""
-"Kroky používané ke konfiguraci autentizátoru, když uživatel nemá žádná "
-"kompatibilní zařízení. Po úspěšném dokončení tohoto konfiguračního kroku již"
-" uživatel není znovu vyzván."
+"ユーザーが互換性のあるデバイスを持っていない場合に認証器を設定するために使用されるステージ。この設定ステージが完了すると、ユーザーは再度プロンプトされません。"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Device classes which can be used to authenticate"
-msgstr "Třídy zařízení, které lze použít k ověření"
+msgstr "認証に使用できるデバイスクラス"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid ""
 "If any of the user's device has been used within this threshold, this stage "
 "will be skipped"
-msgstr ""
-"Pokud bylo libovolné z uživatelových zařízení použito v rámci této prahové "
-"hodnoty, tento krok se přeskočí."
+msgstr "ユーザーのいずれかのデバイスがこのしきい値内で使用されている場合、このステージはスキップされます"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Enforce user verification for WebAuthn devices."
-msgstr "Vynutit ověření uživatele pro zařízení WebAuthn."
+msgstr "WebAuthn デバイスのユーザー検証を強制。"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
-msgstr "Krok validace autentikátoru"
+msgstr "認証器検証ステージ"
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stages"
-msgstr "Kroky validace autentikátoru"
+msgstr "認証器検証ステージ"
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
-msgstr "Žádný (povolený) MFA autentikátor nebyl nastaven."
+msgstr "（許可された）MFA 認証器が設定されていません。"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
-msgstr "Krok nastavení autentikátoru WebAuthn"
+msgstr "WebAuthn 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stages"
-msgstr "Kroky nastavení autentikátoru WebAuthn"
+msgstr "WebAuthn 認証器セットアップステージ"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device"
-msgstr "WebAuthn zařízení"
+msgstr "WebAuthn デバイス"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
-msgstr "WebAuthn zařízení"
+msgstr "WebAuthn デバイス"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device type"
-msgstr "Typ zařízení WebAuthn"
+msgstr "WebAuthn デバイスタイプ"
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
-msgstr "Typy zařízení WebAuthn"
+msgstr "WebAuthn デバイスタイプ"
 
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
-msgstr ""
-"Úloha na pozadí pro import FIDO Alliance MDS blobů a AAGUIDů do databáze."
+msgstr "FIDO Alliance MDS blob と AAGUID をデータベースにインポートするバックグラウンドタスク。"
 
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
-msgstr "Veřejný klíč získaný vaším poskytovatelem captcha."
+msgstr "公開鍵、Captcha プロバイダーから取得。"
 
 #: authentik/stages/captcha/models.py
 msgid "Private key, acquired your captcha Provider."
-msgstr "Privátní klíč získaný vaším poskytovatelem captcha."
+msgstr "秘密鍵、Captcha プロバイダーから取得。"
 
 #: authentik/stages/captcha/models.py
 msgid ""
@@ -3837,95 +3626,93 @@ msgid ""
 "will continue, but the data from the captcha will be available in the "
 "context for policy decisions"
 msgstr ""
-"Pokud je povoleno a získané skóre captcha je mimo stanovenou mez, tento krok"
-" zobrazí chybové hlášení. Pokud povoleno není, tok bude pokračovat, ale data"
-" z captcha budou k dispozici v kontextu, aby se podle nich mohly rozhodovat "
-"Zásady."
+"有効にして受信 Captcha スコアがしきい値の外にある場合、ステージはエラーメッセージを表示。無効な場合、フローは継続しますが Captcha "
+"のデータはポリシー決定用のコンテキストで利用可能です"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
-msgstr "Krok Captcha"
+msgstr "Captchaステージ"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
-msgstr "Kroky Captcha"
+msgstr "Captchaステージ"
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response. Retrying may solve this issue."
-msgstr "Neplatná odpověď captcha. Zkuste to znovu a možná to pomůže."
+msgstr "無効な Captcha レスポンス。再試行すると解決する場合があります。"
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
-msgstr "Neplatná odpověď captcha"
+msgstr "無効な Captcha レスポンス"
 
 #: authentik/stages/captcha/stage.py
 msgid "Failed to validate token"
-msgstr "Ověřování tokenu selhalo"
+msgstr "トークンの検証に失敗しました"
 
 #: authentik/stages/consent/models.py
 msgid ""
 "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Čas, po kterém vyprší souhlas. (Formát: hours=1;minutes=2;seconds=3)."
+msgstr "同意の有効期限切れ（形式: hours=1;minutes=2;seconds=3）。"
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stage"
-msgstr "Krok souhlasu"
+msgstr "同意ステージ"
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stages"
-msgstr "Kroky souhlasu"
+msgstr "同意ステージ"
 
 #: authentik/stages/consent/models.py
 msgid "User Consent"
-msgstr "Souhlas uživatele"
+msgstr "ユーザー同意"
 
 #: authentik/stages/consent/models.py
 msgid "User Consents"
-msgstr "Souhlasy uživatelů"
+msgstr "ユーザー同意"
 
 #: authentik/stages/consent/stage.py
 msgid "Invalid consent token, re-showing prompt"
-msgstr "Neplatný token souhlasu, ukazuji výzvu znovu"
+msgstr "無効な同意トークン、プロンプトを再表示中"
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
-msgstr "Krok zamítnutí"
+msgstr "拒否ステージ"
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stages"
-msgstr "Kroky zamítnutí"
+msgstr "拒否ステージ"
 
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stage"
-msgstr "Testovací krok"
+msgstr "ダミーステージ"
 
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
-msgstr "Testovací kroky"
+msgstr "ダミーステージ"
 
 #: authentik/stages/email/flow.py
 msgid "Continue to confirm this email address."
-msgstr "Pokračujte k ověření této emailové adresy."
+msgstr "続行してこのメールアドレスを確認。"
 
 #: authentik/stages/email/flow.py
 msgid "Link was already used, please request a new link."
-msgstr "Odkaz už byl použit, prosím, vyžádejte si nový."
+msgstr "リンクはすでに使用されています。新しいリンクを要求してください。"
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
-msgstr "Obnovení hesla"
+msgstr "パスワードリセット"
 
 #: authentik/stages/email/models.py
 msgid "Account Confirmation"
-msgstr "Ověření účtu"
+msgstr "アカウント確認"
 
 #: authentik/stages/email/models.py
 msgid "Email OTP"
-msgstr "Email OTP"
+msgstr "メール OTP"
 
 #: authentik/stages/email/models.py
 msgid "Event Notification"
-msgstr "Oznámení o události"
+msgstr "イベント通知"
 
 #: authentik/stages/email/models.py
 msgid ""
@@ -3933,66 +3720,62 @@ msgid ""
 "number of attempts exceed recovery_max_attempts within this period, further "
 "attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Časové okno použité pro počítání pokusů o obnovu účtu. Pokud počet pokusů "
-"přesáhne recovery_max_attempts během stanovené doby, další pokusy budou "
-"časově omezeny. (Format: hours=1;minutes=2;seconds=3)."
+"最近のアカウント回復試行を数えるために使用される時間ウィンドウ。この期間内で試行回数が recovery_max_attempts "
+"を超える場合、さらなる試行はレート制限されます（形式: hours=1;minutes=2;seconds=3）"
 
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
-msgstr "Aktivovat uživatele po dokočení tohoto kroku."
+msgstr "ステージ完了時にユーザーをアクティベート。"
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
-msgstr "Krok e-mailu"
+msgstr "メールステージ"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Kroky e-mailu"
+msgstr "メールステージ"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
-msgstr "Email úspěšně ověřený."
+msgstr "メールの検証に成功しました。"
 
 #: authentik/stages/email/stage.py
 msgid "No pending user."
-msgstr "Žádný čekající uživatel."
+msgstr "保留中のユーザーはありません。"
 
 #: authentik/stages/email/stage.py
 msgid "Email sent."
-msgstr "Email odeslán."
+msgstr "メールを送信しました。"
 
 #: authentik/stages/email/stage.py
 #, python-brace-format
 msgid ""
 "Too many account verification attempts. Please try again after {minutes} "
 "minutes."
-msgstr ""
-"Příliš mnoho pokusů o ověření účtu. Prosím, zkuste znovu za {minutes} minut."
+msgstr "アカウント検証の試行が多すぎます。{minutes} 分後に再度お試しください。"
 
 #: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
-msgstr "Email úspěšně odeslán."
+msgstr "メールが正常に送信されました。"
 
 #: authentik/stages/email/tasks.py
 msgid "Send email."
-msgstr "Odeslat email."
+msgstr "メールを送信。"
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 #: authentik/stages/email/templates/email/account_confirmation.txt
 msgid "Welcome!"
-msgstr "Vítejte!"
+msgstr "ようこそ！"
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
-msgstr ""
-"Těšíme se, až budete moci začít. Nejdříve je potřeba, abyste potvrdili Váš "
-"účet. Klikněte na tlačítko níže."
+msgstr "開始してくれてうれしいです。まず、アカウントを確認する必要があります。下のボタンを押してください。"
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 msgid "Confirm Account"
-msgstr "Potvrdit účet"
+msgstr "アカウント確認"
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 #, python-format
@@ -4002,16 +3785,14 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"    Pokud to nefunguje, zkopírujte a vlože následující odkaz do Vašeho prohlížeče: %(url)s\n"
+"    それが機能しない場合は、次のリンクをコピーしてブラウザに貼り付けてください: %(url)s\n"
 "    "
 
 #: authentik/stages/email/templates/email/account_confirmation.txt
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just open the link below."
-msgstr ""
-"Těšíme se, až budete moci začít. Nejdříve je potřeba, abyste potvrdili Váš "
-"účet. Otevřete odkaz níže."
+msgstr "開始してくれてうれしいです。まず、アカウントを確認する必要があります。以下のリンクを開いてください。"
 
 #: authentik/stages/email/templates/email/event_notification.html
 #, python-format
@@ -4021,20 +3802,20 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"    Tento email byl odeslán z transportu oznámení <code>%(name)s</code>.\n"
+"    このメールは通知トランスポート <code>%(name)s</code> から送信されました。\n"
 "    "
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "Dear authentik user,"
-msgstr "Vážený uživateli authentik,"
+msgstr "authentik ユーザーの皆様へ"
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "The following notification was created:"
-msgstr "Bylo vytvořeno následující upozornění:"
+msgstr "次の通知が作成されました:"
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "Additional attributes:"
-msgstr "Dodatečné atributy:"
+msgstr "追加属性:"
 
 #: authentik/stages/email/templates/email/event_notification.txt
 #, python-format
@@ -4043,7 +3824,7 @@ msgid ""
 "This email was sent from the notification transport %(name)s.\n"
 msgstr ""
 "\n"
-"Tento email byl odeslán z transportu oznámení %(name)s.\n"
+"このメールは通知トランスポート %(name)s から送信されました。\n"
 
 #: authentik/stages/email/templates/email/password_reset.html
 msgid ""
@@ -4052,7 +3833,7 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Nedávno jste požádali o změnu hesla k účtu authentik. Pro nastavení nového hesla použijte níže uvedené tlačítko.\n"
+"          最近、authentik アカウントのパスワードを変更するようリクエストされました。下のボタンを使用して新しいパスワードを設定してください。\n"
 "          "
 
 #: authentik/stages/email/templates/email/password_reset.html
@@ -4063,8 +3844,8 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Pokud jste nepožádali o změnu hesla, tento email prosím ignorujte. Odkaz výše je platný po dobu %(expires)s.\n"
-" "
+"    パスワードの変更をリクエストしていない場合は、このメールを無視してください。上記のリンクは %(expires)s まで有効です。\n"
+"    "
 
 #: authentik/stages/email/templates/email/password_reset.txt
 msgid ""
@@ -4072,7 +3853,7 @@ msgid ""
 "You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
 msgstr ""
 "\n"
-"Nedávno jste požádali o změnu hesla k účtu authentik. Pro nastavení nového hesla použijte níže uvedený odkaz.\n"
+"最近、authentik アカウントのパスワードを変更するようリクエストされました。以下のリンクを使用して新しいパスワードを設定してください。\n"
 
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
@@ -4081,11 +3862,11 @@ msgid ""
 "If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
 "\n"
-"Pokud jste nepožádali o změnu hesla, tento email prosím ignorujte. Odkaz výše je platný po dobu %(expires)s.\n"
+"パスワードの変更をリクエストしていない場合は、このメールを無視してください。上記のリンクは %(expires)s まで有効です。\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
-msgstr "Testovací email authentiku"
+msgstr "authentik テストメール"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid ""
@@ -4094,7 +3875,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    Toto je testovací email, který vás má informovat, že jste úspěšně nakonfigurovali emaily v authentiku.\n"
+"                    これはテストメールで、authentik メールの設定に成功したことをお知らせします。\n"
 "                    "
 
 #: authentik/stages/email/templates/email/setup.txt
@@ -4103,25 +3884,22 @@ msgid ""
 "This is a test email to inform you, that you've successfully configured authentik emails.\n"
 msgstr ""
 "\n"
-"Toto je testovací email, který vás má informovat, že jste úspěšně nakonfigurovali emaily v authentiku.\n"
+"これはテストメールで、authentik メールの設定に成功したことをお知らせします。\n"
 
 #: authentik/stages/identification/api.py
 msgid "When no user fields are selected, at least one source must be selected"
 msgstr ""
-"Pokud nejsou vybrána žádná uživatelská pole, musí být vybrán alespoń jeden "
-"zdroj"
+"When no user フィールドs are selected, at least one source する必要があります be selected"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "Fields of the user object to match against. (Hold shift to select multiple "
 "options)"
-msgstr ""
-"Pole uživatelského objektu, se kterými se má porovnávat (držte Shift pro "
-"výběr více možností)."
+msgstr "照合するユーザーオブジェクトのフィールド。（Shift を保持して複数のオプションを選択）"
 
 #: authentik/stages/identification/models.py
 msgid "When enabled, user fields are matched regardless of their casing."
-msgstr ""
+msgstr "有効にすると、ユーザーフィールドは大文字小文字に関係なく照合されます。"
 
 #: authentik/stages/identification/models.py
 msgid ""
@@ -4129,62 +3907,55 @@ msgid ""
 "the user's username and avatar will be shown. Otherwise, the text that the "
 "user entered will be shown"
 msgstr ""
-"Když bylo zadáno platné uživatelské jméno/e-mail a tato možnost je povolena,"
-" zobrazí se uživatelské jméno a avatar uživatele. V opačném případě se "
-"zobrazí text, který uživatel zadal"
+"有効なユーザー名/メールが入力され、このオプションが有効な場合、ユーザー名とアバターが表示されます。そうでない場合、ユーザーが入力したテキストが表示されます"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
-msgstr ""
-"Pokud je povoleno, tento krok uspěje a bude pokračovat i přesto, že byly  "
-"zadány neplatné informace o uživateli."
+msgstr "有効にすると、不正確なユーザー情報が入力された場合でもステージは成功して続行します。"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "Show the user the 'Remember me on this device' toggle, allowing repeat users"
 " to skip straight to entering their password."
-msgstr ""
-"Zobrazit uživateli přepínač 'Zapamatovat na tomto zařízení', což umožní "
-"stálým uživatelům přeskočit rovnou k zadání hesla."
+msgstr "ユーザーに「このデバイスで保存」トグルを表示し、リピートユーザーが直接パスワード入力をスキップできるようにします。"
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
-msgstr ""
-"Volitelný tok pro registraci, na který je odkaz ve spodní části stránky."
+msgstr "オプショナル登録フロー、ページ下部にリンクされます。"
 
 #: authentik/stages/identification/models.py
 msgid "Optional recovery flow, which is linked at the bottom of the page."
-msgstr "Volitelný tok obnovení, na který je odkaz ve spodní části stránky."
+msgstr "オプショナルリカバリーフロー、ページ下部にリンクされます。"
 
 #: authentik/stages/identification/models.py
 msgid "Optional passwordless flow, which is linked at the bottom of the page."
-msgstr "Volitelný tok bez hesla, na který je odkaz ve spodní části stránky."
+msgstr "オプショナルパスワードレスフロー、ページ下部にリンクされます。"
 
 #: authentik/stages/identification/models.py
 msgid "Specify which sources should be shown."
-msgstr "Specifikujte, které zdroje se mají zobrazit."
+msgstr "表示するソースを指定します。"
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stage"
-msgstr "Krok identifikace"
+msgstr "識別ステージ"
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
-msgstr "Kroky identifikace"
+msgstr "識別ステージ"
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
-msgstr "Ověření se nezdařilo."
+msgstr "認証に失敗しました。"
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
-msgstr "Přihlásit"
+msgstr "ログイン"
 
 #: authentik/stages/identification/stage.py
 msgid "Continue"
-msgstr "Pokračovat"
+msgstr "続ける"
 
 #: authentik/stages/invitation/models.py
 msgid ""
@@ -4192,151 +3963,149 @@ msgid ""
 "Invitation is given. By default this Stage will cancel the Flow when no "
 "invitation is given."
 msgstr ""
-"Pokud je tento příznak nastaven, tento krok přeskočí na další krok, když "
-"není poskytnuta žádná pozvánka. Ve výchozím nastavení tento krok zruší tok, "
-"když není poskytnuta žádná pozvánka."
+"このフラグが設定されている場合、招待がないときにこのステージは次のステージにジャンプします。デフォルトではこのステージは招待がないときにフローをキャンセルします。"
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation Stage"
-msgstr "Krok pozvánky"
+msgstr "招待ステージ"
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation Stages"
-msgstr "Kroky pozvánek"
+msgstr "招待ステージ"
 
 #: authentik/stages/invitation/models.py
 msgid "When set, only the configured flow can use this invitation."
-msgstr "Pokud je zapnuto, pouze stanovený krok může použít tuto pozvánku."
+msgstr "設定すると、設定されたフローのみがこの招待を使用できます。"
 
 #: authentik/stages/invitation/models.py
 msgid "When enabled, the invitation will be deleted after usage."
-msgstr "Pokud je povoleno, pozvánka bude po použití smazána."
+msgstr "有効にすると、招待は使用後に削除されます。"
 
 #: authentik/stages/invitation/models.py
 msgid "Optional fixed data to enforce on user enrollment."
-msgstr ""
+msgstr "ユーザー登録に強制するオプショナル固定データ。"
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation"
-msgstr "Pozvánka"
+msgstr "招待"
 
 #: authentik/stages/invitation/models.py
 msgid "Invitations"
-msgstr "Pozvánky"
+msgstr "招待"
 
 #: authentik/stages/invitation/stage.py
 msgid "Invalid invite/invite not found"
-msgstr ""
+msgstr "無効な招待/招待が見つかりません"
 
 #: authentik/stages/password/models.py
 msgid "User database + standard password"
-msgstr ""
+msgstr "ユーザーデータベース + 標準パスワード"
 
 #: authentik/stages/password/models.py
 msgid "User database + app passwords"
-msgstr ""
+msgstr "ユーザーデータベース + アプリパスワード"
 
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
-msgstr ""
+msgstr "ユーザーデータベース + LDAP パスワード"
 
 #: authentik/stages/password/models.py
 msgid "User database + Kerberos password"
-msgstr ""
+msgstr "ユーザーデータベース + Kerberos パスワード"
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
-msgstr ""
+msgstr "パスワードをテストするバックエンドの選択。"
 
 #: authentik/stages/password/models.py
 msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
-msgstr ""
+msgstr "フローがキャンセルされる前のユーザーの試行回数。ユーザーをロックするには評判ポリシーと user_write ステージを使用。"
 
 #: authentik/stages/password/models.py
 msgid ""
 "When enabled, provides a 'show password' button with the password input "
 "field."
-msgstr ""
+msgstr "有効にすると、パスワード入力フィールドに「パスワード表示」ボタンが表示されます。"
 
 #: authentik/stages/password/models.py
 msgid "Password Stage"
-msgstr ""
+msgstr "パスワードステージ"
 
 #: authentik/stages/password/models.py
 msgid "Password Stages"
-msgstr ""
+msgstr "パスワードステージ"
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
-msgstr "Neplatné heslo"
+msgstr "無効なパスワード"
 
 #: authentik/stages/prompt/models.py
 msgid "Text: Simple Text input"
-msgstr ""
+msgstr "テキスト: シンプルテキスト入力"
 
 #: authentik/stages/prompt/models.py
 msgid "Text area: Multiline Text Input."
-msgstr ""
+msgstr "テキストエリア: 複数行テキスト入力。"
 
 #: authentik/stages/prompt/models.py
 msgid "Text (read-only): Simple Text input, but cannot be edited."
-msgstr ""
+msgstr "テキスト（読み取り専用）: シンプルテキスト入力ですが編集できません。"
 
 #: authentik/stages/prompt/models.py
 msgid "Text area (read-only): Multiline Text input, but cannot be edited."
-msgstr ""
+msgstr "テキストエリア（読み取り専用）: 複数行テキスト入力ですが編集できません。"
 
 #: authentik/stages/prompt/models.py
 msgid ""
 "Username: Same as Text input, but checks for and prevents duplicate "
 "usernames."
-msgstr ""
+msgstr "ユーザー名: テキスト入力と同じですが、重複ユーザー名をチェックして防止します。"
 
 #: authentik/stages/prompt/models.py
 msgid "Email: Text field with Email type."
-msgstr ""
+msgstr "メール: メールタイプのテキストフィールド。"
 
 #: authentik/stages/prompt/models.py
 msgid ""
 "Password: Masked input, multiple inputs of this type on the same prompt need"
 " to be identical."
-msgstr ""
+msgstr "パスワード: マスク入力、同じプロンプト上の複数の入力は同じである必要があります。"
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
-msgstr ""
+msgstr "ラジオボタンのグループとして表示される固定選択フィールド。"
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a dropdown."
-msgstr ""
+msgstr "ドロップダウンとして表示される固定選択フィールド。"
 
 #: authentik/stages/prompt/models.py
 msgid ""
 "File: File upload for arbitrary files. File content will be available in "
 "flow context as data-URI"
-msgstr ""
+msgstr "ファイル: 任意のファイルのアップロード。ファイル内容はフロー コンテキストで data-URI として利用可能です"
 
 #: authentik/stages/prompt/models.py
 msgid "Separator: Static Separator Line"
-msgstr ""
+msgstr "セパレーター: 静的セパレーターライン"
 
 #: authentik/stages/prompt/models.py
 msgid "Hidden: Hidden field, can be used to insert data into form."
-msgstr ""
+msgstr "非表示: 非表示フィールド、フォームにデータを挿入するために使用できます。"
 
 #: authentik/stages/prompt/models.py
 msgid "Static: Static value, displayed as-is."
-msgstr ""
+msgstr "静的: 静的値、そのまま表示。"
 
 #: authentik/stages/prompt/models.py
 msgid "authentik: Selection of locales authentik supports"
-msgstr "authentik: Výběr jazyků, které authentik podporuje"
+msgstr "authentik: authentik がサポートするロケールの選択"
 
 #: authentik/stages/prompt/models.py
 msgid "Name of the form field, also used to store the value"
-msgstr ""
+msgstr "フォームフィールドの名前、値を保存するためにも使用されます"
 
 #: authentik/stages/prompt/models.py
 msgid ""
@@ -4344,6 +4113,7 @@ msgid ""
 "When creating a fixed choice field, enable interpreting as expression and "
 "return a list to return multiple choices."
 msgstr ""
+"予想される入力値を説明する短いヒントをオプションで提供。固定選択フィールドを作成する場合、式として解釈を有効化して複数の選択肢を返すリストを返す。"
 
 #: authentik/stages/prompt/models.py
 msgid ""
@@ -4351,66 +4121,67 @@ msgid ""
 "choice field, enable interpreting as expression and return a list to return "
 "multiple default choices."
 msgstr ""
+"入力を初期値で事前入力します（オプション）。固定選択フィールドを作成する場合、式として解釈を有効化して複数のデフォルト選択肢を返すリストを返す。"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt"
-msgstr "Výzva"
+msgstr "プロンプト"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompts"
-msgstr "Výzvy"
+msgstr "プロンプト"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stage"
-msgstr ""
+msgstr "プロンプトステージ"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stages"
-msgstr ""
+msgstr "プロンプトステージ"
 
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
-msgstr "Hesla se neshodují."
+msgstr "パスワードが一致しません。"
 
 #: authentik/stages/redirect/api.py
 msgid "Target URL should be present when mode is Static."
-msgstr ""
+msgstr "モードが Static の場合、Target URL が存在する必要があります。"
 
 #: authentik/stages/redirect/api.py
 msgid "Target Flow should be present when mode is Flow."
-msgstr ""
+msgstr "モードが Flow の場合、Target Flow が存在する必要があります。"
 
 #: authentik/stages/redirect/models.py
 msgid "Redirect Stage"
-msgstr ""
+msgstr "リダイレクト ステージ"
 
 #: authentik/stages/redirect/models.py
 msgid "Redirect Stages"
-msgstr ""
+msgstr "リダイレクト ステージ"
 
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
-msgstr ""
+msgstr "ユーザー削除ステージ"
 
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stages"
-msgstr ""
+msgstr "ユーザー削除ステージ"
 
 #: authentik/stages/user_delete/stage.py
 msgid "No Pending User."
-msgstr ""
+msgstr "保留中のユーザーはありません。"
 
 #: authentik/stages/user_login/models.py
 msgid "Bind sessions created by this stage to the configured network"
-msgstr ""
+msgstr "このステージで作成されたセッションを設定されたネットワークにバインド"
 
 #: authentik/stages/user_login/models.py
 msgid "Bind sessions created by this stage to the configured GeoIP location"
-msgstr ""
+msgstr "このステージで作成されたセッションを設定された GeoIP ロケーションにバインド"
 
 #: authentik/stages/user_login/models.py
 msgid "Terminate all other sessions of the user logging in."
-msgstr ""
+msgstr "ログインするユーザーの他のすべてのセッションを終了。"
 
 #: authentik/stages/user_login/models.py
 msgid ""
@@ -4418,6 +4189,8 @@ msgid ""
 "option. Default of 0 means that the remember me option will not be shown. "
 "(Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
+"ユーザーが「保存」を選択するときセッションが延長されるオフセット。デフォルト 0 は「保存」オプションが表示されないことを意味（形式: "
+"hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/stages/user_login/models.py
 msgid ""
@@ -4425,271 +4198,273 @@ msgid ""
 "expiry,to remember the device the user is logging in from. (Format: "
 "hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
+"0 以外の値に設定すると authentik はより長い有効期限の Cookie を保存してユーザーがログインしているデバイスを記憶（形式: "
+"hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
-msgstr ""
+msgstr "ユーザーログインステージ"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stages"
-msgstr ""
+msgstr "ユーザーログインステージ"
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
-msgstr ""
+msgstr "ログインする保留中のユーザーがありません。"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
-msgstr ""
+msgstr "ユーザーログアウトステージ"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stages"
-msgstr ""
+msgstr "ユーザーログアウトステージ"
 
 #: authentik/stages/user_write/models.py
 msgid "When set, newly created users are inactive and cannot login."
-msgstr ""
+msgstr "設定すると、新規作成されたユーザーは非アクティブでログインできません。"
 
 #: authentik/stages/user_write/models.py
 msgid "Optionally add newly created users to this group."
-msgstr ""
+msgstr "新規作成されたユーザーをこのグループに追加します（オプション）。"
 
 #: authentik/stages/user_write/models.py
 msgid "User Write Stage"
-msgstr ""
+msgstr "ユーザー書き込みステージ"
 
 #: authentik/stages/user_write/models.py
 msgid "User Write Stages"
-msgstr ""
+msgstr "ユーザー書き込みステージ"
 
 #: authentik/stages/user_write/stage.py
 msgid "No Pending data."
-msgstr ""
+msgstr "保留中のデータはありません。"
 
 #: authentik/stages/user_write/stage.py
 msgid "No user found and can't create new user."
-msgstr ""
+msgstr "ユーザーが見つからず、新しいユーザーを作成できません。"
 
 #: authentik/stages/user_write/stage.py
 msgid "Failed to update user. Please try again later."
-msgstr ""
+msgstr "ユーザーの更新に失敗しました。後でもう一度試してください。"
 
 #: authentik/tasks/models.py
 msgid "Tenant this task belongs to"
-msgstr ""
+msgstr "このタスクが属するテナント"
 
 #: authentik/tasks/models.py
 msgid "Retry failed task"
-msgstr ""
+msgstr "失敗したタスクを再試行"
 
 #: authentik/tasks/models.py
 msgid "Task log"
-msgstr ""
+msgstr "タスク ログ"
 
 #: authentik/tasks/models.py
 msgid "Task logs"
-msgstr ""
+msgstr "タスク ログ"
 
 #: authentik/tasks/models.py
 msgid "Worker status"
-msgstr ""
+msgstr "ワーカーステータス"
 
 #: authentik/tasks/models.py
 msgid "Worker statuses"
-msgstr ""
+msgstr "ワーカーステータス"
 
 #: authentik/tasks/schedules/models.py
 msgid "Unique schedule identifier"
-msgstr ""
+msgstr "ユニークなスケジュール識別子"
 
 #: authentik/tasks/schedules/models.py
 msgid "User schedule identifier"
-msgstr ""
+msgstr "ユーザースケジュール識別子"
 
 #: authentik/tasks/schedules/models.py
 msgid "Manually trigger a schedule"
-msgstr ""
+msgstr "スケジュールを手動でトリガー"
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
-msgstr ""
+msgstr "古いワーカーステータスを削除。"
 
 #: authentik/tenants/api/settings.py
 #, python-brace-format
 msgid "Value for flag {flag_key} needs to be of type {type}."
-msgstr ""
+msgstr "フラグ {flag_key} の値は {type} 型である必要があります。"
 
 #: authentik/tenants/models.py
 msgid ""
 "Schema name must start with t_, only contain lowercase letters and numbers "
 "and be less than 63 characters."
-msgstr ""
+msgstr "スキーマ名は t_ で始まり、小文字と数字のみを含み、63 文字未満である必要があります。"
 
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
-msgstr ""
+msgstr "authentik がユーザーのアバターを表示する方法を設定。"
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their name."
-msgstr "Umožnit uživatelům změnit své jméno."
+msgstr "ユーザーが名前を変更できる機能を有効化。"
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their email address."
-msgstr "Umožnit uživatelům změnit svou emailovou adresu."
+msgstr "ユーザーがメールアドレスを変更できる機能を有効化。"
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their username."
-msgstr "Umožnit uživatelům změnit své uživatelské jméno."
+msgstr "ユーザーがユーザー名を変更できる機能を有効化。"
 
 #: authentik/tenants/models.py
 msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
-msgstr ""
+msgstr "イベントはこの期間後に削除されます（形式: weeks=3;days=2;hours=3,seconds=2）。"
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr "Reputace nesmí klesnout pod tuto hodnotu. Nula nebo záporné."
+msgstr "評判はこの値より低く減少することはできません。ゼロ以下。"
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr "Reputace nesmí vystoupat nad tuto hodnotu. Nula nebo kladné."
+msgstr "評判はこの値より高く増加することはできません。ゼロ以上。"
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."
-msgstr ""
+msgstr "このオプションはフロー実行者ページのフッターリンクを設定します。"
 
 #: authentik/tenants/models.py
 msgid ""
 "When enabled, all the events caused by a user will be deleted upon the "
 "user's deletion."
-msgstr ""
+msgstr "有効にするとユーザーが削除されるとユーザーが原因で起こったすべてのイベントが削除されます。"
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
-msgstr "Globální povolení/zakázání zosobnění."
+msgstr "なりすまし機能をグローバルに有効/無効。"
 
 #: authentik/tenants/models.py
 msgid "Require administrators to provide a reason for impersonating a user."
-msgstr "Požadovat, aby správci uvedli důvod, proč se za uživatele vydávají."
+msgstr "管理者にユーザーになりすまし理由の提供を要求。"
 
 #: authentik/tenants/models.py
 msgid "Default token duration"
-msgstr ""
+msgstr "デフォルトトークン期間"
 
 #: authentik/tenants/models.py
 msgid "Default token length"
-msgstr ""
+msgstr "デフォルト トークン長"
 
 #: authentik/tenants/models.py
 msgid "Tenant"
-msgstr "Nájemce"
+msgstr "テナント"
 
 #: authentik/tenants/models.py
 msgid "Tenants"
-msgstr "Nájemci"
+msgstr "テナント"
 
 #: authentik/tenants/models.py
 msgid "Domain"
-msgstr "Doména"
+msgstr "ドメイン"
 
 #: authentik/tenants/models.py
 msgid "Domains"
-msgstr "Domény"
+msgstr "ドメイン"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"
-msgstr ""
+msgstr "グループ チャネル"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channels"
-msgstr ""
+msgstr "グループ チャネル"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Message"
-msgstr ""
+msgstr "メッセージ"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Messages"
-msgstr ""
+msgstr "メッセージ"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Queue name"
-msgstr ""
+msgstr "キュー名"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Dramatiq actor name"
-msgstr ""
+msgstr "Dramatiq アクター名"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Message body"
-msgstr ""
+msgstr "メッセージ本文"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task status"
-msgstr "Stav úlohy"
+msgstr "タスク ステータス"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task last modified time"
-msgstr ""
+msgstr "タスク最後の変更時刻"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Number of retries"
-msgstr ""
+msgstr "再試行回数"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Planned execution time"
-msgstr ""
+msgstr "計画実行時刻"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task result"
-msgstr "Výsledek úlohy"
+msgstr "タスク結果"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Result expiry time"
-msgstr ""
+msgstr "結果の有効期限"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task"
-msgstr "Úloha"
+msgstr "タスク"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Tasks"
-msgstr "Úlohy"
+msgstr "タスク"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 #, python-format
 msgid "%(value)s is not a valid crontab"
-msgstr ""
+msgstr "%(value)s は有効な crontab ではありません"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Dramatiq actor to call"
-msgstr ""
+msgstr "呼び出す Dramatiq アクター"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Args to send to the actor"
-msgstr ""
+msgstr "アクターに送信する引数"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Kwargs to send to the actor"
-msgstr ""
+msgstr "アクターに送信する kwargs"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Options to send to the actor"
-msgstr ""
+msgstr "アクターに送信するオプション"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "When to schedule tasks"
-msgstr ""
+msgstr "タスクをスケジュールする時期"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Pause this schedule"
-msgstr ""
+msgstr "このスケジュールを一時停止"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Schedule"
-msgstr ""
+msgstr "スケジュール"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Schedules"
-msgstr ""
+msgstr "スケジュール"

@@ -2,394 +2,350 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-# Translators:
-# Jiří P., 2022
-# Zdeněk B., 2023
-# Jakub Procházka, 2024
-# Jan Kasal <jankasal@protonmail.com>, 2025
-# Bohuslav šín, 2025
-# Martin Kloz, 2025
-# klasyc, 2025
-# Václav Nováček <waclaw661@gmail.com>, 2025
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Václav Nováček <waclaw661@gmail.com>, 2025\n"
-"Language-Team: Czech (Czech Republic) (https://app.transifex.com/authentik/teams/119923/cs_CZ/)\n"
+"POT-Creation-Date: 2025-12-01 17:05+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs_CZ\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: authentik/admin/models.py
 msgid "Version history"
-msgstr "Historie verzí"
+msgstr ""
 
 #: authentik/admin/tasks.py
 msgid "Update latest version info."
-msgstr "Upravit informace o poslední verzi."
+msgstr ""
 
 #: authentik/admin/tasks.py
 #, python-brace-format
 msgid "New version {version} available!"
-msgstr "Je dostupná nová verze - {version}!"
+msgstr ""
 
 #: authentik/api/v3/schema/query.py
 msgid "Which field to use when ordering the results."
-msgstr "Které pole se má použít pro řazení výsledků."
+msgstr ""
 
 #: authentik/api/v3/schema/query.py
 msgid "A page number within the paginated result set."
-msgstr "Číslo stránky ve stránkované sadě výsledků."
+msgstr ""
 
 #: authentik/api/v3/schema/query.py
 msgid "Number of results to return per page."
-msgstr "Počet výsledků vrácených na jedné stránce."
+msgstr ""
 
 #: authentik/api/v3/schema/query.py
 msgid "A search term."
-msgstr "Hledaný výraz."
+msgstr ""
 
 #: authentik/api/v3/schema/response.py
 msgid "Generic API Error"
-msgstr "Obecná chyba API"
+msgstr ""
 
 #: authentik/api/v3/schema/response.py
 msgid "Validation Error"
-msgstr "Chyba validace"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Blueprint file does not exist"
-msgstr "Soubor s konfigurační šablonou neexistuje"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Failed to validate blueprint"
-msgstr "Ověřování konfigurační šablony selhalo"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
-msgstr "Musí být nastavena buď cesta, nebo obsah."
+msgstr ""
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
-msgstr "Spravuje authentik"
+msgstr ""
 
 #: authentik/blueprints/models.py
 msgid ""
-"Objects that are managed by authentik. These objects are created and updated"
-" automatically. This flag only indicates that an object can be overwritten "
-"by migrations. You can still modify the objects via the API, but expect "
-"changes to be overwritten in a later update."
+"Objects that are managed by authentik. These objects are created and updated "
+"automatically. This flag only indicates that an object can be overwritten by "
+"migrations. You can still modify the objects via the API, but expect changes "
+"to be overwritten in a later update."
 msgstr ""
-"Objekty, které jsou spravovány authentikem. Tyto objekty jsou vytvářeny a "
-"aktualizovány automaticky. Tato značka pouze naznačuje, že objekt může být "
-"přepsán migracemi. Stále můžete upravovat objekty prostřednictvím API, ale "
-"očekávejte, že změny budou v pozdější aktualizaci přepsány."
 
 #: authentik/blueprints/models.py
 msgid "Blueprint Instance"
-msgstr "Instance konfigurační šablony"
+msgstr ""
 
 #: authentik/blueprints/models.py
 msgid "Blueprint Instances"
-msgstr "Instance konfiguračních šablon"
+msgstr ""
 
 #: authentik/blueprints/v1/exporter.py
 #, python-brace-format
 msgid "authentik Export - {date}"
-msgstr "authentik Export - {date}"
+msgstr ""
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
 msgstr ""
-"Najít konfigurační šablony stejně jako `blueprints_find`, ale nevracet "
-"bezpečný slovník."
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Find blueprints and check if they need to be created in the database."
 msgstr ""
-"Najít konfiugrační šablony a zkontrolovat, jestli potřebují být vytvořeny v "
-"databázi."
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Apply single blueprint."
-msgstr "Aplikovat jednu konfigurační šablonu."
+msgstr ""
 
 #: authentik/blueprints/v1/tasks.py
 msgid "Remove blueprints which couldn't be fetched."
-msgstr "Odstranit konfigurační šablony, které nemohly být načteny."
+msgstr ""
 
 #: authentik/brands/models.py
 msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
 msgstr ""
-"Doména aktivující tuto značku. Může to být nadmnožina, např. `a.b` pro "
-"`aa.b` a `ba.b`"
 
 #: authentik/brands/models.py
 msgid ""
 "When set, external users will be redirected to this application after "
 "authenticating."
 msgstr ""
-"Pokud je nastaveno, externí uživatelé budou po přihlášení přesměrováni do "
-"této aplikace"
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
-msgstr "Webový certifikát používaný webovým serverem v jádře authentiku. "
+msgstr ""
 
 #: authentik/brands/models.py
 msgid "Certificates used for client authentication."
-msgstr "Certifikáty používané pro ověření klienta."
+msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brand"
-msgstr "Značka"
+msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brands"
-msgstr "Značky"
+msgstr ""
 
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
-msgstr "Uživatel nemá přístup k aplikaci."
+msgstr ""
 
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
-msgstr "Slug '{slug}' je rezervovaný a nelze jej použít pro aplikace."
+msgstr ""
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
-msgstr "Nelze nastavit skupinu jako nadřazenou sobě samé."
+msgstr ""
 
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
-"providers are returned. When set to false, backchannel providers are "
-"excluded"
+"providers are returned. When set to false, backchannel providers are excluded"
 msgstr ""
-"Pokud není nastaveno, vrátí všechny poskytovatele. Pokud je zapnuto, vrátí "
-"pouze poskytovatele backchannel. Pokud je vypnuto, backchannel poskytovatelé"
-" nejsou zahrnuti."
 
 #: authentik/core/api/transactional_applications.py
 #, python-brace-format
 msgid "User lacks permission to create {model}"
-msgstr "Uživatel nemá oprávnění vytvořit {model}"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
-msgstr "Lomítka na začátku ani konci nejsou povoleny"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
-msgstr "Mezery v cestě k uživateli nejsou povoleny."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
-msgstr "Uživatel/skupina s těmito detaily již existuje"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Unable to create user"
-msgstr "Nepodařilo se vytvořit uživatele"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
-msgstr "Došlo k neznámé chybě"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
-msgstr "Toto pole je povinné."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "name"
-msgstr "Jméno"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Users added to this group will be superusers."
-msgstr "Uživatelé přidáni do této skupiny budou správci."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Group"
-msgstr "Skupina"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Groups"
-msgstr "Skupiny"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Add user to group"
-msgstr "Přidat uživatele do skupiny"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Remove user from group"
-msgstr "Odebrat uživatele ze skupiny"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Enable superuser status"
-msgstr "Povolit status superuživatele"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Disable superuser status"
-msgstr "Zakázat status superuživatele"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "User's display name."
-msgstr "Zobrazované jméno uživatele."
+msgstr ""
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
 #: authentik/providers/saml/models.py authentik/rbac/models.py
 msgid "User"
-msgstr "Uživatel"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Users"
-msgstr "Uživatelé"
+msgstr ""
 
 #: authentik/core/models.py
 #: authentik/stages/email/templates/email/password_reset.html
 msgid "Reset Password"
-msgstr "Obnovit heslo"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr "Může se vydávat za jiné uživatele"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Can assign permissions to users"
-msgstr "Může uživatelům přidělovat oprávnění"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Can unassign permissions from users"
-msgstr "Může odebírat oprávnění uživatelů"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
-msgstr "Může zobrazit náhled uživatelských dat odeslaných poskytovatelům"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "View applications the user has access to"
-msgstr "Zobrazení aplikací, ke kterým má uživatel přístup"
+msgstr ""
 
 #: authentik/core/models.py
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
-"Tok používaný pro ověření, když k přidružené aplikaci přistoupí nepřihlášený"
-" uživatel."
 
 #: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
-msgstr "Tok použitý při autorizaci tohoto poskytovatele."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Flow used ending the session from a provider."
-msgstr "Tok použitý při ukončení spojení s poskytovatelem."
+msgstr ""
 
 #: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
-"Přístup z aplikací; volitelní backchannel poskytovatelé pro protokoly jako "
-"je LDAP a SCIM. "
 
 #: authentik/core/models.py
 msgid "Application's display Name."
-msgstr "Zobrazovaný název aplikace."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Internal application name, used in URLs."
-msgstr "Interní název aplikace, používaný v URI."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Open launch URL in a new browser tab or window."
-msgstr "Otevřít úvodní URL v novém okně nebo kartě prohlížeče."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application"
-msgstr "Aplikace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Applications"
-msgstr "Aplikace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application Entitlement"
-msgstr "Oprávnění aplikace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application Entitlements"
-msgstr "Oprávnění aplikace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
-msgstr "Použít identifikátor specifický pro zdroj"
+msgstr ""
 
 #: authentik/core/models.py
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
-"Propojit na uživatele s identickou emailovou adresou. Toto může mít "
-"bezpečnostní dopady, pokud zdroj neověřuje emailové adresy."
 
 #: authentik/core/models.py
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
-"Použít uživatelův email, ale zakázat zápis v případě, že adresa již "
-"existuje."
 
 #: authentik/core/models.py
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
-"Propojit na uživatele s identickým uživatelským jménem. Toto může mít "
-"bezpečnostní dopady, pokud pokud je uživatelské jméno použito s jiným "
-"zdrojem."
 
 #: authentik/core/models.py
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
-"Použít uživatelské jméno, ale zakázat zápis, pokud už uživatelské jméno "
-"existuje."
 
 #: authentik/core/models.py
 msgid ""
 "Link to a group with identical name. Can have security implications when a "
 "group name is used with another source."
 msgstr ""
-"Propojit na skupinu s identickým jménem. Toto může mít bezpečnostní dopady, "
-"pokud je název skupiny použit s jiným zdrojem."
 
 #: authentik/core/models.py
 msgid "Use the group name, but deny enrollment when the name already exists."
 msgstr ""
-"Použít jméno skupiny, ale zakázat zápis, pokud skupina s tímto názvem již "
-"existuje."
 
 #: authentik/core/models.py
 msgid "Source's display Name."
-msgstr "Zobrazované jméno zdroje."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Internal source name, used in URLs."
-msgstr "Interní jméno zdroje, používané v URL."
+msgstr ""
 
 #: authentik/core/models.py
 msgid ""
@@ -399,71 +355,67 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
-msgstr "Tok používaný při ověřování existujících uživatelů."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
-msgstr "Tok používaný při zapisování nových uživatelů."
+msgstr ""
 
 #: authentik/core/models.py
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
-"Jak zdroj určuje, jestli má být ověřen existující, nebo zapsán nový "
-"uživatel."
 
 #: authentik/core/models.py
 msgid ""
-"How the source determines if an existing group should be used or a new group"
-" created."
+"How the source determines if an existing group should be used or a new group "
+"created."
 msgstr ""
-"Jak zdroj určuje, jestli má být použita existující skupina, nebo vytvořena "
-"nová."
 
 #: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
-msgstr "Token"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Tokens"
-msgstr "Tokeny"
+msgstr ""
 
 #: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
 msgid "View token's key"
-msgstr "Zobrazit klíč tokenu"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Set a token's key"
-msgstr "Nastavit klíč tokenu"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Property Mapping"
-msgstr "Mapování vlastností"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Property Mappings"
-msgstr "Mapování vlastností"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "session data"
-msgstr "relační data"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Session"
-msgstr "Relace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Sessions"
-msgstr "Relace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
-msgstr "Ověřená relace"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
-msgstr "Ověřené relace"
+msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -471,67 +423,65 @@ msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
 "with the source you've previously signed up with."
 msgstr ""
-"Požadavek na ověření zdrojem {source} byl zakázán. Prosím, ověřte se pomocí "
-"zdroje, přes který jste si zakládali Váš účet."
 
 #: authentik/core/sources/flow_manager.py
 msgid "Configured flow does not exist."
-msgstr "Nastavený tok neexistuje."
+msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully authenticated with {source}!"
-msgstr "Úspěšně ověřeno pomocí {source}!"
+msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid "Successfully linked {source}!"
-msgstr "Úspěšně připojeno ke zdroji {source}!"
+msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
-msgstr "Zdroj není nastaven pro zapisování nových uživatelů."
+msgstr ""
 
 #: authentik/core/tasks.py
 msgid "Remove expired objects."
-msgstr "Odstranit objekty po vypršení platnosti."
+msgstr ""
 
 #: authentik/core/tasks.py
 msgid "Remove temporary users created by SAML Sources."
-msgstr "Odstranit dočasné uživatele vytvořené zdroji SAML."
+msgstr ""
 
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
 msgid "Go home"
-msgstr "Přejít domů"
+msgstr ""
 
 #: authentik/core/templates/login/base_full.html
 #: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
-msgstr "Powered by authentik"
+msgstr ""
 
 #: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
 msgid "You're about to sign into %(application)s."
-msgstr "Přihlašujete se do %(application)s"
+msgstr ""
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
-msgstr "Rozhraní je dostupné pouze pro interní uživatele."
+msgstr ""
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
-msgstr "Alternativní jméno subjektu"
+msgstr ""
 
 #: authentik/crypto/builder.py
 msgid "rsa"
-msgstr "rsa"
+msgstr ""
 
 #: authentik/crypto/builder.py
 msgid "ecdsa"
-msgstr "ecdsa"
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid "RSA"
@@ -555,27 +505,25 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
-msgstr "Certifikát v kódování PEM "
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
 msgstr ""
-"Volitelný privátní klíč. Pokud je nastaven, můžete tento pár klíčů použít "
-"pro šifrování."
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
-msgstr "Pár Certifikát-Klič"
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
-msgstr "Páry Certifikát-Klíč"
+msgstr ""
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
-msgstr "Objevit, importovat a aktualizovat certifikáty na souborovém systému."
+msgstr ""
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Selected platform not supported"
@@ -600,12 +548,12 @@ msgstr ""
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Device Token"
-msgstr "Token zařízení"
+msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Device Tokens"
-msgstr "Tokeny zařízení"
+msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Token"
@@ -678,617 +626,572 @@ msgstr ""
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr ""
-"Pro vytvoření/aktualizaci tohoto objektu je vyžadována Enterprise licence."
 
 #: authentik/enterprise/models.py
 msgid "License"
-msgstr "Licence"
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "Licenses"
-msgstr "Licence"
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License Usage"
-msgstr "Využití licence"
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
-msgstr "Záznamy o využití licence"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
-"Klíč pole ke kontrole, klíče polí definované v krocích Výzvy jsou k "
-"dispozici."
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Number of passwords to check against."
-msgstr "Počet hesel, proti kterým se ověřuje."
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
-msgstr "Heslo není nastaveno v kontextu "
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "This password has been used previously. Please choose a different one."
-msgstr "Toto heslo již v minulosti bylo použito. Prosím zvolte jiné."
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policy"
-msgstr "Zásada jedinečnosti hesel"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policies"
-msgstr "Zásady jedinečnosti hesel"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "User Password History"
-msgstr "Historie hesel uživatele"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid ""
 "Check if any UniquePasswordPolicy exists, and if not, purge the password "
 "history table."
 msgstr ""
-"Zkontrolovat, jestli existuje nějaká zásada jedinečnosti hesel a pokud ne, "
-"vymazat tabulku historie hesel."
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid "Remove user password history that are too old."
-msgstr "Vymazat z historie uživatelská hesla, která jsou příliš stará."
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
-msgstr "Pro přístup k této funkci je potřeba Enterprise licence."
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Feature only accessible for internal users."
-msgstr "Funkce je dostupná pouze interním uživatelům"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider User"
-msgstr "Uživatel poskytovatele Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Users"
-msgstr "Uživatelé poskytovatele Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Group"
-msgstr "Skupina poskytovatele Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Groups"
-msgstr "Skupiny poskytovatele Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
-msgstr "Mapování vlastností použitá pro vytváření/úpravu skupin."
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider"
-msgstr "Poskytovatel Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
-msgstr "Poskytovatelé Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mapping"
-msgstr "Mapování poskytovatele Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mappings"
-msgstr "Mapování poskytovatelů Google Workspace"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync Google Workspace provider objects."
-msgstr "Synchronizovat objekty poskytovatele Google Workspace."
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Full sync for Google Workspace provider."
-msgstr "Plná synchronizace poskytovatele Google Workspace."
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a direct object (user, group) for Google Workspace provider."
 msgstr ""
-"Synchronizovat objekt (uživatel, skupina) poskytovatele Google Workspace "
-"přímo."
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů "
-"Google Workspace."
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a related object (memberships) for Google Workspace provider."
 msgstr ""
-"Synchronizovat příbuzný objekt (členství) poskytovatele Google Workspace."
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
 "Dispatch syncs for a related object (memberships) for Google Workspace "
 "providers."
 msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů Google "
-"Workspace."
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider User"
-msgstr "Uživatel poskytovatele Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Group"
-msgstr "Skupina poskytovatele Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Groups"
-msgstr "Skupiny poskytovatele Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider"
-msgstr "Poskytovatel Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
-msgstr "Poskytovatelé Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mapping"
-msgstr "Mapování poskytovatele Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
-msgstr "Mapování poskytovatelů Microsoft Entra"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync Microsoft Entra provider objects."
-msgstr "Synchronizovat objekty poskytovatele Microsoft Entra."
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Full sync for Microsoft Entra provider."
-msgstr "Plná synchronizace poskytovatele Microsoft Entra."
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a direct object (user, group) for Microsoft Entra provider."
 msgstr ""
-"Synchronizovat objekt (uživatel, skupina) poskytovatele Microsoft Entra "
-"přímo."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
 msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů "
-"Microsoft Entra."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
 msgstr ""
-"Synchronizovat příbuzný objekt (členství) poskytovatele Microsoft Entra."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch syncs for a related object (memberships) for Microsoft Entra "
 "providers."
 msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů Microsoft "
-"Entra."
 
 #: authentik/enterprise/providers/radius/api.py
 msgid "Enterprise is required to use EAP-TLS."
-msgstr "Pro použití EAP-TLS je nutná Enterprise licence."
+msgstr ""
 
 #: authentik/enterprise/providers/scim/api.py
 msgid "Enterprise is required to use the OAuth mode."
-msgstr "Pro použití OAuth režimu je vyžadována Enterprise licence."
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
-msgstr "Podepisovací klíč"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Key used to sign the SSF Events."
-msgstr "Klíč používaný pro podpis SSF událostí."
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Provider"
-msgstr "Poskytovatel Shared Signals Framework"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Providers"
-msgstr "Poskytovatelé Shared Signals Framework"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
-msgstr "Přidat stream do poskytovatele SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
-msgstr "Stream SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr "Streamy SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
-msgstr "Událost SSF Stream"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Events"
-msgstr "Události SSF Stream"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Dispatch SSF events."
-msgstr "Odbavit události SSF."
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
-msgstr "Odeslat událost SSF."
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
-msgstr "Fáze konektoru Endpoint Authenticator Google Device Trust"
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stages"
-msgstr "Fáze konektorů Endpoint Authenticator Google Device Trust"
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Device"
-msgstr "Koncové zařízení"
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Devices"
-msgstr "Koncová zařízení"
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
-msgstr "Ověřuji Váš prohlížeč..."
+msgstr ""
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid ""
 "Configure certificate authorities to validate the certificate against. This "
-"option has a higher priority than the `client_certificate` option on "
-"`Brand`."
+"option has a higher priority than the `client_certificate` option on `Brand`."
 msgstr ""
-"Nastavte certifikační autority, vůči nimž se budou ověřovat certifikáty. "
-"Toto nastavení má vyšší prioritu než  volba `client_certificate` v `Značka`."
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stage"
-msgstr "Fáze vzájemné TLS"
+msgstr ""
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stages"
-msgstr "Fáze vzájemné TLS"
+msgstr ""
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
-msgstr "Oprávnění předávat certifikáty outpostům."
+msgstr ""
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "Certificate required but no certificate was given."
-msgstr "Je vyžadován certifikát, ale žádný nebyl dodán."
+msgstr ""
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
-msgstr "Pro certifikát nebyl nalezen žádný uživatel."
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
 "flow (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Čas, který může uživatel strávit návratem ze zdroje, aby tok pokračoval "
-"(Formát: hodiny=-1;minuty=-2;sekundy=-3)"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
-msgstr "Fáze zdroje"
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stages"
-msgstr "Fáze zdroje"
+msgstr ""
 
 #: authentik/enterprise/tasks.py
 msgid "Update enterprise license status."
-msgstr "Aktualizovat stav Enterprise licence."
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Event"
-msgstr "Událost"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Events"
-msgstr "Události"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "authentik inbuilt notifications"
-msgstr "vestavěná oznámení authentiku"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Generic Webhook"
-msgstr "Obecný webhook"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Slack Webhook (Slack/Discord)"
-msgstr "Webhook Slack (Slack/Discord)"
+msgstr ""
 
-#: authentik/events/models.py
-#: authentik/stages/authenticator_validate/models.py
+#: authentik/events/models.py authentik/stages/authenticator_validate/models.py
 msgid "Email"
-msgstr "E-mail"
+msgstr ""
 
 #: authentik/events/models.py
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
-"Odeslat oznámení pouze jednou, například při posílání webhooku do kanálu "
-"chatu."
 
 #: authentik/events/models.py
 msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
-"Přizpůsobit tělo požadavku. Mapování by mělo vrátit data serializovatelná do"
-" JSON."
 
 #: authentik/events/models.py
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
 msgstr ""
-"Nastavit odeslání dodatečných hlaviček. Mapování by mělo vrátit slovník párů"
-" klíč-hodnota."
 
 #: authentik/events/models.py
 msgid "Severity"
-msgstr "Závažnost"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Dispatched for user"
-msgstr "Odbaveno pro uživatele"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Event user"
-msgstr "Dotčený uživatel"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Transport oznámení"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notification Transports"
-msgstr "Transporty oznámení"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notice"
-msgstr "Poznámka"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Warning"
-msgstr "Upozornění"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Alert"
-msgstr "Výstraha"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notification"
-msgstr "Oznámení"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notifications"
-msgstr "Oznámení"
+msgstr ""
 
 #: authentik/events/models.py
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
-"Vyberte, jaké transporty se mají použít pro upozornění uživatele. Pokud není"
-" vybrán žádný, oznámení se zobrazí pouze v rozhraní authentiku."
 
 #: authentik/events/models.py
 msgid "Controls which severity level the created notifications will have."
-msgstr "Určuje, jakou závažnost budou mít vytvořená upozornění."
+msgstr ""
 
 #: authentik/events/models.py
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
-"Definujte uživatelskou skupinu, které se má oznámení odeslat a zobrazit. "
-"Pokud je pole prázdné, oznámení se nepošle vůbec."
 
 #: authentik/events/models.py
 msgid ""
 "When enabled, notification will be sent to user the user that triggered the "
 "event.When destination_group is configured, notification is sent to both."
 msgstr ""
-"Pokud je povoleno, upozornění bude zasláno uživateli, který událost "
-"způsobil. Pokud je nakonfigurován destination_group, upozornění se zašle "
-"oběma.."
 
 #: authentik/events/models.py
 msgid "Notification Rule"
-msgstr "Pravidlo upozornění"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Notification Rules"
-msgstr "Pravidla upozornění"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Webhook Mapping"
-msgstr "Mapování webhooku"
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Webhook Mappings"
-msgstr "Mapování webhooků"
+msgstr ""
 
 #: authentik/events/tasks.py
 msgid "Dispatch new event notifications."
-msgstr "Odbavit nová upozornění."
+msgstr ""
 
 #: authentik/events/tasks.py
 msgid ""
 "Check if policies attached to NotificationRule match event and dispatch "
 "notification tasks."
 msgstr ""
-"Ověřit, jestli zásady připojené k pravidlu upozornění odpovídají této "
-"události a odesílají upozornění."
 
 #: authentik/events/tasks.py
 msgid "Send notification."
-msgstr "Odeslat upozornění."
+msgstr ""
 
 #: authentik/events/tasks.py
 msgid "Cleanup events for GDPR compliance."
-msgstr "Vymazat události pro soulad s GDPR."
+msgstr ""
 
 #: authentik/events/tasks.py
 msgid "Cleanup seen notifications and notifications whose event expired."
 msgstr ""
-"Vymazat přečtená upozornění a upozornění, jejichž události již vypršely."
 
 #: authentik/flows/api/flows.py
 #, python-brace-format
 msgid "Flow not applicable to current user/request: {messages}"
-msgstr "Tok není aplikovatelný na aktuálního uživatele/požadavek: {messages}"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Policy ({type})"
-msgstr "Zásada ({type})"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Binding {order}"
-msgstr "Vazba {order}"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy passed"
-msgstr "Řízeno zásadami"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Stage ({type})"
-msgstr "Fáze ({type})"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy denied"
-msgstr "Zakázano zásadami"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "End of the flow"
-msgstr "Konec toku"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Requirement not fulfilled"
-msgstr "Požadavek nesplněn"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Flow authentication requirement"
-msgstr "Ověřovací požadavek toku"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Requirement fulfilled"
-msgstr "Požadavek splněn"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Pre-flow policies"
-msgstr "Zásady před tokem"
+msgstr ""
 
 #: authentik/flows/api/flows_diagram.py authentik/flows/models.py
 msgid "Flow"
-msgstr "Tok"
+msgstr ""
 
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
-msgstr "Tok se nevztahuje na aktuálního uživatele."
+msgstr ""
 
 #: authentik/flows/models.py
 #, python-brace-format
 msgid "Dynamic In-memory stage: {doc}"
-msgstr "Dynamická fáze v paměti: {doc}"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Visible in the URL."
-msgstr "Viditelný v URL."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Shown as the Title in Flow pages."
-msgstr "Zobrazený jako Název na stránkách Toků."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
 "Decides what this Flow is used for. For example, the Authentication flow is "
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
-"Rozhoduje, na co se Tok používá. Například přesměrování na Autentizační tok "
-"proběhne, pokud nepřihlášený uživatel navštíví authentik. "
 
 #: authentik/flows/models.py
 msgid "Background shown during execution"
-msgstr "Během provádění se zobrazí úlohy na pozadí"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
-"Enable compatibility mode, increases compatibility with password managers on"
-" mobile devices."
+"Enable compatibility mode, increases compatibility with password managers on "
+"mobile devices."
 msgstr ""
-"Povolit režim kompatibility, zvyšuje kompatibilitu s manažery hesel na "
-"mobilních zařízeních."
 
 #: authentik/flows/models.py
 msgid "Configure what should happen when a flow denies access to a user."
-msgstr "Nastavte, co se má stát, když tok zamezí přístup uživateli."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Required level of authentication and authorization to access a flow."
-msgstr "Požadovaná úroveň autentizace a autorizace pro přístup k toku."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flows"
-msgstr "Toky"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Can export a Flow"
-msgstr "Může exportovat Tok"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Can inspect a Flow's execution"
-msgstr "Může prohlížet provádění Toku"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "View Flow's cache metrics"
-msgstr "Zobrazit metriky cache Toku"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Clear Flow's cache metrics"
-msgstr "Vymazat metriky cache Toku"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Evaluate policies during the Flow planning process."
-msgstr "Vyhodnocovat zásady během procesu plánování Toku."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Evaluate policies when the Stage is presented to the user."
-msgstr "Vyhodnocovat zásady, když je Fáze prezentována uživateli."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -1297,34 +1200,28 @@ msgid ""
 "executor. RESTART restarts the flow from the beginning, and "
 "RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
 msgstr ""
-"Konfigurovat,  jak má provádění toku řešit neplatnou odpověď na výzvu. RETRY"
-" vrací chybové hlášení a obdobnou výzvu pošle znovu. RESTART spustí tok "
-"znovu od začátku a  RESTART_WITH_CONTEXT spustí tok znovu se zachováním "
-"aktuálního kontextu."
 
 #: authentik/flows/models.py
 msgid "Flow Stage Binding"
-msgstr "Vazba Fáze toku"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Stage Bindings"
-msgstr "Vazby Fází toků"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
 msgstr ""
-"Tok používaný přihlášeným uživatelem pro konfiguraci této Fáze. Pokud je "
-"prázdný, uživatel nebude schopen tuto fázi konfigurovat."
 
 #: authentik/flows/models.py
 msgid "Flow Token"
-msgstr "Token Toku"
+msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
-msgstr "Tokeny Toků"
+msgstr ""
 
 #: authentik/flows/templates/if/flow.html
 msgid "Site footer"
@@ -1332,7 +1229,7 @@ msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
-msgstr "Neplatná cílová URL"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
@@ -1347,149 +1244,133 @@ msgid ""
 "When enabled, provider will not modify or create objects in the remote "
 "system."
 msgstr ""
-"Pokud je povoleno, poskytovatel nebude měnit, ani vytvářet nové objekty v "
-"cílovém systému."
 
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr "%(value)s není ve správném formátu 'hours=3;minutes=1'."
+msgstr ""
 
 #: authentik/lib/validators.py
 #, python-brace-format
 msgid "The fields {field_names} must be used together."
-msgstr "Pole {field_names} musí být použita společně."
+msgstr ""
 
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
-"Během připojování do lokálního clusteru můžete použít pouze prázdný "
-"kubeconfig."
 
 #: authentik/outposts/api/service_connections.py
 msgid "Invalid kubeconfig"
-msgstr "Neplatný kubeconfig"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid ""
 "If enabled, use the local connection. Required Docker socket/Kubernetes "
 "Integration"
 msgstr ""
-"Pokud je povoleno, použije se lokální spojení. Vyžaduje integraci Docker "
-"socket/Kubernetes"
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connection"
-msgstr "Servisní spojení Outpostu"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connections"
-msgstr "Servisní spojení Outpostů"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid ""
 "Can be in the format of 'unix://<path>' when connecting to a local docker "
 "daemon, or 'https://<hostname>:2376' when connecting to a remote system."
 msgstr ""
-"Může být ve formátu 'unix://<path>', pokud se připojujete k lokálnímu "
-"démonovi, nebo 'https://<hostname>:2376' pokud se jedná o vzdálený systém."
 
 #: authentik/outposts/models.py
 msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
 msgstr ""
-"CA, proti které se ověřuje koncový certifikát. Můžete nechat prázdné pro "
-"přeskočení validace."
 
 #: authentik/outposts/models.py
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
-"Certifikát/Klíč použitý pro autentizaci. Ponechte prázdné pro vypnutí "
-"autentizace."
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connection"
-msgstr "Servisní spojení Dockeru"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connections"
-msgstr "Servisní spojení Dockerů"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid ""
 "Paste your kubeconfig here. authentik will automatically use the currently "
 "selected context."
 msgstr ""
-"Sem vložte Váš kubeconfig. authentik automaticky použije právě vybraný "
-"kontext."
 
 #: authentik/outposts/models.py
 msgid "Verify SSL Certificates of the Kubernetes API endpoint"
-msgstr "Ověřit SSL certifikáty koncového bodu Kubernetes API"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connection"
-msgstr "Servisní spojení Kubernetes"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connections"
-msgstr "Servisní spojení Kubernetes"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid ""
-"Select Service-Connection authentik should use to manage this outpost. Leave"
-" empty if authentik should not handle the deployment."
+"Select Service-Connection authentik should use to manage this outpost. Leave "
+"empty if authentik should not handle the deployment."
 msgstr ""
-"Vyberte servisní spojení, které má authentik používat pro správu tohoto "
-"Outpostu. Ponechte prázdné, pokud se authentik nemá starat o nasazení."
 
 #: authentik/outposts/models.py
 msgid "Outpost"
-msgstr "Outpost"
+msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Outposts"
-msgstr "Outposty"
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
-msgstr "Aktualizovat mezipaměť stavu servisního spojení."
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Create/update/monitor/delete the deployment of an Outpost."
-msgstr "Vytvořit/upravit/monitorovat/vymazat nasazení Outpostu."
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
-msgstr "Ujistěte se, že všechny Outposty mají platné servisní účty a tokeny."
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Send update to outpost"
-msgstr "Poslat aktualizaci do outpostu"
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Checks the local environment and create Service connections."
-msgstr "Zkontroluje lokální prostředí a vytvoří servisní spojení."
+msgstr ""
 
 #: authentik/outposts/tasks.py
 msgid "Terminate session on all outposts."
-msgstr "Ukončit relace na všech outpostech."
+msgstr ""
 
 #: authentik/policies/denied.py
 msgid "Access denied"
-msgstr "Přístup zamítnut"
+msgstr ""
 
 #: authentik/policies/dummy/models.py
 msgid "Dummy Policy"
-msgstr "Testovací zásada"
+msgstr ""
 
 #: authentik/policies/dummy/models.py
 msgid "Dummy Policies"
-msgstr "Testovací zásady"
+msgstr ""
 
 #: authentik/policies/event_matcher/api.py
 #: authentik/policies/event_matcher/models.py
@@ -1497,8 +1378,6 @@ msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
 msgstr ""
-"Filtrovat události vytvořené zvolenou aplikací. Pokud ponecháte prázdné, "
-"budou zobrazeny všechny aplikace."
 
 #: authentik/policies/event_matcher/api.py
 #: authentik/policies/event_matcher/models.py
@@ -1506,235 +1385,221 @@ msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
 msgstr ""
-"Filtrovat události vytvořené vybraným modelem. Pokud je prázdné, zobrazí se "
-"všechny modely. Pokud je vybrána aplikace, zobrazí se všechny modely zvolené"
-" aplikace."
 
 #: authentik/policies/event_matcher/api.py
 msgid "At least one criteria must be set."
-msgstr "Musí být zadáno alespoň jedno kritérium."
+msgstr ""
 
 #: authentik/policies/event_matcher/models.py
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
 msgstr ""
-"Filtrovat události s tímto typem aplikace. Pokud je prázdné, budou se "
-"zobrazovat všechny typy aplikací."
 
 #: authentik/policies/event_matcher/models.py
 msgid ""
 "Matches Event's Client IP (strict matching, for network matching use an "
 "Expression Policy)"
 msgstr ""
-"Filtrovat události podle IP adresy klienta (přesná shoda, pro síťové "
-"porovnání použijte zásadu typu Výraz)"
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
-msgstr "Zásada porovnávání událostí"
+msgstr ""
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policies"
-msgstr "Zásady porovnávání událostí"
+msgstr ""
 
 #: authentik/policies/expiry/models.py
 #, python-brace-format
 msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
-"Platnost hesla vypršela před {days} dny. Prosím, aktualizujte si heslo."
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
-msgstr "Heslu vypršela platnost."
+msgstr ""
 
 #: authentik/policies/expiry/models.py
 msgid "Password Expiry Policy"
-msgstr "Zásada vypršení hesla"
+msgstr ""
 
 #: authentik/policies/expiry/models.py
 msgid "Password Expiry Policies"
-msgstr "Zásady vypršení hesel"
+msgstr ""
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policy"
-msgstr "Zásada typu Výraz"
+msgstr ""
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policies"
-msgstr "Zásady typu Výraz"
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP: client IP not found in ASN database."
-msgstr "GeoIP: IP adresa klienta nebyla nalezena v databázi ASN."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not part of an allowed autonomous system."
-msgstr "IP adresa klienta není součástí povoleného autonomního systému."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP: client IP address not found in City database."
-msgstr "GeoIP: IP adresa klienta nebyla nalezena v databázi měst."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not in an allowed country."
-msgstr "IP adresa klienta není v povolené zemi."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "Distance from previous authentication is larger than threshold."
-msgstr "Vzdálenost od předchozího místa ověření je delší než povolená mez."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
-msgstr "Vzdálenost je příliš daleká."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policy"
-msgstr "Zásada GeoIP"
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policies"
-msgstr "Zásady GeoIP"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "all, all policies must pass"
-msgstr "vše, splnit všechny zásady"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "any, any policy must pass"
-msgstr "libovolná, splnit alespoň jednu zásadu"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
-msgstr "Model vazby zásady"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
-msgstr "Modely vazeb zásad"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
-msgstr "Neguje výstup ze zásady. Výstupní hlášení nejsou změněna."
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Timeout after which Policy execution is terminated."
-msgstr "Časový limit, po němž je zpracování zásady ukončeno."
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Result if the Policy execution fails."
-msgstr "Výsledek, pokud zpracování zásady selže."
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policy Binding"
-msgstr "Vazba zásady"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policy Bindings"
-msgstr "Vazby zásad"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid ""
 "When this option is enabled, all executions of this policy will be logged. "
 "By default, only execution errors are logged."
 msgstr ""
-"Pokud je povoleno, všechna provádění této zásady budou zaznamenána. "
-"Standardně se ukládají pouze chybná provedení."
 
 #: authentik/policies/models.py
 msgid "Policy"
-msgstr "Zásada"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Policies"
-msgstr "Zásady"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "View Policy's cache metrics"
-msgstr "Zobrazit metriky mezipaměti zásady"
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Clear Policy's cache metrics"
-msgstr "Vymazat metriky mezipaměti zásady"
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
-msgstr "Kolikrát může být otisk hesla na haveibeenpwned."
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
 msgstr ""
-"Pokud je skóre na zxcvbn menší nebo rovno této hodnotě, zásada nebude "
-"uznána."
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
-msgstr "Neplatné heslo."
+msgstr ""
 
 #: authentik/policies/password/models.py
 #, python-brace-format
 msgid "Password exists on {count} online lists."
-msgstr "Heslo existuje na {count} online seznamech."
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
-msgstr "Heslo je příliš slabé."
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password Policy"
-msgstr "Zásady hesla"
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password Policies"
-msgstr "Zásady hesel"
+msgstr ""
 
 #: authentik/policies/reputation/api.py
 msgid "Either IP or Username must be checked"
-msgstr "Musí se zkontrolovat buď IP nebo uživatelské jméno"
+msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policy"
-msgstr "Zásada reputace"
+msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policies"
-msgstr "Zásady reputace"
+msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Score"
-msgstr "Reputační skóre"
+msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
-msgstr "Reputační skóre"
+msgstr ""
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Waiting for authentication..."
-msgstr "Čeká se na ověření..."
+msgstr ""
 
 #: authentik/policies/templates/policies/buffer.html
 msgid ""
 "You're already authenticating in another tab. This page will refresh once "
 "authentication is completed."
 msgstr ""
-"Už se přihlašujete na jiné záložce. Stránka se obnoví, jakmile bude ověření "
-"dokončeno."
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Authenticate in this tab"
-msgstr "Ověřit na této záložce"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
-msgstr "Nedostatečná oprávnění"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
-msgstr "Uživatelův avatar"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
-msgstr "Nejste to vy?"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Error"
@@ -1742,15 +1607,15 @@ msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
-msgstr "Požadavek byl zamítnut."
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Messages:"
-msgstr "Zprávy:"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Explanation:"
-msgstr "Vysvětlení:"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 #, python-format
@@ -1759,17 +1624,14 @@ msgid ""
 "                    Policy binding '%(name)s' returned result '%(result)s'\n"
 "                    "
 msgstr ""
-"\n"
-"                    Vazba zásady '%(name)s' vrátila výsledek '%(result)s'\n"
-"                    "
 
 #: authentik/policies/views.py
 msgid "Failed to resolve application"
-msgstr "Nepodařilo se dohledat aplikaci"
+msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid "DN under which objects are accessible."
-msgstr "DN pod kterým jsou objekty dostupné."
+msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid ""
@@ -1777,9 +1639,6 @@ msgid ""
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"Začátek pro uidNumbers, toto číslo se přidává k user.Pk, aby se zajistilo, "
-"že čísla nebudou pro uživatele POSIX příliš nízká. Výchozí hodnota je 2000, "
-"aby se zajistilo, že nebudeme kolidovat s místními uživateli uidNumber"
 
 #: authentik/providers/ldap/models.py
 msgid ""
@@ -1788,236 +1647,210 @@ msgid ""
 "Default is 4000 to ensure that we don't collide with local groups or users "
 "primary groups gidNumber"
 msgstr ""
-"Začátek pro gidNumbers, toto číslo se přičte k číslu vygenerovanému z "
-"group.Pk, aby se zajistilo, že čísla nebudou příliš nízká pro skupiny POSIX."
-" Výchozí hodnota je 4000, aby se zajistilo, že nebudeme kolidovat s místními"
-" skupinami nebo primárními skupinami uživatelů gidNumber"
 
 #: authentik/providers/ldap/models.py authentik/providers/radius/models.py
 msgid ""
 "When enabled, code-based multi-factor authentication can be used by "
-"appending a semicolon and the TOTP code to the password. This should only be"
-" enabled if all users that will bind to this provider have a TOTP device "
+"appending a semicolon and the TOTP code to the password. This should only be "
+"enabled if all users that will bind to this provider have a TOTP device "
 "configured, as otherwise a password may incorrectly be rejected if it "
 "contains a semicolon."
 msgstr ""
-"Pokud je tato funkce povolena, lze vícefaktorové ověřování založené na kódu "
-"použít tak, že se k heslu připojí středník a kód TOTP. Tato funkce by měla "
-"být povolena pouze v případě, že všichni uživatelé, kteří se budou vázat k "
-"tomuto poskytovateli, mají nakonfigurované zařízení TOTP, protože jinak může"
-" být heslo nesprávně odmítnuto, pokud obsahuje středník."
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Provider"
-msgstr "Poskytovatel LDAP"
+msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
-msgstr "Poskytovatelé LDAP"
+msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid "Search full LDAP directory"
-msgstr "Prohledat celý adresář LDAP"
+msgstr ""
 
 #: authentik/providers/oauth2/api/providers.py
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
-msgstr "Neplatný regulární výraz: {url}"
+msgstr ""
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
-msgstr "Na základě otisku uživatelského ID"
+msgstr ""
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on user ID"
-msgstr "Na základě uživatelského ID"
+msgstr ""
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on user UUID"
-msgstr "Na základě uživatelského UUID"
+msgstr ""
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the username"
-msgstr "Na základě uživatelského jména"
+msgstr ""
 
 #: authentik/providers/oauth2/constants.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
-"Na základě uživatelova emailu. Toto je doporučeno více než metoda UPN."
 
 #: authentik/providers/oauth2/constants.py
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
 msgstr ""
-"Na základě uživatelova UPN, funguje pouze pokud má uživatel nastaven atribut"
-" 'upn'. Použijte tuto metodu pouze pokud máte rozdílné UPN a emailové "
-"domény."
 
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
-msgstr "Důvěrné"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Public"
-msgstr "Veřejný"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Same identifier is used for all providers"
-msgstr "Pro všechny poskytovatele se používá stejný identifikátor"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
-"Každý poskytovatel má jiného vydavatele v závislosti na slugu aplikace."
 
 #: authentik/providers/oauth2/models.py
 msgid "Strict URL comparison"
-msgstr "Striktní porovnání URL"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
-msgstr "Porovnání URL regulárním výrazem"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Back-channel"
-msgstr "Back-channel"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Front-channel"
-msgstr "Front-channel"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
-msgstr "kód (tok autorizačního kódu)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "id_token (Implicit Flow)"
-msgstr "id_token (implicitní tok)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "id_token token (Implicit Flow)"
-msgstr "id_token token (implicitní tok)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code token (Hybrid Flow)"
-msgstr "code token (hybridní tok)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code id_token (Hybrid Flow)"
-msgstr "code id_token (hybridní tok)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code id_token token (Hybrid Flow)"
-msgstr "code id_token token (hybridní tok)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "HS256 (Symmetric Encryption)"
-msgstr "HS256 (symetrické šifrování)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "RS256 (Asymmetric Encryption)"
-msgstr "RS256 (asymetrické šifrování)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "ES256 (asymetrické šifrování)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ES384 (Asymmetric Encryption)"
-msgstr "ES384 (asymetrické šifrování)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ES512 (Asymmetric Encryption)"
-msgstr "ES512 (asymetrické šifrování)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
-msgstr "Scope používaný klientem"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Description shown to the user when consenting. If left empty, the user won't"
-" be informed."
+"Description shown to the user when consenting. If left empty, the user won't "
+"be informed."
 msgstr ""
-"Popis zobrazený uživateli při udělování souhlasu. Pokud je ponecháno "
-"prázdné, uživatel nebude informován."
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope Mapping"
-msgstr "Mapování scope"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope Mappings"
-msgstr "Mapování scope"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Client Type"
-msgstr "Typ klienta"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Confidential clients are capable of maintaining the confidentiality of their"
-" credentials. Public clients are incapable"
+"Confidential clients are capable of maintaining the confidentiality of their "
+"credentials. Public clients are incapable"
 msgstr ""
-"Důvěrní klienti jsou schopni zachovávat důvěrnost svých údajů. Veřejní "
-"klienti toto neumí"
 
 #: authentik/providers/oauth2/models.py
 msgid "Client ID"
-msgstr "ID klienta"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Client Secret"
-msgstr "Secret klienta"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
-msgstr "URI pro přesměrování"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout URI"
-msgstr "Odhlašovací URI"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout Method"
-msgstr "Metoda odhlášení"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Backchannel logs out with server to server calls. Frontchannel uses iframes "
 "in your browser"
 msgstr ""
-"Backchannel se odhlašuje pomocí volání mezi servery. Frontchannel používá "
-"iframe ve vašem prohlížeči."
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
-msgstr "Zahrnout \"claims\" do id_token"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Include User claims from scopes in the id_token, for applications that don't"
-" access the userinfo endpoint."
+"Include User claims from scopes in the id_token, for applications that don't "
+"access the userinfo endpoint."
 msgstr ""
-"Zahrnout \"claims\" uživatele ze \"scopes\" do id_tokenu pro aplikace, které"
-" nepřistupují k userinfo endpointu."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Přístupové kódy nejsou platné po aktuálním čase + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Tokens not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Tokeny nejsou platné po aktuálním čase + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2025,282 +1858,257 @@ msgid ""
 "duration, it will be renewed. When set to seconds=0, token will always be "
 "renewed. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Pokud je při obnovování tokenu jeho platnost nižší než zde stanovená doba, "
-"bude token obnoven. Pokud je nastavena doba seconds=0, token bude obnoven "
-"vždy. (Formát: hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
 msgstr ""
-"Nastavte, jaké údaje mají být použity jako unikátní identifikátor uživatele."
-" Ve většině případů by výchozí hodnota měla být v pořádku."
 
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
-msgstr "Konfigurace, jak má být vyplněno pole vydavatele v ID Tokenu."
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
-msgstr "Klíč používaný k podepisování tokenů."
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Encryption Key"
-msgstr "Šifrovací klíč"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Key used to encrypt the tokens. When set, tokens will be encrypted and "
 "returned as JWEs."
 msgstr ""
-"Klíč použitý k šifrování tokenů. Pokud je nastaven, tokeny budou šifrovány a"
-" vráceny jako JWE."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Any JWT signed by the JWK of the selected source can be used to "
-"authenticate."
+"Any JWT signed by the JWK of the selected source can be used to authenticate."
 msgstr ""
-"Jakýkoliv JWT podepsaný JWK zvoleného zdroje může být použit pro "
-"autentizaci."
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Provider"
-msgstr "Poskytovatel OAuth2/OpenID"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Providers"
-msgstr "Poskytovatelé OAuth2/OpenID"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Scopes"
-msgstr "Scopes"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code"
-msgstr "Kód"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Nonce"
-msgstr "Nonce"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge"
-msgstr "Výzvový kód"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
-msgstr "Metoda výzvového kódu"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization Code"
-msgstr "Autorizační kód"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization Codes"
-msgstr "Autorizační kódy"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Access Token"
-msgstr "OAuth2 přístupový token"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Access Tokens"
-msgstr "OAuth2 přístupové tokeny"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ID Token"
-msgstr "ID token"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Token"
-msgstr "Obnovovací token OAuth2"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
-msgstr "Obnovovací tokeny OAuth2"
+msgstr ""
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
 msgstr ""
-"Odeslat registrovanému klientovi odhlašovací požadavek přes back-channel "
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
-msgstr "Zpracovávat upozornění o back-channel odhlášení odbavené přes signály"
+msgstr ""
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
 msgid "Redirecting to {app}..."
-msgstr "Přesměrování na {app}..."
+msgstr ""
 
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
-msgstr "Neplatný kód"
+msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your User Information"
-msgstr "GitHub Compatibility: Přístup k vašim informacím o uživateli"
+msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access you Email addresses"
-msgstr "GitHub Compatibility: Přístup k vašim emailovým adresám"
+msgstr ""
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your Groups"
-msgstr "GitHub Compatibility: Přístup k vašim skupinám"
+msgstr ""
 
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
-"Atributy Uživatel a Heslo musí být nastaveny, pokud je basic autentizace "
-"povolena."
 
 #: authentik/providers/proxy/api.py
 msgid "Internal host cannot be empty when forward auth is disabled."
-msgstr "Interní hostitel nemůže být prázdný, pokud je forward auth vypnutý."
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Session"
-msgstr "Relace proxy"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Sessions"
-msgstr "Relace proxy"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
-msgstr "Ověřovat SSL certifikáty upstream serverů"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Internal host SSL Validation"
-msgstr "Validace SSL interního hostitele"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
 msgstr ""
-"Povolit podporu pro forwardAuth v traefik a auth_request v nginx. Vylučuje "
-"se s internal_host."
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Regular expressions for which authentication is not required. Each new line "
 "is interpreted as a new Regular Expression."
 msgstr ""
-"Regulární výrazy pro které není vyžadovaná autentikace. Každý nový řádek je "
-"interpretovaný jako nový regulární výraz."
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "When enabled, this provider will intercept the authorization header and "
 "authenticate requests based on its value."
 msgstr ""
-"Pokud je povoleno, tento poskytovatel bude zachytávat hlavičku Authorization"
-" a ověří požadavky na základě její hodnoty."
 
 #: authentik/providers/proxy/models.py
 msgid "Set HTTP-Basic Authentication"
-msgstr "Nastavit autentizace HTTP-Basic"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid ""
-"Set a custom HTTP-Basic Authentication header based on values from "
-"authentik."
-msgstr "Nastavit vlastní HTTP-Basic hlavičku na základě hodnot z authentiku."
+"Set a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Username Key"
-msgstr "Klíč uživatelského jména HTTP-Basic"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid ""
-"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
-" set, the user's Email address is used."
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not "
+"set, the user's Email address is used."
 msgstr ""
-"Atribut Uživatele/Skupiny použitý pro uživatelskou část HTTP-Basic hlavičky."
-" Pokud není nastaven, použije se e-mailová adresa uživatele."
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Password Key"
-msgstr "Klíč hesla HTTP-Basic"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr ""
-"Atribut Uživatele/Skupiny použitý pro část s heslem HTTP-Basic hlavičky."
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Provider"
-msgstr "Poskytovatel proxy"
+msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Providers"
-msgstr "Poskytovatelé proxy"
+msgstr ""
 
 #: authentik/providers/proxy/tasks.py
 msgid "Terminate session on Proxy outpost."
-msgstr "Ukončit relaci na outpostu proxy."
+msgstr ""
 
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
 "lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Určuje, jak dlouho relace trvá. Výchozí 0 znamená, že relace trvá, dokud "
-"není zavřen prohlížeč. (formát: hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/providers/rac/models.py
 msgid "When set to true, connection tokens will be deleted upon disconnect."
-msgstr "Pokud je povoleno, tokeny spojení budou smazány při odpojení."
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider"
-msgstr "Poskytovatel RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Providers"
-msgstr "Poskytovatelé RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoint"
-msgstr "Endpoint RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoints"
-msgstr "Endpointy RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatele RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection token"
-msgstr "Token připojení RAC"
+msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection tokens"
-msgstr "Tokeny připojení RAC"
+msgstr ""
 
 #: authentik/providers/rac/views.py
 msgid "Maximum connection limit reached."
-msgstr "Dosažen maximální limit počtu spojení."
+msgstr ""
 
 #: authentik/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
-msgstr "(Už jste připojeni v jiné záložce/okně)"
+msgstr ""
 
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
-msgstr "Sdílené tajemství mezi klienty a serverem pro hashování paketů."
+msgstr ""
 
 #: authentik/providers/radius/models.py
 msgid ""
@@ -2308,88 +2116,79 @@ msgid ""
 "specific CIDR will match before a looser one. Clients connecting from a non-"
 "specified CIDR will be dropped."
 msgstr ""
-"Seznam CIDR adres (oddělených čárkami), ze kterých se mohou klienti "
-"připojit. Specifičtější CIDR se shoduje dříve než obecné. Klienti "
-"připojující se z neurčeného CIDR budou odmítnuti."
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider"
-msgstr "Poskytovatel Radius"
+msgstr ""
 
 #: authentik/providers/radius/models.py
 msgid "Radius Providers"
-msgstr "Poskytovatelé Radius"
+msgstr ""
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele Radius"
+msgstr ""
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatelů Radius"
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
 msgstr ""
-"Pokud je vybrán pár podepisovacích klíčů, musí být vybrána alespoň jedna z "
-"voleb 'Podepsat tvrzení' a 'Podepsat odpoovědi'."
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
-msgstr "Neplatná syntaxe XML"
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 #, python-brace-format
 msgid "Failed to import Metadata: {messages}"
-msgstr "Nepodařilo se importovat metadata: {messages}"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "ACS URL"
-msgstr "ACS URL"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
-msgstr "Vazba na poskytovatele služby"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
 "This determines how authentik sends the response back to the Service "
 "Provider."
 msgstr ""
-"Určuje, jakým způsobem authentik posílá odpověď zpět Poskytovateli služby."
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Value of the audience restriction field of the assertion. When left empty, "
 "no audience restriction will be added."
 msgstr ""
-"Hodnota pole Omezení publika nastavovaného Tvrzení. Pokud je prázdné, žádné "
-"omezení publika nebude přidáno."
 
 #: authentik/providers/saml/models.py
 msgid "Also known as EntityID"
-msgstr "Také známé jako EntityID."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
-msgstr "SLS URL"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "Single Logout Service URL where the logout response should be sent."
-msgstr "URL Single Logout Service, kam se pošle odhlašovací odpověď."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SLS Binding"
-msgstr "Vazby SLS"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
 "This determines how authentik sends the logout response back to the Service "
 "Provider."
 msgstr ""
-"Určuje, jak authentik posílá odhlašovací odpověď zpět poskytovateli služeb."
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2399,27 +2198,20 @@ msgid ""
 "sends logout requests directly from the server without user interaction "
 "(requires POST SLS binding)."
 msgstr ""
-"Odhlašovací metoda. Front-channel načte všechna odhlašovací URL najednou do "
-"skrytých iframe. Front-channel používá aktivní záložku prohlížeče k odeslání"
-" požadavků typu POST a přesměrování na poskytovatele. Back-channel posílá "
-"odhlašovacíí požadavky přímo ze serveru bez uživatelské interakce (vyžaduje "
-"vazbu POST SLS)."
 
 #: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
-msgstr "Mapování vlastnosti NameID"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Configure how the NameID value will be created. When left empty, the "
 "NameIDPolicy of the incoming request will be considered"
 msgstr ""
-"Nakonfigurujte, jak bude vytvořena hodnota NameID. Pokud je ponecháno "
-"prázdné, bude zvážena NameIDPolicy příchozího požadavku."
 
 #: authentik/providers/saml/models.py
 msgid "AuthnContextClassRef Property Mapping"
-msgstr "Mapování vlastnosti AuthnContextClassRef"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2427,190 +2219,173 @@ msgid ""
 "empty, the AuthnContextClassRef will be set based on which authentication "
 "methods the user used to authenticate."
 msgstr ""
-"Nastaví, jak bude hodnota AuthnContextClassRef vytvořena. Pokud je ponecháno"
-" prázdné, bude AuthnContextClassRef nastavena na základě toho, které metody "
-"ověřování uživatel použil k ověření."
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Assertion valid not before current time + this value (Format: "
 "hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
-"Tvrzení nebude platné před aktuálním časem + tato hodnota (formát: "
-"hours=-1;minutes=-2;seconds=-3)."
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Assertion not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Tvrzení není platné po aktuálním času + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/saml/models.py
 msgid ""
 "Session not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Relace není platná po aktuálním času + tato hodnota (formát: "
-"hours=1;minutes=2;seconds=3)."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA1"
-msgstr "SHA1"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA256"
-msgstr "SHA256"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA384"
-msgstr "SHA384"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA512"
-msgstr "SHA512"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA1"
-msgstr "RSA-SHA1"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA256"
-msgstr "RSA-SHA256"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA384"
-msgstr "RSA-SHA384"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA512"
-msgstr "RSA-SHA512"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "ECDSA-SHA1"
-msgstr "ECDSA-SHA1"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "ECDSA-SHA256"
-msgstr "ECDSA-SHA256"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "ECDSA-SHA384"
-msgstr "ECDSA-SHA384"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "ECDSA-SHA512"
-msgstr "ECDSA-SHA512"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "DSA-SHA1"
-msgstr "DSA-SHA1"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid ""
 "When selected, incoming assertion's Signatures will be validated against "
 "this certificate. To allow unsigned Requests, leave on default."
 msgstr ""
-"Je-li vybráno, budou podpisy příchozích Tvrzení ověřeny proti tomuto "
-"certifikátu. Chcete-li povolit nepodepsané Požadavky, ponechte výchozí "
-"nastavení."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Verification Certificate"
-msgstr "Ověřovací certifikát"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
 msgstr ""
-"Pár klíčů používaný pro podpis Odpovědí jdoucích Poskytovateli služeb."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
-msgstr "Podepisovací pár klíčů"
+msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid ""
-"When selected, incoming assertions are encrypted by the IdP using the public"
-" key of the encryption keypair. The assertion is decrypted by the SP using "
+"When selected, incoming assertions are encrypted by the IdP using the public "
+"key of the encryption keypair. The assertion is decrypted by the SP using "
 "the the private key."
 msgstr ""
-"Pokud je vybráno, příchozí tvrzení jsou zašifrována poskytovatelem identit "
-"pomocí veřejného klíče z páru šifrovacích klíčů. Tvrzení si dešifruje "
-"Poskytovatel služeb svým privátním klíčem."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Encryption Keypair"
-msgstr "Šifrovací pár klíčů"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
 msgstr ""
-"Výchozí hodnota relay_state pro přihlášení iniciovaná poskytovatelem identit"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider"
-msgstr "Poskytovatel SAML"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
-msgstr "Poskytovatelé SAML"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mapping"
-msgstr "Mapování vlastností poskytovatele SAML"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mappings"
-msgstr "Mapování vlastností poskytovatele SAML"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider from Metadata"
-msgstr "Poskytovatel SAML z metadat"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers from Metadata"
-msgstr "Poskytovatelé SAML z metadat"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "Link to the user's authenticated session"
-msgstr "Okaz na uživatelovu přihlášenou relaci"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML SessionIndex for this session"
-msgstr "SAML SessionIndex pro tuto relaci"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML NameID value for this session"
-msgstr "Hodnota SAML NameID pro tuto relaci"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML NameID format"
-msgstr "Formát SAML NameID"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Session"
-msgstr "Relace SAML"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
-msgstr "Relace SAML"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "OAuth"
-msgstr "OAuth"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Default"
-msgstr "Výchozí"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "AWS"
-msgstr "AWS"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Slack"
-msgstr "Slack"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Salesforce"
@@ -2618,239 +2393,227 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
-msgstr "Základní URL na požadavky SCIM obvykle končí /v2"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
-msgstr "Autentizační token"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
-msgstr "Zdroj OAuth použitý pro přihlášení"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Additional OAuth parameters, such as grant_type"
-msgstr "Dodatečné parametry OAuth, například grant_type"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Compatibility Mode"
-msgstr "Režim kompatibility SCIM"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Alter authentik behavior for vendor-specific SCIM implementations."
 msgstr ""
-"Upravit chování authentiku pro implementace SCIM specifické pro dodavatele."
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
-msgstr "Poskytovatel SCIM"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Providers"
-msgstr "Poskytovatelé SCIM"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider Mapping"
-msgstr "Mapování poskytovatele SCIM"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider Mappings"
-msgstr "Mapování poskytovatelů SCIM"
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync SCIM provider objects."
-msgstr "Synchronizovat objekty poskytovatele SCIM."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Full sync for SCIM provider."
-msgstr "Plná synchronizace poskytovatele SCIM."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a direct object (user, group) for SCIM provider."
-msgstr "Synchronizovat objekt (uživatel, skupina) poskytovatele SCIM přímo."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
-"Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů SCIM."
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
-msgstr "Synchronizovat příbuzný objekt (členství) poskytovatele SCIM."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
 msgstr ""
-"Odbavit synchronizace příbuzných objektů (členství) poskytovatelů SCIM."
 
 #: authentik/rbac/models.py
 msgid "Role"
-msgstr "Role"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Roles"
-msgstr "Role"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can assign permissions to roles"
-msgstr "Může přiřazovat oprávnění rolím"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can unassign permissions from roles"
-msgstr "Může odebírat oprávnění rolím"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
-msgstr "Počáteční oprávnění"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "System permission"
-msgstr "Systémové oprávnění"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "System permissions"
-msgstr "Systémová oprávnění"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
-msgstr "Může zobrazovat systémové informace"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
-msgstr "Může přistupovat k administračnímu rozhraní"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can view system settings"
-msgstr "Může zobrazovat systémová nastavení"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can edit system settings"
-msgstr "Může upravovat systémová nastavení"
+msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
-msgstr "Vytvořit administrátorskou skupinu, pokud je výchozí skupina smazána."
+msgstr ""
 
 #: authentik/recovery/management/commands/create_recovery_key.py
 msgid "Create a Key which can be used to restore access to authentik."
-msgstr "Vytvořit Klíč, který lze použít k obnovení přístupu do authentiku."
+msgstr ""
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Použit obnovovací odkaz pro přihlášení."
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos realm"
-msgstr "Kerberos realm"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Custom krb5.conf to use. Uses the system one by default"
-msgstr "Použít vlastní krb5.conf. Standardně se používá systémový"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "KAdmin server type"
-msgstr "Typ serveru KAdmin"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Sync users from Kerberos into authentik"
-msgstr "Synchronizovat uživatele Kerberos do authentiku"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "When a user changes their password, sync it back to Kerberos"
-msgstr "Pokud si uživatel změní heslo, synchronizovat ho zpět do Kerberosu"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Principal to authenticate to kadmin for sync."
-msgstr "Entita používaná k ověření u kadmin pro synchronizaci."
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Password to authenticate to kadmin for sync"
-msgstr "Heslo pro ověření u kadmin pro synchronizaci"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
 "form TYPE:residual"
 msgstr ""
-"Keytab pro ověření u kadmin pro synchronizaci. Musí být v kódování base64 "
-"nebo ve formátu TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Credentials cache to authenticate to kadmin for sync. Must be in the form "
 "TYPE:residual"
 msgstr ""
-"Mezipaměť přihlašovacích údajů kadmin pro synchronizaci. Musí být ve formátu"
-" TYPE:residual"
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "Force the use of a specific server name for SPNEGO. Must be in the form "
 "HTTP@hostname"
 msgstr ""
-"Vynutit použití konkrétního názvu serveru pro SPNEGO. Musí být ve formátu "
-"HTTP@hostitel"
 
 #: authentik/sources/kerberos/models.py
 msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
 msgstr ""
-"Keytab pro SPNEGO v base64 nebo cesta ke keytab souboru ve formátu FILE:path"
 
 #: authentik/sources/kerberos/models.py
 msgid "Credential cache to use for SPNEGO in form type:residual"
-msgstr "Mezipaměť přihlašovacích údajů pro SPNEGO ve formátu TYPE:residual"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid ""
 "If enabled, the authentik-stored password will be updated upon login with "
 "the Kerberos password backend"
 msgstr ""
-"Pokud je zapnuto, uložené heslo v authentiku se po přihlášení aktualizuje "
-"heslem z Kerberos password backend"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source"
-msgstr "Zdroj Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Sources"
-msgstr "Zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mapping"
-msgstr "Mapování vlastností zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mappings"
-msgstr "Mapování vlastností zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connection"
-msgstr "Uživatelské spojení zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connections"
-msgstr "Uživatelská spojení zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connection"
-msgstr "Skupinové spojení zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connections"
-msgstr "Skupinová spojení zdroje Kerberos"
+msgstr ""
 
 #: authentik/sources/kerberos/tasks.py
 msgid "Check connectivity for Kerberos sources."
-msgstr "Zkonotrolovat připojení pro zdroje Kerberos."
+msgstr ""
 
 #: authentik/sources/kerberos/tasks.py
 msgid "Sync Kerberos source."
-msgstr "Synchronizovat zdroj Kerberos."
+msgstr ""
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
-msgstr "Vyžadováno ověření SPNEGO"
+msgstr ""
 
 #: authentik/sources/kerberos/views.py
 msgid ""
@@ -2860,97 +2623,87 @@ msgid ""
 "                    Please contact your administrator.\n"
 "                "
 msgstr ""
-"\n"
-"                    Ujistěte se, že máte platné tikety (získatelné přes kinit)\n"
-"                    a správně nastavený prohlížeč.\n"
-"                    Prosím, kontaktujte správce.\n"
-"                "
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
-msgstr "Je dovolen pouze jeden zdroj LDAP se synchronizací hesel"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
-msgstr "URI serveru"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid ""
-"Optionally verify the LDAP Server's Certificate against the CA Chain in this"
-" keypair."
+"Optionally verify the LDAP Server's Certificate against the CA Chain in this "
+"keypair."
 msgstr ""
-"Volitelně ověřit certifikát LDAP serveru proti řetězci certifikačních "
-"autorit v tomto páru klíčů."
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Client certificate to authenticate against the LDAP Server's Certificate."
-msgstr "Klientský certifikát pro ověření proti certifikátu LDAP serveru."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Bind CN"
-msgstr "Vazební CN"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Enable Start TLS"
-msgstr "Povolit Start TLS"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Use Server URI for SNI verification"
-msgstr "Použít URI serveru pro ověření SNI"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Base DN"
-msgstr "Základní DN"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for User-queries."
-msgstr "Přidáno před Základní DN pro uživatelské dotazy."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Addition User DN"
-msgstr "Dodatečné DN uživatele"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for Group-queries."
-msgstr "Přidáno před Základní DN pro skupinové dotazy."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Addition Group DN"
-msgstr "Dodatečné DN skupiny"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
-msgstr "Považovat objekty odpovídající tomuto filtru za uživatele."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Attribute which matches the value of `group_membership_field`."
-msgstr "Atribut odpovídající hodnotě `group_membership_field`."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
-msgstr "Pole, které obsahuje členy skupiny."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Groups."
-msgstr "Považovat objekty odpovídající tomuto filtru za skupiny."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains a unique Identifier."
-msgstr "Pole, které obsahuje jedinečný identifikátor."
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Update internal authentik password when login succeeds with LDAP"
 msgstr ""
-"Aktualizovat interní heslo authentiku, když přihlášení přes LDAP uspěje."
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
 msgstr ""
-"Pokud si uživatel změní heslo, synchronizovat změnu zpět do LDAPu. Toto může"
-" být povoleno pouze pro jeden zdroj LDAP."
 
 #: authentik/sources/ldap/models.py
 msgid ""
@@ -2958,87 +2711,81 @@ msgid ""
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
 msgstr ""
-"Vyhledat členství ve skupině na základě uživatelského atributu namísto "
-"skupinového atributu. Toto umožňuje rozlišovat vnořené skupiny v systémech, "
-"jako je FreeIPA a Active Directory"
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Delete authentik users and groups which were previously supplied by this "
 "source, but are now missing from it."
 msgstr ""
-"Smazat uživatele a skupiny authentiku, které byly dříve poskytovány tímto "
-"zdrojem, ale nyní v něm chybí."
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
-msgstr "LDAP zdroj"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Sources"
-msgstr "LDAP zdroje"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mapping"
-msgstr "Mapování vlastností zdroje LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
-msgstr "Mapování vlastností zdroje LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid ""
 "Unique ID used while checking if this object still exists in the directory."
 msgstr ""
-"Jedinečné ID použité při kontrole, jestli objekt v adresáři stále existuje."
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
-msgstr "Uživatelské spojení zdroje LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connections"
-msgstr "Uživatelská spojené zdrojů LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connection"
-msgstr "Skupinové spojení zdroje LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connections"
-msgstr "Skupinová spojení zdrojů LDAP"
+msgstr ""
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
-msgstr "Heslo nesplňuje požadavky na složitost v Active Directory."
+msgstr ""
 
 #: authentik/sources/ldap/tasks.py
 msgid "Check connectivity for LDAP source."
-msgstr "Zkontrolovat připojení pro zdroj LDAP."
+msgstr ""
 
 #: authentik/sources/ldap/tasks.py
 msgid "Sync LDAP source."
-msgstr "Synchronizovat zdroj LDAP."
+msgstr ""
 
 #: authentik/sources/ldap/tasks.py
 msgid "Sync page for LDAP source."
-msgstr "Synchronizovat stránku zdroje LDAP."
+msgstr ""
 
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
-msgstr "Nebyl přijat žádný token."
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "HTTP Basic Authentication"
-msgstr "HTTP Basic Authentication"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Include the client ID and secret as request parameters"
-msgstr "Zahrnout ID klienta a tajný klíč jako parametry požadavku"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "No PKCE"
-msgstr "Bez PKCE"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Plain"
@@ -3046,347 +2793,331 @@ msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "S256"
-msgstr "S256"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
-msgstr "URL tokenu požadavku"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid ""
-"URL used to request the initial token. This URL is only required for OAuth "
-"1."
+"URL used to request the initial token. This URL is only required for OAuth 1."
 msgstr ""
-"URL používaná k vyžádání počátečního tokenu. Tato URL je vyžadována pouze "
-"pro OAuth 1."
 
 #: authentik/sources/oauth/models.py
 msgid "Authorization URL"
-msgstr "URL autorizace"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "URL the user is redirect to to conest the flow."
 msgstr ""
-"URL na kterou je uživatel přesměrován pro udělení souhlasu k autorizaci."
 
 #: authentik/sources/oauth/models.py
 msgid "Access Token URL"
-msgstr "URL přístupového tokenu"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
-msgstr "URL používané systémem authentik k získání tokenů."
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Profile URL"
-msgstr "URL profilu"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to get user information."
-msgstr "URL používané systémem authentik k získání informací o uživateli."
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
-msgstr "Dodatečné Scopes"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "PKCE"
-msgstr "PKCE"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid ""
-"How to perform authentication during an authorization_code token request "
-"flow"
-msgstr "Jak provést ověření během toku požadavku na token authorization_code"
+"How to perform authentication during an authorization_code token request flow"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
-msgstr "Zdroj OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Sources"
-msgstr "Zdroje OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Source"
-msgstr "Zdroj GitHub OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
-msgstr "Zdroje GitHub OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Source"
-msgstr "Zdroj GitLab OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Sources"
-msgstr "Zdroje GitLab OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
-msgstr "Zdroj Twich OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Sources"
-msgstr "Zdroje Twitch OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Source"
-msgstr "Zdroj Mailcow OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Sources"
-msgstr "Zdroje Mailcow OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Source"
-msgstr "Zdroj Twitter OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Sources"
-msgstr "Zdroje Twitter OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Source"
-msgstr "Zdroj Facebook OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Sources"
-msgstr "Zdroje Facebook OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Source"
-msgstr "Zdroj Discord OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Sources"
-msgstr "Zdroje Discord OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
-msgstr "Zdroj Patreon OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Sources"
-msgstr "Zdroje Patreon OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Source"
-msgstr "Zdroj Goole OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Sources"
-msgstr "Zdroj Goole OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Source"
-msgstr "Zdroj Azure AD OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
-msgstr "Zdroje Azure AD OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Source"
-msgstr "Zdroj Entra ID OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Sources"
-msgstr "Zdroje Entra ID OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
-msgstr "Zdroj OpenID OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Sources"
-msgstr "Zdroje OpenID OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Source"
-msgstr "Zdroj Apple OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Sources"
-msgstr "Zdroje Apple OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Source"
-msgstr "Zdroj Okta OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Sources"
-msgstr "Zdroje Okta OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Source"
-msgstr "Zdroj Reddit OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
-msgstr "Zdroje Reddit OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
-msgstr "Mapování vlastností zdroje OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mappings"
-msgstr "Mapování vlastností zdroje OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
-msgstr "Uživatelské spojení zdroje OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
-msgstr "Uživatelská spojení zdrojů OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connection"
-msgstr "Skupinové spojení zdroje OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
-msgstr "Skupinová spojení zdrojů OAuth"
+msgstr ""
 
 #: authentik/sources/oauth/tasks.py
 msgid ""
 "Update OAuth sources' config from well_known, and JWKS info from the "
 "configured URL."
 msgstr ""
-"Aktualizovat konfiguraci zdroje OAuth z well_known a JKWS informací z "
-"nastaveného URL."
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
 msgid "Authentication failed: {reason}"
-msgstr "Ověření selhaho: {reason}"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
-msgstr "Identifikátor klienta používaný pro komunikaci s Plex."
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid ""
 "Which servers a user has to be a member of to be granted access. Empty list "
 "allows every server."
 msgstr ""
-"Seznam serverů, jichž musí být uživatel členem, aby mu byl udělen přístup. "
-"Prázdný seznam povoluje libovolný server."
 
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
-msgstr "Povolit ověření přátelům, i když spolu nesdílíte žádný server."
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Plex token used to check friends"
-msgstr "Plex token používaný pro kontrolu přátel"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source"
-msgstr "Zdroj Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Plex Sources"
-msgstr "Zdroje Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mapping"
-msgstr "Mapování vlastností zdroje Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mappings"
-msgstr "Mapování vlastností zdroje Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
-msgstr "Uživatelské spojení zdroje Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
-msgstr "Uživatelská spojení zdrojů Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connection"
-msgstr "Skupinové spojení zdroje Plex"
+msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
-msgstr "Skupinová spojení zdrojů Plex"
+msgstr ""
 
 #: authentik/sources/plex/tasks.py
 msgid "Check the validity of a Plex source."
-msgstr "Zkontrolovat platnost zdroje Plex."
+msgstr ""
 
 #: authentik/sources/saml/api/source.py
 msgid ""
 "With a Verification Certificate selected, at least one of 'Verify Assertion "
 "Signature' or 'Verify Response Signature' must be selected."
 msgstr ""
-"Pokud je vybrán Ověřovací certifikát, musí být vybrána alespoň jedna z voleb"
-" 'Ověřit podpis Tvrzení a 'Ověřit podpis odpoovědi'."
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
-msgstr "Přiřazení přesměrování"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "Vazba POST"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
-msgstr "Vazba POST s automatickým potvrzením"
+msgstr ""
 
 #: authentik/sources/saml/models.py authentik/sources/telegram/models.py
 msgid "Flow used before authentication."
-msgstr "Tok používaný před ověřením."
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Issuer"
-msgstr "Vydavatel"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults the Metadata URL."
-msgstr "Také známý jako Entity ID. Výchozí je Metadata URL."
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"
-msgstr "SSO URL"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "URL that the initial Login request is sent to."
-msgstr "URL, na kterou je odeslán počáteční požadavek na přihlášení."
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "SLO URL"
-msgstr "SLO URL"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Optional URL if your IDP supports Single-Logout."
-msgstr "Volitelná URL, pokud IDP podporuje Single-Logout."
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
 msgstr ""
-"Povolit autentikační tok iniciovaný Identity Providerem. Může představovat "
-"bezpečnostní riziko, protože se nekontroluje request ID."
 
 #: authentik/sources/saml/models.py
 msgid ""
-"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
-"sent."
+"NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
 msgstr ""
-"Zásada NameID odesílaná poskytovateli. Pokud je prázdná, žádná zásada se "
-"nepošle."
 
 #: authentik/sources/saml/models.py
 msgid "Delete temporary users after"
-msgstr "Smazat dočasné uživatele po"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
@@ -3394,136 +3125,131 @@ msgid ""
 "your IDP uses the NameID Format 'transient', and the user doesn't log out "
 "manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Doba, po jejímž uplynutí se smažou dočasní uživatelé. Uplatní se jen tehdy, "
-"pokud poskytovatel používá formát NameID 'transient' a uživatel se neodhlásí"
-" ručně. (Formát: hours=1;minutes=2;seconds=3)."
 
 #: authentik/sources/saml/models.py
-msgid ""
-"Keypair used to sign outgoing Responses going to the Identity Provider."
+msgid "Keypair used to sign outgoing Responses going to the Identity Provider."
 msgstr ""
-"Pár klíčů používaný pro podpis Odpovědí jdoucích Poskytovateli identit."
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source"
-msgstr "Zdroj SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "SAML Sources"
-msgstr "Zdroje SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mapping"
-msgstr "Mapování vlastností zdroje SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mappings"
-msgstr "Mapování vlastností zdroje SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
-msgstr "Uživatelská spojení zdroje SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
-msgstr "Uživatelská spojení zdrojů SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connection"
-msgstr "Skupinové spojení zdroje SAML"
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connections"
-msgstr "Skupinová spojení zdrojů SAML"
+msgstr ""
 
 #: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
-msgstr "Pokračovat na {source_name}"
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
-msgstr "Zdroj SCIM"
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
-msgstr "Zdroje SCIM"
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mapping"
-msgstr "Mapování vlastností zdroje SCIM"
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mappings"
-msgstr "Mapování vlastností zdroje SCIM"
+msgstr ""
 
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
-msgstr "Uživateldké jméno Telegram bota"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram bot token"
-msgstr "Token Telegram bota"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Request access to send messages from your bot."
-msgstr "Požádat o přístup pro zasílání zpráv z vašeho bota."
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source"
-msgstr "Zdroj Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Sources"
-msgstr "Zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source Property Mapping"
-msgstr "Mapování vlastností zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Telegram Source Property Mappings"
-msgstr "Mapování flastností zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connection"
-msgstr "Uživatelské spojení zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connections"
-msgstr "Uživatelská spojení zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connection"
-msgstr "Skupinové spojení zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connections"
-msgstr "Skupinová spojení zdroje Telegram"
+msgstr ""
 
 #: authentik/sources/telegram/stage.py
 msgid "Authentication date is too old"
-msgstr "Datum ověření je příliš staré"
+msgstr ""
 
 #: authentik/sources/telegram/stage.py
 msgid "Invalid hash"
-msgstr "Neplatný hash"
+msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
-msgstr "Krok nastavení autentikátoru Duo"
+msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stages"
-msgstr "Kroky nastavení autentikátoru Duo"
+msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Device"
-msgstr "Zařízení Duo"
+msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
-msgstr "Zařízení Duo"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
@@ -3531,51 +3257,47 @@ msgid ""
 "When enabled, global Email connection settings will be used and connection "
 "settings below will be ignored."
 msgstr ""
-"Když je povoleno, budou použita globální nastavení e-mailového spojení a "
-"níže uvedená nastavení spojení budou ignorována."
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
-"Čas, po který je odeslaný token platný (Formát: "
-"hours=3,minutes=17,seconds=300)."
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
-msgstr "Krok nastavení emailového autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stages"
-msgstr "Kroky nastavení emailového autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 #: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/email/stage.py
 msgid "Exception occurred while rendering E-mail template"
-msgstr "Při vykreslování E-mailové šablony došlo k chybě"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Device"
-msgstr "Emailové zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Devices"
-msgstr "Emailová zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_email/stage.py
 #: authentik/stages/authenticator_sms/stage.py
 #: authentik/stages/authenticator_totp/stage.py
 msgid "Code does not match"
-msgstr "Kód nesouhlasí"
+msgstr ""
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "Invalid email"
-msgstr "Neplatný email"
+msgstr ""
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "The user already has an email address registered for MFA."
-msgstr "Uživatel už má emailovou adresu registrovanou pro MFA."
+msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
@@ -3585,9 +3307,6 @@ msgid ""
 "      Hi %(username)s,\n"
 "      "
 msgstr ""
-"\n"
-"      Ahoj %(username)s,\n"
-"      "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 msgid ""
@@ -3595,240 +3314,221 @@ msgid ""
 "          Email MFA code.\n"
 "          "
 msgstr ""
-"\n"
-"          Emailový kód MFA.\n"
-"          "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #, python-format
 msgid ""
 "\n"
-"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    If you did not request this code, please ignore this email. The code "
+"above is valid for %(expires)s.\n"
 "    "
 msgstr ""
-"\n"
-"Pokud jste nepožádali o tento kód, tento email prosím ignorujte. Kód je platný po dobu %(expires)s.\n"
-" "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
 msgid "Hi %(username)s,"
-msgstr "Ahoj %(username)s,"
+msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 msgid ""
 "\n"
 "Email MFA code\n"
 msgstr ""
-"\n"
-"Emailový kód MFA\n"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #, python-format
 msgid ""
 "\n"
-"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"If you did not request this code, please ignore this email. The code above "
+"is valid for %(expires)s.\n"
 msgstr ""
-"\n"
-"Pokud jste tento kód nepožadovali, prosím, ignorujte tento email. Kód uvedený výše je platný po dobu %(expires)s.\n"
 
 #: authentik/stages/authenticator_sms/models.py
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
-"users authenticity. Only a hash of the phone number is saved to ensure it is"
-" not reused in the future."
+"users authenticity. Only a hash of the phone number is saved to ensure it is "
+"not reused in the future."
 msgstr ""
-"Pokud je povoleno, telefonní číslo se použije pouze při registraci uživatele"
-" na  ověření autentičnosti. Následně se uloží pouze otisk telefonního čísla,"
-" aby nešlo použít v budoucnu."
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "Optionally modify the payload being sent to custom providers."
-msgstr "Volitelně upravit data odesílaná vlastním poskytovatelům."
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 #, python-brace-format
 msgid "Use this code to authenticate in authentik: {token}"
-msgstr "Pro ověření v authentiku použijte tento kód: {token}"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stage"
-msgstr "Krok nastavení SMS autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Authenticator Setup Stages"
-msgstr "Kroky nastavení SMS autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Device"
-msgstr "SMS zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Devices"
-msgstr "SMS zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/stage.py
 msgid "Invalid phone number"
-msgstr "Neplatné telefonní číslo"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Authenticator Setup Stage"
-msgstr "Krok nastavení statického autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Authenticator Setup Stages"
-msgstr "Kroky nastavení statického autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Device"
-msgstr "Statické zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Devices"
-msgstr "Statická zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Token"
-msgstr "Statický token"
+msgstr ""
 
 #: authentik/stages/authenticator_static/models.py
 msgid "Static Tokens"
-msgstr "Statické tokeny"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "6 digits, widely compatible"
-msgstr "6 číslic, široce kompatibilní"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "8 digits, not compatible with apps like Google Authenticator"
-msgstr "8 číslic, není kompatibilní s aplikacemi jako Google Authenticator"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stage"
-msgstr "Krok nastavení TOTP autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stages"
-msgstr "Kroky nastavení TOTP autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Device"
-msgstr "TOTP zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Devices"
-msgstr "TOTP zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py
 msgid ""
 "Invalid Token. Please ensure the time on your device is accurate and try "
 "again."
 msgstr ""
-"Neplatný token. Prosím, ověřte si nastavení času na zařízení a zkuste to "
-"znovu."
 
 #: authentik/stages/authenticator_validate/challenge.py
 #: authentik/stages/authenticator_webauthn/stage.py
 #, python-brace-format
 msgid "Invalid device type. Contact your {brand} administrator for help."
-msgstr "Neplatný typ zařízení. Požádejte o pomoc správce značky {brand}."
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
-msgstr "Statický"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "TOTP"
-msgstr "TOTP"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "WebAuthn"
-msgstr "WebAuthn"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Duo"
-msgstr "Duo"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "SMS"
-msgstr "SMS"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid ""
-"Stages used to configure Authenticator when user doesn't have any compatible"
-" devices. After this configuration Stage passes, the user is not prompted "
+"Stages used to configure Authenticator when user doesn't have any compatible "
+"devices. After this configuration Stage passes, the user is not prompted "
 "again."
 msgstr ""
-"Kroky používané ke konfiguraci autentizátoru, když uživatel nemá žádná "
-"kompatibilní zařízení. Po úspěšném dokončení tohoto konfiguračního kroku již"
-" uživatel není znovu vyzván."
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Device classes which can be used to authenticate"
-msgstr "Třídy zařízení, které lze použít k ověření"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid ""
 "If any of the user's device has been used within this threshold, this stage "
 "will be skipped"
 msgstr ""
-"Pokud bylo libovolné z uživatelových zařízení použito v rámci této prahové "
-"hodnoty, tento krok se přeskočí."
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Enforce user verification for WebAuthn devices."
-msgstr "Vynutit ověření uživatele pro zařízení WebAuthn."
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
-msgstr "Krok validace autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stages"
-msgstr "Kroky validace autentikátoru"
+msgstr ""
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
-msgstr "Žádný (povolený) MFA autentikátor nebyl nastaven."
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
-msgstr "Krok nastavení autentikátoru WebAuthn"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stages"
-msgstr "Kroky nastavení autentikátoru WebAuthn"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device"
-msgstr "WebAuthn zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
-msgstr "WebAuthn zařízení"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device type"
-msgstr "Typ zařízení WebAuthn"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
-msgstr "Typy zařízení WebAuthn"
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
 msgstr ""
-"Úloha na pozadí pro import FIDO Alliance MDS blobů a AAGUIDů do databáze."
 
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
-msgstr "Veřejný klíč získaný vaším poskytovatelem captcha."
+msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid "Private key, acquired your captcha Provider."
-msgstr "Privátní klíč získaný vaším poskytovatelem captcha."
+msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid ""
@@ -3837,95 +3537,91 @@ msgid ""
 "will continue, but the data from the captcha will be available in the "
 "context for policy decisions"
 msgstr ""
-"Pokud je povoleno a získané skóre captcha je mimo stanovenou mez, tento krok"
-" zobrazí chybové hlášení. Pokud povoleno není, tok bude pokračovat, ale data"
-" z captcha budou k dispozici v kontextu, aby se podle nich mohly rozhodovat "
-"Zásady."
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
-msgstr "Krok Captcha"
+msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
-msgstr "Kroky Captcha"
+msgstr ""
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response. Retrying may solve this issue."
-msgstr "Neplatná odpověď captcha. Zkuste to znovu a možná to pomůže."
+msgstr ""
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
-msgstr "Neplatná odpověď captcha"
+msgstr ""
 
 #: authentik/stages/captcha/stage.py
 msgid "Failed to validate token"
-msgstr "Ověřování tokenu selhalo"
+msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid ""
 "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
-msgstr "Čas, po kterém vyprší souhlas. (Formát: hours=1;minutes=2;seconds=3)."
+msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stage"
-msgstr "Krok souhlasu"
+msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stages"
-msgstr "Kroky souhlasu"
+msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid "User Consent"
-msgstr "Souhlas uživatele"
+msgstr ""
 
 #: authentik/stages/consent/models.py
 msgid "User Consents"
-msgstr "Souhlasy uživatelů"
+msgstr ""
 
 #: authentik/stages/consent/stage.py
 msgid "Invalid consent token, re-showing prompt"
-msgstr "Neplatný token souhlasu, ukazuji výzvu znovu"
+msgstr ""
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
-msgstr "Krok zamítnutí"
+msgstr ""
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stages"
-msgstr "Kroky zamítnutí"
+msgstr ""
 
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stage"
-msgstr "Testovací krok"
+msgstr ""
 
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
-msgstr "Testovací kroky"
+msgstr ""
 
 #: authentik/stages/email/flow.py
 msgid "Continue to confirm this email address."
-msgstr "Pokračujte k ověření této emailové adresy."
+msgstr ""
 
 #: authentik/stages/email/flow.py
 msgid "Link was already used, please request a new link."
-msgstr "Odkaz už byl použit, prosím, vyžádejte si nový."
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
-msgstr "Obnovení hesla"
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Account Confirmation"
-msgstr "Ověření účtu"
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Email OTP"
-msgstr "Email OTP"
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Event Notification"
-msgstr "Oznámení o události"
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid ""
@@ -3933,33 +3629,30 @@ msgid ""
 "number of attempts exceed recovery_max_attempts within this period, further "
 "attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Časové okno použité pro počítání pokusů o obnovu účtu. Pokud počet pokusů "
-"přesáhne recovery_max_attempts během stanovené doby, další pokusy budou "
-"časově omezeny. (Format: hours=1;minutes=2;seconds=3)."
 
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
-msgstr "Aktivovat uživatele po dokočení tohoto kroku."
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
-msgstr "Krok e-mailu"
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Kroky e-mailu"
+msgstr ""
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
-msgstr "Email úspěšně ověřený."
+msgstr ""
 
 #: authentik/stages/email/stage.py
 msgid "No pending user."
-msgstr "Žádný čekající uživatel."
+msgstr ""
 
 #: authentik/stages/email/stage.py
 msgid "Email sent."
-msgstr "Email odeslán."
+msgstr ""
 
 #: authentik/stages/email/stage.py
 #, python-brace-format
@@ -3967,74 +3660,65 @@ msgid ""
 "Too many account verification attempts. Please try again after {minutes} "
 "minutes."
 msgstr ""
-"Příliš mnoho pokusů o ověření účtu. Prosím, zkuste znovu za {minutes} minut."
 
 #: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
-msgstr "Email úspěšně odeslán."
+msgstr ""
 
 #: authentik/stages/email/tasks.py
 msgid "Send email."
-msgstr "Odeslat email."
+msgstr ""
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 #: authentik/stages/email/templates/email/account_confirmation.txt
 msgid "Welcome!"
-msgstr "Vítejte!"
+msgstr ""
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
 msgstr ""
-"Těšíme se, až budete moci začít. Nejdříve je potřeba, abyste potvrdili Váš "
-"účet. Klikněte na tlačítko níže."
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 msgid "Confirm Account"
-msgstr "Potvrdit účet"
+msgstr ""
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 #, python-format
 msgid ""
 "\n"
-"    If that doesn't work, copy and paste the following link in your browser: %(url)s\n"
+"    If that doesn't work, copy and paste the following link in your browser: "
+"%(url)s\n"
 "    "
 msgstr ""
-"\n"
-"    Pokud to nefunguje, zkopírujte a vlože následující odkaz do Vašeho prohlížeče: %(url)s\n"
-"    "
 
 #: authentik/stages/email/templates/email/account_confirmation.txt
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just open the link below."
 msgstr ""
-"Těšíme se, až budete moci začít. Nejdříve je potřeba, abyste potvrdili Váš "
-"účet. Otevřete odkaz níže."
 
 #: authentik/stages/email/templates/email/event_notification.html
 #, python-format
 msgid ""
 "\n"
-"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    This email was sent from the notification transport <code>%(name)s</"
+"code>.\n"
 "    "
 msgstr ""
-"\n"
-"    Tento email byl odeslán z transportu oznámení <code>%(name)s</code>.\n"
-"    "
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "Dear authentik user,"
-msgstr "Vážený uživateli authentik,"
+msgstr ""
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "The following notification was created:"
-msgstr "Bylo vytvořeno následující upozornění:"
+msgstr ""
 
 #: authentik/stages/email/templates/email/event_notification.txt
 msgid "Additional attributes:"
-msgstr "Dodatečné atributy:"
+msgstr ""
 
 #: authentik/stages/email/templates/email/event_notification.txt
 #, python-format
@@ -4042,82 +3726,67 @@ msgid ""
 "\n"
 "This email was sent from the notification transport %(name)s.\n"
 msgstr ""
-"\n"
-"Tento email byl odeslán z transportu oznámení %(name)s.\n"
 
 #: authentik/stages/email/templates/email/password_reset.html
 msgid ""
 "\n"
-"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          You recently requested to change your password for your authentik "
+"account. Use the button below to set a new password.\n"
 "          "
 msgstr ""
-"\n"
-"          Nedávno jste požádali o změnu hesla k účtu authentik. Pro nastavení nového hesla použijte níže uvedené tlačítko.\n"
-"          "
 
 #: authentik/stages/email/templates/email/password_reset.html
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"    If you did not request a password change, please ignore this email. The "
+"link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
-"\n"
-"Pokud jste nepožádali o změnu hesla, tento email prosím ignorujte. Odkaz výše je platný po dobu %(expires)s.\n"
-" "
 
 #: authentik/stages/email/templates/email/password_reset.txt
 msgid ""
 "\n"
-"You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
+"You recently requested to change your password for your authentik account. "
+"Use the link below to set a new password.\n"
 msgstr ""
-"\n"
-"Nedávno jste požádali o změnu hesla k účtu authentik. Pro nastavení nového hesla použijte níže uvedený odkaz.\n"
 
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"If you did not request a password change, please ignore this email. The link "
+"above is valid for %(expires)s.\n"
 msgstr ""
-"\n"
-"Pokud jste nepožádali o změnu hesla, tento email prosím ignorujte. Odkaz výše je platný po dobu %(expires)s.\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
-msgstr "Testovací email authentiku"
+msgstr ""
 
 #: authentik/stages/email/templates/email/setup.html
 msgid ""
 "\n"
-"                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
+"                    This is a test email to inform you, that you've "
+"successfully configured authentik emails.\n"
 "                    "
 msgstr ""
-"\n"
-"                    Toto je testovací email, který vás má informovat, že jste úspěšně nakonfigurovali emaily v authentiku.\n"
-"                    "
 
 #: authentik/stages/email/templates/email/setup.txt
 msgid ""
 "\n"
-"This is a test email to inform you, that you've successfully configured authentik emails.\n"
+"This is a test email to inform you, that you've successfully configured "
+"authentik emails.\n"
 msgstr ""
-"\n"
-"Toto je testovací email, který vás má informovat, že jste úspěšně nakonfigurovali emaily v authentiku.\n"
 
 #: authentik/stages/identification/api.py
 msgid "When no user fields are selected, at least one source must be selected"
 msgstr ""
-"Pokud nejsou vybrána žádná uživatelská pole, musí být vybrán alespoń jeden "
-"zdroj"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "Fields of the user object to match against. (Hold shift to select multiple "
 "options)"
 msgstr ""
-"Pole uživatelského objektu, se kterými se má porovnávat (držte Shift pro "
-"výběr více možností)."
 
 #: authentik/stages/identification/models.py
 msgid "When enabled, user fields are matched regardless of their casing."
@@ -4129,62 +3798,54 @@ msgid ""
 "the user's username and avatar will be shown. Otherwise, the text that the "
 "user entered will be shown"
 msgstr ""
-"Když bylo zadáno platné uživatelské jméno/e-mail a tato možnost je povolena,"
-" zobrazí se uživatelské jméno a avatar uživatele. V opačném případě se "
-"zobrazí text, který uživatel zadal"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
 msgstr ""
-"Pokud je povoleno, tento krok uspěje a bude pokračovat i přesto, že byly  "
-"zadány neplatné informace o uživateli."
 
 #: authentik/stages/identification/models.py
 msgid ""
-"Show the user the 'Remember me on this device' toggle, allowing repeat users"
-" to skip straight to entering their password."
+"Show the user the 'Remember me on this device' toggle, allowing repeat users "
+"to skip straight to entering their password."
 msgstr ""
-"Zobrazit uživateli přepínač 'Zapamatovat na tomto zařízení', což umožní "
-"stálým uživatelům přeskočit rovnou k zadání hesla."
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr ""
-"Volitelný tok pro registraci, na který je odkaz ve spodní části stránky."
 
 #: authentik/stages/identification/models.py
 msgid "Optional recovery flow, which is linked at the bottom of the page."
-msgstr "Volitelný tok obnovení, na který je odkaz ve spodní části stránky."
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Optional passwordless flow, which is linked at the bottom of the page."
-msgstr "Volitelný tok bez hesla, na který je odkaz ve spodní části stránky."
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Specify which sources should be shown."
-msgstr "Specifikujte, které zdroje se mají zobrazit."
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stage"
-msgstr "Krok identifikace"
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
-msgstr "Kroky identifikace"
+msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
-msgstr "Ověření se nezdařilo."
+msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Log in"
-msgstr "Přihlásit"
+msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Continue"
-msgstr "Pokračovat"
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid ""
@@ -4192,25 +3853,22 @@ msgid ""
 "Invitation is given. By default this Stage will cancel the Flow when no "
 "invitation is given."
 msgstr ""
-"Pokud je tento příznak nastaven, tento krok přeskočí na další krok, když "
-"není poskytnuta žádná pozvánka. Ve výchozím nastavení tento krok zruší tok, "
-"když není poskytnuta žádná pozvánka."
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation Stage"
-msgstr "Krok pozvánky"
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation Stages"
-msgstr "Kroky pozvánek"
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "When set, only the configured flow can use this invitation."
-msgstr "Pokud je zapnuto, pouze stanovený krok může použít tuto pozvánku."
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "When enabled, the invitation will be deleted after usage."
-msgstr "Pokud je povoleno, pozvánka bude po použití smazána."
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "Optional fixed data to enforce on user enrollment."
@@ -4218,11 +3876,11 @@ msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "Invitation"
-msgstr "Pozvánka"
+msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "Invitations"
-msgstr "Pozvánky"
+msgstr ""
 
 #: authentik/stages/invitation/stage.py
 msgid "Invalid invite/invite not found"
@@ -4270,7 +3928,7 @@ msgstr ""
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
-msgstr "Neplatné heslo"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Text: Simple Text input"
@@ -4300,8 +3958,8 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid ""
-"Password: Masked input, multiple inputs of this type on the same prompt need"
-" to be identical."
+"Password: Masked input, multiple inputs of this type on the same prompt need "
+"to be identical."
 msgstr ""
 
 #: authentik/stages/prompt/models.py
@@ -4332,7 +3990,7 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "authentik: Selection of locales authentik supports"
-msgstr "authentik: Výběr jazyků, které authentik podporuje"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Name of the form field, also used to store the value"
@@ -4354,11 +4012,11 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt"
-msgstr "Výzva"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Prompts"
-msgstr "Výzvy"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stage"
@@ -4370,7 +4028,7 @@ msgstr ""
 
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
-msgstr "Hesla se neshodují."
+msgstr ""
 
 #: authentik/stages/redirect/api.py
 msgid "Target URL should be present when mode is Static."
@@ -4531,15 +4189,15 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their name."
-msgstr "Umožnit uživatelům změnit své jméno."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their email address."
-msgstr "Umožnit uživatelům změnit svou emailovou adresu."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their username."
-msgstr "Umožnit uživatelům změnit své uživatelské jméno."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid ""
@@ -4549,11 +4207,11 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr "Reputace nesmí klesnout pod tuto hodnotu. Nula nebo záporné."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr "Reputace nesmí vystoupat nad tuto hodnotu. Nula nebo kladné."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."
@@ -4567,11 +4225,11 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
-msgstr "Globální povolení/zakázání zosobnění."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Require administrators to provide a reason for impersonating a user."
-msgstr "Požadovat, aby správci uvedli důvod, proč se za uživatele vydávají."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Default token duration"
@@ -4583,19 +4241,19 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Tenant"
-msgstr "Nájemce"
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Tenants"
-msgstr "Nájemci"
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Domain"
-msgstr "Doména"
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Domains"
-msgstr "Domény"
+msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"
@@ -4627,7 +4285,7 @@ msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task status"
-msgstr "Stav úlohy"
+msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task last modified time"
@@ -4643,7 +4301,7 @@ msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task result"
-msgstr "Výsledek úlohy"
+msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Result expiry time"
@@ -4651,11 +4309,11 @@ msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task"
-msgstr "Úloha"
+msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Tasks"
-msgstr "Úlohy"
+msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 #, python-format
