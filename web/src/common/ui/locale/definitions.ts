@@ -123,8 +123,8 @@ export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
     pl_PL: /^pl([_-]|$)/i,
     ru_RU: /^ru([_-]|$)/i,
     tr_TR: /^tr([_-]|$)/i,
-    zh_Hans: /^zh(\b|_)/i,
-    zh_Hant: /^zh[_-](HK|Hant)/i,
+    zh_Hant: /^zh[_-](TW|HK|Hant)/i,
+    zh_Hans: /^zh([_-](CN|SG|Hans)|$)/i,
 };
 
 /**
