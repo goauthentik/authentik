@@ -101,13 +101,13 @@ export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule
  * "Tags for the Identification of Languages."
  * In practice, language tags have been seen using both hyphens and underscores.
  *
- * Chinese locales usually (but not always) use the script rather than region suffix.
- * The default (optional) fallback for Chinese (zh) is "Chinese (simplified)",
- * which is why it has that odd regex syntax at the end which means "match zh
- * as long as it's not followed by a [:word:] token".
+ * Chinese language (`zh` or _Zhongwen_) can have a subtag indicating script:
  *
- * Traditional script and the Taiwanese are attempted first, and if neither matches,
- * anything beginning with that generic "zh" is mapped to "Chinese (simplified)."
+ * - `Hans`: Simplified
+ * - `Hant`: Traditional
+ *
+ * Alternatively, the subtag can indicate a region with a predominant script.
+ * The fallback is simplified Chinese.
  */
 export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
     [sourceLocale]: /^en([_-]|$)/i,
@@ -123,7 +123,17 @@ export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
     pl_PL: /^pl([_-]|$)/i,
     ru_RU: /^ru([_-]|$)/i,
     tr_TR: /^tr([_-]|$)/i,
+    /**
+     * Traditional Chinese.
+     *
+     * The region subtag is required.
+     */
     zh_Hant: /^zh[_-](TW|HK|MO|Hant)/i,
+    /**
+     * Simplified Chinese.
+     *
+     * The region subtag is optional.
+     */
     zh_Hans: /^zh([_-](CN|SG|MY|Hans)|$)/i,
 };
 
