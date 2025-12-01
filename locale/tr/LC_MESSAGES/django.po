@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-25 00:09+0000\n"
+"POT-Creation-Date: 2025-12-01 15:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/authentik/teams/119923/tr/)\n"
@@ -382,6 +382,12 @@ msgid "Internal source name, used in URLs."
 msgstr "URL'lerde kullanılan iç kaynak adı."
 
 #: authentik/core/models.py
+msgid ""
+"When enabled, this source will be displayed as a prominent button on the "
+"login page, instead of a small icon."
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
 msgstr "Mevcut kullanıcıların kimliğini doğrularken kullanılacak akış."
 
@@ -582,11 +588,77 @@ msgid "Agent Connectors"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "Cihaz Jetonu"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "Cihaz Jetonları"
+
+#: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Token"
 msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Tokens"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication token"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication tokens"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonce"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonces"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device"
+msgstr "Cihaz"
+
+#: authentik/endpoints/models.py
+msgid "Devices"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device User binding"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device User bindings"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device connection"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device connections"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshot"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshots"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device access group"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Device access groups"
 msgstr ""
 
 #: authentik/endpoints/tasks.py
@@ -2007,14 +2079,6 @@ msgstr "OAuth2 Yenileme Jetonu"
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 Yenileme Jetonları"
-
-#: authentik/providers/oauth2/models.py
-msgid "Device Token"
-msgstr "Cihaz Jetonu"
-
-#: authentik/providers/oauth2/models.py
-msgid "Device Tokens"
-msgstr "Cihaz Jetonları"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
