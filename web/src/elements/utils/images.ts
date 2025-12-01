@@ -1,9 +1,10 @@
 import { resolveUITheme, rootInterface } from "#common/theme";
 
 import type { AKElement } from "#elements/Base";
+import type { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { html, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 
 export const FontAwesomeProtocol = "fa://";
 
@@ -23,9 +24,13 @@ export function themeImage(rawPath: string) {
  */
 export function renderImage(
     imagePath: string,
-    alt: string = "",
-    className: string = "",
-): TemplateResult {
+    alt?: string,
+    className?: string,
+): SlottedTemplateResult {
+    if (!imagePath) {
+        return nothing;
+    }
+
     // Handle Font Awesome icons (same logic as ak-app-icon)
     if (imagePath.startsWith(FontAwesomeProtocol)) {
         return html`<i
@@ -36,9 +41,9 @@ export function renderImage(
         ></i>`;
     }
 
-    // Handle regular images
     const src = themeImage(imagePath);
-    return html`<img src="${src}" alt="${alt}" class="${className}" role="img" />`;
+
+    return html`<img src=${src} alt=${ifPresent(alt)} class=${ifPresent(className)} />`;
 }
 
 export function isDefaultAvatar(path?: string | null): boolean {
