@@ -71,6 +71,13 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
 
     response_class = EndpointAgentChallengeResponse
 
+    def get(self, request, *args, **kwargs):
+        stage: EndpointStage = self.executor.current_stage
+        keypair = CertificateKeyPair.objects.filter(pk=stage.connector.challenge_key_id).first()
+        if not keypair:
+            return self.executor.stage_ok()
+        return super().get(request, *args, **kwargs)
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: EndpointStage = self.executor.current_stage
         keypair = CertificateKeyPair.objects.get(pk=stage.connector.challenge_key_id)

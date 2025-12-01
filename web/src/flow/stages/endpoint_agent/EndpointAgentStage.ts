@@ -25,7 +25,7 @@ export class EndpointAgentStage extends BaseStage<
 
     firstUpdated() {
         window.addEventListener("message", (ev) => {
-            if (ev.data?._ak_ext === "authentik-platform-sso") {
+            if (ev.data?._ak_ext === "authentik-platform-sso" && ev.data.response) {
                 this.host?.submit(
                     {
                         response: ev.data?.response,
