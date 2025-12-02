@@ -1,5 +1,5 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-<file target-language="pl_PL" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="pl-PL" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
@@ -511,7 +511,7 @@
   <target>Wyczyść wyszukiwanie</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
   <source>No objects found.</source>
@@ -522,7 +522,7 @@
   <target>Nie udało się wczytać obiektów.</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -738,9 +738,9 @@
   <target>Nie znaleziono</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
-  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-  <target>Nie znaleziono "
-        <x id="0" equiv-text="${this.url}"/>" adresu URL.</target>
+  <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+  <target>Nie znaleziono &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; adresu URL.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
@@ -1078,10 +1078,10 @@
   <target>Zamknij</target>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
+  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
+  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
   <source>Permissions</source>
@@ -1772,7 +1772,7 @@
   <target>Jeśli nie zostaną określone żadne jawne identyfikatory URI przekierowania, zostanie zapisany pierwszy pomyślnie użyty identyfikator URI przekierowania.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -2782,7 +2782,7 @@
         <x id="0" equiv-text="${item.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
   <source>Successfully triggered sync.</source>
@@ -2864,7 +2864,7 @@
   <target>Wybierz dostawców, których chcesz dodać do aplikacji</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
-  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
   <target>Wprowadź pełny adres URL, ścieżkę względną lub użyj „fa://fa-test”, aby użyć ikony Font Awesome „fa-test”.</target>
 </trans-unit>
 <trans-unit id="s0410779cb47de312">
@@ -2994,7 +2994,7 @@
   <target>Ostrzeżenie: Dostawca nie jest używany przez aplikację.</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source></source>
+  <source/>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -3795,17 +3795,17 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <target>Aplikacja(e)</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
   <source>Update Application</source>
   <target>Aktualizuj aplikację</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
@@ -3862,7 +3862,7 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <source>Create entitlement</source>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
@@ -5307,7 +5307,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <target>Grupa(y)</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s416a540b16275f2e">
   <source>Create Group</source>
@@ -5520,7 +5520,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <source>New User</source>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Ten użytkownik zostanie dodany do grupy &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s0051b0d8e6decea6">
@@ -5555,16 +5555,16 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <source>Unnamed</source>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
+  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
   <source>Root</source>
@@ -5712,7 +5712,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         <x id="0" equiv-text="${source.component}"/></target>
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
-  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+  <source>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</source>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -6621,7 +6621,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <target>Nieusuwalny token uwierzytelniający, taki jak TouchID lub Windows Hello</target>
 </trans-unit>
 <trans-unit id="sdf1d8edef27236f0">
-  <source>A "roaming" authenticator, like a YubiKey</source>
+  <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
   <target>„Mobilne” uwierzytelniacz, taki jak YubiKey</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
@@ -6833,7 +6833,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <target>Po wprowadzeniu prawidłowej nazwy użytkownika/adresu e-mail i włączeniu tej opcji zostanie wyświetlona nazwa użytkownika i awatar użytkownika. W przeciwnym razie zostanie wyświetlony tekst wprowadzony przez użytkownika.</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
+  <source>Enable &quot;Remember me on this device&quot;</source>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -6963,10 +6963,10 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Udostępnij użytkownikom przycisk "pokaż hasło".</target>
+  <target>Udostępnij użytkownikom przycisk &quot;pokaż hasło&quot;.</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
   <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
@@ -7058,7 +7058,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <target>Przesunięcie, pozostania zalogowanym</target>
 </trans-unit>
 <trans-unit id="s1608b2f94fa0dbd4">
-  <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+  <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
   <target>W przypadku ustawienia czasu trwania powyżej 0, użytkownik będzie mógł wybrać opcję „pozostania zalogowanym”, co spowoduje przedłużenie jego sesji o określony tutaj czas.</target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
@@ -7438,14 +7438,14 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
   <target>Aktualizuj przepływ</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sc4fdeccf14be5378">
   <source>Execute</source>
   <target>Wykonaj</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s293aa6a6446fb153">
   <source>Export</source>
@@ -7534,20 +7534,20 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
   <target>Wykonaj przepływ</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
+  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
   <source>Normal</source>
   <target>Normalny</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
+  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
   <source>Current user</source>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
+  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
@@ -8283,10 +8283,10 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <target>Aktualizuj schemat</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -9089,7 +9089,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>application</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
+  <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -9121,10 +9121,10 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <target>Wyszukiwanie nie zwróciło żadnych wyników.</target>
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
   <source><x id="0" equiv-text="${count}"/> application available</source>
