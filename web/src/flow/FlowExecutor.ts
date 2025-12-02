@@ -374,6 +374,12 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-user-login>`;
+            case "ak-stage-endpoint-agent":
+                await import("#flow/stages/endpoint_agent/EndpointAgentStage");
+                return html`<ak-stage-endpoint-agent
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-endpoint-agent>`;
             // Sources
             case "ak-source-plex":
                 return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;

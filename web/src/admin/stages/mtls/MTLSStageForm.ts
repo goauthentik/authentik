@@ -13,7 +13,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     CertAttributeEnum,
     MutualTLSStage,
-    MutualTLSStageModeEnum,
+    StageModeEnum,
     StagesApi,
     UserAttributeEnum,
 } from "@goauthentik/api";
@@ -62,7 +62,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                             .options=${[
                                 {
                                     label: msg("Certificate optional"),
-                                    value: MutualTLSStageModeEnum.Optional,
+                                    value: StageModeEnum.Optional,
                                     default: true,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will succeed and continue to the next stage.",
@@ -70,7 +70,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                                 },
                                 {
                                     label: msg("Certificate required"),
-                                    value: MutualTLSStageModeEnum.Required,
+                                    value: StageModeEnum.Required,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will stop flow execution.",
                                     )}`,

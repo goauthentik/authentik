@@ -6185,6 +6185,26 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/devices/summary/:
+    get:
+      operationId: endpoints_devices_summary_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceSummary'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -28968,6 +28988,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/:
+    get:
+      operationId: stages_endpoints_list
+      description: EndpointStage Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_endpoints_create
+      description: EndpointStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/{stage_uuid}/:
+    get:
+      operationId: stages_endpoints_retrieve
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_endpoints_update
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_endpoints_partial_update
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_endpoints_destroy
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_endpoints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/identification/:
     get:
       operationId: stages_identification_list
@@ -32515,9 +32725,14 @@ components:
           type: string
           nullable: true
           readOnly: true
-        jwks:
+        jwks_auth:
           type: object
           additionalProperties: {}
+          readOnly: true
+        jwks_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
           readOnly: true
         nss_uid_offset:
           type: integer
@@ -32533,7 +32748,8 @@ components:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - device_id
-      - jwks
+      - jwks_auth
+      - jwks_challenge
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
@@ -34859,6 +35075,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallenge'
       - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
+      - $ref: '#/components/schemas/EndpointAgentChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
@@ -34891,6 +35108,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallenge'
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
@@ -35862,6 +36080,20 @@ components:
           minLength: 1
       required:
       - id
+    DeviceSummary:
+      type: object
+      description: Summary of registered devices
+      properties:
+        total_count:
+          type: integer
+        unreachable_count:
+          type: integer
+        outdated_agent_count:
+          type: integer
+      required:
+      - outdated_agent_count
+      - total_count
+      - unreachable_count
     DeviceUser:
       type: object
       properties:
@@ -36530,6 +36762,37 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointAgentChallenge:
+      type: object
+      description: Signed challenge for authentik agent to respond to
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-endpoint-agent
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        challenge:
+          type: string
+      required:
+      - challenge
+    EndpointAgentChallengeResponseRequest:
+      type: object
+      description: Response to signed challenge
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-endpoint-agent
+        response:
+          type: string
+          nullable: true
+          minLength: 1
     EndpointAuthModeEnum:
       enum:
       - static
@@ -36684,6 +36947,74 @@ components:
       - name
       - protocol
       - provider
+    EndpointStage:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        connector:
+          type: string
+          format: uuid
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+      required:
+      - component
+      - connector
+      - connector_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    EndpointStageRequest:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        connector:
+          type: string
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+      required:
+      - connector
+      - name
     EnrollRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -37358,6 +37689,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/EndpointAgentChallengeResponseRequest'
       - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -37386,6 +37718,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallengeResponseRequest'
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -41065,7 +41398,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -41088,11 +41421,6 @@ components:
       - user_attribute
       - verbose_name
       - verbose_name_plural
-    MutualTLSStageModeEnum:
-      enum:
-      - optional
-      - required
-      type: string
     MutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -41105,7 +41433,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -42866,6 +43194,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEndpointStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -45864,6 +46207,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    PatchedEndpointStageRequest:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        connector:
+          type: string
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
     PatchedEnrollmentTokenRequest:
       type: object
       properties:
@@ -46868,7 +47227,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -53176,6 +53535,11 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    StageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
     StagePrompt:
       type: object
       description: Serializer for a single Prompt field
@@ -54088,6 +54452,9 @@ components:
         icon_url:
           type: string
         requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
           type: boolean
           default: false
       required:

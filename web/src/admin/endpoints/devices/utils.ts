@@ -31,3 +31,21 @@ export function getSize(size: number) {
     }
     return size.toString();
 }
+
+export function trySortNumerical<T extends { id: string | number }>(a: T, b: T): number {
+    let idA: string | number = a.id;
+    let idB: string | number = b.id;
+    try {
+        if (typeof a.id === "string" && typeof b.id === "string") {
+            idA = parseInt(a.id, 10);
+            idB = parseInt(b.id, 10);
+            return idA - idB;
+        }
+        if (typeof a.id === "number" && typeof b.id === "number") {
+            return a.id - b.id;
+        }
+    } catch {
+        //
+    }
+    return a.id.toString().localeCompare(b.id.toString());
+}
