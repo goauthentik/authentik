@@ -7482,8 +7482,6 @@
                         "string",
                         "null"
                     ],
-                    "format": "uri",
-                    "maxLength": 200,
                     "title": "Hyperlink"
                 },
                 "hyperlink_label": {

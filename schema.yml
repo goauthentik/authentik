@@ -4474,7 +4474,7 @@ paths:
         Create a data export for this data type. Note that the export is generated asynchronously:
         this method returns a `DataExport` object that will initially have `completed=false` as well
         as the permanent URL to that object in the `Location` header.
-        You can poll that URL until `completed=true`, at which point the `file` attribute will
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
       parameters:
       - in: query
@@ -6823,7 +6823,7 @@ paths:
         Create a data export for this data type. Note that the export is generated asynchronously:
         this method returns a `DataExport` object that will initially have `completed=false` as well
         as the permanent URL to that object in the `Location` header.
-        You can poll that URL until `completed=true`, at which point the `file` attribute will
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
       parameters:
       - in: query
@@ -35823,9 +35823,8 @@ components:
         query_params:
           type: object
           additionalProperties: {}
-        file:
+        file_url:
           type: string
-          format: uri
           readOnly: true
         completed:
           type: boolean
@@ -35833,7 +35832,7 @@ components:
       required:
       - completed
       - content_type
-      - file
+      - file_url
       - id
       - query_params
       - requested_by
@@ -41624,9 +41623,7 @@ components:
           readOnly: true
         hyperlink:
           type: string
-          format: uri
           nullable: true
-          maxLength: 200
         hyperlink_label:
           type: string
           nullable: true
@@ -41649,9 +41646,7 @@ components:
       properties:
         hyperlink:
           type: string
-          format: uri
           nullable: true
-          maxLength: 200
         hyperlink_label:
           type: string
           nullable: true
@@ -47276,9 +47271,7 @@ components:
       properties:
         hyperlink:
           type: string
-          format: uri
           nullable: true
-          maxLength: 200
         hyperlink_label:
           type: string
           nullable: true

@@ -8,7 +8,11 @@ from django.urls import reverse
 from drf_spectacular.generators import SchemaGenerator
 from rest_framework.test import APITestCase
 
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.tests.utils import FileTestFileBackendMixin
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import User
+from authentik.events.models import Event
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.reports.models import DataExport
 
@@ -49,14 +53,12 @@ class TestExportAPI(APITestCase):
         )
         self.assertEqual(response.data["requested_by"]["pk"], self.user.pk)
         self.assertEqual(response.data["completed"], False)
-        self.assertEqual(response.data["file"], None)
+        self.assertEqual(response.data["file_url"], "")
         self.assertEqual(response.data["query_params"], {})
-        self.assertEqual(response.data["content_type"]["id"], self._get_user_content_type_id())
-
-    def _get_user_content_type_id(self):
-        from authentik.core.models import User
-
-        return ContentType.objects.get_for_model(User).id
+        self.assertEqual(
+            response.data["content_type"]["id"],
+            ContentType.objects.get_for_model(User).id,
+        )
 
     def test_create_event_export(self):
         """Test Event export endpoint"""
@@ -70,14 +72,12 @@ class TestExportAPI(APITestCase):
         )
         self.assertEqual(response.data["requested_by"]["pk"], self.user.pk)
         self.assertEqual(response.data["completed"], False)
-        self.assertEqual(response.data["file"], None)
+        self.assertEqual(response.data["file_url"], "")
         self.assertEqual(response.data["query_params"], {})
-        self.assertEqual(response.data["content_type"]["id"], self._get_event_content_type_id())
-
-    def _get_event_content_type_id(self):
-        from authentik.events.models import Event
-
-        return ContentType.objects.get_for_model(Event).id
+        self.assertEqual(
+            response.data["content_type"]["id"],
+            ContentType.objects.get_for_model(Event).id,
+        )
 
 
 @patch_license
@@ -85,6 +85,16 @@ class TestExportPermissions(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_user()
         self.client.force_login(self.user)
+
+    def _add_perm(self, codename: str, app_label: str, user=None):
+        if user is None:
+            user = self.user
+        _add_perm(user, codename, app_label)
+
+    def _drop_perm(self, codename: str, app_label: str, user=None):
+        if user is None:
+            user = self.user
+        _drop_perm(user, codename, app_label)
 
     def test_export_without_permission(self):
         """Test User export endpoint without permission"""
@@ -166,20 +176,9 @@ class TestExportPermissions(APITestCase):
         response = self.client.get(export_url)
         self.assertEqual(response.status_code, 404)
 
-    def _add_perm(self, codename: str, app_label: str, user=None):
-        if user is None:
-            user = self.user
-        _add_perm(user, codename, app_label)
-
-    def _drop_perm(self, codename: str, app_label: str, user=None):
-        if user is None:
-            user = self.user
-        _drop_perm(user, codename, app_label)
-
 
 @patch_license
 class TestSchemaMatch(TestCase):
-
     def setUp(self) -> None:
         generator = SchemaGenerator()
         self.schema = generator.get_schema(request=None, public=True)
@@ -222,15 +221,17 @@ class TestSchemaMatch(TestCase):
 
 
 @patch_license
-class TestUserExport(TestCase):
+class TestUserExport(FileTestFileBackendMixin, TestCase):
     def setUp(self) -> None:
+        super().setUp()
+
         self.u1 = create_test_user(username="a")
         _add_perm(self.u1, "view_user", "authentik_core")
         self.u2 = create_test_user(username="b", path="abcd")
         _add_perm(self.u1, "view_user", "authentik_core")
 
     def _read_export(self, filename):
-        with open(filename, encoding="utf-8") as f:
+        with open(f"{self.reports_backend_path}/reports/public/{filename}") as f:
             reader = csv.DictReader(f)
             return list(reader)
 
@@ -243,7 +244,7 @@ class TestUserExport(TestCase):
         export.generate()
 
         self.assertEqual(export.completed, True)
-        data = self._read_export(export.file.path)
+        data = self._read_export(export.file)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["Username"], self.u1.username)
 

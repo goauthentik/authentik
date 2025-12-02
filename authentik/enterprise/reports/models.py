@@ -63,6 +63,7 @@ class DataExport(SerializerModel):
                 for record in queryset:
                     data = serializer.child.to_representation(record).values()
                     writer.writerow(data)
+        self.completed = True
         self.save()
 
         message = _(f"{model_verbose_name} export generated successfully")
