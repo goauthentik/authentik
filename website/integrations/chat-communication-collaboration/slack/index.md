@@ -73,7 +73,7 @@ To support the integration of Slack with authentik, you need to create an applic
 
 ## SCIM Integration _(optional)_
 
-You can configure SCIM with Slack, allowing you to automatically make new slack users once your authentik database is updated with a new user.
+You can configure SCIM with Slack to automatically provision new Slack accounts whenever a new user is added to authentik.
 
 ### Configure Slack
 
@@ -81,12 +81,13 @@ SCIM requires having a Slack account that is Business+ level or higher.
 
 #### Create a Slack application on your workspace
 
-1. Navigate to the [Slack App creation page](https://api.slack.com/apps?new_app=1) and create a new application.
-2. After creating the application, click **OAuth & Permissions** in the sidebar.
-3. Under **User Token Scopes**, add the `admin` scope.
-4. Refresh the page.
-5. Click **Install to Workspace** to add the application to your workspace.
-6. Copy the generated **User OAuth Token**.
+1. Log in to the Slack Admin Dashboard.
+2. Navigate to the [Slack App creation page](https://api.slack.com/apps?new_app=1) and create a new application.
+3. After creating the application, click **OAuth & Permissions** in the sidebar.
+4. Under **User Token Scopes**, add the `admin` scope.
+5. Refresh the page.
+6. Click **Install to Workspace** to add the application to your workspace.
+7. Copy the generated **User OAuth Token**.
 
 ### Configure authentik
 
@@ -104,7 +105,8 @@ SCIM requires having a Slack account that is Business+ level or higher.
 
 #### Add the SCIM provider to your application
 
-1. Navigate to **Applications** > **Applications** and select your Slack application.
-2. Click **Edit**.
-3. In the **Backchannel Providers** field, select the SCIM provider you created.
-4. Click **Update** to save the application.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and select your Slack application.
+3. Click **Edit**.
+4. In the **Backchannel Providers** field, select the SCIM provider you created.
+5. Click **Update** to save the application.
