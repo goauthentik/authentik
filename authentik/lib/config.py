@@ -20,7 +20,7 @@ from urllib.parse import urlparse
 import yaml
 from django.conf import ImproperlyConfigured
 
-from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
+from authentik.lib.utils.dict import delete_path_in_dict, get_path_from_dict, set_path_in_dict
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -237,12 +237,15 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_config = deepcopy(self.__config)
+        original_value = self.get(path, UNSET)
         self.set(path, value)
         try:
             yield
         finally:
-            self.__config = original_config
+            if original_value is not UNSET:
+                self.set(path, original_value)
+            else:
+                self.delete(path)
 
     @property
     def raw(self) -> dict:
@@ -313,6 +316,9 @@ class ConfigLoader:
         if not isinstance(value, Attr):
             value = Attr(value)
         set_path_in_dict(self.raw, path, value, sep=sep)
+
+    def delete(self, path: str, sep="."):
+        delete_path_in_dict(self.raw, path, sep=sep)
 
 
 CONFIG = ConfigLoader()
