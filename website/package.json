@@ -79,7 +79,8 @@
         "docusaurus-theme-openapi-docs": {
             "postman-code-generators": {
                 ".": "^1.10.1",
-                "detect-package-manager": "file:./vendored/detect-package-manager"
+                "detect-package-manager": "file:./vendored/detect-package-manager",
+                "shelljs": "0.10.0"
             }
         },
         "format-imports": {
