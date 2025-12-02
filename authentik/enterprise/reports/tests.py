@@ -8,13 +8,11 @@ from django.urls import reverse
 from drf_spectacular.generators import SchemaGenerator
 from rest_framework.test import APITestCase
 
-from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.tests.utils import FileTestFileBackendMixin
-from authentik.admin.files.usage import FileUsage
 from authentik.core.models import User
-from authentik.events.models import Event
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.reports.models import DataExport
+from authentik.events.models import Event
 
 
 def _add_perm(user, codename: str, app_label: str):
