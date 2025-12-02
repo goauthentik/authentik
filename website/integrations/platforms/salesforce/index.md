@@ -6,7 +6,9 @@ support_level: community
 
 ## What is Salesforce
 
-> Salesforce is a cloud-based CRM platform that provides sales, service, marketing, and analytics applications. To learn more, visit https://salesforce.com.
+> Salesforce is a cloud-based CRM platform that provides sales, service, marketing, and analytics applications.
+>
+> -- https://salesforce.com
 
 ## Preparation
 
@@ -18,8 +20,6 @@ The following placeholders are used in this guide:
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
-
-For additional information about integrating with Salesforce, refer to their [SAML SSO documentation](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5) and [JIT provisioning documentation](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5).
 
 ## authentik configuration
 
@@ -38,6 +38,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
             ```python
             return request.user.email
             ```
+
     - **Email Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: `User.Email`
@@ -45,6 +46,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
             ```python
             return request.user.email
             ```
+
     - **Last Name Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: `User.LastName`
@@ -52,13 +54,20 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
             ```python
             return request.user.name.split()[-1] if request.user.name else "User"
             ```
+
     - **Profile ID Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: `User.ProfileId`
-        - **Expression** (replace with your Salesforce Profile ID):
+        - **Expression**:
+
             ```python
-            return "00eXXXXXXXXXXXXX"
+            return "00eXXXXXXXXXXXXX" #replace with your Salesforce Profile ID
             ```
+
+            :::info Salesforce Profile ID
+            To find your Salesforce Profile ID, navigate to **Setup** > **Users** > **Profiles** in Salesforce, click on the desired profile, and copy the 18-character ID from the URL (starts with `00e`).
+            :::
+
     - **Federation Identifier Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: `User.FederationIdentifier`
@@ -67,32 +76,29 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
             return request.user.email
             ```
 
-:::note
-To find your Salesforce Profile ID, navigate to **Setup** > **Users** > **Profiles** in Salesforce, click on the desired profile, and copy the 18-character ID from the URL (starts with `00e`).
-:::
-
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to `https://company.my.salesforce.com?so=XXXXXXXXX`, replacing `XXXXXXXXX` with your Salesforce Organization ID.
-    - Set the **Issuer** to a unique identifier (e.g., `https://authentik.company`).
-    - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**:
-        - Select an available **Signing Certificate**.
-        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-        - Add all five **Property Mappings** you created in the previous section.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://company.my.salesforce.com?so=XXXXXXXXX`, replacing `XXXXXXXXX` with your Salesforce Organization ID.
+        - Set the **Issuer** to a unique identifier (e.g., `https://authentik.company`).
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Add all five **Property Mappings** you created in the previous section.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ### Download the signing certificate
 
-1. Navigate to **Applications** > **Providers** and click on the name of the SAML provider you created.
-2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate will be required for the Salesforce configuration.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider you created.
+3. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file will be required for the Salesforce configuration.
 
 ## Salesforce configuration
 
@@ -105,11 +111,11 @@ To find your Salesforce Profile ID, navigate to **Setup** > **Users** > **Profil
 
 ### Create a new SAML Single Sign-On configuration
 
-1. In the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
+1. On the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
 2. Enter the following values:
     - **Name**: `authentik`
     - **Issuer**: Enter the same issuer value you configured in authentik (e.g., `https://authentik.company`).
-    - **Identity Provider Certificate**: Upload the signing certificate you downloaded from authentik.
+    - **Identity Provider Certificate**: Upload the signing certificate that you downloaded from authentik.
     - **Request Signing Certificate**: Select the default certificate or leave as-is.
     - **Request Signature Method**: `RSA-SHA256`
     - **SAML Identity Type**: Select **Assertion contains the Federation ID from the User object**.
@@ -120,12 +126,12 @@ To find your Salesforce Profile ID, navigate to **Setup** > **Users** > **Profil
 
 ### Enable Just-in-Time provisioning
 
-1. On the SAML Single Sign-On configuration page you just created, click **Edit**.
+1. On the SAML Single Sign-On configuration page that you just created, click **Edit**.
 2. Under **Just-in-Time User Provisioning**, check **User Provisioning Enabled**.
 3. Select **Standard** for the provisioning type.
 4. Click **Save**.
 
 ## References
 
-- [Salesforce SAML SSO Documentation](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5)
-- [Salesforce JIT Provisioning Requirements](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5)
+- [Salesforce Help - Configure SSO with Salesforce as a SAML Service Provider](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5)
+- [Salesforce Help - Just-in-Time SAML Assertion Fields for Salesforce](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5)
