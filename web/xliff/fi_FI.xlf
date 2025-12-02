@@ -1,5 +1,5 @@
 <?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-<file target-language="fi_FI" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<file target-language="fi-FI" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
@@ -6464,10 +6464,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 <trans-unit id="s9d2d00982edafabb">
   <source>Turkish</source>
   <target>turkki</target>
-</trans-unit>
-<trans-unit id="s4660da32fb311ac0">
-  <source>Taiwanese Mandarin</source>
-  <target>taiwanin mandariini</target>
 </trans-unit>
 <trans-unit id="s354e0a9f146d2869">
   <source>Chinese (simplified)</source>
