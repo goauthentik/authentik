@@ -46,7 +46,9 @@ class AgentConfigSerializer(PassiveSerializer):
         kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
         return {"keys": [JWKSView.get_jwk_for_key(kp, "sig")]}
 
-    def get_jwks_challenge(self, instance: AgentConnector) -> dict:
+    def get_jwks_challenge(self, instance: AgentConnector) -> dict | None:
+        if not instance.challenge_key:
+            return None
         return {"keys": [JWKSView.get_jwk_for_key(instance.challenge_key, "sig")]}
 
     def get_system_config(self, instance: AgentConnector) -> ConfigSerializer:

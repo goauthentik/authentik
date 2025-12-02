@@ -32775,6 +32775,7 @@ components:
         jwks_challenge:
           type: object
           additionalProperties: {}
+          nullable: true
           readOnly: true
         nss_uid_offset:
           type: integer
