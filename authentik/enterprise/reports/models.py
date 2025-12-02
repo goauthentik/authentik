@@ -1,3 +1,5 @@
+import csv
+import io
 from uuid import uuid4
 
 from django.contrib.contenttypes.models import ContentType
@@ -7,8 +9,11 @@ from rest_framework.serializers import Serializer
 from rest_framework.settings import api_settings
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.files.fields import FileField
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import User
-from authentik.enterprise.reports.utils import ChunkedCSVOutputFile, MockRequest
+from authentik.enterprise.reports.utils import MockRequest
 from authentik.events.models import Event, EventAction, Notification, NotificationSeverity
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.db import chunked_queryset
@@ -21,7 +26,7 @@ class DataExport(SerializerModel):
     requested_on = models.DateTimeField(auto_now_add=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     query_params = models.JSONField()
-    file = models.FileField(upload_to="data_exports/", null=True)
+    file = FileField(blank=True)
     completed = models.BooleanField(default=False)
 
     class Meta:
@@ -48,17 +53,16 @@ class DataExport(SerializerModel):
         serializer = self.get_serializer_class()(
             context={"request": self._get_request()}, instance=queryset, many=True
         )
-        filename = f"{model_verbose_name_plural.lower()}_{self.id}.csv"
+        self.file = f"{model_verbose_name_plural.lower()}_{self.id}.csv"
 
-        def rows():
-            yield [field.label for field in serializer.child.fields.values()]
-            for record in queryset:
-                # not using serializer.data because that produces a list with the data internally
-                yield serializer.child.to_representation(record).values()
-
-        f = ChunkedCSVOutputFile(rows(), name=filename)
-        self.file.save(filename, f)
-        self.completed = True
+        with get_file_manager(FileUsage.REPORTS).save_file_stream(self.file) as f:
+            with io.TextIOWrapper(f, encoding="utf-8", newline="") as text:
+                writer = csv.writer(text)
+                fields = [field.label for field in serializer.child.fields.values()]
+                writer.writerow(fields)
+                for record in queryset:
+                    data = serializer.child.to_representation(record).values()
+                    writer.writerow(data)
         self.save()
 
         message = _(f"{model_verbose_name} export generated successfully")
@@ -66,16 +70,20 @@ class DataExport(SerializerModel):
             EventAction.EXPORT_READY,
             message=message,
             export=self,
-        )
-        e.set_user(self.requested_by).save()
+        ).set_user(self.requested_by)
+        e.save()
         Notification.objects.create(
             event=e,
             severity=NotificationSeverity.NOTICE,
             body=message,
-            hyperlink=self.file.url,
+            hyperlink=self.file_url,
             hyperlink_label=_("Download"),
             user=self.requested_by,
         )
+
+    @property
+    def file_url(self) -> str:
+        return get_file_manager(FileUsage.REPORTS).file_url(self.file)
 
     def _get_request(self) -> MockRequest:
         return MockRequest(

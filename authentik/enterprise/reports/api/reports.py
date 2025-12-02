@@ -4,7 +4,7 @@ from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField
+from rest_framework.fields import CharField
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -34,7 +34,6 @@ class ContentTypeSerializer(ModelSerializer):
 
 
 class DataExportSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    file = FileField(use_url=True, read_only=True)
     requested_by = RequestedBySerializer(read_only=True)
     content_type = ContentTypeSerializer(read_only=True)
 
@@ -46,7 +45,7 @@ class DataExportSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "requested_on",
             "content_type",
             "query_params",
-            "file",
+            "file_url",
             "completed",
         )
         read_only_fields = (
@@ -54,7 +53,7 @@ class DataExportSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "requested_by",
             "requested_on",
             "content_type",
-            "file",
+            "file_url",
             "completed",
         )
 
@@ -103,7 +102,7 @@ class ExportMixin:
         Create a data export for this data type. Note that the export is generated asynchronously:
         this method returns a `DataExport` object that will initially have `completed=false` as well
         as the permanent URL to that object in the `Location` header.
-        You can poll that URL until `completed=true`, at which point the `file` attribute will
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
         """
         from authentik.enterprise.reports.tasks import generate_export
