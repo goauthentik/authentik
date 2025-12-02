@@ -270,7 +270,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      *
      * @deprecated Use `formatAPISuccessMessage` instead.
      */
-    protected getSuccessMessage(): string | undefined {
+    public getSuccessMessage(): string | undefined {
         return this.successMessage;
     }
 

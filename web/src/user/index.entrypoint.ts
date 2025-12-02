@@ -23,7 +23,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { ifPresent } from "#elements/utils/attributes";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
@@ -135,11 +135,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
-                            <img
-                                class="pf-c-brand"
-                                src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                                alt="${this.brandingTitle}"
-                            />
+                            ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
                         </a>
                     </div>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>

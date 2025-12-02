@@ -1,3 +1,5 @@
+import "#admin/applications/ApplicationCheckAccessForm";
+
 import type { OwnPropertyRecord } from "#common/types";
 
 import type { AKElement } from "#elements/Base";

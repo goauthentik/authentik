@@ -1,7 +1,5 @@
 """core Configs API"""
 
-from pathlib import Path
-
 from django.conf import settings
 from django.db import models
 from django.dispatch import Signal
@@ -20,6 +18,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.context_processors.base import get_context_processors
 from authentik.lib.config import CONFIG
@@ -68,12 +68,7 @@ class ConfigView(APIView):
     def get_capabilities(request: HttpRequest) -> list[Capabilities]:
         """Get all capabilities this server instance supports"""
         caps = []
-        deb_test = settings.DEBUG or settings.TEST
-        if (
-            CONFIG.get("storage.media.backend", "file") == "s3"
-            or Path(settings.STORAGES["default"]["OPTIONS"]["location"]).is_mount()
-            or deb_test
-        ):
+        if get_file_manager(FileUsage.MEDIA).manageable:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         for processor in get_context_processors():
             if cap := processor.capability():
