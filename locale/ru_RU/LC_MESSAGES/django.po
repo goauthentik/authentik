@@ -4,24 +4,19 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Vladimir, 2022
-# Ivan Podgorny, 2023
-# Nicholas Winterhalter, 2023
-# Ренат Шарафутдинов, 2023
-# Stepan Karavaev, 2024
-# Anton Babenko, 2024
-# fenix vd, 2025
 # Marc Schmitt, 2025
+# Vladimir, 2025
+# Andrey Boyko, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Marc Schmitt, 2025\n"
-"Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
+"POT-Creation-Date: 2025-12-01 17:05+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Andrey Boyko, 2025\n"
+"Language-Team: Russian (Russia) (https://app.transifex.com/authentik/teams/119923/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -448,11 +443,11 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Session"
-msgstr ""
+msgstr "Сессия"
 
 #: authentik/core/models.py
 msgid "Sessions"
-msgstr ""
+msgstr "Сессии"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -631,7 +626,7 @@ msgstr ""
 
 #: authentik/endpoints/models.py
 msgid "Device"
-msgstr ""
+msgstr "Устройство"
 
 #: authentik/endpoints/models.py
 msgid "Devices"
@@ -1713,7 +1708,7 @@ msgstr "Не вы?"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
@@ -4599,11 +4594,11 @@ msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Queue name"
