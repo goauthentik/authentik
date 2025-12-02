@@ -36,6 +36,17 @@ export class EndpointAgentStage extends BaseStage<
                 );
             }
         });
+        // Fallback in case we don't get a response
+        setTimeout(() => {
+            this.host?.submit(
+                {
+                    response: null,
+                } as EndpointAgentChallengeResponseRequest,
+                {
+                    invisible: true,
+                },
+            );
+        }, this.challenge.challengeIdleTimeout * 1000);
     }
 
     updated(changedProperties: PropertyValues<this>) {

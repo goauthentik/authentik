@@ -50,6 +50,8 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "nss_uid_offset",
             "nss_gid_offset",
             "challenge_key",
+            "challenge_idle_timeout",
+            "challenge_trigger_check_in",
             "jwt_federation_providers",
         ]
 

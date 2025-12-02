@@ -96,6 +96,7 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
                 "iss": str(stage.pk),
                 "iat": int(iat.timestamp()),
                 "exp": int((iat + timedelta(minutes=5)).timestamp()),
+                "goauthentik.io/device/check_in": stage.connector.challenge_trigger_check_in,
             },
             headers={"kid": keypair.kid},
             key=keypair.private_key,
@@ -106,6 +107,9 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
             data={
                 "component": "ak-stage-endpoint-agent",
                 "challenge": challenge,
+                "challenge_idle_timeout": int(
+                    timedelta_from_string(stage.connector.challenge_idle_timeout).total_seconds()
+                ),
             }
         )
 
