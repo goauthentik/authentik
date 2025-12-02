@@ -14,8 +14,8 @@
         "pl_PL",
         "ru_RU",
         "tr_TR",
-        "zh_Hans",
-        "zh_Hant",
+        "zh-Hans",
+        "zh-Hant",
         "pseudo_LOCALE"
     ],
     "tsConfig": "./tsconfig.json",

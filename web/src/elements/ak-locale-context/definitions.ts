@@ -51,8 +51,8 @@ const LOCALE_TABLE: LocaleRow[] = [
     ["pl_PL", /^pl([_-]|$)/i, () => msg("Polish"), () => import("#locales/pl_PL")],
     ["ru_RU", /^ru([_-]|$)/i, () => msg("Russian"), () => import("#locales/ru_RU")],
     ["tr_TR", /^tr([_-]|$)/i, () => msg("Turkish"), () => import("#locales/tr_TR")],
-    ["zh_Hans", /^zh(\b|_)/i, () => msg("Chinese (simplified)"), () => import("#locales/zh_Hans")],
-    ["zh_Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh_Hant")],
+    ["zh-Hans", /^zh(\b|_)/i, () => msg("Chinese (simplified)"), () => import("#locales/zh-Hans")],
+    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh-Hant")],
     debug
 ];
 

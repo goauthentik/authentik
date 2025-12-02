@@ -23,8 +23,8 @@ export const targetLocales = [
   `pseudo_LOCALE`,
   `ru_RU`,
   `tr_TR`,
-  `zh_Hans`,
-  `zh_Hant`,
+  `zh-Hans`,
+  `zh-Hant`,
 ] as const;
 
 /**
@@ -44,6 +44,6 @@ export const allLocales = [
   `pseudo_LOCALE`,
   `ru_RU`,
   `tr_TR`,
-  `zh_Hans`,
-  `zh_Hant`,
+  `zh-Hans`,
+  `zh-Hant`,
 ] as const;
