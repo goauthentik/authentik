@@ -39,10 +39,13 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
         if not response:
             return None
         raw = decode(
-            response, options={"verify_signature": False}, issuer="goauthentik.io/platform/endpoint"
+            response,
+            options={"verify_signature": False},
+            audience="goauthentik.io/platform/endpoint",
         )
         device = Device.filter_not_expired(identifier=raw["iss"]).first()
         if not device:
+            self.stage.logger.warning("Could not find device for challenge")
             raise ValidationError("Invalid challenge response")
         try:
             for token in DeviceToken.filter_not_expired(
@@ -54,11 +57,13 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
                     key=token,
                     algorithms="HS512",
                     issuer=device.identifier,
+                    audience="goauthentik.io/platform/endpoint",
                 )
                 if not compare_digest(
                     decoded["atc"],
                     self.stage.executor.plan.context[PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE],
                 ):
+                    self.stage.logger.warning("mismatched challenge")
                     raise ValidationError("Invalid challenge response")
                 return device
         except PyJWTError as exc:

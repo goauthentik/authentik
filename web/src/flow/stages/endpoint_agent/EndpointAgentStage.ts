@@ -42,18 +42,32 @@ export class EndpointAgentStage extends BaseStage<
         super.updated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            if (this.challenge.responseErrors) {
+                return;
+            }
             window.postMessage({
                 _ak_ext: "authentik-platform-sso",
-                challenge: this.challenge,
+                challenge: this.challenge.challenge,
             });
         }
     }
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <ak-empty-state loading
-                ><span>${msg("Verifying your device...")}</span>
-            </ak-empty-state>
+            ${this.challenge.responseErrors
+                ? html`
+                      <ak-empty-state icon="fa-times"
+                          ><span>${msg("Failed to validate device.")}</span>
+                          <div slot="body">
+                              ${this.challenge.responseErrors.response.map((err) => {
+                                  return html`<p>${err.string}</p>`;
+                              })}
+                          </div>
+                      </ak-empty-state>
+                  `
+                : html` <ak-empty-state loading
+                      ><span>${msg("Verifying your device...")}</span>
+                  </ak-empty-state>`}
         </ak-flow-card>`;
     }
 }

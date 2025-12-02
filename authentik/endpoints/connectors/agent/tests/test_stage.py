@@ -53,6 +53,7 @@ class TestEndpointStage(FlowTestCase):
             {
                 "iss": self.device.identifier,
                 "atc": challenge,
+                "aud": "goauthentik.io/platform/endpoint",
             },
             key=self.device_token.key,
             algorithm="HS512",
@@ -85,6 +86,7 @@ class TestEndpointStage(FlowTestCase):
             {
                 "iss": self.device.identifier,
                 "atc": challenge,
+                "aud": "goauthentik.io/platform/endpoint",
             },
             key=self.device_token.key,
             algorithm="HS512",
@@ -140,5 +142,5 @@ class TestEndpointStage(FlowTestCase):
             res,
             flow=flow,
             component="ak-stage-access-denied",
-            error_message="Could not validate device",
+            error_message="Invalid challenge response",
         )
