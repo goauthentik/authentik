@@ -4,12 +4,12 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "preinstall": "./scripts/preinstall.sh",
         "build": "npm run build -w docs",
         "build:api": "npm run build -w api",
         "build:integrations": "npm run build -w integrations",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
+        "preinstall": "./scripts/preinstall.sh",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
         "lint:lockfile": "echo 'Skipping lockfile linting'",
