@@ -71,7 +71,7 @@ To support the integration of Slack with authentik, you need to create an applic
 4. Optionally, configure the other settings and customize the Sign in button label.
 5. Click **Save**.
 
-## SCIM Integration
+## SCIM Integration _(optional)_
 
 You can configure SCIM with Slack, allowing you to automatically make new slack users once your authentik database is updated with a new user.
 
