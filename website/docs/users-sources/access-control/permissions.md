@@ -13,11 +13,11 @@ For instructions to add, remove, and manage permissions, refer to [Manage Permis
 
 ## Fundamentals of authentik permissions
 
-A [role](../roles/index.md) is a collection of permissions. A user or a group may have any number of roles. A user has a certain permission if they have a role that has that permission, or if they are part of a group (either directly or indirectly) which has a role that has that permission.
+A [role](../roles/index.md) is a collection of permissions. A user or a group can be assigned to any number of roles. A user has a certain permission if they have a role that also has that permission, or if they are part of a group (either directly or indirectly) that has a role which has that permission.
 
-- Example 1 (no group): Judith has the role "RADIUS", which has every permission for RADIUS providers and property mappings. Then, Judith has permission to add/view/change/delete RADIUS providers or RADIUS property mappings.
-- Example 2 (direct group): Marie is part of the group "Auditors". That group has the role "Event Log manager", which in turn has the permissions "Can view Event", "Can change Event", and "Can delete Event". Then, Marie has permissions to view, change, or delete Events.
-- Example 3 (indirect group): Elaine is part of the group "Accounting", which has a parent group "Back office", which has a parent group "Employees". The group "Employees" has the role "Read-only, which has view permissions on all object types. Then, Elaine has the permission to view any object in authentik through indirect membership of the "Employees" group.
+- Example 1 (no group): Judith has the role "RADIUS", which has every permission for RADIUS providers and property mappings. With this role, Judith has permission to add/view/change/delete RADIUS providers or RADIUS property mappings.
+- Example 2 (direct group): Marie is part of the group "Auditors". That group has the role "Event Log manager", which in turn has the permissions "Can view Event", "Can change Event", and "Can delete Event". Thus, Marie has permissions to view, change, or delete Events.
+- Example 3 (indirect group): Elaine is part of the group "Accounting", which has a parent group "Back office", which has a parent group "Employees". The group "Employees" has the role "Read-only", which has view permissions on all object types. So Elaine has the permission to view any object in authentik through indirect membership of the "Employees" group.
 
 :::info
 From 2025.12, authentik's access control is fully role-based. Before 2025.12, Admins could assign permissions to individual [users](../user/index.mdx). To mimic this behavior of "User permissions", an Admin can
@@ -28,7 +28,7 @@ There are two main types of permissions in authentik:
 - [**Global permissions**](#global-permissions)
 - [**Object permissions**](#object-permissions)
 
-Additionally, authentik employs _initial permissions_ to streamline the process of granting object-level permissions when an object (user or role) is created. This feature automatically adds permissions for newly created objects to the role that created them. For more details, refer to [Initial permissions](./initial_permissions.mdx).
+Additionally, authentik employs _initial permissions_ to streamline the process of granting object-level permissions when an object (user or role) is created. When an Admin implements initial permissions, this feature automatically adds permissions for newly created objects to the role (and thus users with that role) that created them. For more details, refer to [Initial permissions](./initial_permissions.mdx).
 
 ### Global permissions
 
@@ -42,7 +42,7 @@ An object permission grants permission on a single object (e.g. a [user](../user
 
 Many objects in authentik's Admin interface have a Permissions view to double-check which roles have access to that particular object. Those permissions describe what those roles can do TO the object detailed on the page.
 
-For example, the Admin interface UI shown below shows the Role Permissions table for the user named Peter.
+For example, the Admin interface UI shown below shows the Permissions tab for the user named Peter, with a list of what users can do what to the user object for Peter.
 
 ![](./user-page.png)
 
