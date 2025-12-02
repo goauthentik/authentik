@@ -125,7 +125,7 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     if isinstance(value, models.Model):
         return sanitize_dict(model_to_dict(value))
     if isinstance(value, UUID):
-        return str(value)
+        return value.hex
     if isinstance(value, HttpRequest | WSGIRequest):
         return ...
     if isinstance(value, City):
