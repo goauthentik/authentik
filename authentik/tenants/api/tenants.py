@@ -109,8 +109,7 @@ class TenantViewSet(ModelViewSet):
         tenant = self.get_object()
         with tenant:
             data = TenantAdminGroupRequestSerializer(data=request.data)
-            if not data.is_valid():
-                return Response(data.errors, status=400)
+            data.is_valid(raise_exception=True)
             user = User.objects.filter(username=data.validated_data.get("user")).first()
             if not user:
                 return Response(status=404)
@@ -131,8 +130,7 @@ class TenantViewSet(ModelViewSet):
         tenant = self.get_object()
         with tenant:
             data = TenantRecoveryKeyRequestSerializer(data=request.data)
-            if not data.is_valid():
-                return Response(data.errors, status=400)
+            data.is_valid(raise_exception=True)
             user = User.objects.filter(username=data.validated_data.get("user")).first()
             if not user:
                 return Response(status=404)

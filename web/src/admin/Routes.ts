@@ -39,6 +39,28 @@ export const ROUTES: Route[] = [
         await import("#admin/applications/ApplicationViewPage");
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
+    new Route(new RegExp("^/endpoints/devices$"), async () => {
+        await import("#admin/endpoints/devices/DeviceListPage");
+        return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
+    }),
+    new Route(new RegExp(`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/devices/DeviceViewPage");
+        return html`<ak-endpoints-device-view .deviceId=${args.uuid}></ak-endpoints-device-view>`;
+    }),
+    new Route(new RegExp("^/endpoints/connectors$"), async () => {
+        await import("#admin/endpoints/connectors/ConnectorsListPage");
+        return html`<ak-endpoints-connectors-list></ak-endpoints-connectors-list>`;
+    }),
+    new Route(new RegExp(`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`), async (args) => {
+        await import("#admin/endpoints/connectors/ConnectorViewPage");
+        return html`<ak-endpoints-connector-view
+            .connectorID=${args.uuid}
+        ></ak-endpoints-connector-view>`;
+    }),
+    new Route(new RegExp("^/endpoints/groups$"), async () => {
+        await import("#admin/endpoints/DeviceAccessGroupsListPage");
+        return html`<ak-endpoints-device-access-groups-list></ak-endpoints-device-access-groups-list>`;
+    }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
         return html`<ak-source-list></ak-source-list>`;
@@ -113,7 +135,7 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp(`^/flow/flows/(?<slug>${SLUG_REGEX})$`), async (args) => {
         await import("#admin/flows/FlowViewPage");
-        return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
+        return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("#admin/events/EventListPage");
@@ -146,6 +168,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/admin/settings$"), async () => {
         await import("#admin/admin-settings/AdminSettingsPage");
         return html`<ak-admin-settings></ak-admin-settings>`;
+    }),
+    new Route(new RegExp("^/files$"), async () => {
+        await import("#admin/files/FileListPage");
+        return html`<ak-files-list></ak-files-list>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("#admin/blueprints/BlueprintListPage");

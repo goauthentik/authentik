@@ -119,7 +119,10 @@ export class InvitationListPage extends TablePage<Invitation> {
                           </ak-label>
                       `
                     : nothing}`,
-            html`${item.createdBy?.username}`,
+            html`<div>
+                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                </div>
+                <small>${item.createdBy.name}</small>`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>

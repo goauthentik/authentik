@@ -8,12 +8,11 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
-from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -26,16 +25,9 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.lib.utils.file import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    set_file,
-    set_file_url,
-)
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
-from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
@@ -58,7 +50,7 @@ class ApplicationSerializer(ModelSerializer):
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
-    meta_icon = ReadOnlyField(source="get_meta_icon")
+    meta_icon_url = ReadOnlyField(source="get_meta_icon")
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -95,13 +87,13 @@ class ApplicationSerializer(ModelSerializer):
             "open_in_new_tab",
             "meta_launch_url",
             "meta_icon",
+            "meta_icon_url",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
             "group",
         ]
         extra_kwargs = {
-            "meta_icon": {"read_only": True},
             "backchannel_providers": {"required": False},
         }
 
@@ -286,44 +278,3 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
 
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-        parser_classes=(MultiPartParser,),
-    )
-    def set_icon(self, request: Request, slug: str):
-        """Set application icon"""
-        app: Application = self.get_object()
-        return set_file(request, app, "meta_icon")
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def set_icon_url(self, request: Request, slug: str):
-        """Set application icon (as URL)"""
-        app: Application = self.get_object()
-        return set_file_url(request, app, "meta_icon")

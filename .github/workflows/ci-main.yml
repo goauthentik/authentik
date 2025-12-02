@@ -37,7 +37,7 @@ jobs:
           - mypy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
@@ -45,7 +45,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -71,16 +71,23 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           fetch-depth: 0
       - name: checkout stable
         run: |
-          # Copy current, latest config to local
-          cp authentik/lib/default.yml local.env.yml
+          set -e -o pipefail
           cp -R .github ..
           cp -R scripts ..
-          git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
+          # Previous stable tag
+          prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
+          # Current version family based on
+          current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
+          if [[ -n $current_version_family ]]; then
+              prev_stable=$current_version_family
+          fi
+          echo "::notice::Checking out ${prev_stable} as stable version..."
+          git checkout ${prev_stable}
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (stable)
@@ -129,7 +136,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -149,11 +156,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
+        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
@@ -187,7 +194,7 @@ jobs:
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -253,7 +260,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables

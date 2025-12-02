@@ -2,6 +2,7 @@
 
 from json import loads
 from os import makedirs
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from cryptography.x509.extensions import SubjectAlternativeName
@@ -319,11 +320,22 @@ class TestCrypto(APITestCase):
 
     def test_discovery(self):
         """Test certificate discovery"""
+        # This test generates 2 separate cert/key combinations
+        # and verifies they both import properly
         name = generate_id()
         builder = CertificateBuilder(name)
         with self.assertRaises(ValueError):
             builder.save()
         builder.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+
+        name2 = generate_id()
+        builder2 = CertificateBuilder(name2)
+        with self.assertRaises(ValueError):
+            builder2.save()
+        builder2.build(
             subject_alt_names=[],
             validity_days=3,
         )
@@ -334,9 +346,9 @@ class TestCrypto(APITestCase):
                 _key.write(builder.private_key)
             makedirs(f"{temp_dir}/foo.bar", exist_ok=True)
             with open(f"{temp_dir}/foo.bar/fullchain.pem", "w+", encoding="utf-8") as _cert:
-                _cert.write(builder.certificate)
+                _cert.write(builder2.certificate)
             with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
-                _key.write(builder.private_key)
+                _key.write(builder2.private_key)
             with CONFIG.patch("cert_discovery_dir", temp_dir):
                 certificate_discovery.send()
         keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
@@ -348,3 +360,58 @@ class TestCrypto(APITestCase):
         self.assertTrue(
             CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
         )
+
+    def test_discovery_updating_same_private_key(self):
+        """Test certificate discovery updating certs with matching private keys"""
+        name = generate_id()
+        builder = CertificateBuilder(name)
+        builder.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+
+        with TemporaryDirectory() as temp_dir:
+            # First discovery: write cert as "original"
+            with open(f"{temp_dir}/original.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/original.key", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+
+            with CONFIG.patch("cert_discovery_dir", temp_dir):
+                certificate_discovery.send()
+
+            # Verify "original" cert was created
+            original = CertificateKeyPair.objects.filter(
+                managed=MANAGED_DISCOVERED % "original"
+            ).first()
+            self.assertIsNotNone(original)
+            self.assertEqual(original.name, "original")
+            self.assertIsNotNone(original.private_key)
+
+            # Second discovery: write same cert/key as "renamed"
+            Path(f"{temp_dir}/original.pem").unlink()
+            Path(f"{temp_dir}/original.key").unlink()
+
+            with open(f"{temp_dir}/renamed.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder.certificate)
+            with open(f"{temp_dir}/renamed.key", "w+", encoding="utf-8") as _key:
+                _key.write(builder.private_key)
+
+            with CONFIG.patch("cert_discovery_dir", temp_dir):
+                certificate_discovery.send()
+
+            # Verify the cert was updated
+            renamed = CertificateKeyPair.objects.filter(
+                managed=MANAGED_DISCOVERED % "renamed"
+            ).first()
+            self.assertIsNotNone(renamed, "Renamed certificate should exist")
+            self.assertEqual(renamed.name, "renamed")
+            self.assertEqual(renamed.pk, original.pk, "Should be same database object")
+
+            # Verify no new cert was created
+            final_count = CertificateKeyPair.objects.filter(
+                managed__startswith="goauthentik.io/crypto/discovered/"
+            ).count()
+            self.assertEqual(
+                1, final_count, "Should not create duplicate cert for same private key"
+            )

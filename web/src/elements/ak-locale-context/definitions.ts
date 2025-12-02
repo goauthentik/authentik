@@ -1,15 +1,13 @@
 import { AkLocale, LocaleRow } from "./types.js";
 
-import * as _enLocale from "#locales/en";
-
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
 export const DEFAULT_FALLBACK = "en";
 
-const enLocale: LocaleModule = _enLocale;
-
-export { enLocale };
+export const enLocale: LocaleModule = {
+    templates: {},
+};
 
 // NOTE: This table cannot be made any shorter, despite all the repetition of syntax. Bundlers look
 // for the `import` #a *string target* for doing alias substitution, so putting
@@ -37,24 +35,24 @@ export { enLocale };
 
 // prettier-ignore
 const debug: LocaleRow = [
-    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  () => import("#locales/pseudo-LOCALE"),
+    "pseudo_LOCALE", /^pseudo/i, () => msg("Pseudolocale (for testing)"), () => import("#locales/pseudo_LOCALE"),
 ];
 
 // prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
-    ["de",      /^de([_-]|$)/i,      () => msg("German"),                () => import("#locales/de")],
-    ["en",      /^en([_-]|$)/i,      () => msg("English"),               () => import("#locales/en")],
-    ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               () => import("#locales/es")],
-    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                () => import("#locales/fr")],
-    ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               () => import("#locales/it")],
-    ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                () => import("#locales/ko")],
-    ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 () => import("#locales/nl")],
-    ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                () => import("#locales/pl")],
-    ["ru",      /^ru([_-]|$)/i,      () => msg("Russian"),               () => import("#locales/ru")],
-    ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               () => import("#locales/tr")],
-    ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    () => import("#locales/zh_TW")],
-    ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  () => import("#locales/zh-Hans")],
-    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh-Hant")],
+    ["de_DE", /^de([_-]|$)/i, () => msg("German"), () => import("#locales/de_DE")],
+    ["en", /^en([_-]|$)/i, () => msg("English"), () => Promise.resolve(enLocale)],
+    ["es_ES", /^es([_-]|$)/i, () => msg("Spanish"), () => import("#locales/es_ES")],
+    ["fr_FR", /^fr([_-]|$)/i, () => msg("French"), () => import("#locales/fr_FR")],
+    ["it_IT", /^it([_-]|$)/i, () => msg("Italian"), () => import("#locales/it_IT")],
+    ["ja_JP", /^ja([_-]|$)/i, () => msg("Japanese"), () => import("#locales/ja_JP")],
+    ["ko_KR", /^ko([_-]|$)/i, () => msg("Korean"), () => import("#locales/ko_KR")],
+    ["nl_NL", /^nl([_-]|$)/i, () => msg("Dutch"), () => import("#locales/nl_NL")],
+    ["pl_PL", /^pl([_-]|$)/i, () => msg("Polish"), () => import("#locales/pl_PL")],
+    ["ru_RU", /^ru([_-]|$)/i, () => msg("Russian"), () => import("#locales/ru_RU")],
+    ["tr_TR", /^tr([_-]|$)/i, () => msg("Turkish"), () => import("#locales/tr_TR")],
+    ["zh_Hans", /^zh(\b|_)/i, () => msg("Chinese (simplified)"), () => import("#locales/zh_Hans")],
+    ["zh_Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("#locales/zh_Hant")],
     debug
 ];
 

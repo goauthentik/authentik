@@ -2,11 +2,15 @@
 
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
+from guardian.shortcuts import get_anonymous_user
+from rest_framework.serializers import PrimaryKeyRelatedField
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer
+from authentik.core.models import User
 from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
@@ -49,6 +53,16 @@ class InvitationSerializer(ModelSerializer):
     fixed_data = JSONDictField(required=False)
     flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["created_by"] = PrimaryKeyRelatedField(
+                queryset=User.objects.all(),
+                required=False,
+                allow_null=True,
+                default=get_anonymous_user(),
+            )
+
     class Meta:
         model = Invitation
         fields = [
@@ -73,4 +87,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = ["name", "created_by__username", "expires", "flow__slug"]
 
     def perform_create(self, serializer: InvitationSerializer):
-        serializer.save(created_by=self.request.user)
+        kwargs = {}
+        if SERIALIZER_CONTEXT_BLUEPRINT not in serializer.context:
+            kwargs["created_by"] = self.request.user
+        serializer.save(**kwargs)

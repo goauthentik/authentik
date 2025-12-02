@@ -3,7 +3,9 @@ import "#flow/components/ak-flow-card";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
+import autoDetectLanguage from "#elements/ak-locale-context/helpers";
 import { akEmptyState } from "#elements/EmptyState";
+import { ifPresent } from "#elements/utils/attributes";
 import { ListenerController } from "#elements/utils/listenerController";
 import { randomId } from "#elements/utils/randomId";
 
@@ -59,7 +61,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
             :host([theme="dark"]) {
                 --captcha-background-to: var(--ak-dark-background-light);
-                --captcha-background-from: var(--ak-dark-background-light-ish);
+                --captcha-background-from: var(--pf-global--BackgroundColor--300);
             }
 
             @keyframes captcha-background-animation {
@@ -132,6 +134,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     #captchaDocumentContainer?: HTMLDivElement;
     #listenController = new ListenerController();
 
+    #locale: string | null = null;
+
     //#endregion
 
     //#region Getters/Setters
@@ -191,6 +195,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     sitekey: this.challenge.siteKey,
                     callback: this.onTokenChange,
                     size: "invisible",
+                    hl: this.#locale ?? undefined,
                 }),
             );
         });
@@ -225,6 +230,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 sitekey: this.challenge.siteKey,
                 callback: this.onTokenChange,
                 size: "invisible",
+                hl: this.#locale ?? undefined,
             }),
         );
     }
@@ -250,6 +256,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             data-theme="${this.activeTheme}"
             data-callback="callback"
             data-size="flexible"
+            data-language=${ifPresent(this.#locale)}
         ></div>`;
     };
 
@@ -368,6 +375,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
+
+        this.#locale = autoDetectLanguage();
     }
 
     public disconnectedCallback(): void {
@@ -574,8 +583,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 theme: this.activeTheme,
             });
 
-            if (captchaProvider === CaptchaProvider.reCAPTCHA) {
-                // reCAPTCHA's domain verification can't seem to penetrate the true origin
+            if (
+                captchaProvider === CaptchaProvider.reCAPTCHA ||
+                captchaProvider === CaptchaProvider.hCaptcha
+            ) {
+                // reCAPTCHA's & hCaptcha's domain verification can't seem to penetrate the true origin
                 // of the page when loaded from a blob URL, likely due to their double-nested
                 // iframe structure.
                 // We fallback to the deprecated `document.write` to get around this.
