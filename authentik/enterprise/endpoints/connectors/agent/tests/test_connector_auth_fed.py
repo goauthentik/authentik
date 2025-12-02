@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import create_test_cert, create_test_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
 from authentik.endpoints.models import Device, DeviceAccessGroup
@@ -30,7 +30,9 @@ class TestConnectorAuthFed(APITestCase):
             connector=self.connector,
         )
         self.user = create_test_user()
-        self.provider = OAuth2Provider.objects.create(name=generate_id())
+        self.provider = OAuth2Provider.objects.create(
+            name=generate_id(), signing_key=create_test_cert()
+        )
         self.raw_token = self.provider.encode({"foo": "bar"})
         self.token = AccessToken.objects.create(
             provider=self.provider, user=self.user, token=self.raw_token, auth_time=now()
