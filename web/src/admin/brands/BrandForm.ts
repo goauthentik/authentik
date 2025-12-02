@@ -75,7 +75,7 @@ export class BrandForm extends ModelForm<Brand, string> {
 
             <ak-switch-input
                 name="_default"
-                label=${msg("Sign assertions")}
+                label=${msg("Default")}
                 ?checked=${this.instance?._default ?? false}
                 help=${msg("Use this brand for each domain that doesn't have a dedicated brand.")}
             >
