@@ -1,0 +1,13 @@
+{
+    "name": "detect-package-manager",
+    "version": "2025.12.0",
+    "description": "Vendored package to detect package manager",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./index.js"
+        }
+    }
+}

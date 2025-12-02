@@ -55,6 +55,7 @@
         "npm": ">=11.6.2"
     },
     "workspaces": [
+        "vendored/*",
         "docusaurus-theme",
         "api",
         "integrations",
