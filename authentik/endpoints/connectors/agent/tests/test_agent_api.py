@@ -58,6 +58,16 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_enroll_token_delete(self):
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": self.device.identifier, "device_name": "bar"},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(DeviceToken.objects.filter(pk=self.device_token.pk).exists())
+        self.assertEqual(DeviceToken.objects.filter(device=self.connection).count(), 1)
+
     def test_enroll_group(self):
         device_group = DeviceAccessGroup.objects.create(name=generate_id())
         self.token.device_group = device_group

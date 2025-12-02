@@ -32804,6 +32804,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+        challenge_trigger_check_in:
+          type: boolean
         jwt_federation_providers:
           type: array
           items:
@@ -32852,6 +32856,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+          minLength: 1
+        challenge_trigger_check_in:
+          type: boolean
         jwt_federation_providers:
           type: array
           items:
@@ -36779,8 +36788,11 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         challenge:
           type: string
+        challenge_idle_timeout:
+          type: integer
       required:
       - challenge
+      - challenge_idle_timeout
     EndpointAgentChallengeResponseRequest:
       type: object
       description: Response to signed challenge
@@ -45471,6 +45483,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+          minLength: 1
+        challenge_trigger_check_in:
+          type: boolean
         jwt_federation_providers:
           type: array
           items:

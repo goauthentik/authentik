@@ -6023,6 +6023,15 @@
                     "format": "uuid",
                     "title": "Challenge key"
                 },
+                "challenge_idle_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Challenge idle timeout"
+                },
+                "challenge_trigger_check_in": {
+                    "type": "boolean",
+                    "title": "Challenge trigger check in"
+                },
                 "jwt_federation_providers": {
                     "type": "array",
                     "items": {
