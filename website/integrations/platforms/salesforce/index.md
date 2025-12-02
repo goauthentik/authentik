@@ -61,11 +61,11 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
         - **Expression**:
 
             ```python
-            return "00eXXXXXXXXXXXXX" #replace with your Salesforce Profile ID
+            return "00eXXXXXXXXXXXXX" # Replace with your Salesforce Profile ID
             ```
 
-            :::info Salesforce Profile ID
-            To find your Salesforce Profile ID, navigate to **Setup** > **Users** > **Profiles** in Salesforce, click on the desired profile, and copy the 18-character ID from the URL (starts with `00e`).
+            :::info Find your Salesforce Profile ID
+            To find your Salesforce Profile ID, in Salesforce, navigate to **Setup** > **Users** > **Profiles**, click on the desired profile, and copy the 18-character ID from the URL (starts with `00e`).
             :::
 
     - **Federation Identifier Mapping:**
@@ -104,7 +104,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 
 ### Enable SAML Single Sign-On
 
-1. Log in to Salesforce as an administrator.
+1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** > **Identity** > **Single Sign-On Settings**.
 3. Click **Edit** and enable **SAML Enabled**.
 4. Click **Save**.
