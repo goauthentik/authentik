@@ -1848,8 +1848,8 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Tokens not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+"Tokens not valid on or after current time + this value (Format: hours=1;"
+"minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2222,20 +2222,20 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Assertion valid not before current time + this value (Format: "
-"hours=-1;minutes=-2;seconds=-3)."
+"Assertion valid not before current time + this value (Format: hours=-1;"
+"minutes=-2;seconds=-3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Assertion not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+"Assertion not valid on or after current time + this value (Format: hours=1;"
+"minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Session not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+"Session not valid on or after current time + this value (Format: hours=1;"
+"minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
@@ -4080,8 +4080,8 @@ msgstr ""
 #: authentik/stages/user_login/models.py
 msgid ""
 "When set to a non-zero value, authentik will save a cookie with a longer "
-"expiry,to remember the device the user is logging in from. (Format: "
-"hours=-1;minutes=-2;seconds=-3)"
+"expiry,to remember the device the user is logging in from. (Format: hours=-1;"
+"minutes=-2;seconds=-3)"
 msgstr ""
 
 #: authentik/stages/user_login/models.py
@@ -4201,8 +4201,8 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid ""
-"Events will be deleted after this duration.(Format: "
-"weeks=3;days=2;hours=3,seconds=2)."
+"Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
+"seconds=2)."
 msgstr ""
 
 #: authentik/tenants/models.py
