@@ -103,7 +103,9 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "ExtensionIdentifier": "io.goauthentik.platform.psso",
                         "TeamIdentifier": "232G855Y8N",
                         "Type": "Redirect",
-                        "URLs": [request.build_absolute_uri("")],
+                        "URLs": [
+                            request.build_absolute_uri(reverse("authentik_core:root-redirect")),
+                        ],
                         "PlatformSSO": {
                             "AccountDisplayName": "authentik",
                             "AllowDeviceIdentifiersInAttestation": True,

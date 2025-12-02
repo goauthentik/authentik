@@ -6409,6 +6409,14 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Connector"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required"
+                    ],
+                    "title": "Mode"
                 }
             },
             "required": []
