@@ -65,13 +65,6 @@ class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
             201: UserTelegramSourceConnectionSerializer,
             403: OpenApiResponse(description="Access denied"),
         },
-        # parameters=[
-        #     OpenApiParameter(
-        #         name="slug",
-        #         location=OpenApiParameter.PATH,
-        #         type=OpenApiTypes.STR,
-        #     )
-        # ],
     )
     @action(
         methods=["POST"],
