@@ -4,26 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Dario Rigolin, 2022
-# aoor9, 2023
-# Enrico Campani, 2024
-# Marco Vitale, 2024
-# Nicola Mersi, 2024
-# tmassimi, 2024
-# Marc Schmitt, 2024
-# Matteo Piccina <altermatte@gmail.com>, 2025
-# albanobattistella <albanobattistella@gmail.com>, 2025
-# Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025
+# Marc Schmitt, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025\n"
-"Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
+"POT-Creation-Date: 2025-12-01 17:05+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Marc Schmitt, 2025\n"
+"Language-Team: Italian (Italy) (https://app.transifex.com/authentik/teams/119923/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
