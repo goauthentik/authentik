@@ -97,6 +97,7 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
                 "iat": int(iat.timestamp()),
                 "exp": int((iat + timedelta(minutes=5)).timestamp()),
             },
+            headers={"kid": keypair.kid},
             key=keypair.private_key,
             algorithm=JWTAlgorithms.from_private_key(keypair.private_key),
         )
