@@ -68,6 +68,7 @@
             "openapi-to-postmanv2": "^5.0.0",
             "postman-collection": "^5.0.2",
             "postman-code-generators": {
+                "detect-package-manager": "^2025.12.0",
                 "shelljs": "0.10.0"
             },
             "docusaurus-theme-openapi-docs": {
