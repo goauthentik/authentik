@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Salesforce with authentik, you need to create property mappings for Just-in-Time (JIT) user provisioning and an application/provider pair.
+To support the integration of Salesforce with authentik, you must create property mappings for Just-in-Time (JIT) user provisioning and an application/provider pair.
 
 ### Create property mappings
 
