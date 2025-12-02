@@ -32768,7 +32768,11 @@ components:
           type: string
           nullable: true
           readOnly: true
-        jwks:
+        jwks_auth:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        jwks_challenge:
           type: object
           additionalProperties: {}
           readOnly: true
@@ -32786,7 +32790,8 @@ components:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - device_id
-      - jwks
+      - jwks_auth
+      - jwks_challenge
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval

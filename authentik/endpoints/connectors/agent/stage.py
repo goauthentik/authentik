@@ -1,6 +1,8 @@
+from datetime import timedelta
 from hmac import compare_digest
 
 from django.http import HttpResponse
+from django.utils.timezone import now
 from jwt import PyJWTError, decode, encode
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -87,10 +89,13 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
         stage: EndpointStage = self.executor.current_stage
         keypair = CertificateKeyPair.objects.get(pk=stage.connector.challenge_key_id)
         challenge_str = generate_id()
+        iat = now()
         challenge = encode(
             {
                 "atc": challenge_str,
                 "iss": str(stage.pk),
+                "iat": int(iat.timestamp()),
+                "exp": int((iat + timedelta(minutes=5)).timestamp()),
             },
             key=keypair.private_key,
             algorithm=JWTAlgorithms.from_private_key(keypair.private_key),

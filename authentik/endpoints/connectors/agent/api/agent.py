@@ -21,7 +21,8 @@ class AgentConfigSerializer(PassiveSerializer):
     refresh_interval = SerializerMethodField()
 
     authorization_flow = SerializerMethodField()
-    jwks = SerializerMethodField()
+    jwks_auth = SerializerMethodField()
+    jwks_challenge = SerializerMethodField()
 
     nss_uid_offset = IntegerField()
     nss_gid_offset = IntegerField()
@@ -41,9 +42,12 @@ class AgentConfigSerializer(PassiveSerializer):
             return None
         return instance.authorization_flow.slug
 
-    def get_jwks(self, instance: AgentConnector) -> dict:
+    def get_jwks_auth(self, instance: AgentConnector) -> dict:
         kp = CertificateKeyPair.objects.filter(managed=MANAGED_KEY).first()
         return {"keys": [JWKSView.get_jwk_for_key(kp, "sig")]}
+
+    def get_jwks_challenge(self, instance: AgentConnector) -> dict:
+        return {"keys": [JWKSView.get_jwk_for_key(instance.challenge_key, "sig")]}
 
     def get_system_config(self, instance: AgentConnector) -> ConfigSerializer:
         return ConfigView.get_config(self.context["request"]).data
