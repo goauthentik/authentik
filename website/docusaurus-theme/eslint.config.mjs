@@ -8,7 +8,5 @@ export default createESLintPackageConfig({
         // ---
         ...DefaultIgnorePatterns,
         "**/.docusaurus/",
-        "**/build",
-        "**/reference",
     ],
 });
