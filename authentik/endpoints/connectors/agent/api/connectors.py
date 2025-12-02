@@ -135,6 +135,7 @@ class AgentConnectorViewSet(
             device=device,
             connector=token.connector,
         )
+        DeviceToken.objects.filter(device=connection).delete()
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {
