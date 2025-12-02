@@ -451,6 +451,7 @@ const items = [
                 ],
             },
             "customize/branding",
+            "customize/files",
         ],
     },
     {

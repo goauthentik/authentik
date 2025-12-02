@@ -4,7 +4,7 @@ sidebar_label: Placetel
 support_level: community
 ---
 
-## What is Plactel
+## What is Placetel
 
 > Placetel is a German cloud communications provider, specializing in VoIP-based telephony, unified communications (UCaaS), and collaboration tools for businesses.
 >
@@ -52,11 +52,11 @@ To support the integration of Placetel with authentik, you need to create an app
 
 ## Placetel configuration
 
-To integrate Plactel with authentik, you will need to setup SSO in the Placetel portal.
+To integrate Placetel with authentik, you will need to setup SSO in the Placetel portal.
 
 1. Log in to the [Placetel portal](https://accounts.webex.placetel.de) as an Administrator.
-2. Click the **Organization Name** in the bottom left corner, and select **Settings**
-3. Scroll to the bottom of the page. Then, next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
+2. Click the "Organization Name" in the bottom left corner, and select **Settings**.
+3. Scroll to the bottom of the page. Next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
 4. In the **Import** section, click on **Choose File** and upload the **SAML Metadata** file that you've just downloaded from authentik.
 5. In the **Settings** section, enter the following values:
     - **SP Entity ID**: `https://web.placetel.de`
@@ -67,7 +67,7 @@ To integrate Plactel with authentik, you will need to setup SSO in the Placetel 
 
 ### Test configuration and activate SSO
 
-To test that authentik is properly configured with Plactel, log out and log back in using this link (with the appropriate Entity ID): `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=<authentik.company>`. You should be redirected to authentik and once authenticated, logged in to Placetel.
+To test that authentik is properly configured with Placetel, log out and log back in using this link (with the appropriate Entity ID): `https://accounts.webex.placetel.de/users/saml/sign_in?entity_id=<authentik.company>`. You should be redirected to authentik and once authenticated, logged in to Placetel.
 
 After confirming that your configuration is correct, return to the Placetel configuration page, check the **Activate Single Sign On** checkbox, and click **Save settings**.
 

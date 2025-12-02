@@ -59,7 +59,7 @@ class TestConnectorAuthIA(FlowTestCase):
         License.objects.create(key=generate_id())
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -68,14 +68,14 @@ class TestConnectorAuthIA(FlowTestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
             HTTP_X_AUTHENTIK_PLATFORM_AUTH_DTH=sha256(self.device_token.key.encode()).hexdigest(),
         )
         self.assertEqual(response.status_code, 200)
         res = loads(response.content)
         response = self.client.get(
             res["url"],
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
             HTTP_X_AUTHENTIK_PLATFORM_AUTH_DTH=sha256(self.device_token.key.encode()).hexdigest(),
         )
         self.assertEqual(response.status_code, 200)
@@ -108,14 +108,14 @@ class TestConnectorAuthIA(FlowTestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
             HTTP_X_AUTHENTIK_PLATFORM_AUTH_DTH=sha256(self.device_token.key.encode()).hexdigest(),
         )
         self.assertEqual(response.status_code, 200)
         res = loads(response.content)
         response = self.client.get(
             res["url"],
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
             HTTP_X_AUTHENTIK_PLATFORM_AUTH_DTH=sha256(self.device_token.key.encode()).hexdigest(),
         )
         self.assertEqual(response.status_code, 302)

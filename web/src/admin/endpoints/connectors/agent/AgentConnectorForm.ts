@@ -101,6 +101,18 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     ${msg("Certificate used for signing device compliance challenges.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-text-input
+                name="authSessionDuration"
+                label=${msg("Session duration")}
+                input-hint="code"
+                required
+                value="${ifDefined(this.instance?.authSessionDuration ?? "hours=8")}"
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Configure how long an authenticated session is valid for.")}
+                    </p>
+                    <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+            >
+            </ak-text-input>
             <ak-form-element-horizontal name="authTerminateSessionOnExpiry">
                 <label class="pf-c-switch">
                     <input

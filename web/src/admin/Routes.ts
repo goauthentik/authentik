@@ -173,6 +173,10 @@ export const ROUTES: Route[] = [
         await import("#admin/admin-settings/AdminSettingsPage");
         return html`<ak-admin-settings></ak-admin-settings>`;
     }),
+    new Route(new RegExp("^/files$"), async () => {
+        await import("#admin/files/FileListPage");
+        return html`<ak-files-list></ak-files-list>`;
+    }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("#admin/blueprints/BlueprintListPage");
         return html`<ak-blueprint-list></ak-blueprint-list>`;
