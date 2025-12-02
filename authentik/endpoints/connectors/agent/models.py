@@ -46,6 +46,10 @@ class AgentConnector(Connector):
     nss_gid_offset = models.PositiveIntegerField(default=1000)
 
     challenge_key = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE, null=True)
+    challenge_idle_timeout = models.TextField(
+        validators=[timedelta_string_validator], default="seconds=5"
+    )
+    challenge_trigger_check_in = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> type[Serializer]:
