@@ -4,25 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Yu, 2023
-# NavyStack, 2023
-# Hiroki Nakano, 2024
-# Kohta Ozaki <ozmachine@gmail.com>, 2024
-# Azusa Takemae, 2025
-# ume <bungoume@gmail.com>, 2025
-# sweetfish, 2025
-# Rintan, 2025
-# Teffen Ellis, 2025
+# Marc Schmitt, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Teffen Ellis, 2025\n"
-"Language-Team: Japanese (https://app.transifex.com/authentik/teams/119923/ja/)\n"
+"POT-Creation-Date: 2025-12-01 17:05+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Marc Schmitt, 2025\n"
+"Language-Team: Japanese (Japan) (https://app.transifex.com/authentik/teams/119923/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
