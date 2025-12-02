@@ -24,7 +24,7 @@ export class LocaleContextController implements ReactiveController {
 
     /**
      * Attempts to apply the given locale code.
-     * @param localeHint A user or agent supllied preferred locale code.
+     * @param nextLocale A user or agent preferred locale code.
      */
     #applyLocale(nextLocale: TargetLocale) {
         const currentLocale = this.#context.value.getLocale();
@@ -44,7 +44,7 @@ export class LocaleContextController implements ReactiveController {
     // #region Attribute Observation
 
     /**
-     * Synchronizes changes the document's `lang` attribute to the locale context.
+     * Synchronizes changes to the document's `lang` attribute to the locale context.
      *
      * @remarks
      * While we don't expect the document's `lang` attribute to change outside of
