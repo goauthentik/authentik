@@ -182,14 +182,14 @@ An Admin can globally enable or disable impersonation in the [System Settings](.
 An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
 :::
 
-## Export users:ak-enterprise
+## Export users :ak-enterprise
 
-You can export the users in your authentik instance to a CSV file. To request a data export:
+You can export the users in your authentik instance to a CSV file. To generate a data export:
 
-1. Go to **Directory > Users** in the Admin interface.
+1. Log in to authentik as an administrator and navigate to **Directory > Users**.
 2. Select a user folder, specify a search query, and set ordering as needed. The data export will honor these settings.
 3. Click **Export** above the user list.
-4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the Admin interface notification area.
-5. Click **Download** in the notification to download the CSV file.
+4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the Admin interface's notification area.
+5. In the notification, click **Download**.
 
 To review, download, or delete past data exports, go to **Events > Data Exports** in the Admin interface.
