@@ -65,10 +65,10 @@ export function renderEventUser(
     }
     if (event.context.device) {
         return html`${body}<small>
-            <a href="#/endpoints/devices/${event.context.device.pk}">
-                ${msg(str`Via ${event.context.device.name}`)}
-            </a>
-        </small>`;
+                <a href="#/endpoints/devices/${event.context.device.pk}">
+                    ${msg(str`Via ${event.context.device.name}`)}
+                </a>
+            </small>`;
     }
 
     return body;
