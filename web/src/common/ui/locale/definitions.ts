@@ -29,20 +29,20 @@ const sourceTargetModule: LocaleModule = {
  */
 export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
     [sourceLocale]: () => msg("English"),
-    pseudo_LOCALE: () => msg("Pseudolocale (for testing)"),
-    cs_CZ: () => msg("Czech"),
-    de_DE: () => msg("German"),
-    es_ES: () => msg("Spanish"),
-    fr_FR: () => msg("French"),
-    it_IT: () => msg("Italian"),
-    ja_JP: () => msg("Japanese"),
-    ko_KR: () => msg("Korean"),
-    nl_NL: () => msg("Dutch"),
-    pl_PL: () => msg("Polish"),
-    ru_RU: () => msg("Russian"),
-    tr_TR: () => msg("Turkish"),
-    zh_Hans: () => msg("Chinese (simplified)"),
-    zh_Hant: () => msg("Chinese (traditional)"),
+    "pseudo_LOCALE": () => msg("Pseudolocale (for testing)"),
+    "cs_CZ": () => msg("Czech"),
+    "de_DE": () => msg("German"),
+    "es_ES": () => msg("Spanish"),
+    "fr_FR": () => msg("French"),
+    "it_IT": () => msg("Italian"),
+    "ja_JP": () => msg("Japanese"),
+    "ko_KR": () => msg("Korean"),
+    "nl_NL": () => msg("Dutch"),
+    "pl_PL": () => msg("Polish"),
+    "ru_RU": () => msg("Russian"),
+    "tr_TR": () => msg("Turkish"),
+    "zh-Hans": () => msg("Chinese (simplified)"),
+    "zh-Hant": () => msg("Chinese (traditional)"),
 };
 
 /**
@@ -79,20 +79,20 @@ export function formatLocaleOptions(
  */
 export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule>> = {
     [sourceLocale]: () => Promise.resolve(sourceTargetModule),
-    pseudo_LOCALE: () => import("#locales/pseudo_LOCALE"),
-    cs_CZ: () => import("#locales/cs_CZ"),
-    de_DE: () => import("#locales/de_DE"),
-    es_ES: () => import("#locales/es_ES"),
-    fr_FR: () => import("#locales/fr_FR"),
-    it_IT: () => import("#locales/it_IT"),
-    ja_JP: () => import("#locales/ja_JP"),
-    ko_KR: () => import("#locales/ko_KR"),
-    nl_NL: () => import("#locales/nl_NL"),
-    pl_PL: () => import("#locales/pl_PL"),
-    ru_RU: () => import("#locales/ru_RU"),
-    tr_TR: () => import("#locales/tr_TR"),
-    zh_Hans: () => import("#locales/zh_Hans"),
-    zh_Hant: () => import("#locales/zh_Hant"),
+    "pseudo_LOCALE": () => import("#locales/pseudo_LOCALE"),
+    "cs_CZ": () => import("#locales/cs_CZ"),
+    "de_DE": () => import("#locales/de_DE"),
+    "es_ES": () => import("#locales/es_ES"),
+    "fr_FR": () => import("#locales/fr_FR"),
+    "it_IT": () => import("#locales/it_IT"),
+    "ja_JP": () => import("#locales/ja_JP"),
+    "ko_KR": () => import("#locales/ko_KR"),
+    "nl_NL": () => import("#locales/nl_NL"),
+    "pl_PL": () => import("#locales/pl_PL"),
+    "ru_RU": () => import("#locales/ru_RU"),
+    "tr_TR": () => import("#locales/tr_TR"),
+    "zh-Hans": () => import("#locales/zh-Hans"),
+    "zh-Hant": () => import("#locales/zh-Hant"),
 };
 
 /**
@@ -116,30 +116,30 @@ export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule
  */
 export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
     [sourceLocale]: /^en([_-]|$)/i,
-    pseudo_LOCALE: /^pseudo/i,
-    cs_CZ: /^cs([_-]|$)/i,
-    de_DE: /^de([_-]|$)/i,
-    es_ES: /^es([_-]|$)/i,
-    fr_FR: /^fr([_-]|$)/i,
-    it_IT: /^it([_-]|$)/i,
-    ja_JP: /^ja([_-]|$)/i,
-    ko_KR: /^ko([_-]|$)/i,
-    nl_NL: /^nl([_-]|$)/i,
-    pl_PL: /^pl([_-]|$)/i,
-    ru_RU: /^ru([_-]|$)/i,
-    tr_TR: /^tr([_-]|$)/i,
+    "pseudo_LOCALE": /^pseudo/i,
+    "cs_CZ": /^cs([_-]|$)/i,
+    "de_DE": /^de([_-]|$)/i,
+    "es_ES": /^es([_-]|$)/i,
+    "fr_FR": /^fr([_-]|$)/i,
+    "it_IT": /^it([_-]|$)/i,
+    "ja_JP": /^ja([_-]|$)/i,
+    "ko_KR": /^ko([_-]|$)/i,
+    "nl_NL": /^nl([_-]|$)/i,
+    "pl_PL": /^pl([_-]|$)/i,
+    "ru_RU": /^ru([_-]|$)/i,
+    "tr_TR": /^tr([_-]|$)/i,
     /**
      * Traditional Chinese.
      *
      * The region subtag is required.
      */
-    zh_Hant: /^zh[_-](TW|HK|MO|Hant)/i,
+    "zh-Hant": /^zh[_-](TW|HK|MO|Hant)/i,
     /**
      * Simplified Chinese.
      *
      * The region subtag is optional.
      */
-    zh_Hans: /^zh([_-](CN|SG|MY|Hans)|$)/i,
+    "zh-Hans": /^zh([_-](CN|SG|MY|Hans)|$)/i,
 };
 
 /**
