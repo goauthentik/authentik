@@ -4,6 +4,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
+        "preinstall": "./scripts/preinstall.sh",
         "build": "npm run build -w docs",
         "build:api": "npm run build -w api",
         "build:integrations": "npm run build -w integrations",
