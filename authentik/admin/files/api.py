@@ -16,6 +16,7 @@ from authentik.admin.files.fields import FileField as AkFileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
+from authentik.api.validation import validate
 from authentik.core.api.used_by import DeleteAction, UsedBySerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -57,11 +58,10 @@ class FileView(APIView):
         parameters=[FileListParameters],
         responses={200: FileListSerializer(many=True)},
     )
-    def get(self, request: Request) -> Response:
+    @validate(FileListParameters, location="query")
+    def get(self, request: Request, query: FileListParameters) -> Response:
         """List files from storage backend."""
-        params = FileView.FileListParameters(data=request.query_params)
-        params.is_valid(raise_exception=True)
-        params = params.validated_data
+        params = query.validated_data
 
         try:
             usage = FileApiUsage(params.get("usage", FileApiUsage.MEDIA.value))
@@ -100,14 +100,12 @@ class FileView(APIView):
         request=FileUploadSerializer,
         responses={200: None},
     )
-    def post(self, request: Request) -> Response:
+    @validate(FileUploadSerializer)
+    def post(self, request: Request, body: FileUploadSerializer) -> Response:
         """Upload file to storage backend."""
-        serializer = FileView.FileUploadSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        file = serializer.validated_data["file"]
-        name = serializer.validated_data.get("name", "").strip()
-        usage_value = serializer.validated_data.get("usage", FileApiUsage.MEDIA.value)
+        file = body.validated_data["file"]
+        name = body.validated_data.get("name", "").strip()
+        usage_value = body.validated_data.get("usage", FileApiUsage.MEDIA.value)
 
         # Validate file size and type
         if file.size > MAX_FILE_SIZE_BYTES:
@@ -166,11 +164,10 @@ class FileView(APIView):
         parameters=[FileDeleteParameters],
         responses={200: None},
     )
-    def delete(self, request: Request) -> Response:
+    @validate(FileDeleteParameters, location="query")
+    def delete(self, request: Request, query: FileDeleteParameters) -> Response:
         """Delete file from storage backend."""
-        params = FileView.FileDeleteParameters(data=request.query_params)
-        params.is_valid(raise_exception=True)
-        params = params.validated_data
+        params = query.validated_data
 
         validate_upload_file_name(params.get("name", ""), ValidationError)
 
@@ -220,10 +217,9 @@ class FileUsedByView(APIView):
         parameters=[FileUsedByParameters],
         responses={200: UsedBySerializer(many=True)},
     )
-    def get(self, request: Request) -> Response:
-        params = FileUsedByView.FileUsedByParameters(data=request.query_params)
-        params.is_valid(raise_exception=True)
-        params = params.validated_data
+    @validate(FileUsedByParameters, location="query")
+    def get(self, request: Request, query: FileUsedByParameters) -> Response:
+        params = query.validated_data
 
         models_and_fields = {}
         for app in get_apps():
