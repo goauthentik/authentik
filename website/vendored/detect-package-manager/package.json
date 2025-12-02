@@ -5,9 +5,5 @@
     "license": "MIT",
     "private": true,
     "type": "module",
-    "exports": {
-        ".": {
-            "import": "./index.js"
-        }
-    }
+    "exports": "./index.mjs"
 }

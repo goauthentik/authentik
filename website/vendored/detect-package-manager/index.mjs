@@ -23,5 +23,5 @@ export async function getNpmVersion() {
  * @returns {string} The detected package manager.
  */
 export function detect() {
-    return "npm";
+    return Promise.resolve("npm");
 }
