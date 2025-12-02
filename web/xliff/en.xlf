@@ -4895,9 +4895,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s9d2d00982edafabb">
   <source>Turkish</source>
 </trans-unit>
-<trans-unit id="s4660da32fb311ac0">
-  <source>Taiwanese Mandarin</source>
-</trans-unit>
 <trans-unit id="s354e0a9f146d2869">
   <source>Chinese (simplified)</source>
 </trans-unit>

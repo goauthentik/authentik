@@ -29,7 +29,7 @@
         "@docusaurus/theme-common": "^3.8.1",
         "@docusaurus/tsconfig": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.2.1",
+        "@goauthentik/docusaurus-config": "^2.2.2",
         "@goauthentik/docusaurus-theme": "*",
         "@goauthentik/tsconfig": "^1.0.5",
         "@mdx-js/react": "^3.1.1",
