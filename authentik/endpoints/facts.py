@@ -67,9 +67,9 @@ class NetworkSerializer(Serializer):
 
 
 class HardwareSerializer(Serializer):
-    model = CharField()
-    manufacturer = CharField()
-    serial = CharField(allow_blank=True)
+    model = CharField(required=False)
+    manufacturer = CharField(required=False)
+    serial = CharField()
 
     cpu_name = CharField(required=False)
     cpu_count = IntegerField(required=False)

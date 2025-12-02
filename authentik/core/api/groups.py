@@ -14,6 +14,7 @@ from drf_spectacular.utils import (
     extend_schema_field,
 )
 from guardian.shortcuts import get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -22,10 +23,12 @@ from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.authentication import TokenAuthentication
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
+from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -235,6 +238,11 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+        AgentAuth,
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField

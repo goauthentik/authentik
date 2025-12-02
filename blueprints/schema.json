@@ -4870,6 +4870,10 @@
                     "type": "string",
                     "title": "Meta launch url"
                 },
+                "meta_icon": {
+                    "type": "string",
+                    "title": "Meta icon"
+                },
                 "meta_description": {
                     "type": "string",
                     "title": "Meta description"
@@ -5318,24 +5322,28 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -5600,8 +5608,10 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_media_files",
                             "authentik_rbac.unassign_role_permissions",
                             "authentik_rbac.view_initialpermissions",
+                            "authentik_rbac.view_media_files",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -5987,6 +5997,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Snapshot expiry"
+                },
+                "auth_session_duration": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Auth session duration"
                 },
                 "auth_terminate_session_on_expiry": {
                     "type": "boolean",
@@ -7721,8 +7736,8 @@
                 },
                 "background": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Background"
+                    "title": "Background",
+                    "description": "Background shown during execution"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -8203,6 +8218,7 @@
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
                         "authentik.events",
+                        "authentik.admin.files",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -10607,24 +10623,28 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -10889,8 +10909,10 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_media_files",
                             "authentik_rbac.unassign_role_permissions",
                             "authentik_rbac.view_initialpermissions",
+                            "authentik_rbac.view_media_files",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -11219,11 +11241,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11333,7 +11350,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -11512,11 +11528,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11563,11 +11574,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11677,7 +11683,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "server_uri": {
@@ -11886,11 +11891,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11937,11 +11937,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12051,7 +12046,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12273,11 +12267,6 @@
                     "type": "string",
                     "format": "date-time",
                     "title": "Expires"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12324,11 +12313,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12438,7 +12422,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12578,11 +12561,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Plex token"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12629,11 +12607,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12743,7 +12716,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12960,11 +12932,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13034,11 +13001,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "User path template"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13136,11 +13098,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13250,7 +13207,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "bot_username": {
@@ -13371,11 +13327,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []

@@ -10,7 +10,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
@@ -273,6 +273,8 @@ class SCIMUserTests(TestCase):
                 "userName": uid,
             },
         )
+        # Update user
+        user.name = "foo bar"
         user.save()
         self.assertEqual(mock.call_count, 4)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -455,3 +457,85 @@ class SCIMUserTests(TestCase):
         self.assertIsNotNone(log.attributes["url"])
         self.assertIsNotNone(log.attributes["body"])
         self.assertIsNotNone(log.attributes["method"])
+
+    @Mocker()
+    def test_user_create_update_noop(self, mock: Mocker):
+        """Test user creation and update"""
+        scim_id = generate_id()
+        mock: Mocker
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+            },
+        )
+        mock.put(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        body = loads(mock.request_history[1].body)
+        self.assertEqual(
+            body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "active": True,
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "other",
+                        "value": f"{uid}@goauthentik.io",
+                    }
+                ],
+                "displayName": f"{uid} {uid}",
+                "externalId": user.uid,
+                "name": {
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
+                    "givenName": uid,
+                },
+                "userName": uid,
+            },
+        )
+        conn = SCIMProviderUser.objects.filter(user=user).first()
+        conn.attributes = {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+            "active": True,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "other",
+                    "value": f"{uid}@goauthentik.io",
+                }
+            ],
+            "displayName": f"{uid} {uid}",
+            "externalId": user.uid,
+            "name": {
+                "familyName": uid,
+                "formatted": f"{uid} {uid}",
+                "givenName": uid,
+            },
+            "userName": uid,
+            "id": scim_id,
+        }
+        conn.save()
+        user.save()
+        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "GET")
+        # No PUT request

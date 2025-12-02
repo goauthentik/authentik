@@ -43,6 +43,7 @@ class AgentConnectorSerializer(ConnectorSerializer):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
             "snapshot_expiry",
+            "auth_session_duration",
             "auth_terminate_session_on_expiry",
             "refresh_interval",
             "authorization_flow",
@@ -150,7 +151,7 @@ class AgentConnectorViewSet(
         connector: AgentConnector = token.device.connector.agentconnector
         return Response(
             AgentConfigSerializer(
-                connector, context={"request": request, "device": token.device}
+                connector, context={"request": request, "device": token.device.device}
             ).data
         )
 
