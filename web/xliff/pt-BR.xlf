@@ -1419,18 +1419,15 @@
 </trans-unit>
 <trans-unit id="s030ac0829bb50a49">
   <source>Policy <x id="0" equiv-text="${v.policyObj?.name}"/></source>
-  <target>Política
-</target>
+  <target>Política <x id="0" equiv-text="${v.policyObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="s2a64d2dca3da9b0e">
   <source>Group <x id="0" equiv-text="${v.groupObj?.name}"/></source>
-  <target>Grupo
-</target>
+  <target>Grupo <x id="0" equiv-text="${v.groupObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="se5dc026819a32ff8">
   <source>User <x id="0" equiv-text="${v.userObj?.name}"/></source>
-  <target>Usuário
-</target>
+  <target>Usuário <x id="0" equiv-text="${v.userObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="sc387b20e6d629087">
   <source>Configure Policy/User/Group Bindings</source>
@@ -7769,7 +7766,7 @@ retorne uma lista para fornecer várias opções padrão.</target>
 </trans-unit>
 <trans-unit id="s77299a9d3dd932cd">
   <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
-  <target>Dispositivos importados com sucesso.</target>
+  <target>Dispositivos importados com sucesso <x id="0" equiv-text="${res.count}"/>.</target>
 </trans-unit>
 <trans-unit id="s6a615f6165ef01c9">
   <source>Start automatic import</source>

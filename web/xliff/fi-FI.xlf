@@ -8423,9 +8423,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
                             docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
-  <target>Voi olla muodossa <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> yhdistettäessä paikalliseen
-                            docker-daemoniin, ssh://<x id="3" equiv-text="&lt;/code&gt;"/> yhdistettäessä SSH:lla tai
-                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> yhdistettäessä etäjärjestelmään.</target>
+  <target>Voi olla muodossa <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/>, kun yhdistetään paikalliseen
+                            docker-daemoniin, käyttämällä <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/>, tai
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/>, kun yhdistetään etäjärjestelmään.</target>
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
   <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
