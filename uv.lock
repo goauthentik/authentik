@@ -586,15 +586,15 @@ wheels = [
 
 [[package]]
 name = "blessed"
-version = "1.24.0"
+version = "1.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinxed", marker = "sys_platform == 'win32'" },
     { name = "wcwidth" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/43/a01951b548a8006f58a6e8f46a958f35405853305610f1f5e86578aab7c9/blessed-1.24.0.tar.gz", hash = "sha256:7822698616deb79dc8897215eef8ed56b6a3fc537dc08ffce2f2020697c6c0d4", size = 6746429, upload-time = "2025-11-16T19:17:18.486Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/cd/eed8b82f1fabcb817d84b24d0780b86600b5c3df7ec4f890bcbb2371b0ad/blessed-1.25.0.tar.gz", hash = "sha256:606aebfea69f85915c7ca6a96eb028e0031d30feccc5688e13fd5cec8277b28d", size = 6746381, upload-time = "2025-11-18T18:43:52.71Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/88/d4681b7ff72b7f8fc01ec87534fc50bfdd2103b137e5acb9493884f06ef5/blessed-1.24.0-py3-none-any.whl", hash = "sha256:177d36ce89db91c8a61e9cf2085d5cedb6f1617dcc7c39b604bb474e2e192ec7", size = 95531, upload-time = "2025-11-16T19:17:16.912Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/2c/e9b6dd824fb6e76dbd39a308fc6f497320afd455373aac8518ca3eba7948/blessed-1.25.0-py3-none-any.whl", hash = "sha256:e52b9f778b9e10c30b3f17f6b5f5d2208d1e9b53b270f1d94fc61a243fc4708f", size = 95646, upload-time = "2025-11-18T18:43:50.924Z" },
 ]
 
 [[package]]
