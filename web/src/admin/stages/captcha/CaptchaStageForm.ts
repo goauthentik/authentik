@@ -11,7 +11,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import { CaptchaStage, CaptchaStageRequest, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -126,6 +126,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     selectedProvider = "custom";
 
     @state()
+    providerOverridden = false;
+
+    @state()
+    currentFormValues?: {
+        jsUrl?: string;
+        apiUrl?: string;
+    };
+
     currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom;
 
     loadInstance(pk: string): Promise<CaptchaStage> {
@@ -150,10 +158,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         return "custom";
     }
 
-    firstUpdated(changedProperties: Map<PropertyKey, unknown>): void {
-        super.firstUpdated(changedProperties);
-        this.selectedProvider = this.detectProviderFromInstance();
-        this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
+    willUpdate(changed: PropertyValues<this>): void {
+        super.willUpdate(changed);
+        if (changed.has("instance")) {
+            this.selectedProvider = this.detectProviderFromInstance();
+            this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
+            this.providerOverridden = false;
+            this.currentFormValues = undefined;
+        }
     }
 
     /**
@@ -185,46 +197,50 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     /**
+     * Get the form values to display, with clear precedence:
+     * 1. If editing an existing instance and provider hasn't been manually changed, use instance values
+     * 2. If provider was changed, check if URLs are blank and fill with preset if so
+     */
+    getFormValues() {
+        if (this.instance && !this.providerOverridden) {
+            return {
+                jsUrl: this.instance.jsUrl,
+                apiUrl: this.instance.apiUrl,
+                interactive: this.instance.interactive,
+                scoreMinThreshold: this.instance.scoreMinThreshold,
+                scoreMaxThreshold: this.instance.scoreMaxThreshold,
+                errorOnInvalidScore: this.instance.errorOnInvalidScore ?? true,
+            };
+        }
+
+        // When provider is changed, check stored form values
+        // If URLs are blank/empty, fill with preset values
+        const jsUrl = this.currentFormValues?.jsUrl?.trim()
+            ? this.currentFormValues.jsUrl
+            : this.currentPreset.jsUrl;
+        const apiUrl = this.currentFormValues?.apiUrl?.trim()
+            ? this.currentFormValues.apiUrl
+            : this.currentPreset.apiUrl;
+
+        return {
+            jsUrl,
+            apiUrl,
+            interactive: this.currentPreset.interactive,
+            scoreMinThreshold: this.currentPreset.score?.min ?? 0.5,
+            scoreMaxThreshold: this.currentPreset.score?.max ?? 1.0,
+            errorOnInvalidScore: true,
+        };
+    }
+
+    /**
      * Handle provider dropdown selection change.
-     * Updates the preset and auto-fills form fields with provider-specific defaults.
-     * Uses direct DOM manipulation because the form fields are rendered in the light DOM
-     * and need to be updated now to reflect the new provider settings.
+     * Uses tracked form values to determine if blank URLs should be filled with new preset.
      */
     handleProviderChange(e: Event): void {
         const select = e.target as HTMLSelectElement;
         this.selectedProvider = select.value;
         this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
-
-        // Auto-fill the URLs and interactive setting from the selected preset
-        const jsUrlInput = this.shadowRoot?.querySelector(
-            'input[name="jsUrl"]',
-        ) as HTMLInputElement;
-        const apiUrlInput = this.shadowRoot?.querySelector(
-            'input[name="apiUrl"]',
-        ) as HTMLInputElement;
-        const interactiveSwitch = this.shadowRoot?.querySelector(
-            'ak-switch-input[name="interactive"]',
-        ) as HTMLInputElement;
-
-        if (jsUrlInput) jsUrlInput.value = this.currentPreset.jsUrl;
-        if (apiUrlInput) apiUrlInput.value = this.currentPreset.apiUrl;
-        if (interactiveSwitch) interactiveSwitch.checked = this.currentPreset.interactive;
-
-        // Update score thresholds if preset has defaults
-        if (this.currentPreset.score) {
-            const minScoreInput = this.shadowRoot?.querySelector(
-                'ak-number-input[name="scoreMinThreshold"]',
-            ) as HTMLInputElement;
-            const maxScoreInput = this.shadowRoot?.querySelector(
-                'ak-number-input[name="scoreMaxThreshold"]',
-            ) as HTMLInputElement;
-
-            if (minScoreInput) minScoreInput.value = this.currentPreset.score.min.toString();
-            if (maxScoreInput) maxScoreInput.value = this.currentPreset.score.max.toString();
-        }
-
-        // Trigger re-render to update help text and conditional sections
-        this.requestUpdate();
+        this.providerOverridden = true;
     }
 
     async send(data: CaptchaStage): Promise<CaptchaStage> {
@@ -247,10 +263,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 .value=${this.selectedProvider}
             >
                 ${Object.entries(CAPTCHA_PROVIDERS).map(
-                    ([key, preset]) =>
-                        html`<option value=${key} ?selected=${this.selectedProvider === key}>
-                            ${preset.label}
-                        </option>`,
+                    ([key, preset]) => html`<option value=${key}>${preset.label}</option>`,
                 )}
             </select>
             <p class="pf-c-form__helper-text">
@@ -329,15 +342,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             </ak-form-group>`;
         }
 
+        const formValues = this.getFormValues();
         return html`<ak-form-group open label="${msg("Score Configuration")}">
             <div class="pf-c-form">
                 <ak-number-input
                     label=${msg("Score Minimum Threshold")}
                     required
                     name="scoreMinThreshold"
-                    value="${ifDefined(
-                        this.instance?.scoreMinThreshold ?? this.currentPreset.score?.min ?? 0.5,
-                    )}"
+                    value="${ifDefined(formValues.scoreMinThreshold)}"
                     help=${msg(
                         "Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.",
                     )}
@@ -346,15 +358,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     label=${msg("Score Maximum Threshold")}
                     required
                     name="scoreMaxThreshold"
-                    value="${ifDefined(
-                        this.instance?.scoreMaxThreshold ?? this.currentPreset.score?.max ?? 1.0,
-                    )}"
+                    value="${ifDefined(formValues.scoreMaxThreshold)}"
                     help=${msg(
                         "Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.",
                     )}
                 ></ak-number-input>
                 <ak-switch-input
-                    ?checked=${!!(this.instance?.errorOnInvalidScore ?? true)}
+                    ?checked=${formValues.errorOnInvalidScore}
                     name="errorOnInvalidScore"
                     label=${msg("Error on Invalid Score")}
                     help=${msg(
@@ -366,16 +376,24 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     renderAdvancedSettings(): TemplateResult {
+        const formValues = this.getFormValues();
         return html`<ak-form-group label="${msg("Advanced Settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("JavaScript URL")} required name="jsUrl">
                     <input
                         type="url"
-                        value="${ifDefined(this.instance?.jsUrl || this.currentPreset.jsUrl)}"
+                        value="${ifDefined(formValues.jsUrl)}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
                         required
+                        @input=${(e: Event) => {
+                            const input = e.target as HTMLInputElement;
+                            this.currentFormValues = {
+                                ...this.currentFormValues,
+                                jsUrl: input.value,
+                            };
+                        }}
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -390,11 +408,18 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 >
                     <input
                         type="url"
-                        value="${ifDefined(this.instance?.apiUrl || this.currentPreset.apiUrl)}"
+                        value="${ifDefined(formValues.apiUrl)}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
                         required
+                        @input=${(e: Event) => {
+                            const input = e.target as HTMLInputElement;
+                            this.currentFormValues = {
+                                ...this.currentFormValues,
+                                apiUrl: input.value,
+                            };
+                        }}
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -407,6 +432,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     renderForm(): TemplateResult {
+        const formValues = this.getFormValues();
         return html`
             <span>
                 ${msg(
@@ -428,7 +454,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     <ak-switch-input
                         name="interactive"
                         label=${msg("Interactive")}
-                        ?checked="${this.instance?.interactive ?? this.currentPreset.interactive}"
+                        ?checked="${formValues.interactive}"
                         help=${msg(
                             "Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.",
                         )}
