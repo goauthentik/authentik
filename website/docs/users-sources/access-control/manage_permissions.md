@@ -71,16 +71,16 @@ To assign or remove _global_ permissions for a role:
 
 ### Assign `Can view Admin interface` permissions
 
-You can grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have full access to the Admin interface.
+You can use a role to grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have _full_ access to the Admin interface.
 
 To assign the `Can view Admin interface` permission to a role:
 
 1. Go to the Admin interface and navigate to **Directory > Role**.
-2. Select a specific role the clicking on the role's name.
+2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.
-5. In the **Assign permissions** area, click **Assign Permission**.
-6. In the **Assign permission to user** box, click the plus sign (**+**), enter `admin` in the Search field and click the search icon.
+5. In the **Assigned global permissions** area, click **Assign Permission**.
+6. In the **Assign permission to role** box, click the plus sign (**+**), enter `admin` in the Search field and click the search icon.
 7. Select the returned permission, click **Add**, and then click **Assign** to save your changes and close the box.
 
 Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.

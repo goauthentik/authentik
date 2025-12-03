@@ -29,7 +29,7 @@ The fundamental steps to implement initial permissions are as follows:
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 :::info
-Typically, initial permissions are assigned to a role that is not a super-user nor administrator. In this scenario, the administrator needs to verify that the user has the `Can view Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
+Typically, initial permissions are assigned to non-super-user, non-administrator roles. In this scenario, the administrator needs to verify that the user has the `Can view Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
 
 Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.
 :::

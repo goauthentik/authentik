@@ -20,7 +20,7 @@ A [role](../roles/index.md) is a collection of permissions. A user or a group ca
 - Example 3 (indirect group): Elaine is part of the group "Accounting", which has a parent group "Back office", which has a parent group "Employees". The group "Employees" has the role "Read-only", which has view permissions on all object types. So Elaine has the permission to view any object in authentik through indirect membership of the "Employees" group.
 
 :::info
-From 2025.12, authentik's access control is fully role-based. Before 2025.12, Admins could assign permissions to individual [users](../user/index.mdx). To mimic this behavior of "User permissions", an Admin can
+From 2025.12, authentik's access control is fully role-based. Before 2025.12, Admins could assign permissions to individual [users](../user/index.mdx). To mimic this behavior of "User permissions", an Admin can assign a user to role that has the required permissions.
 :::
 
 There are two main types of permissions in authentik:
@@ -36,16 +36,18 @@ Global permissions define coarse-grained access control. For example, a role wit
 
 ### Object permissions
 
-An object permission grants permission on a single object (e.g. a [user](../user/index.mdx), a [group](../groups/index.mdx), a [role](../roles/index.md), a [flow](../../add-secure-apps/flows-stages/flow/index.md), etc.) instead of all objects of a specific type. For example, a role with only the object permission to change the Default Authentication flow will not be able to change any other flow.
+An object permission grants permission on a single object (e.g. a [user](../user/index.mdx), a [group](../groups/index.mdx), a [role](../roles/index.md), a [flow](../../add-secure-apps/flows-stages/flow/index.md), etc.) instead of all objects of a specific type.
+
+For example, a role with only the object permission to change the Default Authentication flow will not be able to change any other flow.
 
 ## Viewing permissions
 
-Many objects in authentik's Admin interface have a Permissions view to double-check which roles have access to that particular object. Those permissions describe what those roles can do TO the object detailed on the page.
+Many objects in authentik's Admin interface have a **Permissions** view to check which roles have access to that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
 
-For example, the Admin interface UI shown below shows the Permissions tab for the user named Peter, with a list of what users can do what to the user object for Peter.
+For example, the screenshot below shows the Permissions tab for the user named Peter, listing what actions users can perform on Peter's user object.
 
 ![](./user-page.png)
 
-You can see in the **Role Permissions** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role view permission.
+You can see in the **Role Permissions** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role only has the view permission.
 
 Hover over a checkmark to see whether that permission is granted by a global permission or an object permission.
