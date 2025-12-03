@@ -26,5 +26,17 @@
         "format-imports": {
             "eslint": "$eslint"
         }
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "onFail": "warn",
+            "version": ">=11.6.2"
+        }
     }
 }
