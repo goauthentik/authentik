@@ -5938,59 +5938,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
   <target>경고: 초대 스테이지는 어떤 플로우에도 바인딩 되어있지 않습니다. 초대가 예상대로 작동하지 않을 수 있습니다.</target>
 </trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-  <target>가짜-로캘 (테스트용)</target>
-</trans-unit>
-<trans-unit id="s63e71d20d1eaca93">
-  <source>German</source>
-  <target>독일어</target>
-</trans-unit>
-<trans-unit id="s4caed5b7a7e5d89b">
-  <source>English</source>
-  <target>영어</target>
-</trans-unit>
-<trans-unit id="sf1868dc19e3917bb">
-  <source>Spanish</source>
-  <target>스페인어</target>
-</trans-unit>
-<trans-unit id="s75a27f43413e02c5">
-  <source>French</source>
-  <target>프랑스어</target>
-</trans-unit>
-<trans-unit id="sd48cc52117f4d68b">
-  <source>Italian</source>
-</trans-unit>
-<trans-unit id="sdd35b688281b6dea">
-  <source>Japanese</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-  <target>한국어</target>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
-</trans-unit>
-<trans-unit id="s03f49e598ffb11cc">
-  <source>Polish</source>
-  <target>폴란드어</target>
-</trans-unit>
-<trans-unit id="sa30c12014e955946">
-  <source>Russian</source>
-  <target>러시아어</target>
-</trans-unit>
-<trans-unit id="s9d2d00982edafabb">
-  <source>Turkish</source>
-  <target>터키어</target>
-</trans-unit>
-<trans-unit id="s354e0a9f146d2869">
-  <source>Chinese (simplified)</source>
-  <target>중국어 (간체)</target>
-</trans-unit>
-<trans-unit id="se3e6af2ce24d80e8">
-  <source>Chinese (traditional)</source>
-  <target>중국어 (번체)</target>
-</trans-unit>
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
   <target>본인이 아닌가요?</target>
@@ -9170,8 +9117,65 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
-<trans-unit id="sc94e314312a8900c">
-  <source>Czech</source>
+<trans-unit id="en">
+  <source>English</source>
+  <target>영어 (English)</target>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+  <target>의사언어</target>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech (Čeština)</source>
+  <target>체코어 (Čeština)</target>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German (Deutsch)</source>
+  <target>독일어 (Deutsch)</target>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish (Español)</source>
+  <target>스페인어 (Español)</target>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French (Français)</source>
+  <target>프랑스어 (Français)</target>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian (Italiano)</source>
+  <target>이탈리아어 (Italiano)</target>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese (日本語)</source>
+  <target>일본어 (日本語)</target>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean (한국어)</source>
+  <target>한국어 (Korean)</target>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch (Nederlands)</source>
+  <target>네덜란드어 (Nederlands)</target>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish (Polski)</source>
+  <target>폴란드어 (Polski)</target>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian (Русский)</source>
+  <target>러시아어 (Русский)</target>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish (Türkçe)</source>
+  <target>터키어 (Türkçe)</target>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified (简体中文)</source>
+  <target>중국어(간체) (简体中文)</target>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional (繁體中文)</source>
+  <target>중국어(번체) (繁體中文)</target>
 </trans-unit>
 </body>
 </file>

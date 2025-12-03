@@ -6000,60 +6000,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
   <target>Uyarı: Hiçbir davetiye aşaması herhangi bir akışa bağlı değildir. Davetiyeler beklendiği gibi çalışmaz.</target>
 </trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-  <target>Pseudolocale (test için)</target>
-</trans-unit>
-<trans-unit id="s63e71d20d1eaca93">
-  <source>German</source>
-  <target>Almanca</target>
-</trans-unit>
-<trans-unit id="s4caed5b7a7e5d89b">
-  <source>English</source>
-  <target>İngilizce</target>
-</trans-unit>
-<trans-unit id="sf1868dc19e3917bb">
-  <source>Spanish</source>
-  <target>İspanyolca</target>
-</trans-unit>
-<trans-unit id="s75a27f43413e02c5">
-  <source>French</source>
-  <target>Fransızca</target>
-</trans-unit>
-<trans-unit id="sd48cc52117f4d68b">
-  <source>Italian</source>
-</trans-unit>
-<trans-unit id="sdd35b688281b6dea">
-  <source>Japanese</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-  <target>Kore dili</target>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
-  <target>Hollanda dili</target>
-</trans-unit>
-<trans-unit id="s03f49e598ffb11cc">
-  <source>Polish</source>
-  <target>Lehçe</target>
-</trans-unit>
-<trans-unit id="sa30c12014e955946">
-  <source>Russian</source>
-  <target>Rusça</target>
-</trans-unit>
-<trans-unit id="s9d2d00982edafabb">
-  <source>Turkish</source>
-  <target>Türkçe</target>
-</trans-unit>
-<trans-unit id="s354e0a9f146d2869">
-  <source>Chinese (simplified)</source>
-  <target>Çince (basitleştirilmiş)</target>
-</trans-unit>
-<trans-unit id="se3e6af2ce24d80e8">
-  <source>Chinese (traditional)</source>
-  <target>Çince (geleneksel)</target>
-</trans-unit>
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
   <target>Sen değil mi?</target>
@@ -9276,8 +9222,65 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
-<trans-unit id="sc94e314312a8900c">
-  <source>Czech</source>
+<trans-unit id="en">
+  <source>English</source>
+  <target>İngilizce</target>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+  <target>Sahte dil</target>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech (Čeština)</source>
+  <target>Çekçe (Čeština)</target>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German (Deutsch)</source>
+  <target>Almanca (Deutsch)</target>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish (Español)</source>
+  <target>İspanyolca (Español)</target>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French (Français)</source>
+  <target>Fransızca (Français)</target>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian (Italiano)</source>
+  <target>İtalyanca (Italiano)</target>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese (日本語)</source>
+  <target>Japonca (日本語)</target>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean (한국어)</source>
+  <target>Korece (한국어)</target>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch (Nederlands)</source>
+  <target>Hollandaca (Nederlands)</target>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish (Polski)</source>
+  <target>Lehçe (Polski)</target>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian (Русский)</source>
+  <target>Rusça (Русский)</target>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish (Türkçe)</source>
+  <target>Türkçe (Turkish)</target>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified (简体中文)</source>
+  <target>Çince (Basitleştirilmiş) (简体中文)</target>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional (繁體中文)</source>
+  <target>Çince (Geleneksel) (繁體中文)</target>
 </trans-unit>
 </body>
 </file>

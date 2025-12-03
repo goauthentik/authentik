@@ -229,7 +229,7 @@ ${prompt.initialValue}</textarea
                     ([label, code]) =>
                         html`<option value=${code} ?selected=${code === selected}>
                             ${label}
-                        </option> `,
+                        </option>`,
                 );
 
                 return html`<select
@@ -240,6 +240,7 @@ ${prompt.initialValue}</textarea
                     <option value="" ?selected=${!selected}>
                         ${msg("Auto-detect (based on your browser)")}
                     </option>
+                    <hr></hr>
                     ${options}
                 </select>`;
             }

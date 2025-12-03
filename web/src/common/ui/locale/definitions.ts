@@ -28,21 +28,21 @@ const sourceTargetModule: LocaleModule = {
  * These are thunked functions to allow for localization via `msg()`.
  */
 export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
-    [sourceLocale]: () => msg("English"),
-    [PseudoLocale]: () => msg("Pseudolocale (for testing)"),
-    "cs-CZ": () => msg("Czech"),
-    "de-DE": () => msg("German"),
-    "es-ES": () => msg("Spanish"),
-    "fr-FR": () => msg("French"),
-    "it-IT": () => msg("Italian"),
-    "ja-JP": () => msg("Japanese"),
-    "ko-KR": () => msg("Korean"),
-    "nl-NL": () => msg("Dutch"),
-    "pl-PL": () => msg("Polish"),
-    "ru-RU": () => msg("Russian"),
-    "tr-TR": () => msg("Turkish"),
-    "zh-Hans": () => msg("Chinese (simplified)"),
-    "zh-Hant": () => msg("Chinese (traditional)"),
+    [sourceLocale]: () => msg("English", { id: "en" }),
+    [PseudoLocale]: () => msg("Pseudolocale", { id: "pseudo-LOCALE" }),
+    "cs-CZ": () => msg("Czech (Čeština)", { id: "cs-CZ" }),
+    "de-DE": () => msg("German (Deutsch)", { id: "de-DE" }),
+    "es-ES": () => msg("Spanish (Español)", { id: "es-ES" }),
+    "fr-FR": () => msg("French (Français)", { id: "fr-FR" }),
+    "it-IT": () => msg("Italian (Italiano)", { id: "it-IT" }),
+    "ja-JP": () => msg("Japanese (日本語)", { id: "ja-JP" }),
+    "ko-KR": () => msg("Korean (한국어)", { id: "ko-KR" }),
+    "nl-NL": () => msg("Dutch (Nederlands)", { id: "nl-NL" }),
+    "pl-PL": () => msg("Polish (Polski)", { id: "pl-PL" }),
+    "ru-RU": () => msg("Russian (Русский)", { id: "ru-RU" }),
+    "tr-TR": () => msg("Turkish (Türkçe)", { id: "tr-TR" }),
+    "zh-Hans": () => msg("Chinese Simplified (简体中文)", { id: "zh-Hans" }),
+    "zh-Hant": () => msg("Chinese Traditional (繁體中文)", { id: "zh-Hant" }),
 };
 
 /**

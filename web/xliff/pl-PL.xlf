@@ -5961,60 +5961,6 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
   <target>Ostrzeżenie: żaden etap zaproszenia nie jest powiązany z żadnym przepływem. Zaproszenia nie będą działać zgodnie z oczekiwaniami.</target>
 </trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-  <target>Pseudo ustawienia regionalne (do testowania)</target>
-</trans-unit>
-<trans-unit id="s63e71d20d1eaca93">
-  <source>German</source>
-  <target>Niemiecki</target>
-</trans-unit>
-<trans-unit id="s4caed5b7a7e5d89b">
-  <source>English</source>
-  <target>Angielski</target>
-</trans-unit>
-<trans-unit id="sf1868dc19e3917bb">
-  <source>Spanish</source>
-  <target>Hiszpański</target>
-</trans-unit>
-<trans-unit id="s75a27f43413e02c5">
-  <source>French</source>
-  <target>Francuski</target>
-</trans-unit>
-<trans-unit id="sd48cc52117f4d68b">
-  <source>Italian</source>
-</trans-unit>
-<trans-unit id="sdd35b688281b6dea">
-  <source>Japanese</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-  <target>Koreański</target>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
-  <target>Holenderski</target>
-</trans-unit>
-<trans-unit id="s03f49e598ffb11cc">
-  <source>Polish</source>
-  <target>Polski</target>
-</trans-unit>
-<trans-unit id="sa30c12014e955946">
-  <source>Russian</source>
-  <target>Rosyjski</target>
-</trans-unit>
-<trans-unit id="s9d2d00982edafabb">
-  <source>Turkish</source>
-  <target>Turecki</target>
-</trans-unit>
-<trans-unit id="s354e0a9f146d2869">
-  <source>Chinese (simplified)</source>
-  <target>Chiński (uproszczony)</target>
-</trans-unit>
-<trans-unit id="se3e6af2ce24d80e8">
-  <source>Chinese (traditional)</source>
-  <target>Chiński (tradycyjny)</target>
-</trans-unit>
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
   <target>Nie ty?</target>
@@ -9211,8 +9157,65 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
-<trans-unit id="sc94e314312a8900c">
-  <source>Czech</source>
+<trans-unit id="en">
+  <source>English</source>
+  <target>Angielski (English)</target>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+  <target>Pseudojęzyk</target>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech (Čeština)</source>
+  <target>Czeski (Čeština)</target>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German (Deutsch)</source>
+  <target>Niemiecki (Deutsch)</target>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish (Español)</source>
+  <target>Hiszpański (Español)</target>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French (Français)</source>
+  <target>Francuski (Français)</target>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian (Italiano)</source>
+  <target>Włoski (Italiano)</target>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese (日本語)</source>
+  <target>Japoński (日本語)</target>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean (한국어)</source>
+  <target>Koreański (한국어)</target>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch (Nederlands)</source>
+  <target>Niderlandzki (Nederlands)</target>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish (Polski)</source>
+  <target>Polski (Polish)</target>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian (Русский)</source>
+  <target>Rosyjski (Русский)</target>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish (Türkçe)</source>
+  <target>Turecki (Türkçe)</target>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified (简体中文)</source>
+  <target>Chiński (Uproszczony) (简体中文)</target>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional (繁體中文)</source>
+  <target>Chiński (Tradycyjny) (繁體中文)</target>
 </trans-unit>
 </body>
 </file>
