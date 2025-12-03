@@ -27,16 +27,16 @@ except OSError:
     ipc_key = None
 
 
-def validate_auth(header: bytes) -> str | None:
+def validate_auth(header: bytes, format="bearer") -> str | None:
     """Validate that the header is in a correct format,
     returns type and credentials"""
     auth_credentials = header.decode().strip()
     if auth_credentials == "" or " " not in auth_credentials:
         return None
     auth_type, _, auth_credentials = auth_credentials.partition(" ")
-    if auth_type.lower() != "bearer":
+    if not compare_digest(auth_type.lower(), format):
         LOGGER.debug("Unsupported authentication type, denying", type=auth_type.lower())
-        raise AuthenticationFailed("Unsupported authentication type")
+        return None
     if auth_credentials == "":  # nosec # noqa
         raise AuthenticationFailed("Malformed header")
     return auth_credentials

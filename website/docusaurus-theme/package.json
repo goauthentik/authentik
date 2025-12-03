@@ -26,8 +26,8 @@
         "#theme/*": "./theme/*"
     },
     "dependencies": {
-        "@docusaurus/preset-classic": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.2.1",
+        "@docusaurus/preset-classic": "^3.9.2",
+        "@goauthentik/docusaurus-config": "^2.2.2",
         "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",

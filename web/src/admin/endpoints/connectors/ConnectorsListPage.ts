@@ -22,7 +22,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
     public pageIcon = "pf-icon pf-icon-data-source";
     public pageTitle = msg("Connectors");
     public pageDescription = msg(
-        "Configure how devices communicate with authentik and external sources device data is fetched from.",
+        "Configure how devices connect with authentik and ingest external device data.",
     );
 
     protected searchEnabled: boolean = true;

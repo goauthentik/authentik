@@ -4,11 +4,12 @@ from django.urls import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConnection
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.facts import OSFamily
-from authentik.endpoints.models import Device, DeviceGroup
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.lib.generators import generate_id
 
 CHECK_IN_DATA_VALID = {
@@ -35,9 +36,7 @@ CHECK_IN_DATA_VALID = {
 class TestAgentAPI(APITestCase):
 
     def setUp(self):
-        self.connector = AgentConnector.objects.create(
-            name=generate_id(),
-        )
+        self.connector = AgentConnector.objects.create(name=generate_id())
         self.token = EnrollmentToken.objects.create(name=generate_id(), connector=self.connector)
         self.device = Device.objects.create(
             identifier=generate_id(),
@@ -59,8 +58,18 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_enroll_token_delete(self):
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": self.device.identifier, "device_name": "bar"},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(DeviceToken.objects.filter(pk=self.device_token.pk).exists())
+        self.assertEqual(DeviceToken.objects.filter(device=self.connection).count(), 1)
+
     def test_enroll_group(self):
-        device_group = DeviceGroup.objects.create(name=generate_id())
+        device_group = DeviceAccessGroup.objects.create(name=generate_id())
         self.token.device_group = device_group
         self.token.save()
         ident = generate_id()
@@ -70,9 +79,9 @@ class TestAgentAPI(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 200)
-        device = Device.objects.filter(identifier=ident).first()
+        device = Device.filter_not_expired(identifier=ident).first()
         self.assertIsNotNone(device)
-        self.assertEqual(device.group, device_group)
+        self.assertEqual(device.access_group, device_group)
 
     def test_enroll_expired(self):
         dev_id = generate_id()
@@ -85,12 +94,13 @@ class TestAgentAPI(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(Device.objects.filter(identifier=dev_id).exists())
+        self.assertFalse(Device.filter_not_expired(identifier=dev_id).exists())
 
+    @reconcile_app("authentik_crypto")
     def test_config(self):
         response = self.client.get(
             reverse("authentik_api:agentconnector-agent-config"),
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -98,7 +108,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 204)
 
@@ -109,7 +119,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -120,7 +130,7 @@ class TestAgentAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
             data=CHECK_IN_DATA_VALID,
-            HTTP_AUTHORIZATION=f"Bearer {self.device_token.key}",
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 403)
 

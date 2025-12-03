@@ -50,6 +50,8 @@ def register_signals(
             return
         if _CTX_INHIBIT_DISPATCH.get():
             return
+        if not provider_type.objects.exists():
+            return
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
             instance.pk,
@@ -62,6 +64,8 @@ def register_signals(
     def model_pre_delete(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
         if _CTX_INHIBIT_DISPATCH.get():
+            return
+        if not provider_type.objects.exists():
             return
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
@@ -79,6 +83,8 @@ def register_signals(
         if action not in ["post_add", "post_remove"]:
             return
         if _CTX_INHIBIT_DISPATCH.get():
+            return
+        if not provider_type.objects.exists():
             return
         task_sync_m2m_dispatch.send(instance.pk, action, list(pk_set), reverse)
 
