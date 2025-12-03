@@ -13,16 +13,16 @@
 /* #region Monochrome */
 
 html[data-theme="dark"] {
-    --pf-global--palette--black-50: #e0e0e0;
-    --pf-global--palette--black-100: #c6c7c8;
-    --pf-global--palette--black-200: #aaabac;
-    --pf-global--palette--black-300: #868789;
-    --pf-global--palette--black-400: #57585a;
-    --pf-global--palette--black-500: #444548;
-    --pf-global--palette--black-600: #36373a;
-    --pf-global--palette--black-700: #26292d;
-    --pf-global--palette--black-800: #1b1d21;
-    --pf-global--palette--black-900: #0f1214;
+    --pf-global--palette--black-50: oklab(0.9067 -0 0);
+    --pf-global--palette--black-100: oklab(0.8292 -0.0007 -0.0016);
+    --pf-global--palette--black-200: oklab(0.7407 -0.0007 -0.0017);
+    --pf-global--palette--black-300: oklab(0.6232 -0.0003 -0.0032);
+    --pf-global--palette--black-400: oklab(0.4602 -0.0003 -0.0034);
+    --pf-global--palette--black-500: oklab(0.3906 0.0001 -0.0052);
+    --pf-global--palette--black-600: oklab(0.3369 0.0001 -0.0054);
+    --pf-global--palette--black-700: oklab(0.2795 -0.0021 -0.0083);
+    --pf-global--palette--black-800: oklab(0.2303 -0.0008 -0.0083);
+    --pf-global--palette--black-900: oklab(0.1798 -0.0034 -0.0053);
 }
 
 /* #endregion */
@@ -30,8 +30,8 @@ html[data-theme="dark"] {
 /* #region Red */
 
 html[data-theme="dark"] {
-    --pf-global--palette--red-9999: #fe5142;
-    --pf-global--palette--red-8888: #ff7468;
+    --pf-global--palette--red-9999: oklab(0.6739 0.1853 0.1022);
+    --pf-global--palette--red-8888: oklab(0.723 0.153 0.0784);
 }
 
 /* #endregion */
@@ -52,18 +52,18 @@ html[data-theme="dark"] {
 /* #region Background */
 
 html[data-theme="dark"] {
-    --pf-global--BackgroundColor--100: #1b1d21;
-    --pf-global--BackgroundColor--150: #212427;
-    --pf-global--BackgroundColor--200: #0f1214;
-    --pf-global--BackgroundColor--300: #26292d;
-    --pf-global--BackgroundColor--400: #36373a;
-    --pf-global--BackgroundColor--light-100: #1b1d21;
-    --pf-global--BackgroundColor--light-200: #0f1214;
-    --pf-global--BackgroundColor--light-300: #26292d;
-    --pf-global--BackgroundColor--dark-100: #1b1d21;
-    --pf-global--BackgroundColor--dark-200: #0f1214;
-    --pf-global--BackgroundColor--dark-300: #26292d;
-    --pf-global--BackgroundColor--dark-400: #36373a;
+    --pf-global--BackgroundColor--100: oklab(0.2303 -0.0008 -0.0083);
+    --pf-global--BackgroundColor--150: oklab(0.2585 -0.0027 -0.0066);
+    --pf-global--BackgroundColor--200: oklab(0.1798 -0.0034 -0.0053);
+    --pf-global--BackgroundColor--300: oklab(0.2795 -0.0021 -0.0083);
+    --pf-global--BackgroundColor--400: oklab(0.3369 0.0001 -0.0054);
+    --pf-global--BackgroundColor--light-100: oklab(0.2303 -0.0008 -0.0083);
+    --pf-global--BackgroundColor--light-200: oklab(0.1798 -0.0034 -0.0053);
+    --pf-global--BackgroundColor--light-300: oklab(0.2795 -0.0021 -0.0083);
+    --pf-global--BackgroundColor--dark-100: oklab(0.2303 -0.0008 -0.0083);
+    --pf-global--BackgroundColor--dark-200: oklab(0.1798 -0.0034 -0.0053);
+    --pf-global--BackgroundColor--dark-300: oklab(0.2795 -0.0021 -0.0083);
+    --pf-global--BackgroundColor--dark-400: oklab(0.3369 0.0001 -0.0054);
 }
 
 /* #endregion */
@@ -71,10 +71,10 @@ html[data-theme="dark"] {
 /* #region Border */
 
 html[data-theme="dark"] {
-    --pf-global--BorderColor--100: #444548;
-    --pf-global--BorderColor--200: #57585a;
-    --pf-global--BorderColor--300: #444548;
-    --pf-global--BorderColor--400: #aaabac;
+    --pf-global--BorderColor--100: oklab(0.3906 0.0001 -0.0052);
+    --pf-global--BorderColor--200: oklab(0.4602 -0.0003 -0.0034);
+    --pf-global--BorderColor--300: oklab(0.3906 0.0001 -0.0052);
+    --pf-global--BorderColor--400: oklab(0.7407 -0.0007 -0.0017);
 }
 
 /* #endregion */
@@ -82,8 +82,8 @@ html[data-theme="dark"] {
 /* #region Base */
 
 html[data-theme="dark"] {
-    --pf-global--Color--100: #e0e0e0;
-    --pf-global--Color--200: #aaabac;
+    --pf-global--Color--100: oklab(0.9067 -0 0);
+    --pf-global--Color--200: oklab(0.7407 -0.0007 -0.0017);
 }
 
 /* #endregion */
@@ -99,7 +99,7 @@ html[data-theme="dark"] {
 /* #region Primary */
 
 html[data-theme="dark"] {
-    --pf-global--primary-color--300: #06c;
+    --pf-global--primary-color--300: oklab(0.522 -0.0434 -0.1717);
     --pf-global--primary-color--100: var(--pf-global--primary-color--300);
 }
 
@@ -109,8 +109,8 @@ html[data-theme="dark"] {
 
 html[data-theme="dark"] {
     --pf-global--link--Color: var(--pf-v4-global--palette--blue-300);
-    --pf-global--link--Color--hover: #73bcf7;
-    --pf-global--link--Color--visited: #a18fff;
+    --pf-global--link--Color--hover: oklab(0.7706 -0.0485 -0.1012);
+    --pf-global--link--Color--visited: oklab(0.7137 0.0522 -0.151);
 }
 
 /* #endregion */
@@ -118,9 +118,9 @@ html[data-theme="dark"] {
 /* #region Disabled */
 
 html[data-theme="dark"] {
-    --pf-global--disabled-color--100: #57585a;
-    --pf-global--disabled-color--200: #444548;
-    --pf-global--disabled-color--300: #aaabac;
+    --pf-global--disabled-color--100: oklab(0.4602 -0.0003 -0.0034);
+    --pf-global--disabled-color--200: oklab(0.3906 0.0001 -0.0052);
+    --pf-global--disabled-color--300: oklab(0.7407 -0.0007 -0.0017);
 }
 
 /* #endregion */
@@ -128,8 +128,8 @@ html[data-theme="dark"] {
 /* #region Icon */
 
 html[data-theme="dark"] {
-    --pf-global--icon--Color--light: #aaabac;
-    --pf-global--icon--Color--dark: #aaabac;
+    --pf-global--icon--Color--light: oklab(0.7407 -0.0007 -0.0017);
+    --pf-global--icon--Color--dark: oklab(0.7407 -0.0007 -0.0017);
 }
 
 /* #endregion */
@@ -137,8 +137,8 @@ html[data-theme="dark"] {
 /* #region Base */
 
 html[data-theme="dark"] {
-    --pf-global--Color--dark-100: #e0e0e0;
-    --pf-global--Color--dark-200: #aaabac;
+    --pf-global--Color--dark-100: oklab(0.9067 -0 0);
+    --pf-global--Color--dark-200: oklab(0.7407 -0.0007 -0.0017);
 }
 
 /* #endregion */
@@ -146,9 +146,9 @@ html[data-theme="dark"] {
 /* #region Light */
 
 html[data-theme="dark"] {
-    --pf-global--Color--light-100: #e0e0e0;
-    --pf-global--Color--light-200: #aaabac;
-    --pf-global--Color--light-300: #3c3f42;
+    --pf-global--Color--light-100: oklab(0.9067 -0 0);
+    --pf-global--Color--light-200: oklab(0.7407 -0.0007 -0.0017);
+    --pf-global--Color--light-300: oklab(0.3659 -0.0025 -0.0061);
 }
 
 /* #endregion */
@@ -156,8 +156,8 @@ html[data-theme="dark"] {
 /* #region Border */
 
 html[data-theme="dark"] {
-    --pf-global--BorderColor--dark-100: #444548;
-    --pf-global--BorderColor--light-100: #444548;
+    --pf-global--BorderColor--dark-100: oklab(0.3906 0.0001 -0.0052);
+    --pf-global--BorderColor--light-100: oklab(0.3906 0.0001 -0.0052);
 }
 
 /* #endregion */
@@ -205,9 +205,9 @@ html[data-theme="dark"] {
 /* #region Warning */
 
 html[data-theme="dark"] {
-    --pf-global--warning-color--100: #f0ab00;
+    --pf-global--warning-color--100: oklab(0.7864 0.0298 0.1604);
     /* --pf-global--warning-color--100: var(--pf-global--palette--gold-300); */
-    --pf-global--warning-color--200: #f4c145;
+    --pf-global--warning-color--200: oklab(0.8354 0.0112 0.1471);
     /* --pf-global--warning-color--200: var(--pf-global--palette--gold-50); */
 }
 
@@ -225,7 +225,7 @@ html[data-theme="dark"] {
 /* #region Success */
 
 html[data-theme="dark"] {
-    --pf-global--success-color--100: #5ba352;
+    --pf-global--success-color--100: oklab(0.6488 -0.1066 0.0846);
     --pf-global--success-color--200: var(--pf-global--palette--green-50);
 }
 
