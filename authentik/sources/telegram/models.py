@@ -1,6 +1,7 @@
 """Telegram source"""
 
 from typing import Any
+from urllib.parse import urlencode
 
 from django.db import models
 from django.http import HttpRequest
@@ -75,6 +76,12 @@ class TelegramSource(Source):
                 "title": self.name,
                 "component": "ak-user-settings-source-telegram",
                 "icon_url": self.icon_url,
+                "configure_url": urlencode(
+                    {
+                        "bot_username": self.bot_username,
+                        "request_message_access": str(self.request_message_access),
+                    }
+                ),
             }
         )
 
