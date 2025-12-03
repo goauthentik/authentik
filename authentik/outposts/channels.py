@@ -5,7 +5,7 @@ from channels.exceptions import DenyConnection
 from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
 
-from authentik.api.authentication import bearer_auth
+from authentik.api.authentication import TokenAuthentication
 
 LOGGER = get_logger()
 
@@ -32,7 +32,7 @@ class TokenOutpostMiddleware:
         raw_header = headers[b"authorization"]
 
         try:
-            user = bearer_auth(raw_header)
+            user = TokenAuthentication().bearer_auth(raw_header)
             # user is only None when no header was given, in which case we deny too
             if not user:
                 raise DenyConnection()
