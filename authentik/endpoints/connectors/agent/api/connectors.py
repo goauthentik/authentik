@@ -43,12 +43,15 @@ class AgentConnectorSerializer(ConnectorSerializer):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
             "snapshot_expiry",
+            "auth_session_duration",
             "auth_terminate_session_on_expiry",
             "refresh_interval",
             "authorization_flow",
             "nss_uid_offset",
             "nss_gid_offset",
             "challenge_key",
+            "challenge_idle_timeout",
+            "challenge_trigger_check_in",
             "jwt_federation_providers",
         ]
 
@@ -132,6 +135,7 @@ class AgentConnectorViewSet(
             device=device,
             connector=token.connector,
         )
+        DeviceToken.objects.filter(device=connection).delete()
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {
@@ -150,7 +154,7 @@ class AgentConnectorViewSet(
         connector: AgentConnector = token.device.connector.agentconnector
         return Response(
             AgentConfigSerializer(
-                connector, context={"request": request, "device": token.device}
+                connector, context={"request": request, "device": token.device.device}
             ).data
         )
 

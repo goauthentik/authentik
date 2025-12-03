@@ -79,12 +79,12 @@ class AgentConnectorViewSetMixin:
         if not raw_token:
             LOGGER.warning("Missing token")
             return HttpResponseBadRequest()
-        device = Device.objects.filter(name=request.query_params.get("device")).first()
+        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
         if not device:
             LOGGER.warning("Couldn't find device")
             raise Http404
 
-        federated_token = agent_auth_fed_validate(raw_token, device)
+        federated_token, connector = agent_auth_fed_validate(raw_token, device)
         LOGGER.info(
             "successfully verified JWT with provider", provider=federated_token.provider.name
         )
@@ -95,7 +95,7 @@ class AgentConnectorViewSetMixin:
                 {"policy_result": "Policy denied access", "policy_messages": policy_result.messages}
             )
 
-        token, exp = agent_auth_issue_token(device, federated_token.user)
+        token, exp = agent_auth_issue_token(device, connector, federated_token.user)
         rel_exp = int((exp - now()).total_seconds())
         Event.new(
             EventAction.LOGIN,

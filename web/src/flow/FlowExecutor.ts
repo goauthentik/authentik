@@ -1,5 +1,4 @@
 import "#elements/LoadingOverlay";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
@@ -24,7 +23,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
@@ -374,6 +373,12 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-user-login>`;
+            case "ak-stage-endpoint-agent":
+                await import("#flow/stages/endpoint/agent/EndpointAgentStage");
+                return html`<ak-stage-endpoint-agent
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-endpoint-agent>`;
             // Sources
             case "ak-source-plex":
                 return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;
@@ -479,13 +484,7 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    <img
-                        class="branding-logo"
-                        part="branding-logo"
-                        src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        alt="${msg("authentik Logo")}"
-                        role="presentation"
-                    />
+                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

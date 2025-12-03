@@ -205,6 +205,21 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
+                <ak-text-input
+                    name="serviceProviderConfigCacheTimeout"
+                    label=${msg("Service Provider Config cache timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.serviceProviderConfigCacheTimeout ?? "hours=1"}"
+                    .errorMessages=${errors.service_provider_config_cache_timeout}
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
                 <ak-form-element-horizontal name="dryRun">
                     <label class="pf-c-switch">
                         <input

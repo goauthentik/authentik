@@ -224,6 +224,15 @@ class DiscordOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
+class SlackOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Slack."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Slack OAuth Source")
+        verbose_name_plural = _("Slack OAuth Sources")
+
+
 class PatreonOAuthSource(CreatableType, OAuthSource):
     """Social Login using Patreon."""
 
@@ -322,6 +331,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    refresh_token = models.TextField(blank=True, null=True, default=None)
     expires = models.DateTimeField(default=now)
 
     @property
@@ -335,10 +345,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
         )
 
         return UserOAuthSourceConnectionSerializer
-
-    def save(self, *args, **kwargs):
-        self.access_token = self.access_token or None
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("User OAuth Source Connection")

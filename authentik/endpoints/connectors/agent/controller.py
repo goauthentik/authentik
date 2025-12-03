@@ -1,4 +1,5 @@
 from plistlib import PlistFormat, dumps
+from uuid import uuid4
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
@@ -63,18 +64,62 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return payload
 
     def _generate_mdm_config_macos(self, request: HttpRequest, token: EnrollmentToken) -> str:
+        token_uuid = str(token.pk).upper()
         payload = dumps(
             {
                 "PayloadContent": [
+                    # Config for authentik Platform Agent (sysd)
                     {
                         "PayloadDisplayName": "authentik Platform",
-                        "PayloadIdentifier": f"io.goauthentik.platform.{str(token.pk).upper()}",
+                        "PayloadIdentifier": f"io.goauthentik.platform.{token_uuid}",
                         "PayloadType": "io.goauthentik.platform",
-                        "PayloadUUID": str(token.pk).upper(),
+                        "PayloadUUID": str(uuid4()),
                         "PayloadVersion": 1,
                         "RegistrationToken": token.key,
                         "URL": request.build_absolute_uri(reverse("authentik_core:root-redirect")),
-                    }
+                    },
+                    # Config for MDM-associated domains (required for PSSO)
+                    {
+                        "PayloadDisplayName": "Associated Domains",
+                        "PayloadIdentifier": f"com.apple.associated-domains.{token_uuid}",
+                        "PayloadType": "com.apple.associated-domains",
+                        "PayloadUUID": str(uuid4()),
+                        "PayloadVersion": 1,
+                        "Configuration": [
+                            {
+                                "ApplicationIdentifier": "232G855Y8N.io.goauthentik.platform.agent",
+                                "AssociatedDomains": [f"authsrv:{request.get_host()}"],
+                                "EnableDirectDownloads": False,
+                            }
+                        ],
+                    },
+                    # Config for Platform SSO
+                    {
+                        "PayloadDisplayName": "Platform Single Sign-On",
+                        "PayloadIdentifier": f"com.apple.extensiblesso.{token_uuid}",
+                        "PayloadType": "com.apple.extensiblesso",
+                        "PayloadUUID": str(uuid4()),
+                        "PayloadVersion": 1,
+                        "ExtensionIdentifier": "io.goauthentik.platform.psso",
+                        "TeamIdentifier": "232G855Y8N",
+                        "Type": "Redirect",
+                        "URLs": [
+                            request.build_absolute_uri(reverse("authentik_core:root-redirect")),
+                        ],
+                        "PlatformSSO": {
+                            "AccountDisplayName": "authentik",
+                            "AllowDeviceIdentifiersInAttestation": True,
+                            "AuthenticationMethod": "UserSecureEnclaveKey",
+                            "EnableAuthorization": True,
+                            "EnableCreateUserAtLogin": True,
+                            "FileVaultPolicy": ["RequireAuthentication"],
+                            "LoginPolicy": ["RequireAuthentication"],
+                            "NewUserAuthorizationMode": "Standard",
+                            "UnlockPolicy": ["RequireAuthentication"],
+                            "UseSharedDeviceKeys": True,
+                            "UserAuthorizationMode": "Standard",
+                        },
+                    },
                 ],
                 "PayloadDisplayName": "authentik Platform",
                 "PayloadIdentifier": str(self.connector.pk).upper(),
