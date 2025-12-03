@@ -2,6 +2,14 @@
 
 import authentik.admin.files.fields
 from django.db import migrations
+from authentik.policies.types import CACHE_PREFIX
+
+
+def delete_applications_cache(apps, schema_editor):
+    CacheEntry = apps.get_model("django_postgres_cache", "CacheEntry")
+    db_alias = schema_editor.connection.alias
+
+    CacheEntry.objects.using(db_alias).filter(cache_key__contains=CACHE_PREFIX).delete()
 
 
 class Migration(migrations.Migration):
@@ -21,4 +29,5 @@ class Migration(migrations.Migration):
             name="icon",
             field=authentik.admin.files.fields.FileField(blank=True, default=""),
         ),
+        migrations.RunPython(code=delete_applications_cache),
     ]
