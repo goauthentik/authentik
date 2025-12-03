@@ -9206,8 +9206,8 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <target>Polski (Polish)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portugalski (Brazylia) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portugalski (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

@@ -9688,8 +9688,8 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Polnisch (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portugiesisch (Brasilien) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portugiesisch (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

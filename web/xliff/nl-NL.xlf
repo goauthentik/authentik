@@ -8805,8 +8805,8 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <target>Pools (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portugees (Brazilië) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portugees (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

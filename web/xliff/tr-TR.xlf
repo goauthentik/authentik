@@ -9271,8 +9271,8 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Lehçe (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portekizce (Brezilya) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portekizce (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

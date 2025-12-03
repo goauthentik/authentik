@@ -9860,8 +9860,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Polonais (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portugais (Brésil) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portugais (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

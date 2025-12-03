@@ -9555,8 +9555,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Polacco (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portoghese (Brasile) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portoghese (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

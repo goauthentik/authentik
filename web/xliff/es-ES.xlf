@@ -9606,8 +9606,8 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <target>Polaco (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Portugués (Brasil) (Português)</target>
+  <source>Portuguese (Português)</source>
+  <target>Portugués (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

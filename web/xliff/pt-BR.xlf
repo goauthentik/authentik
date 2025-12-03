@@ -9902,8 +9902,8 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <target>Polonês (Polski)</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Brazil) (Português)</source>
-  <target>Português (Brasil) (Portuguese)</target>
+  <source>Portuguese (Português)</source>
+  <target>Português (Portuguese)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>
