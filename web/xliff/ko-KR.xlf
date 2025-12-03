@@ -9137,6 +9137,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Spanish (Español)</source>
   <target>스페인어 (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>핀란드어 (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>프랑스어 (Français)</target>
@@ -9160,6 +9164,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>폴란드어 (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>포르투갈어(브라질) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

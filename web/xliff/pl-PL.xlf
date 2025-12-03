@@ -9177,6 +9177,10 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Spanish (Español)</source>
   <target>Hiszpański (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Fiński (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Francuski (Français)</target>
@@ -9200,6 +9204,10 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Polski (Polish)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugalski (Brazylia) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

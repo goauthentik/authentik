@@ -8776,6 +8776,10 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Spanish (Español)</source>
   <target>Spaans (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Fins (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Frans (Français)</target>
@@ -8799,6 +8803,10 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Pools (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugees (Brazilië) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

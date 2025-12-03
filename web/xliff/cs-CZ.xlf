@@ -9619,6 +9619,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Spanish (Español)</source>
   <target>Španělština (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Finština (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Francouzština (Français)</target>
@@ -9642,6 +9646,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Polština (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugalština (Brazílie) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

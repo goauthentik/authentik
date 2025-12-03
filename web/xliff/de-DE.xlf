@@ -9659,6 +9659,10 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Spanish (Español)</source>
   <target>Spanisch (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Finnisch (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Französisch (Français)</target>
@@ -9682,6 +9686,10 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Polnisch (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugiesisch (Brasilien) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

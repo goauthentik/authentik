@@ -9577,6 +9577,10 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>Spanish (Español)</source>
   <target>Español (Spanish)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Finés (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Francés (Français)</target>
@@ -9600,6 +9604,10 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Polaco (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugués (Brasil) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

@@ -9242,6 +9242,10 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Spanish (Español)</source>
   <target>İspanyolca (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Fince (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Fransızca (Français)</target>
@@ -9265,6 +9269,10 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Lehçe (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portekizce (Brezilya) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>

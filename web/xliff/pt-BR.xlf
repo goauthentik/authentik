@@ -9856,6 +9856,74 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
+<trans-unit id="en">
+  <source>English</source>
+  <target>Inglês (English)</target>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+  <target>Pseudoidioma</target>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech (Čeština)</source>
+  <target>Tcheco (Čeština)</target>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German (Deutsch)</source>
+  <target>Alemão (Deutsch)</target>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish (Español)</source>
+  <target>Espanhol (Español)</target>
+</trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Finlandês (Suomi)</target>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French (Français)</source>
+  <target>Francês (Français)</target>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian (Italiano)</source>
+  <target>Italiano (Italiano)</target>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese (日本語)</source>
+  <target>Japonês (日本語)</target>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean (한국어)</source>
+  <target>Coreano (한국어)</target>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch (Nederlands)</source>
+  <target>Holandês (Nederlands)</target>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish (Polski)</source>
+  <target>Polonês (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Português (Brasil) (Portuguese)</target>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian (Русский)</source>
+  <target>Russo (Русский)</target>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish (Türkçe)</source>
+  <target>Turco (Türkçe)</target>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified (简体中文)</source>
+  <target>Chinês (Simplificado) (简体中文)</target>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional (繁體中文)</source>
+  <target>Chinês (Tradicional) (繁體中文)</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

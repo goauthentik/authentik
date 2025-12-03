@@ -9831,6 +9831,10 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Spanish (Español)</source>
   <target>Espagnol (Español)</target>
 </trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Finnois (Suomi)</target>
+</trans-unit>
 <trans-unit id="fr-FR">
   <source>French (Français)</source>
   <target>Français (French)</target>
@@ -9854,6 +9858,10 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="pl-PL">
   <source>Polish (Polski)</source>
   <target>Polonais (Polski)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Brazil) (Português)</source>
+  <target>Portugais (Brésil) (Português)</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian (Русский)</source>
