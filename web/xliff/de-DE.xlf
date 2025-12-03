@@ -5,71 +5,71 @@
 
 <trans-unit id="en">
   <source>English</source>
-  <target>Englisch (English)</target>
+  <target>Englisch</target>
 </trans-unit>
 <trans-unit id="pseudo-LOCALE">
   <source>Pseudolocale</source>
   <target>Pseudosprache</target>
 </trans-unit>
 <trans-unit id="cs-CZ">
-  <source>Czech (Čeština)</source>
-  <target>Tschechisch (Čeština)</target>
+  <source>Czech</source>
+  <target>Tschechisch</target>
 </trans-unit>
 <trans-unit id="de-DE">
-  <source>German (Deutsch)</source>
-  <target>Deutsch (German)</target>
+  <source>German</source>
+  <target>Deutsch</target>
 </trans-unit>
 <trans-unit id="es-ES">
-  <source>Spanish (Español)</source>
-  <target>Spanisch (Español)</target>
+  <source>Spanish</source>
+  <target>Spanisch</target>
 </trans-unit>
 <trans-unit id="fi-FI">
-  <source>Finnish (Suomi)</source>
-  <target>Finnisch (Suomi)</target>
+  <source>Finnish</source>
+  <target>Finnisch</target>
 </trans-unit>
 <trans-unit id="fr-FR">
-  <source>French (Français)</source>
-  <target>Französisch (Français)</target>
+  <source>French</source>
+  <target>Französisch</target>
 </trans-unit>
 <trans-unit id="it-IT">
-  <source>Italian (Italiano)</source>
-  <target>Italienisch (Italiano)</target>
+  <source>Italian</source>
+  <target>Italienisch</target>
 </trans-unit>
 <trans-unit id="ja-JP">
-  <source>Japanese (日本語)</source>
-  <target>Japanisch (日本語)</target>
+  <source>Japanese</source>
+  <target>Japanisch</target>
 </trans-unit>
 <trans-unit id="ko-KR">
-  <source>Korean (한국어)</source>
-  <target>Koreanisch (한국어)</target>
+  <source>Korean</source>
+  <target>Koreanisch</target>
 </trans-unit>
 <trans-unit id="nl-NL">
-  <source>Dutch (Nederlands)</source>
-  <target>Niederländisch (Nederlands)</target>
+  <source>Dutch</source>
+  <target>Niederländisch</target>
 </trans-unit>
 <trans-unit id="pl-PL">
-  <source>Polish (Polski)</source>
-  <target>Polnisch (Polski)</target>
+  <source>Polish</source>
+  <target>Polnisch</target>
 </trans-unit>
 <trans-unit id="pt-BR">
-  <source>Portuguese (Português)</source>
-  <target>Portugiesisch (Português)</target>
+  <source>Portuguese</source>
+  <target>Portugiesisch</target>
 </trans-unit>
 <trans-unit id="ru-RU">
-  <source>Russian (Русский)</source>
-  <target>Russisch (Русский)</target>
+  <source>Russian</source>
+  <target>Russisch</target>
 </trans-unit>
 <trans-unit id="tr-TR">
-  <source>Turkish (Türkçe)</source>
-  <target>Türkisch (Türkçe)</target>
+  <source>Turkish</source>
+  <target>Türkisch</target>
 </trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified (简体中文)</source>
-  <target>Chinesisch (Vereinfacht) (简体中文)</target>
+  <source>Chinese Simplified</source>
+  <target>Chinesisch</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional (繁體中文)</source>
-  <target>Chinesisch (Traditionell) (繁體中文)</target>
+  <source>Chinese Traditional</source>
+  <target>Chinesisch</target>
 </trans-unit>
 <!-- #endregion -->
 <trans-unit id="s12d6dde9b30c3093">

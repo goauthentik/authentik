@@ -30,21 +30,47 @@ const sourceTargetModule: LocaleModule = {
 export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
     [sourceLocale]: () => msg("English", { id: "en" }),
     [PseudoLocale]: () => msg("Pseudolocale", { id: "pseudo-LOCALE" }),
-    "cs-CZ": () => msg("Czech (Čeština)", { id: "cs-CZ" }),
-    "de-DE": () => msg("German (Deutsch)", { id: "de-DE" }),
-    "es-ES": () => msg("Spanish (Español)", { id: "es-ES" }),
-    "fi-FI": () => msg("Finnish (Suomi)", { id: "fi-FI" }),
-    "fr-FR": () => msg("French (Français)", { id: "fr-FR" }),
-    "it-IT": () => msg("Italian (Italiano)", { id: "it-IT" }),
-    "ja-JP": () => msg("Japanese (日本語)", { id: "ja-JP" }),
-    "ko-KR": () => msg("Korean (한국어)", { id: "ko-KR" }),
-    "nl-NL": () => msg("Dutch (Nederlands)", { id: "nl-NL" }),
-    "pl-PL": () => msg("Polish (Polski)", { id: "pl-PL" }),
-    "pt-BR": () => msg("Portuguese (Português)", { id: "pt-BR" }),
-    "ru-RU": () => msg("Russian (Русский)", { id: "ru-RU" }),
-    "tr-TR": () => msg("Turkish (Türkçe)", { id: "tr-TR" }),
-    "zh-Hans": () => msg("Chinese Simplified (简体中文)", { id: "zh-Hans" }),
-    "zh-Hant": () => msg("Chinese Traditional (繁體中文)", { id: "zh-Hant" }),
+    "cs-CZ": () => msg("Czech", { id: "cs-CZ" }),
+    "de-DE": () => msg("German", { id: "de-DE" }),
+    "es-ES": () => msg("Spanish", { id: "es-ES" }),
+    "fi-FI": () => msg("Finnish", { id: "fi-FI" }),
+    "fr-FR": () => msg("French", { id: "fr-FR" }),
+    "it-IT": () => msg("Italian", { id: "it-IT" }),
+    "ja-JP": () => msg("Japanese", { id: "ja-JP" }),
+    "ko-KR": () => msg("Korean", { id: "ko-KR" }),
+    "nl-NL": () => msg("Dutch", { id: "nl-NL" }),
+    "pl-PL": () => msg("Polish", { id: "pl-PL" }),
+    "pt-BR": () => msg("Portuguese", { id: "pt-BR" }),
+    "ru-RU": () => msg("Russian", { id: "ru-RU" }),
+    "tr-TR": () => msg("Turkish", { id: "tr-TR" }),
+    "zh-Hans": () => msg("Chinese Simplified", { id: "zh-Hans" }),
+    "zh-Hant": () => msg("Chinese Traditional", { id: "zh-Hant" }),
+};
+
+/**
+ * A record mapping locale codes to their respective human-readable labels in their own language.
+ *
+ * @remarks
+ * These are not thunked, as they are already localized.
+ */
+export const LocalizedLabelRecord: Record<TargetLocale, string> = {
+    [sourceLocale]: "English",
+    [PseudoLocale]: "Pseudolocale",
+    "cs-CZ": "Čeština",
+    "de-DE": "Deutsch",
+    "es-ES": "Español",
+    "fi-FI": "Suomi",
+    "fr-FR": "Français",
+    "it-IT": "Italiano",
+    "ja-JP": "日本語",
+    "ko-KR": "한국어",
+    "nl-NL": "Nederlands",
+    "pl-PL": "Polski",
+    "pt-BR": "Português",
+    "ru-RU": "Русский",
+    "tr-TR": "Türkçe",
+    "zh-Hans": "简体中文",
+    "zh-Hant": "繁體中文",
 };
 
 /**
