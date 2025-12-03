@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import DateTimeField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authentication import validate_auth
+from authentik.api.authentication import IPCUser, validate_auth
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.config import CONFIG
@@ -32,11 +32,13 @@ class TenantApiKeyAuthentication(BaseAuthentication):
     def authenticate(self, request: Request) -> bool:
         key = CONFIG.get("tenants.api_key", "")
         if not key:
-            return False
+            return None
         token = validate_auth(get_authorization_header(request))
         if token is None:
-            return False
-        return compare_digest(token, key)
+            return None
+        if not compare_digest(token, key):
+            return None
+        return (IPCUser(), None)
 
 
 class TenantSerializer(ModelSerializer):

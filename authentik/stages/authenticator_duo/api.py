@@ -98,7 +98,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         return Response({"duo_response": status})
 
     @permission_required(
-        "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
+        None, ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
     )
     @extend_schema(
         request=AuthenticatorDuoStageManualDeviceImport(),
