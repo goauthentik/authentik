@@ -17,6 +17,7 @@ class EndpointStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "connector",
             "connector_obj",
+            "mode",
         ]
 
 

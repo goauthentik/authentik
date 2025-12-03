@@ -12,10 +12,10 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.models import StageMode
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
     MutualTLSStage,
-    TLSMode,
     UserAttributes,
 )
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
@@ -39,7 +39,7 @@ class MTLSStageTests(FlowTestCase):
         )
         self.stage = MutualTLSStage.objects.create(
             name=generate_id(),
-            mode=TLSMode.REQUIRED,
+            mode=StageMode.REQUIRED,
             cert_attribute=CertAttributes.COMMON_NAME,
             user_attribute=UserAttributes.USERNAME,
         )
@@ -171,7 +171,7 @@ class MTLSStageTests(FlowTestCase):
 
     def test_no_ca_optional(self):
         """Test using no CA Set"""
-        self.stage.mode = TLSMode.OPTIONAL
+        self.stage.mode = StageMode.OPTIONAL
         self.stage.certificate_authorities.clear()
         self.stage.save()
         res = self.client.get(
@@ -194,7 +194,7 @@ class MTLSStageTests(FlowTestCase):
 
     def test_no_cert_optional(self):
         """Test using no cert Set"""
-        self.stage.mode = TLSMode.OPTIONAL
+        self.stage.mode = StageMode.OPTIONAL
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
