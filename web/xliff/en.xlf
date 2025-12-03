@@ -7449,6 +7449,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
+<trans-unit id="sc94e314312a8900c">
+  <source>Czech</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

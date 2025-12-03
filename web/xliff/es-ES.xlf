@@ -9612,6 +9612,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
+<trans-unit id="sc94e314312a8900c">
+  <source>Czech</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

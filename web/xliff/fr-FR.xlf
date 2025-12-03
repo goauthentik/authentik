@@ -9866,6 +9866,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
+<trans-unit id="sc94e314312a8900c">
+  <source>Czech</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
