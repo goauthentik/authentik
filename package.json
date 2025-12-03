@@ -8,13 +8,13 @@
         "@goauthentik/eslint-config": "./packages/eslint-config",
         "@goauthentik/prettier-config": "./packages/prettier-config",
         "@goauthentik/tsconfig": "./packages/tsconfig",
-        "@typescript-eslint/eslint-plugin": "^8.48.0",
-        "@typescript-eslint/parser": "^8.48.0",
+        "@typescript-eslint/eslint-plugin": "^8.48.1",
+        "@typescript-eslint/parser": "^8.48.1",
         "eslint": "^9.39.1",
-        "prettier": "^3.7.3",
+        "prettier": "^3.7.4",
         "prettier-plugin-packagejson": "^2.5.20",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.48.0"
+        "typescript-eslint": "^8.48.1"
     },
     "engines": {
         "node": ">=24",
