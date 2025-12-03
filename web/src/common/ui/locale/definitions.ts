@@ -8,7 +8,7 @@ export type TargetLocale = (typeof allLocales)[number];
 /**
  * The pseudo locale code.
  */
-export const PseudoLocale = "pseudo_LOCALE" satisfies TargetLocale;
+export const PseudoLocale = "pseudo-LOCALE" satisfies TargetLocale;
 
 /**
  * A dummy locale module representing the source locale (English).
@@ -29,18 +29,18 @@ const sourceTargetModule: LocaleModule = {
  */
 export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
     [sourceLocale]: () => msg("English"),
-    "pseudo_LOCALE": () => msg("Pseudolocale (for testing)"),
-    "cs_CZ": () => msg("Czech"),
-    "de_DE": () => msg("German"),
-    "es_ES": () => msg("Spanish"),
-    "fr_FR": () => msg("French"),
-    "it_IT": () => msg("Italian"),
-    "ja_JP": () => msg("Japanese"),
-    "ko_KR": () => msg("Korean"),
-    "nl_NL": () => msg("Dutch"),
-    "pl_PL": () => msg("Polish"),
-    "ru_RU": () => msg("Russian"),
-    "tr_TR": () => msg("Turkish"),
+    [PseudoLocale]: () => msg("Pseudolocale (for testing)"),
+    "cs-CZ": () => msg("Czech"),
+    "de-DE": () => msg("German"),
+    "es-ES": () => msg("Spanish"),
+    "fr-FR": () => msg("French"),
+    "it-IT": () => msg("Italian"),
+    "ja-JP": () => msg("Japanese"),
+    "ko-KR": () => msg("Korean"),
+    "nl-NL": () => msg("Dutch"),
+    "pl-PL": () => msg("Polish"),
+    "ru-RU": () => msg("Russian"),
+    "tr-TR": () => msg("Turkish"),
     "zh-Hans": () => msg("Chinese (simplified)"),
     "zh-Hant": () => msg("Chinese (traditional)"),
 };
@@ -79,18 +79,18 @@ export function formatLocaleOptions(
  */
 export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule>> = {
     [sourceLocale]: () => Promise.resolve(sourceTargetModule),
-    "pseudo_LOCALE": () => import("#locales/pseudo_LOCALE"),
-    "cs_CZ": () => import("#locales/cs_CZ"),
-    "de_DE": () => import("#locales/de_DE"),
-    "es_ES": () => import("#locales/es_ES"),
-    "fr_FR": () => import("#locales/fr_FR"),
-    "it_IT": () => import("#locales/it_IT"),
-    "ja_JP": () => import("#locales/ja_JP"),
-    "ko_KR": () => import("#locales/ko_KR"),
-    "nl_NL": () => import("#locales/nl_NL"),
-    "pl_PL": () => import("#locales/pl_PL"),
-    "ru_RU": () => import("#locales/ru_RU"),
-    "tr_TR": () => import("#locales/tr_TR"),
+    [PseudoLocale]: () => import("#locales/pseudo-LOCALE"),
+    "cs-CZ": () => import("#locales/cs-CZ"),
+    "de-DE": () => import("#locales/de-DE"),
+    "es-ES": () => import("#locales/es-ES"),
+    "fr-FR": () => import("#locales/fr-FR"),
+    "it-IT": () => import("#locales/it-IT"),
+    "ja-JP": () => import("#locales/ja-JP"),
+    "ko-KR": () => import("#locales/ko-KR"),
+    "nl-NL": () => import("#locales/nl-NL"),
+    "pl-PL": () => import("#locales/pl-PL"),
+    "ru-RU": () => import("#locales/ru-RU"),
+    "tr-TR": () => import("#locales/tr-TR"),
     "zh-Hans": () => import("#locales/zh-Hans"),
     "zh-Hant": () => import("#locales/zh-Hant"),
 };
@@ -116,18 +116,18 @@ export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule
  */
 export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
     [sourceLocale]: /^en([_-]|$)/i,
-    "pseudo_LOCALE": /^pseudo/i,
-    "cs_CZ": /^cs([_-]|$)/i,
-    "de_DE": /^de([_-]|$)/i,
-    "es_ES": /^es([_-]|$)/i,
-    "fr_FR": /^fr([_-]|$)/i,
-    "it_IT": /^it([_-]|$)/i,
-    "ja_JP": /^ja([_-]|$)/i,
-    "ko_KR": /^ko([_-]|$)/i,
-    "nl_NL": /^nl([_-]|$)/i,
-    "pl_PL": /^pl([_-]|$)/i,
-    "ru_RU": /^ru([_-]|$)/i,
-    "tr_TR": /^tr([_-]|$)/i,
+    [PseudoLocale]: /^pseudo/i,
+    "cs-CZ": /^cs([_-]|$)/i,
+    "de-DE": /^de([_-]|$)/i,
+    "es-ES": /^es([_-]|$)/i,
+    "fr-FR": /^fr([_-]|$)/i,
+    "it-IT": /^it([_-]|$)/i,
+    "ja-JP": /^ja([_-]|$)/i,
+    "ko-KR": /^ko([_-]|$)/i,
+    "nl-NL": /^nl([_-]|$)/i,
+    "pl-PL": /^pl([_-]|$)/i,
+    "ru-RU": /^ru([_-]|$)/i,
+    "tr-TR": /^tr([_-]|$)/i,
     /**
      * Traditional Chinese.
      *
