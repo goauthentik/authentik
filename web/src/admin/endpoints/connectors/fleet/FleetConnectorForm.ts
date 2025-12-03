@@ -23,8 +23,8 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
 
     getSuccessMessage(): string {
         return this.instance
-            ? msg("Successfully updated connector.")
-            : msg("Successfully created connector.");
+            ? msg("Successfully updated fleet connector.")
+            : msg("Successfully created fleet connector.");
     }
 
     async send(data: FleetConnector): Promise<FleetConnector> {
