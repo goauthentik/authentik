@@ -1,0 +1,22 @@
+---
+title: SSH authentication
+sidebar_label: SSH authentication
+---
+
+It's possible to authenticate SSH connections using authentik credentials between Endpoint Devices with the [authentik Agent](../authentik-agent/index.mdx) installed.
+
+Currently, this is only supported when the SSH endpoint is a [Linux host](../authentik-agent/agent-deployment/linux-host.md).
+
+## How to SSH to an Endpoint Device
+
+To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux-host.md) using the authentik Agent:
+
+1. Open a Terminal session and run the following command:
+
+    ```
+    ak ssh <hostname>
+    ```
+
+2. The SSH session will connect.
+
+## Command details

@@ -666,6 +666,91 @@ const items = [
     {
         //#endregion
 
+        //#region Endpoint Devices
+        type: "category",
+        label: "Endpoint Devices",
+        collapsed: true,
+        link: {
+            type: "doc",
+            id: "endpoint-devices/index",
+        },
+        items: [
+            "endpoint-devices/devices-overview",
+            {
+                //#endregion
+
+                //#region authentik Agent
+                type: "category",
+                label: "authentik Agent",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/authentik-agent/index",
+                },
+                items: [
+                    "endpoint-devices/authentik-agent/agent-configuration",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Deployment
+                        type: "category",
+                        label: "authentik Agent Deployment",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/agent-deployment/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/agent-deployment/linux-host",
+                            "endpoint-devices/authentik-agent/agent-deployment/linux-workstation",
+                            "endpoint-devices/authentik-agent/agent-deployment/macos-workstation",
+                            "endpoint-devices/authentik-agent/agent-deployment/windows-workstation",
+                            "endpoint-devices/authentik-agent/agent-deployment/mdm-deployment",
+                        ],
+                    },
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Device Authentication
+                type: "category",
+                label: "Device Authentication",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/device-authentication/index",
+                },
+                items: [
+                    "endpoint-devices/device-authentication/device-access-groups",
+                    "endpoint-devices/device-authentication/local-device-login",
+                    "endpoint-devices/device-authentication/ssh-authentication",
+                    "endpoint-devices/device-authentication/sudo-authorization",
+                    "endpoint-devices/device-authentication/cli-app-authentication",
+                    "endpoint-devices/device-authentication/wi-fi-authentication",
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Device Compliance
+                type: "category",
+                label: "Device Compliance",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/device-compliance/index",
+                },
+                items: [
+                    "endpoint-devices/device-compliance/connectors",
+                    "endpoint-devices/device-compliance/device-compliance-policy",
+                ],
+            },
+        ],
+    },
+    {
+        //#endregion
+
         //#region Developer Documentation
         type: "category",
         label: "Developer Documentation",

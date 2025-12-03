@@ -1,0 +1,82 @@
+---
+title: Endpoint Devices
+sidebar_label: Endpoint Devices
+---
+
+import DocCardList from "@theme/DocCardList";
+
+:::danger
+The Endpoint Devices featureset is currently in early preview stage and under heavy development. It is not recommended for production use.
+
+This is a very early preview. The features, methods and even the name are yet to be confirmed.
+
+Breaking changes and bugs should be expected.
+:::
+
+## What are Endpoint Devices?
+
+Endpoint Devices are end-user devices or servers that are integrated with authentik.
+
+There are two categories or purposes of integration: [Device Authentication](./device-authentication/index.mdx) and [Device Compliance](./device-compliance/index.mdx).
+
+Devices can be integrated by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
+
+- [Device Compliance](./device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
+- [Local device login](./device-authentication/local-device-login.mdx) with authentik credentials
+- [Connecting via SSH to Endpoint Devices](./device-authentication/ssh-authentication.mdx) with authentik credentials
+- [Sudo authorization](./device-authentication/sudo-authorization.md) with authentik credentials
+- [Authenticating to CLI applications](./device-authentication/cli-app-authentication.mdx) such as kubectl and AWS with authentik credentials
+
+Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services like Fleet and (TODO). This allows for device information to be reported to authentik for [Device Compliance](./device-compliance/index.mdx) purposes.
+
+## Current featureset
+
+The featureset is at varying levels of development.
+
+### Device authentication
+
+#### Local device login
+
+:ak-enterprise
+(maybe open-source for linux - needs testing)
+
+#### SSH authentication / Remote authentication
+
+Linux targets = open-source
+Windows and macos targets = :ak-enterprise
+
+Currently, only Linux hosts can be connected to via SSH.
+SSH connections to macOS and Windows hosts, and RDP connections to Windows hosts is planned.
+
+#### Sudo authorization
+
+open-source?
+
+Currently, only supported on Linux. (macos - need testing)
+
+### Basic device compliance
+
+open-source
+
+Associating device with session
+Basic agent facts
+
+### Advanced device compliance
+
+:ak-enterprise
+
+More information
+
+#### Connectors
+
+:ak-enterprise
+
+Connectors like Fleet, Entra, Intune etc
+
+## Important Considerations
+
+## How to provide feedback and report bugs
+
+Report issues via out [GitHub](https://github.com/goauthentik/authentik/issues) using the special Endpoint Devices issue form (TODO create form and put a link here)
+
+<DocCardList />

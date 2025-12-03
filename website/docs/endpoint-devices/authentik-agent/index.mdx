@@ -1,0 +1,56 @@
+---
+title: authentik Agent
+sidebar_label: authentik Agent
+---
+
+import DocCardList from "@theme/DocCardList";
+
+## What is the authentik Agent?
+
+The authentik Agent is a service that can be installed on Linux, macOS, and Windows. It supports the following features:
+
+- [Device Compliance](../device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
+- [Local device login](../device-authentication/local-device-login.mdx) with authentik credentials
+- [Connecting via SSH to Endpoint Devices](../device-authentication/ssh-authentication.mdx) with authentik credentials
+- [Sudo authorization](../device-authentication/sudo-authorization.md) with authentik credentials
+- [Authenticating to CLI applications](../device-authentication/cli-app-authentication.mdx) such as kubectl and AWS with authentik credentials
+
+## authentik Agent components
+
+On all platforms, Linux, macOS, and Windows, the authentik Agent uses the following core components:
+
+#### authentik-cli
+
+Provides commands for interacting with authentik-agent.
+
+#### authentik-agent
+
+User service.
+
+#### authentik-sysd
+
+System service.
+
+### Linux hosts
+
+Linux hosts that are connected to via SSH using the authentik Agent can use another two components:
+
+#### libpam-authentik
+
+PAM Module, which provides token-based and interactive authentication via authentik. Requires authentik-sysd running.
+
+Authentication is only possible if Linux is aware of the authentik user, which can be achieved with [libnss-authentik](#libnss-authentik) or by manually creating user accounts that match the authentik users that need to authenticate.
+
+#### libnss-authentik
+
+NSS Module. Requires authentik-sysd running.
+
+Makes the Linux host aware of authentik users.
+
+## Important considerations
+
+Sentry reporting is enabled by default and currently can't be disabled. This will be configurable in future.
+
+Most of the AK CLI commands have a -v flag for verbose
+
+<DocCardList />
