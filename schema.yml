@@ -48912,6 +48912,11 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -52655,6 +52660,10 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -52772,6 +52781,11 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
