@@ -125,15 +125,6 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     @state()
     selectedProvider = "custom";
 
-    @state()
-    providerOverridden = false;
-
-    @state()
-    currentFormValues?: {
-        jsUrl?: string;
-        apiUrl?: string;
-    };
-
     currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom;
 
     loadInstance(pk: string): Promise<CaptchaStage> {
@@ -163,8 +154,6 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         if (changed.has("instance")) {
             this.selectedProvider = this.detectProviderFromInstance();
             this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
-            this.providerOverridden = false;
-            this.currentFormValues = undefined;
         }
     }
 
@@ -198,11 +187,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
 
     /**
      * Get the form values to display, with clear precedence:
-     * 1. If editing an existing instance and provider hasn't been manually changed, use instance values
-     * 2. If provider was changed, check if URLs are blank and fill with preset if so
+     * 1. If editing an existing instance, use instance values
+     * 2. Otherwise, use the current preset defaults
      */
     getFormValues() {
-        if (this.instance && !this.providerOverridden) {
+        if (this.instance) {
             return {
                 jsUrl: this.instance.jsUrl,
                 apiUrl: this.instance.apiUrl,
@@ -212,19 +201,9 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 errorOnInvalidScore: this.instance.errorOnInvalidScore ?? true,
             };
         }
-
-        // When provider is changed, check stored form values
-        // If URLs are blank/empty, fill with preset values
-        const jsUrl = this.currentFormValues?.jsUrl?.trim()
-            ? this.currentFormValues.jsUrl
-            : this.currentPreset.jsUrl;
-        const apiUrl = this.currentFormValues?.apiUrl?.trim()
-            ? this.currentFormValues.apiUrl
-            : this.currentPreset.apiUrl;
-
         return {
-            jsUrl,
-            apiUrl,
+            jsUrl: this.currentPreset.jsUrl,
+            apiUrl: this.currentPreset.apiUrl,
             interactive: this.currentPreset.interactive,
             scoreMinThreshold: this.currentPreset.score?.min ?? 0.5,
             scoreMaxThreshold: this.currentPreset.score?.max ?? 1.0,
@@ -234,13 +213,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
 
     /**
      * Handle provider dropdown selection change.
-     * Uses tracked form values to determine if blank URLs should be filled with new preset.
+     * Updates the preset, which triggers a re-render with new default values.
      */
     handleProviderChange(e: Event): void {
         const select = e.target as HTMLSelectElement;
         this.selectedProvider = select.value;
         this.currentPreset = CAPTCHA_PROVIDERS[this.selectedProvider];
-        this.providerOverridden = true;
     }
 
     async send(data: CaptchaStage): Promise<CaptchaStage> {
@@ -387,13 +365,6 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         autocomplete="off"
                         spellcheck="false"
                         required
-                        @input=${(e: Event) => {
-                            const input = e.target as HTMLInputElement;
-                            this.currentFormValues = {
-                                ...this.currentFormValues,
-                                jsUrl: input.value,
-                            };
-                        }}
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -413,13 +384,6 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         autocomplete="off"
                         spellcheck="false"
                         required
-                        @input=${(e: Event) => {
-                            const input = e.target as HTMLInputElement;
-                            this.currentFormValues = {
-                                ...this.currentFormValues,
-                                apiUrl: input.value,
-                            };
-                        }}
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
