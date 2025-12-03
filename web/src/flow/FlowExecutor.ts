@@ -20,11 +20,13 @@ import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
+import { formatLocaleOptions, PseudoLocale, TargetLocale } from "#common/ui/locale/definitions";
 import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLocale } from "#elements/mixins/locale";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { renderImage } from "#elements/utils/images";
@@ -59,7 +61,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    extends WithCapabilitiesConfig(WithBrandConfig(WithLocale(Interface)))
     implements StageHost
 {
     static readonly DefaultLayout: FlowLayoutEnum =
@@ -481,6 +483,41 @@ export class FlowExecutor
         </button>`;
     }
 
+    #localeChangeListener = (event: Event) => {
+        const select = event.target as HTMLSelectElement;
+        const locale = select.value as TargetLocale;
+        this.locale = locale;
+    };
+
+    protected renderLocaleSelector() {
+        const { locale } = this;
+        let localeOptions = formatLocaleOptions();
+
+        if (!this.can(CapabilitiesEnum.CanDebug)) {
+            localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
+        }
+
+        const options = localeOptions.map(
+            ([label, code]) =>
+                html`<option value=${code} ?selected=${code === locale}>${label}</option>`,
+        );
+
+        return html`<div class="locale-selector">
+            <i class="fa fa-globe" aria-hidden="true"></i>
+            <select
+                @change=${this.#localeChangeListener}
+                class="pf-c-form-control"
+                name="locale"
+                aria-label=${msg("Select language", {
+                    id: "language-selector-label",
+                    desc: "Label for the language selection dropdown",
+                })}
+            >
+                ${options}
+            </select>
+        </div>`;
+    }
+
     //#endregion
 
     //#region Render
@@ -492,7 +529,9 @@ export class FlowExecutor
     public override render(): TemplateResult {
         const { component } = this.challenge || {};
 
-        return html`<header class="pf-c-login__header">${this.renderInspectorButton()}</header>
+        return html`<header class="pf-c-login__header">
+                ${this.renderLocaleSelector()} ${this.renderInspectorButton()}
+            </header>
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"
