@@ -67,11 +67,6 @@
     --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--100);
 }
 
-ak-locale-context {
-    display: flex;
-    flex-direction: column;
-}
-
 .pf-c-drawer__main {
     min-height: calc(100vh - 76px);
     max-height: calc(100vh - 76px);

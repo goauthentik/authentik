@@ -2,6 +2,75 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 <file target-language="en" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<!-- #region Locales -->
+<trans-unit id="en">
+  <source>English</source>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech</source>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German</source>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish</source>
+</trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish</source>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French</source>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian</source>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese</source>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean</source>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch</source>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish</source>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese</source>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian</source>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish</source>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified</source>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional</source>
+</trans-unit>
+<!-- #endregion -->
+
+<!-- #region Locale selector  -->
+<trans-unit id="locale-auto-detect-option">
+  <source>Auto-detect</source>
+  <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
+</trans-unit>
+<trans-unit id="language-selector-label">
+  <source>Select language</source>
+  <note from="lit-localize">Label for the language selection dropdown</note>
+</trans-unit>
+<trans-unit id="locale-option-localized-label">
+  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+</trans-unit>
+<!-- #endregion -->
+
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
 </trans-unit>
@@ -2357,15 +2426,6 @@
 <trans-unit id="s068d4dd16d9106d0">
   <source>Icon</source>
 </trans-unit>
-<trans-unit id="s67e20cd8018d7e3c">
-  <source>Currently set to:</source>
-</trans-unit>
-<trans-unit id="s80e6d6fe5ad458d3">
-  <source>Clear icon</source>
-</trans-unit>
-<trans-unit id="s485c05d34eb00415">
-  <source>Delete currently set icon.</source>
-</trans-unit>
 <trans-unit id="s6d3b4d0561ba1cff">
   <source>Publisher</source>
 </trans-unit>
@@ -3316,12 +3376,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s09810653c832e935">
   <source>Click to change value</source>
 </trans-unit>
-<trans-unit id="se17f29e830ebf9be">
-  <source>Successfully updated connector.</source>
-</trans-unit>
-<trans-unit id="s6da88527f3e5e513">
-  <source>Successfully created connector.</source>
-</trans-unit>
 <trans-unit id="s6a087e34edeadc1f">
   <source>Connector name...</source>
 </trans-unit>
@@ -3369,9 +3423,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s7e840add1b48d751">
-  <source>Configure how devices communicate with authentik and external sources device data is fetched from.</source>
 </trans-unit>
 <trans-unit id="s58d0ed0cc064ec4f">
   <source>Update Connector</source>
@@ -4859,53 +4910,8 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s802826db4e2c852e">
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
 </trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-</trans-unit>
-<trans-unit id="s63e71d20d1eaca93">
-  <source>German</source>
-</trans-unit>
-<trans-unit id="s4caed5b7a7e5d89b">
-  <source>English</source>
-</trans-unit>
-<trans-unit id="sf1868dc19e3917bb">
-  <source>Spanish</source>
-</trans-unit>
-<trans-unit id="s75a27f43413e02c5">
-  <source>French</source>
-</trans-unit>
-<trans-unit id="sd48cc52117f4d68b">
-  <source>Italian</source>
-</trans-unit>
-<trans-unit id="sdd35b688281b6dea">
-  <source>Japanese</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
-</trans-unit>
-<trans-unit id="s03f49e598ffb11cc">
-  <source>Polish</source>
-</trans-unit>
-<trans-unit id="sa30c12014e955946">
-  <source>Russian</source>
-</trans-unit>
-<trans-unit id="s9d2d00982edafabb">
-  <source>Turkish</source>
-</trans-unit>
-<trans-unit id="s354e0a9f146d2869">
-  <source>Chinese (simplified)</source>
-</trans-unit>
-<trans-unit id="se3e6af2ce24d80e8">
-  <source>Chinese (traditional)</source>
-</trans-unit>
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
-</trans-unit>
-<trans-unit id="s2f995efbb1e46b18">
-  <source>Auto-detect (based on your browser)</source>
 </trans-unit>
 <trans-unit id="s296fbffaaa7c910a">
   <source>Required.</source>
@@ -5985,12 +5991,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s374abf1a54d87b67">
   <source>Background shown during execution.</source>
 </trans-unit>
-<trans-unit id="s3ebf4c166058afce">
-  <source>Clear background</source>
-</trans-unit>
-<trans-unit id="sb24755ea94bef31d">
-  <source>Delete currently set background image.</source>
-</trans-unit>
 <trans-unit id="sb904f23f17b60c3a">
   <source>Successfully imported flow.</source>
 </trans-unit>
@@ -6821,9 +6821,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
 </trans-unit>
-<trans-unit id="s02d57c823e493fe9">
-  <source>Device groups</source>
-</trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
 </trans-unit>
@@ -7448,6 +7445,111 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s6cd96061d397f7b5">
+  <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+</trans-unit>
+<trans-unit id="sb7ff80582ccd9348">
+  <source>reference will be left dangling</source>
+</trans-unit>
+<trans-unit id="s0b7ddc0168e79ea2">
+  <source>Failed to fetch files</source>
+</trans-unit>
+<trans-unit id="sdc4f1cfd587212b4">
+  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+</trans-unit>
+<trans-unit id="s8015ac3b47172dc8">
+  <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+</trans-unit>
+<trans-unit id="s87616130c08b117c">
+  <source>This type is deprecated.</source>
+</trans-unit>
+<trans-unit id="s40f4c2223ce87751">
+  <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+</trans-unit>
+<trans-unit id="s70c2cd89201ecca9">
+  <source>Home directory</source>
+</trans-unit>
+<trans-unit id="sb171d638b8af660d">
+  <source>Successfully updated agent connector.</source>
+</trans-unit>
+<trans-unit id="s81c9554908463f94">
+  <source>Successfully created agent connector.</source>
+</trans-unit>
+<trans-unit id="s306dd51d3be07bc7">
+  <source>Device compliance settings</source>
+</trans-unit>
+<trans-unit id="sc2966702517b7af5">
+  <source>Challenge certificate</source>
+</trans-unit>
+<trans-unit id="s051588c63fedab5f">
+  <source>Challenge idle timeout</source>
+</trans-unit>
+<trans-unit id="s4c70d7629e29ac2d">
+  <source>Duration the flow executor will wait before continuing without a response.</source>
+</trans-unit>
+<trans-unit id="se3c7fb54006d9e98">
+  <source>Trigger check-in on device</source>
+</trans-unit>
+<trans-unit id="se0a747f4db08e87f">
+  <source>Configure how devices connect with authentik and ingest external device data.</source>
+</trans-unit>
+<trans-unit id="s114f2b310ef163ff">
+  <source>Stage which associates the currently used device with the current session.</source>
+</trans-unit>
+<trans-unit id="s8290d08ab5a49ed0">
+  <source>Connector</source>
+</trans-unit>
+<trans-unit id="s5e8eefcbbeffd4d5">
+  <source>Device optional</source>
+</trans-unit>
+<trans-unit id="s51b09bba5dcc19b0">
+  <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+</trans-unit>
+<trans-unit id="s5f58e358343a5514">
+  <source>Device required</source>
+</trans-unit>
+<trans-unit id="s6df8326edea3b23d">
+  <source>If no device was provided, this stage will stop flow execution.</source>
+</trans-unit>
+<trans-unit id="s506c7d2e87f6770e">
+  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
+</trans-unit>
+<trans-unit id="s3a3d5b2575cd32ea">
+  <source>File uploaded successfully</source>
+</trans-unit>
+<trans-unit id="sd3775ef947e0de32">
+  <source>File Name</source>
+</trans-unit>
+<trans-unit id="s1afc99a84a890514">
+  <source>Type an optional custom file name...</source>
+</trans-unit>
+<trans-unit id="sb40e2763045466ea">
+  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s803ce7e1a2294d50">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="s42d82601762f5321">
+  <source>Manage uploaded files.</source>
+</trans-unit>
+<trans-unit id="saad01178f02a6a23">
+  <source>file</source>
+</trans-unit>
+<trans-unit id="s69f800801812a5f0">
+  <source>files</source>
+</trans-unit>
+<trans-unit id="s96668830629e0dfc">
+  <source>Upload</source>
+</trans-unit>
+<trans-unit id="sa32e9d0a108ee802">
+  <source>Upload File</source>
+</trans-unit>
+<trans-unit id="s95094b57684716a5">
+  <source>Failed to validate device.</source>
+</trans-unit>
+<trans-unit id="se99d25eb70c767ef">
+  <source>Verifying your device...</source>
 </trans-unit>
 </body>
 </file>
