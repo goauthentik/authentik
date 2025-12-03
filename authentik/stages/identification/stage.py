@@ -29,7 +29,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
-from authentik.lib.utils.reflection import all_subclasses, class_to_path
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator_validate.challenge import (
@@ -141,7 +141,6 @@ class IdentificationChallengeResponse(ChallengeResponse):
             device = self._validate_passkey_response(passkey)
             self.passkey_device = device
             self.pre_user = device.user
-            self.pre_user.backend = class_to_path(type(self))
             return attrs
 
         # Standard username/password flow
