@@ -53,6 +53,7 @@
         }
     },
     "imports": {
+        "#fonts/*.css": "./fonts/*.css",
         "#styles/*.css": "./src/styles/*.css",
         "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
