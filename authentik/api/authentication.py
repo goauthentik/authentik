@@ -78,21 +78,22 @@ class TokenAuthentication(BaseAuthentication):
         """Token-based authentication using HTTP Bearer authentication"""
         auth = get_authorization_header(request)
 
-        user = self.bearer_auth(auth)
+        user_ctx = self.bearer_auth(auth)
         # None is only returned when the header isn't set.
-        if not user:
+        if not user_ctx:
             return None
 
-        return (user, None)
+        return user_ctx
 
-    def bearer_auth(self, raw_header: bytes) -> User | None:
+    def bearer_auth(self, raw_header: bytes) -> tuple[User, Any] | None:
         """raw_header in the Format of `Bearer ....`"""
-        user = self.auth_user_lookup(raw_header)
-        if not user:
+        user_ctx = self.auth_user_lookup(raw_header)
+        if not user_ctx:
             return None
+        user, ctx = user_ctx
         if not user.is_active:
             raise AuthenticationFailed("Token invalid/expired")
-        return user
+        return user, ctx
 
     def auth_user_lookup(self, raw_header: bytes) -> tuple[User, Any] | None:
         """raw_header in the Format of `Bearer ....`"""
