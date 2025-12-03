@@ -23,10 +23,8 @@ interface CaptchaProviderPreset {
     supportsScore: boolean;
     score?: { min: number; max: number };
     help: {
-        pubLinkText: string;
-        pubLinkUrl: string;
-        privLinkText: string;
-        privLinkUrl: string;
+        keyLinkText: string;
+        keyLinkUrl: string;
     };
 }
 
@@ -43,10 +41,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         interactive: true,
         supportsScore: false,
         help: {
-            pubLinkText: "reCAPTCHA admin console",
-            pubLinkUrl: "https://www.google.com/recaptcha/admin",
-            privLinkText: "reCAPTCHA admin console",
-            privLinkUrl: "https://www.google.com/recaptcha/admin",
+            keyLinkText: msg("the reCAPTCHA admin console"),
+            keyLinkUrl: "https://www.google.com/recaptcha/admin",
         },
     },
     recaptcha_v3: {
@@ -57,10 +53,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubLinkText: "reCAPTCHA admin console",
-            pubLinkUrl: "https://www.google.com/recaptcha/admin",
-            privLinkText: "reCAPTCHA admin console",
-            privLinkUrl: "https://www.google.com/recaptcha/admin",
+            keyLinkText: msg("the reCAPTCHA admin console"),
+            keyLinkUrl: "https://www.google.com/recaptcha/admin",
         },
     },
     recaptcha_enterprise: {
@@ -71,10 +65,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubLinkText: "Google Cloud reCAPTCHA Enterprise",
-            pubLinkUrl: "https://cloud.google.com/recaptcha-enterprise",
-            privLinkText: "Google Cloud reCAPTCHA Enterprise",
-            privLinkUrl: "https://cloud.google.com/recaptcha-enterprise",
+            keyLinkText: msg("Google Cloud reCAPTCHA Enterprise"),
+            keyLinkUrl: "https://cloud.google.com/recaptcha-enterprise",
         },
     },
     hcaptcha: {
@@ -85,10 +77,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.0, max: 0.5 },
         help: {
-            pubLinkText: "hCaptcha dashboard",
-            pubLinkUrl: "https://dashboard.hcaptcha.com",
-            privLinkText: "hCaptcha dashboard",
-            privLinkUrl: "https://dashboard.hcaptcha.com",
+            keyLinkText: msg("the hCaptcha dashboard"),
+            keyLinkUrl: "https://dashboard.hcaptcha.com",
         },
     },
     turnstile: {
@@ -98,10 +88,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         interactive: true,
         supportsScore: false,
         help: {
-            pubLinkText: "Cloudflare dashboard",
-            pubLinkUrl: "https://dash.cloudflare.com",
-            privLinkText: "Cloudflare dashboard",
-            privLinkUrl: "https://dash.cloudflare.com",
+            keyLinkText: msg("the Cloudflare dashboard"),
+            keyLinkUrl: "https://dash.cloudflare.com",
         },
     },
     custom: {
@@ -112,10 +100,8 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
         help: {
-            pubLinkText: "",
-            pubLinkUrl: "",
-            privLinkText: "",
-            privLinkUrl: "",
+            keyLinkText: "",
+            keyLinkUrl: "",
         },
     },
 };
@@ -159,30 +145,29 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
 
     /**
      * Get localized help text for public/private key fields.
-     * These are methods that return msg() calls with string literals instead of
+     * These methods return msg() calls with string literals instead of
      * storing translatable strings in the preset objects, which would break i18n.
-     * It would also be illogical due to repetition of the help text.
      * The Lit localize library requires msg() to be called with string literals at
      * compile time so it can extract them for translation.
      */
-    getPublicKeyHelpText(): string {
-        if (this.selectedProvider === "custom") {
-            return msg("Site key from your CAPTCHA provider.");
-        }
-        if (this.selectedProvider === "recaptcha_enterprise") {
-            return msg("Site key for your CAPTCHA provider. Get keys from");
-        }
-        return msg("Site key for your CAPTCHA provider. Get keys from the");
+    getPublicKeyHelpText(anchor?: TemplateResult): string | TemplateResult {
+        return anchor
+            ? html`${msg("Site key from your CAPTCHA provider. Get keys from")} ${anchor}`
+            : msg("Site key from your CAPTCHA provider.");
     }
 
-    getPrivateKeyHelpText(): string {
-        if (this.selectedProvider === "custom") {
-            return msg("Secret key from your CAPTCHA provider.");
-        }
-        if (this.selectedProvider === "recaptcha_enterprise") {
-            return msg("Secret key for your CAPTCHA provider. Get keys from");
-        }
-        return msg("Secret key for your CAPTCHA provider. Get keys from the");
+    getPrivateKeyHelpText(anchor?: TemplateResult): string | TemplateResult {
+        return anchor
+            ? html`${msg("Secret key from your CAPTCHA provider. Get keys from")} ${anchor}`
+            : msg("Secret key from your CAPTCHA provider.");
+    }
+
+    /**
+     * Renders help text wrapped in the PF helper text element.
+     * Used for form fields that need to display help text with optional anchor links.
+     */
+    renderHelpText(content: string | TemplateResult): TemplateResult {
+        return html`<p class="pf-c-form__helper-text">${content}</p>`;
     }
 
     /**
@@ -253,21 +238,16 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     renderKeyFields(): TemplateResult {
-        // bighelp is an extended help property on HorizontalLightComponent that accepts
-        // TemplateResult for rich HTML content (like links), whereas the standard help
-        // property only accepts plain strings
-        const privKeyHelp = html`<p class="pf-c-form__helper-text">
-            ${this.getPrivateKeyHelpText()}
-            ${this.currentPreset.help.privLinkUrl
+        const keyLink =
+            this.currentPreset.help.keyLinkUrl && this.currentPreset.help.keyLinkText
                 ? html`<a
                           target="_blank"
                           rel="noopener noreferrer"
-                          href=${this.currentPreset.help.privLinkUrl}
+                          href=${this.currentPreset.help.keyLinkUrl}
                       >
-                          ${this.currentPreset.help.privLinkText} </a
+                          ${this.currentPreset.help.keyLinkText} </a
                       >.`
-                : ""}
-        </p>`;
+                : undefined;
 
         return html`
             <ak-form-element-horizontal label=${msg("Public Key")} required name="publicKey">
@@ -279,18 +259,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     spellcheck="false"
                     required
                 />
-                <p class="pf-c-form__helper-text">
-                    ${this.getPublicKeyHelpText()}
-                    ${this.currentPreset.help.pubLinkUrl
-                        ? html`<a
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  href=${this.currentPreset.help.pubLinkUrl}
-                              >
-                                  ${this.currentPreset.help.pubLinkText} </a
-                              >.`
-                        : ""}
-                </p>
+                ${this.renderHelpText(this.getPublicKeyHelpText(keyLink))}
             </ak-form-element-horizontal>
 
             <ak-secret-text-input
@@ -299,7 +268,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 input-hint="code"
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}
-                .bighelp=${privKeyHelp}
+                .bighelp=${this.renderHelpText(this.getPrivateKeyHelpText(keyLink))}
             ></ak-secret-text-input>
         `;
     }
