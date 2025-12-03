@@ -9,6 +9,7 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -83,7 +84,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             ),
         },
     )
-    @action(methods=["POST"], detail=True, permission_classes=[])
+    @action(methods=["POST"], detail=True, permission_classes=[IsAuthenticated])
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
         stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()

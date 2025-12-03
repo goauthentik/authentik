@@ -16,11 +16,18 @@ def api_viewset_action(viewset: GenericViewSet, member: Callable) -> Callable:
 
     def tester(self: TestActionDecoratorAPI):
         if "permission_classes" in member.kwargs:
-            self.assertNotEqual(member.kwargs["permission_classes"], [])
+            self.assertNotEqual(
+                member.kwargs["permission_classes"], [], "permission_classes should not be empty"
+            )
         if "authentication_classes" in member.kwargs:
-            self.assertNotEqual(member.kwargs["authentication_classes"], [])
+            self.assertNotEqual(
+                member.kwargs["authentication_classes"],
+                [],
+                "authentication_classes should not be empty",
+            )
 
     return tester
+
 
 # Tell django to load all URLs
 reverse("authentik_core:root-redirect")
