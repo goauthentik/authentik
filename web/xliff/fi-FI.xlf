@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="fi-FI" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <!-- #region Locales -->
@@ -602,7 +602,7 @@
   <target>Tyhjennä haku</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
   <target>Järjestä kentän &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot; mukaan</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
@@ -614,7 +614,7 @@
   <target>Objektien haku ei onnistunut.</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
   <target>Valitse rivi &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
@@ -848,9 +848,9 @@
   <target>Ei löytynyt</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
-  <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-  <target>Osoitetta &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; ei löytynyt.</target>
+  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+  <target>Osoitetta "
+        <x id="0" equiv-text="${this.url}"/>" ei löytynyt.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
@@ -1202,11 +1202,11 @@
   <target>Sulje</target>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
   <target>Päivitä &amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot;-käyttöoikeudet</target>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
   <target>Avaa &amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot;-käyttöoikeuksien ikkuna</target>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
@@ -1970,8 +1970,8 @@
   <target>Jos URI-osoitteita ei ole erikseen määritelty, tallennetaan ensimmäinen onnistuneesti käytetty uudelleenohjaus-URI.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>Salliaksesi minkä tahansa uudelleenohjaus-URI-osoitteen, aseta tila Regexiksi ja syötä arvoksi &quot;.*&quot;. Huomioi tämän aiheuttamat tietoturvavaikutukset.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Salliaksesi minkä tahansa uudelleenohjaus-URI-osoitteen, aseta tila Regexiksi ja syötä arvoksi ".*". Huomioi tämän aiheuttamat tietoturvavaikutukset.</target>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -3086,7 +3086,7 @@
         <x id="0" equiv-text="${item.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
   <target>Muokkaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;-palveluntarjoajaa</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
@@ -3182,8 +3182,8 @@
   <target>Valitse palveluntarjoajat, jotka liitetään sovellukseen</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
-  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-  <target>Syötä joko kokonainen URL-osoite, suhteellinen polku tai 'fa://fa-test' käyttääksesi Font Awesome -kuvaketta &quot;fa-test&quot;.</target>
+  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+  <target>Syötä joko kokonainen URL-osoite, suhteellinen polku tai 'fa://fa-test' käyttääksesi Font Awesome -kuvaketta "fa-test".</target>
 </trans-unit>
 <trans-unit id="s0410779cb47de312">
   <source>Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.</source>
@@ -3224,18 +3224,6 @@
 <trans-unit id="s068d4dd16d9106d0">
   <source>Icon</source>
   <target>Kuvake</target>
-</trans-unit>
-<trans-unit id="s67e20cd8018d7e3c">
-  <source>Currently set to:</source>
-  <target>Tällä hetkellä asetettu:</target>
-</trans-unit>
-<trans-unit id="s80e6d6fe5ad458d3">
-  <source>Clear icon</source>
-  <target>Tyhjennä kuvake</target>
-</trans-unit>
-<trans-unit id="s485c05d34eb00415">
-  <source>Delete currently set icon.</source>
-  <target>Poista nykyinen kuvake.</target>
 </trans-unit>
 <trans-unit id="s6d3b4d0561ba1cff">
   <source>Publisher</source>
@@ -3314,7 +3302,7 @@
   <target>Varoitus: Palveluntarjoaja ei ole minkään sovelluksen käytössä.</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source/>
+  <source></source>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -4173,7 +4161,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Sovellukset</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Kuvake sovellukselle &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
@@ -4181,11 +4169,11 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Päivitä sovellus</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Muokkaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Avaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
@@ -4257,7 +4245,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Luo oikeus</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
   <target>Sovelluksen &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot; haku epäonnistui.</target>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
@@ -4459,12 +4447,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>Click to change value</source>
   <target>Klikkaa muuttaaksesi arvoa</target>
 </trans-unit>
-<trans-unit id="se17f29e830ebf9be">
-  <source>Successfully updated connector.</source>
-</trans-unit>
-<trans-unit id="s6da88527f3e5e513">
-  <source>Successfully created connector.</source>
-</trans-unit>
 <trans-unit id="s6a087e34edeadc1f">
   <source>Connector name...</source>
 </trans-unit>
@@ -4513,9 +4495,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s7e840add1b48d751">
-  <source>Configure how devices communicate with authentik and external sources device data is fetched from.</source>
 </trans-unit>
 <trans-unit id="s58d0ed0cc064ec4f">
   <source>Update Connector</source>
@@ -5786,7 +5765,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Ryhmät</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Katso ryhmän &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; tiedot</target>
 </trans-unit>
 <trans-unit id="s416a540b16275f2e">
@@ -6015,7 +5994,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Uusi käyttäjä</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Tämä käyttäjä lisätään ryhmään &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s0051b0d8e6decea6">
@@ -6055,19 +6034,19 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Nimetön</target>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>Sulje &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>Avaa &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>Valitse &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>&amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;:n kohteet</target>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
@@ -6223,7 +6202,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
         <x id="0" equiv-text="${source.component}"/></target>
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
-  <source>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</source>
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -6487,65 +6466,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 <trans-unit id="s802826db4e2c852e">
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
   <target>Varoitus: Mitään kutsuvaihetta ei ole kytketty mihinkään prosessiin. Kutsut eivät toimi odotetulla tavalla.</target>
-</trans-unit>
-<trans-unit id="s2da4aa7a9abeb653">
-  <source>Pseudolocale (for testing)</source>
-  <target>Pseudokielialue (testausta varten)</target>
-</trans-unit>
-<trans-unit id="s63e71d20d1eaca93">
-  <source>German</source>
-  <target>saksa</target>
-</trans-unit>
-<trans-unit id="s4caed5b7a7e5d89b">
-  <source>English</source>
-  <target>englanti</target>
-</trans-unit>
-<trans-unit id="sf1868dc19e3917bb">
-  <source>Spanish</source>
-  <target>espanja</target>
-</trans-unit>
-<trans-unit id="s75a27f43413e02c5">
-  <source>French</source>
-  <target>ranska</target>
-</trans-unit>
-<trans-unit id="sd48cc52117f4d68b">
-  <source>Italian</source>
-  <target>italia</target>
-</trans-unit>
-<trans-unit id="sdd35b688281b6dea">
-  <source>Japanese</source>
-</trans-unit>
-<trans-unit id="s94d61907ee22a8c1">
-  <source>Korean</source>
-  <target>Korea</target>
-</trans-unit>
-<trans-unit id="s95d56e58f816d211">
-  <source>Dutch</source>
-  <target>hollanti</target>
-</trans-unit>
-<trans-unit id="s03f49e598ffb11cc">
-  <source>Polish</source>
-  <target>puola</target>
-</trans-unit>
-<trans-unit id="sa30c12014e955946">
-  <source>Russian</source>
-  <target>venäjä</target>
-</trans-unit>
-<trans-unit id="s9d2d00982edafabb">
-  <source>Turkish</source>
-  <target>turkki</target>
-</trans-unit>
-<trans-unit id="s4660da32fb311ac0">
-  <source>Taiwanese Mandarin</source>
-  <target>taiwanin mandariini</target>
-</trans-unit>
-<trans-unit id="s354e0a9f146d2869">
-  <source>Chinese (simplified)</source>
-  <target>kiina (yksinkertaistettu)</target>
-</trans-unit>
-<trans-unit id="se3e6af2ce24d80e8">
-  <source>Chinese (traditional)</source>
-  <target>kiina (perinteinen)</target>
 </trans-unit>
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
@@ -7168,8 +7088,8 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Sisäänrakennettu todentaja, joten TouchID tai Windows Hello.</target>
 </trans-unit>
 <trans-unit id="sdf1d8edef27236f0">
-  <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-  <target>&quot;Roaming&quot;-tyyppinen todentaja, kuten YubiKey.</target>
+  <source>A "roaming" authenticator, like a YubiKey</source>
+  <target>"Roaming"-tyyppinen todentaja, kuten YubiKey.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
@@ -7277,7 +7197,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s7f68101a50f526ee">
   <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
-  <target>Hylkää prosessi staattisesti. Käyttääksesi tätä vaihetta tehokkaasti kytke pois käytöstä &quot;Suorita kun prosessi suunnitellaan&quot; tähän liittyvästä liitoksesta.</target>
+  <target>Hylkää prosessi staattisesti. Käyttääksesi tätä vaihetta tehokkaasti kytke pois käytöstä "Suorita kun prosessi suunnitellaan" tähän liittyvästä liitoksesta.</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7392,8 +7312,8 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Kun validi käyttäjätunnus tai sähköpostiosoite on syötetty ja tämä valinta on käytössä, käyttäjän käyttäjätunnus ja avatar näytetään. Muussa tapauksessa näytetään käyttäjän kirjoittama teksti.</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Ota käyttöön &quot;Muista minut tällä laitteella&quot;</target>
+  <source>Enable "Remember me on this device"</source>
+  <target>Ota käyttöön "Muista minut tällä laitteella"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -7539,7 +7459,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Näytä käyttäjille 'näytä salasana' -painike.</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, tyyppiä <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
@@ -7643,8 +7563,8 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Kirjautuneena pysymisen viive</target>
 </trans-unit>
 <trans-unit id="s1608b2f94fa0dbd4">
-  <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-  <target>Jos tähän määritellään nollaa suurempi arvo, käyttäjällä on mahdollisuus valita &quot;pysy sisäänkirjautuneena&quot;, joka jatkaa istunnon kestoa tähän määritellyn ajan verran.</target>
+  <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+  <target>Jos tähän määritellään nollaa suurempi arvo, käyttäjällä on mahdollisuus valita "pysy sisäänkirjautuneena", joka jatkaa istunnon kestoa tähän määritellyn ajan verran.</target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
@@ -7997,14 +7917,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>Background shown during execution.</source>
   <target>Suorittamisen aikana näytettävä tausta.</target>
 </trans-unit>
-<trans-unit id="s3ebf4c166058afce">
-  <source>Clear background</source>
-  <target>Tyhjennä tausta</target>
-</trans-unit>
-<trans-unit id="sb24755ea94bef31d">
-  <source>Delete currently set background image.</source>
-  <target>Poista nykyinen taustakuva.</target>
-</trans-unit>
 <trans-unit id="sb904f23f17b60c3a">
   <source>Successfully imported flow.</source>
   <target>Prosessin tuonti onnistui.</target>
@@ -8034,7 +7946,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Päivitä prosessi</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Suorita &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sc4fdeccf14be5378">
@@ -8042,7 +7954,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Suorita</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>Vie &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s293aa6a6446fb153">
@@ -8132,7 +8044,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Suorita prosessi</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
   <target>Suorita &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; normaalisti</target>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
@@ -8140,7 +8052,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Normaali</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
   <target>Suorita &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; nykyisenä käyttäjänä</target>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
@@ -8148,7 +8060,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <target>Nykyinen käyttäjä</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
   <target>Suorita &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; tarkastajalla</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
@@ -8919,11 +8831,11 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <target>Päivitä suunnitelma</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
   <target>Muokkaa &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;-suunnitelmaa</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
   <target>Käytä &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;-suunnitelmaa</target>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
@@ -9120,9 +9032,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
-</trans-unit>
-<trans-unit id="s02d57c823e493fe9">
-  <source>Device groups</source>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -9821,7 +9730,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <target>sovellus</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
   <target>&amp;quot;<x id="0" equiv-text="${applicationName}"/>&amp;quot;:n toiminnot</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
@@ -9857,11 +9766,11 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <target>Haku ei palauttanut tuloksia.</target>
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
   <target><x id="0" equiv-text="${count}"/> sovellus löytyi kohteelle &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
   <target><x id="0" equiv-text="${count}"/> sovellusta löytyi kohteelle &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
@@ -9955,6 +9864,111 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>...</source>
   <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s6cd96061d397f7b5">
+  <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+</trans-unit>
+<trans-unit id="sb7ff80582ccd9348">
+  <source>reference will be left dangling</source>
+</trans-unit>
+<trans-unit id="s0b7ddc0168e79ea2">
+  <source>Failed to fetch files</source>
+</trans-unit>
+<trans-unit id="sdc4f1cfd587212b4">
+  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+</trans-unit>
+<trans-unit id="s8015ac3b47172dc8">
+  <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+</trans-unit>
+<trans-unit id="s87616130c08b117c">
+  <source>This type is deprecated.</source>
+</trans-unit>
+<trans-unit id="s40f4c2223ce87751">
+  <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+</trans-unit>
+<trans-unit id="s70c2cd89201ecca9">
+  <source>Home directory</source>
+</trans-unit>
+<trans-unit id="sb171d638b8af660d">
+  <source>Successfully updated agent connector.</source>
+</trans-unit>
+<trans-unit id="s81c9554908463f94">
+  <source>Successfully created agent connector.</source>
+</trans-unit>
+<trans-unit id="s306dd51d3be07bc7">
+  <source>Device compliance settings</source>
+</trans-unit>
+<trans-unit id="sc2966702517b7af5">
+  <source>Challenge certificate</source>
+</trans-unit>
+<trans-unit id="s051588c63fedab5f">
+  <source>Challenge idle timeout</source>
+</trans-unit>
+<trans-unit id="s4c70d7629e29ac2d">
+  <source>Duration the flow executor will wait before continuing without a response.</source>
+</trans-unit>
+<trans-unit id="se3c7fb54006d9e98">
+  <source>Trigger check-in on device</source>
+</trans-unit>
+<trans-unit id="se0a747f4db08e87f">
+  <source>Configure how devices connect with authentik and ingest external device data.</source>
+</trans-unit>
+<trans-unit id="s114f2b310ef163ff">
+  <source>Stage which associates the currently used device with the current session.</source>
+</trans-unit>
+<trans-unit id="s8290d08ab5a49ed0">
+  <source>Connector</source>
+</trans-unit>
+<trans-unit id="s5e8eefcbbeffd4d5">
+  <source>Device optional</source>
+</trans-unit>
+<trans-unit id="s51b09bba5dcc19b0">
+  <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+</trans-unit>
+<trans-unit id="s5f58e358343a5514">
+  <source>Device required</source>
+</trans-unit>
+<trans-unit id="s6df8326edea3b23d">
+  <source>If no device was provided, this stage will stop flow execution.</source>
+</trans-unit>
+<trans-unit id="s506c7d2e87f6770e">
+  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
+</trans-unit>
+<trans-unit id="s3a3d5b2575cd32ea">
+  <source>File uploaded successfully</source>
+</trans-unit>
+<trans-unit id="sd3775ef947e0de32">
+  <source>File Name</source>
+</trans-unit>
+<trans-unit id="s1afc99a84a890514">
+  <source>Type an optional custom file name...</source>
+</trans-unit>
+<trans-unit id="sb40e2763045466ea">
+  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s803ce7e1a2294d50">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="s42d82601762f5321">
+  <source>Manage uploaded files.</source>
+</trans-unit>
+<trans-unit id="saad01178f02a6a23">
+  <source>file</source>
+</trans-unit>
+<trans-unit id="s69f800801812a5f0">
+  <source>files</source>
+</trans-unit>
+<trans-unit id="s96668830629e0dfc">
+  <source>Upload</source>
+</trans-unit>
+<trans-unit id="sa32e9d0a108ee802">
+  <source>Upload File</source>
+</trans-unit>
+<trans-unit id="s95094b57684716a5">
+  <source>Failed to validate device.</source>
+</trans-unit>
+<trans-unit id="se99d25eb70c767ef">
+  <source>Verifying your device...</source>
 </trans-unit>
 </body>
 </file>

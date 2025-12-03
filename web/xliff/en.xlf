@@ -2410,15 +2410,6 @@
 <trans-unit id="s068d4dd16d9106d0">
   <source>Icon</source>
 </trans-unit>
-<trans-unit id="s67e20cd8018d7e3c">
-  <source>Currently set to:</source>
-</trans-unit>
-<trans-unit id="s80e6d6fe5ad458d3">
-  <source>Clear icon</source>
-</trans-unit>
-<trans-unit id="s485c05d34eb00415">
-  <source>Delete currently set icon.</source>
-</trans-unit>
 <trans-unit id="s6d3b4d0561ba1cff">
   <source>Publisher</source>
 </trans-unit>
@@ -3369,12 +3360,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s09810653c832e935">
   <source>Click to change value</source>
 </trans-unit>
-<trans-unit id="se17f29e830ebf9be">
-  <source>Successfully updated connector.</source>
-</trans-unit>
-<trans-unit id="s6da88527f3e5e513">
-  <source>Successfully created connector.</source>
-</trans-unit>
 <trans-unit id="s6a087e34edeadc1f">
   <source>Connector name...</source>
 </trans-unit>
@@ -3422,9 +3407,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s7e840add1b48d751">
-  <source>Configure how devices communicate with authentik and external sources device data is fetched from.</source>
 </trans-unit>
 <trans-unit id="s58d0ed0cc064ec4f">
   <source>Update Connector</source>
@@ -5996,12 +5978,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s374abf1a54d87b67">
   <source>Background shown during execution.</source>
 </trans-unit>
-<trans-unit id="s3ebf4c166058afce">
-  <source>Clear background</source>
-</trans-unit>
-<trans-unit id="sb24755ea94bef31d">
-  <source>Delete currently set background image.</source>
-</trans-unit>
 <trans-unit id="sb904f23f17b60c3a">
   <source>Successfully imported flow.</source>
 </trans-unit>
@@ -6832,9 +6808,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
 </trans-unit>
-<trans-unit id="s02d57c823e493fe9">
-  <source>Device groups</source>
-</trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
 </trans-unit>
@@ -7459,6 +7432,111 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
+</trans-unit>
+<trans-unit id="s6cd96061d397f7b5">
+  <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+</trans-unit>
+<trans-unit id="sb7ff80582ccd9348">
+  <source>reference will be left dangling</source>
+</trans-unit>
+<trans-unit id="s0b7ddc0168e79ea2">
+  <source>Failed to fetch files</source>
+</trans-unit>
+<trans-unit id="sdc4f1cfd587212b4">
+  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+</trans-unit>
+<trans-unit id="s8015ac3b47172dc8">
+  <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+</trans-unit>
+<trans-unit id="s87616130c08b117c">
+  <source>This type is deprecated.</source>
+</trans-unit>
+<trans-unit id="s40f4c2223ce87751">
+  <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+</trans-unit>
+<trans-unit id="s70c2cd89201ecca9">
+  <source>Home directory</source>
+</trans-unit>
+<trans-unit id="sb171d638b8af660d">
+  <source>Successfully updated agent connector.</source>
+</trans-unit>
+<trans-unit id="s81c9554908463f94">
+  <source>Successfully created agent connector.</source>
+</trans-unit>
+<trans-unit id="s306dd51d3be07bc7">
+  <source>Device compliance settings</source>
+</trans-unit>
+<trans-unit id="sc2966702517b7af5">
+  <source>Challenge certificate</source>
+</trans-unit>
+<trans-unit id="s051588c63fedab5f">
+  <source>Challenge idle timeout</source>
+</trans-unit>
+<trans-unit id="s4c70d7629e29ac2d">
+  <source>Duration the flow executor will wait before continuing without a response.</source>
+</trans-unit>
+<trans-unit id="se3c7fb54006d9e98">
+  <source>Trigger check-in on device</source>
+</trans-unit>
+<trans-unit id="se0a747f4db08e87f">
+  <source>Configure how devices connect with authentik and ingest external device data.</source>
+</trans-unit>
+<trans-unit id="s114f2b310ef163ff">
+  <source>Stage which associates the currently used device with the current session.</source>
+</trans-unit>
+<trans-unit id="s8290d08ab5a49ed0">
+  <source>Connector</source>
+</trans-unit>
+<trans-unit id="s5e8eefcbbeffd4d5">
+  <source>Device optional</source>
+</trans-unit>
+<trans-unit id="s51b09bba5dcc19b0">
+  <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+</trans-unit>
+<trans-unit id="s5f58e358343a5514">
+  <source>Device required</source>
+</trans-unit>
+<trans-unit id="s6df8326edea3b23d">
+  <source>If no device was provided, this stage will stop flow execution.</source>
+</trans-unit>
+<trans-unit id="s506c7d2e87f6770e">
+  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
+</trans-unit>
+<trans-unit id="s3a3d5b2575cd32ea">
+  <source>File uploaded successfully</source>
+</trans-unit>
+<trans-unit id="sd3775ef947e0de32">
+  <source>File Name</source>
+</trans-unit>
+<trans-unit id="s1afc99a84a890514">
+  <source>Type an optional custom file name...</source>
+</trans-unit>
+<trans-unit id="sb40e2763045466ea">
+  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s803ce7e1a2294d50">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="s42d82601762f5321">
+  <source>Manage uploaded files.</source>
+</trans-unit>
+<trans-unit id="saad01178f02a6a23">
+  <source>file</source>
+</trans-unit>
+<trans-unit id="s69f800801812a5f0">
+  <source>files</source>
+</trans-unit>
+<trans-unit id="s96668830629e0dfc">
+  <source>Upload</source>
+</trans-unit>
+<trans-unit id="sa32e9d0a108ee802">
+  <source>Upload File</source>
+</trans-unit>
+<trans-unit id="s95094b57684716a5">
+  <source>Failed to validate device.</source>
+</trans-unit>
+<trans-unit id="se99d25eb70c767ef">
+  <source>Verifying your device...</source>
 </trans-unit>
 </body>
 </file>
