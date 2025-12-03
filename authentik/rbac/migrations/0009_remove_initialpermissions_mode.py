@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_rbac", "0007_alter_role_group"),
+        ("authentik_rbac", "0008_alter_role_group"),
     ]
 
     operations = [

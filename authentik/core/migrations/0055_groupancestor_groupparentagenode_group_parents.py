@@ -29,7 +29,7 @@ def migrate_parents(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0053_alter_application_slug_alter_source_slug"),
+        ("authentik_core", "0054_alter_application_meta_icon_alter_source_icon"),
     ]
 
     operations = [

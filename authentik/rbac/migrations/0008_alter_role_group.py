@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("auth", "0012_alter_user_first_name_max_length"),
-        ("authentik_rbac", "0006_alter_role_options"),
+        ("authentik_rbac", "0007_alter_systempermission_options"),
     ]
 
     operations = [
