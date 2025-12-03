@@ -1,10 +1,14 @@
 package web
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/go-http-utils/etag"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
 	"goauthentik.io/internal/config"
@@ -12,6 +16,47 @@ import (
 	"goauthentik.io/internal/utils/web"
 	staticWeb "goauthentik.io/web"
 )
+
+type StorageClaims struct {
+	jwt.RegisteredClaims
+	Path string `json:"path,omitempty"`
+}
+
+func storageTokenIsValid(usage string, r *http.Request) bool {
+	tokenString := r.URL.Query().Get("token")
+	if tokenString == "" {
+		return false
+	}
+	claims := &StorageClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		key := []byte(fmt.Sprintf("%s:%s", config.Get().SecretKey, usage))
+		hash := sha256.Sum256(key)
+		hexDigest := hex.EncodeToString(hash[:])
+		return []byte(hexDigest), nil
+	})
+	if err != nil || !token.Valid {
+		return false
+	}
+
+	now := time.Now()
+
+	if claims.ExpiresAt != nil && claims.ExpiresAt.Before(now) {
+		return false
+	}
+	if claims.NotBefore != nil && claims.NotBefore.After(now) {
+		return false
+	}
+
+	if claims.Path != fmt.Sprintf("%s/%s", usage, r.URL.Path) {
+		return false
+	}
+
+	return true
+}
 
 func (ws *WebServer) configureStatic() {
 	// Setup routers
@@ -61,15 +106,63 @@ func (ws *WebServer) configureStatic() {
 		).ServeHTTP(rw, r)
 	})
 
-	// Media files, if backend is file
-	if config.Get().Storage.Media.Backend == "file" {
-		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+	// Files, if backend is file
+	defaultBackend := config.Get().Storage.Backend
+	if defaultBackend == "" {
+		defaultBackend = "file"
+	}
+	mediaBackend := config.Get().Storage.Media.Backend
+	if mediaBackend == "" {
+		mediaBackend = defaultBackend
+	}
+	reportsBackend := config.Get().Storage.Reports.Backend
+	if reportsBackend == "" {
+		reportsBackend = defaultBackend
+	}
+
+	defaultStoragePath := config.Get().Storage.File.Path
+	if defaultStoragePath == "" {
+		defaultStoragePath = "./data"
+	}
+
+	if mediaBackend == "file" {
+		mediaPath := config.Get().Storage.Media.File.Path
+		if mediaPath == "" {
+			mediaPath = defaultStoragePath
+		}
+		mediaPath = mediaPath + "/media"
+		fsMedia := http.FileServer(http.Dir(mediaPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/media/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if !storageTokenIsValid("media", r) {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
+
 				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsMedia.ServeHTTP(w, r)
 			}),
-			"media/",
+			"files/media/",
+			config.Get().Web.Path,
+		))
+	}
+
+	if reportsBackend == "file" {
+		reportsPath := config.Get().Storage.Reports.File.Path
+		if reportsPath == "" {
+			reportsPath = defaultStoragePath
+		}
+		reportsPath = reportsPath + "/reports"
+		fsReports := http.FileServer(http.Dir(reportsPath))
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/files/reports/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if !storageTokenIsValid("reports", r) {
+					http.Error(w, "404 page not found", http.StatusNotFound)
+					return
+				}
+				fsReports.ServeHTTP(w, r)
+			}),
+			"files/reports/",
 			config.Get().Web.Path,
 		))
 	}

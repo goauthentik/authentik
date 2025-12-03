@@ -12,11 +12,11 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
 
-import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
+import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -51,10 +51,32 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     ordering = "name";
 
+    @state()
+    summary?: DeviceSummary;
+
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
+        this.summary = await new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesSummaryRetrieve();
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
             await this.defaultEndpointConfig(),
         );
+    }
+
+    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(html`
+            ${inner
+                ? inner
+                : html`<ak-empty-state icon=${this.pageIcon}
+                      ><span>${msg("No objects found.")}</span>
+                      <div slot="body">
+                          ${this.search ? this.renderEmptyClearSearch() : nothing}
+                          <p>
+                              ${msg(
+                                  "No connectors configured. Navigate to Connectors in the sidebar and first create a connector.",
+                              )}
+                          </p>
+                      </div>
+                  </ak-empty-state>`}
+        `);
     }
 
     renderSectionBefore() {
@@ -67,7 +89,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
-                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
+                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl"
                 >
                     <ak-aggregate-card
                         role="status"
@@ -76,7 +98,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                         label=${msg("Total devices")}
                         subtext=${msg("Total count of devices across all groups")}
                     >
-                        ${this.data?.pagination.count}
+                        ${this.summary?.totalCount ?? "-"}
                     </ak-aggregate-card>
                     <ak-aggregate-card
                         role="status"
@@ -87,7 +109,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                             "Devices that authentik hasn't received information about in 24h.",
                         )}
                     >
-                        -
+                        ${this.summary?.unreachableCount ?? "-"}
                     </ak-aggregate-card>
                     <ak-aggregate-card
                         role="status"
@@ -96,7 +118,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                         label=${msg("Outdated agents")}
                         subtext=${msg("Devices running an outdated version of an agent")}
                     >
-                        -
+                        ${this.summary?.outdatedAgentCount ?? "-"}
                     </ak-aggregate-card>
                 </div>
             </section>
@@ -123,12 +145,6 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 </button>
             </ak-forms-modal>`,
         ];
-    }
-
-    renderObjectCreate() {
-        return html`<ak-endpoints-device-add>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Setup")}</button>
-        </ak-endpoints-device-add>`;
     }
 
     renderToolbarSelected() {
