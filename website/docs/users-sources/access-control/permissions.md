@@ -42,9 +42,9 @@ For example, a role with only the object permission to change the Default Authen
 
 ## Viewing permissions
 
-Many objects in authentik's Admin interface have a **Permissions** view to check which roles have access to that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
+Many objects in authentik's Admin interface have a **Permissions** tab, where you can check which roles have rights on that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
 
-For example, the screenshot below shows the Permissions tab for the user named Peter, listing what actions users can perform on Peter's user object.
+For example, the screenshot below shows the Permissions tab for the user named Peter, listing what actions the listed roles can perform on the user object "Peter".
 
 ![](./user-page.png)
 
