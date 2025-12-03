@@ -20,9 +20,11 @@ updates:
       prefix: "ci:"
     labels:
       - dependencies
+
   #endregion
 
   #region Golang
+
   - package-ecosystem: gomod
     directory: "/"
     schedule:
