@@ -4870,6 +4870,10 @@
                     "type": "string",
                     "title": "Meta launch url"
                 },
+                "meta_icon": {
+                    "type": "string",
+                    "title": "Meta icon"
+                },
                 "meta_description": {
                     "type": "string",
                     "title": "Meta description"
@@ -5593,8 +5597,10 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_media_files",
                             "authentik_rbac.unassign_role_permissions",
                             "authentik_rbac.view_initialpermissions",
+                            "authentik_rbac.view_media_files",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -6017,6 +6023,15 @@
                     "format": "uuid",
                     "title": "Challenge key"
                 },
+                "challenge_idle_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Challenge idle timeout"
+                },
+                "challenge_trigger_check_in": {
+                    "type": "boolean",
+                    "title": "Challenge trigger check in"
+                },
                 "jwt_federation_providers": {
                     "type": "array",
                     "items": {
@@ -6359,6 +6374,14 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Connector"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required"
+                    ],
+                    "title": "Mode"
                 }
             },
             "required": []
@@ -7719,8 +7742,8 @@
                 },
                 "background": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Background"
+                    "title": "Background",
+                    "description": "Background shown during execution"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -8201,6 +8224,7 @@
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
                         "authentik.events",
+                        "authentik.admin.files",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -10378,6 +10402,12 @@
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
                 },
+                "service_provider_config_cache_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Service provider config cache timeout",
+                    "description": "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -10891,8 +10921,10 @@
                             "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
+                            "authentik_rbac.manage_media_files",
                             "authentik_rbac.unassign_role_permissions",
                             "authentik_rbac.view_initialpermissions",
+                            "authentik_rbac.view_media_files",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -11221,11 +11253,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11335,7 +11362,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -11514,11 +11540,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11565,11 +11586,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11679,7 +11695,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "server_uri": {
@@ -11888,11 +11903,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -11939,11 +11949,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12053,7 +12058,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12082,6 +12086,7 @@
                         "okta",
                         "patreon",
                         "reddit",
+                        "slack",
                         "twitch",
                         "twitter"
                     ],
@@ -12275,11 +12280,6 @@
                     "type": "string",
                     "format": "date-time",
                     "title": "Expires"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12326,11 +12326,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12440,7 +12435,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12580,11 +12574,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Plex token"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12631,11 +12620,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -12745,7 +12729,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "group_matching_mode": {
@@ -12962,11 +12945,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13036,11 +13014,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "User path template"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13138,11 +13111,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []
@@ -13252,7 +13220,6 @@
                 },
                 "icon": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Icon"
                 },
                 "bot_username": {
@@ -13373,11 +13340,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
-                },
-                "icon": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Icon"
                 }
             },
             "required": []

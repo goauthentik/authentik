@@ -2,8 +2,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSo
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
@@ -22,7 +20,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
-export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<TelegramSource>) {
+export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async loadInstance(pk: string): Promise<TelegramSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
             slug: pk,

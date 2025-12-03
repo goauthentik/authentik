@@ -5,7 +5,7 @@
 #region Locale
 
 src/locales/*.ts
-xliff/pseudo-LOCALE.xlf
+xliff/pseudo[_-]LOCALE.xlf
 
 ### Node ###
 # Logs

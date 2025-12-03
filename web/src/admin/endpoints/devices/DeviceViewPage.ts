@@ -1,6 +1,8 @@
 import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
-import "#admin/endpoints/devices/ProcessTable";
+import "#admin/endpoints/devices/facts/DeviceProcessTable";
+import "#admin/endpoints/devices/facts/DeviceUserTable";
+import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceForm";
 import "#elements/forms/ModalForm";
 import "#elements/Tabs";
@@ -206,7 +208,7 @@ export class DeviceViewPage extends AKElement {
                     </dl>
                 </div>
             </div>
-            <div class="pf-l-grid__item pf-m-6-col pf-c-card">
+            <div class="pf-l-grid__item pf-m-12-col pf-c-card">
                 <div class="pf-c-card__title">${msg("Users / Groups")}</div>
                 <div class="pf-c-card__body">
                     <ak-bound-device-users-list
@@ -224,6 +226,24 @@ export class DeviceViewPage extends AKElement {
         return html`<ak-endpoints-device-process-table
             .device=${this.device}
         ></ak-endpoints-device-process-table>`;
+    }
+
+    renderUsers() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-users-table
+            .device=${this.device}
+        ></ak-endpoints-device-users-table>`;
+    }
+
+    renderGroups() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-groups-table
+            .device=${this.device}
+        ></ak-endpoints-device-groups-table>`;
     }
 
     render() {
@@ -248,6 +268,26 @@ export class DeviceViewPage extends AKElement {
                     class="pf-c-page__main-section"
                 >
                     ${this.renderProcesses()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Users")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderUsers()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Groups")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderGroups()}
                 </div>
             </ak-tabs>
         </main>`;
