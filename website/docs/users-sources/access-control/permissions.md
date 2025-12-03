@@ -36,18 +36,18 @@ Global permissions define coarse-grained access control. For example, a role wit
 
 ### Object permissions
 
-An object permission grants permission on a single object (e.g. a [user](../user/index.mdx), a [group](../groups/index.mdx), a [role](../roles/index.md), a [flow](../../add-secure-apps/flows-stages/flow/index.md), etc.) instead of all objects of a specific type.
+An object permission grants permission (via a role) on a single, specific object (e.g. a [user](../user/index.mdx), a [group](../groups/index.mdx), a [role](../roles/index.md), a [flow](../../add-secure-apps/flows-stages/flow/index.md), etc.) instead of all objects of a specific type.
 
-For example, a role with only the object permission to change the Default Authentication flow will not be able to change any other flow.
+For example, a role with the object permission to change only the Default Authentication flow will not be able to change any other flow.
 
 ## Viewing permissions
 
 Many objects in authentik's Admin interface have a **Permissions** tab, where you can check which roles have rights on that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
 
-For example, the screenshot below shows the Permissions tab for the user named Peter, listing what actions the listed roles can perform on the user object "Peter".
+For example, the screenshot below shows the **Permissions** tab for the user named Peter, listing what actions the listed roles can perform on the user object "Peter".
 
 ![](./user-page.png)
 
-You can see in the **Role Permissions** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role only has the view permission.
+You can see in the **Role Permissions** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role has only the view permission.
 
 Hover over a checkmark to see whether that permission is granted by a global permission or an object permission.
