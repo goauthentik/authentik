@@ -7,7 +7,7 @@ import { kAKLocale, LocaleContext, LocaleMixin } from "#elements/mixins/locale";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { ContextProvider } from "@lit/context";
-import { configureLocalization } from "@lit/localize";
+import { configureLocalization, LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import type { ReactiveController } from "lit";
 
 /**
@@ -114,15 +114,6 @@ export class LocaleContextController implements ReactiveController {
 
         const loader = LocaleLoaderRecord[locale];
 
-        this.#log(`Updating \`lang\` attribute to: \`${locale}\``);
-
-        // Prevent observation while we update the `lang` attribute...
-        this.#disconnectDocumentObserver();
-
-        document.documentElement.lang = locale;
-
-        this.#connectDocumentObserver();
-
         return loader();
     };
 
@@ -156,8 +147,34 @@ export class LocaleContextController implements ReactiveController {
         }
     }
 
+    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "error") {
+            this.#log("Error loading locale:", event.detail);
+            return;
+        }
+
+        if (event.detail.status === "loading") {
+            return;
+        }
+
+        const { readyLocale } = event.detail;
+        this.#log(`Updating \`lang\` attribute to: \`${readyLocale}\``);
+
+        // Prevent observation while we update the `lang` attribute...
+        this.#disconnectDocumentObserver();
+
+        document.documentElement.lang = readyLocale;
+
+        this.#connectDocumentObserver();
+    };
+
+    public hostConnected() {
+        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
     public hostDisconnected() {
         this.#documentObserver.disconnect();
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
     }
 
     //#endregion
