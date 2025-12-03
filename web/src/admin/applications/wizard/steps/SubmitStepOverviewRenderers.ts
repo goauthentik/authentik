@@ -1,13 +1,13 @@
-import { OneOfProvider } from "../types.js";
-
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+
+import { WizardReadyProviderSuffix } from "#admin/applications/wizard/steps/ProviderChoices";
+import { OneOfProvider } from "#admin/applications/wizard/steps/providers/shared";
 
 import {
     ClientTypeEnum,
     LDAPProvider,
     MatchingModeEnum,
     OAuth2Provider,
-    ProviderModelEnum,
     ProxyMode,
     ProxyProvider,
     RACProvider,
@@ -20,7 +20,7 @@ import {
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, TemplateResult } from "lit";
 
 const renderSummary = (type: string, name: string, fields: DescriptionPair[]) =>
     renderDescriptionList([[msg("Type"), type], [msg("Name"), name], ...fields], {
@@ -145,14 +145,14 @@ function renderLDAPOverview(rawProvider: OneOfProvider) {
     return renderSummary("Proxy", provider.name, [[msg("Base DN"), provider.baseDn]]);
 }
 
-const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
-
-export const providerRenderers = new Map([
-    [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
-    [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
-    [providerName(ProviderModelEnum.AuthentikProvidersRadiusRadiusprovider), renderRadiusOverview],
-    [providerName(ProviderModelEnum.AuthentikProvidersRacRacprovider), renderRACOverview],
-    [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
-    [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
-    [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
-]);
+export const ProviderOverviewRenderer: Readonly<
+    Record<WizardReadyProviderSuffix, (provider: OneOfProvider) => TemplateResult>
+> = {
+    samlprovider: renderSAMLOverview,
+    scimprovider: renderSCIMOverview,
+    radiusprovider: renderRadiusOverview,
+    racprovider: renderRACOverview,
+    proxyprovider: renderProxyOverview,
+    oauth2provider: renderOAuth2Overview,
+    ldapprovider: renderLDAPOverview,
+};
