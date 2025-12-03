@@ -1,6 +1,76 @@
 <?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="pl-PL" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<!-- #region Locales -->
+<trans-unit id="en">
+  <source>English</source>
+  <target>Angielski (English)</target>
+</trans-unit>
+<trans-unit id="pseudo-LOCALE">
+  <source>Pseudolocale</source>
+  <target>Pseudojęzyk</target>
+</trans-unit>
+<trans-unit id="cs-CZ">
+  <source>Czech (Čeština)</source>
+  <target>Czeski (Čeština)</target>
+</trans-unit>
+<trans-unit id="de-DE">
+  <source>German (Deutsch)</source>
+  <target>Niemiecki (Deutsch)</target>
+</trans-unit>
+<trans-unit id="es-ES">
+  <source>Spanish (Español)</source>
+  <target>Hiszpański (Español)</target>
+</trans-unit>
+<trans-unit id="fi-FI">
+  <source>Finnish (Suomi)</source>
+  <target>Fiński (Suomi)</target>
+</trans-unit>
+<trans-unit id="fr-FR">
+  <source>French (Français)</source>
+  <target>Francuski (Français)</target>
+</trans-unit>
+<trans-unit id="it-IT">
+  <source>Italian (Italiano)</source>
+  <target>Włoski (Italiano)</target>
+</trans-unit>
+<trans-unit id="ja-JP">
+  <source>Japanese (日本語)</source>
+  <target>Japoński (日本語)</target>
+</trans-unit>
+<trans-unit id="ko-KR">
+  <source>Korean (한국어)</source>
+  <target>Koreański (한국어)</target>
+</trans-unit>
+<trans-unit id="nl-NL">
+  <source>Dutch (Nederlands)</source>
+  <target>Niderlandzki (Nederlands)</target>
+</trans-unit>
+<trans-unit id="pl-PL">
+  <source>Polish (Polski)</source>
+  <target>Polski (Polish)</target>
+</trans-unit>
+<trans-unit id="pt-BR">
+  <source>Portuguese (Português)</source>
+  <target>Portugalski (Português)</target>
+</trans-unit>
+<trans-unit id="ru-RU">
+  <source>Russian (Русский)</source>
+  <target>Rosyjski (Русский)</target>
+</trans-unit>
+<trans-unit id="tr-TR">
+  <source>Turkish (Türkçe)</source>
+  <target>Turecki (Türkçe)</target>
+</trans-unit>
+<trans-unit id="zh-Hans">
+  <source>Chinese Simplified (简体中文)</source>
+  <target>Chiński (Uproszczony) (简体中文)</target>
+</trans-unit>
+<trans-unit id="zh-Hant">
+  <source>Chinese Traditional (繁體中文)</source>
+  <target>Chiński (Tradycyjny) (繁體中文)</target>
+</trans-unit>
+<!-- #endregion -->
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
 </trans-unit>
@@ -9156,74 +9226,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="ellipsis">
   <source>...</source>
   <note from="lit-localize">Truncation ellipsis</note>
-</trans-unit>
-<trans-unit id="en">
-  <source>English</source>
-  <target>Angielski (English)</target>
-</trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-  <target>Pseudojęzyk</target>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech (Čeština)</source>
-  <target>Czeski (Čeština)</target>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German (Deutsch)</source>
-  <target>Niemiecki (Deutsch)</target>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish (Español)</source>
-  <target>Hiszpański (Español)</target>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish (Suomi)</source>
-  <target>Fiński (Suomi)</target>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French (Français)</source>
-  <target>Francuski (Français)</target>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian (Italiano)</source>
-  <target>Włoski (Italiano)</target>
-</trans-unit>
-<trans-unit id="ja-JP">
-  <source>Japanese (日本語)</source>
-  <target>Japoński (日本語)</target>
-</trans-unit>
-<trans-unit id="ko-KR">
-  <source>Korean (한국어)</source>
-  <target>Koreański (한국어)</target>
-</trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch (Nederlands)</source>
-  <target>Niderlandzki (Nederlands)</target>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish (Polski)</source>
-  <target>Polski (Polish)</target>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese (Português)</source>
-  <target>Portugalski (Português)</target>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian (Русский)</source>
-  <target>Rosyjski (Русский)</target>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish (Türkçe)</source>
-  <target>Turecki (Türkçe)</target>
-</trans-unit>
-<trans-unit id="zh-Hans">
-  <source>Chinese Simplified (简体中文)</source>
-  <target>Chiński (Uproszczony) (简体中文)</target>
-</trans-unit>
-<trans-unit id="zh-Hant">
-  <source>Chinese Traditional (繁體中文)</source>
-  <target>Chiński (Tradycyjny) (繁體中文)</target>
 </trans-unit>
 </body>
 </file>
