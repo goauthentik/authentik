@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0053_alter_application_slug_alter_source_slug"),
-        ("django_postgres_cache", "0002_remove_message_notify_new_channels_message_and_more"),
+        ("django_postgres_cache", "0001_initial"),
     ]
 
     operations = [
