@@ -1,7 +1,7 @@
 import { type allLocales, sourceLocale } from "../../../locale-codes.js";
 
 import type { LocaleModule } from "@lit/localize";
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 
 export type TargetLocale = (typeof allLocales)[number];
 
@@ -53,7 +53,7 @@ export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
  * @remarks
  * These are not thunked, as they are already localized.
  */
-export const LocalizedLabelRecord: Record<TargetLocale, string> = {
+export const TranslatedLabelRecord: Record<TargetLocale, string> = {
     [sourceLocale]: "English",
     [PseudoLocale]: "Pseudolocale",
     "cs-CZ": "Čeština",
@@ -90,8 +90,24 @@ export function formatLocaleOptions(
     collatorOptions?: Intl.CollatorOptions,
 ): LocaleOption[] {
     const options = Object.entries(LocaleLabelRecord)
-        .map(([code, label]) => {
-            return [label(), code];
+        .map(([_code, label]) => {
+            const code = _code as TargetLocale;
+
+            const translatedLabel = TranslatedLabelRecord[code];
+
+            const localeLabel = label();
+            let localizedMessage: string;
+
+            if (localeLabel === translatedLabel) {
+                localizedMessage = localeLabel;
+            } else {
+                localizedMessage = msg(str`${localeLabel} (${translatedLabel})`, {
+                    id: "locale-option-localized-label",
+                    desc: "Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.",
+                });
+            }
+
+            return [localizedMessage, code];
         })
         .sort(([aLabel], [bLabel]) => aLabel.localeCompare(bLabel, locales, collatorOptions));
 

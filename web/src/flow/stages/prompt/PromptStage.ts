@@ -33,6 +33,9 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+// Fixes horizontal rule <hr> warning in select dropdowns.
+/* eslint-disable lit/no-invalid-html */
+
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
@@ -236,11 +239,18 @@ ${prompt.initialValue}</textarea
                     class="pf-c-form-control"
                     id=${fieldId}
                     name="${prompt.fieldKey}"
+                    aria-label=${msg("Select language", {
+                        id: "language-selector-label",
+                        desc: "Label for the language selection dropdown",
+                    })}
                 >
                     <option value="" ?selected=${!selected}>
-                        ${msg("Auto-detect (based on your browser)")}
+                        ${msg("Auto-detect", {
+                            id: "locale-auto-detect-option",
+                            desc: "Label for the auto-detect locale option in language selection dropdown",
+                        })}
                     </option>
-                    <hr></hr>
+                    <hr />
                     ${options}
                 </select>`;
             }

@@ -71,6 +71,23 @@
   <target>中国語繁体字</target>
 </trans-unit>
 <!-- #endregion -->
+
+<!-- #region Locale selector  -->
+<trans-unit id="locale-auto-detect-option">
+  <source>Auto-detect</source>
+  <target>自動検出</target>
+  <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
+</trans-unit>
+<trans-unit id="language-selector-label">
+  <source>Select language</source>
+  <note from="lit-localize">Label for the language selection dropdown</note>
+</trans-unit>
+<trans-unit id="locale-option-localized-label">
+  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+</trans-unit>
+<!-- #endregion -->
+
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
   <target>閉じる</target>
@@ -6457,10 +6474,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s8939f574b096054a">
   <source>Not you?</source>
   <target>あなたではありませんか?</target>
-</trans-unit>
-<trans-unit id="s2f995efbb1e46b18">
-  <source>Auto-detect (based on your browser)</source>
-  <target>自動検出（ブラウザに基づく）</target>
 </trans-unit>
 <trans-unit id="s296fbffaaa7c910a">
   <source>Required.</source>
