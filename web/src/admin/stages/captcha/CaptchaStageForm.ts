@@ -152,13 +152,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
      */
     getPublicKeyHelpText(anchor?: TemplateResult): string | TemplateResult {
         return anchor
-            ? html`${msg("Site key from your CAPTCHA provider. Get keys from")} ${anchor}`
+            ? msg(html`Site key from your CAPTCHA provider. Get keys from ${anchor}`)
             : msg("Site key from your CAPTCHA provider.");
     }
 
     getPrivateKeyHelpText(anchor?: TemplateResult): string | TemplateResult {
         return anchor
-            ? html`${msg("Secret key from your CAPTCHA provider. Get keys from")} ${anchor}`
+            ? msg(html`Secret key from your CAPTCHA provider. Get keys from ${anchor}`)
             : msg("Secret key from your CAPTCHA provider.");
     }
 
