@@ -58,18 +58,6 @@ function createGuestSession(): SessionUser {
     return guest;
 }
 
-let memoizedSession: SessionUser | null = null;
-
-/**
- * Refresh the current user session.
- *
- * @deprecated This should be moved to the WithSession mixin.
- */
-export function refreshMe(): Promise<SessionUser> {
-    memoizedSession = null;
-    return me();
-}
-
 /**
  * Retrieve the current user session.
  *
@@ -80,8 +68,6 @@ export function refreshMe(): Promise<SessionUser> {
  * @category Session
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
-    if (memoizedSession) return memoizedSession;
-
     return new CoreApi(DEFAULT_CONFIG)
         .coreUsersMeRetrieve(requestInit)
         .catch(async (error: unknown) => {
@@ -96,10 +82,6 @@ export async function me(requestInit?: RequestInit): Promise<SessionUser> {
             console.debug("authentik/users: Failed to retrieve user session", error);
 
             return createGuestSession();
-        })
-        .then((nextSession) => {
-            memoizedSession = nextSession;
-            return nextSession;
         });
 }
 

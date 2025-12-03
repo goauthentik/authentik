@@ -1,7 +1,8 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { formatLocaleOptions } from "#common/ui/locale/definitions";
+import { formatLocaleOptions, PseudoLocale } from "#common/ui/locale/definitions";
+import { getBestMatchLocale } from "#common/ui/locale/utils";
 
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
@@ -216,14 +217,17 @@ ${prompt.initialValue}</textarea
                 })}`;
             case PromptTypeEnum.AkLocale: {
                 let localeOptions = formatLocaleOptions();
+                const selected = prompt.initialValue
+                    ? getBestMatchLocale(prompt.initialValue)
+                    : null;
 
                 if (!this.can(CapabilitiesEnum.CanDebug)) {
-                    localeOptions = localeOptions.filter(([, code]) => code !== "pseudo-LOCALE");
+                    localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
                 }
 
                 const options = localeOptions.map(
                     ([label, code]) =>
-                        html`<option value=${code} ?selected=${code === prompt.initialValue}>
+                        html`<option value=${code} ?selected=${code === selected}>
                             ${label}
                         </option> `,
                 );
@@ -233,7 +237,7 @@ ${prompt.initialValue}</textarea
                     id=${fieldId}
                     name="${prompt.fieldKey}"
                 >
-                    <option value="" ?selected=${prompt.initialValue === ""}>
+                    <option value="" ?selected=${!selected}>
                         ${msg("Auto-detect (based on your browser)")}
                     </option>
                     ${options}

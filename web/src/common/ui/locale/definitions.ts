@@ -6,6 +6,11 @@ import { msg } from "@lit/localize";
 export type TargetLocale = (typeof allLocales)[number];
 
 /**
+ * The pseudo locale code.
+ */
+export const PseudoLocale = "pseudo_LOCALE" satisfies TargetLocale;
+
+/**
  * A dummy locale module representing the source locale (English).
  *
  * @remarks
