@@ -32,12 +32,12 @@ class TokenOutpostMiddleware:
         raw_header = headers[b"authorization"]
 
         try:
-            user = TokenAuthentication().bearer_auth(raw_header)
+            user_ctx = TokenAuthentication().bearer_auth(raw_header)
             # user is only None when no header was given, in which case we deny too
-            if not user:
+            if not user_ctx:
                 raise DenyConnection()
+            user, _ = user_ctx
+            scope["user"] = user
         except AuthenticationFailed as exc:
             LOGGER.warning("Failed to authenticate", exc=exc)
             raise DenyConnection() from None
-
-        scope["user"] = user
