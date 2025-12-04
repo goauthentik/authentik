@@ -130,7 +130,7 @@ class AuthenticatedSessionViewSet(
         serializer = BulkDeleteSessionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user_ids = serializer.validated_data.get("user_ids", [])
-        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_ids).delete()
+        user_pks = body.validated_data.get("user_pks", [])
+        deleted_count, _ = AuthenticatedSession.objects.filter(user_pk__in=user_pks).delete()
 
         return Response({"deleted": deleted_count}, status=200)
