@@ -1,3 +1,4 @@
+from ssl import PEM_FOOTER, PEM_HEADER
 from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 
@@ -75,10 +76,13 @@ class MTLSStageTests(FlowTestCase):
 
     def test_parse_traefik(self):
         """Test traefik's format"""
+        traefik_cert = (
+            self.client_cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", "")
+        )
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(traefik_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))

@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
-from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256
+from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256, format_cert
 from authentik.endpoints.models import StageMode
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
@@ -50,7 +50,7 @@ class MTLSStageView(ChallengeStageView):
         if not raw:
             return []
         try:
-            cert = load_pem_x509_certificate(unquote_plus(raw).encode())
+            cert = load_pem_x509_certificate(format_cert(unquote_plus(raw)).encode())
             return [cert]
         except ValueError as exc:
             self.logger.info("Failed to parse certificate", exc=exc)
@@ -79,7 +79,12 @@ class MTLSStageView(ChallengeStageView):
     def _parse_cert_traefik(self) -> list[Certificate]:
         """Parse certificates in the format traefik gives to us"""
         ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
-        return self.__parse_single_cert(ftcc_raw)
+        if not ftcc_raw:
+            return []
+        certs = []
+        for cert in ftcc_raw.split(","):
+            certs.extend(self.__parse_single_cert(cert))
+        return certs
 
     def _parse_cert_outpost(self) -> list[Certificate]:
         """Parse certificates in the format outposts give to us. Also authenticates
