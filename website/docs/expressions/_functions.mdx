@@ -203,7 +203,7 @@ To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(
 resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
 resolve_dns("google.com", 4)  # return a list of only IP4 addresses
 resolve_dns("google.com", 6)  # return a list of only IP6 addresses
-:::info
+```
 
 You can also do reverse DNS lookups.
 
@@ -217,4 +217,3 @@ To perform a reverse DNS lookup use `reverse_dns("192.0.2.0")`. If no DNS record
 :::info
 DNS resolving results are cached in memory. The last 32 unique queries are cached for up to 3 minutes.
 :::
-```

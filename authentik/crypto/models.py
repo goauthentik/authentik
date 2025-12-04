@@ -140,3 +140,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
+        permissions = [
+            ("view_certificatekeypair_certificate", _("View Certificate-Key pair's certificate")),
+            ("view_certificatekeypair_key", _("View Certificate-Key pair's private key")),
+        ]

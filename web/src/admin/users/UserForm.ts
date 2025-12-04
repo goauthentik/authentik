@@ -8,7 +8,6 @@ import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -198,7 +197,7 @@ export class UserForm extends ModelForm<User, number> {
 
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(
                         this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"

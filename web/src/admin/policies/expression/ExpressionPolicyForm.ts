@@ -5,8 +5,6 @@ import "#elements/forms/HorizontalFormElement";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
@@ -78,7 +76,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                         name="expression"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
