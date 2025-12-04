@@ -1108,14 +1108,14 @@ wheels = [
 
 [[package]]
 name = "django-pgactivity"
-version = "1.7.1"
+version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/24/87ef93b1f4df5daa025739aba69b83a53814405dcb1a45e853177447b965/django_pgactivity-1.7.1.tar.gz", hash = "sha256:4d8aad75c2d48e1e79f39d9163b5f134f5867f65c75f08c37fa745d5e8f3d6fa", size = 13080, upload-time = "2024-12-16T02:01:44.621Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/84/2b/f8f91d90e29e8969a61b4267068b1566e6ec33a9cc83621721a45b9e6e6a/django_pgactivity-1.8.0.tar.gz", hash = "sha256:0988995caca9d5b1e7b60c0f335135cd85cb0625cddb1b95ce71bd73d6752d22", size = 12702, upload-time = "2025-11-30T23:26:39.384Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/c2/9de50e5ed5e09cd7eb64e99f743087d4f6839917d7e69198860fc7442a58/django_pgactivity-1.7.1-py3-none-any.whl", hash = "sha256:0cd9e8dbaab7997410bd0fe490417d63f568fa27fd02e548bb3ea8dc73e0e319", size = 14422, upload-time = "2024-12-16T02:01:42.637Z" },
+    { url = "https://files.pythonhosted.org/packages/89/b1/966b4717bbcd002d0c6b90ba3af0361aee4b3d9b75246cb99d372ea42343/django_pgactivity-1.8.0-py3-none-any.whl", hash = "sha256:9b17f5d570266d26b3f8797379aeb721c95f60f999629a0648558374f0579eda", size = 14469, upload-time = "2025-11-30T23:26:38.237Z" },
 ]
 
 [[package]]
