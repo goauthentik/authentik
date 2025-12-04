@@ -19,6 +19,7 @@ from authentik.core.models import (
     User,
     default_token_duration,
 )
+from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str
@@ -50,6 +51,8 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     if session:
         session.save()
 
+    if not RefreshOtherFlowsAfterAuthentication().get():
+        return
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
     if device_cookie:
