@@ -108,7 +108,7 @@ ak_create_event("my_custom_event", foo=request.user)
 ### `ak_create_jwt(user: User, provider: OAuth2Provider | str, scopes: list[str], validity = "seconds=60") -> str | None`:ak-version[2025.2]
 
 :::info Requires HTTP Request
-This function will only work when there's a HTTP request in the current context.
+This function will only work when there is an HTTP request in the current context.
 :::
 
 Create a new JWT signed by the given `provider` for `user`.
