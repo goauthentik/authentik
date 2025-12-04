@@ -32,6 +32,7 @@ import type { Extension } from "@codemirror/state";
 import { Compartment, EditorState } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { drawSelection, EditorView, keymap, lineNumbers, ViewUpdate } from "@codemirror/view";
+import { match } from "ts-pattern";
 
 //#region Language support
 
