@@ -132,12 +132,12 @@ class TokenAuthentication(BaseAuthentication):
             return user
         raise AuthenticationFailed("Token invalid/expired")
 
-    def token_ipc(self, value: str) -> User | None:
+    def token_ipc(self, value: str) -> tuple[User, None] | None:
         """Check if the token is the secret key
         and return the service account for the managed outpost"""
         if not ipc_key or not compare_digest(value, ipc_key):
             return None
-        return IPCUser()
+        return IPCUser(), None
 
     def token_secret_key(self, value: str) -> tuple[User, Outpost] | None:
         """Check if the token is the secret key
