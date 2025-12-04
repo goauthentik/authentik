@@ -32,6 +32,14 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -58,10 +66,6 @@ export class TaskList extends Table<Task> {
 
     @state()
     status?: GlobalTaskStatus;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =

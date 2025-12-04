@@ -11,7 +11,6 @@ import "#components/ak-switch-input";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
@@ -143,7 +142,7 @@ export class GroupForm extends ModelForm<Group, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>
