@@ -383,6 +383,45 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserPanicButtonSerializer(PassiveSerializer):
+    """Payload to trigger panic button for a user"""
+
+    reason = CharField(required=True, help_text="Reason for triggering panic button")
+    notify_user = BooleanField(
+        required=False, allow_null=True, default=None, help_text="Override notify user setting"
+    )
+    notify_admins = BooleanField(
+        required=False, allow_null=True, default=None, help_text="Override notify admins setting"
+    )
+    notify_security = BooleanField(
+        required=False,
+        allow_null=True,
+        default=None,
+        help_text="Override notify security setting",
+    )
+
+
+class UserBulkPanicButtonSerializer(PassiveSerializer):
+    """Payload to trigger panic button for multiple users"""
+
+    users = PrimaryKeyRelatedField(
+        many=True, queryset=User.objects.all().exclude_anonymous(), help_text="Users to lock"
+    )
+    reason = CharField(required=True, help_text="Reason for triggering panic button")
+    notify_user = BooleanField(
+        required=False, allow_null=True, default=None, help_text="Override notify user setting"
+    )
+    notify_admins = BooleanField(
+        required=False, allow_null=True, default=None, help_text="Override notify admins setting"
+    )
+    notify_security = BooleanField(
+        required=False,
+        allow_null=True,
+        default=None,
+        help_text="Override notify security setting",
+    )
+
+
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -848,6 +887,145 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        return Response(status=204)
+
+    def _trigger_panic_button(
+        self,
+        request: Request,
+        user: User,
+        reason: str,
+        notify_user: bool | None,
+        notify_admins: bool | None,
+        notify_security: bool | None,
+    ) -> None:
+        """Helper method to trigger panic button for a single user"""
+        from secrets import token_urlsafe
+
+        with atomic():
+            user.is_active = False
+            new_password = token_urlsafe(32)
+            user.set_password(new_password)
+            user.save()
+
+            Session.objects.filter(authenticatedsession__user=user).delete()
+            LOGGER.info("Panic button triggered", user=user.username, triggered_by=request.user)
+
+        Event.new(
+            EventAction.PANIC_BUTTON_TRIGGERED,
+            reason=reason,
+            affected_user=user.username,
+            triggered_by=request.user.username,
+        ).from_http(request, user)
+
+        # Resolve notification settings (use tenant defaults if not specified)
+        resolved_notify_user = (
+            notify_user if notify_user is not None else request.tenant.panic_button_notify_user
+        )
+        resolved_notify_admins = (
+            notify_admins
+            if notify_admins is not None
+            else request.tenant.panic_button_notify_admins
+        )
+        resolved_notify_security = (
+            notify_security
+            if notify_security is not None
+            else request.tenant.panic_button_notify_security
+        )
+
+        from authentik.events.tasks import panic_button_notification
+
+        panic_button_notification.send_with_options(
+            args=(
+                user.pk,
+                request.user.pk,
+                reason,
+                resolved_notify_user,
+                resolved_notify_admins,
+                resolved_notify_security,
+            ),
+            kwargs={},
+        )
+
+    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
+    @extend_schema(
+        request=UserPanicButtonSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered panic button"),
+            "400": OpenApiResponse(description="Panic button feature is disabled"),
+        },
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @validate(UserPanicButtonSerializer)
+    def panic_button(self, request: Request, pk: int, body: UserPanicButtonSerializer) -> Response:
+        """Trigger panic button for a user"""
+        if not request.tenant.panic_button_enabled:
+            LOGGER.debug("Panic button feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Panic button feature is disabled.")]},
+                status=400,
+            )
+
+        user: User = self.get_object()
+        reason = body.validated_data["reason"]
+
+        if user.pk == request.user.pk:
+            LOGGER.debug("User attempted to trigger panic button on themselves", user=request.user)
+            return Response(
+                data={"non_field_errors": [_("Cannot trigger panic button on yourself.")]},
+                status=400,
+            )
+
+        self._trigger_panic_button(
+            request,
+            user,
+            reason,
+            body.validated_data.get("notify_user"),
+            body.validated_data.get("notify_admins"),
+            body.validated_data.get("notify_security"),
+        )
+
+        return Response(status=204)
+
+    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
+    @extend_schema(
+        request=UserBulkPanicButtonSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered panic button"),
+            "400": OpenApiResponse(description="Panic button feature is disabled"),
+        },
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="panic_button_bulk",
+    )
+    @validate(UserBulkPanicButtonSerializer)
+    def panic_button_bulk(self, request: Request, body: UserBulkPanicButtonSerializer) -> Response:
+        """Trigger panic button for multiple users"""
+        if not request.tenant.panic_button_enabled:
+            LOGGER.debug("Panic button feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Panic button feature is disabled.")]},
+                status=400,
+            )
+
+        users = body.validated_data["users"]
+        reason = body.validated_data["reason"]
+
+        for user in users:
+            if user.pk == request.user.pk:
+                continue  # Skip self
+
+            self._trigger_panic_button(
+                request,
+                user,
+                reason,
+                body.validated_data.get("notify_user"),
+                body.validated_data.get("notify_admins"),
+                body.validated_data.get("notify_security"),
+            )
 
         return Response(status=204)
 

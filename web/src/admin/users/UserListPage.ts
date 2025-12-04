@@ -1,6 +1,7 @@
 import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
+import "#admin/users/UserBulkPanicButtonForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
@@ -164,44 +165,55 @@ export class UserListPage extends WithBrandConfig(
             return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("User(s)")}
-            .objects=${this.selectedElements}
-            .metadata=${(item: User) => {
-                return [
-                    { key: msg("Username"), value: item.username },
-                    { key: msg("ID"), value: item.pk.toString() },
-                    { key: msg("UID"), value: item.uid },
-                ];
-            }}
-            .usedBy=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: item.pk,
-                });
-            }}
-            .delete=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: item.pk,
-                });
-            }}
-        >
-            ${shouldShowWarning
-                ? html`<div slot="notice" class="pf-c-form__alert">
-                      <div class="pf-c-alert pf-m-inline pf-m-warning">
-                          <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                objectLabel=${msg("User(s)")}
+                .objects=${this.selectedElements}
+                .metadata=${(item: User) => {
+                    return [
+                        { key: msg("Username"), value: item.username },
+                        { key: msg("ID"), value: item.pk.toString() },
+                        { key: msg("UID"), value: item.uid },
+                    ];
+                }}
+                .usedBy=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                        id: item.pk,
+                    });
+                }}
+                .delete=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+                        id: item.pk,
+                    });
+                }}
+            >
+                ${shouldShowWarning
+                    ? html`<div slot="notice" class="pf-c-form__alert">
+                          <div class="pf-c-alert pf-m-inline pf-m-warning">
+                              <div class="pf-c-alert__icon">
+                                  <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                              </div>
+                              <h4 class="pf-c-alert__title">
+                                  ${msg(
+                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                  )}
+                              </h4>
                           </div>
-                          <h4 class="pf-c-alert__title">
-                              ${msg(
-                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
-                              )}
-                          </h4>
-                      </div>
-                  </div>`
-                : nothing}
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
-            </button>
-        </ak-forms-delete-bulk>`;
+                      </div>`
+                    : nothing}
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>
+            <ak-forms-modal size=${PFSize.Medium}>
+                <span slot="submit">${msg("Trigger Panic Button")}</span>
+                <span slot="header">${msg("Panic Button for Selected Users")}</span>
+                <ak-user-bulk-panic-button-form
+                    slot="form"
+                    .users=${this.selectedElements}
+                ></ak-user-bulk-panic-button-form>
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Panic Button")}
+                </button>
+            </ak-forms-modal>`;
     }
 
     renderToolbarAfter(): TemplateResult {

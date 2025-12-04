@@ -71,6 +71,11 @@ class SettingsSerializer(ModelSerializer):
             "default_token_length",
             "pagination_default_page_size",
             "pagination_max_page_size",
+            "panic_button_enabled",
+            "panic_button_notify_user",
+            "panic_button_notify_admins",
+            "panic_button_notify_security",
+            "panic_button_security_email",
             "flags",
         ]
 
