@@ -98,16 +98,16 @@ class TestConnectorAuthFed(APITestCase):
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.device.name}foo",
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
         # No device
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.device.name}foo",
             HTTP_AUTHORIZATION=f"Bearer {self.raw_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         # invalid token
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-fed") + f"?device={self.device.name}",
             HTTP_AUTHORIZATION=f"Bearer {self.raw_token}aa",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
