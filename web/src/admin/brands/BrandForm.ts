@@ -306,9 +306,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                             name="attributes"
                             mode=${CodeMirrorMode.YAML}
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
+                            aria-describedby="attributes-help"
                         >
                         </ak-codemirror>
-                        <p class="pf-c-form__helper-text">
+                        <p class="pf-c-form__helper-text" id="attributes-help">
                             ${msg(
                                 "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",
                             )}
