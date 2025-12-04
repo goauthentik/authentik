@@ -24,8 +24,8 @@
             "import": "./*/index.js"
         },
         ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
         }
     },
     "imports": {
