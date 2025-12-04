@@ -48,6 +48,6 @@ For example, the screenshot below shows the **Permissions** tab for the user nam
 
 ![](./user-page.png)
 
-You can see in the **Role Permissions** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role has only the view permission.
+You can see in the **Permissions on this object** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role has only the view permission.
 
 Hover over a checkmark to see whether that permission is granted by a global permission or an object permission.
