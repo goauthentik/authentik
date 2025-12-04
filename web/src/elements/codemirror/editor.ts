@@ -15,7 +15,7 @@ import { CodeMirrorMode } from "#elements/codemirror/shared";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
@@ -95,7 +95,7 @@ export class CodeMirrorEditor implements Disposable {
 
         const extensions: Array<Extension | null> = [
             history(),
-            keymap.of([...defaultKeymap, ...historyKeymap]),
+            keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
             createLanguageSupport(mode),
             lineNumbers(),
             drawSelection(),

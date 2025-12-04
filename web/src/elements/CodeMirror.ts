@@ -153,6 +153,7 @@ export class CodeMirrorTextarea<
         });
 
         this.#editor.view.contentDOM.tabIndex = 0;
+        this.#editor.view.contentDOM.tabIndex = 0;
         root.appendChild(this.#editor.view.dom);
     }
 
@@ -165,6 +166,7 @@ export class CodeMirrorTextarea<
 
         this.addEventListener("focus", this.#focusListener);
 
+        this.role ||= "combobox";
         this.#initialize(this.shadowRoot || document);
     }
 
