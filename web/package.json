@@ -189,7 +189,7 @@
         "vitest": "^4.0.13",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
-        "yaml": "^2.8.1"
+        "yaml": "^2.8.2"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.27.0",
