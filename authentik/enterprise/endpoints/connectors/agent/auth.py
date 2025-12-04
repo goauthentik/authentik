@@ -55,7 +55,7 @@ def agent_auth_fed_validate(
     try:
         decode(
             raw_token,
-            _key,
+            _key.public_key(),
             algorithms=[_alg],
             options={
                 "verify_aud": False,

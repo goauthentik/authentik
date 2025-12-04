@@ -108,11 +108,10 @@ class SCIMGroupTests(TestCase):
         )
         group.name = generate_id()
         group.save()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
-        self.assertEqual(mock.request_history[2].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "PUT")
+        self.assertEqual(mock.request_history[2].method, "PUT")
 
     @Mocker()
     def test_group_create_delete(self, mock: Mocker):
@@ -145,26 +144,20 @@ class SCIMGroupTests(TestCase):
             },
         )
         group.delete()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
-        self.assertEqual(mock.request_history[3].method, "DELETE")
-        self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
+        self.assertEqual(mock.request_history[2].method, "DELETE")
+        self.assertEqual(mock.request_history[2].url, f"https://localhost/Groups/{scim_id}")
 
     @Mocker()
     def test_group_create_update_noop(self, mock: Mocker):
-        """Test group creation and update"""
+        """Test group creation and noop update"""
         scim_id = generate_id()
         mock.get(
             "https://localhost/ServiceProviderConfig",
             json={},
         )
         mock.post(
-            "https://localhost/Groups",
-            json={
-                "id": scim_id,
-            },
-        )
-        mock.put(
             "https://localhost/Groups",
             json={
                 "id": scim_id,
@@ -196,9 +189,19 @@ class SCIMGroupTests(TestCase):
             "displayName": group.name,
         }
         conn.save()
+        mock.get(
+            f"https://localhost/Groups/{scim_id}",
+            json={
+                "id": scim_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+                "members": [],
+            },
+        )
         group.save()
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 3)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "GET")
-        self.assertEqual(mock.request_history[2].method, "GET")
+        self.assertNotIn("PUT", [req.method for req in mock.request_history])
