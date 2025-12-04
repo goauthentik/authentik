@@ -2,6 +2,7 @@
 
 from typing import TypedDict
 
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
@@ -11,11 +12,13 @@ from rest_framework.serializers import CharField, DateTimeField, IPAddressField,
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
+from authentik.rbac.decorators import permission_required
 
 
 class UserAgentDeviceDict(TypedDict):
@@ -124,13 +127,28 @@ class AuthenticatedSessionViewSet(
     ordering = ["user__username"]
     owner_field = "user"
 
-    @action(detail=False, methods=["POST"], pagination_class=None, filter_backends=[])
-    def bulk_delete(self, request: Request) -> Response:
+    @permission_required("authentik_core.delete_authenticatedsession")
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "user_pks",
+                serializers.ListField(child=serializers.IntegerField()),
+                description="List of user IDs to revoke all sessions for",
+                required=True,
+            ),
+        ],
+        responses={
+            200: inline_serializer(
+                "BulkDeleteSessionResponse",
+                {"deleted": serializers.IntegerField()},
+            ),
+        },
+    )
+    @validate(BulkDeleteSessionSerializer, location="query")
+    @action(detail=False, methods=["DELETE"], pagination_class=None, filter_backends=[])
+    def bulk_delete(self, request: Request, *, query: BulkDeleteSessionSerializer) -> Response:
         """Bulk revoke all sessions for multiple users"""
-        serializer = BulkDeleteSessionSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user_pks = body.validated_data.get("user_pks", [])
-        deleted_count, _ = AuthenticatedSession.objects.filter(user_pk__in=user_pks).delete()
+        user_pks = query.validated_data.get("user_pks", [])
+        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_pks).delete()
 
         return Response({"deleted": deleted_count}, status=200)

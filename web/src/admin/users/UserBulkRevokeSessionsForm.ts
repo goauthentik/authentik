@@ -43,7 +43,7 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
             }
         }
         this.requestUpdate();
-
+        
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -102,9 +102,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             // Delete all sessions for these users in a single API call
             if (userIds.length > 0) {
                 const response = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsBulkDelete({
-                    bulkDeleteSession: {
-                        userIds: userIds,
-                    },
+                    userPks: userIds,
                 });
                 this.revokedCount = response.deleted || 0;
             }
