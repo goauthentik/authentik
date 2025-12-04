@@ -153,7 +153,6 @@ export class CodeMirrorTextarea<
         });
 
         this.#editor.view.contentDOM.tabIndex = 0;
-        this.#editor.view.contentDOM.tabIndex = 0;
         root.appendChild(this.#editor.view.dom);
     }
 
