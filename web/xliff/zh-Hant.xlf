@@ -6425,65 +6425,16 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sa64fb483becc9c2c">
   <source>Device type restrictions</source>
 </trans-unit>
-<trans-unit id="sfffba7b23d8fb40c">
-  <source>This stage checks the user's current session against the Google reCaptcha (or compatible) service.</source>
-  <target>這個階段使用 Google reCaptcha （或其他相容的）服務檢查使用者目前的會談。</target>
-</trans-unit>
 <trans-unit id="sfd1af96798dd8a5f">
   <source>Public Key</source>
   <target>公鑰</target>
-</trans-unit>
-<trans-unit id="sf339673f0f76a8bd">
-  <source>Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.</source>
-  <target>公鑰，取得自以下網址 https://www.google.com/recaptcha/intro/v3.html。</target>
 </trans-unit>
 <trans-unit id="s83d0f62ad1731a03">
   <source>Private Key</source>
   <target>私鑰</target>
 </trans-unit>
-<trans-unit id="s892d2731a6f22e59">
-  <source>Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.</source>
-  <target>私鑰，取得自以下網址 https://www.google.com/recaptcha/intro/v3.html。</target>
-</trans-unit>
 <trans-unit id="s6f4f35a5a4b9b3cb">
   <source>Interactive</source>
-</trans-unit>
-<trans-unit id="sd020240e41e4c207">
-  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
-</trans-unit>
-<trans-unit id="sce17c2bdea3e6ace">
-  <source>Score minimum threshold</source>
-</trans-unit>
-<trans-unit id="sf2fcb974c62625fc">
-  <source>Minimum required score to allow continuing</source>
-</trans-unit>
-<trans-unit id="s7452199a73ce8b78">
-  <source>Score maximum threshold</source>
-</trans-unit>
-<trans-unit id="s2d3a6cd50b46b44d">
-  <source>Maximum allowed score to allow continuing</source>
-</trans-unit>
-<trans-unit id="s9d6e40d9a9a58fbf">
-  <source>Error on invalid score</source>
-</trans-unit>
-<trans-unit id="s2af59e2f9f12847a">
-  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
-</trans-unit>
-<trans-unit id="s39e436de1dc4df4f">
-  <source>JS URL</source>
-  <target>JS 網址</target>
-</trans-unit>
-<trans-unit id="s170b705c55ecb2ae">
-  <source>URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.</source>
-  <target>用於擷取 JavaScript 的網址，預設為 reCAPTCHA。可以替換為任何相容的替代方案。</target>
-</trans-unit>
-<trans-unit id="s275021658614ce9e">
-  <source>API URL</source>
-  <target>API 網址</target>
-</trans-unit>
-<trans-unit id="sc8a79fddea3ab4a9">
-  <source>URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative.</source>
-  <target>用於驗證認證碼回應的網址，預設為 reCAPTCHA。可以替換為任何相容的替代方案。</target>
 </trans-unit>
 <trans-unit id="s1cd617e7bbe278d0">
   <source>Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.</source>
@@ -8982,6 +8933,90 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se99d25eb70c767ef">
   <source>Verifying your device...</source>
+</trans-unit>
+<trans-unit id="s5c85e53f1d3747d0">
+  <source>Service Provider Config cache timeout</source>
+</trans-unit>
+<trans-unit id="s5fca9f7853a54584">
+  <source>Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.</source>
+</trans-unit>
+<trans-unit id="s89a2859207d766fe">
+  <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
+</trans-unit>
+<trans-unit id="s18b4f9093a0008b3">
+  <source>the reCAPTCHA admin console</source>
+</trans-unit>
+<trans-unit id="s200b0a3b5133280d">
+  <source>Google Cloud reCAPTCHA Enterprise</source>
+</trans-unit>
+<trans-unit id="sa31bb688b2e7b492">
+  <source>the hCaptcha dashboard</source>
+</trans-unit>
+<trans-unit id="s678ebab4940155c3">
+  <source>the Cloudflare dashboard</source>
+</trans-unit>
+<trans-unit id="h67148561b42485e7">
+  <source>Site key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
+</trans-unit>
+<trans-unit id="sc57fbc2c02769dc5">
+  <source>Site key from your CAPTCHA provider.</source>
+</trans-unit>
+<trans-unit id="h98bbd5c4c133577c">
+  <source>Secret key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
+</trans-unit>
+<trans-unit id="s2ca00d57e90d053e">
+  <source>Secret key from your CAPTCHA provider.</source>
+</trans-unit>
+<trans-unit id="s77c1f57b676529ff">
+  <source>Select a CAPTCHA provider. URLs and settings will be automatically configured, but can be customized below.</source>
+</trans-unit>
+<trans-unit id="s988e1dfd2b962e4f">
+  <source>Score Configuration</source>
+</trans-unit>
+<trans-unit id="s83d396fed4b71e29">
+  <source>This CAPTCHA provider does not support scoring. Score thresholds will be ignored.</source>
+</trans-unit>
+<trans-unit id="s5b29d7a77c92758e">
+  <source>Score Minimum Threshold</source>
+</trans-unit>
+<trans-unit id="sfb4f2529b0b36889">
+  <source>Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.</source>
+</trans-unit>
+<trans-unit id="sf578722c6d349838">
+  <source>Score Maximum Threshold</source>
+</trans-unit>
+<trans-unit id="s66fe9ce730db1f7b">
+  <source>Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.</source>
+</trans-unit>
+<trans-unit id="s1f412e69817ebb7f">
+  <source>Error on Invalid Score</source>
+</trans-unit>
+<trans-unit id="sbfc0f211f5f7c96f">
+  <source>When enabled and the score is outside the threshold, the user will not be able to continue. When disabled, the user can continue and the score can be used in policies.</source>
+</trans-unit>
+<trans-unit id="s74982e57a1d8896c">
+  <source>Advanced Settings</source>
+</trans-unit>
+<trans-unit id="s27bfe23deaaf0c2f">
+  <source>JavaScript URL</source>
+</trans-unit>
+<trans-unit id="s22f10cb634a6d1e5">
+  <source>URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.</source>
+</trans-unit>
+<trans-unit id="s83c66d5a3edc1b03">
+  <source>API Verification URL</source>
+</trans-unit>
+<trans-unit id="s47028bbf2c2cce0c">
+  <source>URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.</source>
+</trans-unit>
+<trans-unit id="s7fed8c29d9963f53">
+  <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
+</trans-unit>
+<trans-unit id="s9b8e5c6f87ca887e">
+  <source>CAPTCHA Provider</source>
+</trans-unit>
+<trans-unit id="sab1ddd059633b9aa">
+  <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
 </trans-unit>
 </body>
 </file>
