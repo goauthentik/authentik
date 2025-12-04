@@ -723,7 +723,22 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/device-authentication/device-access-groups",
-                    "endpoint-devices/device-authentication/local-device-login",
+                    {
+                        //#endregion
+
+                        //#region local device login
+                        type: "category",
+                        label: "Local Device Login",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-authentication/local-device-login/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-authentication/local-device-login/linux",
+                            "endpoint-devices/device-authentication/local-device-login/windows",
+                        ],
+                    },
                     "endpoint-devices/device-authentication/ssh-authentication",
                     "endpoint-devices/device-authentication/sudo-authorization",
                     {

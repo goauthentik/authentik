@@ -6,7 +6,7 @@ tags: [ssh, authentik Agent]
 
 It's possible to authenticate SSH connections using authentik credentials between Endpoint Devices with the [authentik Agent](../authentik-agent/index.mdx) installed.
 
-Currently, this is only supported when the SSH endpoint is a [Linux host](../authentik-agent/agent-deployment/linux.md).
+Currently, this is only supported when the SSH endpoint is a [Linux](../authentik-agent/agent-deployment/linux.md] device, see the [Configure SSH authentication on an Endpoint Device](#configure-SSH-authentication-on-an-Endpoint-Device) section for more details.
 
 ## How to SSH to an Endpoint Device
 
@@ -21,4 +21,31 @@ To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux.md
 2. If not already authentiacted, you will be prompted for authentik credentials.
 3. The SSH session will connect.
 
-## Command details
+## Configure SSH authentication on an Endpoint Device
+
+If you want a Linux Endpoint Device to support [SSH connections] using authentik credentials, you will need to install the `libpam-authentik` package. This is a PAM Module, which provides token-based and interactive authentication via authentik. It requires `authentik-sysd` to be running.
+
+Authentication is only possible if the Linux device is aware of the authentik user which is authenticating. This can be achieved in one of two ways:
+
+1. Provision user accounts - Create users on the Linux device with usernames that match authentik users that need to authenticate to the device. This can be done manually or via automation tools like Ansible.
+2. `libnss-authentik` - This is a package that can be installed on the Linux device. It is an NSS module that makes the Linux device aware of authetnik users. Similar to adding a Linux device to an Active Directory or LDAP domain.
+
+### Install the `libpam-authentik` package _(required)_
+
+:::info Prerequisites
+You must have already deployed and configured the authentik Agent on the device.
+:::
+
+Run the following command to install the `libpam-authentik` package:
+
+```sh
+sudo apt install libpam-authentik
+```
+
+### Install the `libnss-authentik` package _(optional)_
+
+Run the following command to install the `libnss-authentik` package:
+
+```sh
+sudo apt install libnss-authentik
+```

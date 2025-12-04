@@ -6,15 +6,18 @@ tags: [authentik Agent, linux, deploy, packages]
 
 ## What does it do
 
-- Allows you to SSH to Linux hosts using authentik credentials.
-- Retrieves information about the host for use in authentik.
-- Allows logging in to the device using authentik credentials.
+- Retrieves information about the host for use in authentik, see [Device Compliace](../../device-compliance/index.mdx).
+- Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md). (TODO - needs testing)
+- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
+- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
 ## Prerequisites
 
-For full funcionality, you must [configure your authentik deployment](../agent-configuration.md) to support the authentik Agent.
+You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
 
 ## Install the authentik Agent in Linux
+
+(TODO - guide via UI)
 
 Follow these steps to install the authentik Agent on your Linux device:
 

@@ -6,9 +6,9 @@ tags: [authentik Agent, windows]
 
 ## What does it do
 
-- Allows you to SSH to Linux hosts using authentik credentials.
-- Retrieves information about the host for use in authentik.
-- Allows logging in to the device using authentik credentials. (optional)
+- Retrieves information about the host for use in authentik, see [Device Compliace](../../device-compliance/index.mdx).
+- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
+- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
 :::info Windows Versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022.
@@ -16,13 +16,15 @@ The authentik Agent is currently only tested on Windows 11 and Windows Server 20
 
 ## Prerequisites
 
-For full funcionality, you must [configure your authentik deployment](../agent-configuration.md) to support the authentik Agent.
+You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
 
 ## Install the authentik Agent
 
+(TODO - guide via UI)
+
 Follow these steps to install the authentik Agent on your Windows device:
 
-1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO)
+1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO - naming)
 2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
 3. Once the download is complete, install the MSI file.
 4. _(Optional)_ During installation, select [Windows Credential Provider](<#Windows-Credential-Provider-(WCP)>) if you want to log in to the Windows device using authentik credentials.
