@@ -1,3 +1,5 @@
+import { pluckErrorDetail } from "#common/errors/network";
+
 import type { CodeMirrorEditor } from "#elements/codemirror/editor";
 import {
     CodeMirrorMode,
@@ -113,7 +115,9 @@ export class CodeMirrorTextarea<
         try {
             return parseCodeMirrorSource(innerValue, this.mode);
         } catch (error: unknown) {
-            console.warn("codemirror/parse-error", error);
+            const message = pluckErrorDetail(error);
+            console.debug("codemirror/parse-error", message);
+
             return innerValue;
         }
     }
