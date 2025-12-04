@@ -11,6 +11,8 @@ if TYPE_CHECKING:
 
 
 class FleetConnector(Connector):
+    """Ingest device data and policy compliance from a Fleet instance."""
+
     url = models.URLField()
     token = models.TextField()
 
