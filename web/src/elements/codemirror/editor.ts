@@ -36,22 +36,16 @@ import { drawSelection, EditorView, keymap, lineNumbers, ViewUpdate } from "@cod
 //#region Language support
 
 export function createLanguageSupport(mode: CodeMirrorMode): LanguageSupport {
-    switch (mode) {
-        case CodeMirrorMode.XML:
-            return xml();
-        case CodeMirrorMode.JavaScript:
-            return javascript();
-        case CodeMirrorMode.HTML:
-            return htmlLang();
-        case CodeMirrorMode.Python:
-            return python();
-        case CodeMirrorMode.CSS:
-            return cssLang();
-        case CodeMirrorMode.YAML:
-            return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
-    }
-
-    throw new TypeError(`Unrecognized CodeMirror mode: ${mode}`) as never;
+return match(mode)
+    .with(CodeMirrorMode.XML, () => xml())
+    .with(CodeMirrorMode.JavaScript, () => javascript())
+    .with(CodeMirrorMode.HTML, () => htmlLang())
+    .with(CodeMirrorMode.Python, () => python())
+    .with(CodeMirrorMode.CSS, () => cssLang())
+    .with(
+       CodeMirrorMode.YAML, 
+       () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml)))
+    .exhaustive();
 }
 
 export interface CodeMirrorInit {
