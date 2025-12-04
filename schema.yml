@@ -3014,19 +3014,22 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/bulk_delete/:
-    post:
+    delete:
       operationId: core_authenticated_sessions_bulk_delete
       description: Bulk revoke all sessions for multiple users
+      parameters:
+      - in: query
+        name: user_pks
+        schema:
+          type: array
+          items:
+            type: integer
+        description: List of user IDs to revoke all sessions for
+        required: true
       tags:
       - core
       security:
       - authentik: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BulkDeleteSession'
-        required: true
       responses:
         '200':
           content:
@@ -34672,7 +34675,7 @@ components:
             type: integer
           description: List of user IDs to revoke all sessions for
       required:
-      - user_ids
+      - user_pks
     Brand:
       type: object
       description: Brand Serializer
