@@ -57,7 +57,7 @@ class UserAgentDict(TypedDict):
 class BulkDeleteSessionSerializer(PassiveSerializer):
     """Serializer for bulk deleting authenticated sessions by user"""
 
-    user_ids = ListField(child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for")
+    user_pks = ListField(child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for")
 
 
 class AuthenticatedSessionSerializer(ModelSerializer):
