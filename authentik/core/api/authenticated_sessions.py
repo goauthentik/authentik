@@ -2,10 +2,12 @@
 
 from typing import TypedDict
 
-from rest_framework import mixins
+from rest_framework import mixins, serializers
+from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
-from rest_framework.serializers import CharField, DateTimeField, IPAddressField
+from rest_framework.response import Response
+from rest_framework.serializers import CharField, DateTimeField, IPAddressField, ListField, UUIDField
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
@@ -50,6 +52,12 @@ class UserAgentDict(TypedDict):
     os: UserAgentOSDict
     user_agent: UserAgentBrowserDict
     string: str
+
+
+class BulkDeleteSessionSerializer(serializers.Serializer):
+    """Serializer for bulk deleting authenticated sessions by user"""
+
+    user_ids = ListField(child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for")
 
 
 class AuthenticatedSessionSerializer(ModelSerializer):
@@ -115,3 +123,14 @@ class AuthenticatedSessionViewSet(
     filterset_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
     ordering = ["user__username"]
     owner_field = "user"
+
+    @action(detail=False, methods=["POST"], pagination_class=None, filter_backends=[])
+    def bulk_delete(self, request: Request) -> Response:
+        """Bulk revoke all sessions for multiple users"""
+        serializer = BulkDeleteSessionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user_ids = serializer.validated_data.get("user_ids", [])
+        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_ids).delete()
+
+        return Response({"deleted": deleted_count}, status=200)

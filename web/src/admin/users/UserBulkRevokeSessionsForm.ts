@@ -43,7 +43,7 @@ export class UserBulkRevokeSessionsTable extends Table<User> {
             }
         }
         this.requestUpdate();
-        
+
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -96,22 +96,17 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
         this.revokedCount = 0;
 
         try {
-            for (const user of this.users) {
-                // Get all sessions for this user
-                const sessions = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
-                    userUsername: user.username,
-                    pageSize: 1000, // Get all sessions
-                });
+            // Get user IDs
+            const userIds = this.users.map((user) => user.pk).filter((pk): pk is number => pk !== undefined);
 
-                // Delete each session
-                for (const session of sessions.results) {
-                    if (session.uuid) {
-                        await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsDestroy({
-                            uuid: session.uuid,
-                        });
-                        this.revokedCount++;
-                    }
-                }
+            // Delete all sessions for these users in a single API call
+            if (userIds.length > 0) {
+                const response = await new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsBulkDelete({
+                    bulkDeleteSession: {
+                        userIds: userIds,
+                    },
+                });
+                this.revokedCount = response.deleted || 0;
             }
 
             this.onSuccess();
