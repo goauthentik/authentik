@@ -1,6 +1,7 @@
 ---
-title: Deploy authentik Agent on a Windows workstation
-sidebar_label: Windows workstation
+title: Deploy authentik Agent on Windows
+sidebar_label: Windows
+tags: [authentik Agent, windows]
 ---
 
 ## What does it do
@@ -9,13 +10,17 @@ sidebar_label: Windows workstation
 - Retrieves information about the host for use in authentik.
 - Allows logging in to the device using authentik credentials. (optional)
 
-:::info Windows 11 only
-The authentik Agent is currently only supported on Windows 11.
+:::info Windows Versions
+The authentik Agent is currently only tested on Windows 11 and Windows Server 2022.
 :::
+
+## Prerequisites
+
+For full funcionality, you must [configure your authentik deployment](../agent-configuration.md) to support the authentik Agent.
 
 ## Install the authentik Agent
 
-Follow these steps to install the authentik Agent on your Windows workstation:
+Follow these steps to install the authentik Agent on your Windows device:
 
 1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO)
 2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
@@ -25,7 +30,7 @@ Follow these steps to install the authentik Agent on your Windows workstation:
 5. Confirm that authentik Platform is installed by opening a Powershell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Configure Platform
+## Configure the authentik Agent
 
 1. Open a Terminal session and run the following command:
 
@@ -47,14 +52,6 @@ It currently only supports local login; RDP login is not supported.
 - WCP can cause issues with user encrypted directories.
 - Support with Active directory has not been confirmed yet.
   :::
-
-### authentik configuration
-
-To support the deployment of Windows Credential Provider, you need to configure your authentik deployment. (TODO)
-
-### Windows Credential Provider configuration
-
-Now you'll need to configure Windows Credential Provider on the Windows device that you want to log in to.
 
 #### Configure Windows Credential Provider
 

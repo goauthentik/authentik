@@ -1,6 +1,7 @@
 ---
-title: Deploy authentik Agent on a Linux workstation
-sidebar_label: Linux workstation
+title: Deploy authentik Agent on Linux
+sidebar_label: Linux
+tags: [authentik Agent, linux, deploy, packages]
 ---
 
 ## What does it do
@@ -9,9 +10,13 @@ sidebar_label: Linux workstation
 - Retrieves information about the host for use in authentik.
 - Allows logging in to the device using authentik credentials.
 
-## Install the authentik Agent
+## Prerequisites
 
-Follow these steps to install the authentik Agent on your Linux workstation:
+For full funcionality, you must [configure your authentik deployment](../agent-configuration.md) to support the authentik Agent.
+
+## Install the authentik Agent in Linux
+
+Follow these steps to install the authentik Agent on your Linux device:
 
 1. Open a Terminal session and install the required GPG key:
 

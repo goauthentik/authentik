@@ -1,6 +1,7 @@
 ---
-title: Deploy authentik Agent on a macOS workstation
-sidebar_label: macOS workstation
+title: Deploy authentik Agent on macOS
+sidebar_label: macOS
+tags: [authentik Agent, mac, macos, deploy]
 ---
 
 ## What does it do
@@ -9,9 +10,13 @@ sidebar_label: macOS workstation
 - Retrieves information about the host for use in authentik.
 - Allows logging in to the device using authentik credentials.
 
+## Prerequisites
+
+For full funcionality, you must [configure your authentik deployment](../agent-configuration.md) to support the authentik Agent.
+
 ## Install the authentik Agent
 
-Follow these steps to install the authentik Agent on your macOS workstation:
+Follow these steps to install the authentik Agent on your macOS device:
 
 1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO)
 2. Under **Desktop packages** click on **macOS** to download the macOS package.

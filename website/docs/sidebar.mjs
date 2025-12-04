@@ -688,7 +688,8 @@ const items = [
                     id: "endpoint-devices/authentik-agent/index",
                 },
                 items: [
-                    "endpoint-devices/authentik-agent/agent-configuration",
+                    "endpoint-devices/authentik-agent/configuration",
+                    "endpoint-devices/authentik-agent/authentik-cli",
                     {
                         //#endregion
 
@@ -701,11 +702,10 @@ const items = [
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/linux-host",
-                            "endpoint-devices/authentik-agent/agent-deployment/linux-workstation",
-                            "endpoint-devices/authentik-agent/agent-deployment/macos-workstation",
-                            "endpoint-devices/authentik-agent/agent-deployment/windows-workstation",
                             "endpoint-devices/authentik-agent/agent-deployment/mdm-deployment",
+                            "endpoint-devices/authentik-agent/agent-deployment/linux",
+                            "endpoint-devices/authentik-agent/agent-deployment/macos",
+                            "endpoint-devices/authentik-agent/agent-deployment/windows",
                         ],
                     },
                 ],
@@ -726,8 +726,22 @@ const items = [
                     "endpoint-devices/device-authentication/local-device-login",
                     "endpoint-devices/device-authentication/ssh-authentication",
                     "endpoint-devices/device-authentication/sudo-authorization",
-                    "endpoint-devices/device-authentication/cli-app-authentication",
-                    "endpoint-devices/device-authentication/wi-fi-authentication",
+                    {
+                        //#endregion
+
+                        //#region cli app authentication
+                        type: "category",
+                        label: "CLI application authentication",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-authentication/cli-app-authentication/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-authentication/cli-app-authentication/aws",
+                            "endpoint-devices/device-authentication/cli-app-authentication/k8s",
+                        ],
+                    },
                 ],
             },
             {
@@ -742,8 +756,10 @@ const items = [
                     id: "endpoint-devices/device-compliance/index",
                 },
                 items: [
+                    "endpoint-devices/device-compliance/configuration",
                     "endpoint-devices/device-compliance/connectors",
                     "endpoint-devices/device-compliance/device-compliance-policy",
+                    "endpoint-devices/device-compliance/device-reporting",
                 ],
             },
         ],
