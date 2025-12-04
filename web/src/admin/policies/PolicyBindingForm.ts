@@ -31,8 +31,11 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 
 @customElement("ak-policy-binding-form")
-export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    async loadInstance(pk: string): Promise<PolicyBinding> {
+export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
+    T,
+    string
+> {
+    async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
@@ -46,7 +49,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
             this.policyGroupUser = PolicyBindingCheckTarget.user;
         }
         this.defaultOrder = await this.getOrder();
-        return binding;
+        return binding as T;
     }
 
     @property()

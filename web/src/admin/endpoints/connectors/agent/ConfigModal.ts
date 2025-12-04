@@ -31,6 +31,9 @@ export class ConfigModal extends ModalButton {
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {
                     this.config = e.config;
+                })
+                .catch((exc) => {
+                    this.config = exc.toString();
                 });
         });
     }
