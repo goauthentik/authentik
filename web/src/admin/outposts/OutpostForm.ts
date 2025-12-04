@@ -10,7 +10,6 @@ import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { PaginatedResponse } from "#elements/table/Table";
 
@@ -259,7 +258,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         <ak-codemirror
                             id="configuration"
                             name="config"
-                            mode=${CodeMirrorMode.YAML}
+                            mode="yaml"
                             value="${YAML.stringify(
                                 this.instance ? this.instance.config : this.defaultConfig?.config,
                             )}"

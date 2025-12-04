@@ -7,7 +7,6 @@ import "#elements/CodeMirror";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
@@ -53,7 +52,7 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>

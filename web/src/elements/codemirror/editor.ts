@@ -5,13 +5,13 @@
  * This should be imported dynamically to avoid the bundle size impact of CodeMirror.
  *
  * ```ts
- * const { CodeMirrorEditor } = await import("#elements/codemirror/editor");
+ * const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
  * ```
  */
 
 import { ResolvedUITheme, ThemeChangeEvent } from "#common/theme";
 
-import { CodeMirrorMode } from "#elements/codemirror/shared";
+import { CodeMirrorMode } from "#elements/CodeMirror/shared";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
