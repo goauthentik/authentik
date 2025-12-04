@@ -294,6 +294,7 @@ class TestResponseProcessor(TestCase):
             certificate_data=key,
         )
         self.source.verification_kp = kp
+        self.source.encryption_kp = kp
         self.source.signed_response = True
         self.source.signed_assertion = False
         request = self.factory.post(
