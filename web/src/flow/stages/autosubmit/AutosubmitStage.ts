@@ -13,7 +13,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
@@ -23,7 +22,7 @@ export class AutosubmitStage extends BaseStage<
     @query("form")
     private form?: HTMLFormElement;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);

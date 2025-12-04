@@ -21,7 +21,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function stringify(obj: unknown): string {
     return JSON.stringify(obj, null, 4);
@@ -39,7 +38,6 @@ export class FlowInspector extends AKElement {
     error?: APIError;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFStack,
         PFCard,

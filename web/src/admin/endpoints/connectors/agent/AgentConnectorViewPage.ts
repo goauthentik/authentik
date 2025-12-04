@@ -26,7 +26,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-connector-agent-view")
 export class AgentConnectorViewPage extends AKElement {
@@ -39,7 +38,7 @@ export class AgentConnectorViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)

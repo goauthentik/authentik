@@ -42,7 +42,6 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export * from "./shared.js";
 export * from "./TableColumn.js";
@@ -75,7 +74,6 @@ export abstract class Table<T extends object>
     implements TableLike
 {
     static styles: CSSResult[] = [
-        PFBase,
         PFTable,
         PFBullseye,
         PFButton,

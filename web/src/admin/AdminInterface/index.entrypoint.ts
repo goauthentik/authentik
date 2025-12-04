@@ -41,7 +41,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
@@ -78,7 +77,7 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
     static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFPage,
         PFButton,
         PFDrawer,

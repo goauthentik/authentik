@@ -11,7 +11,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
@@ -21,7 +20,7 @@ export class EnterpriseStatusCard extends AKElement {
     @state()
     summary?: LicenseSummary;
 
-    static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+    static styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress];
 
     renderSummaryBadge() {
         switch (this.summary?.status) {

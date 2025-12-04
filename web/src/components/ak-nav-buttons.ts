@@ -24,7 +24,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-nav-buttons")
@@ -39,7 +38,6 @@ export class NavigationButtons extends WithSession(AKElement) {
     notificationsCount = 0;
 
     static styles = [
-        PFBase,
         PFDisplay,
         PFBrand,
         PFPage,

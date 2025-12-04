@@ -15,7 +15,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * A configuration object for the visibility states of the password input.
@@ -41,7 +40,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static styles = [PFBase, PFForm, PFInputGroup, PFFormControl, PFButton];
+    static styles = [PFForm, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 

@@ -11,7 +11,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class WizardForm extends Form {
     viewportCheck = false;
@@ -37,15 +36,7 @@ export abstract class WizardForm extends Form {
 }
 
 export class WizardFormPage extends WizardPage {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFCard,
-        PFButton,
-        PFForm,
-        PFAlert,
-        PFInputGroup,
-        PFFormControl,
-    ];
+    static styles: CSSResult[] = [PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl];
 
     inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");

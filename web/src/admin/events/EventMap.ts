@@ -23,7 +23,6 @@ import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import OL from "ol/ol.css";
 
 @customElement("ak-map")
@@ -69,7 +68,6 @@ export class EventMap extends AKElement {
     zoomPaddingPx = 100;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFCard,
         css`
             .pf-c-card,
