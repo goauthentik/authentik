@@ -2,13 +2,14 @@
 
 import json
 from base64 import b64encode
+from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 
-from authentik.api.authentication import TokenAuthentication
+from authentik.api.authentication import IPCUser, TokenAuthentication
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -100,3 +101,11 @@ class TestAPIAuth(TestCase):
         )
         with self.assertRaises(AuthenticationFailed):
             TokenAuthentication().bearer_auth(f"Bearer {access.token}".encode())
+
+    def test_ipc(self):
+        """Test IPC auth (mock key)"""
+        key = generate_id()
+        with patch("authentik.api.authentication.ipc_key", key):
+            user, ctx = TokenAuthentication().bearer_auth(f"Bearer {key}".encode())
+        self.assertEqual(user, IPCUser())
+        self.assertEqual(ctx, None)
