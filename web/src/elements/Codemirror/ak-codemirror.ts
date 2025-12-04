@@ -91,7 +91,7 @@ export class CodeMirrorTextarea<
 
     //#endregion
 
-    //#region Codemirror Internals
+    //#region CodeMirror Internals
 
     #editor?: CodeMirrorEditor;
 
