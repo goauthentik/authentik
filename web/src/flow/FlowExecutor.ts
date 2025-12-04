@@ -503,15 +503,20 @@ export class FlowExecutor
         );
 
         return html`<div class="locale-selector">
-            <i class="fa fa-globe" aria-hidden="true"></i>
-            <select
-                @change=${this.#localeChangeListener}
-                class="pf-c-form-control"
-                name="locale"
+            <label
+                for="locale-selector"
                 aria-label=${msg("Select language", {
                     id: "language-selector-label",
                     desc: "Label for the language selection dropdown",
                 })}
+            >
+                <i class="fa fa-globe" aria-hidden="true"></i>
+            </label>
+            <select
+                id="locale-selector"
+                @change=${this.#localeChangeListener}
+                class="pf-c-form-control"
+                name="locale"
             >
                 ${options}
             </select>

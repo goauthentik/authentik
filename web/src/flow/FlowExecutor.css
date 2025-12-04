@@ -29,7 +29,7 @@
     border-color: transparent;
     border-width: thin;
 
-    &:hover {
+    &:has(select:hover) {
         cursor: pointer;
         border-color: var(--pf-global--Color--100);
     }
