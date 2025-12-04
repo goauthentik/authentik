@@ -14,6 +14,10 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { gidStartNumberHelp, uidStartNumberHelp } from "#admin/providers/ldap/LDAPOptionsAndHelp";
+import {
+    oauth2ProvidersProvider,
+    oauth2ProvidersSelector,
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
 
 import {
     AgentConnector,
@@ -131,6 +135,24 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                                 >${msg("Terminate authenticated sessions on token expiry")}</span
                             >
                         </label>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${oauth2ProvidersSelector(
+                                this.instance?.jwtFederationProviders,
+                            )}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to devices.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

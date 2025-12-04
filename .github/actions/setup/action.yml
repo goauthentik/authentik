@@ -35,7 +35,7 @@ runs:
       run: uv sync --all-extras --dev --frozen
     - name: Setup node
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v4
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"

@@ -19,7 +19,8 @@ button.pf-c-nav__link {
 .pf-c-nav__link.pf-m-current::after,
 .pf-c-nav__link.pf-m-current:hover::after,
 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+    --pf-c-nav__link--m-current--after--BorderColor: var(--ak-accent);
+    --pf-c-nav__link--m-current--after--BorderLeftWidth: var(--pf-global--BorderWidth--md);
 }
 
 .pf-c-nav__list .sidebar-brand {
