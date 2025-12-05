@@ -319,5 +319,4 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
-        sfm = parser.prepare_flow_manager()
-        print(sfm)
+
