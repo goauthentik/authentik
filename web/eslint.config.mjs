@@ -49,7 +49,6 @@ const eslintConfig = defineConfig(
             "@typescript-eslint/no-use-before-define": "off",
             "array-callback-return": "off",
             "consistent-return": "off",
-            "func-names": "off",
             "no-div-regex": "off",
             "no-empty-function": ["error", { allow: ["arrowFunctions"] }],
             "no-param-reassign": "off",
