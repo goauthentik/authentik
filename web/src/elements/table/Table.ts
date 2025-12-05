@@ -167,7 +167,7 @@ export abstract class Table<T extends object>
     public page = getURLParam(this.#pageParam, 1);
 
     /**
-     * Set if your `selectedElements\` use of the selection box is to enable bulk-delete,
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
      * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
      * @prop
