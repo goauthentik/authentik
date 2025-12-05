@@ -4,8 +4,8 @@ from collections.abc import Iterator
 from copy import copy
 
 from django.core.cache import cache
-from django.db import models
-from django.db.models import QuerySet
+from django.db.models import Case, QuerySet
+from django.db.models.expressions import When
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
@@ -23,6 +23,7 @@ from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
@@ -64,14 +65,9 @@ class ApplicationSerializer(ModelSerializer):
         # Cache serialized user data to avoid N+1 when formatting launch URLs
         # for multiple applications. UserSerializer accesses user.ak_groups which
         # would otherwise trigger a query for each application.
-        if user and user.is_authenticated:
+        if user is not None:
             if "_cached_user_data" not in self.context:
                 # Prefetch groups to avoid N+1
-                from django.db.models import prefetch_related_objects
-
-                from authentik.core.api.users import UserSerializer
-
-                prefetch_related_objects([user], "ak_groups")
                 self.context["_cached_user_data"] = UserSerializer(instance=user).data
             user_data = self.context["_cached_user_data"]
 
@@ -168,11 +164,26 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 applications.append(application)
         return applications
 
+    def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
+        """
+        Re-fetch with proper prefetching for serialization
+        Cached applications don't have prefetched relationships, causing N+1 queries
+        during serialization when get_provider() is called
+        """
+        if not applications:
+            return self.get_queryset().none()
+        pks = [app.pk for app in applications]
+        return (
+            self.get_queryset()
+            .filter(pk__in=pks)
+            .order_by(Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pks)]))
+        )
+
     def _filter_applications_with_launch_url(
-        self, paginated_apps: Iterator[Application]
+        self, applications: QuerySet[Application]
     ) -> list[Application]:
         applications = []
-        for app in paginated_apps:
+        for app in applications:
             if app.get_launch_url():
                 applications.append(app)
         return applications
@@ -272,19 +283,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             except ValueError as exc:
                 raise ValidationError from exc
             allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
-
-            # Re-fetch with proper prefetching for serialization
-            if allowed_applications:
-                app_pks = [app.pk for app in allowed_applications]
-                allowed_applications = list(
-                    self.get_queryset()
-                    .filter(pk__in=app_pks)
-                    .order_by(
-                        models.Case(
-                            *[models.When(pk=pk, then=pos) for pos, pk in enumerate(app_pks)]
-                        )
-                    )
-                )
+            allowed_applications = self._expand_applications(allowed_applications)
 
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
@@ -304,23 +303,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     allowed_applications,
                     timeout=86400,
                 )
+        allowed_applications = self._expand_applications(allowed_applications)
 
         if only_with_launch_url == "true":
             allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
-
-        # Re-fetch applications with proper prefetching for serialization
-        # Cached applications don't have prefetched relationships, causing N+1 queries
-        # during serialization when get_provider() is called
-        if allowed_applications:
-            app_pks = [app.pk for app in allowed_applications]
-            allowed_applications = list(
-                self.get_queryset()
-                .filter(pk__in=app_pks)
-                .order_by(
-                    # Preserve the original order from policy evaluation
-                    models.Case(*[models.When(pk=pk, then=pos) for pos, pk in enumerate(app_pks)])
-                )
-            )
 
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)

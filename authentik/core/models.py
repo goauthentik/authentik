@@ -531,10 +531,7 @@ class ApplicationQuerySet(QuerySet):
             # Also prefetch/select through each subclass path to ensure casted instances have access
             qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
             qs = qs.select_related(f"provider__{subclass}__application")
-            # qs = qs.select_related(f"provider__{subclass}__backchannel_application")
-            # qs = qs.select_related(f"provider__{subclass}__authentication_flow")
-            # qs = qs.select_related(f"provider__{subclass}__authorization_flow")
-            # qs = qs.select_related(f"provider__{subclass}__invalidation_flow")
+            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
         return qs
 
 
