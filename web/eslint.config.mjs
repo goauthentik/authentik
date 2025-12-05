@@ -44,7 +44,6 @@ const eslintConfig = defineConfig(
     },
     {
         rules: {
-            "@typescript-eslint/no-use-before-define": "off",
             "consistent-return": "off",
             "no-div-regex": "off",
             "no-empty-function": ["error", { allow: ["arrowFunctions"] }],
