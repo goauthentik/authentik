@@ -12,13 +12,66 @@ class TransientSyncException(BaseSyncException):
 class NotFoundSyncException(BaseSyncException):
     """Exception when an object was not found in the remote system"""
 
+    def __init__(self, response=None, message: str | None = None):
+        super().__init__()
+        self.response = response
+        self.message = message
+
+    def __str__(self):
+        if self.response is not None:
+            if hasattr(self.response, "text"):
+                return f"Not found: {self.response.text}"
+            return f"Not found: {self.response}"
+        if self.message:
+            return f"Not found: {self.message}"
+        return "Object not found in remote system"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class ObjectExistsSyncException(BaseSyncException):
     """Exception when an object already exists in the remote system"""
 
+    def __init__(self, response=None, message: str | None = None):
+        super().__init__()
+        self.response = response
+        self.message = message
+
+    def __str__(self):
+        if self.response is not None:
+            if hasattr(self.response, "text"):
+                return f"Object exists: {self.response.text}"
+            return f"Object exists: {self.response}"
+        if self.message:
+            return f"Object exists: {self.message}"
+        return "Object exists in remote system"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class BadRequestSyncException(BaseSyncException):
     """Exception when invalid data was sent to the remote system"""
+
+    def __init__(self, message: str | None = None, response=None):
+        super().__init__()
+        self.message = message
+        self.response = response
+
+    def __str__(self):
+        parts = []
+        if self.message:
+            parts.append(self.message)
+        if self.response is not None:
+            if hasattr(self.response, "text"):
+                parts.append(str(self.response.text))
+            else:
+                parts.append(str(self.response))
+        return "Bad request: " + " - ".join(parts) if parts else "Bad request to remote system"
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class DryRunRejected(BaseSyncException):
