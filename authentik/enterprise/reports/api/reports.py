@@ -14,9 +14,8 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.reports.models import DataExport
-from authentik.rbac.decorators import permission_required
-from authentik.rbac.permissions import HasPermission
 from authentik.enterprise.reports.tasks import generate_export
+from authentik.rbac.permissions import HasPermission
 
 
 class RequestedBySerializer(ModelSerializer):

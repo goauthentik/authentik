@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
-from rest_framework.settings import api_settings
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.files.fields import FileField
@@ -96,9 +95,7 @@ class DataExport(SerializerModel):
         viewset = self.get_viewset()
         viewset.request = request
         queryset = viewset.get_queryset()
-
-        for backend in api_settings.DEFAULT_FILTER_BACKENDS:
-            queryset = backend().filter_queryset(request, queryset, viewset)
+        queryset = viewset.filter_queryset(queryset)
 
         return queryset
 
