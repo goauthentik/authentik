@@ -16,6 +16,7 @@ from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.reports.models import DataExport
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.permissions import HasPermission
+from authentik.enterprise.reports.tasks import generate_export
 
 
 class RequestedBySerializer(ModelSerializer):
@@ -104,7 +105,6 @@ class ExportMixin:
         You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
         """
-        from authentik.enterprise.reports.tasks import generate_export
 
         s = DataExportSerializer(data={"query_params": request.query_params.dict()})
         s.is_valid(raise_exception=True)
