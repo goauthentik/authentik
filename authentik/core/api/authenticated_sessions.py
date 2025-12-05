@@ -129,14 +129,7 @@ class AuthenticatedSessionViewSet(
 
     @permission_required("authentik_core.delete_authenticatedsession")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "user_pks",
-                serializers.ListField(child=serializers.IntegerField()),
-                description="List of user IDs to revoke all sessions for",
-                required=True,
-            ),
-        ],
+        parameters=[BulkDeleteSessionSerializer],
         responses={
             200: inline_serializer(
                 "BulkDeleteSessionResponse",
