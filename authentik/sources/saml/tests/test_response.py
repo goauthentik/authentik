@@ -295,10 +295,7 @@ class TestResponseProcessor(TestCase):
         )
 
         encrypted_key = load_fixture("fixtures/encrypted-key2.pem")
-        ekp = CertificateKeyPair.objects.create(
-            name=generate_id(),
-            key_data=encrypted_key
-        )
+        ekp = CertificateKeyPair.objects.create(name=generate_id(), key_data=encrypted_key)
 
         self.source.verification_kp = vkp
         self.source.encryption_kp = ekp
@@ -319,4 +316,3 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
-
