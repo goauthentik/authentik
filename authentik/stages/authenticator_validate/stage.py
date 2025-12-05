@@ -257,15 +257,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         if not, we can skip this entire stage"""
         user = self.get_pending_user()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-        # Skip if user already authenticated via passkey at identification stage,
-        # this stage accepts WebAuthn devices, and the setting is enabled
-        if (
-            stage.skip_if_passkey_authenticated
-            and self.executor.plan.context.get(PLAN_CONTEXT_METHOD) == "auth_webauthn_pwl"
-            and DeviceClasses.WEBAUTHN in stage.device_classes
-        ):
-            self.logger.debug("Skipping, user already authenticated via passkey")
-            return self.executor.stage_ok()
         if user and not user.is_anonymous:
             try:
                 challenges = self.get_device_challenges()

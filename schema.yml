@@ -33882,11 +33882,6 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
-        skip_if_passkey_authenticated:
-          type: boolean
-          description: If enabled and a WebAuthn device was used to authenticate in
-            an earlier stage (such as the identification stage), this stage will be
-            skipped.
       required:
       - component
       - meta_model_name
@@ -33935,11 +33930,6 @@ components:
           items:
             type: string
             format: uuid
-        skip_if_passkey_authenticated:
-          type: boolean
-          description: If enabled and a WebAuthn device was used to authenticate in
-            an earlier stage (such as the identification stage), this stage will be
-            skipped.
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -45224,11 +45214,6 @@ components:
           items:
             type: string
             format: uuid
-        skip_if_passkey_authenticated:
-          type: boolean
-          description: If enabled and a WebAuthn device was used to authenticate in
-            an earlier stage (such as the identification stage), this stage will be
-            skipped.
     PatchedAuthenticatorWebAuthnStageRequest:
       type: object
       description: AuthenticatorWebAuthnStage Serializer

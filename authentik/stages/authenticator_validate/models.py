@@ -77,14 +77,6 @@ class AuthenticatorValidateStage(Stage):
         "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
     )
 
-    skip_if_passkey_authenticated = models.BooleanField(
-        default=False,
-        help_text=_(
-            "If enabled and a WebAuthn device was used to authenticate in an earlier stage "
-            "(such as the identification stage), this stage will be skipped."
-        ),
-    )
-
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer

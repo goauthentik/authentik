@@ -14506,11 +14506,6 @@
                         "format": "uuid"
                     },
                     "title": "Webauthn allowed device types"
-                },
-                "skip_if_passkey_authenticated": {
-                    "type": "boolean",
-                    "title": "Skip if passkey authenticated",
-                    "description": "If enabled and a WebAuthn device was used to authenticate in an earlier stage (such as the identification stage), this stage will be skipped."
                 }
             },
             "required": []
