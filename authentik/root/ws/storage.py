@@ -31,7 +31,7 @@ class ChannelsStorage(SessionStorage):
                 async_to_sync(self.channel.send)(
                     uid,
                     {
-                        "type": "event.update",
+                        "type": "event.message",
                         "message_type": "message",
                         "level": message.level_tag,
                         "tags": message.tags,

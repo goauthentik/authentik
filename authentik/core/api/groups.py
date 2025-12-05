@@ -17,6 +17,7 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
@@ -296,7 +297,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     @validate(UserAccountSerializer)
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
@@ -327,7 +328,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     @validate(UserAccountSerializer)
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:

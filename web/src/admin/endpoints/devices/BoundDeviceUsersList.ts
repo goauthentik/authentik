@@ -22,6 +22,8 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-device-users-list")
 export class BoundDeviceUsersList extends Table<PolicyBinding> {
+    static styles: CSSResult[] = [...super.styles, PFSpacing];
+
     @property()
     target?: string;
 
@@ -29,10 +31,6 @@ export class BoundDeviceUsersList extends Table<PolicyBinding> {
     clearOnRefresh = true;
 
     order = "order";
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({

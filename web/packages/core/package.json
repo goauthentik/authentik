@@ -24,8 +24,8 @@
             "import": "./*/index.js"
         },
         ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
         }
     },
     "imports": {
@@ -43,7 +43,7 @@
         }
     },
     "dependencies": {
-        "@goauthentik/tsconfig": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.5",
         "@types/node": "^24.10.1",
         "@types/semver": "^7.7.1",
         "semver": "^7.7.3",

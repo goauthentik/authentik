@@ -5280,6 +5280,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -5953,7 +5955,9 @@
                             "add_certificatekeypair",
                             "change_certificatekeypair",
                             "delete_certificatekeypair",
-                            "view_certificatekeypair"
+                            "view_certificatekeypair",
+                            "view_certificatekeypair_certificate",
+                            "view_certificatekeypair_key"
                         ]
                     },
                     "user": {
@@ -10604,6 +10608,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",

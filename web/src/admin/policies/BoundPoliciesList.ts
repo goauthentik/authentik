@@ -34,6 +34,8 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
+    public static styles: CSSResult[] = [...super.styles, PFSpacing];
+
     @property()
     target?: string;
 
@@ -54,10 +56,6 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     clearOnRefresh = true;
 
     order = "order";
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");

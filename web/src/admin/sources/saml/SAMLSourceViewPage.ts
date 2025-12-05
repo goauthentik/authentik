@@ -11,7 +11,6 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { sourceBindingTypeNotices } from "#admin/sources/utils";
@@ -200,7 +199,7 @@ export class SAMLSourceViewPage extends AKElement {
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
                                 <ak-codemirror
-                                    mode=${CodeMirrorMode.XML}
+                                    mode="xml"
                                     readonly
                                     value="${ifDefined(this.metadata?.metadata)}"
                                 ></ak-codemirror>

@@ -1,16 +1,14 @@
-from django.http import Http404, HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
-from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from structlog.stdlib import get_logger
 
-from authentik.api.authentication import validate_auth
 from authentik.endpoints.connectors.agent.api.agent import (
     AgentAuthenticationResponse,
     AgentTokenResponseSerializer,
@@ -20,9 +18,8 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceAuthenticationToken,
     DeviceToken,
 )
-from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.agent.auth import (
-    agent_auth_fed_validate,
+    DeviceAuthFedAuthentication,
     agent_auth_issue_token,
     check_device_policies,
 )
@@ -71,23 +68,11 @@ class AgentConnectorViewSetMixin:
         detail=False,
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
-        authentication_classes=[],
+        permission_classes=[IsAuthenticated],
+        authentication_classes=[DeviceAuthFedAuthentication],
     )
     def auth_fed(self, request: Request) -> Response:
-        raw_token = validate_auth(get_authorization_header(request))
-        if not raw_token:
-            LOGGER.warning("Missing token")
-            return HttpResponseBadRequest()
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
-        if not device:
-            LOGGER.warning("Couldn't find device")
-            raise Http404
-
-        federated_token, connector = agent_auth_fed_validate(raw_token, device)
-        LOGGER.info(
-            "successfully verified JWT with provider", provider=federated_token.provider.name
-        )
+        federated_token, device, connector = request.auth
 
         policy_result = check_device_policies(device, federated_token.user, request._request)
         if not policy_result.passing:
