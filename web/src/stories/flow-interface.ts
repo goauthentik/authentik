@@ -1,7 +1,4 @@
 import { FlowExecutor } from "#flow/FlowExecutor";
-import { SubmitOptions } from "#flow/stages/base";
-
-import { FlowChallengeResponseRequest } from "@goauthentik/api";
 
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -12,11 +9,8 @@ export class StoryFlowInterface extends FlowExecutor {
         return Promise.resolve();
     }
 
-    submit = async (
-        payload?: FlowChallengeResponseRequest,
-        options?: SubmitOptions,
-    ): Promise<boolean> => {
-        return true;
+    public override submit = () => {
+        return Promise.resolve(true);
     };
 
     async renderChallenge(): Promise<TemplateResult> {

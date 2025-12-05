@@ -24,7 +24,8 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
-        } catch (e) {
+        } catch (error) {
+            console.error("Failed to fetch impersonation settings:", error);
             // fallback to reason not required as the backend will still validate it
             this.requireReason = false;
         }
