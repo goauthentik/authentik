@@ -15,13 +15,17 @@ The following placeholders are used in this guide:
 
 ## WeChat configuration
 
-To use WeChat as a social login source, you need to register a "Website Application" (网站应用) on the [WeChat Open Platform](https://open.weixin.qq.com/).
+To integrate WeChat with authentik you will need to register a "Website Application" (网站应用) on the [WeChat Open Platform](https://open.weixin.qq.com/).
 
 1. Register for a developer account on the [WeChat Open Platform](https://open.weixin.qq.com/).
 2. Create a new "Website Application".
 3. Submit the application for review.
 4. Once approved, you will obtain an **AppID** and **AppSecret**.
 5. In the WeChat application settings, configure the **Authorized Callback Domain** to match your authentik domain (e.g. `authentik.company`).
+
+:::info
+This integration uses the WeChat "Website Application" login flow (QR Code login). When users access the login page on a desktop device (Windows/Mac) with the WeChat client installed, they may see a "Fast Login" prompt.
+:::
 
 ## authentik configuration
 
@@ -37,7 +41,7 @@ To support the integration of WeChat with authentik, you need to create a WeChat
             - **Scopes**: The default scope is `snsapi_login`, which is required for website applications.
 3. Click **Finish**.
 
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
@@ -45,21 +49,20 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
-## User Matching
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+
+### User Matching
 
 WeChat users are identified by their `unionid` (if available) or `openid`.
 
 - **UnionID**: Unique across multiple applications under the same developer account. authentik prioritizes this as the username.
 - **OpenID**: Unique to the specific application. Used as a fallback if `unionid` is not returned.
 
-:::note
+:::info
 WeChat does not provide the user's email address via the API.
 :::
-
-## Notes
-
-- This integration uses the WeChat "Website Application" login flow (QR Code login).
-- When users access the login page on a desktop device (Windows/Mac) with the WeChat client installed, they may see a "Fast Login" prompt.
 
 ## Resources
 
