@@ -18,6 +18,7 @@ from authentik.endpoints.models import (
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector as DBC
 from authentik.events.utils import sanitize_item
 from authentik.lib.utils.http import get_http_session
+from authentik.policies.utils import delete_none_values
 
 
 class FleetController(BaseController[DBC]):
@@ -28,7 +29,7 @@ class FleetController(BaseController[DBC]):
         self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
         if self.connector.headers_mapping:
             self._session.headers.update(
-                headers=sanitize_item(
+                sanitize_item(
                     self.connector.headers_mapping.evaluate(
                         user=None,
                         request=None,
@@ -45,7 +46,7 @@ class FleetController(BaseController[DBC]):
 
     def _paginate_hosts(self):
         try:
-            page = 0
+            page = 1
             while True:
                 res = self._session.get(
                     self._url("/api/v1/fleet/hosts"),
@@ -114,41 +115,54 @@ class FleetController(BaseController[DBC]):
             return OSFamily.iOS
         return OSFamily.other
 
+    def or_none(self, value) -> Any | None:
+        if value == "":
+            return None
+        return value
+
     def convert_host_data(self, host: dict[str, Any]) -> dict[str, Any]:
         """Convert host data from fleet to authentik"""
         fleet_version = ""
-        for pkg in host["software"]:
+        for pkg in host.get("software") or []:
             if pkg["name"] in ["fleet-osquery", "fleet-desktop"]:
                 fleet_version = pkg["version"]
         data = {
-            "os": {
-                "arch": host["cpu_type"],
-                "family": FleetController.os_family(host),
-                "name": host["platform_like"],
-                "version": host["os_version"],
-            },
-            "disks": [],
-            "network": {"hostname": host["hostname"], "interfaces": []},
-            "hardware": {
-                "model": host["hardware_model"],
-                "manufacturer": host["hardware_vendor"],
-                "serial": host["hardware_serial"],
-                "cpu_name": host["cpu_brand"],
-                "cpu_count": host["cpu_logical_cores"],
-                "memory_bytes": host["memory"],
-            },
-            "software": [
+            "os": delete_none_values(
                 {
-                    "name": x["name"],
-                    "version": x["version"],
-                    "source": x["source"],
+                    "arch": self.or_none(host["cpu_type"]),
+                    "family": FleetController.os_family(host),
+                    "name": self.or_none(host["platform_like"]),
+                    "version": self.or_none(host["os_version"]),
                 }
-                for x in host["software"]
+            ),
+            "disks": [],
+            "network": delete_none_values(
+                {"hostname": self.or_none(host["hostname"]), "interfaces": []}
+            ),
+            "hardware": delete_none_values(
+                {
+                    "model": self.or_none(host["hardware_model"]),
+                    "manufacturer": self.or_none(host["hardware_vendor"]),
+                    "serial": self.or_none(host["hardware_serial"]),
+                    "cpu_name": self.or_none(host["cpu_brand"]),
+                    "cpu_count": self.or_none(host["cpu_logical_cores"]),
+                    "memory_bytes": self.or_none(host["memory"]),
+                }
+            ),
+            "software": [
+                delete_none_values(
+                    {
+                        "name": x["name"],
+                        "version": x["version"],
+                        "source": x["source"],
+                    }
+                )
+                for x in (host.get("software") or [])
             ],
             "vendor": {
                 "fleetdm.com": {
                     "policies": [
-                        {"name": policy["name"], "status": policy["response"]}
+                        delete_none_values({"name": policy["name"], "status": policy["response"]})
                         for policy in host.get("policies", [])
                     ],
                     "agent_version": fleet_version,
