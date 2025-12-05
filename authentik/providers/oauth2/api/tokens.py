@@ -62,7 +62,7 @@ class AuthorizationCodeViewSet(
 ):
     """AuthorizationCode Viewset"""
 
-    queryset = AuthorizationCode.objects.all()
+    queryset = AuthorizationCode.objects.including_expired().all()
     serializer_class = ExpiringBaseGrantModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
