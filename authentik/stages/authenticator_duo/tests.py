@@ -40,6 +40,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
 
     def test_api_enrollment_invalid(self):
         """Test `enrollment_status`"""
+        self.client.force_login(self.user)
         response = self.client.post(
             reverse(
                 "authentik_api:authenticatorduostage-enrollment-status",
@@ -52,6 +53,7 @@ class AuthenticatorDuoStageTests(FlowTestCase):
 
     def test_api_enrollment(self):
         """Test `enrollment_status`"""
+        self.client.force_login(self.user)
         stage = AuthenticatorDuoStage.objects.create(
             name=generate_id(),
             client_id=generate_id(),

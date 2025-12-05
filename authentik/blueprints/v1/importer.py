@@ -44,6 +44,8 @@ from authentik.core.models import (
 )
 from authentik.endpoints.connectors.agent.models import (
     AgentDeviceConnection,
+    AppleNonce,
+    DeviceAuthenticationToken,
 )
 from authentik.endpoints.connectors.agent.models import (
     DeviceToken as EndpointDeviceToken,
@@ -150,6 +152,8 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceToken,
         Device,
         DeviceConnection,
+        DeviceAuthenticationToken,
+        AppleNonce,
         AgentDeviceConnection,
         DeviceFactSnapshot,
         DeviceToken,

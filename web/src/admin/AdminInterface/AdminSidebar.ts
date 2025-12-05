@@ -65,7 +65,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     ],
     [null, msg("Endpoint Devices"), null, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
-        ["/endpoints/groups", msg("Device groups")],
+        ["/endpoints/groups", msg("Device access groups")],
         ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`]],
     ]],
     [null, msg("Events"), null, [
@@ -77,7 +77,8 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/policy/policies", msg("Policies")],
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
-        ["/policy/reputation", msg("Reputation scores")]]
+        ["/files", msg("Files")],
+        ["/policy/reputation", msg("Reputation scores")]],
     ],
     [null, msg("Flows and Stages"), null, [
         ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],

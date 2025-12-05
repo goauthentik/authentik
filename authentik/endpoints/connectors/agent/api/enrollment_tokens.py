@@ -7,7 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.tokens import TokenViewSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.endpoints.api.device_group import DeviceGroupSerializer
+from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.connectors.agent.models import EnrollmentToken
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -15,7 +15,9 @@ from authentik.rbac.decorators import permission_required
 
 class EnrollmentTokenSerializer(ModelSerializer):
 
-    device_group_obj = DeviceGroupSerializer(source="device_group", read_only=True, required=False)
+    device_group_obj = DeviceAccessGroupSerializer(
+        source="device_group", read_only=True, required=False
+    )
 
     class Meta:
         model = EnrollmentToken

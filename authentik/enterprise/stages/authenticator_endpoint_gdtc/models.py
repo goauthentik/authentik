@@ -11,11 +11,11 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.flows.stage import StageView
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DeprecatedMixin, SerializerModel
 from authentik.stages.authenticator.models import Device
 
 
-class AuthenticatorEndpointGDTCStage(ConfigurableStage, FriendlyNamedStage, Stage):
+class AuthenticatorEndpointGDTCStage(DeprecatedMixin, ConfigurableStage, FriendlyNamedStage, Stage):
     """Verify Google Chrome Device Trust connection for the user's browser."""
 
     credentials = models.JSONField()

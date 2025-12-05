@@ -30,6 +30,108 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/:
+    get:
+      operationId: admin_file_list
+      description: List files from storage backend.
+      parameters:
+      - in: query
+        name: manageable_only
+        schema:
+          type: boolean
+          default: false
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: usage
+        schema:
+          enum:
+          - media
+          type: string
+          default: media
+          minLength: 1
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: admin_file_create
+      description: Upload file to storage backend.
+      tags:
+      - admin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: admin_file_destroy
+      description: Delete file from storage backend.
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: usage
+        schema:
+          enum:
+          - media
+          type: string
+          default: media
+          minLength: 1
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /admin/file/used_by/:
+    get:
+      operationId: admin_file_used_by_list
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -2847,61 +2949,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/{slug}/set_icon/:
-    post:
-      operationId: core_applications_set_icon_create
-      description: Set application icon
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/applications/{slug}/set_icon_url/:
-    post:
-      operationId: core_applications_set_icon_url_create
-      description: Set application icon (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /core/applications/{slug}/used_by/:
     get:
       operationId: core_applications_used_by_list
@@ -5056,6 +5103,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/auth_fed/:
+    post:
+      operationId: endpoints_agents_connectors_auth_fed_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: device
+        schema:
+          type: string
+        required: true
+      tags:
+      - endpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentTokenResponse'
+          description: ''
+        '404':
+          description: Device not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/connectors/auth_ia/:
+    post:
+      operationId: endpoints_agents_connectors_auth_ia_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentAuthenticationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/check_in/:
     post:
       operationId: endpoints_agents_connectors_check_in_create
@@ -5093,7 +5184,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EnrollResponse'
+                $ref: '#/components/schemas/AgentTokenResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5333,6 +5424,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/device/:
+    post:
+      operationId: endpoints_agents_psso_register_device_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/register/user/:
+    post:
+      operationId: endpoints_agents_psso_register_user_create
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSelf'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/connectors/:
     get:
       operationId: endpoints_connectors_list
@@ -5456,6 +5591,201 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/:
+    get:
+      operationId: endpoints_device_access_groups_list
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDeviceAccessGroupList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_device_access_groups_create
+      description: DeviceAccessGroup Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAccessGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/{pbm_uuid}/:
+    get:
+      operationId: endpoints_device_access_groups_retrieve
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_device_access_groups_update
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAccessGroupRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_device_access_groups_partial_update
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDeviceAccessGroupRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAccessGroup'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_device_access_groups_destroy
+      description: DeviceAccessGroup Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/device_access_groups/{pbm_uuid}/used_by/:
+    get:
+      operationId: endpoints_device_access_groups_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Device access group.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/device_bindings/:
     get:
       operationId: endpoints_device_bindings_list
@@ -5549,7 +5879,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5575,7 +5905,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5607,7 +5937,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5638,7 +5968,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5661,202 +5991,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device user binding.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/:
-    get:
-      operationId: endpoints_device_groups_list
-      description: DeviceGroup Viewset
-      parameters:
-      - $ref: '#/components/parameters/QueryName'
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedDeviceGroupList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: endpoints_device_groups_create
-      description: DeviceGroup Viewset
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/{pbm_uuid}/:
-    get:
-      operationId: endpoints_device_groups_retrieve
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: endpoints_device_groups_update
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeviceGroupRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: endpoints_device_groups_partial_update
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDeviceGroupRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeviceGroup'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: endpoints_device_groups_destroy
-      description: DeviceGroup Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
-        required: true
-      tags:
-      - endpoints
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /endpoints/device_groups/{pbm_uuid}/used_by/:
-    get:
-      operationId: endpoints_device_groups_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this device group.
+        description: A UUID string identifying this Device User binding.
         required: true
       tags:
       - endpoints
@@ -5916,7 +6051,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -5943,7 +6078,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -5976,7 +6111,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6008,7 +6143,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6031,7 +6166,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this device.
+        description: A UUID string identifying this Device.
         required: true
       tags:
       - endpoints
@@ -6045,6 +6180,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/devices/summary/:
+    get:
+      operationId: endpoints_devices_summary_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceSummary'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -7957,61 +8112,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/{slug}/set_background/:
-    post:
-      operationId: flows_instances_set_background_create
-      description: Set Flow background
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Visible in the URL.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /flows/instances/{slug}/set_background_url/:
-    post:
-      operationId: flows_instances_set_background_url_create
-      description: Set Flow background (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Visible in the URL.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /flows/instances/{slug}/used_by/:
     get:
       operationId: flows_instances_used_by_list
@@ -8084,7 +8184,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/FileUploadRequest'
+              $ref: '#/components/schemas/FlowUploadRequest'
       security:
       - authentik: []
       responses:
@@ -20563,61 +20663,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/all/{slug}/set_icon/:
-    post:
-      operationId: sources_all_set_icon_create
-      description: Set source icon
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/FileUploadRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /sources/all/{slug}/set_icon_url/:
-    post:
-      operationId: sources_all_set_icon_url_create
-      description: Set source icon (as URL)
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilePathRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          description: Success
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /sources/all/{slug}/used_by/:
     get:
       operationId: sources_all_used_by_list
@@ -28943,6 +28988,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/:
+    get:
+      operationId: stages_endpoints_list
+      description: EndpointStage Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_endpoints_create
+      description: EndpointStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/{stage_uuid}/:
+    get:
+      operationId: stages_endpoints_retrieve
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_endpoints_update
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_endpoints_partial_update
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_endpoints_destroy
+      description: EndpointStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/endpoints/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_endpoints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/identification/:
     get:
       operationId: stages_identification_list
@@ -32473,33 +32708,71 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AgentAuthenticationResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        url:
+          type: string
+      required:
+      - url
     AgentConfig:
       type: object
       description: Base serializer class which doesn't implement create/update methods
       properties:
+        device_id:
+          type: string
+          readOnly: true
+        refresh_interval:
+          type: integer
+          readOnly: true
+        authorization_flow:
+          type: string
+          nullable: true
+          readOnly: true
+        jwks_auth:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        jwks_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
+          readOnly: true
         nss_uid_offset:
           type: integer
         nss_gid_offset:
           type: integer
-        authentication_flow:
-          type: string
         auth_terminate_session_on_expiry:
           type: boolean
-        refresh_interval:
-          type: integer
+        system_config:
+          allOf:
+          - $ref: '#/components/schemas/Config'
           readOnly: true
       required:
       - auth_terminate_session_on_expiry
-      - authentication_flow
+      - authorization_flow
+      - device_id
+      - jwks_auth
+      - jwks_challenge
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
+      - system_config
     AgentConnector:
       type: object
       properties:
         connector_uuid:
           type: string
           format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -32512,16 +32785,18 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        name:
-          type: string
-        enabled:
-          type: boolean
         snapshot_expiry:
           type: string
+        auth_session_duration:
+          type: string
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32530,18 +32805,18 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+        challenge_trigger_check_in:
+          type: boolean
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - component
       - meta_model_name
@@ -32562,6 +32837,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        auth_session_duration:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -32570,21 +32857,92 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+          minLength: 1
+        challenge_trigger_check_in:
+          type: boolean
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - name
+    AgentPSSODeviceRegistrationRequest:
+      type: object
+      description: Register Apple device via Platform SSO
+      properties:
+        device_signing_key:
+          type: string
+          minLength: 1
+        device_encryption_key:
+          type: string
+          minLength: 1
+        sign_key_id:
+          type: string
+          minLength: 1
+        enc_key_id:
+          type: string
+          minLength: 1
+      required:
+      - device_encryption_key
+      - device_signing_key
+      - enc_key_id
+      - sign_key_id
+    AgentPSSODeviceRegistrationResponse:
+      type: object
+      description: authentik settings for Platform SSO tokens
+      properties:
+        client_id:
+          type: string
+        issuer:
+          type: string
+        token_endpoint:
+          type: string
+        jwks_endpoint:
+          type: string
+        audience:
+          type: string
+        nonce_endpoint:
+          type: string
+      required:
+      - audience
+      - client_id
+      - issuer
+      - jwks_endpoint
+      - nonce_endpoint
+      - token_endpoint
+    AgentPSSOUserRegistrationRequest:
+      type: object
+      description: Register Apple device user via Platform SSO
+      properties:
+        user_auth:
+          type: string
+          minLength: 1
+        user_secure_enclave_key:
+          type: string
+          minLength: 1
+        enclave_key_id:
+          type: string
+          minLength: 1
+      required:
+      - enclave_key_id
+      - user_auth
+      - user_secure_enclave_key
+    AgentTokenResponse:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        token:
+          type: string
+        expires_in:
+          type: integer
+      required:
+      - token
     AlgEnum:
       enum:
       - rsa
@@ -32614,6 +32972,7 @@ components:
       - authentik.endpoints.connectors.agent
       - authentik.enterprise
       - authentik.events
+      - authentik.admin.files
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -32760,10 +33119,10 @@ components:
           format: uri
         meta_icon:
           type: string
+        meta_icon_url:
+          type: string
           nullable: true
-          description: |-
-            Get the URL to the App Icon image. If the name is /static or starts with http
-            it is returned as-is
+          description: Get the URL to the App Icon image
           readOnly: true
         meta_description:
           type: string
@@ -32776,7 +33135,7 @@ components:
       required:
       - backchannel_providers_obj
       - launch_url
-      - meta_icon
+      - meta_icon_url
       - name
       - pk
       - provider_obj
@@ -32843,6 +33202,8 @@ components:
         meta_launch_url:
           type: string
           format: uri
+        meta_icon:
+          type: string
         meta_description:
           type: string
         meta_publisher:
@@ -34728,6 +35089,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallenge'
       - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
+      - $ref: '#/components/schemas/EndpointAgentChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
       - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
@@ -34760,6 +35122,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallenge'
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
           xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
@@ -35338,7 +35701,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
       required:
@@ -35499,6 +35865,26 @@ components:
       - type
       - verbose_name
       - verbose_name_plural
+    DeviceAccessGroup:
+      type: object
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+      required:
+      - name
+      - pbm_uuid
+    DeviceAccessGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     DeviceChallenge:
       type: object
       description: Single device challenge
@@ -35624,6 +36010,16 @@ components:
           items:
             $ref: '#/components/schemas/Process'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUser'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroup'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
@@ -35668,29 +36064,83 @@ components:
           items:
             $ref: '#/components/schemas/ProcessRequest'
           nullable: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserRequest'
+          nullable: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceGroupRequest'
+          nullable: true
         vendor:
           type: object
           additionalProperties: {}
     DeviceGroup:
       type: object
       properties:
-        pbm_uuid:
+        id:
           type: string
-          format: uuid
-          readOnly: true
         name:
           type: string
       required:
-      - name
-      - pbm_uuid
+      - id
     DeviceGroupRequest:
       type: object
       properties:
+        id:
+          type: string
+          minLength: 1
         name:
           type: string
           minLength: 1
       required:
-      - name
+      - id
+    DeviceSummary:
+      type: object
+      description: Summary of registered devices
+      properties:
+        total_count:
+          type: integer
+        unreachable_count:
+          type: integer
+        outdated_agent_count:
+          type: integer
+      required:
+      - outdated_agent_count
+      - total_count
+      - unreachable_count
+    DeviceUser:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        home:
+          type: string
+      required:
+      - id
+    DeviceUserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        home:
+          type: string
+          minLength: 1
+      required:
+      - id
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -36329,6 +36779,40 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointAgentChallenge:
+      type: object
+      description: Signed challenge for authentik agent to respond to
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-endpoint-agent
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        challenge:
+          type: string
+        challenge_idle_timeout:
+          type: integer
+      required:
+      - challenge
+      - challenge_idle_timeout
+    EndpointAgentChallengeResponseRequest:
+      type: object
+      description: Response to signed challenge
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-endpoint-agent
+        response:
+          type: string
+          nullable: true
+          minLength: 1
     EndpointAuthModeEnum:
       enum:
       - static
@@ -36346,12 +36830,12 @@ components:
           readOnly: true
         name:
           type: string
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroup'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -36367,7 +36851,6 @@ components:
           additionalProperties: {}
       required:
       - facts
-      - group_obj
       - name
       - pbm_uuid
     EndpointDeviceDetails:
@@ -36382,12 +36865,12 @@ components:
           readOnly: true
         name:
           type: string
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroup'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroup'
         expiring:
           type: boolean
         expires:
@@ -36421,7 +36904,6 @@ components:
       - connections
       - connections_obj
       - facts
-      - group_obj
       - name
       - pbm_uuid
       - policies
@@ -36434,12 +36916,12 @@ components:
         name:
           type: string
           minLength: 1
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -36450,7 +36932,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - group_obj
       - name
     EndpointRequest:
       type: object
@@ -36486,6 +36967,74 @@ components:
       - name
       - protocol
       - provider
+    EndpointStage:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        connector:
+          type: string
+          format: uuid
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+      required:
+      - component
+      - connector
+      - connector_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    EndpointStageRequest:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        connector:
+          type: string
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
+      required:
+      - connector
+      - name
     EnrollRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -36499,14 +37048,6 @@ components:
       required:
       - device_name
       - device_serial
-    EnrollResponse:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        token:
-          type: string
-      required:
-      - token
     EnrollmentToken:
       type: object
       properties:
@@ -36520,7 +37061,7 @@ components:
           nullable: true
         device_group_obj:
           allOf:
-          - $ref: '#/components/schemas/DeviceGroup'
+          - $ref: '#/components/schemas/DeviceAccessGroup'
           readOnly: true
         connector:
           type: string
@@ -37040,25 +37581,35 @@ components:
           minLength: 1
       required:
       - object_pk
-    FilePathRequest:
+    FileList:
       type: object
-      description: Serializer to upload file
+      description: Base serializer class which doesn't implement create/update methods
       properties:
+        name:
+          type: string
+        mime_type:
+          type: string
         url:
           type: string
-          minLength: 1
       required:
+      - mime_type
+      - name
       - url
     FileUploadRequest:
       type: object
-      description: Serializer to upload file
+      description: Base serializer class which doesn't implement create/update methods
       properties:
         file:
           type: string
           format: binary
-        clear:
-          type: boolean
-          default: false
+        name:
+          type: string
+        usage:
+          type: string
+          minLength: 1
+          default: media
+      required:
+      - file
     Flow:
       type: object
       description: Flow Serializer
@@ -37088,9 +37639,10 @@ components:
             flow is redirect to when an un-authenticated user visits authentik.
         background:
           type: string
-          description: |-
-            Get the URL to the background image. If the name is /static or starts with http
-            it is returned as-is
+          description: Background shown during execution
+        background_url:
+          type: string
+          description: Get the URL to the background image
           readOnly: true
         stages:
           type: array
@@ -37131,7 +37683,7 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
-      - background
+      - background_url
       - cache_count
       - designation
       - export_url
@@ -37157,6 +37709,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/EndpointAgentChallengeResponseRequest'
       - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -37185,6 +37738,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          ak-stage-endpoint-agent: '#/components/schemas/EndpointAgentChallengeResponseRequest'
           xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
@@ -37326,6 +37880,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
+        background:
+          type: string
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -37376,11 +37933,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
-        background:
+        background_url:
           type: string
-          description: |-
-            Get the URL to the background image. If the name is /static or starts with http
-            it is returned as-is
+          description: Get the URL to the background image
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
@@ -37400,7 +37955,7 @@ components:
           description: Configure what should happen when a flow denies access to a
             user.
       required:
-      - background
+      - background_url
       - designation
       - export_url
       - name
@@ -37529,6 +38084,16 @@ components:
       - order
       - stage
       - target
+    FlowUploadRequest:
+      type: object
+      description: Serializer to upload file
+      properties:
+        file:
+          type: string
+          format: binary
+        clear:
+          type: boolean
+          default: false
     FooterLink:
       type: object
       description: Links returned in Config API
@@ -38620,8 +39185,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     HardwareRequest:
       type: object
@@ -38634,6 +39197,7 @@ components:
           minLength: 1
         serial:
           type: string
+          minLength: 1
         cpu_name:
           type: string
           minLength: 1
@@ -38643,8 +39207,6 @@ components:
           type: integer
           format: int64
       required:
-      - manufacturer
-      - model
       - serial
     IdentificationChallenge:
       type: object
@@ -39238,6 +39800,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -39288,7 +39852,7 @@ components:
       required:
       - component
       - connectivity
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -39413,6 +39977,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -39906,6 +40472,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         server_uri:
           type: string
@@ -39993,7 +40561,7 @@ components:
       - base_dn
       - component
       - connectivity
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -40118,6 +40686,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         server_uri:
           type: string
           minLength: 1
@@ -40866,7 +41436,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSet'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -40889,11 +41459,6 @@ components:
       - user_attribute
       - verbose_name
       - verbose_name_plural
-    MutualTLSStageModeEnum:
-      enum:
-      - optional
-      - required
-      type: string
     MutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -40906,7 +41471,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -41718,6 +42283,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
           readOnly: true
         group_matching_mode:
@@ -41778,7 +42345,7 @@ components:
       - callback_url
       - component
       - consumer_key
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -41904,6 +42471,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -42519,7 +43088,7 @@ components:
       - pagination
       - results
       - autocomplete
-    PaginatedDeviceGroupList:
+    PaginatedDeviceAccessGroupList:
       type: object
       properties:
         pagination:
@@ -42527,7 +43096,7 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/DeviceGroup'
+            $ref: '#/components/schemas/DeviceAccessGroup'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -42663,6 +43232,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedEndpointStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointStage'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -44901,6 +45485,18 @@ components:
         snapshot_expiry:
           type: string
           minLength: 1
+        auth_session_duration:
+          type: string
+          minLength: 1
+        auth_terminate_session_on_expiry:
+          type: boolean
+        refresh_interval:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
         nss_uid_offset:
           type: integer
           maximum: 2147483647
@@ -44909,19 +45505,19 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        auth_terminate_session_on_expiry:
-          type: boolean
-        refresh_interval:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
         challenge_key:
           type: string
           format: uuid
           nullable: true
+        challenge_idle_timeout:
+          type: string
+          minLength: 1
+        challenge_trigger_check_in:
+          type: boolean
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -44961,6 +45557,8 @@ components:
         meta_launch_url:
           type: string
           format: uri
+        meta_icon:
+          type: string
         meta_description:
           type: string
         meta_publisher:
@@ -45437,7 +46035,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
-    PatchedDeviceGroupRequest:
+    PatchedDeviceAccessGroupRequest:
       type: object
       properties:
         name:
@@ -45609,12 +46207,12 @@ components:
         name:
           type: string
           minLength: 1
-        group:
+        access_group:
           type: string
           format: uuid
           nullable: true
-        group_obj:
-          $ref: '#/components/schemas/DeviceGroupRequest'
+        access_group_obj:
+          $ref: '#/components/schemas/DeviceAccessGroupRequest'
         expiring:
           type: boolean
         expires:
@@ -45652,6 +46250,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    PatchedEndpointStageRequest:
+      type: object
+      description: EndpointStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        connector:
+          type: string
+          format: uuid
+        mode:
+          $ref: '#/components/schemas/StageModeEnum'
     PatchedEnrollmentTokenRequest:
       type: object
       properties:
@@ -45781,6 +46395,9 @@ components:
           - $ref: '#/components/schemas/FlowDesignationEnum'
           description: Decides what this Flow is used for. For example, the Authentication
             flow is redirect to when an un-authenticated user visits authentik.
+        background:
+          type: string
+          description: Background shown during execution
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -46281,6 +46898,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -46484,6 +47103,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         server_uri:
           type: string
           minLength: 1
@@ -46655,7 +47276,7 @@ components:
           items:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
-          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+          $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
           type: array
           items:
@@ -46925,6 +47546,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -47196,6 +47819,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -47795,6 +48420,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -47927,6 +48554,11 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -48156,7 +48788,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
@@ -48263,6 +48898,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         bot_username:
           type: string
           minLength: 1
@@ -48739,6 +49376,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -48762,7 +49401,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -48887,6 +49526,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -49553,6 +50194,7 @@ components:
       - okta
       - patreon
       - reddit
+      - slack
       - twitch
       - twitter
       type: string
@@ -51230,6 +51872,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           readOnly: true
         group_matching_mode:
           allOf:
@@ -51301,7 +51945,7 @@ components:
           type: boolean
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -51427,6 +52071,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -51643,6 +52289,10 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -51760,6 +52410,11 @@ components:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
+        service_provider_config_cache_timeout:
+          type: string
+          minLength: 1
+          description: Cache duration for ServiceProviderConfig responses. Set minutes=0
+            to disable.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -52569,7 +53224,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
@@ -52631,7 +53289,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
@@ -52781,14 +53442,14 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
+          description: Get the URL to the source icon
           readOnly: true
       required:
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -52946,6 +53607,11 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    StageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
     StagePrompt:
       type: object
       description: Serializer for a single Prompt field
@@ -53415,6 +54081,8 @@ components:
           type: string
         icon:
           type: string
+        icon_url:
+          type: string
           nullable: true
           readOnly: true
         bot_username:
@@ -53430,7 +54098,7 @@ components:
       required:
       - bot_username
       - component
-      - icon
+      - icon_url
       - managed
       - meta_model_name
       - name
@@ -53555,6 +54223,8 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        icon:
+          type: string
         bot_username:
           type: string
           minLength: 1
@@ -53757,6 +54427,7 @@ components:
       - identifier
     TokenSetKeyRequest:
       type: object
+      description: Set token's key
       properties:
         key:
           type: string
@@ -53853,6 +54524,9 @@ components:
         icon_url:
           type: string
         requires_enterprise:
+          type: boolean
+          default: false
+        deprecated:
           type: boolean
           default: false
       required:
@@ -53967,6 +54641,7 @@ components:
       - cascade_many
       - set_null
       - set_default
+      - left_dangling
       type: string
     User:
       type: object

@@ -32,8 +32,10 @@ class FlowTestCase(APITestCase):
         self.assertIsNotNone(raw_response["component"])
         if flow:
             self.assertIn("flow_info", raw_response)
-            self.assertEqual(
-                raw_response["flow_info"]["cancel_url"], reverse("authentik_flows:cancel")
+            self.assertTrue(
+                raw_response["flow_info"]["cancel_url"].startswith(
+                    reverse("authentik_flows:cancel")
+                )
             )
             # We don't check the flow title since it will most likely go
             # through ChallengeStageView.format_title() so might not match 1:1

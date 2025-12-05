@@ -7,7 +7,6 @@ import "#elements/CodeMirror";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
@@ -46,14 +45,14 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Device Group")} name="group">
+            <ak-form-element-horizontal label=${msg("Device Group")} name="accessGroup">
                 <ak-endpoints-device-group-search
-                    .group=${this.instance?.group}
+                    .group=${this.instance?.accessGroup}
                 ></ak-endpoints-device-group-search>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>

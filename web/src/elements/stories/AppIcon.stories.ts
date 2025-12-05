@@ -34,7 +34,7 @@ import "#components/ak-app-icon";
 \`\`\`
 
 \`\`\`html
-<ak-app-icon name=\${app.name} icon=\${app.metaIcon}></ak-ak-app-icon>
+<ak-app-icon name=\${app.name} icon=\${app.metaIconUrl}></ak-ak-app-icon>
 \`\`\`
 `,
             },
