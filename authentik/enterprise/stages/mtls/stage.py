@@ -1,4 +1,5 @@
 from binascii import hexlify
+from enum import IntFlag, auto
 from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
@@ -43,14 +44,28 @@ HEADER_OUTPOST_FORWARDED = "X-Authentik-Outpost-Certificate"
 PLAN_CONTEXT_CERTIFICATE = "certificate"
 
 
+class ParseOptions(IntFlag):
+
+    # URL unquote the string
+    UNQUOTE = auto()
+    # Re-add PEM Header & footer, and chunk it into 64 character lines
+    FORMAT = auto()
+
+
 class MTLSStageView(ChallengeStageView):
 
-    def __parse_single_cert(self, raw: str | None) -> list[Certificate]:
+    def __parse_single_cert(self, raw: str | None, *options: ParseOptions) -> list[Certificate]:
         """Helper to parse a single certificate"""
         if not raw:
             return []
+        for opt in options:
+            match opt:
+                case ParseOptions.FORMAT:
+                    raw = format_cert(raw)
+                case ParseOptions.UNQUOTE:
+                    raw = unquote_plus(raw)
         try:
-            cert = load_pem_x509_certificate(format_cert(unquote_plus(raw)).encode())
+            cert = load_pem_x509_certificate(raw.encode())
             return [cert]
         except ValueError as exc:
             self.logger.info("Failed to parse certificate", exc=exc)
@@ -68,22 +83,23 @@ class MTLSStageView(ChallengeStageView):
             raw_cert = {k.split("=")[0]: k.split("=")[1] for k in el}
             if "Cert" not in raw_cert:
                 continue
-            certs.extend(self.__parse_single_cert(raw_cert["Cert"]))
+            certs.extend(self.__parse_single_cert(raw_cert["Cert"], ParseOptions.UNQUOTE))
         return certs
 
     def _parse_cert_nginx(self) -> list[Certificate]:
         """Parse certificates in the format nginx-ingress gives to us"""
         sslcc_raw = self.request.headers.get(HEADER_NGINX_FORWARDED)
-        return self.__parse_single_cert(sslcc_raw)
+        return self.__parse_single_cert(sslcc_raw, ParseOptions.UNQUOTE)
 
     def _parse_cert_traefik(self) -> list[Certificate]:
         """Parse certificates in the format traefik gives to us"""
+        # https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/passtlsclientcert/
         ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
         if not ftcc_raw:
             return []
         certs = []
         for cert in ftcc_raw.split(","):
-            certs.extend(self.__parse_single_cert(cert))
+            certs.extend(self.__parse_single_cert(cert, ParseOptions.UNQUOTE, ParseOptions.FORMAT))
         return certs
 
     def _parse_cert_outpost(self) -> list[Certificate]:
@@ -97,7 +113,7 @@ class MTLSStageView(ChallengeStageView):
         ) and not user.has_perm("authentik_stages_mtls.pass_outpost_certificate"):
             return []
         outpost_raw = self.request.headers.get(HEADER_OUTPOST_FORWARDED)
-        return self.__parse_single_cert(outpost_raw)
+        return self.__parse_single_cert(outpost_raw, ParseOptions.UNQUOTE)
 
     def get_authorities(self) -> list[CertificateKeyPair] | None:
         # We can't access `certificate_authorities` on `self.executor.current_stage`, as that would
