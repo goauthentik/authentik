@@ -48,8 +48,6 @@ const eslintConfig = defineConfig(
             "no-div-regex": "off",
             "no-empty-function": ["error", { allow: ["arrowFunctions"] }],
             "no-param-reassign": "off",
-            "prefer-arrow-callback": "off",
-            "react/jsx-no-leaked-render": "off",
         },
     },
     {
