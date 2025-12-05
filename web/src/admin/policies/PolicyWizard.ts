@@ -6,18 +6,18 @@ import "#admin/policies/geoip/GeoIPPolicyForm";
 import "#admin/policies/password/PasswordPolicyForm";
 import "#admin/policies/reputation/ReputationPolicyForm";
 import "#admin/policies/unique_password/UniquePasswordPolicyForm";
-import "#elements/forms/ProxyForm";
-import "#elements/wizard/FormWizardPage";
-import "#elements/wizard/TypeCreateWizardPage";
-import "#elements/wizard/Wizard";
+import "#admin/forms/ProxyForm";
+import "#admin/wizard/FormWizardPage";
+import "#admin/wizard/TypeCreateWizardPage";
+import "#admin/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { FormWizardPage } from "#elements/wizard/FormWizardPage";
-import type { Wizard } from "#elements/wizard/Wizard";
 
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
+import { FormWizardPage } from "#admin/wizard/FormWizardPage";
+import type { Wizard } from "#admin/wizard/Wizard";
 
 import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api";
 

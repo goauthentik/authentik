@@ -7,9 +7,9 @@ import "#components/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#admin/sync/SyncStatusCard";
+import "#admin/tasks/ScheduleList";
+import "#admin/tasks/TaskList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";

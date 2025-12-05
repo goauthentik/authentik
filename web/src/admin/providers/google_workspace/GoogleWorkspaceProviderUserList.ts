@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#admin/sync/SyncObjectForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

@@ -7,8 +7,8 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
+import "#admin/sync/SyncStatusCard";
+import "#admin/tasks/ScheduleList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";

@@ -5,7 +5,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#admin/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/ak-mdx/ak-mdx";
 

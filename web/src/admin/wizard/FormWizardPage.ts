@@ -1,5 +1,6 @@
 import { Form } from "#elements/forms/Form";
-import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { WizardPage } from "#admin/wizard/WizardPage";
 
 import { customElement } from "lit/decorators.js";
 

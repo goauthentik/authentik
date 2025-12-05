@@ -2,13 +2,12 @@ import type { AppGroupEntry } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
 
+import { ApplicationRoute } from "#elements/router/utils";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
-
-import { ApplicationRoute } from "#admin/Routes";
 
 import { Application } from "@goauthentik/api";
 

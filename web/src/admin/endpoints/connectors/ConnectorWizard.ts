@@ -1,14 +1,15 @@
 import "#admin/common/ak-license-notice";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
-import "#elements/forms/ProxyForm";
-import "#elements/wizard/FormWizardPage";
-import "#elements/wizard/TypeCreateWizardPage";
-import "#elements/wizard/Wizard";
+import "#admin/forms/ProxyForm";
+import "#admin/wizard/FormWizardPage";
+import "#admin/wizard/TypeCreateWizardPage";
+import "#admin/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { Wizard } from "#elements/wizard/Wizard";
+
+import { Wizard } from "#admin/wizard/Wizard";
 
 import { EndpointsApi, TypeCreate } from "@goauthentik/api";
 

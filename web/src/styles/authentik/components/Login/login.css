@@ -147,6 +147,7 @@
         position: relative;
         flex: 1 1 auto;
     }
+
     @media (min-width: 35rem) and (min-height: 17.5rem) {
         box-shadow: var(--pf-global--BoxShadow--md);
     }

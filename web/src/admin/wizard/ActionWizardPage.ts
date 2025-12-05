@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "#common/constants";
 
-import { WizardAction } from "#elements/wizard/Wizard";
-import { WizardPage } from "#elements/wizard/WizardPage";
+import { WizardAction } from "#admin/wizard/Wizard";
+import { WizardPage } from "#admin/wizard/WizardPage";
 
 import { ResponseError } from "@goauthentik/api";
 

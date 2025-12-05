@@ -28,7 +28,7 @@ import "#admin/stages/user_logout/UserLogoutStageForm";
 import "#admin/stages/user_write/UserWriteStageForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

@@ -2,18 +2,18 @@ import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/EmptyState";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/wizard/TypeCreateWizardPage";
+import "#admin/wizard/TypeCreateWizardPage";
 
 import { applicationWizardProvidersContext } from "../ContextIdentity.js";
 import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
 import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { TypeCreateWizardPageLayouts } from "#admin/wizard/TypeCreateWizardPage";
 
 import { TypeCreate } from "@goauthentik/api";
 

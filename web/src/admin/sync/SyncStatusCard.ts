@@ -2,7 +2,7 @@ import "#components/ak-status-label";
 import "#elements/EmptyState";
 import "#elements/buttons/ActionButton/index";
 import "#elements/events/LogViewer";
-import "#elements/tasks/TaskStatus";
+import "#admin/tasks/TaskStatus";
 
 import { formatElapsedTime } from "#common/temporal";
 

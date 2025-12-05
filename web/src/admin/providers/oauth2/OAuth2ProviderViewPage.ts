@@ -5,7 +5,7 @@ import "#admin/rbac/ObjectPermissionsPage";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
-import "#elements/tasks/TaskList";
+import "#admin/tasks/TaskList";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";

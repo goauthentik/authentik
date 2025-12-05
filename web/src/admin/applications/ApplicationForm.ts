@@ -9,7 +9,7 @@ import "#elements/Alert";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

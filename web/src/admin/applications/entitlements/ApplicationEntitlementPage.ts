@@ -5,15 +5,14 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import {
     ApplicationEntitlement,

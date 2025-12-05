@@ -5,7 +5,7 @@ import "#admin/stages/StageWizard";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 

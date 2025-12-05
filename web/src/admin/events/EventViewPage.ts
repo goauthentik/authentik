@@ -2,14 +2,13 @@ import "#components/ak-event-info";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EventGeo, renderEventUser } from "#common/events/utils";
 import { actionToLabel } from "#common/labels";
 
 import { AKElement } from "#elements/Base";
 import { Timestamp } from "#elements/table/shared";
 
 import { setPageDetails } from "#components/ak-page-navbar";
-
-import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { EventsApi, EventToJSON } from "@goauthentik/api";
 

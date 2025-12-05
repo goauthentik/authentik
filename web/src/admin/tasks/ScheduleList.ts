@@ -2,9 +2,9 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/ScheduleForm";
-import "#elements/tasks/TaskList";
-import "#elements/tasks/TaskStatus";
+import "#admin/tasks/ScheduleForm";
+import "#admin/tasks/TaskList";
+import "#admin/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

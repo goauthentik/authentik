@@ -4,8 +4,8 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskStatus";
-import "#elements/tasks/TaskStatusSummary";
+import "#admin/tasks/TaskStatus";
+import "#admin/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

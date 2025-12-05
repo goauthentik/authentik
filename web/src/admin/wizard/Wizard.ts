@@ -1,9 +1,10 @@
-import "#elements/wizard/ActionWizardPage";
+import "#admin/wizard/ActionWizardPage";
 
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
-import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { WizardPage } from "#admin/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";

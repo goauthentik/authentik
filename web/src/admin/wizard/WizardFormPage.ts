@@ -1,6 +1,7 @@
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
-import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { WizardPage } from "#admin/wizard/WizardPage";
 
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";

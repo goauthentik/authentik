@@ -7,13 +7,13 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
+import { EventGeo, renderEventUser } from "#common/events/utils";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
-import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 

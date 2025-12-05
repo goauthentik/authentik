@@ -6,12 +6,11 @@ import "#elements/user/sources/SourceSettingsTelegram";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { renderSourceIcon } from "#common/sources/utils";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/user/sources/SourceSettings.css";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { renderSourceIcon } from "#admin/sources/utils";
 
 import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api";
 

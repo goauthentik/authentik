@@ -1,6 +1,7 @@
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
-import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { LitPropertyRecord } from "#elements/types";
+
+import { SidebarItemProperties } from "#admin/sidebar/SidebarItem";
 
 import { spread } from "@open-wc/lit-helpers";
 

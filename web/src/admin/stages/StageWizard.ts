@@ -23,18 +23,18 @@ import "#admin/stages/user_delete/UserDeleteStageForm";
 import "#admin/stages/user_login/UserLoginStageForm";
 import "#admin/stages/user_logout/UserLogoutStageForm";
 import "#admin/stages/user_write/UserWriteStageForm";
-import "#elements/forms/ProxyForm";
-import "#elements/wizard/FormWizardPage";
-import "#elements/wizard/TypeCreateWizardPage";
-import "#elements/wizard/Wizard";
+import "#admin/forms/ProxyForm";
+import "#admin/wizard/FormWizardPage";
+import "#admin/wizard/TypeCreateWizardPage";
+import "#admin/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { FormWizardPage } from "#elements/wizard/FormWizardPage";
-import { Wizard } from "#elements/wizard/Wizard";
 
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
+import { FormWizardPage } from "#admin/wizard/FormWizardPage";
+import { Wizard } from "#admin/wizard/Wizard";
 
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 

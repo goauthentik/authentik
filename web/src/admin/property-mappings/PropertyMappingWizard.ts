@@ -14,15 +14,16 @@ import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
 import "#admin/property-mappings/PropertyMappingTestForm";
-import "#elements/forms/ProxyForm";
-import "#elements/wizard/FormWizardPage";
-import "#elements/wizard/TypeCreateWizardPage";
-import "#elements/wizard/Wizard";
+import "#admin/forms/ProxyForm";
+import "#admin/wizard/FormWizardPage";
+import "#admin/wizard/TypeCreateWizardPage";
+import "#admin/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import type { Wizard } from "#elements/wizard/Wizard";
+
+import type { Wizard } from "#admin/wizard/Wizard";
 
 import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 

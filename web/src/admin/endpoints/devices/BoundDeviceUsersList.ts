@@ -3,14 +3,13 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
 import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 

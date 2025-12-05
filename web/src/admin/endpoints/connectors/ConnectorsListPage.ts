@@ -1,7 +1,7 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ProxyForm";
+import "#admin/forms/ProxyForm";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

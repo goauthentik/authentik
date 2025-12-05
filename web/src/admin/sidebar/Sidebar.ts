@@ -1,4 +1,4 @@
-import "#elements/sidebar/SidebarVersion";
+import "#admin/sidebar/SidebarVersion";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/Sidebar.css";

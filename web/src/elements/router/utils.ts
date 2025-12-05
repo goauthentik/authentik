@@ -2,6 +2,8 @@
  * @file Utilities for working with the client-side page router.
  */
 
+import { globalAK } from "#common/global";
+
 import { kebabCase } from "change-case";
 
 /**
@@ -73,3 +75,14 @@ export function formatSlug(input: string): string {
 export function isSlug(input: string): boolean {
     return kebabCase(input) === input;
 }
+
+/**
+ * Application route helpers.
+ *
+ * @TODO: This API isn't quite right yet. Revisit after the hash router is replaced.
+ */
+export const ApplicationRoute = {
+    EditURL(slug: string, base = globalAK().api.base) {
+        return `${base}if/admin/#/core/applications/${slug}`;
+    },
+} as const;

@@ -1,10 +1,9 @@
 import "#admin/sources/telegram/TelegramSourceForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { sourceBindingTypeNotices } from "#common/sources/utils";
 
 import { AKElement } from "#elements/Base";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     RbacPermissionsAssignedByUsersListModelEnum,

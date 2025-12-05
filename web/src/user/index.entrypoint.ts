@@ -5,8 +5,8 @@ import "#elements/messages/MessageContainer";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
+import "#admin/sidebar/Sidebar";
+import "#admin/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

@@ -2,7 +2,8 @@ import "#admin/common/ak-license-notice";
 import "#elements/Alert";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { WizardPage } from "#admin/wizard/WizardPage";
 
 import { TypeCreate } from "@goauthentik/api";
 

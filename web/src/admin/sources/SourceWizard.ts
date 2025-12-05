@@ -5,15 +5,16 @@ import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/telegram/TelegramSourceForm";
-import "#elements/forms/ProxyForm";
-import "#elements/wizard/FormWizardPage";
-import "#elements/wizard/Wizard";
+import "#admin/forms/ProxyForm";
+import "#admin/wizard/FormWizardPage";
+import "#admin/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
-import type { Wizard } from "#elements/wizard/Wizard";
+
+import { TypeCreateWizardPageLayouts } from "#admin/wizard/TypeCreateWizardPage";
+import type { Wizard } from "#admin/wizard/Wizard";
 
 import { SourcesApi, TypeCreate } from "@goauthentik/api";
 

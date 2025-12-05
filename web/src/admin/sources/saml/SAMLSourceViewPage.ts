@@ -9,11 +9,10 @@ import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { sourceBindingTypeNotices } from "#common/sources/utils";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
     RbacPermissionsAssignedByUsersListModelEnum,

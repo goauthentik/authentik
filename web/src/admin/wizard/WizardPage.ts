@@ -1,5 +1,6 @@
 import { AKElement } from "#elements/Base";
-import { Wizard } from "#elements/wizard/Wizard";
+
+import { Wizard } from "#admin/wizard/Wizard";
 
 import { CSSResult, html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
