@@ -117,7 +117,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
-                icon=${ifPresent(item.metaIcon)}
+                icon=${ifPresent(item.metaIconUrl)}
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>

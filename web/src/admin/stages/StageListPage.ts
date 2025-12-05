@@ -14,6 +14,7 @@ import "#admin/stages/consent/ConsentStageForm";
 import "#admin/stages/deny/DenyStageForm";
 import "#admin/stages/dummy/DummyStageForm";
 import "#admin/stages/email/EmailStageForm";
+import "#admin/stages/endpoint/EndpointStageForm";
 import "#admin/stages/identification/IdentificationStageForm";
 import "#admin/stages/invitation/InvitationStageForm";
 import "#admin/stages/mtls/MTLSStageForm";

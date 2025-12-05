@@ -58,8 +58,8 @@ export const ROUTES: Route[] = [
         ></ak-endpoints-connector-view>`;
     }),
     new Route(new RegExp("^/endpoints/groups$"), async () => {
-        await import("#admin/endpoints/DeviceGroupsListPage");
-        return html`<ak-endpoints-device-groups-list></ak-endpoints-device-groups-list>`;
+        await import("#admin/endpoints/DeviceAccessGroupsListPage");
+        return html`<ak-endpoints-device-access-groups-list></ak-endpoints-device-access-groups-list>`;
     }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
@@ -168,6 +168,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/admin/settings$"), async () => {
         await import("#admin/admin-settings/AdminSettingsPage");
         return html`<ak-admin-settings></ak-admin-settings>`;
+    }),
+    new Route(new RegExp("^/files$"), async () => {
+        await import("#admin/files/FileListPage");
+        return html`<ak-files-list></ak-files-list>`;
     }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("#admin/blueprints/BlueprintListPage");
