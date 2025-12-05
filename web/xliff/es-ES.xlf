@@ -7685,14 +7685,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
 </trans-unit>
-<trans-unit id="s3abecf1e778c9625">
-  <source>See more here:</source>
-  <target>Ver más aquí:</target>
-</trans-unit>
-<trans-unit id="s74cb3d66f6a668e1">
-  <source>Documentation</source>
-  <target>Documentacion</target>
-</trans-unit>
 <trans-unit id="sc816360d6f5a1eeb">
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
   <target>Los flujos describen una cadena de Etapas para autenticar, inscribir o recuperar un usuario. Las etapas se eligen en función de las políticas que se les aplican.</target>
@@ -8044,10 +8036,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s9c29565c5ae1cc92">
   <source>Selecting an integration enables the management of the outpost by authentik.</source>
   <target>La selección de una integración permite la gestión del puesto avanzado por authentik.</target>
-</trans-unit>
-<trans-unit id="s7a64ac07061f85b2">
-  <source>See documentation</source>
-  <target>Ver documentación</target>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
@@ -9742,6 +9730,18 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
+</trans-unit>
+<trans-unit id="s8d94e51441d0ce0c">
+  <source>Flow Examples</source>
+</trans-unit>
+<trans-unit id="s49ae82ba527f8e01">
+  <source>Type an outpost name...</source>
+</trans-unit>
+<trans-unit id="s574ed5d3a52d45c8">
+  <source>Outpost Name</source>
+</trans-unit>
+<trans-unit id="sc47f8ab6162bb2bb">
+  <source>Outpost configuration</source>
 </trans-unit>
 </body>
 </file>
