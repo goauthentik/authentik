@@ -5291,6 +5291,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -5964,7 +5966,9 @@
                             "add_certificatekeypair",
                             "change_certificatekeypair",
                             "delete_certificatekeypair",
-                            "view_certificatekeypair"
+                            "view_certificatekeypair",
+                            "view_certificatekeypair_certificate",
+                            "view_certificatekeypair_key"
                         ]
                     },
                     "user": {
@@ -6033,6 +6037,15 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Challenge key"
+                },
+                "challenge_idle_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Challenge idle timeout"
+                },
+                "challenge_trigger_check_in": {
+                    "type": "boolean",
+                    "title": "Challenge trigger check in"
                 },
                 "jwt_federation_providers": {
                     "type": "array",
@@ -6376,6 +6389,14 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Connector"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required"
+                    ],
+                    "title": "Mode"
                 }
             },
             "required": []
@@ -10396,6 +10417,12 @@
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
                 },
+                "service_provider_config_cache_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Service provider config cache timeout",
+                    "description": "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -10592,6 +10619,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -12074,6 +12103,7 @@
                         "okta",
                         "patreon",
                         "reddit",
+                        "slack",
                         "twitch",
                         "twitter"
                     ],

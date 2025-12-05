@@ -22,7 +22,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-telegram-view")
 export class TelegramSourceViewPage extends AKElement {
@@ -40,9 +39,15 @@ export class TelegramSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: TelegramSource;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
-    }
+    public static styles: CSSResult[] = [
+        // ---
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     render(): TemplateResult {
         if (!this.source) {

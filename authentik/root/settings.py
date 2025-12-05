@@ -6,7 +6,7 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from django.http import response as http_response
+from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -189,6 +189,7 @@ SPECTACULAR_SETTINGS = {
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
+        "StageModeEnum": "authentik.endpoints.models.StageMode",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -253,7 +254,7 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
+MESSAGE_STORAGE = "authentik.root.ws.storage.ChannelsStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
@@ -478,7 +479,7 @@ STORAGES = {
 # as the maximum for a URL to redirect to, mostly for running on Windows.
 # However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
 # 8192 should cover most cases.
-http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
+utils_http.MAX_URL_LENGTH = utils_http.MAX_URL_LENGTH * 4
 
 structlog_configure()
 LOGGING = get_logger_config()

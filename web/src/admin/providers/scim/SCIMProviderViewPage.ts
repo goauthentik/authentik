@@ -232,6 +232,18 @@ export class SCIMProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">
+                                        ${msg("Service Provider Config cache timeout")}
+                                    </span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.serviceProviderConfigCacheTimeout}
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                     <div class="pf-c-card__footer">

@@ -27,7 +27,6 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 
@@ -113,14 +112,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             }
         `,
     ];
-
-    constructor() {
-        super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            if (!this.user?.pk) return;
-            this.userId = this.user?.pk;
-        });
-    }
 
     renderUserCard() {
         if (!this.user) {

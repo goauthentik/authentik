@@ -10,3 +10,9 @@ class AuthentikEndpointsConnectorAgentAppConfig(ManagedAppConfig):
     label = "authentik_endpoints_connectors_agent"
     verbose_name = "authentik Endpoints.Connectors.Agent"
     default = True
+
+    def import_related(self):
+        from authentik.endpoints.connectors.agent.models import AgentConnector
+
+        _ = AgentConnector().stage
+        return super().import_related()

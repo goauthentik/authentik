@@ -1,5 +1,4 @@
 import "#admin/AdminInterface/AboutModal";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
@@ -162,54 +161,52 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
             "pf-m-collapsed": !drawerOpen,
         };
 
-        return html` <ak-locale-context>
-            <div class="pf-c-page">
-                <ak-page-navbar ?open=${this.sidebarOpen}>
-                    <ak-version-banner></ak-version-banner>
-                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
-                </ak-page-navbar>
+        return html`<div class="pf-c-page">
+            <ak-page-navbar ?open=${this.sidebarOpen}>
+                <ak-version-banner></ak-version-banner>
+                <ak-enterprise-status interface="admin"></ak-enterprise-status>
+            </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(createAdminSidebarEntries())}
-                    ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
-                        : nothing}
-                </ak-sidebar>
+            <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                >${renderSidebarItems(createAdminSidebarEntries())}
+                ${this.can(CapabilitiesEnum.IsEnterprise)
+                    ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
+                    : nothing}
+            </ak-sidebar>
 
-                <div class="pf-c-page__drawer">
-                    <div class="pf-c-drawer ${classMap(drawerClasses)}">
-                        <div class="pf-c-drawer__main">
-                            <div class="pf-c-drawer__content">
-                                <div class="pf-c-drawer__body">
-                                    <ak-router-outlet
-                                        role="presentation"
-                                        class="pf-c-page__main"
-                                        tabindex="-1"
-                                        id="main-content"
-                                        defaultUrl="/administration/overview"
-                                        .routes=${ROUTES}
-                                    >
-                                    </ak-router-outlet>
-                                </div>
+            <div class="pf-c-page__drawer">
+                <div class="pf-c-drawer ${classMap(drawerClasses)}">
+                    <div class="pf-c-drawer__main">
+                        <div class="pf-c-drawer__content">
+                            <div class="pf-c-drawer__body">
+                                <ak-router-outlet
+                                    role="presentation"
+                                    class="pf-c-page__main"
+                                    tabindex="-1"
+                                    id="main-content"
+                                    defaultUrl="/administration/overview"
+                                    .routes=${ROUTES}
+                                >
+                                </ak-router-outlet>
                             </div>
-                            <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this
-                                    .notificationDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.notificationDrawerOpen}
-                            ></ak-notification-drawer>
-                            <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.apiDrawerOpen}
-                            ></ak-api-drawer>
-                            <ak-about-modal></ak-about-modal>
                         </div>
+                        <ak-notification-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.notificationDrawerOpen}
+                        ></ak-notification-drawer>
+                        <ak-api-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.apiDrawerOpen}
+                        ></ak-api-drawer>
+                        <ak-about-modal></ak-about-modal>
                     </div>
-                </div></div
-        ></ak-locale-context>`;
+                </div>
+            </div>
+        </div>`;
     }
 }
 

@@ -35,6 +35,7 @@ export type EventContextProperty = EventModel | EventGeo | string | number | str
 export interface EventContext {
     [key: string]: EventContext | EventContextProperty;
     geo?: EventGeo;
+    device?: EventModel;
 }
 
 export interface EventWithContext extends Event {

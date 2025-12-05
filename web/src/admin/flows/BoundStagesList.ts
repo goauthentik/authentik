@@ -145,7 +145,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                            ${msg("Bind existing stage")}
+                            ${msg("Bind existing Stage")}
                         </button>
                     </ak-forms-modal>
                 </div>
@@ -166,7 +166,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Bind existing stage")}
+                    ${msg("Bind existing Stage")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
