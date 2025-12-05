@@ -542,7 +542,7 @@ class Notification(SerializerModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     severity = models.TextField(choices=NotificationSeverity.choices)
     body = models.TextField()
-    hyperlink = models.TextField(blank=True, null=True)
+    hyperlink = models.TextField(blank=True, null=True, max_length=4096)
     hyperlink_label = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
