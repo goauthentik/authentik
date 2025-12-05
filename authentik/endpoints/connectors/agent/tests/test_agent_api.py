@@ -79,7 +79,7 @@ class TestAgentAPI(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 200)
-        device = Device.filter_not_expired(identifier=ident).first()
+        device = Device.objects.filter(identifier=ident).first()
         self.assertIsNotNone(device)
         self.assertEqual(device.access_group, device_group)
 
@@ -94,7 +94,7 @@ class TestAgentAPI(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(Device.filter_not_expired(identifier=dev_id).exists())
+        self.assertFalse(Device.objects.filter(identifier=dev_id).exists())
 
     @reconcile_app("authentik_crypto")
     def test_config(self):

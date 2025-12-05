@@ -97,7 +97,7 @@ class DeviceViewSet(
     def summary(self, request: Request) -> Response:
         delta = now() - timedelta(hours=24)
         unreachable = (
-            Device.filter_not_expired()
+            Device.objects.all()
             .annotate(
                 latest_snapshot=Subquery(
                     DeviceFactSnapshot.objects.filter(connection__device=OuterRef("pk"))
@@ -110,7 +110,7 @@ class DeviceViewSet(
             .count()
         )
         data = {
-            "total_count": Device.filter_not_expired().count(),
+            "total_count": Device.objects.all().count(),
             "unreachable_count": unreachable,
             # Currently not supported
             "outdated_agent_count": 0,

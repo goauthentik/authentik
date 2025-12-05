@@ -54,7 +54,7 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
     def facts(self) -> "DeviceFactSnapshot":
         data = {}
         last_updated = datetime.fromtimestamp(0, UTC)
-        for snapshot_data, snapshort_created in DeviceFactSnapshot.filter_not_expired(
+        for snapshot_data, snapshort_created in DeviceFactSnapshot.objects.filter(
             snapshot_id__in=Subquery(
                 DeviceFactSnapshot.objects.filter(
                     connection__connector=OuterRef("connection__connector"), connection__device=self
