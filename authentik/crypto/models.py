@@ -2,6 +2,8 @@
 
 from binascii import hexlify
 from hashlib import md5
+from ssl import PEM_FOOTER, PEM_HEADER
+from textwrap import wrap
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
@@ -20,6 +22,24 @@ from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 LOGGER = get_logger()
 
 
+<<<<<<< HEAD
+=======
+def format_cert(raw_pam: str) -> str:
+    """Format a PEM certificate that is either missing its header/footer or is in a single line"""
+    return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
+
+
+class KeyType(models.TextChoices):
+    """Cryptographic key algorithm types"""
+
+    RSA = "rsa", _("RSA")
+    EC = "ec", _("Elliptic Curve")
+    DSA = "dsa", _("DSA")
+    ED25519 = "ed25519", _("Ed25519")
+    ED448 = "ed448", _("Ed448")
+
+
+>>>>>>> 6d7249ea5 (enterprise/stages/mtls: fix traefik certificate parsing (#18607))
 def fingerprint_sha256(cert: Certificate) -> str:
     """Get SHA256 Fingerprint of certificate"""
     return hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8")
