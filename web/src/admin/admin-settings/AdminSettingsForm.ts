@@ -245,7 +245,12 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
-            <ak-form-group label=${msg("Flags")} description=${msg("Flags allow you to enable new functionality and behaviour in authentik early.")} open>
+            <ak-form-group
+                label=${msg("Flags")}
+                description=${msg(
+                    "Flags allow you to enable new functionality and behaviour in authentik early.",
+                )}
+            >
                 <div class="pf-c-form">
                     <ak-switch-input
                         name="flags.policiesBufferedAccessView"
