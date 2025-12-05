@@ -85,7 +85,6 @@ class DataExportViewSet(
 
 
 class ExportMixin:
-    @permission_required(None, [])
     @extend_schema(
         request=None,
         parameters=[],
