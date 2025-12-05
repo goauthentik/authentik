@@ -70,11 +70,11 @@ You can export your authentik instance's events to a CSV file. To generate a dat
 4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the Admin interface's notification area.
 5. In the notification, click **Download**.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Events** > **Logs**.
-3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
-4. Click **Export** above the event list.
-5. The export is processed in the background and once it's ready, you will receive a notification in the Admin interface's notification area.
-6. In the notification, click **Download**.
+6. Log in to authentik as an administrator and open the authentik Admin interface.
+7. Navigate to **Events** > **Logs**.
+8. Set a [search query](#tell-me-more) as well as the ordering for the data export.
+9. Click **Export** above the event list.
+10. The export is processed in the background and once it's ready, you will receive a notification in the Admin interface's notification area.
+11. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
