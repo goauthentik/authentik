@@ -1,30 +1,41 @@
-import { createESLintPackageConfig } from "@goauthentik/eslint-config";
+/**
+ * @file ESLint Configuration
+ *
+ * @import { Config } from "eslint/config";
+ */
 
-import tseslint from "typescript-eslint";
+import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
+
+import { defineConfig } from "eslint/config";
 
 // @ts-check
 
 /**
  * ESLint configuration for authentik's monorepo.
+ * @type {Config[]}
  */
-const ESLintConfig = createESLintPackageConfig({
-    ignorePatterns: [
-        "**/dist/**",
-        "**/out/**",
-        "**/vendored/**",
-        "**/.wireit/**",
-        "**/node_modules/",
-        "**/.storybook/*",
-        "coverage/",
-        "src/locale-codes.ts",
-        "storybook-static/",
-        "src/locales/",
-        "**/*.min.js",
-    ],
-});
-
-export default tseslint.config(
-    ...ESLintConfig,
+const eslintConfig = defineConfig(
+    createESLintPackageConfig({
+        parserOptions: {
+            tsconfigRootDir: import.meta.dirname,
+        },
+        ignorePatterns: [
+            // ---
+            ...DefaultIgnorePatterns,
+            "**/dist/**",
+            "**/out/**",
+            "**/vendored/**",
+            "**/.wireit/**",
+            "**/node_modules/",
+            "**/.storybook/*",
+            "coverage/",
+            "src/locale-codes.ts",
+            "playwright-report",
+            "storybook-static/",
+            "src/locales/",
+            "**/*.min.js",
+        ],
+    }),
     {
         rules: {
             "no-console": "off",
@@ -34,8 +45,6 @@ export default tseslint.config(
     {
         rules: {
             "no-void": "off",
-            "no-implicit-coercion": "off",
-            "prefer-template": "off",
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": "off",
             "@typescript-eslint/no-use-before-define": "off",
@@ -46,7 +55,6 @@ export default tseslint.config(
             "guard-for-in": "off",
             "no-bitwise": "off",
             "no-div-regex": "off",
-            "no-else-return": "off",
             "no-empty-function": "off",
             "no-param-reassign": "off",
             "no-throw-literal": "off",
@@ -57,3 +65,5 @@ export default tseslint.config(
         },
     },
 );
+
+export default eslintConfig;
