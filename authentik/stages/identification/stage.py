@@ -141,6 +141,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
             device = self._validate_passkey_response(passkey)
             self.passkey_device = device
             self.pre_user = device.user
+            # Set backend so password stage policy knows user is already authenticated
+            self.pre_user.backend = "authentik.core.auth.WebAuthnBackend"
             return attrs
 
         # Standard username/password flow
