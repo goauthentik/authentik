@@ -35696,7 +35696,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
       required:
@@ -48756,7 +48759,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
@@ -53189,7 +53195,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
@@ -53251,7 +53260,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
