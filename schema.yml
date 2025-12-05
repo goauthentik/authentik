@@ -35017,8 +35017,8 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
           readOnly: true
+          nullable: true
         certificate_download_url:
           type: string
           description: Get URL to download certificate
