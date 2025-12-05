@@ -18,12 +18,7 @@ import {
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
-<<<<<<< HEAD
-import { WebsocketClient } from "#common/ws";
-=======
-import { applyBackgroundImageProperty } from "#common/theme";
 import { WebsocketClient, WSMessage } from "#common/ws";
->>>>>>> 31186baf2 (flows: refresh unauthenticated tabs (#18621))
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -256,11 +251,6 @@ export class FlowExecutor
         });
     }
 
-<<<<<<< HEAD
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-
-=======
     #websocketHandler = (e: CustomEvent<WSMessage>) => {
         if (e.detail.message_type === "session.authenticated") {
             console.debug("authentik/ws: Reloading after session authenticated event");
@@ -271,17 +261,14 @@ export class FlowExecutor
     public connectedCallback(): void {
         super.connectedCallback();
 
-        window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
         window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
         window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
 
->>>>>>> 31186baf2 (flows: refresh unauthenticated tabs (#18621))
         WebsocketClient.close();
     }
 

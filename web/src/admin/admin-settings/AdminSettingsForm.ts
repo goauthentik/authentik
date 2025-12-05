@@ -13,7 +13,6 @@ import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
@@ -246,18 +245,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
-<<<<<<< HEAD
-            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(settings?.flags ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Modify flags to opt into new authentik behaviours early.")}
-                </p>
-            </ak-form-element-horizontal>
-=======
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(
@@ -285,7 +272,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     </ak-switch-input>
                 </div>
             </ak-form-group>
->>>>>>> 31186baf2 (flows: refresh unauthenticated tabs (#18621))
         `;
     }
 }
