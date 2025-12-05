@@ -45,22 +45,24 @@ const eslintConfig = defineConfig(
     {
         rules: {
             "no-void": "off",
-            "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": "off",
             "@typescript-eslint/no-use-before-define": "off",
             "array-callback-return": "off",
             "block-scoped-var": "off",
             "consistent-return": "off",
             "func-names": "off",
-            "guard-for-in": "off",
             "no-div-regex": "off",
             "no-empty-function": "off",
             "no-param-reassign": "off",
-            // "no-var": "off",
             "prefer-arrow-callback": "off",
             "react/jsx-no-leaked-render": "off",
+        },
+    },
+    {
+        rules: {
             "vars-on-top": "off",
         },
+        files: ["**/*.d.ts"],
     },
 );
 
