@@ -288,13 +288,20 @@ class TestResponseProcessor(TestCase):
 
     def test_signed_encrypted_response(self):
         """Test signed & encrypted response"""
-        key = load_fixture("fixtures/signature_cert2.pem")
-        kp = CertificateKeyPair.objects.create(
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
             name=generate_id(),
-            certificate_data=key,
+            certificate_data=verification_key,
         )
-        self.source.verification_kp = kp
-        self.source.encryption_kp = kp
+
+        encrypted_key = load_fixture("fixtures/encrypted-key2.pem")
+        ekp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            key_data=encrypted_key
+        )
+
+        self.source.verification_kp = vkp
+        self.source.encryption_kp = ekp
         self.source.signed_response = True
         self.source.signed_assertion = False
         request = self.factory.post(
@@ -312,3 +319,5 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
+        sfm = parser.prepare_flow_manager()
+        print(sfm)
