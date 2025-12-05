@@ -103,9 +103,10 @@ class DataExport(SerializerModel):
         from authentik.core.api.users import UserViewSet
         from authentik.events.api.events import EventViewSet
 
-        if self.content_type.model == "user":
+        model = (self.content_type.app_label, self.content_type.model)
+        if model == ("authentik_core", "user"):
             return UserViewSet()
-        elif self.content_type.model == "event":
+        elif model == ("authentik_events", "event"):
             return EventViewSet()
         raise NotImplementedError(f"Unsupported data export type {self.content_type.model}")
 
