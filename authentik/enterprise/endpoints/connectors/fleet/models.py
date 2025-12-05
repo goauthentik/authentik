@@ -15,6 +15,17 @@ class FleetConnector(Connector):
 
     url = models.URLField()
     token = models.TextField()
+    headers_mapping = models.ForeignKey(
+        "authentik_events.NotificationWebhookMapping",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        default=None,
+        related_name="+",
+        help_text=_(
+            "Configure additional headers to be sent. "
+            "Mapping should return a dictionary of key-value pairs"
+        ),
+    )
 
     @property
     def serializer(self) -> type[Serializer]:

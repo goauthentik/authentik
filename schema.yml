@@ -37826,6 +37826,12 @@ components:
           type: string
           format: uri
           maxLength: 200
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
       required:
       - component
       - meta_model_name
@@ -37854,6 +37860,12 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
       required:
       - name
       - token
@@ -46641,6 +46653,12 @@ components:
           type: string
           writeOnly: true
           minLength: 1
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
     PatchedFlowRequest:
       type: object
       description: Flow Serializer

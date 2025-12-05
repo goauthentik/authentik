@@ -6484,6 +6484,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Token"
+                },
+                "headers_mapping": {
+                    "type": "integer",
+                    "title": "Headers mapping",
+                    "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 }
             },
             "required": []

@@ -16,6 +16,7 @@ from authentik.endpoints.models import (
     DeviceUserBinding,
 )
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector as DBC
+from authentik.events.utils import sanitize_item
 from authentik.lib.utils.http import get_http_session
 
 
@@ -25,6 +26,16 @@ class FleetController(BaseController[DBC]):
         super().__init__(*args, **kwargs)
         self._session = get_http_session()
         self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
+        if self.connector.headers_mapping:
+            self._session.headers.update(
+                headers=sanitize_item(
+                    self.connector.headers_mapping.evaluate(
+                        user=None,
+                        request=None,
+                        connector=self.connector,
+                    )
+                )
+            )
 
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return [EnrollmentMethods.AUTOMATIC_API]
