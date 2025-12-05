@@ -62,7 +62,7 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 
 ## Export events :ak-enterprise
 
-You can export your authentik instance's events to a CSV file. To generate a data export:
+You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
 
 1. Log in to authentik as an administrator and navigate to **Events > Logs**.
 2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
@@ -70,4 +70,11 @@ You can export your authentik instance's events to a CSV file. To generate a dat
 4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the Admin interface's notification area.
 5. In the notification, click **Download**.
 
-To review, download, or delete past data exports, go to **Events > Data Exports** in the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Events** > **Logs**.
+3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
+4. Click **Export** above the event list.
+5. The export is processed in the background and once it's ready, you will receive a notification in the Admin interface's notification area.
+6. In the notification, click **Download**.
+
+To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
