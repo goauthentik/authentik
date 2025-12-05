@@ -142,7 +142,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             self.passkey_device = device
             self.pre_user = device.user
             # Set backend so password stage policy knows user is already authenticated
-            self.pre_user.backend =  class_to_path(IdentificationChallengeResponse)
+            self.pre_user.backend = class_to_path(IdentificationChallengeResponse)
             return attrs
 
         # Standard username/password flow
