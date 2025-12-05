@@ -90,7 +90,7 @@ entries:
           return True
       # if the authentication method is webauthn (passwordless), then we skip the authenticator
       # validation stage by returning false (true will execute the stage)
-      return not (flow_plan.context.get("auth_method").backend == "auth_webauthn_pwl")
+      return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
 - model: authentik_policies.policybinding
   identifiers:
     order: 10
@@ -102,6 +102,6 @@ entries:
   identifiers:
     order: 10
     target: !KeyOf default-authentication-flow-authenticator-validation-binding
-    policy: !KeyOf default-authentication-flow-authenticator-validate-stage
+    policy: !KeyOf default-authentication-flow-authenticator-validate-optional
   attrs:
     failure_result: true
