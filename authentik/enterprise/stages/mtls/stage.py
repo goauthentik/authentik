@@ -74,6 +74,7 @@ class MTLSStageView(ChallengeStageView):
     def _parse_cert_xfcc(self) -> list[Certificate]:
         """Parse certificates in the format given to us in
         the format of the authentik router/envoy"""
+        # https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert
         xfcc_raw = self.request.headers.get(HEADER_PROXY_FORWARDED)
         if not xfcc_raw:
             return []
@@ -88,6 +89,8 @@ class MTLSStageView(ChallengeStageView):
 
     def _parse_cert_nginx(self) -> list[Certificate]:
         """Parse certificates in the format nginx-ingress gives to us"""
+        # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication
+        # https://github.com/kubernetes/ingress-nginx/blob/78f593b24494a0674b362faf551079f06d71b5a9/rootfs/etc/nginx/template/nginx.tmpl#L1096
         sslcc_raw = self.request.headers.get(HEADER_NGINX_FORWARDED)
         return self.__parse_single_cert(sslcc_raw, ParseOptions.UNQUOTE)
 
