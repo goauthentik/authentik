@@ -689,7 +689,6 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/authentik-agent/configuration",
-                    "endpoint-devices/authentik-agent/authentik-cli",
                     {
                         //#endregion
 
@@ -708,6 +707,7 @@ const items = [
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
                         ],
                     },
+                    "endpoint-devices/authentik-agent/authentik-cli",
                 ],
             },
             {
