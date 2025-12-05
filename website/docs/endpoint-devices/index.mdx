@@ -15,11 +15,11 @@ Breaking changes and bugs should be expected.
 
 ## What are Endpoint Devices?
 
-Endpoint Devices are end-user devices or servers that are integrated with authentik.
+Endpoint Devices are end-user devices or servers that are registered with authentik.
 
-There are two categories or purposes of integration: [Device Authentication](./device-authentication/index.mdx) and [Device Compliance](./device-compliance/index.mdx).
+There are two purposes for registration: [Device Authentication](./device-authentication/index.mdx) and [Device Compliance](./device-compliance/index.mdx).
 
-Devices can be integrated by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
+Devices can be registered by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
 
 - [Device Compliance](./device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
 - [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials
@@ -29,49 +29,16 @@ Devices can be integrated by installing the [authentik Agent](./authentik-agent/
 
 Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services like Fleet and (TODO). This allows for device information to be reported to authentik for [Device Compliance](./device-compliance/index.mdx) purposes.
 
-## Current featureset
+## Current features overview
 
-The featureset is at varying levels of development.
-
-### Device authentication
-
-#### Local device login
-
-:ak-enterprise
-(maybe open-source for linux - needs testing)
-
-#### SSH authentication / Remote authentication
-
-Linux targets = open-source
-Windows and macos targets = :ak-enterprise
-
-Currently, only Linux hosts can be connected to via SSH.
-SSH connections to macOS and Windows hosts, and RDP connections to Windows hosts is planned.
-
-#### Sudo authorization
-
-open-source?
-
-Currently, only supported on Linux. (macos - need testing)
-
-### Basic device compliance
-
-open-source
-
-Associating device with session
-Basic agent facts
-
-### Advanced device compliance
-
-:ak-enterprise
-
-More information
-
-#### Connectors
-
-:ak-enterprise
-
-Connectors like Fleet, Entra, Intune etc
+| Feature                                   | Linux          | Windows        | macOS          | Status                                             |
+| ----------------------------------------- | -------------- | -------------- | -------------- | -------------------------------------------------- |
+| **Local device login**                    | ?              | ?              | ?              | :ak-enterprise (Linux open-source?)                |
+| **SSH/Remote authentication**             | Open Source    | :ak-enterprise | :ak-enterprise | Linux only (Win/macOS planned)                     |
+| **Sudo authorization**                    | ? Open Source  | -              | ?              | Linux only (macOS testing)                         |
+| **Basic compliance**                      | Open Source    | Open Source    | Open Source    | Basic facts - Session association, agent facts etc |
+| **Advanced compliance**                   | :ak-enterprise | :ak-enterprise | :ak-enterprise | More info than basic                               |
+| **Connectors** (Fleet, Entra, Intune etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise | Fleet ready - Others WIP                           |
 
 ## Important Considerations
 
