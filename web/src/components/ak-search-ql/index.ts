@@ -29,7 +29,9 @@ export class QL extends DjangoQL {
     logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
-    textareaResize() {}
+    textareaResize() {
+        // Suppress auto-resize behavior
+    }
 }
 
 /**
