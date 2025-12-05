@@ -13,6 +13,7 @@ from rest_framework.fields import (
     IntegerField,
     ListField,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -102,7 +103,7 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     def add_user(self, request: Request, pk: str) -> Response:
         """Add user to role"""
@@ -132,7 +133,7 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     def remove_user(self, request: Request, pk: str) -> Response:
         """Remove user from role"""
