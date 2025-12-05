@@ -14,9 +14,7 @@ class ExportUserSerializer(UserSerializer):
         return ",".join([group.name for group in instance.ak_groups.all()])
 
     class Meta(UserSerializer.Meta):
-        fields = [
-            f for f in UserSerializer.Meta.fields if f not in {"groups_obj", "is_superuser"}
-        ] + ["groups"]
+        fields = [f for f in UserSerializer.Meta.fields if f != "groups_obj"] + ["groups"]
 
 
 class ExportEventSerializer(EventSerializer):
