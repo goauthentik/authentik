@@ -101,11 +101,8 @@ class ResponseProcessor:
                     self.response_signature_verified = True
                 else:
                     self.response_signature_verified = False
-                    sig_errors.append(resp_error)
-
-        if self._source.verification_kp and self._source.signed_response:
-            if self.response_signature_verified is False:
-                raise InvalidSignature(f"SAML Response signature invalid: {'; '.join(sig_errors)}")
+                    sig_errors.append(post_error)
+                    raise InvalidSignature(f"SAML Response signature invalid: {'; '.join(sig_errors)}")
 
         self._verify_request_id()
         self._verify_status()
