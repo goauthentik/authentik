@@ -133,7 +133,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 
 ## Salesforce as an OAuth Source
 
-You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. You can also use this to keep your salesforce users in sync with your authentik users via Oauth2 SCIM.
+You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#SCIM-Provisioning) to keep your Salesforce users in sync with your authentik users.
 
 ### Salesforce configuration
 
