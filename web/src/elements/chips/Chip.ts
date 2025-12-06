@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip")
 export class Chip extends AKElement {
@@ -18,7 +17,7 @@ export class Chip extends AKElement {
     @property({ type: Boolean })
     removable = false;
 
-    static styles: CSSResult[] = [PFBase, PFButton, PFChip];
+    static styles: CSSResult[] = [PFButton, PFChip];
 
     render(): TemplateResult {
         return html`<li class="pf-c-chip-group__list-item">

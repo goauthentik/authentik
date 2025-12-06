@@ -43,7 +43,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -54,7 +53,6 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFBanner,
         PFForm,

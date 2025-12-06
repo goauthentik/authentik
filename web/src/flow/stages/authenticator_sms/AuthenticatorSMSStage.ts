@@ -23,7 +23,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-sms")
 export class AuthenticatorSMSStage extends BaseStage<
@@ -31,7 +30,6 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFAlert,
         PFLogin,
         PFForm,

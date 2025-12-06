@@ -13,7 +13,6 @@ import { repeat } from "lit/directives/repeat.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type InputCell<T> = (el: T, idx: number) => TemplateResult | typeof nothing;
 
@@ -30,7 +29,6 @@ type Keyed<T> = { key: string; item: T };
 @customElement("ak-array-input")
 export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
     static styles = [
-        PFBase,
         PFButton,
         PFInputGroup,
         PFFormControl,

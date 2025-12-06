@@ -22,7 +22,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface PageHeaderInit {
     header?: string | null;
@@ -45,7 +44,6 @@ export class AKPageNavbar
     //#region Static Properties
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFDrawer,

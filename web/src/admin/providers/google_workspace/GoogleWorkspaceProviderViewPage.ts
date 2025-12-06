@@ -38,7 +38,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
@@ -49,7 +48,6 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     provider?: GoogleWorkspaceProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFForm,
         PFFormControl,

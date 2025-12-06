@@ -36,7 +36,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function isIgnored<T extends Element>(element: T) {
     if (!(element instanceof HTMLElement)) return false;
@@ -237,7 +236,6 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     nonFieldErrors?: string[];
 
     static styles: CSSResult[] = [
-        PFBase,
         PFCard,
         PFButton,
         PFForm,

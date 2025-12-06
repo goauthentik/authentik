@@ -33,7 +33,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -54,15 +53,7 @@ export class SAMLSourceViewPage extends AKElement {
     @state()
     metadata?: SAMLMetadata;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFGrid,
-        PFButton,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();

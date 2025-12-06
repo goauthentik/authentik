@@ -21,7 +21,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-connector-agent-setup")
 export class AgentConnectorSetup extends AKElement {
@@ -32,7 +31,6 @@ export class AgentConnectorSetup extends AKElement {
     token?: EnrollmentToken;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFGrid,
         PFButton,
         PFList,

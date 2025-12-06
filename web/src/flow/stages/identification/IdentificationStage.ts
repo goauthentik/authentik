@@ -36,7 +36,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -54,7 +53,6 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFAlert,
         PFInputGroup,
         PFLogin,

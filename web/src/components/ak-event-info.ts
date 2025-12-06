@@ -23,7 +23,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
 type EventSlotValueType =
@@ -85,7 +84,6 @@ export class EventInfo extends AKElement {
     event!: EventWithContext;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFFlex,
         PFCard,

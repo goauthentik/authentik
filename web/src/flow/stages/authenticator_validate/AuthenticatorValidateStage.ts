@@ -30,7 +30,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 interface DevicePickerProps {
     icon?: string;
@@ -85,15 +84,7 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFTitle,
-        PFButton,
-        Styles,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton, Styles];
 
     flowSlug = "";
 

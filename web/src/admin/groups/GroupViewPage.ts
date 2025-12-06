@@ -31,7 +31,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -53,7 +52,6 @@ export class GroupViewPage extends AKElement {
     group?: Group;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,

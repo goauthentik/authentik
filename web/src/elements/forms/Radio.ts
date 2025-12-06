@@ -10,7 +10,6 @@ import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface RadioOption<T> {
     label: string;
@@ -36,7 +35,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFRadio,
         PFForm,
         Styles,

@@ -15,7 +15,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-stage-user-login")
@@ -23,15 +22,7 @@ export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFSpacing,
-        PFButton,
-        PFTitle,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFSpacing, PFButton, PFTitle];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

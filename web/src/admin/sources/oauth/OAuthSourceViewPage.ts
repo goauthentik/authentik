@@ -33,7 +33,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function ProviderToLabel(provider?: ProviderTypeEnum): string {
     switch (provider) {
@@ -92,15 +91,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: OAuthSource;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFButton,
-        PFGrid,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();

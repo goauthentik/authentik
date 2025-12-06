@@ -30,14 +30,12 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const AdminOverviewBase = WithLicenseSummary(WithSession(AKElement));
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
     static styles: CSSResult[] = [
-        PFBase,
         PFGrid,
         PFPage,
         PFContent,

@@ -37,12 +37,10 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFList,
         PFBanner,
         PFPage,

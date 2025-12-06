@@ -17,7 +17,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
@@ -30,7 +29,7 @@ export class ObjectPermissionPage extends AKElement {
     @property({ type: Boolean })
     embedded = false;
 
-    static styles = [PFBase, PFGrid, PFPage, PFCard];
+    static styles = [PFGrid, PFPage, PFCard];
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>

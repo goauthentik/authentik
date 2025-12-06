@@ -14,7 +14,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function renderItem(item: RequestInfo, idx: number): TemplateResult {
     const subheading = `${item.method}: ${item.status}`;
@@ -48,7 +47,6 @@ export class APIDrawer extends AKElement {
     requests: RequestInfo[] = [];
 
     static styles: CSSResult[] = [
-        PFBase,
         PFNotificationDrawer,
         PFButton,
         PFContent,
