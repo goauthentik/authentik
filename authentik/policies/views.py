@@ -74,13 +74,20 @@ class PolicyAccessView(AccessMixin, View):
         is not caught, and will return directly"""
         raise NotImplementedError
 
+    def supports_cors_preflight_requests(self) -> bool:
+        """If true, OPTIONS requests will be answered without authentication or permission checks.
+        This is useful for CORS preflight requests."""
+        return hasattr(self, "options") and callable(self.options)
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        # Validate request before doing anything else
         try:
             self.pre_permission_check()
         except RequestValidationError as exc:
             if exc.response:
                 return exc.response
             return self.handle_no_permission()
+
         try:
             self.resolve_provider_application()
         except (Application.DoesNotExist, Provider.DoesNotExist) as exc:
@@ -88,14 +95,19 @@ class PolicyAccessView(AccessMixin, View):
             return self.handle_no_permission_authenticated(
                 PolicyResult(False, _("Failed to resolve application"))
             )
-        # Check if user is unauthenticated, so we pass the application
-        # for the identification stage
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
-        # Check permissions
-        result = self.user_has_access()
-        if not result.passing:
-            return self.handle_no_permission_authenticated(result)
+
+        # CORS preflight requests should not require authentication
+        if request.method != "OPTIONS" or not self.supports_cors_preflight_requests():
+            # Check if user is unauthenticated, so we pass the application
+            # for the identification stage
+            if not request.user.is_authenticated:
+                return self.handle_no_permission()
+
+            # Check permissions
+            result = self.user_has_access()
+            if not result.passing:
+                return self.handle_no_permission_authenticated(result)
+
         return super().dispatch(request, *args, **kwargs)
 
     def handle_no_permission(self) -> HttpResponse:
