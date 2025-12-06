@@ -1,3 +1,25 @@
+.pf-c-form {
+    /**
+     * This variable is derived from PatternFly 4, modified to align with our borderless
+     * form controls.
+     * @see {@patternfly/patternfly/components/Form/form.scss}
+     */
+    /* prettier-ignore */
+    --pf-c-form--m-horizontal__group-label--md--PaddingTop: calc(
+        (((((var(
+            --pf-global--FontSize--md) * var(
+            --pf-global--LineHeight--md)) + (2 * var(
+            --pf-global--BorderWidth--sm))) - var(
+            --pf-global--FontSize--md)) / 2) + var(
+            --pf-global--FontSize--md)) - ((((var(
+            --pf-global--FontSize--sm) * var(
+            --pf-global--LineHeight--sm)) - var(
+            --pf-global--FontSize--sm)) / 2) + var(
+            --pf-global--FontSize--sm)) + (var(
+            --pf-global--BorderWidth--sm) * 4)
+    );
+}
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
