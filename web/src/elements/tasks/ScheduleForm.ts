@@ -19,7 +19,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-schedule-form")
 export class ScheduleForm extends ModelForm<Schedule, string> {
     async loadInstance(pk: string): Promise<Schedule> {
-        return await new TasksApi(DEFAULT_CONFIG).tasksSchedulesRetrieve({
+        return new TasksApi(DEFAULT_CONFIG).tasksSchedulesRetrieve({
             id: pk,
         });
     }
@@ -35,7 +35,8 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         if (!this.instance) {
             return;
         }
-        return await new TasksApi(DEFAULT_CONFIG).tasksSchedulesUpdate({
+
+        return new TasksApi(DEFAULT_CONFIG).tasksSchedulesUpdate({
             id: this.instance.id,
             scheduleRequest: data,
         });

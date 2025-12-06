@@ -209,7 +209,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
             default:
-                throw new Error(`Unknown layout: ${this.layout}`) as never;
+                throw new TypeError(`Unknown layout: ${this.layout}`);
         }
     }
 }

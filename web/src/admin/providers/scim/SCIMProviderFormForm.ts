@@ -46,7 +46,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-hidden-text-input>`;
 }
 
-export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
