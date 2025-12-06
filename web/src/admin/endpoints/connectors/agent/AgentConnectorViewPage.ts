@@ -14,7 +14,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import {
     AgentConnector,
     EndpointsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -125,7 +125,7 @@ export class AgentConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

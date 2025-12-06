@@ -4,7 +4,7 @@ import "#elements/forms/ModalForm";
 import { AKElement } from "#elements/Base";
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -21,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
     objectPk?: string | number;
@@ -57,7 +57,7 @@ export class ObjectPermissionModal extends AKElement {
     ];
 
     @property()
-    public model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
     public objectPk?: string | number;

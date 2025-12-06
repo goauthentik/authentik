@@ -28,7 +28,7 @@ import {
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
@@ -179,7 +179,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersOauth2Oauth2provider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

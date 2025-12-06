@@ -7,9 +7,10 @@ from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.serializers import BaseSerializer
 
+from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.reflection import get_apps
 
@@ -31,7 +32,7 @@ def get_permission_choices():
     )
 
 
-class Role(SerializerModel):
+class Role(SerializerModel, ManagedModel):
     """RBAC role, which can have different permissions (both global and per-object) attached
     to it."""
 
@@ -45,18 +46,10 @@ class Role(SerializerModel):
     # The main advantage of that is that all the permission checking just works out of the box,
     # as these permissions are checked by default by django and most other libraries that build
     # on top of django
-    group = models.OneToOneField("auth.Group", on_delete=models.CASCADE)
+    group = models.OneToOneField("auth.Group", on_delete=models.CASCADE, null=True)
 
     # name field has the same constraints as the group model
     name = models.TextField(max_length=150, unique=True)
-
-    def assign_permission(self, *perms: str, obj: models.Model | None = None):
-        """Assign permission to role, can handle multiple permissions,
-        but when assigning multiple permissions to an object the permissions
-        must all belong to the object given"""
-        with atomic():
-            for perm in perms:
-                assign_perm(perm, self.group, obj)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -75,19 +68,39 @@ class Role(SerializerModel):
             ("unassign_role_permissions", _("Can unassign permissions from roles")),
         ]
 
+    def assign_perms(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        """Assign permission to role, can handle multiple permissions,
+        but when assigning multiple permissions to an object the permissions
+        must all belong to the object given"""
+        if not isinstance(perms, list):
+            perms = [perms]
+        with atomic():
+            for perm in perms:
+                assign_perm(perm, self, obj)
 
-class InitialPermissionsMode(models.TextChoices):
-    """Determines which entity the initial permissions are assigned to."""
-
-    USER = "user", _("User")
-    ROLE = "role", _("Role")
+    def remove_perms(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        """Assign permission to role, can handle multiple permissions,
+        but when assigning multiple permissions to an object the permissions
+        must all belong to the object given"""
+        if isinstance(perms, str):
+            perms = [perms]
+        with atomic():
+            for perm in perms:
+                remove_perm(perm, self, obj)
 
 
 class InitialPermissions(SerializerModel):
     """Assigns permissions for newly created objects."""
 
     name = models.TextField(max_length=150, unique=True)
-    mode = models.CharField(choices=InitialPermissionsMode.choices)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     permissions = models.ManyToManyField(Permission, blank=True)
 
@@ -98,7 +111,7 @@ class InitialPermissions(SerializerModel):
         return InitialPermissionsSerializer
 
     def __str__(self) -> str:
-        return f"Initial Permissions for Role #{self.role_id}, applying to #{self.mode}"
+        return f"Initial Permissions for Role #{self.role_id}."
 
     class Meta:
         verbose_name = _("Initial Permissions")

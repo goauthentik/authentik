@@ -19,7 +19,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import {
     FlowDesignationEnum,
     Invitation,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -135,7 +135,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

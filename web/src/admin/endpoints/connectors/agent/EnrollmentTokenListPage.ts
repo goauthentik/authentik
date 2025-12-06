@@ -16,7 +16,7 @@ import {
     AgentConnector,
     EndpointsApi,
     EnrollmentToken,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -101,7 +101,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
                     objectPk=${item.tokenUuid}
                 >
                 </ak-rbac-object-permission-modal>

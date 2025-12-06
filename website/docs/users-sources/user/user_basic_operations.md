@@ -89,7 +89,13 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 
 1. To add a user to a group, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full user details page.
-3. Click the **Groups** tab, and then click either **Add to existing group** or **Add to new group**.
+3. Click the **Groups** tab, and then click either **Add to existing group** (or **Add new group** first).
+
+## Add a user to a role
+
+1. To add a user to a role, navigate to **Directory > Users** to display all users.
+2. Click the name of the user to display the full user details page.
+3. Click the **Roles** tab, and then click either **Add to existing role** (or **Add new role** first).
 
 ## User credentials recovery
 
