@@ -96,7 +96,7 @@ func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd st
 	return tokenString, nil
 }
 
-func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
+func (a *Application) stateFromRequest(rw http.ResponseWriter, r *http.Request) *OAuthState {
 	stateJwt := r.URL.Query().Get("state")
 	token, err := jwt.Parse(stateJwt, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
@@ -127,6 +127,13 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
 		a.log.WithError(err).Warning("failed to get session")
+		// Delete the stale session cookie if it exists
+		if rw != nil {
+			s.Options.MaxAge = -1
+			if saveErr := s.Save(r, rw); saveErr != nil {
+				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+			}
+		}
 		return nil
 	}
 	if claims.SessionID != s.ID {

@@ -87,7 +87,7 @@ func (a *Application) assertState(t *testing.T, req *http.Request, response *htt
 	nrq.Set("state", state)
 	nr.URL.RawQuery = nrq.Encode()
 	// parse state
-	parsed := a.stateFromRequest(nr)
+	parsed := a.stateFromRequest(nil, nr)
 	if parsed == nil {
 		panic("Could not parse state")
 	}

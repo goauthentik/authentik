@@ -73,7 +73,7 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 		r.Header.Set("X-Forwarded-Host", r.Host)
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host
-		claims := a.getClaimsFromSession(r)
+		claims := a.getClaimsFromSession(nil, r)
 		if claims != nil && claims.Proxy != nil {
 			if claims.Proxy.BackendOverride != "" {
 				u, err := url.Parse(claims.Proxy.BackendOverride)

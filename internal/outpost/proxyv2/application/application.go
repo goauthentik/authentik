@@ -160,7 +160,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		a.sessions = sess
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		c := a.getClaimsFromSession(r)
+		c := a.getClaimsFromSession(nil, r)
 		if c == nil {
 			return l
 		}
@@ -171,7 +171,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c := a.getClaimsFromSession(r)
+			c := a.getClaimsFromSession(nil, r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
