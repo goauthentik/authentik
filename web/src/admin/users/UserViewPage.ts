@@ -6,6 +6,7 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserPanicButtonForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-status-label";
@@ -144,6 +145,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
     renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
+        const canTriggerPanic = user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
@@ -177,6 +179,22 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
+            ${canTriggerPanic
+                ? html`
+                      <ak-forms-modal size=${PFSize.Medium} id="panic-button-request">
+                          <span slot="submit">${msg("Trigger Panic Button")}</span>
+                          <span slot="header">${msg("Panic Button")}</span>
+                          <ak-user-panic-button-form
+                              slot="form"
+                              .instancePk=${user.pk}
+                              .user=${user}
+                          ></ak-user-panic-button-form>
+                          <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
+                              ${msg("Panic Button")}
+                          </button>
+                      </ak-forms-modal>
+                  `
+                : nothing}
             ${canImpersonate
                 ? html`
                       <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">

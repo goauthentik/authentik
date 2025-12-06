@@ -136,3 +136,90 @@ def notification_cleanup():
     notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.info(f"Expired {amount} Notifications")
+
+
+@actor(description=_("Send panic button notification emails."))
+def panic_button_notification(affected_user_pk: int, triggered_by_pk: int, reason: str):
+    """Send email notifications when panic button is triggered"""
+    from django.db.models import Q
+
+    from authentik.brands.models import Brand
+    from authentik.stages.email.models import EmailStage
+    from authentik.stages.email.tasks import send_mails
+    from authentik.stages.email.utils import TemplateEmailMessage
+    from authentik.tenants.models import Tenant
+
+    affected_user = User.objects.filter(pk=affected_user_pk).first()
+    triggered_by = User.objects.filter(pk=triggered_by_pk).first()
+    if not affected_user or not triggered_by:
+        LOGGER.warning("panic button notification: users not found")
+        return
+
+    tenant = Tenant.objects.first()
+    if not tenant:
+        LOGGER.warning("panic button notification: tenant not found")
+        return
+
+    email_stages = EmailStage.objects.all()
+    if not email_stages.exists():
+        LOGGER.warning("panic button notification: no email stage configured")
+        return
+
+    email_stage = email_stages.first()
+    template_context = {
+        "affected_user": affected_user,
+        "triggered_by": triggered_by,
+        "reason": reason,
+    }
+
+    if tenant.panic_button_notify_user and affected_user.email:
+        user_message = TemplateEmailMessage(
+            subject=_("Security Alert: Your Account Has Been Locked"),
+            to=[(affected_user.name, affected_user.email)],
+            template_name="email/panic_button.html",
+            language="en",
+            template_context=template_context,
+        )
+        send_mails(email_stage, user_message)
+        LOGGER.info(
+            "panic button notification sent to user",
+            affected_user=affected_user.username,
+        )
+
+    if tenant.panic_button_notify_admins:
+        admin_users = User.objects.filter(
+            Q(is_superuser=True) | Q(ak_groups__is_superuser=True)
+        ).distinct()
+        admin_recipients = []
+        for admin in admin_users:
+            if admin.email and admin.pk != affected_user_pk:
+                admin_recipients.append((admin.name, admin.email))
+
+        if admin_recipients:
+            admin_message = TemplateEmailMessage(
+                subject=_("Security Alert: Panic Button Triggered"),
+                to=admin_recipients,
+                template_name="email/panic_button_admin.html",
+                language="en",
+                template_context=template_context,
+            )
+            send_mails(email_stage, admin_message)
+            LOGGER.info(
+                "panic button notification sent to admins",
+                affected_user=affected_user.username,
+                admin_count=len(admin_recipients),
+            )
+
+    if tenant.panic_button_notify_security and tenant.panic_button_security_email:
+        security_message = TemplateEmailMessage(
+            subject=_("SECURITY ALERT: Panic Button Triggered"),
+            to=[("Security Team", tenant.panic_button_security_email)],
+            template_name="email/panic_button_security.html",
+            language="en",
+            template_context=template_context,
+        )
+        send_mails(email_stage, security_message)
+        LOGGER.info(
+            "panic button notification sent to security",
+            affected_user=affected_user.username,
+        )

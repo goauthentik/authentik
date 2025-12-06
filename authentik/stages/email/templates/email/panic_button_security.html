@@ -1,0 +1,58 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1 style="color: #c9190b;">
+      {% trans "SECURITY ALERT: Panic Button Triggered" %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 600px; padding: 20px 0; color: #212124;">
+          <p><strong>{% trans "Emergency User Lockout Initiated" %}</strong></p>
+          <table style="margin: 15px auto; text-align: left; border: 1px solid #ddd; border-collapse: collapse; width: 100%; max-width: 500px;">
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">{% trans "Affected User" %}</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">{{ affected_user.username }} ({{ affected_user.email }})</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">{% trans "User Name" %}</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">{{ affected_user.name }}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">{% trans "Triggered By" %}</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">{{ triggered_by.username }} ({{ triggered_by.email }})</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd; vertical-align: top;">{% trans "Reason" %}</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">{{ reason }}</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 10px; font-weight: bold; border: 1px solid #ddd;">{% trans "Actions Taken" %}</td>
+              <td style="padding: 10px; border: 1px solid #ddd;">
+                {% trans "Account locked" %}<br>
+                {% trans "Password reset" %}<br>
+                {% trans "All sessions terminated" %}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% trans "This is an automated security notification. Review audit logs for full details." %}
+  </td>
+</tr>
+{% endblock %}

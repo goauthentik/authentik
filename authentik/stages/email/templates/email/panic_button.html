@@ -1,0 +1,38 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1 style="color: #c9190b;">
+      {% trans "Security Alert" %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 400px; padding: 20px 0; color: #212124;">
+          <p>{% trans "Your account has been locked for security reasons." %}</p>
+          <p>{% trans "The following actions have been taken:" %}</p>
+          <ul style="text-align: left; max-width: 350px; margin: 10px auto;">
+            <li>{% trans "Your account has been locked" %}</li>
+            <li>{% trans "Your password has been reset" %}</li>
+            <li>{% trans "All active sessions have been terminated" %}</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% trans "if the dev didn't mess up the perms and a regular user can send a POST to the endpoint, please contact your administrator immediately." %}
+  </td>
+</tr>
+{% endblock %}
