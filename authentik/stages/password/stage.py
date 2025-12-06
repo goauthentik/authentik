@@ -5,6 +5,7 @@ from typing import Any
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
+from django.db.models import Sum
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -25,13 +26,14 @@ from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
+from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
-SESSION_KEY_INVALID_TRIES = "authentik/stages/password/user_invalid_tries"
+PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
 
 
 def authenticate(
@@ -148,19 +150,27 @@ class PasswordStageView(ChallengeStageView):
                 kwargs={"flow_slug": recovery_flow.slug},
             )
             challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
+        if PLAN_CONTEXT_INITIAL_SCORE not in self.executor.plan.context:
+            self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = self.get_reputation_score()
         return challenge
 
+    def get_reputation_score(self) -> int:
+        return (
+            Reputation.objects.filter(identifier=self.get_pending_user().username).aggregate(
+                total_score=Sum("score")
+            )["total_score"]
+            or 0
+        )
+
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
-        if SESSION_KEY_INVALID_TRIES not in self.request.session:
-            self.request.session[SESSION_KEY_INVALID_TRIES] = 0
-        self.request.session[SESSION_KEY_INVALID_TRIES] += 1
         current_stage: PasswordStage = self.executor.current_stage
-        if (
-            self.request.session[SESSION_KEY_INVALID_TRIES]
-            >= current_stage.failed_attempts_before_cancel
-        ):
+        initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
+        if initial_score is None:
+            initial_score = self.get_reputation_score()
+            self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
+        new_score = self.get_reputation_score()
+        if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
-            del self.request.session[SESSION_KEY_INVALID_TRIES]
             return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
 
