@@ -3,7 +3,6 @@ import "#flow/components/ak-flow-card";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
-import autoDetectLanguage from "#elements/ak-locale-context/helpers";
 import { akEmptyState } from "#elements/EmptyState";
 import { ifPresent } from "#elements/utils/attributes";
 import { ListenerController } from "#elements/utils/listenerController";
@@ -134,8 +133,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     #captchaDocumentContainer?: HTMLDivElement;
     #listenController = new ListenerController();
 
-    #locale: string | null = null;
-
     //#endregion
 
     //#region Getters/Setters
@@ -195,7 +192,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     sitekey: this.challenge.siteKey,
                     callback: this.onTokenChange,
                     size: "invisible",
-                    hl: this.#locale ?? undefined,
+                    hl: this.locale,
                 }),
             );
         });
@@ -230,7 +227,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 sitekey: this.challenge.siteKey,
                 callback: this.onTokenChange,
                 size: "invisible",
-                hl: this.#locale ?? undefined,
+                hl: this.locale,
             }),
         );
     }
@@ -256,7 +253,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             data-theme="${this.activeTheme}"
             data-callback="callback"
             data-size="flexible"
-            data-language=${ifPresent(this.#locale)}
+            data-language=${ifPresent(this.locale)}
         ></div>`;
     };
 
@@ -375,8 +372,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
-
-        this.#locale = autoDetectLanguage();
     }
 
     public disconnectedCallback(): void {

@@ -2,12 +2,12 @@
 
 from base64 import b64encode
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
-from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import dummy_get_response, load_fixture
+from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.response import ResponseProcessor

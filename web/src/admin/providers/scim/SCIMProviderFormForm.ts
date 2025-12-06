@@ -15,8 +15,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProvid
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import {
     CompatibilityModeEnum,
     CoreApi,
@@ -78,10 +76,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: Valida
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror
-                mode=${CodeMirrorMode.YAML}
-                value="${YAML.stringify(provider?.authOauthParams ?? {})}"
-            >
+            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
             </ak-codemirror>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
@@ -205,6 +200,21 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
+                <ak-text-input
+                    name="serviceProviderConfigCacheTimeout"
+                    label=${msg("Service Provider Config cache timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.serviceProviderConfigCacheTimeout ?? "hours=1"}"
+                    .errorMessages=${errors.service_provider_config_cache_timeout}
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
                 <ak-form-element-horizontal name="dryRun">
                     <label class="pf-c-switch">
                         <input

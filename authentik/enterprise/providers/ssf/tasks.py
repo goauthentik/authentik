@@ -42,6 +42,8 @@ def send_ssf_events(
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         events_data[stream.uuid] = event_data
+    if not events_data:
+        return
     ssf_events_dispatch.send(events_data)
 
 

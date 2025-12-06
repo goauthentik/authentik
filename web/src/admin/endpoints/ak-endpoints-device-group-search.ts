@@ -4,32 +4,36 @@ import { AKElement } from "#elements/Base";
 import { SearchSelect } from "#elements/forms/SearchSelect/index";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
-import { DeviceGroup, EndpointsApi, EndpointsDeviceGroupsListRequest } from "@goauthentik/api";
+import {
+    DeviceAccessGroup,
+    EndpointsApi,
+    EndpointsDeviceAccessGroupsListRequest,
+} from "@goauthentik/api";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-async function fetchObjects(query?: string): Promise<DeviceGroup[]> {
-    const args: EndpointsDeviceGroupsListRequest = {
+async function fetchObjects(query?: string): Promise<DeviceAccessGroup[]> {
+    const args: EndpointsDeviceAccessGroupsListRequest = {
         ordering: "name",
     };
     if (query !== undefined) {
         args.search = query;
     }
-    const groups = await new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceGroupsList(args);
+    const groups = await new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsList(args);
     return groups.results;
 }
 
-const renderElement = (group: DeviceGroup): string => group.name;
+const renderElement = (group: DeviceAccessGroup): string => group.name;
 
-const renderValue = (group: DeviceGroup | undefined): string | undefined => group?.pbmUuid;
+const renderValue = (group: DeviceAccessGroup | undefined): string | undefined => group?.pbmUuid;
 
 /**
  * @element ak-endpoints-device-group-search
  */
 
 @customElement("ak-endpoints-device-group-search")
-export class EndpointsDeviceGroupSearch extends CustomListenerElement(AKElement) {
+export class EndpointsDeviceAccessGroupSearch extends CustomListenerElement(AKElement) {
     /**
      * The current group known to the caller.
      *
@@ -39,12 +43,12 @@ export class EndpointsDeviceGroupSearch extends CustomListenerElement(AKElement)
     group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<DeviceGroup>;
+    search!: SearchSelect<DeviceAccessGroup>;
 
     @property({ type: String })
     public name?: string | null;
 
-    selectedGroup?: DeviceGroup;
+    selectedGroup?: DeviceAccessGroup;
 
     constructor() {
         super();
@@ -74,7 +78,7 @@ export class EndpointsDeviceGroupSearch extends CustomListenerElement(AKElement)
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    selected = (group: DeviceGroup) => {
+    selected = (group: DeviceAccessGroup) => {
         return this.group === group.pbmUuid;
     };
 
@@ -95,6 +99,6 @@ export class EndpointsDeviceGroupSearch extends CustomListenerElement(AKElement)
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoints-device-group-search": EndpointsDeviceGroupSearch;
+        "ak-endpoints-device-group-search": EndpointsDeviceAccessGroupSearch;
     }
 }
