@@ -180,9 +180,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="serviceConnection">
-                <div slot="label" class="pf-c-form__group-label">
-                    ${AKLabel({ htmlFor: "serviceConnection" }, msg("Integration"))}
-                </div>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "serviceConnection",
+                    },
+                    msg("Integration"),
+                )}
 
                 <ak-search-select
                     id="serviceConnection"
@@ -251,9 +256,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             <ak-form-group label=${msg("Advanced settings")}>
                 <div class="pf-c-form">
                     <ak-form-element-horizontal name="config">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "configuration" }, msg("Configuration"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configuration",
+                            },
+                            msg("Configuration"),
+                        )}
 
                         <ak-codemirror
                             id="configuration"
