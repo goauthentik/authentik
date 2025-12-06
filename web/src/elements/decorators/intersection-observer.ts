@@ -71,7 +71,7 @@ export function intersectionObserver(init: IntersectionObserverInit = {}): Inter
 
         const { connectedCallback, disconnectedCallback } = target;
 
-        target.connectedCallback = function (this: T) {
+        target.connectedCallback = function connectedCallbackWrapper(this: T) {
             connectedCallback?.call(this);
 
             if (this.hasUpdated) {
@@ -83,7 +83,7 @@ export function intersectionObserver(init: IntersectionObserverInit = {}): Inter
             }
         };
 
-        target.disconnectedCallback = function (this: LitElement) {
+        target.disconnectedCallback = function disconnectedCallbackWrapper(this: LitElement) {
             disconnectedCallback?.call(this);
 
             if (observer) {

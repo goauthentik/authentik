@@ -24,6 +24,30 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
+
 export interface PageHeaderInit {
     header?: string | null;
     description?: string | null;
@@ -411,30 +435,6 @@ export class AKPageNavbar
     }
 
     //#endregion
-}
-
-export class PageDetailsUpdate extends Event {
-    static readonly eventName = "ak-page-details-update";
-    header: PageHeaderInit;
-
-    constructor(header: PageHeaderInit) {
-        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
-        this.header = header;
-    }
-}
-
-export class PageNavMenuToggle extends Event {
-    static readonly eventName = "ak-page-nav-menu-toggle";
-    open: boolean;
-
-    constructor(open?: boolean) {
-        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
-        this.open = !!open;
-    }
-}
-
-export function setPageDetails(header: PageHeaderInit) {
-    window.dispatchEvent(new PageDetailsUpdate(header));
 }
 
 declare global {

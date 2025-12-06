@@ -93,11 +93,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                oAuthSourceRequest: data as unknown as OAuthSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
     }
 
     fetchProviderType(v: string | undefined) {

@@ -37,11 +37,10 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                 stageUuid: this.instance.pk || "",
                 mutualTLSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-                mutualTLSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
+            mutualTLSStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

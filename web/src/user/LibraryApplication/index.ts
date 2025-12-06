@@ -37,8 +37,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     editURL,
     background,
-    appIndex,
-    groupIndex,
     className = "",
     targetRef,
     ...props

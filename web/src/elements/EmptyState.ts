@@ -135,7 +135,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

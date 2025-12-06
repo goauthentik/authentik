@@ -37,7 +37,7 @@ function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     return aSortBy.localeCompare(bSortBy);
 }
 
-function keyfinder(key: string) {
+function keyfinder(key: string | number) {
     return ([k]: DualSelectPair) => k === key;
 }
 
@@ -98,7 +98,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @state()
     protected selectedFilter: string = "";
 
-    #selectedKeys: Set<string> = new Set();
+    #selectedKeys: Set<string | number> = new Set();
 
     //#endregion
 
@@ -188,7 +188,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     // updating the list of currently visible options;
     protected addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
-        const selected = new Map<string, DualSelectPair>([
+        const selected = new Map<string | number, DualSelectPair>([
             ...this.options.map((pair) => [pair[0], pair] as const),
             ...this.selected.map((pair) => [pair[0], pair] as const),
         ]);

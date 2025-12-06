@@ -28,8 +28,6 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @property()
     roleUuid?: string;
 
-    async load(): Promise<void> {}
-
     loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
     }

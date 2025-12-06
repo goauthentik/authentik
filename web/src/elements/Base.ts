@@ -68,7 +68,7 @@ export class AKElement extends LitElement implements AKElementProps {
         if (process.env.NODE_ENV === "development") {
             const updatedCallback = this.updated;
 
-            this.updated = function (args: PropertyValues) {
+            this.updated = function updatedWrapper(args: PropertyValues) {
                 updatedCallback?.call(this, args);
 
                 const unregisteredElements = this.renderRoot.querySelectorAll(

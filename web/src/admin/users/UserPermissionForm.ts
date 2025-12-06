@@ -28,8 +28,6 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
     @property({ type: Number })
     userId?: number;
 
-    async load(): Promise<void> {}
-
     loadInstance(): Promise<UserPermissionAssign> {
         throw new Error("Method not implemented.");
     }

@@ -19,6 +19,14 @@ export type SidebarEntry = [
 ];
 
 /**
+ * Recursively renders a collection of sidebar entries.
+ */
+export function renderSidebarItems(entries: readonly SidebarEntry[]) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
+}
+
+/**
  * Recursively renders a sidebar entry.
  */
 export function renderSidebarItem([
@@ -42,13 +50,6 @@ export function renderSidebarItem([
     >
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
-}
-
-/**
- * Recursively renders a collection of sidebar entries.
- */
-export function renderSidebarItems(entries: readonly SidebarEntry[]) {
-    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
 }
 
 // prettier-ignore

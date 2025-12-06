@@ -70,7 +70,6 @@ interface ILoadingOverlayContent {
     body?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof ILoadingOverlayContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

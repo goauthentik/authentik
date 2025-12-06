@@ -24,7 +24,6 @@ import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
-import { copy } from "esbuild-plugin-copy";
 
 /// <reference types="../types/esbuild.js" />
 
@@ -36,6 +35,22 @@ const publicBundledDefinitions = Object.fromEntries(
     Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
 );
 logger.info(publicBundledDefinitions, "Bundle definitions");
+
+/**
+ * @typedef {[from: string, to: string]} SourceDestinationPair
+ */
+
+/**
+ * @type {SourceDestinationPair[]}
+ */
+const assets = [
+    [
+        path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
+        path.dirname(EntryPoint.StandaloneLoading.out),
+    ],
+    [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
+    [path.resolve(PackageRoot, "icons"), "./assets/icons"],
+];
 
 /**
  * @type {Readonly<BuildOptions>}
@@ -63,22 +78,42 @@ const BASE_ESBUILD_OPTIONS = {
         ".svg": "file",
     },
     plugins: [
-        copy({
-            assets: [
-                {
-                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
-                    to: path.dirname(EntryPoint.StandaloneLoading.out),
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
-                    to: "./assets/images",
-                },
-                {
-                    from: path.resolve(PackageRoot, "icons", "*"),
-                    to: "./assets/icons",
-                },
-            ],
-        }),
+        {
+            name: "copy",
+            setup(build) {
+                build.onEnd(async () => {
+                    /**
+                     * @type {import('esbuild').PartialMessage[]}
+                     */
+                    const errors = [];
+
+                    /**
+                     * @param {SourceDestinationPair} pair
+                     */
+                    const copy = ([from, to]) => {
+                        const resolvedDestination = path.resolve(DistDirectory, to);
+
+                        logger.debug(`📋 Copying assets from ${from} to ${to}`);
+
+                        return fs
+                            .cp(from, resolvedDestination, { recursive: true })
+                            .catch((error) => {
+                                errors.push({
+                                    text: `Failed to copy assets from ${from} to ${to}: ${error}`,
+                                    location: {
+                                        file: from,
+                                    },
+                                });
+                            });
+                    };
+
+                    await Promise.all(assets.map(copy));
+
+                    return { errors };
+                });
+            },
+        },
+
         mdxPlugin({
             root: MonoRepoRoot,
         }),

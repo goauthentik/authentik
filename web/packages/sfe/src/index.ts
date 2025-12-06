@@ -17,6 +17,8 @@ import {
 import { fromByteArray } from "base64-js";
 import $ from "jquery";
 
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 interface GlobalAuthentik {
     brand: {
         branding_logo: string;

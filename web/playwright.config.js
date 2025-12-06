@@ -41,7 +41,7 @@ export default defineConfig({
                 isEnabled() {
                     return true;
                 },
-                log: (name, severity, message, args) => {
+                log: (name, severity, message, _args) => {
                     let logger = LoggerCache.get(name);
 
                     if (!logger) {
