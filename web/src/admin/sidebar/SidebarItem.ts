@@ -1,8 +1,9 @@
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
+
+import Styles from "#admin/sidebar/SidebarItem.css";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";

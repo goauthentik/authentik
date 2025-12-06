@@ -1,7 +1,8 @@
 import "#admin/sidebar/SidebarVersion";
 
 import { AKElement } from "#elements/Base";
-import Styles from "#elements/sidebar/Sidebar.css";
+
+import Styles from "#admin/sidebar/Sidebar.css";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
