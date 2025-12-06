@@ -23,7 +23,7 @@ PLAN_CONTEXT_CONSENT = "consent"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
 PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
-SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
+PLAN_CONTEXT_CONSENT_TOKEN = "goauthentik.io/stages/consent/token"  # nosec
 
 
 class ConsentPermissionSerializer(PassiveSerializer):
@@ -50,7 +50,7 @@ class ConsentChallengeResponse(ChallengeResponse):
     token = CharField(required=True)
 
     def validate_token(self, token: str):
-        if token != self.stage.executor.request.session[SESSION_KEY_CONSENT_TOKEN]:
+        if token != self.stage.executor.plan.context[PLAN_CONTEXT_CONSENT_TOKEN]:
             raise ValidationError(_("Invalid consent token, re-showing prompt"))
         return token
 
@@ -62,7 +62,7 @@ class ConsentStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         token = str(uuid4())
-        self.request.session[SESSION_KEY_CONSENT_TOKEN] = token
+        self.executor.plan.context[PLAN_CONTEXT_CONSENT_TOKEN] = token
         data = {
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
