@@ -133,7 +133,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 
 ## Salesforce as an OAuth Source
 
-You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#SCIM-Provisioning) to keep your Salesforce users in sync with your authentik users.
+You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#scim-provisioning-optional) to keep your Salesforce users in sync with your authentik users.
 
 ### Salesforce configuration
 
@@ -148,7 +148,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
     - **Contact Email**: Your email address
 5. Under **API (Enable OAuth Settings)**:
     - Check **Enable OAuth Settings**.
-    - Set **Callback URL** to `https://authentik.company/source/oauth/callback/<slug>/`
+    - Set **Callback URL** to `https://authentik.company/source/oauth/callback/<slug>/`, replacing `<slug>` with the slug you will use when creating the OAuth Source in authentik (e.g., `salesforce`).
     - Under **Selected OAuth Scopes**, add:
         - `Access unique user identifiers (openid)`
         - `Manage user data via APIs (api)`
@@ -158,7 +158,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
 
 #### Configure Client Credentials Flow _(required for SCIM with OAuth)_
 
-If you plan to use SCIM provisioning with OAuth authentication:
+If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
 1. Navigate to **Setup** > **External Client App Manager**.
 2. Find your Connected App and click on it.
@@ -195,7 +195,7 @@ If you plan to use SCIM provisioning with OAuth authentication:
 
 ## SCIM Provisioning _(optional)_
 
-You can configure SCIM provisioning to automatically sync users from authentik to Salesforce.
+You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers the Oauth2 SCIM integration, which requires an enterprise authentik account.
 
 ### Create SCIM property mappings
 
@@ -203,10 +203,10 @@ Salesforce requires specific SCIM attributes that are not included in the defaul
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SCIM Provider Mapping**s with the following settings:
-
     - **Profile ID Mapping:**
         - **Name**: `Salesforce SCIM: Profile ID`
         - **Expression**:
+
             ```python
             return {
                 "entitlements": [
