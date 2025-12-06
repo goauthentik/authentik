@@ -6,8 +6,8 @@ from django.db.models.functions import Greatest, Least
 from django.dispatch import receiver
 from django.http import HttpRequest
 from psqlextra.query import ConflictAction
-from structlog.stdlib import get_logger
 from psqlextra.util import postgres_manager
+from structlog.stdlib import get_logger
 
 from authentik.core.signals import login_failed
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
