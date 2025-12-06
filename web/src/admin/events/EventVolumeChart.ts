@@ -20,7 +20,7 @@ export class EventVolumeChart extends EventChart {
 
     @property({ attribute: false })
     set query(value: EventsEventsListRequest | undefined) {
-        if (JSON.stringify(value) !== JSON.stringify(this._query)) return;
+        if (JSON.stringify(value) === JSON.stringify(this._query)) return;
         this._query = value;
         this.refreshHandler();
     }
