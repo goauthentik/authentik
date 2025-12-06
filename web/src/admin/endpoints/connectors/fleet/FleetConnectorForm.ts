@@ -48,9 +48,9 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                 required
             ></ak-text-input>
             <ak-switch-input
-            name="enabled"
-            label=${msg("Enabled")}
-              ?checked=${this.instance?.enabled ?? true}
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
             ></ak-switch-input>
             <ak-text-input
                 name="url"
