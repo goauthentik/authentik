@@ -59,7 +59,7 @@ export class FleetConnectorViewPage extends AKElement {
         }
     }
 
-    updated(changed: PropertyValues<this>) {
+    public override updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
             icon: "pf-icon pf-icon-data-source",
