@@ -18,12 +18,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
-<<<<<<< HEAD
-from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256
-=======
 from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256, format_cert
-from authentik.endpoints.models import StageMode
->>>>>>> 6d7249ea5 (enterprise/stages/mtls: fix traefik certificate parsing (#18607))
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
     MutualTLSStage,
