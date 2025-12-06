@@ -129,11 +129,11 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
                     ><span
                         >${msg("Configured file backend does not support file management.")}</span
                     >
-                    <span slot="secondary"
-                        >${msg(
+                    <div slot="body">
+                        ${msg(
                             "Please ensure the data folder is mounted or S3 storage is configured.",
-                        )}</span
-                    >
+                        )}
+                    </div>
                     <div slot="primary">
                         <a
                             target="_blank"
