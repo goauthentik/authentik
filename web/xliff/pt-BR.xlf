@@ -7958,10 +7958,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Create Stage binding</source>
   <target>Criar Vinculação de Estágio</target>
 </trans-unit>
-<trans-unit id="scc2e420c54dc8089">
-  <source>Bind existing stage</source>
-  <target>Vincular estágio existente</target>
-</trans-unit>
 <trans-unit id="s30d1f50f476c3f48">
   <source>Flow Overview</source>
   <target>Visão Geral do Fluxo</target>
@@ -8672,10 +8668,6 @@ definido, por exemplo, como <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id=
 <trans-unit id="s2de7890b100c4f4c">
   <source>Flags</source>
   <target>Flags</target>
-</trans-unit>
-<trans-unit id="sf0b34d32a602aee8">
-  <source>Modify flags to opt into new authentik behaviours early.</source>
-  <target>Modifique as flags para optar por novos comportamentos do authentik mais cedo.</target>
 </trans-unit>
 <trans-unit id="s33f85f24c0f5f008">
   <source>Save</source>
@@ -9978,6 +9970,24 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+</trans-unit>
+<trans-unit id="sb5e95aaacac5d929">
+  <source>Bind existing Stage</source>
+</trans-unit>
+<trans-unit id="s7dcfe418b8d601f6">
+  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
+</trans-unit>
+<trans-unit id="sbaeb8266aac13639">
+  <source>Buffer PolicyAccessVew requests</source>
+</trans-unit>
+<trans-unit id="se20d0be2cece3841">
+  <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
+</trans-unit>
+<trans-unit id="s8aa73079812f56b2">
+  <source>Refresh other flow tabs upon authentication</source>
+</trans-unit>
+<trans-unit id="s696386b762cd516c">
+  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
 </trans-unit>
 </body>
 </file>
