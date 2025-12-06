@@ -194,11 +194,11 @@ export class AuthenticatorValidateStage
     }
 
     renderDevicePicker() {
-        if (this.selectedDeviceChallenge) {
+        const { deviceChallenges } = this.challenge || {};
+
+        if (this.selectedDeviceChallenge || !deviceChallenges?.length) {
             return nothing;
         }
-
-        const { deviceChallenges } = this.challenge;
 
         const devicePickerPropMap = createDevicePickerPropMap();
 
@@ -235,9 +235,7 @@ export class AuthenticatorValidateStage
 
         return html`<fieldset class="pf-c-form__group pf-m-action" name="device-challenges">
             <legend class="pf-c-title">${msg("Select an authentication method")}</legend>
-            ${deviceChallenges.length
-                ? deviceChallengeButtons
-                : msg("No authentication methods available.")}
+            ${deviceChallengeButtons}
         </fieldset>`;
     }
 
