@@ -27,7 +27,9 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+const [FLEET_CONNECTOR_APP_LABEL, FLEET_CONNECTOR_MODEL_NAME] =
+    ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector.split(".");
 
 @customElement("ak-endpoints-connector-fleet-view")
 export class FleetConnectorViewPage extends AKElement {
@@ -40,7 +42,7 @@ export class FleetConnectorViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)
@@ -68,9 +70,7 @@ export class FleetConnectorViewPage extends AKElement {
         });
     }
 
-    renderTabOverview() {
-        const [appLabel, modelName] =
-            ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector.split(".");
+    protected renderTabOverview() {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
@@ -81,8 +81,8 @@ export class FleetConnectorViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__body">
                         <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
+                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
+                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
                             .relObjId="${this.connector?.connectorUuid}"
                         ></ak-schedule-list>
                     </div>
@@ -95,8 +95,8 @@ export class FleetConnectorViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__body">
                         <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
+                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
+                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
                             .relObjId="${this.connector?.connectorUuid}"
                         ></ak-task-list>
                     </div>
@@ -142,7 +142,7 @@ export class FleetConnectorViewPage extends AKElement {
                 tabindex="0"
                 slot="page-permissions"
                 id="page-permissions"
-                aria-label="${msg("Permissions")}"
+                aria-label=${msg("Permissions")}
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
