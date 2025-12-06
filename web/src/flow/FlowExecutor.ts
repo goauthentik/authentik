@@ -11,12 +11,16 @@ import "#flow/stages/RedirectStage";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import {
+    EVENT_FLOW_ADVANCE,
+    EVENT_FLOW_INSPECTOR_TOGGLE,
+    EVENT_WS_MESSAGE,
+} from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { WebsocketClient } from "#common/ws";
+import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -154,16 +158,25 @@ export class FlowExecutor
         });
     }
 
+    #websocketHandler = (e: CustomEvent<WSMessage>) => {
+        if (e.detail.message_type === "session.authenticated") {
+            console.debug("authentik/ws: Reloading after session authenticated event");
+            window.location.reload();
+        }
+    };
+
     public connectedCallback(): void {
         super.connectedCallback();
 
         window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
 
         WebsocketClient.close();
     }

@@ -7873,14 +7873,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>.yaml files, which can be found in the Example Flows documentation</source>
   <target>Fichiers .yaml, qui peuvent être trouvés dans la documentation "Example Flows"</target>
 </trans-unit>
-<trans-unit id="s3abecf1e778c9625">
-  <source>See more here:</source>
-  <target>Voir plus ici:</target>
-</trans-unit>
-<trans-unit id="s74cb3d66f6a668e1">
-  <source>Documentation</source>
-  <target>Documentation</target>
-</trans-unit>
 <trans-unit id="sc816360d6f5a1eeb">
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
   <target>Les flux décrivent une succession d'étapes pour authentifier, inscrire ou récupérer un utilisateur. Les étapes sont choisies en fonction des politiques qui leur sont appliquées.</target>
@@ -8241,10 +8233,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s9c29565c5ae1cc92">
   <source>Selecting an integration enables the management of the outpost by authentik.</source>
   <target>La sélection d'une intégration permet la gestion de l'avant-poste par authentik.</target>
-</trans-unit>
-<trans-unit id="s7a64ac07061f85b2">
-  <source>See documentation</source>
-  <target>Voir la documentation</target>
 </trans-unit>
 <trans-unit id="scb76a63c68b0d81f">
   <source>Available Applications</source>
@@ -9996,6 +9984,18 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
+</trans-unit>
+<trans-unit id="s8d94e51441d0ce0c">
+  <source>Flow Examples</source>
+</trans-unit>
+<trans-unit id="s49ae82ba527f8e01">
+  <source>Type an outpost name...</source>
+</trans-unit>
+<trans-unit id="s574ed5d3a52d45c8">
+  <source>Outpost Name</source>
+</trans-unit>
+<trans-unit id="sc47f8ab6162bb2bb">
+  <source>Outpost configuration</source>
 </trans-unit>
 </body>
 </file>
