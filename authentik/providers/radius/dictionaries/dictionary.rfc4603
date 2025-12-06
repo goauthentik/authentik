@@ -1,0 +1,19 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+##############################################################################
+#
+#	Attributes and values defined in RFC 4603.
+#	http://www.ietf.org/rfc/rfc4603.txt
+#
+#	$Id$
+#
+##############################################################################
+
+VALUE	NAS-Port-Type			PPPoA			30
+VALUE	NAS-Port-Type			PPPoEoA			31
+VALUE	NAS-Port-Type			PPPoEoE			32
+VALUE	NAS-Port-Type			PPPoEoVLAN		33
+VALUE	NAS-Port-Type			PPPoEoQinQ		34
+
