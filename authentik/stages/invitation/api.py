@@ -80,7 +80,7 @@ class InvitationSerializer(ModelSerializer):
 class InvitationViewSet(UsedByMixin, ModelViewSet):
     """Invitation Viewset"""
 
-    queryset = Invitation.objects.all()
+    queryset = Invitation.objects.including_expired().all()
     serializer_class = InvitationSerializer
     ordering = ["-expires"]
     search_fields = ["name", "created_by__username", "expires", "flow__slug"]

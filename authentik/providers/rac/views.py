@@ -68,7 +68,7 @@ class RACInterface(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Early sanity check to ensure token still exists
-        token = ConnectionToken.filter_not_expired(
+        token = ConnectionToken.objects.filter(
             token=self.kwargs["token"],
             session__session__session_key=request.session.session_key,
         ).first()
@@ -101,7 +101,7 @@ class RACFinalStage(RedirectStage):
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
         # Check if we're already at the maximum connection limit
-        all_tokens = ConnectionToken.filter_not_expired(
+        all_tokens = ConnectionToken.objects.filter(
             endpoint=self.endpoint,
         )
         if self.endpoint.maximum_connections > -1:

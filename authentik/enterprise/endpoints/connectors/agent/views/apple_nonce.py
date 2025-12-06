@@ -17,7 +17,7 @@ class NonceView(View):
 
     def post(self, request: HttpRequest, *args, **kwargs):
         raw_token = unquote(self.request.POST.get("x-ak-device-token"))
-        device_token = DeviceToken.filter_not_expired(key=raw_token).first()
+        device_token = DeviceToken.objects.filter(key=raw_token).first()
         if not device_token:
             return HttpResponseBadRequest()
         nonce = AppleNonce.objects.create(

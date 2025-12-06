@@ -95,7 +95,7 @@ class TokenView(View):
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.filter_not_expired(nonce=decoded["request_nonce"]).first()
+        nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
         self.nonce = nonce
