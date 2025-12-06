@@ -164,7 +164,10 @@ class PasswordStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
-        initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE, 0)
+        initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
+        if initial_score is None:
+            initial_score = self.get_reputation_score()
+            self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
         new_score = self.get_reputation_score()
         if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
