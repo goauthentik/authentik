@@ -1,0 +1,44 @@
+---
+title: authentik CLI commands
+sidebar_label: authentik CLI commands
+tags: [authentik Agent, authentik cli, ak cli, ak, cli, commands]
+---
+
+## Introduction
+
+(TODO)
+
+## Commands
+
+### SSH
+
+```
+ak ssh <hostname>
+```
+
+Opens an SSH connection to the target Endpoint Device.
+
+### Troubleshooting
+
+```bash
+ak-sysd troubleshoot check
+```
+
+Useful on linux as there are different components being used.
+
+```bash
+ak-sysd troubleshoot inspect
+```
+
+Outputs the state database that the agent has
+keeps a local cache
+
+```bash
+ak-sysd troubleshoot facts
+```
+
+Outputs device facts - this is what's sent to authentik for device reporting
+
+## Notes
+
+Most of the AK CLI commands have a -v flag for verbose
