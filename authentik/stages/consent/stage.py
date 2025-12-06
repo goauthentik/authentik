@@ -1,5 +1,6 @@
 """authentik consent stage"""
 
+from hmac import compare_digest
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
@@ -50,7 +51,9 @@ class ConsentChallengeResponse(ChallengeResponse):
     token = CharField(required=True)
 
     def validate_token(self, token: str):
-        if token != self.stage.executor.plan.context[PLAN_CONTEXT_CONSENT_TOKEN]:
+        if not compare_digest(
+            token, self.stage.executor.plan.context.get(PLAN_CONTEXT_CONSENT_TOKEN, "")
+        ):
             raise ValidationError(_("Invalid consent token, re-showing prompt"))
         return token
 
