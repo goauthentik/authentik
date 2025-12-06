@@ -153,6 +153,10 @@ export const ROUTES: Route[] = [
         await import("#admin/events/RuleListPage");
         return html`<ak-event-rule-list></ak-event-rule-list>`;
     }),
+    new Route(new RegExp("^/events/exports"), async () => {
+        await import("./events/DataExportListPage");
+        return html`<ak-data-export-list></ak-data-export-list>`;
+    }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;

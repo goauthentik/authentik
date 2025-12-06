@@ -668,6 +668,7 @@ const items = [
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
+            "sys-mgmt/data-exports",
         ],
     },
     {

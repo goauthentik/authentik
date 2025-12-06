@@ -1,8 +1,15 @@
+import "#admin/common/ak-license-notice";
+
+import { WithCapabilitiesConfig } from "../mixins/capabilities";
+import { WithLicenseSummary } from "../mixins/license";
+
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -16,10 +23,11 @@ export interface SidebarItemProperties {
     path?: string | null;
     activeWhen?: string[];
     expanded?: boolean | null;
+    enterprise?: boolean;
 }
 
 @customElement("ak-sidebar-item")
-export class SidebarItem extends AKElement {
+export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKElement)) {
     static styles: CSSResult[] = [
         // ---
         PFPage,
@@ -48,6 +56,9 @@ export class SidebarItem extends AKElement {
     public highlight = false;
 
     public parent?: SidebarItem;
+
+    @property({ type: Boolean })
+    public enterprise = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
@@ -199,7 +210,18 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
+    renderEnterpriseRequired() {
+        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+            ${this.label}
+            <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
+        </a>`;
+    }
+
     renderWithPath() {
+        if (this.enterprise && !this.hasEnterpriseLicense) {
+            if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+            else return this.renderEnterpriseRequired();
+        }
         return html`
             <a
                 part="link ${this.current ? "current" : ""}"
