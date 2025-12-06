@@ -307,6 +307,15 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class WeChatOAuthSource(CreatableType, OAuthSource):
+    """Social Login using WeChat."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat OAuth Source")
+        verbose_name_plural = _("WeChat OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
