@@ -2,12 +2,18 @@ import "#elements/CodeMirror";
 import "#elements/buttons/ActionButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { downloadFile } from "#common/download";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 
-import { EndpointsAgentsConnectorsMdmConfigCreateRequest, EndpointsApi } from "@goauthentik/api";
+import {
+    EndpointsAgentsConnectorsMdmConfigCreateRequest,
+    EndpointsApi,
+    MDMConfigResponse,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -20,7 +26,7 @@ export class ConfigModal extends ModalButton {
     request?: EndpointsAgentsConnectorsMdmConfigCreateRequest;
 
     @state()
-    config?: string;
+    config?: MDMConfigResponse;
 
     connectedCallback(): void {
         super.connectedCallback();
@@ -29,13 +35,19 @@ export class ConfigModal extends ModalButton {
             new EndpointsApi(DEFAULT_CONFIG)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {
-                    this.config = e.config;
+                    this.config = e;
                 })
-                .catch((exc) => {
-                    this.config = exc.toString();
+                .catch(async (error) => {
+                    const parsedError = await parseAPIResponseError(error);
+
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: pluckErrorDetail(parsedError),
+                    });
                 });
         });
     }
+
     renderModalInner() {
         return html`<div class="pf-c-modal-box__header">
                 <h1 class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
@@ -44,10 +56,26 @@ export class ConfigModal extends ModalButton {
                 <ak-codemirror
                     mode="xml"
                     readonly
-                    value="${ifDefined(this.config)}"
+                    value="${ifDefined(this.config?.config)}"
                 ></ak-codemirror>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
+                <ak-action-button
+                    class="pf-m-primary"
+                    .apiRequest=${() => {
+                        if (!this.config) {
+                            return;
+                        }
+                        downloadFile(
+                            this.config.config,
+                            this.config.filename,
+                            this.config.mimeType,
+                        );
+                        this.close();
+                    }}
+                >
+                    ${msg("Download")}
+                </ak-action-button>
                 <ak-action-button
                     class="pf-m-secondary"
                     .apiRequest=${() => {
@@ -55,18 +83,18 @@ export class ConfigModal extends ModalButton {
                             return Promise.resolve(
                                 showMessage({
                                     level: MessageLevel.info,
-                                    message: this.config || "",
+                                    message: this.config?.config || "",
                                 }),
                             );
                         }
-                        return navigator.clipboard.writeText(this.config || "");
+                        return navigator.clipboard.writeText(this.config?.config || "");
                     }}
                 >
                     ${msg("Copy")}
                 </ak-action-button>
                 &nbsp;
                 <button
-                    class="pf-c-button pf-m-primary"
+                    class="pf-c-button pf-m-secondary"
                     @click=${() => {
                         this.open = false;
                     }}

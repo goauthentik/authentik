@@ -41061,8 +41061,14 @@ components:
       properties:
         config:
           type: string
+        mime_type:
+          type: string
+        filename:
+          type: string
       required:
       - config
+      - filename
+      - mime_type
     MatchingModeEnum:
       enum:
       - strict

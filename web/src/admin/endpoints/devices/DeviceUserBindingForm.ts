@@ -34,7 +34,7 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         return html`<ak-switch-input
                 name="isPrimary"
                 label=${msg("Is Primary user")}
-                ?checked=${this.instance.isPrimary ?? false}
+                ?checked=${this.instance?.isPrimary ?? false}
             >
             </ak-switch-input>
 
