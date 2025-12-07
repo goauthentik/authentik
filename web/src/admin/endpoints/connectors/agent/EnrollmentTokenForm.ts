@@ -23,7 +23,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     connectorID?: string;
 
     @state()
-    showExpiry = false;
+    protected showExpiry = false;
 
     async loadInstance(pk: string): Promise<EnrollmentToken> {
         const token = await new EndpointsApi(

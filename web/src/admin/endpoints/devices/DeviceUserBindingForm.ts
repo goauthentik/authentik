@@ -1,3 +1,5 @@
+import "#components/ak-switch-input";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
@@ -28,22 +30,15 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         return binding;
     }
 
-    renderForm() {
-        return html`<ak-form-element-horizontal name="isPrimary">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.isPrimary ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Is Primary user")}</span>
-                </label> </ak-form-element-horizontal
-            >${super.renderForm()}`;
+    public override renderForm() {
+        return html`<ak-switch-input
+                name="isPrimary"
+                label=${msg("Is Primary user")}
+                ?checked=${this.instance.isPrimary ?? false}
+            >
+            </ak-switch-input>
+
+            ${super.renderForm()}`;
     }
 }
 
