@@ -103,13 +103,15 @@ class GroupSerializer(ModelSerializer):
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
-        return PartialUserSerializer(instance.users, many=True).data
+        # Use .all() to access prefetched data instead of triggering new queries
+        return PartialUserSerializer(instance.users.all(), many=True).data
 
     @extend_schema_field(GroupChildSerializer(many=True))
     def get_children_obj(self, instance: Group) -> list[GroupChildSerializer] | None:
         if not self._should_include_children:
             return None
-        return GroupChildSerializer(instance.children, many=True).data
+        # Use .all() to access prefetched data instead of triggering new queries
+        return GroupChildSerializer(instance.children.all(), many=True).data
 
     def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
@@ -261,8 +263,18 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
                 Prefetch("users", queryset=User.objects.all().only("id"))
             )
 
+        # Always prefetch children since the serializer includes 'children' field for PKs
+        # even when include_children=false
         if self.serializer_class(context={"request": self.request})._should_include_children:
-            base_qs = base_qs.prefetch_related("children")
+            # When including full children data, prefetch with parent selected
+            base_qs = base_qs.prefetch_related(
+                Prefetch("children", queryset=Group.objects.select_related("parent"))
+            )
+        else:
+            # When only needing PKs, just prefetch IDs
+            base_qs = base_qs.prefetch_related(
+                Prefetch("children", queryset=Group.objects.all().only("group_uuid"))
+            )
 
         return base_qs
 
