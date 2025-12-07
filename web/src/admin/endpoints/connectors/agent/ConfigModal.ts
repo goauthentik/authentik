@@ -1,5 +1,6 @@
 import "#elements/CodeMirror";
 import "#elements/buttons/ActionButton/index";
+import "#elements/Expand";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { downloadFile } from "#common/download";
@@ -49,15 +50,22 @@ export class ConfigModal extends ModalButton {
     }
 
     renderModalInner() {
-        return html`<div class="pf-c-modal-box__header">
-                <h1 class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
-            </div>
+        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+                <div class="pf-c-content">
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
+                </div>
+            </section>
             <div class="pf-c-modal-box__body">
-                <ak-codemirror
-                    mode="xml"
-                    readonly
-                    value="${ifDefined(this.config?.config)}"
-                ></ak-codemirror>
+                <ak-expand
+                    text-closed=${msg("Show MDM configuration")}
+                    text-open=${msg("Hide MDM configuration")}
+                >
+                    <ak-codemirror
+                        mode="xml"
+                        readonly
+                        value="${ifDefined(this.config?.config)}"
+                    ></ak-codemirror>
+                </ak-expand>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
                 <ak-action-button
@@ -76,6 +84,7 @@ export class ConfigModal extends ModalButton {
                 >
                     ${msg("Download")}
                 </ak-action-button>
+                &nbsp;
                 <ak-action-button
                     class="pf-m-secondary"
                     .apiRequest=${() => {
