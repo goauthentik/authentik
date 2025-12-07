@@ -16,6 +16,7 @@ from authentik.endpoints.connectors.agent.models import (
     EnrollmentToken,
 )
 from authentik.endpoints.models import Device
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import JWTAlgorithms
 
@@ -106,3 +107,9 @@ class TestAppleToken(TestCase):
         )
 
         self.assertEqual(res.status_code, 200)
+        event = Event.objects.filter(
+            action=EventAction.LOGIN,
+            app="authentik.endpoints.connectors.agent",
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["device"]["name"], self.device.name)
