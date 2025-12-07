@@ -43,6 +43,7 @@ from rest_framework.fields import (
     ListField,
     SerializerMethodField,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -632,7 +633,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
     @validate(UserPasswordSetSerializer)
     def set_password(self, request: Request, pk: int, body: UserPasswordSetSerializer) -> Response:
         """Set password for user"""
@@ -718,7 +723,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
         if not request.tenant.impersonation:

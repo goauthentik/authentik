@@ -11,8 +11,6 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
@@ -72,7 +70,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
+                            mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">

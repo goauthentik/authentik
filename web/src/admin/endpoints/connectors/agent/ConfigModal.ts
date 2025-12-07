@@ -5,7 +5,6 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
 
 import { EndpointsAgentsConnectorsMdmConfigCreateRequest, EndpointsApi } from "@goauthentik/api";
@@ -25,7 +24,7 @@ export class ConfigModal extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener("ak-modal-show", (e) => {
+        this.addEventListener("ak-modal-show", () => {
             if (!this.request) return;
             new EndpointsApi(DEFAULT_CONFIG)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
@@ -43,7 +42,7 @@ export class ConfigModal extends ModalButton {
             </div>
             <div class="pf-c-modal-box__body">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.XML}
+                    mode="xml"
                     readonly
                     value="${ifDefined(this.config)}"
                 ></ak-codemirror>
