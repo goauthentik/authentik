@@ -87,7 +87,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.expiring ?? true}
+                        ?checked=${this.instance?.expiring ?? false}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showExpiry = el.checked;
