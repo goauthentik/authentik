@@ -339,6 +339,12 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserPanicButtonSerializer(PassiveSerializer):
+    """Payload to trigger panic button for a user"""
+
+    reason = CharField(required=True, help_text="Reason for triggering panic button")
+
+
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -779,6 +785,66 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        return Response(status=204)
+
+    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
+    @extend_schema(
+        request=UserPanicButtonSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered panic button"),
+            "400": OpenApiResponse(description="Panic button feature is disabled"),
+        },
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @validate(UserPanicButtonSerializer)
+    def panic_button(self, request: Request, pk: int, body: UserPanicButtonSerializer) -> Response:
+        """Trigger panic button for a user"""
+        from secrets import token_urlsafe
+
+        if not request.tenant.panic_button_enabled:
+            LOGGER.debug("Panic button feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Panic button feature is disabled.")]},
+                status=400,
+            )
+
+        user: User = self.get_object()
+        reason = body.validated_data["reason"]
+
+        if user.pk == request.user.pk:
+            LOGGER.debug("User attempted to trigger panic button on themselves", user=request.user)
+            return Response(
+                data={"non_field_errors": [_("Cannot trigger panic button on yourself.")]},
+                status=400,
+            )
+
+        with atomic():
+            user.is_active = False
+            new_password = token_urlsafe(32)
+            user.set_password(new_password)
+            user.save()
+
+            Session.objects.filter(authenticatedsession__user=user).delete()
+            LOGGER.info("Panic button triggered", user=user.username, triggered_by=request.user)
+
+        Event.new(
+            EventAction.PANIC_BUTTON_TRIGGERED,
+            reason=reason,
+            affected_user=user.username,
+            triggered_by=request.user.username,
+        ).from_http(request, user)
+
+        from authentik.events.tasks import panic_button_notification
+
+        panic_button_notification.send_with_options(
+            args=(
+                user.pk,
+                request.user.pk,
+                reason,
+            ),
+            kwargs={},
+        )
 
         return Response(status=204)
 

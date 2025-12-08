@@ -1,0 +1,49 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1 style="color: #c9190b;">
+      {% trans "Panic Button Triggered" %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 500px; padding: 20px 0; color: #212124;">
+          <p><strong>{% trans "User Account Emergency Lockout" %}</strong></p>
+          <table style="margin: 15px auto; text-align: left; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px; font-weight: bold;">{% trans "Affected User:" %}</td>
+              <td style="padding: 8px;">{{ affected_user.name }} ({{ affected_user.username }})</td>
+            </tr>
+            <tr style="background-color: #f5f5f5;">
+              <td style="padding: 8px; font-weight: bold;">{% trans "Triggered By:" %}</td>
+              <td style="padding: 8px;">{{ triggered_by.name }} ({{ triggered_by.username }})</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; font-weight: bold; vertical-align: top;">{% trans "Reason:" %}</td>
+              <td style="padding: 8px;">{{ reason }}</td>
+            </tr>
+          </table>
+          <p style="margin-top: 15px;">
+            {% trans "Actions taken: Account locked, password reset, all sessions terminated." %}
+          </p>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% trans "This event has been logged in the audit trail." %}
+  </td>
+</tr>
+{% endblock %}

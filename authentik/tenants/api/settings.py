@@ -69,6 +69,11 @@ class SettingsSerializer(ModelSerializer):
             "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
+            "panic_button_enabled",
+            "panic_button_notify_user",
+            "panic_button_notify_admins",
+            "panic_button_notify_security",
+            "panic_button_security_email",
             "flags",
         ]
 
