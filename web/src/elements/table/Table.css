@@ -69,6 +69,10 @@ td:has(ak-rbac-object-permission-modal) {
     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
 }
 
+.selected-chips::part(chip-group) {
+    margin-block-end: var(--pf-global--spacer--sm);
+}
+
 .pf-c-toolbar {
     display: flex;
     flex-flow: row wrap;
