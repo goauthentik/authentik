@@ -18,7 +18,8 @@ export class ExportButton extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
-    public createExport!: () => Promise<void>;
+    // public createExport: (() => Promise<void>) | null = null;
+    public createExport: (() => Promise<void>) | null = null;
 
     // safest display setting for a button
     cachedDisplay = "inline-block";
