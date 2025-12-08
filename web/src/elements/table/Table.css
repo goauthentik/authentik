@@ -5,6 +5,8 @@
 }
 
 .pf-c-table {
+    --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+
     .presentational {
         --pf-c-table--cell--MinWidth: 0;
     }
