@@ -5027,10 +5027,13 @@
                     "title": "Is superuser",
                     "description": "Users added to this group will be superusers."
                 },
-                "parent": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Parent"
+                "parents": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Parents"
                 },
                 "users": {
                     "type": "array",
@@ -5051,14 +5054,6 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
-                },
-                "children": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Children"
                 }
             },
             "required": []
@@ -5213,6 +5208,14 @@
                     },
                     "title": "Groups"
                 },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Roles"
+                },
                 "email": {
                     "type": "string",
                     "format": "email",
@@ -5264,6 +5267,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -5277,6 +5282,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -5288,6 +5295,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -5307,6 +5316,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
@@ -5320,6 +5331,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",
@@ -5997,7 +6010,9 @@
                             "add_certificatekeypair",
                             "change_certificatekeypair",
                             "delete_certificatekeypair",
-                            "view_certificatekeypair"
+                            "view_certificatekeypair",
+                            "view_certificatekeypair_certificate",
+                            "view_certificatekeypair_key"
                         ]
                     },
                     "user": {
@@ -10582,14 +10597,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "mode": {
-                    "type": "string",
-                    "enum": [
-                        "user",
-                        "role"
-                    ],
-                    "title": "Mode"
-                },
                 "role": {
                     "type": "string",
                     "format": "uuid",
@@ -10657,6 +10664,8 @@
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
+                            "authentik_core.add_groupancestrynode",
+                            "authentik_core.add_groupparentagenode",
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
@@ -10670,6 +10679,8 @@
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
+                            "authentik_core.change_groupancestrynode",
+                            "authentik_core.change_groupparentagenode",
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
@@ -10681,6 +10692,8 @@
                             "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
+                            "authentik_core.delete_groupancestrynode",
+                            "authentik_core.delete_groupparentagenode",
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
@@ -10700,6 +10713,8 @@
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
+                            "authentik_core.view_groupancestrynode",
+                            "authentik_core.view_groupparentagenode",
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
@@ -10713,6 +10728,8 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_crypto.view_certificatekeypair_certificate",
+                            "authentik_crypto.view_certificatekeypair_key",
                             "authentik_endpoints.add_connector",
                             "authentik_endpoints.add_device",
                             "authentik_endpoints.add_deviceaccessgroup",

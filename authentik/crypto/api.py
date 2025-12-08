@@ -27,6 +27,7 @@ from rest_framework.fields import (
     SerializerMethodField,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
@@ -42,7 +43,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
+from authentik.rbac.filters import SecretKeyFilter
 
 LOGGER = get_logger()
 
@@ -292,6 +293,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @permission_required("view_certificatekeypair_certificate")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -302,7 +304,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -323,6 +325,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             return response
         return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
+    @permission_required("view_certificatekeypair_key")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -333,7 +336,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()

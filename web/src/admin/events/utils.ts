@@ -6,6 +6,13 @@ import { SlottedTemplateResult } from "#elements/types";
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 
+export function formatUUID(hex: string): string {
+    if (hex.length < 32) {
+        return hex;
+    }
+    return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
+}
+
 /**
  * Given event with a geographical context, format it into a string for display.
  */
@@ -72,11 +79,4 @@ export function renderEventUser(
     }
 
     return body;
-}
-
-export function formatUUID(hex: string): string {
-    if (hex.length < 32) {
-        return hex;
-    }
-    return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
 }

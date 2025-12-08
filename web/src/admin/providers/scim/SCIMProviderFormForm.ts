@@ -15,8 +15,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProvid
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import {
     CompatibilityModeEnum,
     CoreApi,
@@ -48,7 +46,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-hidden-text-input>`;
 }
 
-export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
@@ -78,10 +76,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: Valida
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror
-                mode=${CodeMirrorMode.YAML}
-                value="${YAML.stringify(provider?.authOauthParams ?? {})}"
-            >
+            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
             </ak-codemirror>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
