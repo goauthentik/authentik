@@ -7,7 +7,7 @@ import { SlottedTemplateResult } from "../../elements/types";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,6 +19,24 @@ export class ExportButton extends WithLicenseSummary(AKElement) {
 
     @property({ attribute: false })
     public createExport!: () => Promise<void>;
+
+    // safest display setting for a button
+    cachedDisplay = "inline-block";
+
+    // memoize what the button would be if it were visible:
+    connectedCallback() {
+        super.connectedCallback();
+        const detectedDisplay = getComputedStyle(this).display;
+        if (detectedDisplay) {
+            this.cachedDisplay = detectedDisplay;
+        }
+    }
+
+    // Take it out of the DOM flow if it's not enabled
+    willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
+        this.style.display = this.hasEnterpriseLicense ? this.cachedDisplay : "none";
+    }
 
     #clickHandler = () => {
         if (typeof this.createExport !== "function") {
