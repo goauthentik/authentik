@@ -492,7 +492,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         if notification.hyperlink:
             context["link"] = {
                 "target": notification.hyperlink,
-                "label": notification.hyperlink_label
+                "label": notification.hyperlink_label,
             }
         if notification.event:
             context["title"] += notification.event.action
