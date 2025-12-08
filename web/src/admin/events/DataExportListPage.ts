@@ -25,12 +25,12 @@ export class DataExportListPage extends TablePage<DataExport> {
     public pageDescription = msg("Manage past data exports.");
     public pageIcon = "pf-icon pf-icon-export";
 
-    checkbox = true;
-    clearOnRefresh = true;
-    expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
 
-    @property()
-    order = "-requested_on";
+    @property({ type: String })
+    public order = "-requested_on";
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
         return new ReportsApi(DEFAULT_CONFIG).reportsExportsList(
