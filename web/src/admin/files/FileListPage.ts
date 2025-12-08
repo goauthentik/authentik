@@ -123,29 +123,29 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
     }
 
     protected renderEmpty(inner?: TemplateResult) {
-        if (!this.can(CapabilitiesEnum.CanSaveMedia)) {
-            return super.renderEmpty(
-                html`<ak-empty-state icon=${this.pageIcon}
-                    ><span
-                        >${msg("Configured file backend does not support file management.")}</span
-                    >
-                    <div slot="body">
-                        ${msg(
-                            "Please ensure the data folder is mounted or S3 storage is configured.",
-                        )}
-                    </div>
-                    <div slot="primary">
-                        <a
-                            target="_blank"
-                            class="pf-c-button pf-m-primary"
-                            href=${docLink("/install-config/configuration/#storage-settings")}
-                            >${msg("Learn more")}</a
-                        >
-                    </div>
-                </ak-empty-state>`,
-            );
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
+            return super.renderEmpty(inner);
         }
-        return super.renderEmpty(inner);
+        return super.renderEmpty(
+            html`<ak-empty-state icon=${this.pageIcon}
+                ><span
+                    >${msg("Configured file backend does not support file management.")}</span
+                >
+                <div slot="body">
+                    ${msg(
+                        "Please ensure the data folder is mounted or S3 storage is configured.",
+                    )}
+                </div>
+                <div slot="primary">
+                    <a
+                        target="_blank"
+                        class="pf-c-button pf-m-secondary"
+                        href=${docLink("/install-config/configuration/#storage-settings")}
+                        >${msg("Learn more")}</a
+                    >
+                </div>
+            </ak-empty-state>`,
+            );
     }
 
     protected renderObjectCreate() {
