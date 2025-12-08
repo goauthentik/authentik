@@ -143,7 +143,7 @@ export class FleetConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsAgentAgentconnector}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;
