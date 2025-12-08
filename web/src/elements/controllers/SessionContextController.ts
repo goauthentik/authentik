@@ -66,43 +66,6 @@ export class SessionContextController implements ReactiveController {
             .finally(() => {
                 this.#abortController = null;
             });
-
-        // return me()
-        //     .then((session) => {
-        //         const localeHint: string | undefined = session.user.settings.locale;
-
-        //         if (localeHint) {
-        //             const locale = autoDetectLanguage(localeHint);
-        //             this.#log(`Activating user's configured locale '${locale}'`);
-        //             this.#host[kAKLocale]?.setLocale(locale);
-        //         }
-
-        //         const config = this.#host[kAKConfig];
-
-        //         if (config?.errorReporting.sendPii) {
-        //             console.debug("authentik/config: Sentry with PII enabled.");
-
-        //             setUser({ email: session.user.email });
-        //         }
-
-        //         console.debug("authentik/controller/session: Fetched session", session);
-        //         this.#context.setValue(session);
-        //         this.#host.session = session;
-        //     })
-        //     .catch(async (error: unknown) => {
-        //         if (isCausedByAbortError(error)) {
-        //             this.#log("Aborted fetching session");
-        //             return;
-        //         }
-
-        //         const parsedError = parseAPIResponseError(error);
-        //         console.error("authentik/controller/session: Failed to fetch session", parsedError);
-
-        //         throw error;
-        //     })
-        //     .finally(() => {
-        //         this.#abortController = null;
-        //     });
     };
 
     public hostConnected() {

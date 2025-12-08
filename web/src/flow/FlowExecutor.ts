@@ -21,6 +21,7 @@ import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 import { formatLocaleOptions, PseudoLocale, TargetLocale } from "#common/ui/locale/definitions";
+import { setSessionLocale } from "#common/ui/locale/utils";
 import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
@@ -49,6 +50,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -486,7 +488,10 @@ export class FlowExecutor
     #localeChangeListener = (event: Event) => {
         const select = event.target as HTMLSelectElement;
         const locale = select.value as TargetLocale;
+
         this.locale = locale;
+
+        setSessionLocale(locale);
     };
 
     protected renderLocaleSelector() {
@@ -497,7 +502,9 @@ export class FlowExecutor
             localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
         }
 
-        const options = localeOptions.map(
+        const options = repeat(
+            localeOptions,
+            ([_locale, code]) => code,
             ([label, code]) =>
                 html`<option value=${code} ?selected=${code === locale}>${label}</option>`,
         );
