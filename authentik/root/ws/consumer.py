@@ -34,7 +34,7 @@ class MessageConsumer(JsonWebsocketConsumer):
         self.session_key = self.scope["session"].session_key
         if self.session_key:
             cache.set(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}", True, None)
-        if device_cookie := self.scope["cookies"]["authentik_device"]:
+        if device_cookie := self.scope["cookies"].get("authentik_device", None):
             self.device_cookie = device_cookie
             async_to_sync(self.channel_layer.group_add)(
                 build_device_group(self.device_cookie), self.channel_name

@@ -60,7 +60,6 @@ if (process.env.NODE_ENV === "development") {
 // trusts that we actually used it. Hence the double ignore below:
 
 @customElement("ak-interface-user-presentation")
-// @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) {
     static styles = [
         PFDisplay,
