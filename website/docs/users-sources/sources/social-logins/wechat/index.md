@@ -55,15 +55,15 @@ Source property mappings allow you to modify or gather extra information from so
 
 The following data is retrieved from WeChat and mapped to the user's attributes in authentik:
 
-| WeChat Field | authentik Attribute | Description |
-| :--- | :--- | :--- |
-| `unionid` (or `openid`) | `username` | Used as the primary identifier. |
-| `nickname` | `name` | The user's display name. |
-| `headimgurl` | `attributes.headimgurl` | URL to the user's avatar. |
-| `sex` | `attributes.sex` | Gender (1=Male, 2=Female). |
-| `city` | `attributes.city` | User's city. |
-| `province` | `attributes.province` | User's province. |
-| `country` | `attributes.country` | User's country. |
+| WeChat Field            | authentik Attribute     | Description                     |
+| :---------------------- | :---------------------- | :------------------------------ |
+| `unionid` (or `openid`) | `username`              | Used as the primary identifier. |
+| `nickname`              | `name`                  | The user's display name.        |
+| `headimgurl`            | `attributes.headimgurl` | URL to the user's avatar.       |
+| `sex`                   | `attributes.sex`        | Gender (1=Male, 2=Female).      |
+| `city`                  | `attributes.city`       | User's city.                    |
+| `province`              | `attributes.province`   | User's province.                |
+| `country`               | `attributes.country`    | User's country.                 |
 
 ### User Matching
 
