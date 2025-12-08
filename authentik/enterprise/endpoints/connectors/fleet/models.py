@@ -27,6 +27,9 @@ class FleetConnector(Connector):
         ),
     )
 
+    map_users = models.BooleanField(default=True)
+    map_teams_access_group = models.BooleanField(default=False)
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.endpoints.connectors.fleet.api import FleetConnectorSerializer

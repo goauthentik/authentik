@@ -12,6 +12,7 @@ from authentik.endpoints.facts import (
 )
 from authentik.endpoints.models import (
     Device,
+    DeviceAccessGroup,
     DeviceConnection,
     DeviceUserBinding,
 )
@@ -79,7 +80,10 @@ class FleetController(BaseController[DBC]):
                 device=device,
                 connector=self.connector,
             )
-            self.map_users(host, device)
+            if self.connector.map_users:
+                self.map_users(host, device)
+            if self.connector.map_teams_access_group:
+                self.map_access_group(host, device)
             try:
                 connection.create_snapshot(self.convert_host_data(host))
             except ValidationError as exc:
@@ -100,6 +104,15 @@ class FleetController(BaseController[DBC]):
                     "order": 0,
                 },
             )
+
+    def map_access_group(self, host: dict[str, Any], device: Device):
+        team_name = host.get("team_name")
+        if not team_name:
+            return
+        group, _ = DeviceAccessGroup.objects.get_or_create(name=team_name)
+        group.attributes["io.goauthentik.endpoints.connectors.fleet.team_id"] = host["team_id"]
+        device.access_group = group
+        device.save()
 
     @staticmethod
     def os_family(host: dict[str, Any]) -> OSFamily:

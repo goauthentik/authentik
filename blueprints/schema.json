@@ -6504,6 +6504,14 @@
                     "type": "integer",
                     "title": "Headers mapping",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
+                },
+                "map_users": {
+                    "type": "boolean",
+                    "title": "Map users"
+                },
+                "map_teams_access_group": {
+                    "type": "boolean",
+                    "title": "Map teams access group"
                 }
             },
             "required": []

@@ -17,6 +17,8 @@ class FleetConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializer):
             "url",
             "token",
             "headers_mapping",
+            "map_users",
+            "map_teams_access_group",
         ]
         extra_kwargs = {
             "token": {"write_only": True},
