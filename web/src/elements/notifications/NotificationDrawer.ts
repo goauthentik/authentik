@@ -90,9 +90,9 @@ export class NotificationDrawer extends WithSession(AKElement) {
 
     protected renderHyperlink(item: Notification) {
         if (!item.hyperlink) {
-          return nothing;
+            return nothing;
         }
-        
+
         return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
     }
 

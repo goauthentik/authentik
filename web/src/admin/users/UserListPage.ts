@@ -156,13 +156,13 @@ export class UserListPage extends WithBrandConfig(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    private async createExport() {
+    #createExport = async () => {
         await new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
         });
-    }
+    };
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

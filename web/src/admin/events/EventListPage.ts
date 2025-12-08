@@ -131,7 +131,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate({
             ...(await this.defaultEndpointConfig()),
         });
-    }
+    };
 }
 
 declare global {

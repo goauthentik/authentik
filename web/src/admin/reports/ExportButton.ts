@@ -2,10 +2,12 @@ import { parseAPIResponseError } from "../../common/errors/network";
 import { MessageLevel } from "../../common/messages";
 import { AKElement } from "../../elements/Base";
 import { showAPIErrorMessage, showMessage } from "../../elements/messages/MessageContainer";
-import { WithLicenseSummary } from "../../elements/mixins/license";
+import { SlottedTemplateResult } from "../../elements/types";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -16,40 +18,34 @@ export class ExportButton extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
-    public createExport: (() => void) | null = null
+    public createExport!: () => Promise<void>;
 
-    async handleExportClick() {
-        try {
-            await this.createExport();
-            showMessage({
-                level: MessageLevel.success,
-                message: msg("Data export requested successfully"),
-                description: msg("You will receive a notification once the data is ready"),
-            });
-        } catch (error) {
-            const apiError = await parseAPIResponseError(error);
-            await showAPIErrorMessage(apiError);
-        }
-    }
-
-    render(): TemplateResult {
-      #clickHandler = () => {
+    #clickHandler = () => {
         if (typeof this.createExport !== "function") {
             throw new TypeError("`createExport` property must be a function");
         }
 
         return this.createExport()
-          .then(() => {
-            showMessage({
-                level: MessageLevel.success,
-                message: msg("Data export requested successfully"),
-                description: msg("You will receive a notification once the data is ready"),
+            .then(() => {
+                showMessage({
+                    level: MessageLevel.success,
+                    message: msg("Data export requested successfully"),
+                    description: msg("You will receive a notification once the data is ready"),
+                });
+            })
+            .catch(async (error) => {
+                const apiError = await parseAPIResponseError(error);
+                showAPIErrorMessage(apiError);
             });
-          })
-          .catch(async (error) => {
-            const apiError = await parseAPIResponseError(error);
-            showAPIErrorMessage(apiError);
-        });
+    };
+
+    render(): SlottedTemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return nothing;
+        }
+        return html`<button @click=${this.#clickHandler} class="pf-c-button pf-m-secondary">
+            ${msg("Export")}
+        </button>`;
     }
 }
 
