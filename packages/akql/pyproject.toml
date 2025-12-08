@@ -1,0 +1,51 @@
+[project]
+name = "akql"
+version = "3.2.0"
+description = "Model and object permissions for Django"
+requires-python = ">=3.9,<3.14"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "Authentik Security Inc.", email = "hello@goauthentik.io" },
+  { name = "Denis Stebunov", email = "support@ivelum.com" },
+]
+keywords = ["django", "permissions", "authorization", "object", "row", "level"]
+
+classifiers = [
+  'Development Status :: 4 - Beta',
+  'Intended Audience :: Developers',
+  'Natural Language :: English',
+  'License :: OSI Approved :: MIT License',
+  'Programming Language :: Python',
+  'Programming Language :: Python :: 2.7',
+  'Programming Language :: Python :: 3.5',
+  'Programming Language :: Python :: 3.6',
+  'Programming Language :: Python :: 3.7',
+  'Programming Language :: Python :: 3.8',
+  'Programming Language :: Python :: 3.9',
+  'Programming Language :: Python :: 3.10',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'Programming Language :: Python :: 3.13',
+]
+
+dependencies = [
+  "ply>=3.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "akql",
+]
+
+[tool.setuptools.packages]
+find = {}

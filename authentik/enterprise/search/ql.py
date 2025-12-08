@@ -2,10 +2,10 @@
 
 from django.apps import apps
 from django.db.models import QuerySet
-from djangoql.ast import Name
-from djangoql.exceptions import DjangoQLError
-from djangoql.queryset import apply_search
-from djangoql.schema import DjangoQLSchema
+from akql.ast import Name
+from akql.exceptions import DjangoQLError
+from akql.queryset import apply_search
+from akql.schema import DjangoQLSchema
 from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request

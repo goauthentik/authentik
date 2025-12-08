@@ -5,8 +5,8 @@ from collections.abc import Generator
 
 from django.db import connection
 from django.db.models import Model, Q
-from djangoql.compat import text_type
-from djangoql.schema import StrField
+from akql.compat import text_type
+from akql.schema import StrField
 
 
 class JSONSearchField(StrField):

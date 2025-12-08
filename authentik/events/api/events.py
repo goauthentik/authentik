@@ -133,7 +133,7 @@ class EventViewSet(ModelViewSet):
     filterset_class = EventsFilter
 
     def get_ql_fields(self):
-        from djangoql.schema import DateTimeField, StrField
+        from akql.schema import DateTimeField, StrField
 
         from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
 

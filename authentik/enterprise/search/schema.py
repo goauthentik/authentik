@@ -1,4 +1,4 @@
-from djangoql.serializers import DjangoQLSchemaSerializer
+from akql.serializers import DjangoQLSchemaSerializer
 from drf_spectacular.generators import SchemaGenerator
 
 from authentik.enterprise.search.fields import JSONSearchField

@@ -499,7 +499,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
+        from akql.schema import BoolField, StrField
 
         from authentik.enterprise.search.fields import (
             ChoiceSearchField,

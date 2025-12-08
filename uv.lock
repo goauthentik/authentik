@@ -5,6 +5,7 @@ requires-python = "==3.13.*"
 [manifest]
 members = [
     "ak-guardian",
+    "akql",
     "authentik",
     "django-channels-postgres",
     "django-dramatiq-postgres",
@@ -91,6 +92,17 @@ requires-dist = [
     { name = "django", specifier = ">=5.2,<6.0" },
     { name = "typing-extensions", marker = "python_full_version < '3.13'", specifier = ">=4.12.0" },
 ]
+
+[[package]]
+name = "akql"
+version = "3.2.0"
+source = { editable = "packages/akql" }
+dependencies = [
+    { name = "ply" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "ply", specifier = ">=3.8" }]
 
 [[package]]
 name = "annotated-types"
@@ -188,6 +200,7 @@ version = "2025.12.0rc1"
 source = { editable = "." }
 dependencies = [
     { name = "ak-guardian" },
+    { name = "akql" },
     { name = "argon2-cffi" },
     { name = "channels" },
     { name = "cryptography" },
@@ -208,7 +221,6 @@ dependencies = [
     { name = "django-prometheus" },
     { name = "django-storages", extra = ["s3"] },
     { name = "django-tenants" },
-    { name = "djangoql" },
     { name = "djangorestframework" },
     { name = "docker" },
     { name = "drf-orjson-renderer" },
@@ -292,6 +304,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ak-guardian", editable = "packages/ak-guardian" },
+    { name = "akql", editable = "packages/akql" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "channels", specifier = "==4.3.1" },
     { name = "cryptography", specifier = "==45.0.5" },
@@ -312,7 +325,6 @@ requires-dist = [
     { name = "django-prometheus", specifier = "==2.4.1" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "django-tenants", specifier = "==3.9.0" },
-    { name = "djangoql", specifier = "==0.18.1" },
     { name = "djangorestframework", specifier = "==3.16.1" },
     { name = "docker", specifier = "==7.1.0" },
     { name = "drf-orjson-renderer", specifier = "==1.7.3" },
@@ -1249,17 +1261,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6b/54/c2e0e2dacd1caa9729c054da5bbdee4244ccd0de912b70dc2932a46ef177/django_tenants-3.9.0.tar.gz", hash = "sha256:6bc67c26be57f412e47c476261a977ef0ef74ec3740d50fd1eb6b69cb072eb03", size = 154244, upload-time = "2025-09-05T10:08:31.973Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/57/918cfca627fcdc3441981dddc72a22be02e57abdb5391eb7339ea77a5ef4/django_tenants-3.9.0-py3-none-any.whl", hash = "sha256:14421088a4336444e2c4af54f21a6af2e57e53dcf95ba5d19b5fa17142cb460b", size = 215955, upload-time = "2025-09-06T21:46:05.939Z" },
-]
-
-[[package]]
-name = "djangoql"
-version = "0.18.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ply" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/0a/83cdb7b9d3b854b98941363153945f6c051b3bc50cd61108a85677c98c3a/djangoql-0.18.1-py2.py3-none-any.whl", hash = "sha256:51b3085a805627ebb43cfd0aa861137cdf8f69cc3c9244699718fe04a6c8e26d", size = 218209, upload-time = "2024-01-08T14:10:47.915Z" },
 ]
 
 [[package]]
