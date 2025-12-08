@@ -22,7 +22,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admi
 import {
     PoliciesApi,
     PolicyBinding,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -202,7 +202,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesPolicybinding}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesPolicybinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

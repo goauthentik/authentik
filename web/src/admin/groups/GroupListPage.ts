@@ -43,7 +43,6 @@ export class GroupListPage extends TablePage<Group> {
 
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
         [msg("Members")],
         [msg("Superuser privileges?")],
         [msg("Actions"), null, msg("Row Actions")],
@@ -78,7 +77,6 @@ export class GroupListPage extends TablePage<Group> {
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,
-            html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>

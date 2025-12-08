@@ -16,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLSource,
     SourcesApi,
@@ -249,7 +249,7 @@ export class SAMLSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesSamlSamlsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesSamlSamlsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

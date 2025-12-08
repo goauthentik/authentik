@@ -3386,6 +3386,11 @@ paths:
           type: boolean
           default: false
       - in: query
+        name: include_parents
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_users
         schema:
           type: boolean
@@ -3470,6 +3475,11 @@ paths:
         required: true
       - in: query
         name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_parents
         schema:
           type: boolean
           default: false
@@ -4125,6 +4135,11 @@ paths:
           type: boolean
           default: true
       - in: query
+        name: include_roles
+        schema:
+          type: boolean
+          default: true
+      - in: query
         name: is_active
         schema:
           type: boolean
@@ -4159,6 +4174,23 @@ paths:
         name: path_startswith
         schema:
           type: string
+      - in: query
+        name: roles_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: roles_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: type
@@ -19736,216 +19768,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/assigned_by_users/:
-    get:
-      operationId: rbac_permissions_assigned_by_users_list
-      description: Get assigned object permissions for a single object
-      parameters:
-      - in: query
-        name: model
-        schema:
-          type: string
-          enum:
-          - authentik_blueprints.blueprintinstance
-          - authentik_brands.brand
-          - authentik_core.application
-          - authentik_core.applicationentitlement
-          - authentik_core.group
-          - authentik_core.token
-          - authentik_core.user
-          - authentik_crypto.certificatekeypair
-          - authentik_endpoints.deviceuserbinding
-          - authentik_endpoints.endpointstage
-          - authentik_endpoints_connectors_agent.agentconnector
-          - authentik_endpoints_connectors_agent.agentdeviceuserbinding
-          - authentik_endpoints_connectors_agent.enrollmenttoken
-          - authentik_enterprise.license
-          - authentik_events.event
-          - authentik_events.notification
-          - authentik_events.notificationrule
-          - authentik_events.notificationtransport
-          - authentik_events.notificationwebhookmapping
-          - authentik_flows.flow
-          - authentik_flows.flowstagebinding
-          - authentik_outposts.dockerserviceconnection
-          - authentik_outposts.kubernetesserviceconnection
-          - authentik_outposts.outpost
-          - authentik_policies.policybinding
-          - authentik_policies_dummy.dummypolicy
-          - authentik_policies_event_matcher.eventmatcherpolicy
-          - authentik_policies_expiry.passwordexpirypolicy
-          - authentik_policies_expression.expressionpolicy
-          - authentik_policies_geoip.geoippolicy
-          - authentik_policies_password.passwordpolicy
-          - authentik_policies_reputation.reputationpolicy
-          - authentik_policies_unique_password.uniquepasswordpolicy
-          - authentik_providers_google_workspace.googleworkspaceprovider
-          - authentik_providers_google_workspace.googleworkspaceprovidermapping
-          - authentik_providers_ldap.ldapprovider
-          - authentik_providers_microsoft_entra.microsoftentraprovider
-          - authentik_providers_microsoft_entra.microsoftentraprovidermapping
-          - authentik_providers_oauth2.oauth2provider
-          - authentik_providers_oauth2.scopemapping
-          - authentik_providers_proxy.proxyprovider
-          - authentik_providers_rac.endpoint
-          - authentik_providers_rac.racpropertymapping
-          - authentik_providers_rac.racprovider
-          - authentik_providers_radius.radiusprovider
-          - authentik_providers_radius.radiusproviderpropertymapping
-          - authentik_providers_saml.samlpropertymapping
-          - authentik_providers_saml.samlprovider
-          - authentik_providers_scim.scimmapping
-          - authentik_providers_scim.scimprovider
-          - authentik_providers_ssf.ssfprovider
-          - authentik_rbac.initialpermissions
-          - authentik_rbac.role
-          - authentik_sources_kerberos.groupkerberossourceconnection
-          - authentik_sources_kerberos.kerberossource
-          - authentik_sources_kerberos.kerberossourcepropertymapping
-          - authentik_sources_kerberos.userkerberossourceconnection
-          - authentik_sources_ldap.groupldapsourceconnection
-          - authentik_sources_ldap.ldapsource
-          - authentik_sources_ldap.ldapsourcepropertymapping
-          - authentik_sources_ldap.userldapsourceconnection
-          - authentik_sources_oauth.groupoauthsourceconnection
-          - authentik_sources_oauth.oauthsource
-          - authentik_sources_oauth.oauthsourcepropertymapping
-          - authentik_sources_oauth.useroauthsourceconnection
-          - authentik_sources_plex.groupplexsourceconnection
-          - authentik_sources_plex.plexsource
-          - authentik_sources_plex.plexsourcepropertymapping
-          - authentik_sources_plex.userplexsourceconnection
-          - authentik_sources_saml.groupsamlsourceconnection
-          - authentik_sources_saml.samlsource
-          - authentik_sources_saml.samlsourcepropertymapping
-          - authentik_sources_saml.usersamlsourceconnection
-          - authentik_sources_scim.scimsource
-          - authentik_sources_scim.scimsourcepropertymapping
-          - authentik_sources_telegram.grouptelegramsourceconnection
-          - authentik_sources_telegram.telegramsource
-          - authentik_sources_telegram.telegramsourcepropertymapping
-          - authentik_sources_telegram.usertelegramsourceconnection
-          - authentik_stages_authenticator_duo.authenticatorduostage
-          - authentik_stages_authenticator_duo.duodevice
-          - authentik_stages_authenticator_email.authenticatoremailstage
-          - authentik_stages_authenticator_email.emaildevice
-          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
-          - authentik_stages_authenticator_sms.authenticatorsmsstage
-          - authentik_stages_authenticator_sms.smsdevice
-          - authentik_stages_authenticator_static.authenticatorstaticstage
-          - authentik_stages_authenticator_static.staticdevice
-          - authentik_stages_authenticator_totp.authenticatortotpstage
-          - authentik_stages_authenticator_totp.totpdevice
-          - authentik_stages_authenticator_validate.authenticatorvalidatestage
-          - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
-          - authentik_stages_authenticator_webauthn.webauthndevice
-          - authentik_stages_captcha.captchastage
-          - authentik_stages_consent.consentstage
-          - authentik_stages_deny.denystage
-          - authentik_stages_dummy.dummystage
-          - authentik_stages_email.emailstage
-          - authentik_stages_identification.identificationstage
-          - authentik_stages_invitation.invitation
-          - authentik_stages_invitation.invitationstage
-          - authentik_stages_mtls.mutualtlsstage
-          - authentik_stages_password.passwordstage
-          - authentik_stages_prompt.prompt
-          - authentik_stages_prompt.promptstage
-          - authentik_stages_redirect.redirectstage
-          - authentik_stages_source.sourcestage
-          - authentik_stages_user_delete.userdeletestage
-          - authentik_stages_user_login.userloginstage
-          - authentik_stages_user_logout.userlogoutstage
-          - authentik_stages_user_write.userwritestage
-          - authentik_tasks_schedules.schedule
-          - authentik_tenants.domain
-        required: true
-      - in: query
-        name: object_pk
-        schema:
-          type: string
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserAssignedObjectPermissionList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/assigned_by_users/{id}/assign/:
-    post:
-      operationId: rbac_permissions_assigned_by_users_assign
-      description: Assign permission(s) to user
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PermissionAssignRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PermissionAssignResult'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/assigned_by_users/{id}/unassign/:
-    patch:
-      operationId: rbac_permissions_assigned_by_users_unassign_partial_update
-      description: |-
-        Unassign permission(s) to user. When `object_pk` is set, the permissions
-        are only assigned to the specific object, otherwise they are assigned globally.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPermissionAssignRequest'
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Successfully unassigned
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/permissions/roles/:
     get:
       operationId: rbac_permissions_roles_list
@@ -19975,260 +19797,36 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/roles/{id}/:
-    get:
-      operationId: rbac_permissions_roles_retrieve
-      description: Get a role's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group object permission.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraRoleObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: rbac_permissions_roles_update
-      description: Get a role's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group object permission.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExtraRoleObjectPermissionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraRoleObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: rbac_permissions_roles_partial_update
-      description: Get a role's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group object permission.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedExtraRoleObjectPermissionRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraRoleObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: rbac_permissions_roles_destroy
-      description: Get a role's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group object permission.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/users/:
-    get:
-      operationId: rbac_permissions_users_list
-      description: Get a users's assigned object permissions
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: user_id
-        schema:
-          type: integer
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedExtraUserObjectPermissionList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /rbac/permissions/users/{id}/:
-    get:
-      operationId: rbac_permissions_users_retrieve
-      description: Get a users's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user object permission.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraUserObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: rbac_permissions_users_update
-      description: Get a users's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user object permission.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExtraUserObjectPermissionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraUserObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: rbac_permissions_users_partial_update
-      description: Get a users's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user object permission.
-        required: true
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedExtraUserObjectPermissionRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExtraUserObjectPermission'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: rbac_permissions_users_destroy
-      description: Get a users's assigned object permissions
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this user object permission.
-        required: true
-      tags:
-      - rbac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/roles/:
     get:
       operationId: rbac_roles_list
       description: Role viewset
       parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: users
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       tags:
       - rbac
       security:
@@ -20376,6 +19974,68 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/add_user/:
+    post:
+      operationId: rbac_roles_add_user_create
+      description: Add user to role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountSerializerForRoleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User added
+        '404':
+          description: User not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/remove_user/:
+    post:
+      operationId: rbac_roles_remove_user_create
+      description: Remove user from role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountSerializerForRoleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: User removed
+        '404':
+          description: User not found
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -37576,7 +37236,7 @@ components:
       - name
     ExtraRoleObjectPermission:
       type: object
-      description: User permission with additional object-related data
+      description: Role permission with additional object-related data
       properties:
         id:
           type: integer
@@ -37609,7 +37269,7 @@ components:
           nullable: true
           description: |-
             Get model description from attached model. This operation takes at least
-            one additional query, and the description is only shown if the user/role has the
+            one additional query, and the description is only shown if the role has the
             view_ permission on the object
           readOnly: true
       required:
@@ -37621,72 +37281,6 @@ components:
       - model_verbose
       - name
       - object_description
-      - object_pk
-    ExtraRoleObjectPermissionRequest:
-      type: object
-      description: User permission with additional object-related data
-      properties:
-        object_pk:
-          type: string
-          minLength: 1
-      required:
-      - object_pk
-    ExtraUserObjectPermission:
-      type: object
-      description: User permission with additional object-related data
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        object_pk:
-          type: string
-        name:
-          type: string
-          readOnly: true
-        app_label_verbose:
-          type: string
-          description: Get app label from permission's model
-          readOnly: true
-        model_verbose:
-          type: string
-          description: Get model label from permission's model
-          readOnly: true
-        object_description:
-          type: string
-          nullable: true
-          description: |-
-            Get model description from attached model. This operation takes at least
-            one additional query, and the description is only shown if the user/role has the
-            view_ permission on the object
-          readOnly: true
-      required:
-      - app_label
-      - app_label_verbose
-      - codename
-      - id
-      - model
-      - model_verbose
-      - name
-      - object_description
-      - object_pk
-    ExtraUserObjectPermissionRequest:
-      type: object
-      description: User permission with additional object-related data
-      properties:
-        object_pk:
-          type: string
-          minLength: 1
-      required:
       - object_pk
     FileList:
       type: object
@@ -38790,12 +38384,15 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
+        parents_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
           readOnly: true
           nullable: true
         users:
@@ -38826,45 +38423,22 @@ components:
           items:
             type: string
             format: uuid
+          readOnly: true
         children_obj:
           type: array
           items:
-            $ref: '#/components/schemas/GroupChild'
+            $ref: '#/components/schemas/RelatedGroup'
           readOnly: true
           nullable: true
       required:
+      - children
       - children_obj
       - name
       - num_pk
-      - parent_name
+      - parents_obj
       - pk
       - roles_obj
       - users_obj
-    GroupChild:
-      type: object
-      description: Stripped down group serializer to show relevant children for groups
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        attributes:
-          type: object
-          additionalProperties: {}
-        group_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-      required:
-      - group_uuid
-      - name
-      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -39093,10 +38667,11 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
         users:
           type: array
           items:
@@ -39105,11 +38680,6 @@ components:
           type: object
           additionalProperties: {}
         roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        children:
           type: array
           items:
             type: string
@@ -39608,8 +39178,6 @@ components:
         name:
           type: string
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid
@@ -39623,16 +39191,10 @@ components:
             $ref: '#/components/schemas/Permission'
           readOnly: true
       required:
-      - mode
       - name
       - permissions_obj
       - pk
       - role
-    InitialPermissionsModeEnum:
-      enum:
-      - user
-      - role
-      type: string
     InitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -39641,8 +39203,6 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid
@@ -39651,7 +39211,6 @@ components:
           items:
             type: integer
       required:
-      - mode
       - name
       - role
     InstallID:
@@ -43450,18 +43009,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedExtraUserObjectPermissionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraUserObjectPermission'
-      required:
-      - pagination
-      - results
     PaginatedFlowList:
       type: object
       properties:
@@ -44887,21 +44434,6 @@ components:
       - pagination
       - results
       - autocomplete
-    PaginatedUserAssignedObjectPermissionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserAssignedObjectPermission'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - pagination
-      - results
-      - autocomplete
     PaginatedUserConsentList:
       type: object
       properties:
@@ -45170,21 +44702,12 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
-          readOnly: true
-          nullable: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - name
       - num_pk
-      - parent_name
       - pk
     PartialUser:
       type: object
@@ -46507,20 +46030,6 @@ components:
         expression:
           type: string
           minLength: 1
-    PatchedExtraRoleObjectPermissionRequest:
-      type: object
-      description: User permission with additional object-related data
-      properties:
-        object_pk:
-          type: string
-          minLength: 1
-    PatchedExtraUserObjectPermissionRequest:
-      type: object
-      description: User permission with additional object-related data
-      properties:
-        object_pk:
-          type: string
-          minLength: 1
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -46784,10 +46293,11 @@ components:
         is_superuser:
           type: boolean
           description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
+        parents:
+          type: array
+          items:
+            type: string
+            format: uuid
         users:
           type: array
           items:
@@ -46796,11 +46306,6 @@ components:
           type: object
           additionalProperties: {}
         roles:
-          type: array
-          items:
-            type: string
-            format: uuid
-        children:
           type: array
           items:
             type: string
@@ -46923,8 +46428,6 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        mode:
-          $ref: '#/components/schemas/InitialPermissionsModeEnum'
         role:
           type: string
           format: uuid
@@ -49267,6 +48770,11 @@ components:
           items:
             type: string
             format: uuid
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
         email:
           type: string
           format: email
@@ -51283,6 +50791,32 @@ components:
       required:
       - matching_mode
       - url
+    RelatedGroup:
+      type: object
+      description: Stripped down group serializer to show relevant children/parents
+        for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
     Reputation:
       type: object
       description: Reputation Serializer
@@ -51417,14 +50951,45 @@ components:
         name:
           type: string
           readOnly: true
-        permissions:
+        object_permissions:
           type: array
           items:
             $ref: '#/components/schemas/RoleObjectPermission'
+        model_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleModelPermission'
       required:
+      - model_permissions
       - name
-      - permissions
+      - object_permissions
       - role_pk
+    RoleModelPermission:
+      type: object
+      description: Role-bound object level permission
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - codename
+      - id
+      - model
+      - name
     RoleObjectPermission:
       type: object
       description: Role-bound object level permission
@@ -54825,6 +54390,17 @@ components:
             $ref: '#/components/schemas/PartialGroup'
           readOnly: true
           nullable: true
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+          nullable: true
         email:
           type: string
           format: email
@@ -54865,6 +54441,7 @@ components:
       - name
       - password_change_date
       - pk
+      - roles_obj
       - uid
       - username
       - uuid
@@ -54876,56 +54453,14 @@ components:
           type: integer
       required:
       - pk
-    UserAssignedObjectPermission:
+    UserAccountSerializerForRoleRequest:
       type: object
-      description: Users assigned object permission serializer
+      description: Account adding/removing operations
       properties:
         pk:
           type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserObjectPermission'
-        is_superuser:
-          type: boolean
       required:
-      - is_superuser
-      - name
-      - permissions
       - pk
-      - uid
-      - username
     UserAttributeEnum:
       enum:
       - username
@@ -55381,35 +54916,6 @@ components:
       - identifier
       - source
       - user
-    UserObjectPermission:
-      type: object
-      description: User-bound object level permission
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-        object_pk:
-          type: string
-        name:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - codename
-      - id
-      - model
-      - name
-      - object_pk
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
@@ -55506,6 +55012,11 @@ components:
           format: date-time
           nullable: true
         groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles:
           type: array
           items:
             type: string
@@ -55608,6 +55119,11 @@ components:
           items:
             $ref: '#/components/schemas/UserSelfGroups'
           readOnly: true
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelfRoles'
+          readOnly: true
         email:
           type: string
           format: email
@@ -55640,11 +55156,24 @@ components:
       - is_superuser
       - name
       - pk
+      - roles
       - settings
       - system_permissions
       - uid
       - username
     UserSelfGroups:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+    UserSelfRoles:
       type: object
       properties:
         name:
