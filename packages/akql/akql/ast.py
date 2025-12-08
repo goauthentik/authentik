@@ -1,19 +1,15 @@
-from __future__ import unicode_literals
-
-from .compat import text_type
-
-
-class Node(object):
+class Node:
     def __str__(self):
         children = []
         for k, v in self.__dict__.items():
-            if isinstance(v, (list, tuple)):
-                v = '[%s]' % ', '.join([text_type(v) for v in v if v])
-            children.append('%s=%s' % (k, v))
-        return '<%s%s%s>' % (
+            vv = v
+            if isinstance(v, list | tuple):
+                vv = "[{}]".format(", ".join([str(v) for v in v if v]))
+            children.append(f"{k}={vv}")
+        return "<{}{}{}>".format(
             self.__class__.__name__,
-            ': ' if children else '',
-            ', '.join(children),
+            ": " if children else "",
+            ", ".join(children),
         )
 
     __repr__ = __str__
@@ -48,7 +44,7 @@ class Name(Node):
 
     @property
     def value(self):
-        return '.'.join(self.parts)
+        return ".".join(self.parts)
 
 
 class Const(Node):

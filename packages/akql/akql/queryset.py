@@ -9,7 +9,7 @@ def build_filter(expr, schema_instance):
     if isinstance(expr.operator, Logical):
         left = build_filter(expr.left, schema_instance)
         right = build_filter(expr.right, schema_instance)
-        if expr.operator.operator == 'or':
+        if expr.operator.operator == "or":
             return left | right
         else:
             return left & right

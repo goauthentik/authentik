@@ -246,11 +246,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ]
 
     def get_ql_fields(self):
-        from akql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            JSONSearchField,
-        )
+        from akql.schema import BoolField, JSONSearchField, StrField
 
         return [
             StrField(Group, "name"),

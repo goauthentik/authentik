@@ -1,35 +1,35 @@
 import inspect
 import warnings
-from collections import OrderedDict, deque
+from collections import OrderedDict, defaultdict, deque
+from collections.abc import Generator
 from datetime import datetime
 from decimal import Decimal
 
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
-from django.db import models
-from django.db.models import ManyToManyRel, ManyToOneRel
+from django.db import connection, models
+from django.db.models import ManyToManyRel, ManyToOneRel, Model, Q
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
 
 from .ast import Comparison, Const, List, Logical, Name, Node
-from .compat import text_type
 from .exceptions import DjangoQLSchemaError
 
 
-class DjangoQLField(object):
+class DjangoQLField:
     """
     Abstract searchable field
     """
+
     model = None
     name = None
     nullable = False
     suggest_options = False
-    type = 'unknown'
+    type = "unknown"
     value_types = []
-    value_types_description = ''
+    value_types_description = ""
 
-    def __init__(self, model=None, name=None, nullable=None,
-                 suggest_options=None):
+    def __init__(self, model=None, name=None, nullable=None, suggest_options=None):
         if model is not None:
             self.model = model
         if name is not None:
@@ -60,7 +60,7 @@ class DjangoQLField(object):
         if choices:
             search = search.lower()
             for c in choices:
-                choice = text_type(c[1])
+                choice = str(c[1])
                 if search in choice.lower():
                     result.append(choice)
         return result
@@ -95,24 +95,24 @@ class DjangoQLField(object):
             invert - boolean, True if this comparison needs to be inverted
         """
         op = {
-            '=': '',
-            '>': '__gt',
-            '>=': '__gte',
-            '<': '__lt',
-            '<=': '__lte',
-            '~': '__icontains',
-            'in': '__in',
-            'startswith': '__istartswith',
-            'endswith': '__iendswith',
+            "=": "",
+            ">": "__gt",
+            ">=": "__gte",
+            "<": "__lt",
+            "<=": "__lte",
+            "~": "__icontains",
+            "in": "__in",
+            "startswith": "__istartswith",
+            "endswith": "__iendswith",
         }.get(operator)
         if op is not None:
             return op, False
         op = {
-            '!=': '',
-            '!~': '__icontains',
-            'not in': '__in',
-            'not startswith': '__istartswith',
-            'not endswith': '__iendswith',
+            "!=": "",
+            "!~": "__icontains",
+            "not in": "__in",
+            "not startswith": "__istartswith",
+            "not endswith": "__iendswith",
         }[operator]
         return op, True
 
@@ -136,138 +136,134 @@ class DjangoQLField(object):
         :param value: value passed for comparison
         :return: Q-object
         """
-        search = '__'.join(path + [self.get_lookup_name()])
+        search = "__".join(path + [self.get_lookup_name()])
         op, invert = self.get_operator(operator)
-        q = models.Q(**{'%s%s' % (search, op): self.get_lookup_value(value)})
+        q = models.Q(**{f"{search}{op}": self.get_lookup_value(value)})
         return ~q if invert else q
 
     def validate(self, value):
         if not self.nullable and value is None:
             raise DjangoQLSchemaError(
-                'Field %s is not nullable, '
-                "can't compare it to None" % self.name,
+                f"Field {self.name} is not nullable, " "can't compare it to None",
             )
         if value is not None and type(value) not in self.value_types:
             if self.nullable:
                 msg = (
                     'Field "{field}" has "nullable {field_type}" type. '
-                    'It can be compared to {possible_values} or None, '
-                    'but not to {value}'
+                    "It can be compared to {possible_values} or None, "
+                    "but not to {value}"
                 )
             else:
                 msg = (
                     'Field "{field}" has "{field_type}" type. It can '
-                    'be compared to {possible_values}, '
-                    'but not to {value}'
+                    "be compared to {possible_values}, "
+                    "but not to {value}"
                 )
-            raise DjangoQLSchemaError(msg.format(
-                field=self.name,
-                field_type=self.type,
-                possible_values=self.value_types_description,
-                value=repr(value),
-            ))
+            raise DjangoQLSchemaError(
+                msg.format(
+                    field=self.name,
+                    field_type=self.type,
+                    possible_values=self.value_types_description,
+                    value=repr(value),
+                )
+            )
 
 
 class IntField(DjangoQLField):
-    type = 'int'
+    type = "int"
     value_types = [int]
-    value_types_description = 'integer numbers'
+    value_types_description = "integer numbers"
 
     def validate(self, value):
         """
         Support enum-like choices defined on an integer field
         """
-        return super(IntField, self).validate(self.get_lookup_value(value))
+        return super().validate(self.get_lookup_value(value))
 
 
 class FloatField(DjangoQLField):
-    type = 'float'
+    type = "float"
     value_types = [int, float, Decimal]
-    value_types_description = 'floating point numbers'
+    value_types_description = "floating point numbers"
 
 
 class StrField(DjangoQLField):
-    type = 'str'
-    value_types = [text_type]
-    value_types_description = 'strings'
+    type = "str"
+    value_types = [str]
+    value_types_description = "strings"
 
     def get_options(self, search):
-        choice_options = super(StrField, self).get_options(search)
+        choice_options = super().get_options(search)
         if choice_options:
             return choice_options
         lookup = {}
         if search:
-            lookup['%s__icontains' % self.name] = search
-        return self.model.objects\
-            .filter(**lookup)\
-            .order_by(self.name)\
-            .values_list(self.name, flat=True)\
+            lookup[f"{self.name}__icontains"] = search
+        return (
+            self.model.objects.filter(**lookup)
+            .order_by(self.name)
+            .values_list(self.name, flat=True)
             .distinct()
+        )
 
 
 class BoolField(DjangoQLField):
-    type = 'bool'
+    type = "bool"
     value_types = [bool]
-    value_types_description = 'True or False'
+    value_types_description = "True or False"
 
 
 class DateField(DjangoQLField):
-    type = 'date'
-    value_types = [text_type]
+    type = "date"
+    value_types = [str]
     value_types_description = 'dates in "YYYY-MM-DD" format'
 
     def validate(self, value):
-        super(DateField, self).validate(value)
+        super().validate(value)
         try:
             self.get_lookup_value(value)
-        except ValueError:
+        except ValueError as exc:
             raise DjangoQLSchemaError(
-                'Field "%s" can be compared to dates in '
-                '"YYYY-MM-DD" format, but not to %s' % (
-                    self.name,
-                    repr(value),
-                ),
-            )
+                f'Field "{self.name}" can be compared to dates in '
+                f'"YYYY-MM-DD" format, but not to {repr(value)}',
+            ) from exc
 
     def get_lookup_value(self, value):
         if not value:
             return None
-        return datetime.strptime(value, '%Y-%m-%d').date()
+        return datetime.strptime(value, "%Y-%m-%d").date()
 
 
 class DateTimeField(DjangoQLField):
-    type = 'datetime'
-    value_types = [text_type]
+    type = "datetime"
+    value_types = [str]
     value_types_description = 'timestamps in "YYYY-MM-DD HH:MM" format'
 
     def validate(self, value):
-        super(DateTimeField, self).validate(value)
+        super().validate(value)
         try:
             self.get_lookup_value(value)
-        except ValueError:
+        except ValueError as exc:
             raise DjangoQLSchemaError(
-                'Field "%s" can be compared to timestamps in '
-                '"YYYY-MM-DD HH:MM" format, but not to %s' % (
-                    self.name,
-                    repr(value),
-                ),
-            )
+                f'Field "{self.name}" can be compared to timestamps in '
+                f'"YYYY-MM-DD HH:MM" format, but not to {repr(value)}',
+            ) from exc
 
     def get_lookup_value(self, value):
         if not value:
             return None
-        mask = '%Y-%m-%d'
+        mask = "%Y-%m-%d"
         if len(value) > 10:
-            mask += ' %H:%M'
+            mask += " %H:%M"
         if len(value) > 16:
-            mask += ':%S'
+            mask += ":%S"
         dt = datetime.strptime(value, mask)
         if settings.USE_TZ:
             dt = dt.replace(tzinfo=get_current_timezone())
         return dt
 
     def get_lookup(self, path, operator, value):
-        search = '__'.join(path + [self.get_lookup_name()])
+        search = "__".join(path + [self.get_lookup_name()])
         op, invert = self.get_operator(operator)
 
         # Add LIKE operator support for datetime fields. For LIKE comparisons
@@ -281,18 +277,17 @@ class DateTimeField(DjangoQLField):
         # and resulting comparison would look like
         #       'created LIKE %2017-01-30 00:00:00%'
         # which is not what we want for this case.
-        val = value if operator in ('~', '!~') else self.get_lookup_value(value)
+        val = value if operator in ("~", "!~") else self.get_lookup_value(value)
 
-        q = models.Q(**{'%s%s' % (search, op): val})
+        q = models.Q(**{f"{search}{op}": val})
         return ~q if invert else q
 
 
 class RelationField(DjangoQLField):
-    type = 'relation'
+    type = "relation"
 
-    def __init__(self, model, name, related_model, nullable=False,
-                 suggest_options=False):
-        super(RelationField, self).__init__(
+    def __init__(self, model, name, related_model, nullable=False, suggest_options=False):
+        super().__init__(
             model=model,
             name=name,
             nullable=nullable,
@@ -305,7 +300,126 @@ class RelationField(DjangoQLField):
         return DjangoQLSchema.model_label(self.related_model)
 
 
-class DjangoQLSchema(object):
+class JSONSearchField(StrField):
+    """JSON field for DjangoQL"""
+
+    model: Model
+
+    def __init__(self, model=None, name=None, nullable=None, suggest_nested=True):
+        # Set this in the constructor to not clobber the type variable
+        self.type = "relation"
+        self.suggest_nested = suggest_nested
+        super().__init__(model, name, nullable)
+
+    def get_lookup(self, path, operator, value):
+        search = "__".join(path)
+        op, invert = self.get_operator(operator)
+        q = Q(**{f"{search}{op}": self.get_lookup_value(value)})
+        return ~q if invert else q
+
+    def json_field_keys(self) -> Generator[tuple[str]]:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"""
+                WITH RECURSIVE "{self.name}_keys" AS (
+                    SELECT
+                        ARRAY[jsonb_object_keys("{self.name}")] AS key_path_array,
+                        "{self.name}" -> jsonb_object_keys("{self.name}") AS value
+                    FROM {self.model._meta.db_table}
+                    WHERE "{self.name}" IS NOT NULL
+                        AND jsonb_typeof("{self.name}") = 'object'
+
+                    UNION ALL
+
+                    SELECT
+                        ck.key_path_array || jsonb_object_keys(ck.value),
+                        ck.value -> jsonb_object_keys(ck.value) AS value
+                    FROM "{self.name}_keys" ck
+                    WHERE jsonb_typeof(ck.value) = 'object'
+                ),
+
+                unique_paths AS (
+                    SELECT DISTINCT key_path_array
+                    FROM "{self.name}_keys"
+                )
+
+                SELECT key_path_array FROM unique_paths;
+            """  # nosec
+            )
+            return (x[0] for x in cursor.fetchall())
+
+    def get_nested_options(self) -> OrderedDict:
+        """Get keys of all nested objects to show autocomplete"""
+        if not self.suggest_nested:
+            return OrderedDict()
+        base_model_name = f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
+
+        def recursive_function(parts: list[str], parent_parts: list[str] | None = None):
+            if not parent_parts:
+                parent_parts = []
+            path = parts.pop(0)
+            parent_parts.append(path)
+            relation_key = "_".join(parent_parts)
+            if len(parts) > 1:
+                out_dict = {
+                    relation_key: {
+                        parts[0]: {
+                            "type": "relation",
+                            "relation": f"{relation_key}_{parts[0]}",
+                        }
+                    }
+                }
+                child_paths = recursive_function(parts.copy(), parent_parts.copy())
+                child_paths.update(out_dict)
+                return child_paths
+            else:
+                return {relation_key: {parts[0]: {}}}
+
+        relation_structure = defaultdict(dict)
+
+        for relations in self.json_field_keys():
+            result = recursive_function([base_model_name] + relations)
+            for relation_key, value in result.items():
+                for sub_relation_key, sub_value in value.items():
+                    if not relation_structure[relation_key].get(sub_relation_key, None):
+                        relation_structure[relation_key][sub_relation_key] = sub_value
+                    else:
+                        relation_structure[relation_key][sub_relation_key].update(sub_value)
+
+        final_dict = defaultdict(dict)
+
+        for key, value in relation_structure.items():
+            for sub_key, sub_value in value.items():
+                if not sub_value:
+                    final_dict[key][sub_key] = {
+                        "type": "str",
+                        "nullable": True,
+                    }
+                else:
+                    final_dict[key][sub_key] = sub_value
+        return OrderedDict(final_dict)
+
+    def relation(self) -> str:
+        return f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
+
+
+class ChoiceSearchField(StrField):
+    def __init__(self, model=None, name=None, nullable=None):
+        super().__init__(model, name, nullable, suggest_options=True)
+
+    def get_options(self, search):
+        result = []
+        choices = self._field_choices()
+        if choices:
+            search = search.lower()
+            for c in choices:
+                choice = str(c[0])
+                if search in choice.lower():
+                    result.append(choice)
+        return result
+
+
+class DjangoQLSchema:
     include = ()  # models to include into introspection
     exclude = ()  # models to exclude from introspection
     suggest_options = None
@@ -313,18 +427,15 @@ class DjangoQLSchema(object):
     def __init__(self, model):
         if not inspect.isclass(model) or not issubclass(model, models.Model):
             raise DjangoQLSchemaError(
-                'Schema must be initialized with a subclass of Django model',
+                "Schema must be initialized with a subclass of Django model",
             )
         if self.include and self.exclude:
             raise DjangoQLSchemaError(
-                'Either include or exclude can be specified, but not both',
+                "Either include or exclude can be specified, but not both",
             )
         if self.excluded(model):
             raise DjangoQLSchemaError(
-                "%s can't be used with %s because it's excluded from it" % (
-                    model,
-                    self.__class__,
-                ),
+                f"{model} can't be used with {self.__class__} because it's excluded from it",
             )
         self.current_model = model
         self._models = None
@@ -332,9 +443,7 @@ class DjangoQLSchema(object):
             self.suggest_options = {}
 
     def excluded(self, model):
-        return model in self.exclude or (
-            self.include and model not in self.include
-        )
+        return model in self.exclude or (self.include and model not in self.include)
 
     @property
     def models(self):
@@ -347,7 +456,7 @@ class DjangoQLSchema(object):
 
     @classmethod
     def model_label(self, model):
-        return text_type(model._meta)
+        return str(model._meta)
 
     def introspect(self, model, exclude=()):
         """
@@ -390,12 +499,12 @@ class DjangoQLSchema(object):
         .super() and exclude unwanted fields from its result.
         """
         return sorted(
-            [f.name for f in model._meta.get_fields() if f.name != 'password'],
+            [f.name for f in model._meta.get_fields() if f.name != "password"],
         )
 
     def get_field_instance(self, model, field_name):
         field = model._meta.get_field(field_name)
-        field_kwargs = {'model': model, 'name': field.name}
+        field_kwargs = {"model": model, "name": field.name}
         if field.is_relation:
             if not field.related_model:
                 # GenericForeignKey
@@ -403,17 +512,15 @@ class DjangoQLSchema(object):
             if self.excluded(field.related_model):
                 return
             field_cls = RelationField
-            field_kwargs['related_model'] = field.related_model
+            field_kwargs["related_model"] = field.related_model
         else:
             field_cls = self.get_field_cls(field)
-        if isinstance(field, (ManyToOneRel, ManyToManyRel, ForeignObjectRel)):
+        if isinstance(field, ManyToOneRel | ManyToManyRel | ForeignObjectRel):
             # Django 1.8 doesn't have .null attribute for these fields
-            field_kwargs['nullable'] = True
+            field_kwargs["nullable"] = True
         else:
-            field_kwargs['nullable'] = field.null
-        field_kwargs['suggest_options'] = (
-            field.name in self.suggest_options.get(model, [])
-        )
+            field_kwargs["nullable"] = field.null
+        field_kwargs["suggest_options"] = field.name in self.suggest_options.get(model, [])
         return field_cls(**field_kwargs)
 
     def get_field_cls(self, field):
@@ -426,11 +533,11 @@ class DjangoQLSchema(object):
         )
         if isinstance(field, str_fields):
             return StrField
-        elif isinstance(field, (models.AutoField, models.IntegerField)):
+        elif isinstance(field, models.AutoField | models.IntegerField):
             return IntField
-        elif isinstance(field, (models.BooleanField, models.NullBooleanField)):
+        elif isinstance(field, models.BooleanField | models.NullBooleanField):
             return BoolField
-        elif isinstance(field, (models.DecimalField, models.FloatField)):
+        elif isinstance(field, models.DecimalField | models.FloatField):
             return FloatField
         elif isinstance(field, models.DateTimeField):
             return DateTimeField
@@ -440,9 +547,11 @@ class DjangoQLSchema(object):
 
     def as_dict(self):
         from .serializers import DjangoQLSchemaSerializer
+
         warnings.warn(
-            'DjangoQLSchema.as_dict() is deprecated and will be removed in '
-            'future releases. Please use DjangoQLSchemaSerializer instead.',
+            "DjangoQLSchema.as_dict() is deprecated and will be removed in "
+            "future releases. Please use DjangoQLSchemaSerializer instead.",
+            stacklevel=2,
         )
         return DjangoQLSchemaSerializer().serialize(self)
 
@@ -454,12 +563,12 @@ class DjangoQLSchema(object):
             field = self.models[model].get(name_part)
             if not field:
                 raise DjangoQLSchemaError(
-                    'Unknown field: %s. Possible choices are: %s' % (
+                    "Unknown field: {}. Possible choices are: {}".format(
                         name_part,
-                        ', '.join(sorted(self.models[model].keys())),
+                        ", ".join(sorted(self.models[model].keys())),
                     ),
                 )
-            if field.type == 'relation':
+            if field.type == "relation":
                 model = field.relation
                 field = None
         return field
@@ -475,7 +584,7 @@ class DjangoQLSchema(object):
             return
         assert isinstance(node.left, Name)
         assert isinstance(node.operator, Comparison)
-        assert isinstance(node.right, (Const, List))
+        assert isinstance(node.right, Const | List)
 
         # Check that field and value types are compatible
         field = self.resolve_name(node.left)
@@ -483,8 +592,8 @@ class DjangoQLSchema(object):
         if field is None:
             if value is not None:
                 raise DjangoQLSchemaError(
-                    'Related model %s can be compared to None only, but not to '
-                    '%s' % (node.left.value, type(value).__name__),
+                    f"Related model {node.left.value} can be compared to None only, but not to "
+                    f"{type(value).__name__}",
                 )
         else:
             values = value if isinstance(node.right, List) else [value]

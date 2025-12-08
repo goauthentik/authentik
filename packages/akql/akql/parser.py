@@ -1,19 +1,14 @@
-from __future__ import unicode_literals
-
 import re
 from decimal import Decimal
 
-import ply.yacc as yacc
+from ply import yacc
 
 from .ast import Comparison, Const, Expression, List, Logical, Name
-from .compat import binary_type, text_type
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
 
-
 unescape_pattern = re.compile(
-    '(' + DjangoQLLexer.re_escaped_char + '|' +
-    DjangoQLLexer.re_escaped_unicode + ')',
+    "(" + DjangoQLLexer.re_escaped_char + "|" + DjangoQLLexer.re_escaped_unicode + ")",
 )
 
 
@@ -22,29 +17,29 @@ def unescape_repl(m):
     if len(contents) == 2:
         return contents[1]
     else:
-        return contents.encode('utf8').decode('unicode_escape')
+        return contents.encode("utf8").decode("unicode_escape")
 
 
 def unescape(value):
-    if isinstance(value, binary_type):
-        value = value.decode('utf8')
+    if isinstance(value, bytes):
+        value = value.decode("utf8")
     return re.sub(unescape_pattern, unescape_repl, value)
 
 
-class DjangoQLParser(object):
+class DjangoQLParser:
     def __init__(self, debug=False, **kwargs):
         self.default_lexer = DjangoQLLexer()
         self.tokens = self.default_lexer.tokens
-        kwargs['debug'] = debug
-        if 'write_tables' not in kwargs:
-            kwargs['write_tables'] = False
+        kwargs["debug"] = debug
+        if "write_tables" not in kwargs:
+            kwargs["write_tables"] = False
         self.yacc = yacc.yacc(module=self, **kwargs)
 
     def parse(self, input=None, lexer=None, **kwargs):  # noqa: A002
         lexer = lexer or self.default_lexer
         return self.yacc.parse(input=input, lexer=lexer, **kwargs)
 
-    start = 'expression'
+    start = "expression"
 
     def p_expression_parens(self, p):
         """
@@ -72,7 +67,7 @@ class DjangoQLParser(object):
         """
         name : NAME
         """
-        p[0] = Name(parts=p[1].split('.'))
+        p[0] = Name(parts=p[1].split("."))
 
     def p_logical(self, p):
         """
@@ -124,7 +119,7 @@ class DjangoQLParser(object):
         if len(p) == 2:
             p[0] = Comparison(operator=p[1])
         else:
-            p[0] = Comparison(operator='%s %s' % (p[1], p[2]))
+            p[0] = Comparison(operator=f"{p[1]} {p[2]}")
 
     def p_comparison_in_list(self, p):
         """
@@ -134,7 +129,7 @@ class DjangoQLParser(object):
         if len(p) == 2:
             p[0] = Comparison(operator=p[1])
         else:
-            p[0] = Comparison(operator='%s %s' % (p[1], p[2]))
+            p[0] = Comparison(operator=f"{p[1]} {p[2]}")
 
     def p_const_value(self, p):
         """
@@ -208,13 +203,13 @@ class DjangoQLParser(object):
 
     def p_error(self, token):
         if token is None:
-            self.raise_syntax_error('Unexpected end of input')
+            self.raise_syntax_error("Unexpected end of input")
         else:
-            fragment = text_type(token.value)
+            fragment = str(token.value)
             if len(fragment) > 20:
-                fragment = fragment[:17] + '...'
+                fragment = fragment[:17] + "..."
             self.raise_syntax_error(
-                'Syntax error at %s' % repr(fragment),
+                f"Syntax error at {repr(fragment)}",
                 token=token,
             )
 
@@ -222,7 +217,7 @@ class DjangoQLParser(object):
         if token is None:
             raise DjangoQLParserError(message)
         lexer = token.lexer
-        if callable(getattr(lexer, 'find_column', None)):
+        if callable(getattr(lexer, "find_column", None)):
             column = lexer.find_column(token)
         else:
             column = None

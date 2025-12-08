@@ -1,7 +1,7 @@
+from akql.schema import JSONSearchField
 from akql.serializers import DjangoQLSchemaSerializer
 from drf_spectacular.generators import SchemaGenerator
 
-from authentik.enterprise.search.fields import JSONSearchField
 from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA
 
 

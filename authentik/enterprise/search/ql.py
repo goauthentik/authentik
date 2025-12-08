@@ -1,17 +1,15 @@
 """DjangoQL search"""
 
-from django.apps import apps
-from django.db.models import QuerySet
 from akql.ast import Name
 from akql.exceptions import DjangoQLError
 from akql.queryset import apply_search
-from akql.schema import DjangoQLSchema
+from akql.schema import DjangoQLSchema, JSONSearchField
+from django.apps import apps
+from django.db.models import QuerySet
 from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
-
-from authentik.enterprise.search.fields import JSONSearchField
 
 LOGGER = get_logger()
 AUTOCOMPLETE_SCHEMA = ResolvedComponent(

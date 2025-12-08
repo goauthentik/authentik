@@ -3,15 +3,15 @@ class DjangoQLError(Exception):
         self.value = value
         self.line = line
         self.column = column
-        super(DjangoQLError, self).__init__(message)
+        super().__init__(message)
 
     def __str__(self):
-        message = super(DjangoQLError, self).__str__()
+        message = super().__str__()
         if self.line:
-            position_info = 'Line %s' % self.line
+            position_info = f"Line {self.line}"
             if self.column:
-                position_info += ', col %s' % self.column
-            return '%s: %s' % (position_info, message)
+                position_info += f", col {self.column}"
+            return f"{position_info}: {message}"
         else:
             return message
 

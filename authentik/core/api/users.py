@@ -499,12 +499,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     ]
 
     def get_ql_fields(self):
-        from akql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            ChoiceSearchField,
-            JSONSearchField,
-        )
+        from akql.schema import BoolField, ChoiceSearchField, JSONSearchField, StrField
 
         return [
             StrField(User, "username"),

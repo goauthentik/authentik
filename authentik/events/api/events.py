@@ -133,9 +133,7 @@ class EventViewSet(ModelViewSet):
     filterset_class = EventsFilter
 
     def get_ql_fields(self):
-        from akql.schema import DateTimeField, StrField
-
-        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+        from akql.schema import ChoiceSearchField, DateTimeField, JSONSearchField, StrField
 
         return [
             ChoiceSearchField(Event, "action"),
