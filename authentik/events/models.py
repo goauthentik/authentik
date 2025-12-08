@@ -489,6 +489,11 @@ class NotificationTransport(TasksModel, SerializerModel):
             context["key_value"]["event_user_username"] = notification.event.user.get(
                 "username", None
             )
+        if notification.hyperlink:
+            context["link"] = {
+                "target": notification.hyperlink,
+                "label": notification.hyperlink_label
+            }
         if notification.event:
             context["title"] += notification.event.action
             for key, value in notification.event.context.items():
