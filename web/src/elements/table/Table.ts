@@ -253,9 +253,16 @@ export abstract class Table<T extends object>
 
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
 
-    #refreshListener = () => {
+    constructor() {
+        super();
+        this.#refreshListener = this.refreshListener.bind(this);
+    }
+
+    protected refreshListener(event: Event): void | Promise<void> {
         return this.fetch();
-    };
+    }
+
+    #refreshListener: EventListener;
 
     public override connectedCallback(): void {
         super.connectedCallback();
