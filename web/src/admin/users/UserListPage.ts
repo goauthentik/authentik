@@ -403,9 +403,7 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-forms-modal>
             <ak-reports-export-button
-                .createExport=${async () => {
-                    await this.createExport();
-                }}
+                .createExport=${this.#createExport}
             ></ak-reports-export-button>
         `;
     }
