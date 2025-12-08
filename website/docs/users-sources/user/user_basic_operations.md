@@ -184,13 +184,13 @@ An Admin can also configure whether inputting a reason for impersonation is requ
 
 ## Export users :ak-enterprise
 
-You can export your authentik instance's users to a CSV file. To generate a data export, follow these steps:
+You can export your authentik instance's user data to a CSV file. To generate a data export, follow these steps:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users** and click **Export**.
 3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
 4. Click **Export** above the event list.
-5. The export is processed in the background and once it's ready, you will receive a notification in the Admin interface's notification area.
+5. The export is processed in the background and after it's ready, you will receive a notification in the Admin interface's notification area.
 6. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
