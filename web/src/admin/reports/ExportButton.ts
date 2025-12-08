@@ -15,10 +15,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class ExportButton extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [PFBase, PFButton];
 
-    @property()
-    createExport: () => void = async () => {
-        throw new Error("createExport not set");
-    };
+    @property({ attribute: false })
+    public createExport: (() => void) | null = null
 
     async handleExportClick() {
         try {
