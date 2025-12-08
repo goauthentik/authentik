@@ -479,6 +479,9 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
+        next_url = self.request.GET.get(NEXT_ARG_NAME)
+        if next_url and not is_url_absolute(next_url):
+            return redirect(next_url)
         return redirect("authentik_flows:default-invalidation")
 
 

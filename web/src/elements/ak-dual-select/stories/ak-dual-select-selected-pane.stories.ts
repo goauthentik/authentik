@@ -20,7 +20,9 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
         },
     },
     argTypes: {
-        // @ts-ignore
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         options: {
             type: "string",
             description: "An array of [key, label] pairs of what to show",
