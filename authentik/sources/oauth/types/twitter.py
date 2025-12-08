@@ -15,9 +15,16 @@ class TwitterOAuthRedirect(OAuthRedirect):
     """Twitter OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
+        scopes = ["users.read", "tweet.read"]
+        # If admin has defined custom scopes in the provider UI, merge them
+        configured = getattr(source, "scope", []) or []
+        for s in configured:
+            if s not in scopes:
+                scopes.append(s)
         return {
-            "scope": ["users.read", "tweet.read"],
+            "scope": scopes,
         }
+
 
 
 class TwitterOAuthCallback(OAuthCallback):
@@ -40,13 +47,20 @@ class TwitterType(SourceType):
 
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
-    profile_url = "https://api.twitter.com/2/users/me"
+    profile_url = "https://api.twitter.com/2/users/me?user.fields=verified,username,name,profile_image_url,confirmed_email"
+
     pkce = PKCEMethod.S256
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         data = info.get("data", {})
+        email = (
+            data.get("confirmed_email")
+            or data.get("email")
+            or None
+        )
         return {
             "username": data.get("username"),
-            "email": None,
+            "email": email,
             "name": data.get("name"),
         }
+
