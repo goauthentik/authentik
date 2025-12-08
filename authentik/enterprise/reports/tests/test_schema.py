@@ -38,6 +38,7 @@ class TestSchemaMatch(TestCase):
     def test_user_export_action_query_params_match_list(self):
         list_params = self._get_op_params("core_users_list")
         del list_params["include_groups"]  # Not applicable for export
+        del list_params["include_roles"]  # Not applicable for export
         export_params = self._get_op_params("core_users_export_create")
         self.assertDictEqual(list_params, export_params)
 

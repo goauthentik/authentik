@@ -7,7 +7,7 @@ from authentik.admin.files.tests.utils import FileTestFileBackendMixin
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.reports.models import DataExport
-from authentik.enterprise.reports.tests.utils import _add_perm, patch_license
+from authentik.enterprise.reports.tests.utils import patch_license
 
 
 @patch_license
@@ -16,9 +16,9 @@ class TestUserExport(FileTestFileBackendMixin, TestCase):
         super().setUp()
 
         self.u1 = create_test_user(username="a")
-        _add_perm(self.u1, "view_user", "authentik_core")
+        self.u1.assign_perms_to_managed_role("authentik_core.view_user")
         self.u2 = create_test_user(username="b", path="abcd")
-        _add_perm(self.u1, "view_user", "authentik_core")
+        self.u1.assign_perms_to_managed_role("authentik_core.view_user")
 
     def _read_export(self, filename):
         with open(f"{self.reports_backend_path}/reports/public/{filename}") as f:

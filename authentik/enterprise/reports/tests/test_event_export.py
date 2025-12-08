@@ -3,15 +3,15 @@ from django.test.testcases import TestCase
 
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.reports.models import DataExport
-from authentik.enterprise.reports.tests.utils import _add_perm, patch_license
+from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.events.models import Event, EventAction
 
 
 @patch_license
 class TestEventExport(TestCase):
     def setUp(self) -> None:
         self.user = create_test_user()
-        _add_perm(self.user, "view_event", "authentik_events")
-        from authentik.events.models import Event, EventAction
+        self.user.assign_perms_to_managed_role("authentik_events.view_event")
 
         self.e1 = Event.new(EventAction.LOGIN, user=self.user)
         self.e1.save()
@@ -19,8 +19,6 @@ class TestEventExport(TestCase):
         self.e2.save()
 
     def test_type_filter(self):
-        from authentik.events.models import Event, EventAction
-
         export = DataExport.objects.create(
             content_type=ContentType.objects.get_for_model(Event),
             requested_by=self.user,
