@@ -72,7 +72,7 @@ export class DataExportListPage extends TablePage<DataExport> {
             Timestamp(item.requestedOn),
             html`${item.completed ? msg("Yes") : msg("No")}`,
             item.completed && item.fileUrl
-                ? html` <div>
+                ? html`<div>
                       <a href="${item.fileUrl}">
                           <pf-tooltip position="top" content=${msg("Download")}>
                               <i class="fas fa-download" aria-hidden="true"></i>
