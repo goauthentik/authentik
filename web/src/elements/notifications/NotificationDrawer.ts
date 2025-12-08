@@ -88,10 +88,12 @@ export class NotificationDrawer extends WithSession(AKElement) {
             });
     }
 
-    renderHyperlink(item: Notification): TemplateResult | typeof nothing {
-        if (item.hyperlink)
-            return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
-        else return nothing;
+    protected renderHyperlink(item: Notification) {
+        if (!item.hyperlink) {
+          return nothing;
+        }
+        
+        return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
     }
 
     #renderItem = (item: Notification): TemplateResult => {
