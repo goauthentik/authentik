@@ -33,16 +33,23 @@ export class ExportButton extends WithLicenseSummary(AKElement) {
     }
 
     render(): TemplateResult {
-        if (this.hasEnterpriseLicense) {
-            return html` <button
-                @click=${this.handleExportClick}
-                class="pf-c-button pf-m-secondary"
-            >
-                ${msg("Export")}
-            </button>`;
-        } else {
-            return html``;
+      #clickHandler = () => {
+        if (typeof this.createExport !== "function") {
+            throw new TypeError("`createExport` property must be a function");
         }
+
+        return this.createExport()
+          .then(() => {
+            showMessage({
+                level: MessageLevel.success,
+                message: msg("Data export requested successfully"),
+                description: msg("You will receive a notification once the data is ready"),
+            });
+          })
+          .catch(async (error) => {
+            const apiError = await parseAPIResponseError(error);
+            showAPIErrorMessage(apiError);
+        });
     }
 }
 
