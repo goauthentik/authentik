@@ -13,6 +13,8 @@ import { ModalForm } from "#elements/forms/ModalForm";
 import {
     CoreApi,
     Group,
+    RbacApi,
+    Role,
     UserServiceAccountRequest,
     UserServiceAccountResponse,
 } from "@goauthentik/api";
@@ -40,13 +42,16 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
-    group?: Group;
+    public targetGroup: Group | null = null;
+
+    @property({ attribute: false })
+    public targetRole: Role | null = null;
 
     //#endregion
 
     getSuccessMessage(): string {
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        if (this.targetGroup) {
+            return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
         }
         return msg("Successfully created user.");
     }
@@ -57,10 +62,18 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         });
         this.result = result;
         (this.parentElement as ModalForm).showSubmitButton = false;
-        if (this.group) {
+        if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
+                    pk: this.result.userPk,
+                },
+            });
+        }
+        if (this.targetRole) {
+            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
                     pk: this.result.userPk,
                 },
             });

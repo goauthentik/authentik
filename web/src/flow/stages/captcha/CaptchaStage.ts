@@ -486,6 +486,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                         // doesn't yet know the correct height, but at least the user can
                         // try to load the challenge again with the correct height.
 
+                        // eslint-disable-next-line @typescript-eslint/no-use-before-define
                         resizeObserver.observe(node as HTMLIFrameElement);
 
                         requestAnimationFrame(synchronizeHeight);
