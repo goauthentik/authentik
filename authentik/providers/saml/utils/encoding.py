@@ -2,9 +2,7 @@
 
 import base64
 import zlib
-
-PEM_HEADER = "-----BEGIN CERTIFICATE-----"
-PEM_FOOTER = "-----END CERTIFICATE-----"
+from ssl import PEM_FOOTER, PEM_HEADER
 
 
 def decode_base64_and_inflate(encoded: str, encoding="utf-8") -> str:
