@@ -5,10 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import (
-    CharField,
-    ChoiceField,
-)
+from rest_framework.fields import ChoiceField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -26,6 +23,7 @@ from authentik.endpoints.connectors.agent.auth import (
     AgentAuth,
     AgentEnrollmentAuth,
 )
+from authentik.endpoints.connectors.agent.controller import MDMConfigResponseSerializer
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
@@ -74,11 +72,6 @@ class MDMConfigSerializer(PassiveSerializer):
         return token
 
 
-class MDMConfigResponseSerializer(PassiveSerializer):
-
-    config = CharField(required=True)
-
-
 class AgentConnectorViewSet(
     ConditionalInheritance(
         "authentik.enterprise.endpoints.connectors.agent.api.connectors.AgentConnectorViewSetMixin"
@@ -108,7 +101,7 @@ class AgentConnectorViewSet(
             raise PermissionDenied()
         ctrl = connector.controller(connector)
         payload = ctrl.generate_mdm_config(data.validated_data["platform"], request, token)
-        return Response({"config": payload})
+        return Response(payload.validated_data)
 
     @extend_schema(
         request=EnrollSerializer(),

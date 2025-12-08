@@ -5839,7 +5839,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedPolicyBindingList'
+                $ref: '#/components/schemas/PaginatedDeviceUserBindingList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5854,7 +5854,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
+              $ref: '#/components/schemas/DeviceUserBindingRequest'
         required: true
       security:
       - authentik: []
@@ -5863,7 +5863,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyBinding'
+                $ref: '#/components/schemas/DeviceUserBinding'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5890,7 +5890,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyBinding'
+                $ref: '#/components/schemas/DeviceUserBinding'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5913,7 +5913,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PolicyBindingRequest'
+              $ref: '#/components/schemas/DeviceUserBindingRequest'
         required: true
       security:
       - authentik: []
@@ -5922,7 +5922,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyBinding'
+                $ref: '#/components/schemas/DeviceUserBinding'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5945,7 +5945,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedPolicyBindingRequest'
+              $ref: '#/components/schemas/PatchedDeviceUserBindingRequest'
       security:
       - authentik: []
       responses:
@@ -5953,7 +5953,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyBinding'
+                $ref: '#/components/schemas/DeviceUserBinding'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -36119,6 +36119,118 @@ components:
           type: string
       required:
       - id
+    DeviceUserBinding:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy binding uuid
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        policy_obj:
+          allOf:
+          - $ref: '#/components/schemas/Policy'
+          readOnly: true
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialGroup'
+          readOnly: true
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+        is_primary:
+          type: boolean
+        connector:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        connector_obj:
+          allOf:
+          - $ref: '#/components/schemas/Connector'
+          readOnly: true
+      required:
+      - connector
+      - connector_obj
+      - group_obj
+      - order
+      - pk
+      - policy_obj
+      - target
+      - user_obj
+    DeviceUserBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+        is_primary:
+          type: boolean
+      required:
+      - order
+      - target
     DeviceUserRequest:
       type: object
       properties:
@@ -40949,8 +41061,14 @@ components:
       properties:
         config:
           type: string
+        mime_type:
+          type: string
+        filename:
+          type: string
       required:
       - config
+      - filename
+      - mime_type
     MatchingModeEnum:
       enum:
       - strict
@@ -43074,6 +43192,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeviceAccessGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDeviceUserBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceUserBinding'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -46018,6 +46151,43 @@ components:
         name:
           type: string
           minLength: 1
+    PatchedDeviceUserBindingRequest:
+      type: object
+      description: PolicyBinding Serializer
+      properties:
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        target:
+          type: string
+          format: uuid
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+        is_primary:
+          type: boolean
     PatchedDockerServiceConnectionRequest:
       type: object
       description: DockerServiceConnection Serializer
