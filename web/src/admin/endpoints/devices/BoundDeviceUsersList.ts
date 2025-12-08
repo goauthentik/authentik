@@ -4,46 +4,36 @@ import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
+import "#admin/endpoints/devices/DeviceUserBindingForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { BoundPoliciesList } from "#admin/policies/BoundPoliciesList";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
-import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import { DeviceUserBinding, EndpointsApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-bound-device-users-list")
-export class BoundDeviceUsersList extends Table<PolicyBinding> {
-    @property()
-    target?: string;
-
-    checkbox = true;
-    clearOnRefresh = true;
-
-    order = "order";
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
-
-    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
+export class BoundDeviceUsersList extends BoundPoliciesList<DeviceUserBinding> {
+    async apiEndpoint(): Promise<PaginatedResponse<DeviceUserBinding>> {
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         });
     }
 
-    protected override rowLabel(item: PolicyBinding): string | null {
+    protected override rowLabel(item: DeviceUserBinding): string | null {
         return item.order?.toString() ?? null;
     }
+
+    protected bindingEditForm: string = "ak-device-binding-form";
 
     protected columns: TableColumn[] = [
         [
@@ -51,40 +41,14 @@ export class BoundDeviceUsersList extends Table<PolicyBinding> {
                 .map((ct) => PolicyBindingCheckTargetToLabel(ct))
                 .join(" / "),
         ],
+        [msg("Primary")],
     ];
 
-    getPolicyUserGroupRowLabel(item: PolicyBinding): string {
-        if (item.policy) {
-            return msg(str`Policy ${item.policyObj?.name}`);
-        } else if (item.group) {
-            return msg(str`Group ${item.groupObj?.name}`);
-        } else if (item.user) {
-            return msg(str`User ${item.userObj?.name}`);
-        }
-        return msg("-");
-    }
-
-    getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
-        const label = this.getPolicyUserGroupRowLabel(item);
-        if (item.user) {
-            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
-        }
-        if (item.group) {
-            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
-        }
-        return html`${label}`;
-    }
-
-    row(item: PolicyBinding): SlottedTemplateResult[] {
-        return [html`${this.getPolicyUserGroupRow(item)}`];
-    }
-
-    renderEmpty(): TemplateResult {
-        return super.renderEmpty(
-            html`<ak-empty-state icon="pf-icon-module"
-                ><span>${msg("No Users bound.")}</span>
-            </ak-empty-state>`,
-        );
+    row(item: DeviceUserBinding): SlottedTemplateResult[] {
+        return [
+            html`${this.getPolicyUserGroupRow(item)}`,
+            html`<ak-status-label ?good=${item.isPrimary}></ak-status-label>`,
+        ];
     }
 }
 

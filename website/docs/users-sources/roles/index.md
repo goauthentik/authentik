@@ -6,7 +6,7 @@ import DocCardList from "@theme/DocCardList";
 
 Roles are a way to simplify the assignment of permissions. Roles are also the backbone of role-based access control (RBAC), an industry standard for managing [access control](../access-control/index.mdx). In authentik, RBAC is how you manage access to system components and specific objects such as flows, stages, users, etc.
 
-Think of roles as a collection of permissions. A role, along with its "bucket" of assigned permissions, can then be assigned to a group, which means that every user who is a part of that group will inherit all of the permissions in that role's "bucket".
+Think of roles as a collection of permissions. A role, along with its "bucket" of assigned permissions, can then be assigned to a user, or it can be assigned to a group (which means that every user who is a part of that group will inherit all of the permissions in that role's "bucket").
 
 For example, let's take a look at the following scenario:
 

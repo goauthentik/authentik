@@ -297,6 +297,16 @@ class LDAPSource(IncomingSyncSource):
             side_effect=pglock.Return,
         )
 
+    def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
+        info = {
+            "vendor": _("N/A"),
+            "version": _("N/A"),
+        }
+        if srv.info:
+            info["vendor"] = str(flatten(srv.info.vendor_name))
+            info["version"] = str(flatten(srv.info.vendor_version))
+        return info
+
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
         servers = self.server()
@@ -307,9 +317,8 @@ class LDAPSource(IncomingSyncSource):
             try:
                 conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(conn.server.info.vendor_name)),
-                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
+                    **self.get_ldap_server_info(conn.server),
                 }
             except LDAPException as exc:
                 server_info[server.host] = {
@@ -319,9 +328,8 @@ class LDAPSource(IncomingSyncSource):
         try:
             conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(conn.server.info.vendor_name)),
-                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
+                **self.get_ldap_server_info(conn.server),
             }
         except LDAPException as exc:
             server_info["__all__"] = {

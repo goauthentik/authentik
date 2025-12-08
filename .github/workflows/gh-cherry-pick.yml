@@ -10,7 +10,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         if: ${{ env.GH_APP_ID != '' }}
         with:
           app-id: ${{ secrets.GH_APP_ID }}

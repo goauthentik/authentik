@@ -6,9 +6,10 @@ from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
 
+import pgtrigger
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
@@ -19,10 +20,11 @@ from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTE, with_cte
 from guardian.conf import settings
-from guardian.mixins import GuardianUserMixin
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.indexes import UniqueIndex
+from psqlextra.models import PostgresMaterializedViewModel
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -43,6 +45,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
+from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
@@ -68,6 +71,17 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 GROUP_RECURSION_LIMIT = 20
+
+MANAGED_ROLE_PREFIX_USER = "ak-managed-role--user"
+MANAGED_ROLE_PREFIX_GROUP = "ak-managed-role--group"
+
+
+def managed_role_name(user_or_group: models.Model):
+    if isinstance(user_or_group, User):
+        return f"{MANAGED_ROLE_PREFIX_USER}-{user_or_group.pk}"
+    if isinstance(user_or_group, Group):
+        return f"{MANAGED_ROLE_PREFIX_GROUP}-{user_or_group.pk}"
+    raise TypeError("Managed roles are only available for User or Group.")
 
 
 def default_token_duration() -> datetime:
@@ -148,69 +162,40 @@ class AttributesMixin(models.Model):
 
 
 class GroupQuerySet(QuerySet):
-    def with_children_recursive(self):
-        """Recursively get all groups that have the current queryset as parents
-        or are indirectly related."""
+    def with_descendants(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(Q(pk__in=pks) | Q(ancestor_nodes__ancestor__in=pks)).distinct()
 
-        def make_cte(cte):
-            """Build the query that ends up in WITH RECURSIVE"""
-            # Start from self, aka the current query
-            # Add a depth attribute to limit the recursion
-            return self.annotate(
-                relative_depth=models.Value(0, output_field=models.IntegerField())
-            ).union(
-                # Here is the recursive part of the query. cte refers to the previous iteration
-                # Only select groups for which the parent is part of the previous iteration
-                # and increase the depth
-                # Finally, limit the depth
-                cte.join(Group, group_uuid=cte.col.parent_id)
-                .annotate(
-                    relative_depth=models.ExpressionWrapper(
-                        cte.col.relative_depth
-                        + models.Value(1, output_field=models.IntegerField()),
-                        output_field=models.IntegerField(),
-                    )
-                )
-                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
-                all=True,
-            )
-
-        # Build the recursive query, see above
-        cte = CTE.recursive(make_cte)
-        # Return the result, as a usable queryset for Group.
-        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
+    def with_ancestors(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(
+            Q(pk__in=pks) | Q(descendant_nodes__descendant__in=pks)
+        ).distinct()
 
 
 class Group(SerializerModel, AttributesMixin):
-    """Group model which supports a basic hierarchy and has attributes"""
+    """Group model which supports a hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField(_("name"))
+    name = models.TextField(verbose_name=_("name"), unique=True)
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
 
-    parent = models.ForeignKey(
+    parents = models.ManyToManyField(
         "Group",
         blank=True,
-        null=True,
-        default=None,
-        on_delete=models.SET_NULL,
+        symmetrical=False,
+        through="GroupParentageNode",
         related_name="children",
     )
 
     objects = GroupQuerySet.as_manager()
 
     class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
         indexes = (
             models.Index(fields=["name"]),
             models.Index(fields=["is_superuser"]),
@@ -244,12 +229,103 @@ class Group(SerializerModel, AttributesMixin):
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
-    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
-        """Compatibility layer for Group.objects.with_children_recursive()"""
-        qs = self
-        if not isinstance(self, QuerySet):
-            qs = Group.objects.filter(group_uuid=self.group_uuid)
-        return qs.with_children_recursive()
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this group and all of its ancestors."""
+        return Role.objects.filter(
+            ak_groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
+        ).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            name = managed_role_name(self)
+            role, created = Role.objects.get_or_create(name=name, managed=name)
+            if created:
+                role.ak_groups.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def assign_perms_to_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        if not perms:
+            return
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perms, obj)
+
+
+class GroupParentageNode(models.Model):
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
+    parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Group Parentage Node")
+        verbose_name_plural = _("Group Parentage Nodes")
+
+        db_table = "authentik_core_groupparentage"
+
+        triggers = [
+            pgtrigger.Trigger(
+                name="refresh_groupancestry",
+                operation=pgtrigger.Insert | pgtrigger.Update | pgtrigger.Delete,
+                when=pgtrigger.After,
+                func="""
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY authentik_core_groupancestry;
+                    RETURN NULL;
+                """,
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"Group Parentage Node from #{self.child_id} to {self.parent_id}"
+
+
+class GroupAncestryNode(PostgresMaterializedViewModel):
+    descendant = models.ForeignKey(
+        Group, related_name="ancestor_nodes", on_delete=models.DO_NOTHING
+    )
+    ancestor = models.ForeignKey(
+        Group, related_name="descendant_nodes", on_delete=models.DO_NOTHING
+    )
+
+    class Meta:
+        # This is a transitive closure of authentik_core_groupparentage
+        # See https://en.wikipedia.org/wiki/Transitive_closure#In_graph_theory
+        db_table = "authentik_core_groupancestry"
+        indexes = [
+            models.Index(fields=["descendant"]),
+            models.Index(fields=["ancestor"]),
+            UniqueIndex(fields=["id"]),
+        ]
+
+    class ViewMeta:
+        query = """
+            WITH RECURSIVE accumulator AS (
+                SELECT
+                child_id::text || '-' || parent_id::text as id,
+                child_id AS descendant_id,
+                parent_id AS ancestor_id
+                FROM authentik_core_groupparentage
+
+                UNION
+
+                SELECT
+                accumulator.descendant_id::text || '-' || current.parent_id::text as id,
+                accumulator.descendant_id,
+                current.parent_id AS ancestor_id
+                FROM accumulator
+                JOIN authentik_core_groupparentage current
+                ON accumulator.ancestor_id = current.child_id
+            )
+            SELECT * FROM accumulator
+        """
+
+    def __str__(self) -> str:
+        return f"Group Ancestry Node from {self.descendant_id} to {self.ancestor_id}"
 
 
 class UserQuerySet(models.QuerySet):
@@ -276,7 +352,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
+class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -286,6 +362,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -323,7 +400,60 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
-        return self.ak_groups.all().with_children_recursive()
+        return self.ak_groups.all().with_ancestors()
+
+    def all_roles(self) -> QuerySet[Role]:
+        """Get all roles of this user and all of its groups (recursively)."""
+        return Role.objects.filter(Q(users=self) | Q(ak_groups__in=self.all_groups())).distinct()
+
+    def get_managed_role(self, create=False):
+        if create:
+            name = managed_role_name(self)
+            role, created = Role.objects.get_or_create(name=name, managed=name)
+            if created:
+                role.users.add(self)
+            return role
+        else:
+            return Role.objects.filter(name=managed_role_name(self)).first()
+
+    def get_all_model_perms_on_managed_role(self) -> QuerySet[RoleModelPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleModelPermission.objects.none()
+        return RoleModelPermission.objects.filter(role=role)
+
+    def get_all_obj_perms_on_managed_role(self) -> QuerySet[RoleObjectPermission]:
+        role = self.get_managed_role()
+        if not role:
+            return RoleObjectPermission.objects.none()
+        return RoleObjectPermission.objects.filter(role=role)
+
+    def assign_perms_to_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        if not perms:
+            return
+        role = self.get_managed_role(create=True)
+        role.assign_perms(perms, obj)
+
+    def remove_perms_from_managed_role(
+        self,
+        perms: str | list[str] | Permission | list[Permission],
+        obj: models.Model | None = None,
+    ):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        role.remove_perms(perms, obj)
+
+    def remove_all_perms_from_managed_role(self):
+        role = self.get_managed_role()
+        if not role:
+            return None
+        RoleModelPermission.objects.filter(role=role).delete()
+        RoleObjectPermission.objects.filter(role=role).delete()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,

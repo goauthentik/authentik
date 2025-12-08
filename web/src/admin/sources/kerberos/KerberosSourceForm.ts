@@ -75,11 +75,11 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
-                kerberosSourceRequest: data as unknown as KerberosSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+            kerberosSourceRequest: data as unknown as KerberosSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {

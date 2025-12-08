@@ -6,7 +6,6 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import {
@@ -123,10 +122,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value=${YAML.stringify(this.request?.context ?? {})}
-                >
+                <ak-codemirror mode="yaml" value=${YAML.stringify(this.request?.context ?? {})}>
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}

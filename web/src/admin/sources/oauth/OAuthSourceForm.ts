@@ -14,7 +14,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -94,11 +93,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                oAuthSourceRequest: data as unknown as OAuthSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
     }
 
     fetchProviderType(v: string | undefined) {
@@ -229,7 +228,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                           </ak-form-element-horizontal>
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.JavaScript}
+                                  mode="javascript"
                                   value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                               >
                               </ak-codemirror>
