@@ -154,4 +154,27 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(migrate_object_permissions),
+        migrations.AlterUniqueTogether(
+            name="group",
+            unique_together=set(),
+        ),
+        migrations.AlterField(
+            model_name="group",
+            name="parents",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="children",
+                through="authentik_core.GroupParentageNode",
+                to="authentik_core.group",
+            ),
+        ),
+        migrations.RemoveField(
+            model_name="group",
+            name="parent",
+        ),
+        migrations.AlterField(
+            model_name="group",
+            name="name",
+            field=models.TextField(unique=True, verbose_name="name"),
+        ),
     ]
