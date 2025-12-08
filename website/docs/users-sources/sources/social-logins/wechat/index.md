@@ -18,10 +18,10 @@ The following placeholders are used in this guide:
 To integrate WeChat with authentik you will need to register a "Website Application" (网站应用) on the [WeChat Open Platform](https://open.weixin.qq.com/).
 
 1. Register for a developer account on the [WeChat Open Platform](https://open.weixin.qq.com/).
-2. Create a new "Website Application".
+2. Navigate to the **Management Center** (管理中心) > **Website Application** (网站应用) and click **Create Website Application** (创建网站应用).
 3. Submit the application for review.
 4. Once approved, you will obtain an **AppID** and **AppSecret**.
-5. In the WeChat application settings, configure the **Authorized Callback Domain** to match your authentik domain (e.g. `authentik.company`).
+5. In the WeChat application settings, configure the **Authorized Callback Domain** (授权回调域) to match your authentik domain (e.g. `authentik.company`).
 
 :::info
 This integration uses the WeChat "Website Application" login flow (QR Code login). When users access the login page on a desktop device (Windows/Mac) with the WeChat client installed, they may see a "Fast Login" prompt.
@@ -38,7 +38,7 @@ To support the integration of WeChat with authentik, you need to create a WeChat
         - **Protocol settings**
             - **Consumer Key**: Enter the **AppID** from the WeChat Open Platform.
             - **Consumer Secret**: Enter the **AppSecret** from the WeChat Open Platform.
-            - **Scopes**: The default scope is `snsapi_login`, which is required for website applications.
+            - **Scopes**: define any further access scopes.
 3. Click **Finish**.
 
 :::info Display new source on login screen
@@ -52,6 +52,18 @@ For instructions on embedding the new source within a flow, such as an authoriza
 ## Source property mappings
 
 Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+
+The following data is retrieved from WeChat and mapped to the user's attributes in authentik:
+
+| WeChat Field | authentik Attribute | Description |
+| :--- | :--- | :--- |
+| `unionid` (or `openid`) | `username` | Used as the primary identifier. |
+| `nickname` | `name` | The user's display name. |
+| `headimgurl` | `attributes.headimgurl` | URL to the user's avatar. |
+| `sex` | `attributes.sex` | Gender (1=Male, 2=Female). |
+| `city` | `attributes.city` | User's city. |
+| `province` | `attributes.province` | User's province. |
+| `country` | `attributes.country` | User's country. |
 
 ### User Matching
 
