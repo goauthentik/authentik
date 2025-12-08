@@ -54,7 +54,7 @@ button.pf-c-nav__link {
     color: var(--pf-global--Color--dark-200);
     background-color: var(--pf-global--Color--light-300);
     font-size: var(--pf-global--FontSize--xs);
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
     padding: 0.1rem 0.5rem;
     border-radius: var(--pf-global--BorderRadius--sm);
 }
