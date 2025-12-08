@@ -44,7 +44,6 @@ class MessageConsumer(JsonWebsocketConsumer):
         if self.session_key:
             cache.delete(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}")
         if self.device_cookie:
-            print("removing from group", build_session_group(self.session_key))
             async_to_sync(self.channel_layer.group_discard)(
                 build_device_group(self.device_cookie), self.channel_name
             )
