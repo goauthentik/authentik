@@ -64,8 +64,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                             pk: userPk,
                         },
                     });
-                }
-                if (this.targetRole) {
+                } else if (this.targetRole) {
                     return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
                         uuid: this.targetRole.pk,
                         // TODO: Rename this.
@@ -74,6 +73,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                         },
                     });
                 }
+                return Promise.resolve();
             }),
         );
         return data;

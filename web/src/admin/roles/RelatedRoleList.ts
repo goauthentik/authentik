@@ -35,7 +35,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
     async send(data: { roles: string[] }): Promise<unknown> {
         await Promise.all(
             data.roles.map((role) => {
-                if (!this.user) return;
+                if (!this.user) return Promise.resolve();
                 return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
                     uuid: role,
                     userAccountSerializerForRoleRequest: {
