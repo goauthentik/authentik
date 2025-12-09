@@ -4861,7 +4861,8 @@
                     "title": "Flow device code"
                 },
                 "default_application": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Default application",
                     "description": "When set, external users will be redirected to this application after authenticating."
                 },
@@ -5017,7 +5018,8 @@
                     "title": "Name"
                 },
                 "app": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "App"
                 },
                 "attributes": {
@@ -6249,11 +6251,13 @@
             "type": "object",
             "properties": {
                 "device_group": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Device group"
                 },
                 "connector": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Connector"
                 },
                 "name": {
@@ -7126,7 +7130,8 @@
                     "title": "Name"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "resume_timeout": {
@@ -7482,12 +7487,14 @@
                     "title": "Webhook url"
                 },
                 "webhook_mapping_body": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Webhook mapping body",
                     "description": "Customize the body of the request. Mapping should return data that is JSON-serializable."
                 },
                 "webhook_mapping_headers": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
@@ -10016,12 +10023,14 @@
                     "description": "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 },
                 "name_id_mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "NameID Property Mapping",
                     "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
                 },
                 "authn_context_class_ref_mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "AuthnContextClassRef Property Mapping",
                     "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
@@ -11126,7 +11135,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11413,7 +11423,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11459,7 +11470,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11776,7 +11788,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11822,7 +11835,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12141,7 +12155,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12199,7 +12214,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12442,7 +12458,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12493,7 +12510,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12818,7 +12836,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12984,7 +13003,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13213,7 +13233,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13565,7 +13586,8 @@
                     "description": "When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future."
                 },
                 "mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Mapping",
                     "description": "Optionally modify the payload being sent to custom providers."
                 }
@@ -14403,12 +14425,14 @@
                     "description": "Fields of the user object to match against. (Hold shift to select multiple options)"
                 },
                 "password_stage": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Password stage",
                     "description": "When set, shows a password field, instead of showing the password field as separate step."
                 },
                 "captcha_stage": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Captcha stage",
                     "description": "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage."
                 },
@@ -14443,7 +14467,8 @@
                 "sources": {
                     "type": "array",
                     "items": {
-                        "type": "integer",
+                        "type": "string",
+                        "format": "uuid",
                         "description": "Specify which sources should be shown."
                     },
                     "title": "Sources",
