@@ -21,8 +21,6 @@ class Command(BaseCommand):
 
         if not password:
             raise CommandError("Password cannot be empty")
-
-
         try:
             hashed = make_password(password)
             if not hashed:
