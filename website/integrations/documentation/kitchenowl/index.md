@@ -34,9 +34,7 @@ To support the integration of KitchenOwl with authentik, you need to create an a
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Create two `Strict` redirect URIs:
-        - `https://kitchenowl.company/signin/redirect`
-        - `kitchenowl:/signin/redirect`
+    - Create two `Strict` redirect URIs and set them to `https://kitchenowl.company/signin/redirect` and `kitchenowl:/signin/redirect`.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -55,17 +53,16 @@ Restart the KitchenOwl backend service for the changes to take effect.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with KitchenOwl, log out and log back in via authentik. You should see a "Sign in with OIDC" button at the bottom of the login page. Click on it and ensure you can successfully log in using Single Sign-On.
+To confirm that authentik is properly configured with KitchenOwl, log out and log back in via authentik. You should see a **Sign in with OIDC** button at the bottom of the login page. Click on it and ensure you can successfully log in using single sign-on.
 
 ## Linking accounts
 
-When signing in using OIDC, you're either logged into the linked account or, if none is present, a new account is created. The account creation will fail if an email already associated with a KitchenOwl account is provided by the identity management.
+When signing in using OIDC, you're either logged into the linked account or, if none exists, a new account is created. The account creation will fail if an email already associated with a KitchenOwl account is provided by the identity management.
 
-If you've already started using KitchenOwl or created an account first, you can link an OIDC account to your existing KitchenOwl account. Navigate to **Settings** → click on your profile at the top → **Linked Accounts** and link your account.
+If you've already started using KitchenOwl or created an account first, you can link an OIDC account to your existing KitchenOwl account. Navigate to **Settings** > click your profile at the top right > **Linked Accounts** and follow the on-screen instructions to link your account.
 
-Account links are permanent and can only be removed by deleting the KitchenOwl account. Users that signed in using OIDC are normal users that, after setting a password, can also sign in using their username + password. Deleting a user from your OIDC authority will not delete a user from KitchenOwl.
+Account links are permanent and can only be removed by deleting the KitchenOwl account. Users that signed in using OIDC are normal users that, after setting a password, can also sign in using their username and password. Deleting a user from your OIDC authority will not delete a user from KitchenOwl.
 
 ## Resources
 
 - [KitchenOwl Documentation - OpenID Connect](https://docs.kitchenowl.org/latest/self-hosting/oidc/)
-
