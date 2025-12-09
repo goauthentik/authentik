@@ -1,7 +1,8 @@
 """authentik crypto models"""
 
+from base64 import urlsafe_b64encode
 from binascii import hexlify
-from hashlib import md5
+from hashlib import sha512
 from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
@@ -66,6 +67,16 @@ def detect_key_type(certificate: Certificate) -> str | None:
     return None
 
 
+def generate_key_id(key_data: str) -> str:
+    """Generate Key ID using SHA512 + urlsafe_b64encode.
+
+    Used for JWKS key identification. New records use SHA512 for better security.
+    """
+    if not key_data:
+        return ""
+    return urlsafe_b64encode(sha512(key_data.encode("utf-8")).digest()).decode("utf-8").rstrip("=")
+
+
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
@@ -110,6 +121,12 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         blank=True,
         help_text=_("SHA1 fingerprint of the certificate"),
     )
+    kid = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        help_text=_("Key ID used for JWKS, generated from private key"),
+    )
 
     _cert: Certificate | None = None
     _private_key: PrivateKeyTypes | None = None
@@ -153,15 +170,6 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 LOGGER.warning(exc)
                 return None
         return self._private_key
-
-    @property
-    def kid(self):
-        """Get Key ID used for JWKS"""
-        return (
-            md5(self.key_data.encode("utf-8"), usedforsecurity=False).hexdigest()
-            if self.key_data
-            else ""
-        )  # nosec
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
