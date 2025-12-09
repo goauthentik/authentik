@@ -21,7 +21,7 @@ import {
     Application,
     CoreApi,
     OutpostsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -96,8 +96,8 @@ export class ApplicationViewPage extends AKElement {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
@@ -407,7 +407,7 @@ export class ApplicationViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

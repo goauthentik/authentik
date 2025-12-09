@@ -148,7 +148,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH_USER = False
+GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -260,7 +260,7 @@ MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",

@@ -60,6 +60,8 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
             device_token_hash, sha256(self.auth_token.device_token.key.encode()).hexdigest()
         ):
             return HttpResponseBadRequest("Invalid device token")
+        if not self.connector.authorization_flow:
+            return HttpResponseBadRequest("No authorization flow configured")
 
         planner = FlowPlanner(self.connector.authorization_flow)
         planner.allow_empty_flows = True

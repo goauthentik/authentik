@@ -12,8 +12,6 @@ from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
-from guardian.models import UserObjectPermission
-from guardian.shortcuts import assign_perm
 from model_utils.managers import InheritanceManager
 from packaging.version import Version, parse
 from rest_framework.serializers import Serializer
@@ -335,8 +333,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
         with transaction.atomic():
-            UserObjectPermission.objects.filter(user=user).delete()
-            user.user_permissions.clear()
+            user.remove_all_perms_from_managed_role()
             for model_or_perm in self.get_required_objects():
                 if isinstance(model_or_perm, models.Model):
                     model_or_perm: models.Model
@@ -344,7 +341,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                         f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
                     )
                     try:
-                        assign_perm(code_name, user, model_or_perm)
+                        user.assign_perms_to_managed_role(code_name, model_or_perm)
                     except (Permission.DoesNotExist, AttributeError) as exc:
                         LOGGER.warning(
                             "permission doesn't exist",
@@ -369,11 +366,11 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                     if not permission.exists():
                         LOGGER.warning("permission doesn't exist", perm=model_or_perm)
                         continue
-                    user.user_permissions.add(permission.first())
+                    user.assign_perms_to_managed_role(permission.first())
         LOGGER.debug(
             "Updated service account's permissions",
-            obj_perms=UserObjectPermission.objects.filter(user=user),
-            perms=user.user_permissions.all(),
+            obj_perms=user.get_all_obj_perms_on_managed_role(),
+            perms=user.get_all_model_perms_on_managed_role(),
         )
 
     @property

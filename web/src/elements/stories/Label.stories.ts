@@ -43,7 +43,9 @@ default label is informational:
         compact: { control: "boolean" },
         color: { control: "text" },
         icon: { control: "text" },
-        // @ts-ignore
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         message: { control: "text" },
     },
 };
@@ -56,7 +58,9 @@ export const DefaultStory: StoryObj = {
         message: "Eat at Joe's.",
     },
 
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components
+    // are treated as properties, and properties are typically renamed to lower case,
+    // even if the variable is not.
     render: ({ compact, color, icon, message }: ILabelForTesting) => {
         return html`
             <style>
