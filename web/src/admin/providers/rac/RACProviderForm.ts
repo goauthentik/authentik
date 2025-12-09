@@ -52,12 +52,14 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                 />
             </ak-form-element-horizontal>
 

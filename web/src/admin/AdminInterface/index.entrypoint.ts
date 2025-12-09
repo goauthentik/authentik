@@ -1,5 +1,4 @@
 import "#admin/AdminInterface/AboutModal";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
@@ -10,29 +9,31 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 
 import {
-    AdminSidebarEnterpriseEntries,
-    AdminSidebarEntries,
+    createAdminSidebarEnterpriseEntries,
+    createAdminSidebarEntries,
     renderSidebarItems,
 } from "./AdminSidebar.js";
 
+import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
-import { me } from "#common/users";
+import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
 import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
-import Styles from "#admin/AdminInterface/styles.css";
+import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -47,7 +48,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterface) {
+export class AdminInterface extends WithCapabilitiesConfig(WithSession(AuthenticatedInterface)) {
     //#region Properties
 
     @property({ type: Boolean })
@@ -55,9 +56,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     @property({ type: Boolean })
     public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    @property({ type: Object, attribute: false })
-    public user?: SessionUser;
 
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
@@ -93,7 +91,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     //#region Lifecycle
 
     constructor() {
-        configureSentry(true);
+        configureSentry();
 
         super();
 
@@ -135,25 +133,23 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         WebsocketClient.close();
     }
 
-    async firstUpdated(): Promise<void> {
-        me().then((session) => {
-            this.user = session;
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
 
-            const canAccessAdmin =
-                this.user.user.isSuperuser ||
-                // TODO: somehow add `access_admin_interface` to the API schema
-                this.user.user.systemPermissions.includes("access_admin_interface");
-
-            if (!canAccessAdmin && this.user.user.pk > 0) {
+        if (changedProperties.has("session") && isAPIResultReady(this.session)) {
+            if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
                 window.location.assign("/if/user/");
             }
-        });
+        }
     }
 
     render(): TemplateResult {
+        if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
+            return html`<slot></slot>`;
+        }
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
-            "pf-m-light": this.activeTheme === UiThemeEnum.Light,
             "pf-m-expanded": this.sidebarOpen,
             "pf-m-collapsed": !this.sidebarOpen,
         };
@@ -165,54 +161,52 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
             "pf-m-collapsed": !drawerOpen,
         };
 
-        return html` <ak-locale-context>
-            <div class="pf-c-page">
-                <ak-page-navbar ?open=${this.sidebarOpen}>
-                    <ak-version-banner></ak-version-banner>
-                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
-                </ak-page-navbar>
+        return html`<div class="pf-c-page">
+            <ak-page-navbar ?open=${this.sidebarOpen}>
+                <ak-version-banner></ak-version-banner>
+                <ak-enterprise-status interface="admin"></ak-enterprise-status>
+            </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
-                    ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(AdminSidebarEnterpriseEntries)
-                        : nothing}
-                </ak-sidebar>
+            <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                >${renderSidebarItems(createAdminSidebarEntries())}
+                ${this.can(CapabilitiesEnum.IsEnterprise)
+                    ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
+                    : nothing}
+            </ak-sidebar>
 
-                <div class="pf-c-page__drawer">
-                    <div class="pf-c-drawer ${classMap(drawerClasses)}">
-                        <div class="pf-c-drawer__main">
-                            <div class="pf-c-drawer__content">
-                                <div class="pf-c-drawer__body">
-                                    <ak-router-outlet
-                                        role="presentation"
-                                        class="pf-c-page__main"
-                                        tabindex="-1"
-                                        id="main-content"
-                                        defaultUrl="/administration/overview"
-                                        .routes=${ROUTES}
-                                    >
-                                    </ak-router-outlet>
-                                </div>
+            <div class="pf-c-page__drawer">
+                <div class="pf-c-drawer ${classMap(drawerClasses)}">
+                    <div class="pf-c-drawer__main">
+                        <div class="pf-c-drawer__content">
+                            <div class="pf-c-drawer__body">
+                                <ak-router-outlet
+                                    role="presentation"
+                                    class="pf-c-page__main"
+                                    tabindex="-1"
+                                    id="main-content"
+                                    defaultUrl="/administration/overview"
+                                    .routes=${ROUTES}
+                                >
+                                </ak-router-outlet>
                             </div>
-                            <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this
-                                    .notificationDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.notificationDrawerOpen}
-                            ></ak-notification-drawer>
-                            <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.apiDrawerOpen}
-                            ></ak-api-drawer>
-                            <ak-about-modal></ak-about-modal>
                         </div>
+                        <ak-notification-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.notificationDrawerOpen}
+                        ></ak-notification-drawer>
+                        <ak-api-drawer
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                ? ""
+                                : "display-none"}"
+                            ?hidden=${!this.apiDrawerOpen}
+                        ></ak-api-drawer>
+                        <ak-about-modal></ak-about-modal>
                     </div>
-                </div></div
-        ></ak-locale-context>`;
+                </div>
+            </div>
+        </div>`;
     }
 }
 

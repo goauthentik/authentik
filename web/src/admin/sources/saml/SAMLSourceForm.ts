@@ -1,5 +1,6 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -9,9 +10,7 @@ import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
-import { config, DEFAULT_CONFIG } from "#common/api/config";
-
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -20,6 +19,7 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     BindingTypeEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
@@ -37,10 +37,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
-export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
-    @state()
-    clearIcon = false;
-
+export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
     hasSigningCert = false;
 
@@ -51,44 +48,22 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
     }
 
     async loadInstance(pk: string): Promise<SAMLSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
-        this.clearIcon = false;
-        return source;
     }
 
     async send(data: SAMLSource): Promise<SAMLSource> {
-        let source: SAMLSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                sAMLSourceRequest: data,
-            });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("icon");
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+            sAMLSourceRequest: data,
+        });
     }
 
     renderHasSigningCert(): TemplateResult {
@@ -167,6 +142,26 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required
@@ -239,52 +234,14 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : nothing}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : nothing}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${this.instance?.icon ?? ""}"
-                          class="pf-c-form-control"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${AdminFileListUsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">

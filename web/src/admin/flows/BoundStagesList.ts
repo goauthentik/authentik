@@ -15,7 +15,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     FlowsApi,
     FlowStageBinding,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -110,7 +110,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlowstagebinding}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikFlowsFlowstagebinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -145,7 +145,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                            ${msg("Bind existing stage")}
+                            ${msg("Bind existing Stage")}
                         </button>
                     </ak-forms-modal>
                 </div>
@@ -166,7 +166,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Bind existing stage")}
+                    ${msg("Bind existing Stage")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}

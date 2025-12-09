@@ -14,6 +14,7 @@ import "#admin/stages/email/EmailStageForm";
 import "#admin/stages/identification/IdentificationStageForm";
 import "#admin/stages/invitation/InvitationStageForm";
 import "#admin/stages/mtls/MTLSStageForm";
+import "#admin/stages/endpoint/EndpointStageForm";
 import "#admin/stages/password/PasswordStageForm";
 import "#admin/stages/prompt/PromptStageForm";
 import "#admin/stages/redirect/RedirectStageForm";

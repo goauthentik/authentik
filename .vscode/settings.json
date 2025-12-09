@@ -11,6 +11,9 @@
     "[jsonc]": {
         "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)$"
     },
+    "[xml]": {
+        "editor.minimap.markSectionHeaderRegex": "<!--\\s*#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\s*-->"
+    },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [

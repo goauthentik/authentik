@@ -64,7 +64,11 @@ export class OAuth2DeviceCode extends BaseStage<
                 </div>
 
                 <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
                 </div>

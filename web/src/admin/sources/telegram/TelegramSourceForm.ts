@@ -2,8 +2,6 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSo
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
@@ -22,7 +20,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
-export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<TelegramSource>) {
+export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async loadInstance(pk: string): Promise<TelegramSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
             slug: pk,
@@ -78,6 +76,26 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                     </span>
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}

@@ -24,12 +24,14 @@ from rest_framework.fields import (
     SerializerMethodField,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
@@ -38,7 +40,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
+from authentik.rbac.filters import SecretKeyFilter
 
 LOGGER = get_logger()
 
@@ -233,22 +235,22 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=False, methods=["POST"])
-    def generate(self, request: Request) -> Response:
+    @validate(CertificateGenerationSerializer)
+    def generate(self, request: Request, body: CertificateGenerationSerializer) -> Response:
         """Generate a new, self-signed certificate-key pair"""
-        data = CertificateGenerationSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        raw_san = data.validated_data.get("subject_alt_name", "")
+        raw_san = body.validated_data.get("subject_alt_name", "")
         sans = raw_san.split(",") if raw_san != "" else []
-        builder = CertificateBuilder(data.validated_data["name"])
-        builder.alg = data.validated_data["alg"]
+        builder = CertificateBuilder(body.validated_data["name"])
+        builder.alg = body.validated_data["alg"]
         builder.build(
             subject_alt_names=sans,
-            validity_days=int(data.validated_data["validity_days"]),
+            validity_days=int(body.validated_data["validity_days"]),
         )
         instance = builder.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @permission_required("view_certificatekeypair_certificate")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -259,7 +261,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -280,6 +282,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             return response
         return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
+    @permission_required("view_certificatekeypair_key")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -290,7 +293,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()

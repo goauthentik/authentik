@@ -2,7 +2,6 @@ import "#elements/Alert";
 
 import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy } from "#common/purify";
-import OneDark from "#common/styles/one-dark.css";
 
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
 import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
@@ -14,6 +13,7 @@ import Styles from "#elements/ak-mdx/styles.css";
 import { AKElement } from "#elements/Base";
 
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
+import OneDark from "#styles/atom/one-dark.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 

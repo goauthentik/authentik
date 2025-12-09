@@ -19,7 +19,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import {
     FlowDesignationEnum,
     Invitation,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -119,7 +119,10 @@ export class InvitationListPage extends TablePage<Invitation> {
                           </ak-label>
                       `
                     : nothing}`,
-            html`${item.createdBy?.username}`,
+            html`<div>
+                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                </div>
+                <small>${item.createdBy.name}</small>`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
@@ -132,7 +135,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

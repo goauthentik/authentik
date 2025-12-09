@@ -21,6 +21,7 @@ from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnList
@@ -143,7 +144,7 @@ class TaskViewSet(
             .filter(tenant=get_current_tenant())
         )
 
-    @permission_required(None, ["authentik_tasks.retry_task"])
+    @permission_required("authentik_tasks.retry_task")
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
@@ -152,7 +153,7 @@ class TaskViewSet(
             404: OpenApiResponse(description="Task not found"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def retry(self, request: Request, pk=None) -> Response:
         """Retry task"""
         task: Task = self.get_object()
@@ -162,6 +163,7 @@ class TaskViewSet(
         broker.enqueue(Message.decode(task.message))
         return Response(status=204)
 
+    @permission_required(None, ["authentik_tasks.view_task"])
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
@@ -182,7 +184,7 @@ class TaskViewSet(
             ),
         },
     )
-    @action(detail=False, methods=["GET"], permission_classes=[])
+    @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
     def status(self, request: Request) -> Response:
         """Global status summary for all tasks"""
         response = {}

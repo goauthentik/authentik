@@ -1,0 +1,22 @@
+.authenticator-button {
+    /* compatibility-mode-fix */
+    & {
+        align-items: center;
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(auto, 2rem) minmax(33%, max-content);
+        gap: var(--pf-global--spacer--lg);
+    }
+
+    &:hover {
+        background-color: var(--pf-global--BackgroundColor--200);
+    }
+}
+
+i {
+    font-size: var(--pf-global--icon--FontSize--lg);
+}
+
+.content {
+    text-align: left;
+}

@@ -8,7 +8,6 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
@@ -175,7 +174,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.YAML}
+                                  mode="yaml"
                                   raw
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
@@ -188,7 +187,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.YAML}
+                            mode="yaml"
                             value="${YAML.stringify(this.instance?.context ?? {})}"
                         >
                         </ak-codemirror>

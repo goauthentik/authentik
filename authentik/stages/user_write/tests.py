@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.core.models import (
     USER_ATTRIBUTE_SOURCES,
@@ -127,6 +128,34 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")
+
+    def test_user_update_complex(self):
+        """Test update of existing user"""
+        new_password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
+            username="unittest", email="test@goauthentik.io"
+        )
+        time = now()
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "test-user-new",
+            "password": new_password,
+            "attributes.foo": time,
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
+        self.assertTrue(user_qs.exists())
+        self.assertTrue(user_qs.first().check_password(new_password))
+        self.assertEqual(user_qs.first().attributes["foo"], time.isoformat()[:-6] + "Z")
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""

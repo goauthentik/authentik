@@ -1,4 +1,5 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
@@ -11,10 +12,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
-import { config, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -23,6 +22,7 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     AuthorizationCodeAuthMethodEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
@@ -37,7 +37,7 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 const authorizationCodeAuthMethodOptions = [
@@ -69,13 +69,12 @@ const pkceMethodOptions = [
 ];
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
+export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
         this.providerType = source.type;
-        this.clearIcon = false;
         return source;
     }
 
@@ -87,41 +86,18 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     @property({ attribute: false })
     providerType: SourceType | null = null;
 
-    @state()
-    clearIcon = false;
-
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
-        let source: OAuthSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                oAuthSourceRequest: data as unknown as OAuthSourceRequest,
-            });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("icon");
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
     }
 
     fetchProviderType(v: string | undefined) {
@@ -252,7 +228,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           </ak-form-element-horizontal>
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.JavaScript}
+                                  mode="javascript"
                                   value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                               >
                               </ak-codemirror>
@@ -315,6 +291,26 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </span>
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
@@ -398,54 +394,14 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : nothing}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : nothing}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${this.instance?.icon ?? ""}"
-                          class="pf-c-form-control pf-m-monospace"
-                          autocomplete="off"
-                          spellcheck="false"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${AdminFileListUsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">

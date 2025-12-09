@@ -2,6 +2,8 @@
 
 from binascii import hexlify
 from hashlib import md5
+from ssl import PEM_FOOTER, PEM_HEADER
+from textwrap import wrap
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
@@ -23,6 +25,11 @@ from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
+
+
+def format_cert(raw_pam: str) -> str:
+    """Format a PEM certificate that is either missing its header/footer or is in a single line"""
+    return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
 
 
 class KeyType(models.TextChoices):
@@ -162,3 +169,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
+        permissions = [
+            ("view_certificatekeypair_certificate", _("View Certificate-Key pair's certificate")),
+            ("view_certificatekeypair_key", _("View Certificate-Key pair's private key")),
+        ]

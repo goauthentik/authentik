@@ -1,0 +1,16 @@
+:host {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(
+        --ak-loading-overlay--BackgroundColor,
+        var(--pf-global--BackgroundColor--dark-transparent-200)
+    );
+}
+
+:host([topmost]) {
+    z-index: var(--pf-global--ZIndex--2xl);
+}

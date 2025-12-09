@@ -3,18 +3,20 @@ import "#elements/buttons/SpinnerButton/index";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
-import { DeleteForm } from "#elements/forms/DeleteForm";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { UserDeleteForm } from "#elements/user/utils";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-active-form")
-export class UserActiveForm extends DeleteForm {
+export class UserActiveForm extends UserDeleteForm {
     onSuccess(): void {
         showMessage({
-            message: msg(str`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
+            message: msg(
+                str`Successfully updated ${this.objectLabel} ${this.getObjectDisplayName()}`,
+            ),
             level: MessageLevel.success,
         });
     }
@@ -30,7 +32,8 @@ export class UserActiveForm extends DeleteForm {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    override renderModalInner(): TemplateResult {
+        const objName = this.getFormattedObjectName();
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Update ${this.objectLabel}`)}</h1>
@@ -39,9 +42,7 @@ export class UserActiveForm extends DeleteForm {
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p>
-                        ${msg(
-                            str`Are you sure you want to update ${this.objectLabel} "${this.obj?.name}"?`,
-                        )}
+                        ${msg(str`Are you sure you want to update ${this.objectLabel}${objName}?`)}
                     </p>
                 </form>
             </section>

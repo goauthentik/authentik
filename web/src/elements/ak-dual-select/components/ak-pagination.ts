@@ -27,6 +27,10 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
                 .pf-c-pagination__nav-control .pf-c-button:disabled {
                     color: var(--pf-c-button--disabled--Color);
                 }
+
+                .pf-c-options-menu__toggle {
+                    color: var(--ak-dark-foreground);
+                }
             }
         `,
     ];
