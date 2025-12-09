@@ -17,7 +17,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.5-trixie@sha256:b669435006316ec2986731bb52ab7df994ea4f7e357f21e7218f1e6b4880883f AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -47,13 +47,14 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
-FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:cb2d1f8ed0ee404682c501138ce5e68e243ddad77ee748b24f71011a19a8dc0d
 
 ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="goauthentik.io Proxy outpost image, see https://goauthentik.io for more info." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \

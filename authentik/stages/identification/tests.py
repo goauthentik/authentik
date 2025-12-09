@@ -95,6 +95,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -130,6 +131,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -204,6 +206,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -259,6 +262,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             show_source_labels=False,
@@ -321,6 +325,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
             user_fields=[],
@@ -369,6 +374,7 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": "/source/oauth/login/test/",
                     },
+                    "promoted": False,
                 }
             ],
         )
@@ -406,6 +412,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
         )
@@ -433,6 +440,7 @@ class TestIdentificationStage(FlowTestCase):
                     },
                     "icon_url": "/static/authentik/sources/default.svg",
                     "name": "test",
+                    "promoted": False,
                 }
             ],
         )

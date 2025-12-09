@@ -13,17 +13,17 @@ import * as path from "node:path";
  * @import { BuildOptions } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
-import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
-import { copy } from "esbuild-plugin-copy";
 
 /// <reference types="../types/esbuild.js" />
 
@@ -36,7 +36,21 @@ const publicBundledDefinitions = Object.fromEntries(
 );
 logger.info(publicBundledDefinitions, "Bundle definitions");
 
-const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
+/**
+ * @typedef {[from: string, to: string]} SourceDestinationPair
+ */
+
+/**
+ * @type {SourceDestinationPair[]}
+ */
+const assets = [
+    [
+        path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
+        path.dirname(EntryPoint.StandaloneLoading.out),
+    ],
+    [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
+    [path.resolve(PackageRoot, "icons"), "./assets/icons"],
+];
 
 /**
  * @type {Readonly<BuildOptions>}
@@ -52,42 +66,54 @@ const BASE_ESBUILD_OPTIONS = {
     minify: NodeEnvironment === "production",
     legalComments: "external",
     splitting: true,
+    color: !process.env.NO_COLOR,
     treeShaking: true,
-    external: ["*.woff", "*.woff2"],
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".woff": "file",
+        ".woff2": "file",
+        ".jpg": "file",
+        ".png": "file",
+        ".svg": "file",
     },
     plugins: [
-        copy({
-            assets: [
-                {
-                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
-                    to: path.dirname(EntryPoint.StandaloneLoading.out),
-                },
+        {
+            name: "copy",
+            setup(build) {
+                build.onEnd(async () => {
+                    /**
+                     * @type {import('esbuild').PartialMessage[]}
+                     */
+                    const errors = [];
 
-                {
-                    from: path.join(patternflyPath, "patternfly.min.css"),
-                    to: ".",
-                },
-                {
-                    from: path.join(patternflyPath, "assets", "**"),
-                    to: "./assets",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "common", "styles", "**"),
-                    to: ".",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
-                    to: "./assets/images",
-                },
-                {
-                    from: path.resolve(PackageRoot, "icons", "*"),
-                    to: "./assets/icons",
-                },
-            ],
-        }),
+                    /**
+                     * @param {SourceDestinationPair} pair
+                     */
+                    const copy = ([from, to]) => {
+                        const resolvedDestination = path.resolve(DistDirectory, to);
+
+                        logger.debug(`📋 Copying assets from ${from} to ${to}`);
+
+                        return fs
+                            .cp(from, resolvedDestination, { recursive: true })
+                            .catch((error) => {
+                                errors.push({
+                                    text: `Failed to copy assets from ${from} to ${to}: ${error}`,
+                                    location: {
+                                        file: from,
+                                    },
+                                });
+                            });
+                    };
+
+                    await Promise.all(assets.map(copy));
+
+                    return { errors };
+                });
+            },
+        },
+
         mdxPlugin({
             root: MonoRepoRoot,
         }),
@@ -147,9 +173,11 @@ function doHelp() {
     process.exit(0);
 }
 
+/**
+ *
+ * @returns {Promise<() => Promise<void>>} dispose
+ */
 async function doWatch() {
-    const { promise, resolve, reject } = Promise.withResolvers();
-
     logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
     const entryPoints = Object.values(EntryPoint);
@@ -165,12 +193,11 @@ async function doWatch() {
 
     const buildOptions = createESBuildOptions({
         entryPoints,
-        plugins: developmentPlugins,
+        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
     });
 
     const buildContext = await esbuild.context(buildOptions);
 
-    await buildContext.rebuild();
     await buildContext.watch();
 
     const httpURL = new URL("http://localhost");
@@ -184,34 +211,23 @@ async function doWatch() {
     logger.info(`🔓 ${httpURL.href}`);
     logger.info(`🔒 ${httpsURL.href}`);
 
-    let disposing = false;
-
-    const delegateShutdown = () => {
+    return () => {
         logger.flush();
-        console.log("");
+        console.info("");
+        console.info("🛑 Stopping file watcher...");
 
-        // We prevent multiple attempts to dispose the context
-        // because ESBuild will repeatedly restart its internal clean-up logic.
-        // However, sending a second SIGINT will still exit the process immediately.
-        if (disposing) return;
-
-        disposing = true;
-
-        return buildContext.dispose().then(resolve).catch(reject);
+        return buildContext.dispose();
     };
-
-    process.on("SIGINT", delegateShutdown);
-
-    return promise;
 }
 
 async function doBuild() {
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
+    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
     const entryPoints = Object.values(EntryPoint);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
@@ -220,10 +236,11 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.StandaloneLoading];
+    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
 
     const buildOptions = createESBuildOptions({
         entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
     });
 
     await esbuild.build(buildOptions);
@@ -253,11 +270,43 @@ await cleanDistDirectory()
     // ---
     .then(() =>
         delegateCommand()
-            .then(() => {
-                process.exit(0);
+            .then((dispose) => {
+                if (!dispose) {
+                    process.exit(0);
+                }
+
+                /**
+                 * @type {Promise<void>}
+                 */
+                const signalListener = new Promise((resolve) => {
+                    // We prevent multiple attempts to dispose the context
+                    // because ESBuild will repeatedly restart its internal clean-up logic.
+                    // However, sending a second SIGINT will still exit the process immediately.
+                    let signalCount = 0;
+
+                    process.on("SIGINT", () => {
+                        if (signalCount > 3) {
+                            // Something is taking too long and the user wants to exit now.
+                            console.log("🛑 Forcing exit...");
+                            process.exit(0);
+                        }
+                    });
+
+                    process.once("SIGINT", () => {
+                        signalCount++;
+
+                        dispose().finally(() => {
+                            console.log("✅ Done!");
+
+                            resolve();
+                        });
+                    });
+
+                    logger.info("🚪 Press Ctrl+C to exit.");
+                });
+
+                return signalListener;
             })
-            .catch((error) => {
-                logger.error(error);
-                process.exit(1);
-            }),
+            .then(() => process.exit(0))
+            .catch(() => process.exit(1)),
     );

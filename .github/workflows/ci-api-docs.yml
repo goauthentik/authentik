@@ -21,7 +21,7 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - name: Install Dependencies
         working-directory: website/
         run: npm ci
@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: website/package.json
           cache: "npm"
@@ -55,7 +55,7 @@ jobs:
         env:
           NODE_ENV: production
         run: npm run build -w api
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v4
         with:
           name: api-docs
           path: website/api/build
@@ -66,12 +66,12 @@ jobs:
       - lint
       - build
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v5
         with:
           name: api-docs
           path: website/api/build
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: website/package.json
           cache: "npm"

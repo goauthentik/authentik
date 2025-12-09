@@ -29,9 +29,12 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
 	}
-	if a.isEmbedded {
+
+	sessionBackend := a.srv.SessionBackend()
+	switch sessionBackend {
+	case "postgres":
 		// New PostgreSQL store
-		ps, err := postgresstore.NewPostgresStore()
+		ps, err := postgresstore.NewPostgresStore(a.log)
 		if err != nil {
 			return nil, err
 		}
@@ -46,30 +49,32 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			Path:     "/",
 		})
 
-		a.log.Trace("using postgresql session backend")
 		return ps, nil
-	}
-	dir := os.TempDir()
-	cs, err := filesystemstore.GetPersistentStore(dir)
-	if err != nil {
-		return nil, err
-	}
-	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
-	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
-	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
-	// securecookie: the value is too long
-	// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
+	case "filesystem":
+		dir := os.TempDir()
+		cs, err := filesystemstore.GetPersistentStore(dir)
+		if err != nil {
+			return nil, err
+		}
+		cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
+		// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
+		// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
+		// securecookie: the value is too long
+		// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
 
-	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-	cs.MaxLength(math.MaxInt)
-	cs.Options.HttpOnly = true
-	cs.Options.Secure = strings.ToLower(externalHost.Scheme) == "https"
-	cs.Options.Domain = *p.CookieDomain
-	cs.Options.SameSite = http.SameSiteLaxMode
-	cs.Options.MaxAge = maxAge
-	cs.Options.Path = "/"
-	a.log.WithField("dir", dir).Trace("using filesystem session backend")
-	return cs, nil
+		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
+		cs.MaxLength(math.MaxInt)
+		cs.Options.HttpOnly = true
+		cs.Options.Secure = strings.ToLower(externalHost.Scheme) == "https"
+		cs.Options.Domain = *p.CookieDomain
+		cs.Options.SameSite = http.SameSiteLaxMode
+		cs.Options.MaxAge = maxAge
+		cs.Options.Path = "/"
+		return cs, nil
+	default:
+		a.log.WithField("backend", sessionBackend).Panic("unknown session backend type")
+		return nil, nil
+	}
 }
 
 func (a *Application) SessionName() string {

@@ -60,6 +60,10 @@ class InheritanceForeignKey(models.ForeignKey):
     forward_related_accessor_class = InheritanceForwardManyToOneDescriptor
 
 
+class DeprecatedMixin:
+    """Mixin for classes that are deprecated"""
+
+
 class DomainlessURLValidator(URLValidator):
     """Subclass of URLValidator which doesn't check the domain
     (to allow hostnames without domain)"""

@@ -63,6 +63,7 @@ class BaseEvaluator:
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
             "ak_create_jwt": self.expr_create_jwt,
+            "ak_create_jwt_raw": self.expr_create_jwt_raw,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_logger": get_logger(self._filename).bind(),
             "ak_send_email": self.expr_send_email,
@@ -221,6 +222,16 @@ class BaseEvaluator:
         access_token.id_token = IDToken.new(provider, access_token, request)
         access_token.save()
         return access_token.token
+
+    def expr_create_jwt_raw(
+        self, provider: OAuth2Provider | str, validity: str = "seconds=60", **kwargs
+    ) -> str:
+        """Issue a JWT for a given provider with completely customized data"""
+        if not isinstance(provider, OAuth2Provider):
+            provider = OAuth2Provider.objects.get(name=provider)
+        kwargs["exp"] = int((now() + timedelta_from_string(validity)).timestamp())
+        kwargs["aud"] = provider.client_id
+        return provider.encode(kwargs)
 
     def expr_send_email(
         self,

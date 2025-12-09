@@ -38,6 +38,9 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Issuer** to `https://zammad.company/auth/saml/metadata`.
     - Set the **Audience** to `https://zammad.company/auth/saml/metadata`.
     - Set the **Service Provider Binding** to `Post`.
+    - Set the **SLS URL** to `https://zammad.company/auth/saml/slo`.
+    - Set the **SLS Binding** to `Redirect`.
+    - Set the **Logout Method** to `Front-channel (Iframe)`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 

@@ -8,6 +8,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -17,7 +18,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { CoreApi, Group, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -159,8 +160,10 @@ export class GroupViewPage extends AKElement {
                         >
                             <div class="pf-c-card__title">${msg("Notes")}</div>
                             <div class="pf-c-card__body">
-                                ${Object.hasOwn(this.group?.attributes || {}, "notes")
-                                    ? html`${this.group.attributes?.notes}`
+                                ${this.group?.attributes?.notes
+                                    ? html`<ak-mdx
+                                          .content=${this.group.attributes.notes}
+                                      ></ak-mdx>`
                                     : html`
                                           <p>
                                               ${msg(
@@ -206,7 +209,7 @@ export class GroupViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

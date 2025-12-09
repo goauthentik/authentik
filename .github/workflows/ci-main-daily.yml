@@ -9,7 +9,6 @@ on:
 
 jobs:
   test-container:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,7 +18,7 @@ jobs:
           - version-2025-4
           - version-2025-2
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"

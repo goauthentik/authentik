@@ -2,19 +2,26 @@
  * @file Docusaurus release utils.
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
+ * @import { AKReleaseFile, AKReleasesPluginEnvironment } from "./common.mjs"
  */
 
-import * as path from "node:path";
+import { readFileSync } from "node:fs";
+import { extname, join } from "node:path";
 
+import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
 import FastGlob from "fast-glob";
 import { coerce } from "semver";
 
 /**
+ * Collect all Markdown files from the releases directory.
  *
  * @param {string} releasesParentDirectory
- * @returns {FastGlob.Entry[]}
+ * @returns {AKReleaseFile[]}
  */
 export function collectReleaseFiles(releasesParentDirectory) {
+    /**
+     * @type {Array<FastGlob.Entry & AKReleaseFile>}
+     */
     const releaseFiles = FastGlob.sync("releases/**/v*.{md,mdx}", {
         cwd: releasesParentDirectory,
         onlyFiles: true,
@@ -38,6 +45,21 @@ export function collectReleaseFiles(releasesParentDirectory) {
             return b.name.localeCompare(a.name);
         });
 
+    const [latestRelease] = releaseFiles;
+
+    if (latestRelease) {
+        const extension = extname(latestRelease.dirent.name);
+
+        const fileContent = readFileSync(
+            join(releasesParentDirectory, `${latestRelease.path}${extension}`),
+            "utf-8",
+        );
+
+        const { frontMatter } = parseFileContentFrontMatter(fileContent);
+
+        latestRelease.frontMatter = frontMatter;
+    }
+
     return releaseFiles;
 }
 
@@ -45,15 +67,13 @@ export const SUPPORTED_RELEASE_COUNT = 3;
 
 /**
  *
- * @param {FastGlob.Entry[]} releaseFiles
+ * @param {AKReleaseFile[]} releaseFiles
  */
 export function createReleaseSidebarEntries(releaseFiles) {
     /**
      * @type {SidebarItemConfig[]}
      */
-    let sidebarEntries = releaseFiles.map((fileEntry) => {
-        return path.join(fileEntry.path);
-    });
+    let sidebarEntries = releaseFiles.map((fileEntry) => fileEntry.path);
 
     if (releaseFiles.length > SUPPORTED_RELEASE_COUNT) {
         // Then we add the rest of the releases as a category.
@@ -69,15 +89,6 @@ export function createReleaseSidebarEntries(releaseFiles) {
 
     return sidebarEntries;
 }
-
-/**
- * @typedef {object} AKReleasesPluginEnvironment
- * @property {string} [branch] The current branch name, if available.
- * e.g. "main" `version-${year}.${month}`, "feature-branch"
- * @property {string} currentReleaseOrigin The URL to the current release documentation.
- * @property {string} preReleaseOrigin The URL to the pre-release documentation.
- * @property {string} apiReferenceOrigin The URL to the API reference documentation.
- */
 
 /**
  * Prepare the environment variables for the releases plugin.

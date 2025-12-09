@@ -5,25 +5,28 @@ on:
   # schedule:
   #   - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
+    inputs:
+      dry-run:
+        type: boolean
+        description: Enable dry-run mode
 
 jobs:
   clean-ghcr:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     name: Delete old unused container images
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Delete 'dev' containers older than a week
-        uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v2
+        uses: snok/container-retention-policy@3b0972b2276b171b212f8c4efbca59ebba26eceb # v3.0.1
         with:
           image-names: dev-server,dev-ldap,dev-proxy
+          image-tags: "!gh-next,!gh-main"
           cut-off: One week ago UTC
-          account-type: org
-          org-name: goauthentik
-          untagged-only: false
+          account: goauthentik
+          tag-selection: untagged
           token: ${{ steps.generate_token.outputs.token }}
-          skip-tags: gh-next,gh-main
+          dry-run: ${{ inputs.dry-run }}

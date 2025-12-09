@@ -11,8 +11,6 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
@@ -54,11 +52,13 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
@@ -70,7 +70,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
+                            mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">

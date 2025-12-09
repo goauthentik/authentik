@@ -64,7 +64,7 @@ func (a *Application) getClaimsFromSession(r *http.Request) *types.Claims {
 
 	// Claims are always stored as types.Claims but may be deserialized differently:
 	// - Filesystem store (gob): preserves struct type as types.Claims
-	// - PostgreSQL store (JSON): deserializes as map[string]interface{}
+	// - PostgreSQL store (JSON): deserializes as map[string]any
 
 	// Handle struct type (filesystem store)
 	if c, ok := claims.(types.Claims); ok {
@@ -72,7 +72,7 @@ func (a *Application) getClaimsFromSession(r *http.Request) *types.Claims {
 	}
 
 	// Handle map type (PostgreSQL store)
-	if claimsMap, ok := claims.(map[string]interface{}); ok {
+	if claimsMap, ok := claims.(map[string]any); ok {
 		var c types.Claims
 		if err := mapstructure.Decode(claimsMap, &c); err != nil {
 			return nil

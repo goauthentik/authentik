@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,7 +17,6 @@ import (
 	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"gorm.io/gorm/logger"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -159,12 +157,12 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 }
 
 // NewPostgresStore returns a new PostgresStore
-func NewPostgresStore() (*PostgresStore, error) {
+func NewPostgresStore(log *log.Entry) (*PostgresStore, error) {
 	cfg := config.Get().PostgreSQL
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
+		Logger: NewLogger(log),
 		NowFunc: func() time.Time {
 			return time.Now().UTC()
 		},
@@ -435,39 +433,6 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 // generateSessionID generates a random session ID
 func generateSessionID() string {
 	return uuid.New().String()
-}
-
-var (
-	globalStore *PostgresStore
-	mu          sync.Mutex
-)
-
-// GetPersistentStore creates a new postgres store if it is the first time the function has been called.
-// If the function is called multiple times, the store from the variable is returned to ensure that only one instance is running.
-func GetPersistentStore() (*PostgresStore, error) {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore == nil {
-		store, err := NewPostgresStore()
-		if err != nil {
-			return nil, fmt.Errorf("failed to create persistent store: %w", err)
-		}
-		globalStore = store
-	}
-
-	return globalStore, nil
-}
-
-// StopPersistentStore stops the cleanup background job and clears the globalStore variable.
-func StopPersistentStore() {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore != nil {
-		_ = globalStore.Close()
-		globalStore = nil
-	}
 }
 
 // NewTestStore creates a PostgresStore for testing with the given database and pool.

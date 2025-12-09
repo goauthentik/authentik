@@ -16,6 +16,7 @@ from sentry_sdk import start_span
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
+from authentik.endpoints.models import Device
 from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
@@ -23,14 +24,22 @@ from authentik.flows.challenge import (
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_PENDING_USER,
+)
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.captcha.stage import CaptchaChallenge, verify_captcha_token
+from authentik.stages.captcha.stage import (
+    PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    CaptchaChallenge,
+    verify_captcha_token,
+)
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
@@ -65,6 +74,7 @@ class LoginSourceSerializer(PassiveSerializer):
 
     name = CharField()
     icon_url = CharField(required=False, allow_null=True)
+    promoted = BooleanField(default=False)
 
     challenge = ChallengeDictWrapper()
 
@@ -149,7 +159,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
             try:
-                verify_captcha_token(captcha_stage, captcha_token, client_ip)
+                verify_captcha_token(
+                    captcha_stage,
+                    captcha_token,
+                    client_ip,
+                    key=self.stage.executor.plan.context.get(PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY),
+                )
             except ValidationError:
                 raise ValidationError(_("Failed to authenticate.")) from None
 
@@ -243,10 +258,14 @@ class IdentificationStageView(ChallengeStageView):
             }
         )
         # If the user has been redirected to us whilst trying to access an
-        # application, SESSION_KEY_APPLICATION_PRE is set in the session
-        if SESSION_KEY_APPLICATION_PRE in self.request.session:
-            challenge.initial_data["application_pre"] = self.request.session.get(
-                SESSION_KEY_APPLICATION_PRE, Application()
+        # application, PLAN_CONTEXT_APPLICATION is set in the flow plan
+        if PLAN_CONTEXT_APPLICATION in self.executor.plan.context:
+            challenge.initial_data["application_pre"] = self.executor.plan.context.get(
+                PLAN_CONTEXT_APPLICATION, Application()
+            ).name
+        if PLAN_CONTEXT_DEVICE in self.executor.plan.context:
+            challenge.initial_data["application_pre"] = self.executor.plan.context.get(
+                PLAN_CONTEXT_DEVICE, Device()
             ).name
         get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
         # Check for related enrollment and recovery flow, add URL to view

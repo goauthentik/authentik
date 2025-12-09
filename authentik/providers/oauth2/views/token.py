@@ -336,7 +336,7 @@ class TokenParams:
         self, request: HttpRequest, username: str, password: str
     ):
         # Authenticate user based on credentials
-        user = User.objects.filter(username=username).first()
+        user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
         token: Token = Token.filter_not_expired(
@@ -378,9 +378,11 @@ class TokenParams:
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"]["kid"]
-        fallback_alg = decode_unvalidated["header"]["alg"]
+        expected_kid = decode_unvalidated["header"].get("kid")
+        fallback_alg = decode_unvalidated["header"].get("alg")
         token = source = None
+        if not expected_kid or not fallback_alg:
+            return None, None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
@@ -555,6 +557,8 @@ class TokenView(View):
 
     provider: OAuth2Provider | None = None
     params: TokenParams | None = None
+    params_class = TokenParams
+    provider_class = OAuth2Provider
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
@@ -574,12 +578,14 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.provider = OAuth2Provider.objects.filter(client_id=client_id).first()
+                self.provider = self.provider_class.objects.filter(client_id=client_id).first()
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
                 CTX_AUTH_VIA.set("oauth_client_secret")
-                self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
+                self.params = self.params_class.parse(
+                    request, self.provider, client_id, client_secret
+                )
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",

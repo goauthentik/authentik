@@ -1,35 +1,72 @@
 {% extends "base/skeleton.html" %}
 
+{% load i18n %}
 {% load static %}
 {% load authentik_core %}
+
 
 {% block head_before %}
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
-<script>ShadyDOM = { force: true };</script>
+<script data-id="shady-dom">ShadyDOM = { force: true };</script>
 {% endif %}
 {% include "base/header_js.html" %}
-<script>
-window.authentik.flow = {
-    "layout": "{{ flow.layout }}",
-};
+<script data-id="flow-config">
+    "use strict";
+
+    window.authentik.flow = {
+        "layout": "{{ flow.layout }}",
+    };
 </script>
+
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/static-%v.css' %}" />
 {% endblock %}
 
 {% block head %}
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
-<style>
-:root {
-    --ak-flow-background: url("{{ flow_background_url }}");
-}
+<style data-id="flow-css">
+  :root {
+      --ak-global--background-image: url("{{ flow_background_url }}");
+  }
 </style>
 {% endblock %}
 
 {% block body %}
 <ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
-<ak-flow-executor flowSlug="{{ flow.slug }}">
-    <ak-loading></ak-loading>
-</ak-flow-executor>
+
+<div class="pf-c-page__drawer">
+    <div class="pf-c-drawer pf-m-collapsed" id="flow-drawer">
+        <div class="pf-c-drawer__main">
+            <div class="pf-c-drawer__content">
+                <div class="pf-c-drawer__body">
+                        <ak-flow-executor
+                            slug="{{ flow.slug }}"
+                            class="pf-c-login"
+                            data-layout="{{ flow.layout|default:'stacked' }}"
+                        >
+                            {% include "base/placeholder.html" %}
+
+                            <ak-brand-links
+                                slot="footer"
+                                exportparts="list:brand-links-list, list-item:brand-links-list-item"
+                                role="contentinfo"
+                                aria-label="{% trans 'Site footer' %}"
+                                class="pf-c-login__footer {% if flow.layout == 'stacked' %}pf-m-dark{% endif %}"
+                            ></ak-brand-links>
+                        </ak-flow-executor>
+                    </div>
+                </div>
+
+                <ak-flow-inspector
+                    id="flow-inspector"
+                    data-registration="lazy"
+                    class="pf-c-drawer__panel pf-m-width-33"
+                    slug="{{ flow.slug }}"
+                ></ak-flow-inspector>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

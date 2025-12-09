@@ -82,6 +82,7 @@ export class ProviderWizard extends AKElement {
                     aria-label=${msg("New Provider")}
                     aria-description="${msg("Open the wizard to create a new provider.")}"
                     type="button"
+                    part="button trigger"
                     slot="trigger"
                     class="pf-c-button pf-m-primary"
                 >

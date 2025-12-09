@@ -17,26 +17,28 @@ import { kebabCase } from "change-case";
 import type { HTMLAttributes } from "react";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, RefOrCallback } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
 
 export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
+    editURL?: string | URL | null;
     background?: string | null;
     appIndex: number;
     groupIndex: number;
+    targetRef?: RefOrCallback | null;
 }
 
 export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
+    editURL,
     background,
-    appIndex,
-    groupIndex,
     className = "",
+    targetRef,
     ...props
 }) => {
     if (!application) {
@@ -55,7 +57,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
         modalRef.value?.show();
     };
 
-    const cardID = `app-card-${groupIndex}-${appIndex}`;
+    const cardID = `app-${application.pk}`;
     const titleID = `${cardID}-title`;
     const descriptionID = `${cardID}-description`;
     const cardHeader = CardHeader({
@@ -64,52 +66,59 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     });
 
     const rac = application.launchUrl === RAC_LAUNCH_URL;
+    const primaryRef = targetRef ? ref(targetRef) : nothing;
+
+    const extendedProps = {
+        "aria-label": msg(str`Open "${application.name}"`),
+        "tabindex": "0",
+        "class": "card-header-aspect-wrapper",
+        "title": ifPresent(application.name),
+        "id": cardID,
+        ...props,
+    };
 
     return html`<div
-        role="gridcell"
-        part="app-card"
+        part="card-wrapper"
         data-application-name=${ifPresent(dataID)}
-        aria-labelledby=${titleID}
         aria-describedby=${descriptionID}
         style=${styleMap({ background: background || null })}
         ${spread(props)}
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
             <ak-app-icon
-                part="card-header-icon"
+                exportparts="icon:card-header-icon"
                 size=${PFSize.Large}
                 name=${application.name}
-                icon=${ifPresent(application.metaIcon)}
+                icon=${ifPresent(application.metaIconUrl)}
             ></ak-app-icon>
             ${rac
                 ? html`<div
+                      ${primaryRef}
                       role="button"
-                      tabindex="0"
                       @click=${launchModal}
-                      class="card-header-aspect-wrapper"
-                      aria-label=${msg(str`Open "${application.name}"`)}
-                      title=${ifPresent(application.name)}
+                      ${spread(extendedProps)}
                   >
-                      <ak-library-rac-endpoint-launch
-                          ${ref(modalRef)}
-                          .app=${application}
-                      ></ak-library-rac-endpoint-launch>
                       ${cardHeader}
                   </div>`
                 : html`<a
-                      tabindex="0"
-                      class="card-header-aspect-wrapper"
-                      aria-label=${msg(str`Open "${application.name}"`)}
-                      title=${ifPresent(application.name)}
+                      ${primaryRef}
                       href=${ifPresent(application.launchUrl)}
                       target=${ifPresent(application.openInNewTab, "_blank")}
+                      ${spread(extendedProps)}
                       >${cardHeader}</a
                   >`}
             ${CardMenu({
                 application,
                 cardID,
                 descriptionID,
+                editURL,
             })}
         </div>
+        ${rac
+            ? html`<ak-library-rac-endpoint-launch
+                  ${ref(modalRef)}
+                  .app=${application}
+              ></ak-library-rac-endpoint-launch>`
+            : nothing}
     </div>`;
 };

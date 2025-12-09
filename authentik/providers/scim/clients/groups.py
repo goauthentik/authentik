@@ -1,12 +1,15 @@
 """Group client"""
 
 from itertools import batched
+from typing import Any
 
 from django.db import transaction
+from orjson import dumps
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 
 from authentik.core.models import Group
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -27,6 +30,7 @@ from authentik.providers.scim.clients.schema import (
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
     SCIMMapping,
     SCIMProvider,
     SCIMProviderGroup,
@@ -113,10 +117,23 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._patch_add_users(connection, users)
         return connection
 
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+        """Check if a group is different than what we last wrote to the remote system.
+        Returns true if there is a difference in data."""
+        local_known = connection.attributes
+        local_updated = {}
+        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        MERGE_LIST_UNIQUE.merge(local_updated, local_created)
+        return dumps(local_updated) != dumps(local_known)
+
     def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
         scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
+        if not self.diff(payload, connection):
+            self.logger.debug("Skipping group write as data has not changed")
+            return self.patch_compare_users(group)
         try:
             if self._config.patch.supported:
                 return self._update_patch(group, scim_group, connection)
@@ -126,6 +143,34 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             raise
 
     def _update_patch(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
+    ):
+        """Apply provider-specific PATCH requests"""
+        match connection.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                self._update_patch_aws(group, scim_group, connection)
+            case _:
+                self._update_patch_general(group, scim_group, connection)
+        return self.patch_compare_users(group)
+
+    def _update_patch_aws(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
+    ):
+        """Run PATCH requests for supported attributes"""
+        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
+        self._patch_chunked(
+            connection.scim_id,
+            *[
+                PatchOperation(
+                    op=PatchOp.replace,
+                    path=attr,
+                    value=group_dict[attr],
+                )
+                for attr in ("displayName", "externalId")
+            ],
+        )
+
+    def _update_patch_general(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
         """Update a group via PATCH request"""
@@ -147,7 +192,6 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_none=True,
             ),
         )
-        return self.patch_compare_users(group)
 
     def _update_put(self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup):
         """Update a group via PUT request"""

@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
 
 from authentik.events.logs import LogEvent
+from authentik.events.utils import sanitize_item
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
@@ -174,7 +175,7 @@ class TaskLog(models.Model):
             log_level=log_event.log_level,
             logger=log_event.logger,
             timestamp=log_event.timestamp,
-            attributes=log_event.attributes,
+            attributes=sanitize_item(log_event.attributes),
         )
 
     @classmethod
@@ -193,7 +194,7 @@ class TaskLog(models.Model):
                     log_level=log_event.log_level,
                     logger=log_event.logger,
                     timestamp=log_event.timestamp,
-                    attributes=log_event.attributes,
+                    attributes=sanitize_item(log_event.attributes),
                 )
                 for log_event in log_events
             ]
