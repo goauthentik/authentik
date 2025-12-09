@@ -178,6 +178,7 @@ class UserSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
+            self.fields["password_hash"] = CharField(required=False, allow_null=True)
             self.fields["permissions"] = ListField(
                 required=False,
                 child=ChoiceField(choices=get_permission_choices()),
@@ -188,12 +189,13 @@ class UserSerializer(ModelSerializer):
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
         perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
         ).values_list("content_type__app_label", "codename")
         perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance: User = super().create(validated_data)
-        self._set_password(instance, password)
+        self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
         return instance
 
@@ -201,21 +203,43 @@ class UserSerializer(ModelSerializer):
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
         perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
         ).values_list("content_type__app_label", "codename")
         perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance = super().update(instance, validated_data)
-        self._set_password(instance, password)
+        self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
         return instance
 
-    def _set_password(self, instance: User, password: str | None):
+    def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password of user if we're in a blueprint context, and if it's an empty
-        string then use an unusable password"""
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
-            instance.set_password(password)
-            instance.save()
+        string then use an unusable password. Supports both plaintext password and
+        pre-hashed password via password_hash parameter."""
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            # password_hash takes precedence over password
+            if password_hash:
+                # Validate the hash format before setting
+                from django.contrib.auth.hashers import identify_hasher
+                from rest_framework.exceptions import ValidationError
+
+                try:
+                    identify_hasher(password_hash)
+                except ValueError as exc:
+                    raise ValidationError(
+                        f"Invalid password hash format. Must be a valid Django password hash: {exc}"
+                    ) from exc
+
+                # Directly set the hashed password without re-hashing
+                instance.password = password_hash
+                from django.utils.timezone import now
+
+                instance.password_change_date = now()
+                instance.save()
+            elif password:
+                instance.set_password(password)
+                instance.save()
         if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
