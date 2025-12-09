@@ -689,6 +689,7 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/authentik-agent/configuration",
+                    "endpoint-devices/authentik-agent/authentik-cli",
                     {
                         //#endregion
 
@@ -707,7 +708,19 @@ const items = [
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
                         ],
                     },
-                    "endpoint-devices/authentik-agent/authentik-cli",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Release Notes
+                        type: "category",
+                        label: "authentik Agent Release Notes",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/release-notes/index",
+                        },
+                        items: ["endpoint-devices/authentik-agent/release-notes/temp"],
+                    },
                 ],
             },
             {

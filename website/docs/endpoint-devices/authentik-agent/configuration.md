@@ -34,6 +34,8 @@ Alternatively, manually create the flow by following the instructions in the [De
         - Set the **Client type** to `Public`.
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
+        - Under **Advanced protocol settings**:
+            - In addidition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
     - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
@@ -46,3 +48,5 @@ Alternatively, manually create the flow by following the instructions in the [De
 2. Navigate to **Endpoint Devices** > **Connectors**, click **Create**, and configure the following settings:
     - **Name** - provide a descriptive name (e.g. `authentik Agent`)
     - **blah** -
+
+## Configuration verification

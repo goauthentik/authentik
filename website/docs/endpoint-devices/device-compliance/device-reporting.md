@@ -24,3 +24,7 @@ When a device registered with authentik reports its [device facts](#device-facts
 ## Device facts
 
 Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more.
+
+## Devices in event logs
+
+(TODO)

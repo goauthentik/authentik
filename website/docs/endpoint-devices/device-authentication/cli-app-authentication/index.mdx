@@ -8,6 +8,12 @@ import DocCardList from "@theme/DocCardList";
 
 The authentik agent can also be used to authenticate CLI based applications like [`aws`](./aws.mdx) and [`kubectl`](./k8s.mdx).
 
+(TODO)
+agent and cli keeps a cache of tokens it has exchanged
+initial step is that cli and local agent takes authenitk token and exchange this for specified k8s or AWS provider
+then it will cache this until it's expired
+this massively improves performance because it doesn't request a new token each time for authentication
+
 For more information, pick a topic below:
 
 <DocCardList />

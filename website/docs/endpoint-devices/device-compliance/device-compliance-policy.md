@@ -11,6 +11,10 @@ Device compliance policies are still in development and currently inaccessible.
 
 However, similar functionality can be achieved with existing stages. The following are examples of what can be achieved.
 
+## Prerequisites
+
+You must have [configured compliance](./configuration.md) in authentik and on the Endpoint device.
+
 ## Examples
 
 ### Limit authentication to only registered Endpoint Devices
