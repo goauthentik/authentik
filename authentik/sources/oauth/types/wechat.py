@@ -19,7 +19,7 @@ class WeChatOAuthRedirect(OAuthRedirect):
         # as the *only* scope for the QR code-based login flow.
         # Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 1)  # noqa: E501
         return {
-            "scope": "snsapi_login",
+            "scope": ["snsapi_login"],
         }
 
 
