@@ -22,8 +22,6 @@ class Command(BaseCommand):
         if not password:
             raise CommandError("Password cannot be empty")
 
-        if len(password) < 1:
-            raise CommandError("Password must be at least 1 character long")
 
         try:
             hashed = make_password(password)
