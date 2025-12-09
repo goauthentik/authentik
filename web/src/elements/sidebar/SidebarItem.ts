@@ -220,7 +220,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     renderWithPath() {
         if (this.enterprise && !this.hasEnterpriseLicense) {
             if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
-            else return this.renderEnterpriseRequired();
+            return this.renderEnterpriseRequired();
         }
         return html`
             <a
