@@ -19816,6 +19816,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.deviceaccessgroup
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
@@ -41324,6 +41325,7 @@ components:
       - authentik_core.token
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
+      - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
       - authentik_endpoints_connectors_agent.agentdeviceuserbinding
