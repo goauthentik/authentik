@@ -3,8 +3,10 @@ import "#elements/forms/SearchSelect/index";
 import "#admin/endpoints/connectors/agent/ConfigModal";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
 
 import {
     AgentConnector,
@@ -17,6 +19,7 @@ import {
 import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -30,6 +33,8 @@ export class AgentConnectorSetup extends AKElement {
 
     @state()
     token?: EnrollmentToken;
+
+    #tokenSelectRef = createRef<SearchSelect<EnrollmentToken>>();
 
     static styles: CSSResult[] = [
         PFBase,
@@ -46,6 +51,21 @@ export class AgentConnectorSetup extends AKElement {
             }
         `,
     ];
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        this.#refreshHandler = this.#refreshHandler.bind(this);
+        window.addEventListener(EVENT_REFRESH, this.#refreshHandler);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener(EVENT_REFRESH, this.#refreshHandler);
+    }
+
+    #refreshHandler = () => {
+        this.#tokenSelectRef.value?.updateData();
+    };
 
     render() {
         return html`<div class="pf-l-grid pf-m-gutter">
@@ -91,6 +111,7 @@ export class AgentConnectorSetup extends AKElement {
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
                     <ak-search-select
+                        ${ref(this.#tokenSelectRef)}
                         .fetchObjects=${async (query?: string): Promise<EnrollmentToken[]> => {
                             const args: EndpointsAgentsEnrollmentTokensListRequest = {
                                 ordering: "name",

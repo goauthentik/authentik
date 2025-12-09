@@ -22,7 +22,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMProvider,
 } from "@goauthentik/api";
 
@@ -155,7 +155,7 @@ export class SCIMProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

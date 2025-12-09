@@ -3,7 +3,7 @@
 from json import dumps
 
 from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter

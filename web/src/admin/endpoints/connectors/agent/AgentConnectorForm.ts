@@ -6,6 +6,7 @@ import "#elements/forms/FormGroup";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
