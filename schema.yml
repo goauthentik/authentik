@@ -4499,6 +4499,145 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/export/:
+    post:
+      operationId: core_users_export_create
+      description: |-
+        Create a data export for this data type. Note that the export is generated asynchronously:
+        this method returns a `DataExport` object that will initially have `completed=false` as well
+        as the permanent URL to that object in the `Location` header.
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
+        contain a URL to download
+      parameters:
+      - in: query
+        name: attributes
+        schema:
+          type: string
+        description: Attributes
+      - in: query
+        name: date_joined
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
+        name: groups_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: groups_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: is_superuser
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - in: query
+        name: path
+        schema:
+          type: string
+      - in: query
+        name: path_startswith
+        schema:
+          type: string
+      - in: query
+        name: roles_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: roles_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: type
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - external
+            - internal
+            - internal_service_account
+            - service_account
+        explode: true
+        style: form
+      - in: query
+        name: username
+        schema:
+          type: string
+      - in: query
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/impersonate_end/:
     get:
       operationId: core_users_impersonate_end_retrieve
@@ -6510,6 +6649,7 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - export_ready
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -6745,6 +6885,108 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/export/:
+    post:
+      operationId: events_events_export_create
+      description: |-
+        Create a data export for this data type. Note that the export is generated asynchronously:
+        this method returns a `DataExport` object that will initially have `completed=false` as well
+        as the permanent URL to that object in the `Location` header.
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
+        contain a URL to download
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - export_ready
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -6795,6 +7037,7 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - export_ready
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -10454,6 +10697,7 @@ paths:
           - configuration_error
           - custom_
           - email_sent
+          - export_ready
           - flow_execution
           - impersonation_ended
           - impersonation_started
@@ -19617,6 +19861,7 @@ paths:
           - authentik_providers_ssf.ssfprovider
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
+          - authentik_reports.dataexport
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -20065,6 +20310,76 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reports/exports/:
+    get:
+      operationId: reports_exports_list
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataExportList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reports/exports/{id}/:
+    get:
+      operationId: reports_exports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Data Export.
+        required: true
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: reports_exports_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Data Export.
+        required: true
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -32687,6 +33002,7 @@ components:
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
+      - authentik.enterprise.reports
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -35037,6 +35353,22 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - id
+      - model
     ContextualFlowInfo:
       type: object
       description: Contextual flow information for a challenge
@@ -35372,6 +35704,45 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    DataExport:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        requested_by:
+          allOf:
+          - $ref: '#/components/schemas/RequestedBy'
+          readOnly: true
+        requested_on:
+          type: string
+          format: date-time
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        query_params:
+          type: object
+          additionalProperties: {}
+        file_url:
+          type: string
+          readOnly: true
+        completed:
+          type: boolean
+          readOnly: true
+      required:
+      - completed
+      - content_type
+      - file_url
+      - id
+      - query_params
+      - requested_by
+      - requested_on
     DeliveryMethodEnum:
       enum:
       - https://schemas.openid.net/secevent/risc/delivery-method/push
@@ -36970,6 +37341,7 @@ components:
       - model_deleted
       - email_sent
       - update_available
+      - export_ready
       - custom_
       type: string
     EventMatcherPolicy:
@@ -41054,6 +41426,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
+      - authentik_reports.dataexport
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
@@ -41284,6 +41657,13 @@ components:
         body:
           type: string
           readOnly: true
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         created:
           type: string
           format: date-time
@@ -41301,6 +41681,13 @@ components:
       type: object
       description: Notification Serializer
       properties:
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         event:
           $ref: '#/components/schemas/EventRequest'
         seen:
@@ -42721,6 +43108,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDataExportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExport'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -46937,6 +47339,13 @@ components:
       type: object
       description: Notification Serializer
       properties:
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         event:
           $ref: '#/components/schemas/EventRequest'
         seen:
@@ -50920,6 +51329,22 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestedBy:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - pk
+      - username
     ResidentKeyRequirementEnum:
       enum:
       - discouraged

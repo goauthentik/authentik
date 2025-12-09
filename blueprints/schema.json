@@ -904,6 +904,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_reports.dataexport"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_reports.dataexport_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_reports.dataexport"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_reports.dataexport"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         },
                         "id": {
@@ -5617,6 +5657,10 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_reports.add_dataexport",
+                            "authentik_reports.change_dataexport",
+                            "authentik_reports.delete_dataexport",
+                            "authentik_reports.view_dataexport",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -6914,6 +6958,43 @@
                 }
             }
         },
+        "model_authentik_reports.dataexport": {
+            "type": "object",
+            "properties": {
+                "query_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Query params"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_reports.dataexport_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_dataexport",
+                            "change_dataexport",
+                            "delete_dataexport",
+                            "view_dataexport"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
             "type": "object",
             "properties": {
@@ -7363,6 +7444,7 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "export_ready",
                         "custom_"
                     ],
                     "title": "Action"
@@ -7427,6 +7509,21 @@
         "model_authentik_events.notification": {
             "type": "object",
             "properties": {
+                "hyperlink": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "maxLength": 4096,
+                    "title": "Hyperlink"
+                },
+                "hyperlink_label": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Hyperlink label"
+                },
                 "event": {
                     "type": "object",
                     "properties": {
@@ -7464,6 +7561,7 @@
                                 "model_deleted",
                                 "email_sent",
                                 "update_available",
+                                "export_ready",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -8207,6 +8305,7 @@
                         "model_deleted",
                         "email_sent",
                         "update_available",
+                        "export_ready",
                         "custom_"
                     ],
                     "title": "Action",
@@ -8299,6 +8398,7 @@
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
+                        "authentik.enterprise.reports",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
@@ -8424,6 +8524,7 @@
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
+                        "authentik_reports.dataexport",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
@@ -10945,6 +11046,10 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_reports.add_dataexport",
+                            "authentik_reports.change_dataexport",
+                            "authentik_reports.delete_dataexport",
+                            "authentik_reports.view_dataexport",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
