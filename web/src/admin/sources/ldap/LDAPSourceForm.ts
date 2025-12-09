@@ -31,28 +31,30 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const SyncOutgoingTriggerModeOptions: readonly RadioOption<SyncOutgoingTriggerModeEnum>[] = [
-    {
-        label: msg("None"),
-        value: SyncOutgoingTriggerModeEnum.None,
-        description: html`${msg("Outgoing syncs will not be triggered.")}`,
-    },
-    {
-        label: msg("Immediate"),
-        value: SyncOutgoingTriggerModeEnum.Immediate,
-        description: html`${msg(
-            "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
-        )}`,
-    },
-    {
-        label: msg("Deferred until end"),
-        value: SyncOutgoingTriggerModeEnum.DeferredEnd,
-        default: true,
-        description: html`${msg(
-            "Outgoing syncs will be triggered at the end of the source synchronization.",
-        )}`,
-    },
-];
+function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTriggerModeEnum>[] {
+    return [
+        {
+            label: msg("None"),
+            value: SyncOutgoingTriggerModeEnum.None,
+            description: html`${msg("Outgoing syncs will not be triggered.")}`,
+        },
+        {
+            label: msg("Immediate"),
+            value: SyncOutgoingTriggerModeEnum.Immediate,
+            description: html`${msg(
+                "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+            )}`,
+        },
+        {
+            label: msg("Deferred until end"),
+            value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+            default: true,
+            description: html`${msg(
+                "Outgoing syncs will be triggered at the end of the source synchronization.",
+            )}`,
+        },
+    ];
+}
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
@@ -512,7 +514,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         required
                         name="type"
                         .value=${this.instance?.syncOutgoingTriggerMode}
-                        .options=${SyncOutgoingTriggerModeOptions}
+                        .options=${createSyncOutgoingTriggerModeOptions}
                     >
                     </ak-radio-input>
                 </div>
