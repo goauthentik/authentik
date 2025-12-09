@@ -62,6 +62,7 @@ class AssertionProcessor:
     session_index: str
     name_id: str
     name_id_format: str
+    issuer: str
     session_not_on_or_after_datetime: datetime
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
@@ -142,10 +143,10 @@ class AssertionProcessor:
         if self.provider.issuer:
             return self.provider.issuer
 
-        # Otherwise, build off of request
-        if self.http_request:
-            application_slug = self.provider.application.slug
-            return self.http_request.build_absolute_uri(f"/application/saml/{application_slug}/")
+        # Otherwise, build off of request if application is linked
+        application = getattr(self.provider, "application", None)
+        if self.http_request and application:
+            return self.http_request.build_absolute_uri(f"/application/saml/{application.slug}/")
 
         # Return default if unable to generate url
         return "authentik"
@@ -153,7 +154,8 @@ class AssertionProcessor:
     def get_issuer(self) -> Element:
         """Get Issuer Element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer", nsmap=NS_MAP)
-        issuer.text = self._get_issuer_value()
+        self.issuer = self._get_issuer_value()
+        issuer.text = self.issuer
         return issuer
 
     def get_assertion_auth_n_statement(self) -> Element:

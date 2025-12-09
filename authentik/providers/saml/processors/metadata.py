@@ -45,10 +45,10 @@ class MetadataProcessor:
         if self.provider.issuer:
             return self.provider.issuer
 
-        # Otherwise, build off of request
-        if self.http_request:
-            application_slug = self.provider.application.slug
-            return self.http_request.build_absolute_uri(f"/application/saml/{application_slug}/")
+        # Otherwise, build off of request if application is linked
+        application = getattr(self.provider, "application", None)
+        if self.http_request and application:
+            return self.http_request.build_absolute_uri(f"/application/saml/{application.slug}/")
 
         # Return default if unable to generate url
         return "authentik"

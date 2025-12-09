@@ -45477,7 +45477,7 @@ components:
         issuer:
           type: string
           nullable: true
-          description: 'Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/'
+          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -48664,7 +48664,7 @@ components:
         issuer:
           type: string
           nullable: true
-          description: 'Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/'
+          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           description: 'Assertion valid not before current time + this value (Format:
@@ -48861,7 +48861,7 @@ components:
         issuer:
           type: string
           nullable: true
-          description: 'Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/'
+          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           minLength: 1

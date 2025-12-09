@@ -75,6 +75,7 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
                 session_index=session.session_index,
                 relay_state=relay_state,
                 http_request=request,
+                issuer=session.issuer,
             )
 
             if session.provider.sls_binding == SAMLBindings.POST:
@@ -164,6 +165,7 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
                 session_index=session.session_index,
                 relay_state=relay_state,
                 http_request=request,
+                issuer=session.issuer,
             )
 
             if session.provider.sls_binding == SAMLBindings.POST:
@@ -225,6 +227,7 @@ def user_session_deleted_saml_logout(sender, instance: AuthenticatedSession, **_
             name_id=saml_session.name_id,
             name_id_format=saml_session.name_id_format,
             session_index=saml_session.session_index,
+            issuer=saml_session.issuer,
         )
 
 
@@ -258,4 +261,5 @@ def user_deactivated_saml_logout(sender, instance: User, **kwargs):
             name_id=saml_session.name_id,
             name_id_format=saml_session.name_id_format,
             session_index=saml_session.session_index,
+            issuer=saml_session.issuer,
         )

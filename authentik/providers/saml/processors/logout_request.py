@@ -34,6 +34,7 @@ class LogoutRequestProcessor:
     session_index: str | None
     relay_state: str | None
     http_request: HttpRequest | None
+    issuer: str | None
 
     _issue_instant: str
     _request_id: str
@@ -48,6 +49,7 @@ class LogoutRequestProcessor:
         session_index: str | None = None,
         relay_state: str | None = None,
         http_request: HttpRequest | None = None,
+        issuer: str | None = None,
     ):
         self.provider = provider
         self.user = user
@@ -57,22 +59,17 @@ class LogoutRequestProcessor:
         self.session_index = session_index
         self.relay_state = relay_state
         self.http_request = http_request
+        self.issuer = issuer
 
         self._issue_instant = get_time_string()
         self._request_id = get_random_id()
 
     def _get_issuer_value(self) -> str:
-        """Get issuer value, with fallback to generated URL if empty"""
-        # If user has set an override issuer, use it
+        """Get issuer value from session, with fallback to provider"""
+        if self.issuer:
+            return self.issuer
         if self.provider.issuer:
             return self.provider.issuer
-
-        # Otherwise, build off of request
-        if self.http_request:
-            application_slug = self.provider.application.slug
-            return self.http_request.build_absolute_uri(f"/application/saml/{application_slug}/")
-
-        # Return default if unable to generate url
         return "authentik"
 
     def get_issuer(self) -> Element:

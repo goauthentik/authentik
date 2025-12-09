@@ -81,9 +81,7 @@ class SAMLProvider(Provider):
         blank=True,
         null=True,
         default=None,
-        help_text=_(
-            "Also known as EntityID. When left empty, defaults to: https://<your-domain>/application/saml/<application-slug>/"
-        ),
+        help_text=_("Also known as EntityID"),
     )
     sls_url = models.TextField(
         blank=True,
@@ -324,6 +322,9 @@ class SAMLSession(SerializerModel, ExpiringModel):
     session_index = models.TextField(help_text=_("SAML SessionIndex for this session"))
     name_id = models.TextField(help_text=_("SAML NameID value for this session"))
     name_id_format = models.TextField(default="", blank=True, help_text=_("SAML NameID format"))
+    issuer = models.TextField(
+        default="", blank=True, help_text=_("SAML Issuer used for this session")
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     @property
