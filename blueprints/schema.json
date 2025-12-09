@@ -544,6 +544,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints.deviceaccessgroup"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints.deviceuserbinding"
                         },
                         "id": {
@@ -4821,7 +4861,8 @@
                     "title": "Flow device code"
                 },
                 "default_application": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Default application",
                     "description": "When set, external users will be redirected to this application after authenticating."
                 },
@@ -4977,7 +5018,8 @@
                     "title": "Name"
                 },
                 "app": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "App"
                 },
                 "attributes": {
@@ -6209,11 +6251,13 @@
             "type": "object",
             "properties": {
                 "device_group": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Device group"
                 },
                 "connector": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Connector"
                 },
                 "name": {
@@ -6252,6 +6296,43 @@
                             "delete_enrollmenttoken",
                             "view_enrollment_token_key",
                             "view_enrollmenttoken"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints.deviceaccessgroup": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints.deviceaccessgroup_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_deviceaccessgroup",
+                            "change_deviceaccessgroup",
+                            "delete_deviceaccessgroup",
+                            "view_deviceaccessgroup"
                         ]
                     },
                     "user": {
@@ -6348,86 +6429,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "connector": {
                     "type": "string",
@@ -7003,86 +7004,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "configure_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -7134,86 +7055,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "mode": {
                     "type": "string",
@@ -7288,88 +7129,9 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "resume_timeout": {
@@ -7725,12 +7487,14 @@
                     "title": "Webhook url"
                 },
                 "webhook_mapping_body": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Webhook mapping body",
                     "description": "Customize the body of the request. Mapping should return data that is JSON-serializable."
                 },
                 "webhook_mapping_headers": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
@@ -8422,6 +8186,7 @@
                         "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
                         "authentik_endpoints.deviceuserbinding",
+                        "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
                         "authentik_endpoints_connectors_agent.agentconnector",
                         "authentik_endpoints_connectors_agent.agentdeviceuserbinding",
@@ -10258,12 +10023,14 @@
                     "description": "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 },
                 "name_id_mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "NameID Property Mapping",
                     "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
                 },
                 "authn_context_class_ref_mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "AuthnContextClassRef Property Mapping",
                     "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
@@ -11368,7 +11135,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11655,7 +11423,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -11701,7 +11470,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12018,7 +11788,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12064,7 +11835,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12383,7 +12155,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12441,7 +12214,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12684,7 +12458,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -12735,7 +12510,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13060,7 +12836,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13226,7 +13003,8 @@
                     "title": "Group"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13455,7 +13233,8 @@
                     "title": "User"
                 },
                 "source": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Source"
                 },
                 "identifier": {
@@ -13499,86 +13278,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "configure_flow": {
                     "type": "string",
@@ -13688,86 +13387,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "configure_flow": {
                     "type": "string",
@@ -13916,86 +13535,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "configure_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -14047,7 +13586,8 @@
                     "description": "When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future."
                 },
                 "mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Mapping",
                     "description": "Optionally modify the payload being sent to custom providers."
                 }
@@ -14126,86 +13666,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "configure_flow": {
                     "type": "string",
@@ -14305,86 +13765,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "configure_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -14478,86 +13858,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "not_configured_action": {
                     "type": "string",
@@ -14655,86 +13955,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "configure_flow": {
                     "type": "string",
@@ -14865,86 +14085,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "public_key": {
                     "type": "string",
                     "minLength": 1,
@@ -15021,86 +14161,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "mode": {
                     "type": "string",
                     "enum": [
@@ -15153,86 +14213,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "deny_message": {
                     "type": "string",
                     "title": "Deny message"
@@ -15274,86 +14254,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "throw_error": {
                     "type": "boolean",
                     "title": "Throw error"
@@ -15394,86 +14294,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "use_global_settings": {
                     "type": "boolean",
@@ -15590,86 +14410,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "user_fields": {
                     "type": "array",
                     "items": {
@@ -15685,12 +14425,14 @@
                     "description": "Fields of the user object to match against. (Hold shift to select multiple options)"
                 },
                 "password_stage": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Password stage",
                     "description": "When set, shows a password field, instead of showing the password field as separate step."
                 },
                 "captcha_stage": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Captcha stage",
                     "description": "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage."
                 },
@@ -15725,7 +14467,8 @@
                 "sources": {
                     "type": "array",
                     "items": {
-                        "type": "integer",
+                        "type": "string",
+                        "format": "uuid",
                         "description": "Specify which sources should be shown."
                     },
                     "title": "Sources",
@@ -15847,86 +14590,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "continue_flow_without_invitation": {
                     "type": "boolean",
                     "title": "Continue flow without invitation",
@@ -15968,86 +14631,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "backends": {
                     "type": "array",
@@ -16223,86 +14806,6 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
-                },
                 "fields": {
                     "type": "array",
                     "items": {
@@ -16355,86 +14858,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "keep_context": {
                     "type": "boolean",
@@ -16493,86 +14916,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 }
             },
             "required": []
@@ -16610,86 +14953,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "session_duration": {
                     "type": "string",
@@ -16772,86 +15035,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 }
             },
             "required": []
@@ -16889,86 +15072,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
-                },
-                "flow_set": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Name"
-                            },
-                            "slug": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Slug",
-                                "description": "Visible in the URL."
-                            },
-                            "title": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Title",
-                                "description": "Shown as the Title in Flow pages."
-                            },
-                            "designation": {
-                                "type": "string",
-                                "enum": [
-                                    "authentication",
-                                    "authorization",
-                                    "invalidation",
-                                    "enrollment",
-                                    "unenrollment",
-                                    "recovery",
-                                    "stage_configuration"
-                                ],
-                                "title": "Designation",
-                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
-                            },
-                            "policy_engine_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
-                                "title": "Policy engine mode"
-                            },
-                            "compatibility_mode": {
-                                "type": "boolean",
-                                "title": "Compatibility mode",
-                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-                            },
-                            "layout": {
-                                "type": "string",
-                                "enum": [
-                                    "stacked",
-                                    "content_left",
-                                    "content_right",
-                                    "sidebar_left",
-                                    "sidebar_right"
-                                ],
-                                "title": "Layout"
-                            },
-                            "denied_action": {
-                                "type": "string",
-                                "enum": [
-                                    "message_continue",
-                                    "message",
-                                    "continue"
-                                ],
-                                "title": "Denied action",
-                                "description": "Configure what should happen when a flow denies access to a user."
-                            }
-                        },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
-                    },
-                    "title": "Flow set"
                 },
                 "user_creation_mode": {
                     "type": "string",
