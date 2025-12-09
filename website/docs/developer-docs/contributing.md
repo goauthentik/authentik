@@ -142,6 +142,7 @@ The process described here has several goals:
 **DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
 
 How to do it correctly:
+
 ```bash
 # Create and switch to a new feature branch
 git checkout -b feature/my-awesome-feature
