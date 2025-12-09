@@ -125,7 +125,7 @@
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.4",
-        "@types/node": "^24.10.1",
+        "@types/node": "^24.10.2",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.47.0",
