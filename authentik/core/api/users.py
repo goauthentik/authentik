@@ -227,8 +227,9 @@ class UserSerializer(ModelSerializer):
                 try:
                     identify_hasher(password_hash)
                 except ValueError as exc:
+                    LOGGER.exception("Failed to identify password hash format")
                     raise ValidationError(
-                        f"Invalid password hash format. Must be a valid Django password hash: {exc}"
+                        "Invalid password hash format. Must be a valid Django password hash."
                     ) from exc
 
                 # Directly set the hashed password without re-hashing
