@@ -33,9 +33,6 @@ ak-sidebar::part(about-dialog-trigger) {
     --pf-c-button--m-plain--hover--Color: var(--pf-c-nav__link--Color);
 }
 
-ak-sidebar-item::part(list-item) {
-}
-
 ak-sidebar-item:active ak-sidebar-item::part(list-item),
 ak-sidebar-item:hover ak-sidebar-item::part(list-item) {
     --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--200);

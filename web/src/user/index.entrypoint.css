@@ -2,6 +2,13 @@
     z-index: var(--pf-global--ZIndex--md);
 }
 
+.pf-c-page__main,
+.pf-c-drawer__content,
+.pf-c-page__drawer {
+    z-index: auto !important;
+    background-color: transparent !important;
+}
+
 .pf-c-page__header {
     background-color: transparent !important;
     box-shadow: none !important;
@@ -26,8 +33,13 @@
 }
 
 .pf-c-brand {
-    min-height: 32px;
-    height: 32px;
+    min-height: 2rem;
+    height: 2rem;
+}
+
+.pf-c-brand i {
+    font-size: 2rem;
+    line-height: 2rem;
 }
 
 .has-notifications {
@@ -53,11 +65,6 @@
 :host([theme="dark"]) .pf-c-page {
     --ak-user-interface--slant-m-light: var(--pf-global--BackgroundColor--200);
     --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--100);
-}
-
-ak-locale-context {
-    display: flex;
-    flex-direction: column;
 }
 
 .pf-c-drawer__main {

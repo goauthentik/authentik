@@ -14,7 +14,6 @@ import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -522,7 +521,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode=${CodeMirrorMode.XML}
+                                      mode="xml"
                                       readonly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>

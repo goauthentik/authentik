@@ -1,5 +1,4 @@
 import "#elements/LoadingOverlay";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
@@ -12,19 +11,23 @@ import "#flow/stages/RedirectStage";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import {
+    EVENT_FLOW_ADVANCE,
+    EVENT_FLOW_INSPECTOR_TOGGLE,
+    EVENT_WS_MESSAGE,
+} from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { WebsocketClient } from "#common/ws";
+import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
@@ -155,16 +158,25 @@ export class FlowExecutor
         });
     }
 
+    #websocketHandler = (e: CustomEvent<WSMessage>) => {
+        if (e.detail.message_type === "session.authenticated") {
+            console.debug("authentik/ws: Reloading after session authenticated event");
+            window.location.reload();
+        }
+    };
+
     public connectedCallback(): void {
         super.connectedCallback();
 
         window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
 
         WebsocketClient.close();
     }
@@ -370,7 +382,16 @@ export class FlowExecutor
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
                 await import("#flow/stages/user_login/UserLoginStage");
-                return html`<ak-stage-user-login ${spread(props)}></ak-stage-user-login>`;
+                return html`<ak-stage-user-login
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-user-login>`;
+            case "ak-stage-endpoint-agent":
+                await import("#flow/stages/endpoint/agent/EndpointAgentStage");
+                return html`<ak-stage-endpoint-agent
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-endpoint-agent>`;
             // Sources
             case "ak-source-plex":
                 return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;
@@ -476,13 +497,7 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    <img
-                        class="branding-logo"
-                        part="branding-logo"
-                        src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        alt="${msg("authentik Logo")}"
-                        role="presentation"
-                    />
+                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

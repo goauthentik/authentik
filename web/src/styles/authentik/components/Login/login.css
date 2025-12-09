@@ -89,6 +89,10 @@
     }
 }
 
+.ak-c-placeholder {
+    grid-area: main;
+}
+
 [data-theme="dark"] .pf-c-login,
 :host([theme="dark"]) .pf-c-login {
     --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
@@ -183,6 +187,18 @@
         display: block;
         width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
         min-height: 4rem;
+    }
+
+    /* Ensure Font Awesome logos scale similarly to image logos */
+    .branding-logo.font-awesome,
+    .branding-logo.fas,
+    .branding-logo.far,
+    .branding-logo.fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3rem, 8vw, 5rem);
+        line-height: 1;
     }
 }
 

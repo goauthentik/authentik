@@ -1,3 +1,4 @@
+from ssl import PEM_FOOTER, PEM_HEADER
 from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 
@@ -12,10 +13,10 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.models import StageMode
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
     MutualTLSStage,
-    TLSMode,
     UserAttributes,
 )
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
@@ -39,7 +40,7 @@ class MTLSStageTests(FlowTestCase):
         )
         self.stage = MutualTLSStage.objects.create(
             name=generate_id(),
-            mode=TLSMode.REQUIRED,
+            mode=StageMode.REQUIRED,
             cert_attribute=CertAttributes.COMMON_NAME,
             user_attribute=UserAttributes.USERNAME,
         )
@@ -50,6 +51,10 @@ class MTLSStageTests(FlowTestCase):
         # User matching the certificate
         User.objects.filter(username="client").delete()
         self.cert_user = create_test_user(username="client")
+
+    def _format_traefik(self, cert: str | None = None):
+        cert = cert if cert else self.client_cert
+        return quote_plus(cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", ""))
 
     def test_parse_xfcc(self):
         """Test authentik Proxy/Envoy's XFCC format"""
@@ -78,7 +83,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -138,7 +143,9 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(cert.certificate_data)},
+                headers={
+                    "X-Forwarded-TLS-Client-Cert": self._format_traefik(cert.certificate_data)
+                },
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
@@ -149,7 +156,7 @@ class MTLSStageTests(FlowTestCase):
         User.objects.filter(username="client").delete()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
@@ -163,7 +170,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -171,12 +178,12 @@ class MTLSStageTests(FlowTestCase):
 
     def test_no_ca_optional(self):
         """Test using no CA Set"""
-        self.stage.mode = TLSMode.OPTIONAL
+        self.stage.mode = StageMode.OPTIONAL
         self.stage.certificate_authorities.clear()
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -187,14 +194,14 @@ class MTLSStageTests(FlowTestCase):
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+            headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
         )
         self.assertEqual(res.status_code, 200)
         self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
 
     def test_no_cert_optional(self):
         """Test using no cert Set"""
-        self.stage.mode = TLSMode.OPTIONAL
+        self.stage.mode = StageMode.OPTIONAL
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -209,7 +216,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": self._format_traefik()},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))

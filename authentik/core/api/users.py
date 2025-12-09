@@ -31,6 +31,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from guardian.shortcuts import get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -42,6 +43,7 @@ from rest_framework.fields import (
     ListField,
     SerializerMethodField,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -52,6 +54,8 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authentication import TokenAuthentication
+from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
@@ -75,6 +79,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -432,6 +437,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+        AgentAuth,
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
@@ -529,14 +539,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         pagination_class=None,
         filter_backends=[],
     )
-    def service_account(self, request: Request) -> Response:
+    @validate(UserServiceAccountSerializer)
+    def service_account(self, request: Request, body: UserServiceAccountSerializer) -> Response:
         """Create a new user account that is marked as a service account"""
-        data = UserServiceAccountSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        expires = data.validated_data.get("expires", now() + timedelta(days=360))
+        expires = body.validated_data.get("expires", now() + timedelta(days=360))
 
-        username = data.validated_data["name"]
-        expiring = data.validated_data["expiring"]
+        username = body.validated_data["name"]
+        expiring = body.validated_data["expiring"]
         with atomic():
             try:
                 user: User = User.objects.create(
@@ -554,7 +563,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     "user_uid": user.uid,
                     "user_pk": user.pk,
                 }
-                if data.validated_data["create_group"] and self.request.user.has_perm(
+                if body.validated_data["create_group"] and self.request.user.has_perm(
                     "authentik_core.add_group"
                 ):
                     group = Group.objects.create(name=username)
@@ -624,14 +633,17 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
-    def set_password(self, request: Request, pk: int) -> Response:
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
+    @validate(UserPasswordSetSerializer)
+    def set_password(self, request: Request, pk: int, body: UserPasswordSetSerializer) -> Response:
         """Set password for user"""
-        data = UserPasswordSetSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
         user: User = self.get_object()
         try:
-            user.set_password(data.validated_data["password"], request=request)
+            user.set_password(body.validated_data["password"], request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
@@ -711,7 +723,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
         if not request.tenant.impersonation:

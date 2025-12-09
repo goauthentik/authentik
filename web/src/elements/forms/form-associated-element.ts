@@ -12,17 +12,16 @@ import { createRef, Ref } from "lit/directives/ref.js";
  *
  * @see {@linkcode FormAssociatedElement} for usage.
  */
-export interface FormAssociated
-    extends Pick<
-        ElementInternals,
-        | "form"
-        | "validity"
-        | "validationMessage"
-        | "willValidate"
-        | "labels"
-        | "checkValidity"
-        | "reportValidity"
-    > {
+export interface FormAssociated extends Pick<
+    ElementInternals,
+    | "form"
+    | "validity"
+    | "validationMessage"
+    | "willValidate"
+    | "labels"
+    | "checkValidity"
+    | "reportValidity"
+> {
     /**
      * The name of the input, provided to the form.
      */
@@ -57,10 +56,10 @@ export type FormValue = File | string | FormData | null;
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals | MDN}
  */
 export abstract class FormAssociatedElement<
-        V extends FormValue = string,
-        T extends Jsonifiable = V extends string ? V : Jsonifiable,
-        S extends FormValue = V,
-    >
+    V extends FormValue = string,
+    T extends Jsonifiable = V extends string ? V : Jsonifiable,
+    S extends FormValue = V,
+>
     extends AKElement
     implements FormAssociated
 {

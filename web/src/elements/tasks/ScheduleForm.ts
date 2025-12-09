@@ -24,7 +24,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (!this.instance) {
             return "";
         }

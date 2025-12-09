@@ -5,23 +5,27 @@
 
 .pf-c-nav {
     --ak-c-nav__item--BorderColor: var(--pf-global--BorderColor--100);
-    --pf-c-nav__subnav__link--hover--after--BorderColor: var(--pf-global--palette--orange-400);
+    --pf-c-nav__subnav__link--hover--after--BorderColor: var(--ak-accent);
 
+    --pf-c-nav__link--xl--PaddingLeft: var(--pf-global--spacer--md);
     --pf-c-nav__link--hover--before--BorderBottomWidth: 1px;
     --pf-c-nav__link--before--BorderColor: transparent;
 
-    --pf-c-nav__link--PaddingTop: 0.5rem;
-    --pf-c-nav__link--PaddingRight: 0.5rem;
-    --pf-c-nav__link--PaddingBottom: 0.5rem;
-    --pf-c-nav__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-nav__link--PaddingTop: var(--pf-global--spacer--sm);
+    --pf-c-nav__link--PaddingRight: var(--pf-global--spacer--sm);
+    --pf-c-nav__link--PaddingBottom: var(--pf-global--spacer--sm);
 
+    --pf-c-nav__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-nav__subnav--PaddingBottom: var(--pf-global--spacer--sm);
     --pf-c-nav__item--before--BorderColor: transparent;
     --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--300);
     --pf-c-nav__link--m-current--Color: var(--ak-accent);
+
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow-y: hidden;
+    padding-block-start: var(--pf-global--spacer--sm);
 }
 
 .pf-c-nav__section + .pf-c-nav__section {

@@ -12,7 +12,6 @@
  * summary of how many strings are missing with respect to the source locale.
  *
  * @import { Stats } from "node:fs";
- * @import { RuntimeOutputConfig } from "@lit/localize-tools/lib/types/modes.js"
  */
 
 import * as fs from "node:fs/promises";
@@ -28,7 +27,8 @@ import { RuntimeLitLocalizer } from "@lit/localize-tools/lib/modes/runtime.js";
 
 //#region Setup
 
-const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_-]+)\sis\smissing/;
+const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sis\smissing/;
+const outdatedMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sdoes\snot\sexist/;
 const logger = ConsoleLogger.child({ name: "Locales" });
 
 const localizeRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
@@ -37,6 +37,12 @@ if (localizeRules.interchange.format !== "xliff") {
     logger.error("Unsupported interchange type, expected 'xliff'");
     process.exit(1);
 }
+
+const { sourceLocale } = localizeRules;
+
+localizeRules.targetLocales = localizeRules.targetLocales.filter((locale) => {
+    return locale !== sourceLocale;
+});
 
 const XLIFFPath = resolve(PackageRoot, localizeRules.interchange.xliffDir);
 
@@ -153,7 +159,12 @@ export async function generateLocaleModules() {
     /**
      * @type {Map<string, number>}
      */
-    const localeWarnings = new Map();
+    const missingTranslationWarnings = new Map();
+
+    /**
+     * @type {Map<string, number>}
+     */
+    const outdatedTranslationWarnings = new Map();
 
     const initialConsoleWarn = console.warn;
 
@@ -163,12 +174,26 @@ export async function generateLocaleModules() {
             return;
         }
 
-        const [, matchedLocale] = arg0.match(missingMessagePattern) || [];
+        const [, matchedMissingTranslation] = arg0.match(missingMessagePattern) || [];
 
-        if (matchedLocale) {
-            const count = localeWarnings.get(matchedLocale) || 0;
+        if (matchedMissingTranslation) {
+            const count = missingTranslationWarnings.get(matchedMissingTranslation) || 0;
 
-            localeWarnings.set(matchedLocale, count + 1);
+            missingTranslationWarnings.set(matchedMissingTranslation, count + 1);
+
+            logger.debug(arg0);
+
+            return;
+        }
+
+        const [, matchedOutdatedTranslation] = arg0.match(outdatedMessagePattern) || [];
+
+        if (matchedOutdatedTranslation) {
+            const count = outdatedTranslationWarnings.get(matchedOutdatedTranslation) || 0;
+
+            outdatedTranslationWarnings.set(matchedOutdatedTranslation, count + 1);
+
+            logger.debug(arg0);
 
             return;
         }
@@ -181,7 +206,7 @@ export async function generateLocaleModules() {
 
     await localizer.build();
 
-    const report = Array.from(localeWarnings)
+    const missingTranslationsReport = Array.from(missingTranslationWarnings)
         .filter(([, count]) => count)
         .sort(([, totalsA], [, totalsB]) => {
             return totalsB - totalsA;
@@ -189,7 +214,17 @@ export async function generateLocaleModules() {
         .map(([locale, count]) => `${locale}: ${count.toLocaleString()}`)
         .join("\n");
 
-    logger.info(`Missing translations:\n${report}`);
+    logger.info(`Missing translations:\n${missingTranslationsReport || "None"}`);
+
+    const outdatedTranslationsReport = Array.from(outdatedTranslationWarnings)
+        .filter(([, count]) => count)
+        .sort(([, totalsA], [, totalsB]) => {
+            return totalsB - totalsA;
+        })
+        .map(([locale, count]) => `${locale}: ${count.toLocaleString()}`)
+        .join("\n");
+
+    logger.info(`Outdated translations:\n${outdatedTranslationsReport || "None"}`);
 
     localizer.assertTranslationsAreValid();
 

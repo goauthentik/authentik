@@ -8,9 +8,8 @@ from rest_framework.test import APITestCase
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import RequestFactory, create_test_user
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.rbac.decorators import permission_required
 
 
@@ -32,10 +31,11 @@ class TestAPIDecorators(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.user = create_test_user()
+        self.request_factory = RequestFactory()
 
     def test_obj_perm_denied(self):
         """Test object perm denied"""
-        request = get_request("", user=self.user)
+        request = self.request_factory.get("", user=self.user)
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 403)
@@ -45,7 +45,7 @@ class TestAPIDecorators(APITestCase):
         assign_perm("authentik_core.view_application", self.user)
         assign_perm("authentik_events.view_event", self.user)
         app = Application.objects.create(name=generate_id(), slug=generate_id())
-        request = get_request("", user=self.user)
+        request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 200, response.data)
 
@@ -54,7 +54,7 @@ class TestAPIDecorators(APITestCase):
         assign_perm("authentik_events.view_event", self.user)
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         assign_perm("authentik_core.view_application", self.user, app)
-        request = get_request("", user=self.user)
+        request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 200)
 
@@ -62,6 +62,6 @@ class TestAPIDecorators(APITestCase):
         """Test other perm denied"""
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         assign_perm("authentik_core.view_application", self.user, app)
-        request = get_request("", user=self.user)
+        request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 403)
