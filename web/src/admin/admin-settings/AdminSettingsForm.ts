@@ -12,6 +12,7 @@ import "./AdminSettingsFooterLinks.js";
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { DefaultBrand } from "#common/ui/config";
 
 import { Form } from "#elements/forms/Form";
 
@@ -254,7 +255,8 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 <div class="pf-c-form">
                     <ak-switch-input
                         name="flags.policiesBufferedAccessView"
-                        ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
+                        ?checked=${settings?.flags.policiesBufferedAccessView ??
+                        DefaultBrand.flags.policiesBufferedAccessView}
                         label=${msg("Buffer PolicyAccessVew requests")}
                         help=${msg(
                             "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
@@ -263,10 +265,21 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     </ak-switch-input>
                     <ak-switch-input
                         name="flags.flowsRefreshOthers"
-                        ?checked=${settings?.flags.flowsRefreshOthers ?? false}
+                        ?checked=${settings?.flags.flowsRefreshOthers ??
+                        DefaultBrand.flags.flowsRefreshOthers}
                         label=${msg("Refresh other flow tabs upon authentication")}
                         help=${msg(
                             "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.coreDefaultAppAccess"
+                        ?checked=${settings?.flags.coreDefaultAppAccess ??
+                        DefaultBrand.flags.coreDefaultAppAccess}
+                        label=${msg("Require policies for application access")}
+                        help=${msg(
+                            "When enabled, applications without explicit policies/users/groups bound to them will not be accessible, instead of being accessible to everyone.",
                         )}
                     >
                     </ak-switch-input>
