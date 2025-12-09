@@ -260,7 +260,7 @@ MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
