@@ -391,7 +391,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               readonly
                                               type="text"
                                               value="${ifDefined(
-                                                  this.provider?.issuer ?? undefined,
+                                                  this.provider?.urlIssuer ?? undefined,
                                               )}"
                                           />
                                       </div>

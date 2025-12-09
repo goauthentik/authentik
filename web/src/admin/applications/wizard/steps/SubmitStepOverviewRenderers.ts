@@ -33,7 +33,7 @@ function renderSAMLOverview(rawProvider: OneOfProvider) {
     return renderSummary("SAML", provider.name, [
         [msg("ACS URL"), provider.acsUrl],
         [msg("Audience"), provider.audience || "-"],
-        [msg("Issuer"), provider.issuer || "-"],
+        [msg("Issuer"), provider.urlIssuer],
     ]);
 }
 
