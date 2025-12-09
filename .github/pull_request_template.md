@@ -2,6 +2,9 @@
 👋 Hi there! Welcome.
 
 Please check the Contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
+
+⚠️ IMPORTANT: Make sure you are opening this PR from a FEATURE BRANCH, not from your main branch!
+If you opened this PR from your main branch, please close it and create a new feature branch instead.
 -->
 
 ## Details

@@ -137,6 +137,23 @@ The process described here has several goals:
 - Engage the community in working toward the best possible authentik
 - Enable a sustainable system for authentik's maintainers to review contributions
 
+#### Always use feature branches
+
+**DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
+
+How to do it correctly:
+```bash
+# Create and switch to a new feature branch
+git checkout -b feature/my-awesome-feature
+
+# Make your changes, then commit and push
+git add .
+git commit -m "providers/oauth2: add awesome feature"
+git push -u origin feature/my-awesome-feature
+```
+
+Then open your PR from the feature branch.
+
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Follow the [style guides](#style-guides)
