@@ -33423,6 +33423,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33441,6 +33442,7 @@ components:
       - api_hostname
       - client_id
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33477,10 +33479,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33581,6 +33579,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33624,6 +33623,7 @@ components:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33636,10 +33636,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33719,6 +33715,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33733,6 +33730,7 @@ components:
       required:
       - component
       - credentials
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33745,10 +33743,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33832,6 +33826,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33866,6 +33861,7 @@ components:
       - account_sid
       - auth
       - component
+      - flow_set
       - from_number
       - meta_model_name
       - name
@@ -33880,10 +33876,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33989,6 +33981,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -34007,6 +34000,7 @@ components:
           minimum: 0
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34019,10 +34013,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -34109,6 +34099,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -34122,6 +34113,7 @@ components:
       required:
       - component
       - digits
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34134,10 +34126,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -34182,6 +34170,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -34217,6 +34206,7 @@ components:
           readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34230,10 +34220,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -34388,6 +34374,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -34421,6 +34408,7 @@ components:
       required:
       - component
       - device_type_restrictions_obj
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34433,10 +34421,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -34849,6 +34833,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         public_key:
           type: string
           description: Public key, acquired your captcha Provider.
@@ -34872,6 +34857,7 @@ components:
             in the context for policy decisions
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34885,10 +34871,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         public_key:
           type: string
           minLength: 1
@@ -35315,6 +35297,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -35323,6 +35306,7 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -35341,10 +35325,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -35786,10 +35766,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         deny_message:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -35802,10 +35784,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
       required:
@@ -36592,10 +36570,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         throw_error:
           type: boolean
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -36608,10 +36588,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         throw_error:
           type: boolean
       required:
@@ -36752,6 +36728,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -36797,6 +36774,7 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -36809,10 +36787,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -37137,6 +37111,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         connector:
           type: string
           format: uuid
@@ -37150,6 +37125,7 @@ components:
       - component
       - connector
       - connector_obj
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -37162,10 +37138,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         connector:
           type: string
           format: uuid
@@ -38035,45 +38007,6 @@ components:
       - name
       - pk
       - policybindingmodel_ptr_id
-      - slug
-      - title
-    FlowSetRequest:
-      type: object
-      description: Stripped down flow serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        slug:
-          type: string
-          minLength: 1
-          description: Visible in the URL.
-          pattern: ^[-a-zA-Z0-9_]+$
-        title:
-          type: string
-          minLength: 1
-          description: Shown as the Title in Flow pages.
-        designation:
-          allOf:
-          - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        compatibility_mode:
-          type: boolean
-          description: Enable compatibility mode, increases compatibility with password
-            managers on mobile devices.
-        layout:
-          $ref: '#/components/schemas/FlowLayoutEnum'
-        denied_action:
-          allOf:
-          - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
-      required:
-      - designation
-      - name
       - slug
       - title
     FlowStageBinding:
@@ -39364,6 +39297,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         user_fields:
           type: array
           items:
@@ -39426,6 +39360,7 @@ components:
             repeat users to skip straight to entering their password.
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -39438,10 +39373,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_fields:
           type: array
           items:
@@ -39702,6 +39633,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -39709,6 +39641,7 @@ components:
             when no invitation is given.
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -39721,10 +39654,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -41464,6 +41393,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -41481,6 +41411,7 @@ components:
       required:
       - cert_attribute
       - component
+      - flow_set
       - meta_model_name
       - mode
       - name
@@ -41495,10 +41426,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -45444,6 +45371,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         backends:
           type: array
           items:
@@ -45468,6 +45396,7 @@ components:
       required:
       - backends
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -45480,10 +45409,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         backends:
           type: array
           items:
@@ -45611,10 +45536,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45645,10 +45566,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45702,10 +45619,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45724,10 +45637,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45768,10 +45677,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45795,10 +45700,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45816,10 +45717,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -45856,10 +45753,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45978,10 +45871,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         public_key:
           type: string
           minLength: 1
@@ -46048,10 +45937,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -46066,10 +45951,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
     PatchedDeviceAccessGroupRequest:
@@ -46185,10 +46066,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         throw_error:
           type: boolean
     PatchedDuoDeviceRequest:
@@ -46216,10 +46093,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -46331,10 +46204,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         connector:
           type: string
           format: uuid
@@ -46760,10 +46629,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_fields:
           type: array
           items:
@@ -46869,10 +46734,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -47319,10 +47180,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -47767,10 +47624,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         backends:
           type: array
           items:
@@ -47979,10 +47832,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         fields:
           type: array
           items:
@@ -48212,10 +48061,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         keep_context:
           type: boolean
         mode:
@@ -48855,10 +48700,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         source:
           type: string
           format: uuid
@@ -49042,10 +48883,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
       description: User source connection
@@ -49077,10 +48914,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         session_duration:
           type: string
           minLength: 1
@@ -49117,10 +48950,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserOAuthSourceConnectionRequest:
       type: object
       description: User source connection
@@ -49242,10 +49071,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
@@ -49995,6 +49820,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         fields:
           type: array
           items:
@@ -50008,6 +49834,7 @@ components:
       required:
       - component
       - fields
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -50020,10 +49847,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         fields:
           type: array
           items:
@@ -51132,6 +50955,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         keep_context:
           type: boolean
         mode:
@@ -51144,6 +50968,7 @@ components:
           nullable: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - mode
       - name
@@ -51162,10 +50987,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         keep_context:
           type: boolean
         mode:
@@ -53621,6 +53442,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -53630,6 +53452,7 @@ components:
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -53643,10 +53466,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         source:
           type: string
           format: uuid
@@ -53733,8 +53552,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -54955,8 +54776,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -54969,10 +54792,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
     UserFieldsEnum:
@@ -55148,6 +54967,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         session_duration:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
@@ -55176,6 +54996,7 @@ components:
             (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55188,10 +55009,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         session_duration:
           type: string
           minLength: 1
@@ -55254,8 +55071,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55268,10 +55087,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
     UserMatchingModeEnum:
@@ -55813,6 +55628,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
@@ -55829,6 +55645,7 @@ components:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55841,10 +55658,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
