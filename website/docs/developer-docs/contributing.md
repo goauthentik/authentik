@@ -141,7 +141,7 @@ The process described here has several goals:
 
 **DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
 
-How to do it correctly:
+Here's one way to do it correctly (your own preferred git commands may differ):
 
 ```bash
 # Create and switch to a new feature branch
