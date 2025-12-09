@@ -74,7 +74,6 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
                 name_id_format=session.name_id_format,
                 session_index=session.session_index,
                 relay_state=relay_state,
-                http_request=request,
                 issuer=session.issuer,
             )
 
@@ -164,7 +163,6 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
                 name_id_format=session.name_id_format,
                 session_index=session.session_index,
                 relay_state=relay_state,
-                http_request=request,
                 issuer=session.issuer,
             )
 

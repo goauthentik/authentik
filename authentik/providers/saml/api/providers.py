@@ -211,9 +211,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_post",
             "url_slo_redirect",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs | {
-            "issuer": {"required": False, "allow_blank": True, "allow_null": True}
-        }
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class SAMLMetadataSerializer(PassiveSerializer):

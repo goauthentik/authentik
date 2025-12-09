@@ -4,7 +4,6 @@ import base64
 from urllib.parse import quote, urlencode
 
 import xmlsec
-from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element
 
@@ -33,7 +32,6 @@ class LogoutRequestProcessor:
     name_id_format: str
     session_index: str | None
     relay_state: str | None
-    http_request: HttpRequest | None
     issuer: str | None
 
     _issue_instant: str
@@ -48,7 +46,6 @@ class LogoutRequestProcessor:
         name_id_format: str = SAML_NAME_ID_FORMAT_EMAIL,
         session_index: str | None = None,
         relay_state: str | None = None,
-        http_request: HttpRequest | None = None,
         issuer: str | None = None,
     ):
         self.provider = provider
@@ -58,7 +55,6 @@ class LogoutRequestProcessor:
         self.name_id_format = name_id_format
         self.session_index = session_index
         self.relay_state = relay_state
-        self.http_request = http_request
         self.issuer = issuer
 
         self._issue_instant = get_time_string()

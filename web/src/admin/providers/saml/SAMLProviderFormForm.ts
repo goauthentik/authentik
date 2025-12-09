@@ -411,7 +411,7 @@ export function renderForm({
                     value="${ifDefined(provider.issuer ?? undefined)}"
                     .errorMessages=${errors.issuer}
                     help=${msg(
-                        "Input a value to set a custom EntityID/Issuer. defaults is https://<your-domain>/application/saml/<application-slug>/",
+                        "Sets a custom EntityID/Issuer to override the authentik generated default.",
                     )}
                 ></ak-text-input>
                 <ak-form-element-horizontal
