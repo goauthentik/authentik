@@ -68,10 +68,7 @@ def detect_key_type(certificate: Certificate) -> str | None:
 
 
 def generate_key_id(key_data: str) -> str:
-    """Generate Key ID using SHA512 + urlsafe_b64encode.
-
-    Used for JWKS key identification. New records use SHA512 for better security.
-    """
+    """Generate Key ID using SHA512 + urlsafe_b64encode."""
     if not key_data:
         return ""
     return urlsafe_b64encode(sha512(key_data.encode("utf-8")).digest()).decode("utf-8").rstrip("=")
@@ -125,7 +122,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         max_length=128,
         null=True,
         blank=True,
-        help_text=_("Key ID used for JWKS, generated from private key"),
+        help_text=_("Key ID generated from private key"),
     )
 
     _cert: Certificate | None = None
