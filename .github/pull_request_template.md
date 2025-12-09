@@ -5,6 +5,7 @@ Please check the Contributing guidelines: https://docs.goauthentik.io/docs/devel
 
 ⚠️ IMPORTANT: Make sure you are opening this PR from a FEATURE BRANCH, not from your main branch!
 If you opened this PR from your main branch, please close it and create a new feature branch instead.
+For more information, see: https://docs.goauthentik.io/developer-docs/contributing/#always-use-feature-branches
 -->
 
 ## Details
