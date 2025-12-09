@@ -111,6 +111,8 @@ class FleetController(BaseController[DBC]):
             return
         group, _ = DeviceAccessGroup.objects.get_or_create(name=team_name)
         group.attributes["io.goauthentik.endpoints.connectors.fleet.team_id"] = host["team_id"]
+        if device.access_group:
+            return
         device.access_group = group
         device.save()
 

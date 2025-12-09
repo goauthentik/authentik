@@ -15,7 +15,7 @@ import {
     EndpointsApi,
     FleetConnector,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -143,7 +143,7 @@ export class FleetConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
+                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;
