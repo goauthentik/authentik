@@ -5,10 +5,10 @@ on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config/**
+      - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
-      - packages/tsconfig/**
+      - packages/docusaurus-config/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
@@ -24,16 +24,17 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` packages should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
+          - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: ${{ matrix.package }}/package.json
           registry-url: "https://registry.npmjs.org"
@@ -43,6 +44,8 @@ jobs:
         with:
           files: |
             ${{ matrix.package }}/package.json
+      - name: Install Dependencies
+        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}

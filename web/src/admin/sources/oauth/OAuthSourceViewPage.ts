@@ -19,7 +19,7 @@ import { sourceBindingTypeNotices } from "#admin/sources/utils";
 import {
     OAuthSource,
     ProviderTypeEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -65,6 +65,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Patreon";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
+        case ProviderTypeEnum.Slack:
+            return "Slack";
         case ProviderTypeEnum.Twitter:
             return "Twitter";
         case ProviderTypeEnum.Twitch:
@@ -284,7 +286,7 @@ export class OAuthSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesOauthOauthsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesOauthOauthsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

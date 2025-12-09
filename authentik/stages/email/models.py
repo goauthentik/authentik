@@ -62,7 +62,7 @@ def get_template_choices():
 
 
 class EmailStage(Stage):
-    """Sends an Email to the user with a token to confirm their Email address."""
+    """Send an Email to the user with a token to confirm their Email address."""
 
     use_global_settings = models.BooleanField(
         default=False,

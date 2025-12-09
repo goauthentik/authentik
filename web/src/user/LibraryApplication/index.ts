@@ -37,8 +37,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     editURL,
     background,
-    appIndex,
-    groupIndex,
     className = "",
     targetRef,
     ...props
@@ -91,7 +89,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 exportparts="icon:card-header-icon"
                 size=${PFSize.Large}
                 name=${application.name}
-                icon=${ifPresent(application.metaIcon)}
+                icon=${ifPresent(application.metaIconUrl)}
             ></ak-app-icon>
             ${rac
                 ? html`<div
@@ -100,10 +98,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                       @click=${launchModal}
                       ${spread(extendedProps)}
                   >
-                      <ak-library-rac-endpoint-launch
-                          ${ref(modalRef)}
-                          .app=${application}
-                      ></ak-library-rac-endpoint-launch>
                       ${cardHeader}
                   </div>`
                 : html`<a
@@ -120,5 +114,11 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 editURL,
             })}
         </div>
+        ${rac
+            ? html`<ak-library-rac-endpoint-launch
+                  ${ref(modalRef)}
+                  .app=${application}
+              ></ak-library-rac-endpoint-launch>`
+            : nothing}
     </div>`;
 };

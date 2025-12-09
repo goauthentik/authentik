@@ -80,6 +80,26 @@ class TestEvaluator(TestCase):
         )
         self.assertEqual(decoded["preferred_username"], user.username)
 
+    def test_expr_create_jwt_raw(self):
+        """Test expr_create_jwt_raw"""
+        rf = RequestFactory()
+        user = create_test_user()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+        )
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {
+            "http_request": rf.get(reverse("authentik_core:root-redirect")),
+            "user": user,
+            "provider": provider.name,
+        }
+        jwt = evaluator.evaluate("return ak_create_jwt_raw(provider, foo='bar')")
+        decoded = decode(
+            jwt, provider.client_secret, algorithms=["HS256"], audience=provider.client_id
+        )
+        self.assertEqual(decoded["foo"], "bar")
+
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_body(self, mock_send_mails):
         """Test ak_send_email with body parameter"""

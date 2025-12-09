@@ -8,11 +8,11 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-file-search-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { DefaultBrand } from "#common/ui/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AKLabel } from "#components/ak-label";
@@ -20,6 +20,7 @@ import { AKLabel } from "#components/ak-label";
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 
 import {
+    AdminFileListUsageEnum,
     Application,
     Brand,
     CoreApi,
@@ -50,9 +51,9 @@ export class BrandForm extends ModelForm<Brand, string> {
     async send(data: Brand): Promise<Brand> {
         data.attributes ??= {};
         if (this.instance?.brandUuid) {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
+            return new CoreApi(DEFAULT_CONFIG).coreBrandsPartialUpdate({
                 brandUuid: this.instance.brandUuid,
-                brandRequest: data,
+                patchedBrandRequest: data,
             });
         }
         return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
@@ -75,7 +76,7 @@ export class BrandForm extends ModelForm<Brand, string> {
 
             <ak-switch-input
                 name="_default"
-                label=${msg("Sign assertions")}
+                label=${msg("Default")}
                 ?checked=${this.instance?._default ?? false}
                 help=${msg("Use this brand for each domain that doesn't have a dedicated brand.")}
             >
@@ -94,44 +95,35 @@ export class BrandForm extends ModelForm<Brand, string> {
                         help=${msg("Branding shown in page title and several other places.")}
                     ></ak-text-input>
 
-                    <ak-text-input
+                    <ak-file-search-input
                         required
                         name="brandingLogo"
-                        input-hint="code"
-                        placeholder="/static/dist/your-logo.svg"
-                        value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
                         label=${msg("Logo")}
-                        autocomplete="off"
-                        spellcheck="false"
+                        value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg("Logo shown in sidebar/header and flow executor.")}
-                    ></ak-text-input>
+                    ></ak-file-search-input>
 
-                    <ak-text-input
+                    <ak-file-search-input
                         required
                         name="brandingFavicon"
-                        input-hint="code"
-                        placeholder="/your-favicon.png"
-                        value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
                         label=${msg("Favicon")}
-                        autocomplete="off"
-                        spellcheck="false"
+                        value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg("Icon shown in the browser tab.")}
-                    ></ak-text-input>
+                    ></ak-file-search-input>
 
-                    <ak-text-input
+                    <ak-file-search-input
                         required
                         name="brandingDefaultFlowBackground"
-                        input-hint="code"
-                        placeholder="/your-favicon.png"
+                        label=${msg("Default flow background")}
                         value="${this.instance?.brandingDefaultFlowBackground ??
                         "/static/dist/assets/images/flow_background.jpg"}"
-                        label=${msg("Default flow background")}
-                        autocomplete="off"
-                        spellcheck="false"
+                        .usage=${AdminFileListUsageEnum.Media}
                         help=${msg(
                             "Default background used during flow execution. Can be overridden per flow.",
                         )}
-                    ></ak-text-input>
+                    ></ak-file-search-input>
 
                     <ak-form-element-horizontal name="brandingCustomCss">
                         <div slot="label" class="pf-c-form__group-label">
@@ -140,7 +132,7 @@ export class BrandForm extends ModelForm<Brand, string> {
 
                         <ak-codemirror
                             id="branding-custom-css"
-                            mode=${CodeMirrorMode.CSS}
+                            mode="css"
                             value="${this.instance?.brandingCustomCss ??
                             DefaultBrand.brandingCustomCss}"
                         >
@@ -311,11 +303,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <ak-codemirror
                             id="attributes"
                             name="attributes"
-                            mode=${CodeMirrorMode.YAML}
+                            mode="yaml"
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
+                            aria-describedby="attributes-help"
                         >
                         </ak-codemirror>
-                        <p class="pf-c-form__helper-text">
+                        <p class="pf-c-form__helper-text" id="attributes-help">
                             ${msg(
                                 "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",
                             )}

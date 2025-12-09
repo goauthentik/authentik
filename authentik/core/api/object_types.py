@@ -11,6 +11,7 @@ from rest_framework.response import Response
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.apps import EnterpriseConfig
+from authentik.lib.models import DeprecatedMixin
 from authentik.lib.utils.reflection import all_subclasses
 
 
@@ -24,6 +25,7 @@ class TypeCreateSerializer(PassiveSerializer):
 
     icon_url = CharField(required=False)
     requires_enterprise = BooleanField(default=False)
+    deprecated = BooleanField(default=False)
 
 
 class CreatableType:
@@ -69,6 +71,7 @@ class TypesMixin:
                         "requires_enterprise": isinstance(
                             subclass._meta.app_config, EnterpriseConfig
                         ),
+                        "deprecated": isinstance(instance, DeprecatedMixin),
                     }
                 )
             except NotImplementedError:

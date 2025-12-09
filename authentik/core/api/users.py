@@ -31,6 +31,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from guardian.shortcuts import get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
@@ -42,6 +43,7 @@ from rest_framework.fields import (
     ListField,
     SerializerMethodField,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -52,6 +54,8 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authentication import TokenAuthentication
+from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
@@ -75,14 +79,17 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import get_permission_choices
+from authentik.rbac.models import Role, get_permission_choices
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -101,7 +108,6 @@ class PartialGroupSerializer(ModelSerializer):
     """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
-    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     class Meta:
         model = Group
@@ -110,8 +116,6 @@ class PartialGroupSerializer(ModelSerializer):
             "num_pk",
             "name",
             "is_superuser",
-            "parent",
-            "parent_name",
             "attributes",
         ]
 
@@ -130,6 +134,13 @@ class UserSerializer(ModelSerializer):
         default=list,
     )
     groups_obj = SerializerMethodField(allow_null=True)
+    roles = PrimaryKeyRelatedField(
+        allow_empty=True,
+        many=True,
+        queryset=Role.objects.all().order_by("name"),
+        default=list,
+    )
+    roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
         max_length=150,
@@ -143,11 +154,24 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_groups", "true")).lower() == "true"
 
+    @property
+    def _should_include_roles(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_roles", "true")).lower() == "true"
+
     @extend_schema_field(PartialGroupSerializer(many=True))
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
         return PartialGroupSerializer(instance.ak_groups, many=True).data
+
+    @extend_schema_field(RoleSerializer(many=True))
+    def get_roles_obj(self, instance: User) -> list[RoleSerializer] | None:
+        if not self._should_include_roles:
+            return None
+        return RoleSerializer(instance.roles, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -163,24 +187,26 @@ class UserSerializer(ModelSerializer):
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance: User = super().create(validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
-        permissions = Permission.objects.filter(
+        perms_qs = Permission.objects.filter(
             codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        )
-        validated_data["user_permissions"] = permissions
+        ).values_list("content_type__app_label", "codename")
+        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
         instance = super().update(instance, validated_data)
         self._set_password(instance, password)
+        instance.assign_perms_to_managed_role(perms_list)
         return instance
 
     def _set_password(self, instance: User, password: str | None):
@@ -235,6 +261,8 @@ class UserSerializer(ModelSerializer):
             "is_superuser",
             "groups",
             "groups_obj",
+            "roles",
+            "roles_obj",
             "email",
             "avatar",
             "attributes",
@@ -258,6 +286,7 @@ class UserSelfSerializer(ModelSerializer):
     is_superuser = BooleanField(read_only=True)
     avatar = SerializerMethodField()
     groups = SerializerMethodField()
+    roles = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
     system_permissions = SerializerMethodField()
@@ -285,6 +314,25 @@ class UserSelfSerializer(ModelSerializer):
                 "pk": group.pk,
             }
 
+    @extend_schema_field(
+        ListSerializer(
+            child=inline_serializer(
+                "UserSelfRoles",
+                {
+                    "name": CharField(read_only=True),
+                    "pk": CharField(read_only=True),
+                },
+            )
+        )
+    )
+    def get_roles(self, _: User):
+        """Return only the roles a user is member of"""
+        for role in self.instance.all_roles().order_by("name"):
+            yield {
+                "name": role.name,
+                "pk": role.pk,
+            }
+
     def get_settings(self, user: User) -> dict[str, Any]:
         """Get user settings with brand and group settings applied"""
         return user.group_attributes(self._context["request"]).get("settings", {})
@@ -306,6 +354,7 @@ class UserSelfSerializer(ModelSerializer):
             "is_active",
             "is_superuser",
             "groups",
+            "roles",
             "email",
             "avatar",
             "uid",
@@ -385,6 +434,16 @@ class UsersFilter(FilterSet):
         queryset=Group.objects.all().order_by("name"),
     )
 
+    roles_by_name = ModelMultipleChoiceFilter(
+        field_name="roles__name",
+        to_field_name="name",
+        queryset=Role.objects.all().order_by("name"),
+    )
+    roles_by_pk = ModelMultipleChoiceFilter(
+        field_name="roles",
+        queryset=Role.objects.all().order_by("name"),
+    )
+
     def filter_is_superuser(self, queryset, name, value):
         if value:
             return queryset.filter(ak_groups__is_superuser=True).distinct()
@@ -420,11 +479,17 @@ class UsersFilter(FilterSet):
             "attributes",
             "groups_by_name",
             "groups_by_pk",
+            "roles_by_name",
+            "roles_by_pk",
             "type",
         ]
 
 
-class UserViewSet(UsedByMixin, ModelViewSet):
+class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """User Viewset"""
 
     queryset = User.objects.none()
@@ -432,6 +497,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
+    authentication_classes = [
+        TokenAuthentication,
+        SessionAuthentication,
+        AgentAuth,
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
@@ -455,11 +525,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         base_qs = User.objects.all().exclude_anonymous()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
             base_qs = base_qs.prefetch_related("ak_groups")
+        if self.serializer_class(context={"request": self.request})._should_include_roles:
+            base_qs = base_qs.prefetch_related("roles")
         return base_qs
 
     @extend_schema(
         parameters=[
             OpenApiParameter("include_groups", bool, default=True),
+            OpenApiParameter("include_roles", bool, default=True),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -529,14 +602,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         pagination_class=None,
         filter_backends=[],
     )
-    def service_account(self, request: Request) -> Response:
+    @validate(UserServiceAccountSerializer)
+    def service_account(self, request: Request, body: UserServiceAccountSerializer) -> Response:
         """Create a new user account that is marked as a service account"""
-        data = UserServiceAccountSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-        expires = data.validated_data.get("expires", now() + timedelta(days=360))
+        expires = body.validated_data.get("expires", now() + timedelta(days=360))
 
-        username = data.validated_data["name"]
-        expiring = data.validated_data["expiring"]
+        username = body.validated_data["name"]
+        expiring = body.validated_data["expiring"]
         with atomic():
             try:
                 user: User = User.objects.create(
@@ -554,7 +626,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     "user_uid": user.uid,
                     "user_pk": user.pk,
                 }
-                if data.validated_data["create_group"] and self.request.user.has_perm(
+                if body.validated_data["create_group"] and self.request.user.has_perm(
                     "authentik_core.add_group"
                 ):
                     group = Group.objects.create(name=username)
@@ -624,14 +696,17 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
-    def set_password(self, request: Request, pk: int) -> Response:
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
+    @validate(UserPasswordSetSerializer)
+    def set_password(self, request: Request, pk: int, body: UserPasswordSetSerializer) -> Response:
         """Set password for user"""
-        data = UserPasswordSetSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
         user: User = self.get_object()
         try:
-            user.set_password(data.validated_data["password"], request=request)
+            user.set_password(body.validated_data["password"], request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
@@ -711,7 +786,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
-    @action(detail=True, methods=["POST"], permission_classes=[])
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
         if not request.tenant.impersonation:

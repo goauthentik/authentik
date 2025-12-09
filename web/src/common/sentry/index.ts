@@ -1,5 +1,4 @@
 import { globalAK } from "#common/global";
-import { me } from "#common/users";
 
 import { readInterfaceRouteParam } from "#elements/router/utils";
 
@@ -11,7 +10,6 @@ import {
     EventHint,
     init,
     setTag,
-    setUser,
     spotlightBrowserIntegration,
 } from "@sentry/browser";
 import { type Integration } from "@sentry/core";
@@ -43,7 +41,7 @@ function beforeSend(
     return event;
 }
 
-export function configureSentry(canDoPpi = false): void {
+export function configureSentry(): void {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
 
@@ -92,12 +90,5 @@ export function configureSentry(canDoPpi = false): void {
         setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
     }
 
-    if (cfg.errorReporting.sendPii && canDoPpi) {
-        me().then((user) => {
-            setUser({ email: user.user.email });
-            console.debug("authentik/config: Sentry with PII enabled.");
-        });
-    } else {
-        console.debug("authentik/config: Sentry enabled.");
-    }
+    console.debug("authentik/config: Sentry enabled.");
 }
