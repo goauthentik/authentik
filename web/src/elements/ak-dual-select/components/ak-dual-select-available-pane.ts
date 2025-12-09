@@ -12,7 +12,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],
@@ -40,7 +39,7 @@ const hostAttributes = [
 export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
     AKElement,
 ) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
+    static styles = [PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
 

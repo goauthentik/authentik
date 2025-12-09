@@ -13,7 +13,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type RedirectURIProperties = LitPropertyRecord<{
     redirectURI: RedirectURI;
@@ -25,7 +24,6 @@ export type RedirectURIProperties = LitPropertyRecord<{
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     static styles = [
-        PFBase,
         PFInputGroup,
         PFFormControl,
         css`

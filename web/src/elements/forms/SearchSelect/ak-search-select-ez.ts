@@ -45,8 +45,6 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static styles = [...SearchSelectBase.styles];
-
     public fetchObjects!: (query?: string) => Promise<T[]>;
     public renderElement!: (element: T) => string;
     public renderDescription?: ((element: T) => string | TemplateResult) | undefined;

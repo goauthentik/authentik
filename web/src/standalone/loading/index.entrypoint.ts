@@ -5,12 +5,10 @@ import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
 export class Loading extends AKElement {
     static styles = [
-        PFBase,
         PFSpinner,
         css`
             :host {

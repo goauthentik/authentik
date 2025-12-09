@@ -46,8 +46,6 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  */
 @customElement("ak-search-select")
 export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
-    static styles = [...SearchSelectBase.styles];
-
     @property({ attribute: false })
     public fetchObjects!: (query?: string) => Promise<T[]>;
 

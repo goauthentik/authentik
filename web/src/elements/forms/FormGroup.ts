@@ -9,7 +9,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Form Group
@@ -21,7 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFForm, PFButton, PFFormControl, Styles];
+    static styles: CSSResult[] = [PFForm, PFButton, PFFormControl, Styles];
 
     //region Properties
 

@@ -19,7 +19,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-saml-native-logout")
 export class NativeLogoutStage extends BaseStage<
@@ -28,7 +27,7 @@ export class NativeLogoutStage extends BaseStage<
 > {
     #formRef: Ref<HTMLFormElement> = createRef();
 
-    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFButton, PFFormControl, PFTitle];
+    public static styles: CSSResult[] = [PFLogin, PFForm, PFButton, PFFormControl, PFTitle];
 
     public override firstUpdated(changedProperties: PropertyValues): void {
         super.firstUpdated(changedProperties);

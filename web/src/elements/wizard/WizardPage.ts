@@ -1,10 +1,8 @@
 import { AKElement } from "#elements/Base";
 import { Wizard } from "#elements/wizard/Wizard";
 
-import { CSSResult, html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
+import { html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Callback for when the page is brought into view.
@@ -19,8 +17,6 @@ export type WizardPageActiveCallback = () => void | Promise<void>;
 export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 export abstract class WizardPage extends AKElement {
-    static styles: CSSResult[] = [PFBase];
-
     /**
      * The label to display in the sidebar for this page.
      *

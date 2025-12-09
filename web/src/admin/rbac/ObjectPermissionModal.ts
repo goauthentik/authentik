@@ -11,7 +11,6 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * This is a bit of a hack to get the viewport checking from ModelForm,
@@ -47,7 +46,6 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         css`
             button {
