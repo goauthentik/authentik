@@ -15,6 +15,14 @@
 import type { PropDocContent as BasePropDocContent } from "@docusaurus/plugin-content-docs";
 import type { DocContextValue as BaseDocContextValue } from "@docusaurus/plugin-content-docs/client";
 
+declare module "@theme/Tabs" {
+    import type { Props as OriginalTabsProps } from "@theme-original/Tabs";
+
+    export interface Props extends OriginalTabsProps {
+        automaticallyDetectPlatform?: boolean;
+    }
+}
+
 declare global {
     /**
      * @monkeypatch
