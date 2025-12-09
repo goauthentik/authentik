@@ -64,7 +64,7 @@ Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\CLSID\{7BCC7941-18BA-4A8E-8E0A-1D0F8E73577A}]
 "URL"="https://authentik.company"       ; authentik URL
-"ClientID"="authentik-wcp"              ; Client ID
+"ClientID"="authentik-cli"              ; Client ID
 ```
 
 ## Logging
