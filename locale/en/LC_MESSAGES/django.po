@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-05 00:11+0000\n"
+"POT-Creation-Date: 2025-12-09 00:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,10 +185,6 @@ msgstr ""
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
-#: authentik/core/api/groups.py
-msgid "Cannot set group as parent of itself."
-msgstr ""
-
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -257,11 +253,19 @@ msgid "Disable superuser status"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr ""
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/providers/saml/models.py authentik/rbac/models.py
+#: authentik/providers/saml/models.py
 msgid "User"
 msgstr ""
 
@@ -2789,6 +2793,10 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr ""
 
@@ -4331,6 +4339,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Domains"
+msgstr ""
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
 msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py

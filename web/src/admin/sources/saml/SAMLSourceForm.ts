@@ -59,11 +59,11 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                 slug: this.instance.slug,
                 sAMLSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
-                sAMLSourceRequest: data,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlCreate({
+            sAMLSourceRequest: data,
+        });
     }
 
     renderHasSigningCert(): TemplateResult {

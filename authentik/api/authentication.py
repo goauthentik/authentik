@@ -70,6 +70,9 @@ class IPCUser(AnonymousUser):
     def is_authenticated(self):
         return True
 
+    def all_roles(self):
+        return []
+
 
 class TokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Bearer authentication"""
