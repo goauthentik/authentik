@@ -112,8 +112,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         try {
             // Step 1: Import SAML metadata to create the provider
-            // Note: The API client needs to be regenerated to reflect the updated endpoint
-            // that returns the created provider (201) instead of no content (204)
             const createdProvider = (await providersApi.providersSamlImportMetadataCreate({
                 file: providerData.file,
                 name: providerData.name,
