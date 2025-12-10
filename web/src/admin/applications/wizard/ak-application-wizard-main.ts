@@ -7,7 +7,7 @@ import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
 
 import { applicationWizardProvidersContext } from "./ContextIdentity.js";
-import { providerTypeRenderers } from "./steps/ProviderChoices.js";
+import { isWizardReadyTypeCreate, WizardProviderRenderRecord } from "./steps/ProviderChoices.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -23,7 +23,6 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 const freshWizardState = (): ApplicationWizardState => ({
-    providerModel: "",
     currentBinding: -1,
     app: {},
     provider: {},
@@ -37,7 +36,7 @@ export class AkApplicationWizardMain extends AKElement {
     @state()
     wizard: ApplicationWizardState = freshWizardState();
 
-    wizardProviderProvider = new ContextProvider(this, {
+    private wizardProviderProvider = new ContextProvider(this, {
         context: applicationWizardProvidersContext,
         initialValue: [],
     });
@@ -50,18 +49,17 @@ export class AkApplicationWizardMain extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
-            const wizardReadyProviders = Object.keys(providerTypeRenderers);
             this.wizardProviderProvider.setValue(
                 providerTypes
-                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
+                    .filter(isWizardReadyTypeCreate)
                     .map((providerType) => ({
                         ...providerType,
-                        renderer: providerTypeRenderers[providerType.modelName].render,
+                        renderer: WizardProviderRenderRecord[providerType.modelName].render,
                     }))
                     .sort(
                         (a, b) =>
-                            providerTypeRenderers[a.modelName].order -
-                            providerTypeRenderers[b.modelName].order,
+                            WizardProviderRenderRecord[a.modelName].order -
+                            WizardProviderRenderRecord[b.modelName].order,
                     )
                     .reverse(),
             );

@@ -1,8 +1,6 @@
 import "#admin/applications/wizard/ak-wizard-title";
 
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { isApplicationTransactionValidationError, OneOfProvider } from "../types.js";
-import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
+import { ProviderOverviewRenderer } from "./SubmitStepOverviewRenderers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -14,13 +12,19 @@ import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/types";
 
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import {
+    OneOfProvider,
+    ProviderModelSuffixRecord,
+} from "#admin/applications/wizard/steps/providers/shared";
+import { isApplicationTransactionValidationError } from "#admin/applications/wizard/types";
+
 import {
     type ApplicationRequest,
     CoreApi,
     instanceOfValidationError,
     type ModelRequest,
     type PolicyBinding,
-    ProviderModelEnum,
     ProxyMode,
     type ProxyProviderRequest,
     type TransactionApplicationRequest,
@@ -44,15 +48,6 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
-
-type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
-
-const providerMap: Map<string, string> = Object.values(ProviderModelEnum)
-    .filter((value) => /^authentik_providers_/.test(value) && /provider$/.test(value))
-    .reduce((acc: Map<string, string>, value) => {
-        acc.set(value.split(".")[1], value);
-        return acc;
-    }, new Map());
 
 type NonEmptyArray<T> = [T, ...T[]];
 
@@ -79,7 +74,9 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 });
 
 @customElement("ak-application-wizard-submit-step")
-export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
+export class ApplicationWizardSubmitStep extends CustomEmitterElement(
+    ApplicationWizardStep<ModelRequest>,
+) {
     static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
@@ -101,28 +98,39 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     state: SubmitStates = "reviewing";
 
     async send() {
-        const app = this.wizard.app;
-        const provider = this.wizard.provider as ModelRequest;
+        const { app, provider } = this.wizard;
 
-        if (app === undefined) {
-            throw new Error("Reached the submit state with the app undefined");
+        if (!app) {
+            throw new TypeError("Reached the submit state with the app undefined");
         }
 
-        if (provider === undefined) {
-            throw new Error("Reached the submit state with the provider undefined");
+        if (!provider) {
+            throw new TypeError("Reached the submit state with the provider undefined");
         }
 
         // Stringly-based API. Not the best, but it works. Just be aware that it is
         // stringly-based.
 
-        const providerModel = providerMap.get(this.wizard.providerModel) as StrictProviderModelEnum;
+        const providerModel = this.wizard.providerModel
+            ? ProviderModelSuffixRecord[this.wizard.providerModel]
+            : null;
+
+        if (!providerModel) {
+            throw new TypeError(
+                `Reached the submit state with an invalid provider model: ${this.wizard.providerModel}`,
+            );
+        }
+
         provider.providerModel = providerModel;
 
         // Special case for the Proxy provider.
         if (this.wizard.providerModel === "proxyprovider") {
-            (provider as ProxyProviderRequest).mode = this.wizard.proxyMode;
-            if ((provider as ProxyProviderRequest).mode !== ProxyMode.ForwardDomain) {
-                (provider as ProxyProviderRequest).cookieDomain = "";
+            const proxyProvider = provider as ProxyProviderRequest;
+
+            proxyProvider.mode = this.wizard.proxyMode;
+
+            if (proxyProvider.mode !== ProxyMode.ForwardDomain) {
+                proxyProvider.cookieDomain = "";
             }
         }
 
@@ -296,7 +304,9 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
-        const renderer = providerRenderers.get(this.wizard.providerModel);
+        const renderer = this.wizard.providerModel
+            ? ProviderOverviewRenderer[this.wizard.providerModel]
+            : null;
 
         if (!renderer) {
             throw new Error(
