@@ -4,6 +4,7 @@ from json import dumps
 from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -46,6 +47,8 @@ class TwitchType(SourceType):
     authorization_url = "https://id.twitch.tv/oauth2/authorize"
     access_token_url = "https://id.twitch.tv/oauth2/token"  # nosec
     profile_url = "https://id.twitch.tv/oauth2/userinfo"
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {

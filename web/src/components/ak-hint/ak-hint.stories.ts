@@ -1,15 +1,18 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "../ak-radio-input.js";
+import "./ak-hint-body.js";
+import "./ak-hint-title.js";
+import "./ak-hint.js";
+
+import AkHint from "./ak-hint.js";
+
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-radio-input";
-import "./ak-hint";
-import AkHint from "./ak-hint";
-import "./ak-hint-body";
-import "./ak-hint-title";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkHint> = {
     title: "Components / Patternfly Hint",
@@ -26,23 +29,24 @@ const metadata: Meta<AkHint> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
             }
-            p {
-                color: black;
-                margin-top: 1em;
+
+            ak-hint {
+                --ak-hint--Color: var(--pf-global--Color--dark-100);
             }
 
-            * {
-                --ak-hint--Color: black !important;
+            @media (prefers-color-scheme: dark) {
+                ak-hint {
+                    --ak-hint--Color: var(--pf-global--Color--light-100);
+                }
             }
-            ak-hint-title::part(ak-hint-title),
-            ak-hint-footer::part(ak-hint-footer),
-            slotted::(*) {
-                color: black;
+
+            p {
+                margin-top: 1em;
             }
         </style>
 

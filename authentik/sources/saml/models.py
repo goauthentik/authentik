@@ -39,6 +39,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SHA1,
@@ -73,6 +74,7 @@ class SAMLNameIDPolicy(models.TextChoices):
     X509 = SAML_NAME_ID_FORMAT_X509
     WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
     TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
+    UNSPECIFIED = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
 class SAMLSource(Source):
@@ -198,6 +200,9 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
+    signed_assertion = models.BooleanField(default=True)
+    signed_response = models.BooleanField(default=False)
+
     @property
     def component(self) -> str:
         return "ak-source-saml-form"
@@ -274,6 +279,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -317,8 +323,6 @@ class SAMLSourcePropertyMapping(PropertyMapping):
 
 class UserSAMLSourceConnection(UserSourceConnection):
     """Connection to configured SAML Sources."""
-
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> Serializer:

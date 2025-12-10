@@ -1,0 +1,122 @@
+version: 1
+metadata:
+  name: OpenID Conformance testing
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-address
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'address'"
+      scope_name: address
+      description: "General Address Information"
+      expression: |
+        return {
+            "address": {
+                "formatted": "foo",
+            }
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-phone
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'phone'"
+      scope_name: phone
+      description: "General phone information"
+      expression: |
+        return {
+            "phone_number": "+1234",
+            "phone_number_verified": True,
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-profile-oidc-standard
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "OIDC conformance profile"
+      scope_name: profile
+      description: "General profile information"
+      expression: |
+        return {
+            # Because authentik only saves the user's full name, and has no concept of first and last names,
+            # the full name is used as given name.
+            # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+            "name": request.user.name,
+            "given_name": request.user.name,
+            "preferred_username": request.user.username,
+            "nickname": request.user.username,
+            "groups": [group.name for group in request.user.ak_groups.all()],
+            "website" : "foo",
+            "zoneinfo" : "foo",
+            "birthdate" : "2000",
+            "gender" : "foo",
+            "profile" : "foo",
+            "middle_name" : "foo",
+            "locale" : "foo",
+            "picture" : "foo",
+            "updated_at" : 1748557810,
+            "family_name" : "foo",
+        }
+
+
+  - model: authentik_providers_oauth2.oauth2provider
+    id: oidc-conformance-1
+    identifiers:
+      name: oidc-conformance-1
+    attrs:
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      # Required as OIDC Conformance test requires issues to be the same across multiple clients
+      issuer_mode: global
+      client_id: 4054d882aff59755f2f279968b97ce8806a926e1
+      client_secret: 4c7e4933009437fb486b5389d15b173109a0555dc47e0cc0949104f1925bcc6565351cb1dffd7e6818cf074f5bd50c210b565121a7328ee8bd40107fc4bbd867
+      redirect_uris:
+        - matching_mode: strict
+          url: https://localhost:8443/test/a/authentik/callback
+        - matching_mode: strict
+          url: https://host.docker.internal:8443/test/a/authentik/callback
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile-oidc-standard]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-offline_access]]
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+  - model: authentik_core.application
+    identifiers:
+      slug: oidc-conformance-1
+    attrs:
+      provider: !KeyOf oidc-conformance-1
+      name: OIDC Conformance (1)
+
+  - model: authentik_providers_oauth2.oauth2provider
+    id: oidc-conformance-2
+    identifiers:
+      name: oidc-conformance-2
+    attrs:
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      # Required as OIDC Conformance test requires issues to be the same across multiple clients
+      issuer_mode: global
+      client_id: ad64aeaf1efe388ecf4d28fcc537e8de08bcae26
+      client_secret: ff2e34a5b04c99acaf7241e25a950e7f6134c86936923d8c698d8f38bd57647750d661069612c0ee55045e29fe06aa101804bdae38e8360647d595e771fea789
+      redirect_uris:
+        - matching_mode: strict
+          url: https://localhost:8443/test/a/authentik/callback
+        - matching_mode: strict
+          url: https://host.docker.internal:8443/test/a/authentik/callback
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile-oidc-standard]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-offline_access]]
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+  - model: authentik_core.application
+    identifiers:
+      slug: oidc-conformance-2
+    attrs:
+      provider: !KeyOf oidc-conformance-2
+      name: OIDC Conformance (2)

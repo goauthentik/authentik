@@ -14,7 +14,9 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 - [Component-Based Formatting](#component-based-formatting)
 - [Error Message Formatting and Troubleshooting](#error-message-formatting-and-troubleshooting)
 - [Accessibility Best Practices](#accessibility-best-practices)
-- [Notes and Warnings](#notes-and-warnings)
+- [Inclusive Language](#inclusive-language)
+- [Images and Media](#images-and-media)
+- [Document Structure and Metadata](#document-structure-and-metadata)
 
 ---
 
@@ -32,7 +34,7 @@ Use headings (sub-titles) to break up large blocks of text, making it easier for
 
 ### Look and feel of the docs
 
-In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large call0outs or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
+In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large callouts or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
 
 ### Cross-references
 
@@ -40,7 +42,7 @@ Always include cross-references to related content. If a concept is referenced e
 
 ### Relative vs. absolute paths
 
-Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between our Integration Guides and our regular technical docs, then use an absolute path.
+Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between another authentik resource that is not in the same repository and our regular technical docs, then use an absolute path.
 
 ### Markdown file type
 
@@ -50,18 +52,31 @@ The standard file type for documentation is `.md`. Use `.mdx` only if React comp
 
 Try to write procedural (How To) docs generically enough that it does not endorse or force a specific operating system. If it is necessary to specify a specific OS be sure to label it clearly. Consider using tabs (with MDX) to show the different OSes.
 
+---
+
 ## Terminology
 
-### authentik product naming conventions
+### authentik product name and terms
 
-- The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence. This consistent style should be followed throughout the documentation.
+- The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence.
+
 - The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security**.
+
+- When referring to the authentik Admin interface, capitalize "Admin" like it is in the UI, but do not bold the phrase "Admin interface" unless in a sentence that explicitly says "Click on **Admin interface**". However, if you are referring to a user or role that is an administrator, or has administrative rights, then do not capitalize it and spell out the full word "administrator" or "administrative".
 
 ### Industry terms and technology names
 
 - When referring to external tools or industry terms, always use the exact capitalization and naming conventions that the product or company uses. Refer to their website or official documentation for the proper formatting. For example, use "OAuth", "SAML", or "Docker" as per the official conventions.
 - Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
-- If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)".
+- If an acronym is used less frequently, spell out its full meaning when first mentioned on the page, followed by the acronym in parentheses. In some cases the acronym can come first, followed by the full term in parentheses.
+
+### Trademarks and legal terms
+
+- Respect third-party trademarks. Use the correct symbols (™, ®) where applicable (e.g., "GitHub®", "Okta™") in the _first_ instance of the name.
+- When mentioning third-party products, follow their branding guidelines (e.g., "GitHub", not "Github").
+- Where appropriate, include required legal disclaimers when referencing external services or integrations.
+
+---
 
 ## Writing style
 
@@ -72,10 +87,6 @@ The tone of the authentik documentation should be friendly but professional. It 
 ### Language
 
 The documentation uses **American English** spelling conventions (e.g., "customize" instead of "customise").
-
-### Punctuation
-
-For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
 
 ### Voice
 
@@ -91,13 +102,30 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 - **DON'T:** "Never modify the default file."
 - **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
 
+### Punctuation
+
+For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the [Serial comma](https://en.wikipedia.org/wiki/Serial_comma) (also known as the Oxford comma).
+
+In [lists](#lists), add a period at the end of a bulleted item if it is a complete sentence. Try not to mix incomplete and complete sentences in the same list.
+
+### Capitalization
+
+#### Titles and headers
+
+Titles and headers (H1, H2, H3, etc.) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names. For more information, see [below](#titles-and-headers).
+
+#### Following a colon
+
+Whether to capitalize after a colon depends on the context. Typically, we do not capitalize the first word after a colon _unless_ it's a proper noun or if it is the start of a complete sentence. If the colon introduces a list, do not capitalize the first word unless it's a proper noun. In headings and titles, capitalize the first word after the colon.
+
+---
+
 ## Word choices
 
 ### "May" versus "Might" versus "Can"
 
 - Typically, avoid using the word "may" in technical writing, as it implies permission rather than ability to perform an action. Instead, use **"can"** to suggest possibility.
 - **"Might"** should be used to indicate that something could happen under certain conditions, but use it sparingly. It implies unpredictability, which can be undesirable in software documentation.
-
     - **DON'T:** "You may use an Expression policy to enforce MFA adherence."
     - **DO:** "You can use an Expression policy to enforce MFA adherence."
     - **DO:** "Values might differ depending on the source of the property mappings."
@@ -117,106 +145,185 @@ It's important to use "that" as a conjunction to introduce a dependent clause, o
 
 ### "which" vs "that"
 
-Th easiest way to remember when to use "which" versus "that" is:
+The easiest way to remember when to use "which" versus "that" is:
 
-- if the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, then you should use "which".
+- If the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, use "which".
 
-For more information, see https://www.grammarly.com/blog/which-vs-that/.
+For more information, see [this guide](https://www.grammarly.com/blog/which-vs-that/).
 
-### “since” (time-based) vs “because” (causal)
+### "since" (time-based) vs "because" (causal)
 
 When writing about a status or anything that is causal ("this happened because of that"), use the word "because". Use the word "since" for time-based topics (this will be rare in technical writing).
 
-### Avoid using “once” (numeric) to mean “after” (time-based).
+### Avoid using "once" (numeric) to mean "after" (time-based).
 
 When writing out steps in a procedural topic, avoid starting with "Once...". Instead, you can say "After you have created the scope mapping...".
 
+---
+
 ## Formatting guidelines
 
-### Fonts and Font Styling
+### Fonts and font styling
 
-- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
+- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting, and do not capitalize. Link to the relevant documentation when possible.
 
 - When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
 - Use **bold** to highlight:
-
     - UI elements such as field names, labels, buttons, or options (e.g., **Save** button, **Username** field).
     - Key actions in instructions (e.g., **Click Next**).
 
 - Use _italic_ for:
-
-    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_). Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
-    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section.
+    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section. Do not use italics to indicate a variable or placeholder; instead use angle brackets as described under [Variables](#variables).
 
 - Use `code formatting` for:
-
-    - Commands (e.g., `docker run`).
+    - Commands (e.g., `kubectl get nodes`).
     - File paths, file names, and directory names (e.g., `/usr/local/bin/`).
     - Inline code snippets (e.g., `.env`).
 
-- When handling URLs:
+### Lists
 
-    - For URLs entered as values or defined in fields _italicize_ any variables within them to emphasize that placeholders require user input.
+Add a period at the end of a bulleted item if it is a complete sentence. Try not to mix incomplete and complete sentences in the same list.
 
-        In Markdown, use this syntax: `<kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>`
+If there is a [colon](#following-a-colon) used in a bulleted list item, follow the capitalization rules.
 
-        Rendered formatting: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
+### Notes and warnings
+
+We use Info, Warning, and Danger boxes, to provide supplemental information. Info boxes can optionally have a title, but do not use a title with Warning or Danger boxes.
+
+Use the following syntax for these components:
+
+**Info**:
+
+```md
+::: info add-title-here
+This is a tip or general note.
+:::
+```
+
+**Warnings**:
+
+```md
+:::warning
+This level is for more serious situations: an action cannot be undone, a process might be canceled, etc.
+:::
+```
+
+**Critical warnings** (for irreversible actions):
+
+```md
+:::danger
+This level is for extremely serious situations, such as an action permanently removing data.
+:::
+```
+
+### URLs
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
+
+    - For URLs entered as values or defined in fields, enclose any variables inside angle brackets (`< >`) and use underscores between words. See more about variables below (#variables).
+
+### Variables
+
+To clearly indicate terms or values that are placeholders and require user input, enclose any variables inside angle brackets (`< >`) and use underscores between words to clearly indicate that these are placeholders that require user input.
+
+        Examples:
+
+        `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+
+        "Add the configuration setting: `<first_name>`."
 
 ### Titles and headers
 
 - Titles and headers (H1, H2, H3) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.
-
     - **DO:** "Configure the Google Workspace provider"
     - **DON'T:** "CONFIGURE THE GOOGLE WORKSPACE PROVIDER"
     - **DON'T:** "Configure The Google Workspace Provider"
 
-- Ensure titles and headers are descriptive and clearly convey the purpose of the section. Avoid vague titles like "Overview." Instead, opt for something more specific, like "About authentik policies."
+- Ensure that titles and headers are descriptive and clearly convey the purpose of the section. Avoid vague titles like "Overview." Instead, opt for something more specific, like "About authentik policies."
 
-- Use the **imperative verb form** in procedural topics. For example, use "Configure your instance" instead of "Configuring your instance."
+- Use the **imperative verb form** in procedural topics, not gerunds. For example, use "Configure your instance" instead of "Configuring your instance."
 
 ### Examples
 
-When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
+When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a colon, like this:
 
-    **Example**:
+**Example**:
 
     This expression policy uses an expression based on the user's name:
-        ```
-        if request.context["pending_user"].username == "marie":
-            return True
-            return False
-        ```
+    ```python
+    if request.context["pending_user"].username == "marie":
+        return True
+    return False
+    ```
 
-## Component-Based Formatting
+### Code blocks
 
-This section covers the usage of React components within our documentation. Files that use component-based formatting must use the `.mdx` extension.
+When you want to show sections of code use **Code blocks** to provide syntax highlighting, a copy button, line numbering and line highlighting:
 
-### Multiline Code Blocks
-
-For displaying multiline code blocks, especially when variables need to be defined, use the **`IntegrationsMultilineCodeblock`** React component. Insert the following lines wherever you want the code block to appear:
-
-```jsx
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
-<IntegrationsMultilineCodeblock>
-    {`
-OIDC_DISCOVERY_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/
-`}
-</IntegrationsMultilineCodeblock>;
+```text
+` ` ` yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+all_access:
+reserved: true
+hidden: false
+backend_roles:
+    - "wazuh-admin"
+    - "admin"
+hosts: []
+users: []
+and_backend_roles: []
+description: "Maps admin to all_access"
+` ` `
 ```
 
-This is especially useful for configuration files like JSON, YAML, or `.env` files, where placeholders must be replaced.
+Which is rendered as:
 
-### Tabs for Multiple Configurations
+```yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+all_access:
+reserved: true
+hidden: false
+backend_roles:
+    - "wazuh-admin"
+    - "admin"
+hosts: []
+users: []
+and_backend_roles: []
+description: "Maps admin to all_access"
+```
 
-Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. Insert the following lines wherever you want the code block to appear:
+- ` ` ` `yaml `defines the language used for syntax highlighting. Other languages can be used such as`jsx`, `python`, `bash`, and `text`.
+
+Optional configurations:
+
+- `showLineNumbers`: enables line numbering.
+- `title=" "`: defines the title displayed at the top (e.g., filenames).
+- `{5}`: highlights specific lines. Ranges and lists are allowed (e.g., `{5, 7, 9-11}`).
+- `// highlight-next-line`: highlights the next line within a code block.
+- `// highlight-start` and `// highlight-end`: highlight multiple lines.
+
+For more details, see the [Docusaurus code block documentation](https://docusaurus.io/docs/markdown-features/code-blocks).
+
+### Tables
+
+Use tables to compare options, list parameters, or summarize information. Ensure tables are concise and avoid nesting complex content. Only use a table when there are 4 or more items. For only 2 or 3 items, use a bullet list.
+
+### Lists
+
+- Use bullet points for unordered lists.
+- Use numbered lists for sequential steps.
+- Keep list items parallel in structure.
+
+---
+
+## Component-based formatting
+
+### Tabs for multiple configurations
+
+Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. For example:
 
 ```jsx
-import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 <Tabs
     defaultValue="oidc"
@@ -230,60 +337,94 @@ import TabItem from "@theme/TabItem";
 </Tabs>;
 ```
 
-Tabs improve readability when presenting different configurations or setup options.
+---
 
-## Error Message Formatting and Troubleshooting
+## Error message formatting and troubleshooting
 
-When documenting error messages:
+When documenting errors, follow this structure:
 
-- Display the error message
-- Explain possible causes
-- Offer solutions
+1. **Error Message**: Display the error in a code block.
+2. **Possible Causes**: List common reasons for the error.
+3. **Solutions**: Provide step-by-step fixes or a work-around if there is one.
 
-Example:
+**Example**:
 
-- **Error message:**
+- **Error message**:
 
     ```sh
     Error: Authentication failed. Invalid credentials.
     ```
 
-- **Possible causes:**
+- **Possible causes**:
+    - Incorrect username or password.
+    - Account locked due to multiple failed attempts.
 
-    - Incorrect username or password
-    - Account is locked due to too many failed login attempts
+- **Solutions**:
+    - Verify your credentials.
+    - Reset your password using the **Forgot Password** link.
+    - Contact your administrator if the account is locked.
 
-- **Solution:**
+---
 
-    - Verify your username and password
-    - Reset your password if necessary
-    - Contact an administrator if your account is locked
+## Accessibility best practices
 
-## Accessibility Best Practices
-
-- Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
-- Provide **descriptive link text**. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
+- **Alt text for images**: Describe the purpose of the image, not just its appearance. For example, use "Screenshot of the login form" instead of "Image of a form."
+- **Heading hierarchy**: Use headings in order (H1 → H2 → H3) to support screen readers.
+- **Color usage**: Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
+- **Descriptive link text**: Provide descriptive link text. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
     - **DON'T:** "Click here."
     - **DO:** "See the [Authentication Settings](/) for more details."
 
-## Notes and Warnings
+---
 
-For notes and important information:
+## Inclusive language
 
-**Notes** are formatted using:
+- Use **gender-neutral pronouns** like "they/them" instead of "he/she" (e.g., "The user should check their settings").
+- Avoid **ableist terms** such as "dumb" or "lame"; use "non-functional" or "unavailable" instead.
+- **Avoid idioms** that may not translate well (e.g., instead of "hit a home run" use "achieve success").
 
-```
-:::info
-Write your note here.
-:::
-```
+---
 
-**Warnings** are formatted using:
+## Images and media
 
-```
-:::warning
-Write your warning here.
-:::
-```
+- **Screenshots**:
+    - Use screenshots very sparingly, only for very complex UIs. If there are screenshots, update any existing ones if the UI changes.
+    - Crop to focus on relevant elements, use red arrows or circles to call out the important element.
+    - Add descriptive alt text (e.g., "Screenshot of the Provider configuration page").
+- **Diagrams**:
+    - Use [Mermaid](https://mermaid.js.org/) for creating diagrams directly in markdown. Mermaid is our preferred tool for documentation diagrams as it allows for version control and easy updates.
+    - For more complex diagrams, you can use tools like [Draw.io](https://draw.io). Ensure high contrast and text descriptions.
 
-Use these conventions to ensure that the reader's attention is drawn to crucial information.
+---
+
+## Document structure and metadata
+
+- **Front matter**: Include a title and optional summary. You can also add badge metadata in the front matter:
+
+    ```md
+    ---
+    title: Getting Started
+    description: Install and configure authentik in 5 minutes.
+    authentik_version: "2025.4" # Semantic version when feature was introduced (Optional)
+    authentik_preview: true # For preview features (Optional)
+    authentik_enterprise: true # For enterprise features (Optional)
+    support_level: "authentik" # For integrations: Support level: "authentik" (tested by team) or "community" (community maintained)
+    ---
+    ```
+
+    Note: Badges should be defined in the front matter, not in the markdown content. The system will automatically display the appropriate badges based on the front matter metadata.
+
+- **Directives**: You can also use directives in your markdown content to add badges inline:
+    - `:ak-version[2025.4]` - Shows when a feature was introduced (requires semantic version)
+    - `:ak-preview` - Indicates preview features
+    - `:ak-enterprise` - Indicates features in our Enterprise offering
+
+    Example usage in a heading:
+
+    ```md
+    # New Feature :ak-version[2025.4] :ak-preview
+    ```
+
+    Note: When using directives, they should be placed at the end of the heading or paragraph where they apply.
+
+- **SEO**: Use keywords in titles and headings to improve searchability. Include relevant terms that users might search for, but avoid keyword stuffing. Focus on natural, descriptive language that accurately represents the content.

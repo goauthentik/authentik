@@ -1,0 +1,99 @@
+/**
+ * @file Atom One Dark syntax highlighting theme.
+ *
+ * @see https://github.com/atom/one-dark-syntax
+ */
+
+:root {
+    --one-dark-base: #282c34;
+    --one-dark-mono-1: #abb2bf;
+    --one-dark-mono-2: #818896;
+    --one-dark-mono-3: #5c6370;
+    --one-dark-hue-1: #56b6c2;
+    --one-dark-hue-2: #61aeee;
+    --one-dark-hue-3: #c678dd;
+    --one-dark-hue-4: #98c379;
+    --one-dark-hue-5: #e06c75;
+    --one-dark-hue-5-2: #be5046;
+    --one-dark-hue-6: #d19a66;
+    --one-dark-hue-6-2: #e6c07b;
+}
+
+.hljs {
+    color: var(--one-dark-mono-1);
+    background: var(--one-dark-base);
+}
+
+pre:has(.hljs) {
+    background: var(--one-dark-base);
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: var(--one-dark-mono-3);
+    font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+    color: var(--one-dark-hue-3);
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+    color: var(--one-dark-hue-5);
+}
+
+.hljs-literal {
+    color: var(--one-dark-hue-1);
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string {
+    color: var(--one-dark-hue-4);
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+    color: var(--one-dark-hue-6);
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+    color: var(--one-dark-hue-2);
+}
+
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-class .hljs-title {
+    color: var(--one-dark-hue-6-2);
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+.hljs-link {
+    text-decoration: underline;
+}

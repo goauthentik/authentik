@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -24,8 +25,6 @@ import (
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
 )
-
-type WSHandler func(ctx context.Context, args map[string]interface{})
 
 const ConfigLogLevel = "log_level"
 
@@ -43,12 +42,11 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	wsConn              *websocket.Conn
-	lastWsReconnect     time.Time
-	wsIsReconnecting    bool
-	wsBackoffMultiplier int
-	wsHandlers          []WSHandler
-	refreshHandlers     []func()
+	eventConn        *websocket.Conn
+	lastWsReconnect  time.Time
+	wsIsReconnecting bool
+	eventHandlers    []EventHandler
+	refreshHandlers  []func()
 
 	instanceUUID uuid.UUID
 }
@@ -62,7 +60,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig.Scheme = akURL.Scheme
 	apiConfig.HTTPClient = &http.Client{
 		Transport: web.NewUserAgentTransport(
-			constants.OutpostUserAgent(),
+			constants.UserAgentOutpost(),
 			web.NewTracingTransport(
 				rsp.Context(),
 				GetTLSTransport(),
@@ -83,20 +81,19 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	var outposts *api.PaginatedOutpostList
-	var err error
-	for {
-		outposts, _, err = apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
-		if err == nil {
-			break
-		}
-
-		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
-		time.Sleep(time.Second * 3)
-	}
+	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
+		func() (*api.PaginatedOutpostList, error) {
+			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+			return outposts, err
+		},
+		retry.Attempts(0),
+		retry.Delay(time.Second*3),
+		retry.OnRetry(func(attempt uint, err error) {
+			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		}),
+	)
 	if len(outposts.Results) < 1 {
-		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
@@ -119,20 +116,31 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:        uuid.New(),
-		Outpost:             outpost,
-		wsHandlers:          []WSHandler{},
-		wsBackoffMultiplier: 1,
-		refreshHandlers:     make([]func(), 0),
+		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:    uuid.New(),
+		Outpost:         outpost,
+		eventHandlers:   []EventHandler{},
+		refreshHandlers: make([]func(), 0),
 	}
+	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initWS(akURL, outpost.Pk)
+	err = ac.initEvent(akURL, outpost.Pk)
 	if err != nil {
-		go ac.reconnectWS()
+		go ac.recentEvents()
 	}
 	ac.configureRefreshSignal()
 	return ac
+}
+
+func (a *APIController) Log() *log.Entry {
+	return a.logger
+}
+
+func (a *APIController) IsEmbedded() bool {
+	if m := a.Outpost.Managed.Get(); m != nil {
+		return *m == "goauthentik.io/outposts/embedded"
+	}
+	return false
 }
 
 // Start Starts all handlers, non-blocking
@@ -196,9 +204,9 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
+func (a *APIController) getEventPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
-		"version":        constants.VERSION,
+		"version":        constants.VERSION(),
 		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),
 		"golangVersion":  runtime.Version(),
@@ -218,16 +226,16 @@ func (a *APIController) StartBackgroundTasks() error {
 		"outpost_name": a.Outpost.Name,
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
-		"version":      constants.VERSION,
+		"version":      constants.VERSION(),
 		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {
-		a.logger.Debug("Starting WS Handler...")
-		a.startWSHandler()
+		a.logger.Debug("Starting Event Handler...")
+		a.startEventHandler()
 	}()
 	go func() {
-		a.logger.Debug("Starting WS Health notifier...")
-		a.startWSHealth()
+		a.logger.Debug("Starting Event health notifier...")
+		a.startEventHealth()
 	}()
 	go func() {
 		a.logger.Debug("Starting Interval updater...")

@@ -17,7 +17,6 @@ from authentik.flows.challenge import (
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.email import mask_email
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator_email.models import (
     AuthenticatorEmailStage,
@@ -100,9 +99,8 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                error=exception_to_string(exc),
                 template=stage.template,
-            ).from_http(self.request)
+            ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 
     def _has_email(self) -> str | None:
@@ -144,6 +142,11 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         user = self.get_pending_user()
 
         stage: AuthenticatorEmailStage = self.executor.current_stage
+        # For the moment we only allow one email device per user
+        if EmailDevice.objects.filter(Q(user=user), stage=stage.pk).exists():
+            return self.executor.stage_invalid(
+                _("The user already has an email address registered for MFA.")
+            )
         if SESSION_KEY_EMAIL_DEVICE not in self.request.session:
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
             valid_secs: int = timedelta_from_string(stage.token_expiry).total_seconds()

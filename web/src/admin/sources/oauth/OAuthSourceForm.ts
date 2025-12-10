@@ -1,49 +1,80 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
+import "#components/ak-radio-input";
+import "#components/ak-secret-textarea-input";
+import "#components/ak-slug-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { SlottedTemplateResult } from "#elements/types";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
+    AuthorizationCodeAuthMethodEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PKCEMethodEnum,
     ProviderTypeEnum,
-    SourceType,
     SourcesApi,
+    SourceType,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+const authorizationCodeAuthMethodOptions = [
+    {
+        label: msg("HTTP Basic Auth"),
+        value: AuthorizationCodeAuthMethodEnum.BasicAuth,
+        default: true,
+    },
+    {
+        label: msg("Include the client ID and secret as request parameters"),
+        value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
+
+const pkceMethodOptions = [
+    {
+        label: msg("None"),
+        value: PKCEMethodEnum.None,
+        default: true,
+    },
+    {
+        label: msg("Plain"),
+        value: PKCEMethodEnum.Plain,
+    },
+    {
+        label: msg("S256"),
+        value: PKCEMethodEnum.S256,
+    },
+];
 
 @customElement("ak-source-oauth-form")
-export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
+export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
         this.providerType = source.type;
-        this.clearIcon = false;
         return source;
     }
 
@@ -55,41 +86,18 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     @property({ attribute: false })
     providerType: SourceType | null = null;
 
-    @state()
-    clearIcon = false;
-
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
-        let source: OAuthSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-                oAuthSourceRequest: data as unknown as OAuthSourceRequest,
-            });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
     }
 
     fetchProviderType(v: string | undefined) {
@@ -108,24 +116,21 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         }
     }
 
-    renderUrlOptions(): TemplateResult {
+    renderUrlOptions(): SlottedTemplateResult {
         if (!this.providerType?.urlsCustomizable) {
-            return html``;
+            return nothing;
         }
-        return html` <ak-form-group .expanded=${true}>
-            <span slot="header"> ${msg("URL settings")} </span>
-            <div slot="body" class="pf-c-form">
+        return html` <ak-form-group open label="${msg("URL settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
                     name="authorizationUrl"
                 >
                     <input
                         type="text"
-                        value="${first(
-                            this.instance?.authorizationUrl,
-                            this.providerType.authorizationUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.authorizationUrl ??
+                        this.providerType.authorizationUrl ??
+                        ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -137,11 +142,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="url"
-                        value="${first(
-                            this.instance?.accessTokenUrl,
-                            this.providerType.accessTokenUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.accessTokenUrl ??
+                        this.providerType.accessTokenUrl ??
+                        ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -153,11 +156,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
                         type="url"
-                        value="${first(
-                            this.instance?.profileUrl,
-                            this.providerType.profileUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.profileUrl ?? this.providerType.profileUrl ?? ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -173,7 +172,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       >
                           <input
                               type="url"
-                              value="${first(this.instance?.requestTokenUrl, "")}"
+                              value="${this.instance?.requestTokenUrl ?? ""}"
                               class="pf-c-form-control pf-m-monospace"
                               autocomplete="off"
                           />
@@ -183,7 +182,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               )}
                           </p>
                       </ak-form-element-horizontal> `
-                    : html``}
+                    : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
                     ? html`<ak-form-element-horizontal
@@ -192,11 +191,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       >
                           <input
                               type="url"
-                              value="${first(
-                                  this.instance?.oidcWellKnownUrl,
-                                  this.providerType.oidcWellKnownUrl,
-                                  "",
-                              )}"
+                              value="${this.instance?.oidcWellKnownUrl ??
+                              this.providerType.oidcWellKnownUrl ??
+                              ""}"
                               class="pf-c-form-control pf-m-monospace"
                               autocomplete="off"
                               spellcheck="false"
@@ -207,7 +204,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               )}
                           </p>
                       </ak-form-element-horizontal>`
-                    : html``}
+                    : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
                     ? html`<ak-form-element-horizontal
@@ -216,11 +213,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           >
                               <input
                                   type="url"
-                                  value="${first(
-                                      this.instance?.oidcJwksUrl,
-                                      this.providerType.oidcJwksUrl,
-                                      "",
-                                  )}"
+                                  value="${this.instance?.oidcJwksUrl ??
+                                  this.providerType.oidcJwksUrl ??
+                                  ""}"
                                   class="pf-c-form-control pf-m-monospace"
                                   autocomplete="off"
                                   spellcheck="false"
@@ -233,19 +228,41 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           </ak-form-element-horizontal>
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.JavaScript}
-                                  value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
+                                  mode="javascript"
+                                  value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                               >
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
-                    : html``}
+                    : nothing}
+                <ak-radio-input
+                    label=${msg("PKCE Method")}
+                    name="pkce"
+                    required
+                    .options=${pkceMethodOptions}
+                    .value=${this.instance?.pkce}
+                    help=${msg("Configure Proof Key for Code Exchange for this source.")}
+                >
+                </ak-radio-input>
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect
+                    ? html`<ak-radio-input
+                          label=${msg("Authorization code authentication method")}
+                          name="authorizationCodeAuthMethod"
+                          required
+                          .options=${authorizationCodeAuthMethodOptions}
+                          .value=${this.instance?.authorizationCodeAuthMethod}
+                          help=${msg(
+                              "How to perform authentication during an authorization_code token request flow",
+                          )}
+                      >
+                      </ak-radio-input>`
+                    : nothing}
             </div>
         </ak-form-group>`;
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -253,22 +270,19 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
             <ak-form-element-horizontal name="enabled">
                 <label class="pf-c-switch">
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -278,9 +292,29 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="promoted">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.promoted ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -323,7 +357,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                ?required=${true}
+                required
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -353,71 +387,27 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
-                    value="${first(
-                        this.instance?.userPathTemplate,
-                        "goauthentik.io/sources/%(slug)s",
-                    )}"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : html``}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : html``}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${first(this.instance?.icon, "")}"
-                          class="pf-c-form-control pf-m-monospace"
-                          autocomplete="off"
-                          spellcheck="false"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${AdminFileListUsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
 
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Consumer key")}
-                        ?required=${true}
+                        required
                         name="consumerKey"
                     >
                         <input
@@ -430,23 +420,18 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    <ak-secret-textarea-input
                         label=${msg("Consumer secret")}
-                        ?required=${true}
-                        ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
-                    >
-                        <textarea
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                        ></textarea>
-                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
-                    </ak-form-element-horizontal>
+                        input-hint="code"
+                        help=${msg("Also known as Client Secret.")}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
+                    ></ak-secret-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
-                            value="${first(this.instance?.additionalScopes, "")}"
+                            value="${this.instance?.additionalScopes ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -460,9 +445,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
-            <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${msg("OAuth Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("OAuth Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -497,9 +481,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
@@ -527,6 +510,21 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
                         </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        required
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

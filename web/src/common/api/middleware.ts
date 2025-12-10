@@ -1,5 +1,5 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
+import { EVENT_REQUEST_POST } from "#common/constants";
+import { getCookie } from "#common/utils";
 
 import {
     CurrentBrand,
@@ -10,6 +10,7 @@ import {
 } from "@goauthentik/api";
 
 export const CSRFHeaderName = "X-authentik-CSRF";
+export const AcceptLanguage = "Accept-Language";
 
 export interface RequestInfo {
     time: number;
@@ -39,8 +40,11 @@ export class LoggingMiddleware implements Middleware {
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
+        context.init.headers = {
+            ...context.init.headers,
+            [CSRFHeaderName]: getCookie("authentik_csrf"),
+        };
+
         return Promise.resolve(context);
     }
 }
@@ -61,5 +65,20 @@ export class EventMiddleware implements Middleware {
             }),
         );
         return Promise.resolve(context.response);
+    }
+}
+
+export class LocaleMiddleware implements Middleware {
+    pre?(context: RequestContext): Promise<FetchParams | void> {
+        const userLocale = new URLSearchParams(window.location.search).get("locale");
+        if (!userLocale) {
+            return Promise.resolve(context);
+        }
+
+        context.init.headers = {
+            ...context.init.headers,
+            [AcceptLanguage]: userLocale,
+        };
+        return Promise.resolve(context);
     }
 }

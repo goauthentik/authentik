@@ -5,7 +5,6 @@ from typing import Any
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DictField, ListField, SerializerMethodField
@@ -15,12 +14,25 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    SourceSerializer,
+    UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
+)
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.outgoing.api import SyncStatusSerializer
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
-from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
+from authentik.lib.sync.api import SyncStatusSerializer
+from authentik.rbac.filters import ObjectFilter
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES, ldap_sync
+from authentik.tasks.models import Task, TaskStatus
 
 
 class LDAPSourceSerializer(SourceSerializer):
@@ -92,6 +104,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "user_object_filter",
             "group_object_filter",
             "group_membership_field",
+            "user_membership_attribute",
             "object_uniqueness_field",
             "password_login_update_internal_password",
             "sync_users",
@@ -99,6 +112,8 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_groups",
             "sync_parent_group",
             "connectivity",
+            "lookup_groups_from_user",
+            "delete_not_found_objects",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -126,6 +141,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "user_object_filter",
         "group_object_filter",
         "group_membership_field",
+        "user_membership_attribute",
         "object_uniqueness_field",
         "password_login_update_internal_password",
         "sync_users",
@@ -134,37 +150,54 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_parent_group",
         "user_property_mappings",
         "group_property_mappings",
+        "lookup_groups_from_user",
+        "delete_not_found_objects",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
 
-    @extend_schema(
-        responses={
-            200: SyncStatusSerializer(),
-        }
-    )
+    @extend_schema(responses={200: SyncStatusSerializer()})
     @action(
         methods=["GET"],
         detail=True,
         pagination_class=None,
         url_path="sync/status",
-        filter_backends=[],
+        filter_backends=[ObjectFilter],
     )
     def sync_status(self, request: Request, slug: str) -> Response:
-        """Get source's sync status"""
+        """Get provider's sync status"""
         source: LDAPSource = self.get_object()
-        tasks = list(
-            get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-                name="ldap_sync",
-                uid__startswith=source.slug,
-            )
-        )
+
+        status = {}
+
         with source.sync_lock as lock_acquired:
-            status = {
-                "tasks": tasks,
-                # If we could not acquire the lock, it means a task is using it, and thus is running
-                "is_running": not lock_acquired,
-            }
+            # If we could not acquire the lock, it means a task is using it, and thus is running
+            status["is_running"] = not lock_acquired
+
+        sync_schedule = None
+        for schedule in source.schedules.all():
+            if schedule.actor_name == ldap_sync.actor_name:
+                sync_schedule = schedule
+
+        if not sync_schedule:
+            return Response(SyncStatusSerializer(status).data)
+
+        last_task: Task = (
+            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
+            .order_by("-mtime")
+            .first()
+        )
+        last_successful_task: Task = (
+            sync_schedule.tasks.filter(aggregated_status__in=(TaskStatus.DONE, TaskStatus.INFO))
+            .order_by("-mtime")
+            .first()
+        )
+
+        if last_task:
+            status["last_sync_status"] = last_task.aggregated_status
+        if last_successful_task:
+            status["last_successful_sync"] = last_successful_task.mtime
+
         return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(
@@ -219,3 +252,23 @@ class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
     filterset_class = LDAPSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]
+
+
+class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
+    class Meta(UserSourceConnectionSerializer.Meta):
+        model = UserLDAPSourceConnection
+
+
+class UserLDAPSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
+    queryset = UserLDAPSourceConnection.objects.all()
+    serializer_class = UserLDAPSourceConnectionSerializer
+
+
+class GroupLDAPSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupLDAPSourceConnection
+
+
+class GroupLDAPSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    queryset = GroupLDAPSourceConnection.objects.all()
+    serializer_class = GroupLDAPSourceConnectionSerializer

@@ -11,6 +11,10 @@ local_settings.py
 db.sqlite3
 media
 
+# Node
+
+node_modules
+
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
 # <django-project-name>/staticfiles/
@@ -33,6 +37,7 @@ eggs/
 lib64/
 parts/
 dist/
+out/
 sdist/
 var/
 wheels/
@@ -67,7 +72,7 @@ unittest.xml
 
 # Translations
 # Have to include binary mo files as they are annoying to compile at build time
-# since a full postgres and redis instance are required
+# since a full postgres instance is required
 # *.mo
 
 # Django stuff:
@@ -94,9 +99,6 @@ ipython_config.py
 
 # pyenv
 .python-version
-
-# celery beat schedule file
-celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
@@ -160,8 +162,6 @@ dmypy.json
 # IPython
 
 # pyenv
-
-# celery beat schedule file
 
 # SageMath parsed files
 

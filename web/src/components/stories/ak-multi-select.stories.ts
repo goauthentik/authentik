@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-multi-select.js";
+
+import AkMultiSelect from "../ak-multi-select.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html, render } from "lit";
-
-import "../ak-multi-select";
-import AkMultiSelect from "../ak-multi-select";
+import { html, render, TemplateResult } from "lit";
 
 const metadata: Meta<AkMultiSelect> = {
     title: "Components / MultiSelect",
@@ -21,7 +22,7 @@ const metadata: Meta<AkMultiSelect> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

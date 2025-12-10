@@ -1,18 +1,21 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/Alert";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/Alert";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import {
+    authenticatorWebauthnDeviceTypesListProvider,
+    stagesProvider,
+    stagesSelector,
+} from "./AuthenticatorValidateStageFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorValidateStage,
@@ -23,11 +26,10 @@ import {
     UserVerificationEnum,
 } from "@goauthentik/api";
 
-import {
-    authenticatorWebauthnDeviceTypesListProvider,
-    stagesProvider,
-    stagesSelector,
-} from "./AuthenticatorValidateStageFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
@@ -57,11 +59,10 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 stageUuid: this.instance.pk || "",
                 authenticatorValidateStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
-                authenticatorValidateStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
+            authenticatorValidateStageRequest: data,
+        });
     }
 
     isDeviceClassSelected(field: DeviceClassesEnum): boolean {
@@ -88,7 +89,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -96,12 +97,11 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Device classes")}
-                        ?required=${true}
+                        required
                         name="deviceClasses"
                     >
                         <ak-checkbox-group
@@ -120,7 +120,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Last validation threshold")}
-                        ?required=${true}
+                        required
                         name="lastAuthThreshold"
                     >
                         <input
@@ -140,7 +140,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Not configured action")}
-                        ?required=${true}
+                        required
                         name="notConfiguredAction"
                     >
                         <select
@@ -206,15 +206,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   </p>
                               </ak-form-element-horizontal>
                           `
-                        : html``}
+                        : nothing}
                 </div>
             </ak-form-group>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("WebAuthn-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("WebAuthn-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn User verification")}
-                        ?required=${true}
+                        required
                         name="webauthnUserVerification"
                     >
                         <ak-radio
@@ -256,7 +255,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
                             )}
                         </p>
-                        <ak-alert ?inline=${true}>
+                        <ak-alert inline>
                             ${
                                 /* TODO: Remove this after 2024.6..or maybe later? */
                                 msg(

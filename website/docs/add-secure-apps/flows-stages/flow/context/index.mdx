@@ -1,5 +1,6 @@
 ---
 title: Flow Context
+toc_max_heading_level: 5
 ---
 
 Each flow execution has an independent _context_. This context holds all of the arbitrary data about that specific flow, data which can then be used and transformed by stages and policies.
@@ -21,6 +22,8 @@ This section describes the data (the context) that are used in authentik, and pr
 :::warning
 Keys prefixed with `goauthentik.io` are used internally by authentik and are subject to change without notice, and should not be modified in policies in most cases.
 :::
+
+{/* To update this file, search for `PLAN_CONTEXT_\w+\s=` in the workspace to find all definitions. */}
 
 ### Common keys
 
@@ -74,7 +77,7 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 #### `is_restored` (Token object)
 
-This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
+This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
 
 #### `is_redirected` (Flow object):ak-version[2024.12]
 
@@ -102,9 +105,15 @@ Key-value pairs of the data that is included in the form and will be submitted t
 
 ##### `captcha` (dictionary)
 
-When `error_on_invalid_score` (TODO) is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
+When _Error on invalid score_ is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
 
 It contains two keys, `response` which is the raw response from the specified captcha verification URL, and `stage`, which is a reference to the captcha stage that executed the test.
+
+#### `goauthentik.io/stages/captcha/site_key` (string):ak-version[2025.12]
+
+#### `goauthentik.io/stages/captcha/private_key` (string):ak-version[2025.12]
+
+Optionally set captcha site and private keys dynamically through a policy, for example when using E2E testing with a captcha stage bound.
 
 #### Consent stage
 
@@ -156,6 +165,7 @@ Possible options:
 - `auth_mfa` (Authentication via MFA device without password)
 - `auth_webauthn_pwl` (Passwordless authentication via WebAuthn with Passkeys)
 - `jwt` ([M2M](../../../providers/oauth2/client_credentials.mdx) authentication via an existing JWT)
+- `mtls` (Authentication via Certificate, see [Mutual TLS Stage](../../stages/mtls/index.md))
 
 ##### `auth_method_args` (dictionary)
 
@@ -176,7 +186,10 @@ Example:
     // JWT information when `auth_method` `jwt` was used
     "jwt": {},
     "source": null,
-    "provider": null
+    "provider": null,
+    // Certificate used for authentication
+    // applies for `auth_method` `mtls`
+    "certificate": {}
 }
 ```
 
@@ -196,6 +209,22 @@ Optionally override the email address that the email will be sent to. If not set
 
 If _Show matched user_ is disabled, this key will be set to the user identifier entered by the user in the identification stage.
 
+#### Invitation stage
+
+##### `invitation` (Invitation object)
+
+The invitation used with the invitation stage. When **Continue flow without invitation** is enabled, this may be unset.
+
+If the invitation was single-use, this object may hold a reference to an invitation that no longer exists in the database.
+
+##### `invitation_in_effect` (boolean)
+
+A boolean value that is `True` when an invitation has been used.
+
+##### `token` (string)
+
+This value can be set either via [Prompt data](#prompt_data-dictionary) or via policy to interactively/programmatically choose an invitation.
+
 #### Redirect stage
 
 ##### `redirect_stage_target` (string):ak-version[2024.12]
@@ -203,3 +232,22 @@ If _Show matched user_ is disabled, this key will be set to the user identifier 
 [Set this key](../../../../customize/policies/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
 
 Use the format `ak-flow://{slug}` to use the Redirect stage in Flow mode. Any other format will result in the Redirect stage running in Static mode.
+
+#### Mutual TLS Stage
+
+##### `certificate` (dictionary):ak-version[2025.6]
+
+This key is set by the Mutual TLS Stage during enrollment and contains data about the certificate supplied by the browser.
+
+Example:
+
+```json
+{
+    "serial_number": "1234",
+    "subject": "CN=client",
+    "issuer": "CN=authentik Test CA, O=authentik, OU=Self-signed",
+    "fingerprint_sha256": "08:D4:A4:79:25:CA:C3:51:28:88:BB:30:C2:96:C3:44:5A:EB:18:07:84:CA:B4:75:27:74:61:19:8A:6A:AF:FC",
+    "fingerprint_sha1": "5D:14:0D:5F:A2:7E:14:B0:F1:1D:6F:CD:E3:4B:81:68:71:24:1A:70",
+    "raw": "-----BEGIN CERTIFICATE-----...."
+}
+```

@@ -1,23 +1,38 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import renderDescriptionList from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/saml/SAMLProviderForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { MessageLevel } from "#common/messages";
+
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
+
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
+    CryptoApi,
+    ProvidersApi,
+    RbacPermissionsAssignedByRolesListModelEnum,
+    SAMLMetadata,
+    SAMLProvider,
+    User,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,18 +47,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    CertificateKeyPair,
-    CoreApi,
-    CoreUsersListRequest,
-    CryptoApi,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SAMLMetadata,
-    SAMLProvider,
-    User,
-} from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
     attributes: {
@@ -68,35 +71,33 @@ export class SAMLProviderViewPage extends AKElement {
     metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier?: CertificateKeyPair;
+    verifier: CertificateKeyPair | null = null;
 
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFList,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFList,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+    ];
 
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            this.providerID = this.provider?.pk;
+            this.fetchProvider(this.provider.pk);
         });
     }
 
@@ -116,20 +117,32 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchSigningCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.signer = kp;
+            this.requestUpdate("signer");
+        });
     }
 
     fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.verifier = kp;
+            this.requestUpdate("verifier");
+        });
     }
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
-            if (this.provider.signingKp) {
+            // Clear existing signing certificate if the provider has none
+            if (!this.provider.signingKp) {
+                this.signer = null;
+            } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
-            if (this.provider.verificationKp) {
+            // Clear existing verification certificate if the provider has none
+            if (!this.provider.verificationKp) {
+                this.verifier = null;
+            } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
@@ -211,55 +224,72 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
-        return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                ${this.renderTabOverview()}
-            </section>
-            ${this.renderTabMetadata()}
-            <section
-                slot="page-preview"
-                data-tab-title="${msg("Preview")}"
-                @activate=${() => {
-                    this.fetchPreview();
-                }}
-            >
-                ${this.renderTabPreview()}
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                ${this.renderTabMetadata()}
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-preview"
+                    id="page-preview"
+                    aria-label="${msg("Preview")}"
+                    @activate=${() => {
+                        this.fetchPreview();
+                    }}
+                >
+                    ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`${
             this.provider?.assignedApplicationName
-                ? html``
+                ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
@@ -332,8 +362,8 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update SAML Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update SAML Provider")}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -430,21 +460,24 @@ export class SAMLProviderViewPage extends AKElement {
                                   </form>
                               </div>
                           </div>`
-                        : html``
+                        : nothing
                 }
             </div>
         </div>`;
     }
 
-    renderTabMetadata(): TemplateResult {
+    renderTabMetadata(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`
             ${this.provider.assignedApplicationName
-                ? html` <section
+                ? html` <div
+                      role="tabpanel"
+                      tabindex="0"
                       slot="page-metadata"
-                      data-tab-title="${msg("Metadata")}"
+                      id="page-metadata"
+                      aria-label="${msg("Metadata")}"
                       @activate=${() => {
                           new ProvidersApi(DEFAULT_CONFIG)
                               .providersSamlMetadataRetrieve({
@@ -488,21 +521,21 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode=${CodeMirrorMode.XML}
-                                      ?readOnly=${true}
+                                      mode="xml"
+                                      readonly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
                           </div>
                       </div>
-                  </section>`
-                : html``}
+                  </div>`
+                : nothing}
         `;
     }
 
-    renderTabPreview(): TemplateResult {
+    renderTabPreview(): SlottedTemplateResult {
         if (!this.preview) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
@@ -539,7 +572,7 @@ export class SAMLProviderViewPage extends AKElement {
                                     .selected=${(user: User): boolean => {
                                         return user.pk === this.previewUser?.pk;
                                     }}
-                                    ?blankable=${true}
+                                    blankable
                                     @ak-change=${(ev: CustomEvent) => {
                                         this.previewUser = ev.detail.value;
                                         this.fetchPreview();

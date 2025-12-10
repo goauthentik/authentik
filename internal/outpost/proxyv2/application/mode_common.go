@@ -11,64 +11,86 @@ import (
 
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
+func (a *Application) addHeaders(headers http.Header, c *types.Claims) {
+	nh := a.getHeaders(c)
+	for key, val := range nh {
+		headers.Set(key, val)
+	}
+	a.removeDuplicateUnderscoreHeader(headers)
+}
+
+func (a *Application) removeDuplicateUnderscoreHeader(h http.Header) {
+	for key := range h {
+		ush := strings.ReplaceAll(key, "_", "-")
+		if _, ok := h[ush]; !ok {
+			h.Del(key)
+		}
+	}
+}
+
+func (a *Application) getHeaders(c *types.Claims) map[string]string {
+	headers := map[string]string{}
+	// https://docs.goauthentik.io/add-secure-apps/providers/proxy
+	headers["X-authentik-username"] = c.PreferredUsername
+	headers["X-authentik-groups"] = strings.Join(c.Groups, "|")
+	headers["X-authentik-entitlements"] = strings.Join(c.Entitlements, "|")
+	headers["X-authentik-email"] = c.Email
+	headers["X-authentik-name"] = c.Name
+	headers["X-authentik-uid"] = c.Sub
+	headers["X-authentik-jwt"] = c.RawToken
+
+	// System headers
+	headers["X-authentik-meta-jwks"] = a.endpoint.JwksUri
+	headers["X-authentik-meta-outpost"] = a.outpostName
+	headers["X-authentik-meta-provider"] = a.proxyConfig.Name
+	headers["X-authentik-meta-app"] = a.proxyConfig.AssignedApplicationSlug
+	headers["X-authentik-meta-version"] = constants.UserAgentOutpost()
+
+	if c.Proxy == nil {
+		return headers
+	}
+	if authz := a.setAuthorizationHeader(c); authz != "" {
+		headers["Authorization"] = authz
+	}
+	// Check if user has additional headers set that we should sent
+	userAttributes := c.Proxy.UserAttributes
+	if additionalHeaders, ok := userAttributes["additionalHeaders"]; ok {
+		a.log.WithField("headers", additionalHeaders).Trace("setting additional headers")
+		if additionalHeaders == nil {
+			return headers
+		}
+		for key, value := range additionalHeaders.(map[string]interface{}) {
+			headers[key] = toString(value)
+		}
+	}
+	return headers
+}
+
 // Attempt to set basic auth based on user's attributes
-func (a *Application) setAuthorizationHeader(headers http.Header, c *Claims) {
+func (a *Application) setAuthorizationHeader(c *types.Claims) string {
 	if !*a.proxyConfig.BasicAuthEnabled {
-		return
+		return ""
 	}
 	userAttributes := c.Proxy.UserAttributes
 	var ok bool
+	var username string
 	var password string
 	if password, ok = userAttributes[*a.proxyConfig.BasicAuthPasswordAttribute].(string); !ok {
 		password = ""
 	}
 	// Check if we should use email or a custom attribute as username
-	var username string
 	if username, ok = userAttributes[*a.proxyConfig.BasicAuthUserAttribute].(string); !ok {
 		username = c.Email
 	}
-	if username == "" && password == "" {
-		return
+	if password == "" {
+		return ""
 	}
 	authVal := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 	a.log.WithField("username", username).Trace("setting http basic auth")
-	headers.Set("Authorization", fmt.Sprintf("Basic %s", authVal))
-}
-
-func (a *Application) addHeaders(headers http.Header, c *Claims) {
-	// https://goauthentik.io/docs/providers/proxy/proxy
-	headers.Set("X-authentik-username", c.PreferredUsername)
-	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
-	headers.Set("X-authentik-entitlements", strings.Join(c.Entitlements, "|"))
-	headers.Set("X-authentik-email", c.Email)
-	headers.Set("X-authentik-name", c.Name)
-	headers.Set("X-authentik-uid", c.Sub)
-	headers.Set("X-authentik-jwt", c.RawToken)
-
-	// System headers
-	headers.Set("X-authentik-meta-jwks", a.endpoint.JwksUri)
-	headers.Set("X-authentik-meta-outpost", a.outpostName)
-	headers.Set("X-authentik-meta-provider", a.proxyConfig.Name)
-	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
-	headers.Set("X-authentik-meta-version", constants.OutpostUserAgent())
-
-	if c.Proxy == nil {
-		return
-	}
-	userAttributes := c.Proxy.UserAttributes
-	a.setAuthorizationHeader(headers, c)
-	// Check if user has additional headers set that we should sent
-	if additionalHeaders, ok := userAttributes["additionalHeaders"]; ok {
-		a.log.WithField("headers", additionalHeaders).Trace("setting additional headers")
-		if additionalHeaders == nil {
-			return
-		}
-		for key, value := range additionalHeaders.(map[string]interface{}) {
-			headers.Set(key, toString(value))
-		}
-	}
+	return fmt.Sprintf("Basic %s", authVal)
 }
 
 // getTraefikForwardUrl See https://doc.traefik.io/traefik/middlewares/forwardauth/

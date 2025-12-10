@@ -19,7 +19,8 @@ def logo_data() -> MIMEImage:
         path = Path("web/dist/assets/icons/icon_left_brand.png")
     with open(path, "rb") as _logo_file:
         logo = MIMEImage(_logo_file.read())
-    logo.add_header("Content-ID", "logo.png")
+    logo.add_header("Content-ID", "<logo>")
+    logo.add_header("Content-Disposition", "inline", filename="logo.png")
     return logo
 
 
@@ -27,7 +28,12 @@ class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
     def __init__(
-        self, to: list[tuple[str]], template_name=None, template_context=None, language="", **kwargs
+        self,
+        to: list[tuple[str, str]],
+        template_name=None,
+        template_context=None,
+        language="",
+        **kwargs,
     ):
         sanitized_to = []
         # Ensure that all recipients are valid

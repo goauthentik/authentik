@@ -1,12 +1,15 @@
 """invitation tests"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -14,11 +17,12 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.stages.invitation.api import InvitationSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import (
-    INVITATION_TOKEN_KEY,
-    INVITATION_TOKEN_KEY_CONTEXT,
+    PLAN_CONTEXT_INVITATION_TOKEN,
     PLAN_CONTEXT_PROMPT,
+    QS_INVITATION_TOKEN_KEY,
 )
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -77,6 +81,31 @@ class TestInvitationStage(FlowTestCase):
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
 
+    def test_with_invitation_expired(self):
+        """Test with invitation, expired"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        data = {"foo": "bar"}
+        invite = Invitation.objects.create(
+            created_by=get_anonymous_user(),
+            fixed_data=data,
+            expires=now() - timedelta(hours=1),
+        )
+
+        base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
+        response = self.client.get(base_url + f"?query={args}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-access-denied",
+        )
+
     def test_with_invitation_get(self):
         """Test with invitation, check data in session"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -89,7 +118,7 @@ class TestInvitationStage(FlowTestCase):
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
 
         session = self.client.session
@@ -114,7 +143,7 @@ class TestInvitationStage(FlowTestCase):
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            args = urlencode({INVITATION_TOKEN_KEY: invite.pk.hex})
+            args = urlencode({QS_INVITATION_TOKEN_KEY: invite.pk.hex})
             response = self.client.get(base_url + f"?query={args}")
 
         session = self.client.session
@@ -134,7 +163,7 @@ class TestInvitationStage(FlowTestCase):
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PROMPT] = {INVITATION_TOKEN_KEY_CONTEXT: invite.pk.hex}
+        plan.context[PLAN_CONTEXT_PROMPT] = {PLAN_CONTEXT_INVITATION_TOKEN: invite.pk.hex}
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -171,3 +200,20 @@ class TestInvitationsAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Invitation.objects.first().created_by, self.user)
+
+    def test_invite_create_blueprint_context(self):
+        """Test Invitations creation via blueprint context"""
+
+        flow = create_test_flow(FlowDesignation.ENROLLMENT)
+        data = {
+            "name": "test-blueprint-invitation",
+            "flow": flow.pk.hex,
+            "single_use": True,
+            "fixed_data": {"email": "test@example.com"},
+        }
+        serializer = InvitationSerializer(data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True})
+        self.assertTrue(serializer.is_valid())
+        invitation = serializer.save()
+        self.assertEqual(invitation.created_by, get_anonymous_user())
+        self.assertEqual(invitation.name, "test-blueprint-invitation")
+        self.assertEqual(invitation.fixed_data, {"email": "test@example.com"})

@@ -1,5 +1,6 @@
 ---
-name: authentik-translate-extract-compile
+name: Translation - Extract and compile
+
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight
@@ -20,15 +21,15 @@ jobs:
     steps:
       - id: generate_token
         if: ${{ github.event_name != 'pull_request' }}
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         if: ${{ github.event_name != 'pull_request' }}
         with:
           token: ${{ steps.generate_token.outputs.token }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
@@ -43,7 +44,7 @@ jobs:
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: extract-compile-backend-translation
@@ -52,3 +53,6 @@ jobs:
           body: "core, web: update translations"
           delete-branch: true
           signoff: true
+          labels: dependencies
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>

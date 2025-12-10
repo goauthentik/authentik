@@ -35,6 +35,6 @@ def blueprint_tester(file_name: Path) -> Callable:
 
 
 for blueprint_file in Path("blueprints/").glob("**/*.yaml"):
-    if "local" in str(blueprint_file):
+    if "local" in str(blueprint_file) or "testing" in str(blueprint_file):
         continue
     setattr(TestPackaged, f"test_blueprint_{blueprint_file}", blueprint_tester(blueprint_file))

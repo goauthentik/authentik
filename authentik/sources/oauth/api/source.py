@@ -79,6 +79,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 "authorization_url": "authorization_endpoint",
                 "access_token_url": "token_endpoint",
                 "profile_url": "userinfo_endpoint",
+                "pkce": "code_challenge_methods_supported",
             }
             for ak_key, oidc_key in field_map.items():
                 # Don't overwrite user-set values
@@ -122,6 +123,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_url",
             "access_token_url",
             "profile_url",
+            "pkce",
             "consumer_key",
             "consumer_secret",
             "callback_url",
@@ -130,6 +132,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_well_known_url",
             "oidc_jwks_url",
             "oidc_jwks",
+            "authorization_code_auth_method",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True},

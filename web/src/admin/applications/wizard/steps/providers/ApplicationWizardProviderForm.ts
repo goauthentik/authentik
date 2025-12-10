@@ -1,23 +1,23 @@
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
+import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
+import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
+
+import { AKElement } from "#elements/Base";
+import { serializeForm } from "#elements/forms/Form";
+
+import { snakeCase } from "change-case";
+
+import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types";
-
-export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    static get styles() {
-        return AwadStyles;
-    }
+export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
+    static styles: CSSResult[] = [...AwadStyles];
 
     label = "";
 
@@ -28,28 +28,30 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
-    form!: HTMLFormElement;
+    public form!: HTMLFormElement | null;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues() {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
+        return serializeForm([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     get valid() {
         this.errors = {};
-        return this.form.checkValidity();
+
+        return !!this.form?.checkValidity();
     }
 
     errorMessages(name: string) {
         return name in this.errors
             ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
-                  this.wizard.errors?.provider?.[camelToSnake(name)] ??
+                  this.wizard.errors?.provider?.[snakeCase(name)] ??
                   []);
     }
 

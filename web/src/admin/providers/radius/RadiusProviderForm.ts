@@ -1,12 +1,14 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { renderForm } from "./RadiusProviderFormForm.js";
 
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { WithBrandConfig } from "#elements/mixins/branding";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
-import { renderForm } from "./RadiusProviderFormForm.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
@@ -22,15 +24,14 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 id: this.instance.pk,
                 radiusProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRadiusCreate({
-                radiusProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersRadiusCreate({
+            radiusProviderRequest: data,
+        });
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, [], this.brand);
+        return renderForm({ provider: this.instance, brand: this.brand });
     }
 }
 

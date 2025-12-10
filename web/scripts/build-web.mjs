@@ -1,140 +1,124 @@
-import { execFileSync } from "child_process";
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
+/**
+ * @file ESBuild script for building the authentik web UI.
+ *
+ * @import { BuildOptions } from "esbuild";
+ */
+import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
+import { createBundleDefinitions } from "#bundler/utils/node";
+import { ConsoleLogger } from "#logger/node";
+import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
+
+import { NodeEnvironment } from "@goauthentik/core/environment/node";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
+import { BuildIdentifier } from "@goauthentik/core/version/node";
+
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
-import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import findFreePorts from "find-free-ports";
-import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
-import { globSync } from "glob";
-import * as path from "path";
-import { cwd } from "process";
-import process from "process";
-import { fileURLToPath } from "url";
 
-import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
-import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
+/// <reference types="../types/esbuild.js" />
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-let authentikProjectRoot = path.join(__dirname, "..", "..");
+const logger = ConsoleLogger.child({ name: "Build" });
 
-try {
-    // Use the package.json file in the root folder, as it has the current version information.
-    authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
-        encoding: "utf8",
-    }).replace("\n", "");
-} catch (_error) {
-    // We probably don't have a .git folder, which could happen in container builds.
-}
+const bundleDefinitions = createBundleDefinitions();
 
-const packageJSONPath = path.join(authentikProjectRoot, "./package.json");
-const rootPackage = JSON.parse(readFileSync(packageJSONPath, "utf8"));
-
-const NODE_ENV = process.env.NODE_ENV || "development";
-const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
-
-const environmentVars = new Map([
-    ["NODE_ENV", NODE_ENV],
-    ["CWD", cwd()],
-    ["AK_API_BASE_PATH", AK_API_BASE_PATH],
-]);
-
-const definitions = Object.fromEntries(
-    Array.from(environmentVars).map(([key, value]) => {
-        return [`process.env.${key}`, JSON.stringify(value)];
-    }),
+const publicBundledDefinitions = Object.fromEntries(
+    Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
 );
+logger.info(publicBundledDefinitions, "Bundle definitions");
 
 /**
- * All is magic is just to make sure the assets are copied into the right places. This is a very
- * stripped down version of what the rollup-copy-plugin does, without any of the features we don't
- * use, and using globSync instead of globby since we already had globSync lying around thanks to
- * Typescript. If there's a third argument in an array entry, it's used to replace the internal path
- * before concatenating it all together as the destination target.
- * @type {Array<[string, string, string?]>}
+ * @typedef {[from: string, to: string]} SourceDestinationPair
  */
-const assetsFileMappings = [
-    ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
-    ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
-    ["src/common/styles/**", "."],
-    ["src/assets/images/**", "./assets/images"],
-    ["./icons/*", "./assets/icons"],
+
+/**
+ * @type {SourceDestinationPair[]}
+ */
+const assets = [
+    [
+        path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
+        path.dirname(EntryPoint.StandaloneLoading.out),
+    ],
+    [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
+    [path.resolve(PackageRoot, "icons"), "./assets/icons"],
 ];
 
 /**
- * @param {string} filePath
- */
-const isFile = (filePath) => statSync(filePath).isFile();
-
-/**
- * @param {string} src Source file
- * @param {string} dest Destination folder
- * @param {string} [strip] Path to strip from the source file
- */
-function nameCopyTarget(src, dest, strip) {
-    const target = path.join(dest, strip ? src.replace(strip, "") : path.parse(src).base);
-    return [src, target];
-}
-
-for (const [source, rawdest, strip] of assetsFileMappings) {
-    const matchedPaths = globSync(source);
-    const dest = path.join("dist", rawdest);
-
-    const copyTargets = matchedPaths.map((path) => nameCopyTarget(path, dest, strip));
-
-    for (const [src, dest] of copyTargets) {
-        if (isFile(src)) {
-            mkdirSync(path.dirname(dest), { recursive: true });
-            copyFileSync(src, dest);
-        }
-    }
-}
-
-/**
- * @typedef {[source: string, destination: string]} EntryPoint
- */
-
-/**
- * This starts the definitions used for esbuild: Our targets, our arguments, the function for
- * running a build, and three options for building: watching, building, and building the proxy.
- * Ordered by largest to smallest interface to build even faster
- *
- * @type {EntryPoint[]}
- */
-const entryPoints = [
-    ["admin/AdminInterface/AdminInterface.ts", "admin"],
-    ["user/UserInterface.ts", "user"],
-    ["flow/FlowInterface.ts", "flow"],
-    ["standalone/api-browser/index.ts", "standalone/api-browser"],
-    ["rac/index.ts", "rac"],
-    ["standalone/loading/index.ts", "standalone/loading"],
-    ["polyfill/poly.ts", "."],
-];
-
-/**
- * @type {import("esbuild").BuildOptions}
+ * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
+    entryNames: `[dir]/[name]-${BuildIdentifier}`,
+    chunkNames: "[dir]/chunks/[hash]",
+    assetNames: "assets/[dir]/[name]-[hash]",
+    outdir: DistDirectory,
     bundle: true,
     write: true,
     sourcemap: true,
-    minify: NODE_ENV === "production",
+    minify: NodeEnvironment === "production",
+    legalComments: "external",
     splitting: true,
+    color: !process.env.NO_COLOR,
     treeShaking: true,
-    external: ["*.woff", "*.woff2"],
-    tsconfig: "./tsconfig.json",
+    tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".woff": "file",
+        ".woff2": "file",
+        ".jpg": "file",
+        ".png": "file",
+        ".svg": "file",
     },
     plugins: [
-        polyfillNode({
-            polyfills: {
-                path: true,
+        {
+            name: "copy",
+            setup(build) {
+                build.onEnd(async () => {
+                    /**
+                     * @type {import('esbuild').PartialMessage[]}
+                     */
+                    const errors = [];
+
+                    /**
+                     * @param {SourceDestinationPair} pair
+                     */
+                    const copy = ([from, to]) => {
+                        const resolvedDestination = path.resolve(DistDirectory, to);
+
+                        logger.debug(`📋 Copying assets from ${from} to ${to}`);
+
+                        return fs
+                            .cp(from, resolvedDestination, { recursive: true })
+                            .catch((error) => {
+                                errors.push({
+                                    text: `Failed to copy assets from ${from} to ${to}: ${error}`,
+                                    location: {
+                                        file: from,
+                                    },
+                                });
+                            });
+                    };
+
+                    await Promise.all(assets.map(copy));
+
+                    return { errors };
+                });
             },
-        }),
+        },
+
         mdxPlugin({
-            root: authentikProjectRoot,
+            root: MonoRepoRoot,
         }),
     ],
-    define: definitions,
+    define: bundleDefinitions,
     format: "esm",
     logOverride: {
         /**
@@ -147,69 +131,41 @@ const BASE_ESBUILD_OPTIONS = {
     },
 };
 
-/**
- * Creates a version ID for the build.
- * @returns {string}
- */
-function composeVersionID() {
-    const { version } = rootPackage;
-    const buildHash = process.env.GIT_BUILD_HASH;
+async function cleanDistDirectory() {
+    logger.info(`♻️ Cleaning previous builds...`);
 
-    if (buildHash) {
-        return `${version}+${buildHash}`;
-    }
+    await fs.rm(DistDirectory, {
+        recursive: true,
+        force: true,
+    });
 
-    return version;
+    await fs.mkdir(DistDirectory, {
+        recursive: true,
+    });
+
+    logger.info(`♻️ Done!`);
 }
 
 /**
- * Build a single entry point.
+ * Creates an ESBuild options, extending the base options with the given overrides.
  *
- * @param {EntryPoint} buildTarget
- * @param {Partial<esbuild.BuildOptions>} [overrides]
- * @throws {Error} on build failure
+ * @param {BuildOptions} overrides
+ * @returns {BuildOptions}
  */
-function createEntryPointOptions([source, dest], overrides = {}) {
-    const outdir = path.join(__dirname, "..", "dist", dest);
-
+export function createESBuildOptions(overrides) {
     /**
-     * @type {esbuild.BuildOptions}
+     * @type {BuildOptions}
      */
+    const mergedOptions = deepmerge(BASE_ESBUILD_OPTIONS, overrides);
 
-    const entryPointConfig = {
-        entryPoints: [`./src/${source}`],
-        entryNames: `[dir]/[name]-${composeVersionID()}`,
-        publicPath: path.join("/static", "dist", dest),
-        outdir,
-    };
-
-    /**
-     * @type {esbuild.BuildOptions}
-     */
-    const mergedConfig = deepmerge(BASE_ESBUILD_OPTIONS, entryPointConfig, overrides);
-
-    return mergedConfig;
-}
-
-/**
- * Build all entry points in parallel.
- *
- * @param {EntryPoint[]} entryPoints
- * @returns {Promise<esbuild.BuildResult[]>}
- */
-async function buildParallel(entryPoints) {
-    return Promise.all(
-        entryPoints.map((entryPoint) => {
-            return esbuild.build(createEntryPointOptions(entryPoint));
-        }),
-    );
+    return mergedOptions;
 }
 
 function doHelp() {
-    console.log(`Build the authentik UI
+    logger.info(`Build the authentik UI
 
         options:
-            -w, --watch: Build all ${entryPoints.length} interfaces
+            -w, --watch: Build all interfaces
             -p, --proxy: Build only the polyfills and the loading application
             -h, --help: This help message
 `);
@@ -217,57 +173,78 @@ function doHelp() {
     process.exit(0);
 }
 
+/**
+ *
+ * @returns {Promise<() => Promise<void>>} dispose
+ */
 async function doWatch() {
-    console.log("Watching all entry points...");
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const wathcherPorts = await findFreePorts(entryPoints.length);
+    const entryPoints = Object.values(EntryPoint);
 
-    const buildContexts = await Promise.all(
-        entryPoints.map((entryPoint, i) => {
-            const port = wathcherPorts[i];
-            const serverURL = new URL(`http://localhost:${port}/events`);
+    const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
+        .then(({ liveReloadPlugin }) => [
+            liveReloadPlugin({
+                relativeRoot: PackageRoot,
+                logger: logger.child({ name: "Live Reload" }),
+            }),
+        ])
+        .catch(() => []);
 
-            return esbuild.context(
-                createEntryPointOptions(entryPoint, {
-                    plugins: [
-                        buildObserverPlugin({
-                            serverURL,
-                            logPrefix: entryPoint[1],
-                            relativeRoot: path.join(__dirname, ".."),
-                        }),
-                    ],
-                    define: {
-                        ...definitions,
-                        "process.env.WATCHER_URL": JSON.stringify(serverURL.toString()),
-                    },
-                }),
-            );
-        }),
-    );
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
+    });
 
-    await Promise.all(buildContexts.map((context) => context.rebuild()));
+    const buildContext = await esbuild.context(buildOptions);
 
-    await Promise.allSettled(buildContexts.map((context) => context.watch()));
+    await buildContext.watch();
 
-    return /** @type {Promise<void>} */ (
-        new Promise((resolve) => {
-            process.on("SIGINT", () => {
-                resolve();
-            });
-        })
-    );
+    const httpURL = new URL("http://localhost");
+    httpURL.port = process.env.COMPOSE_PORT_HTTP ?? "9000";
+
+    const httpsURL = new URL("https://localhost");
+    httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
+
+    logger.info(`🚀 Server running`);
+
+    logger.info(`🔓 ${httpURL.href}`);
+    logger.info(`🔒 ${httpsURL.href}`);
+
+    return () => {
+        logger.flush();
+        console.info("");
+        console.info("🛑 Stopping file watcher...");
+
+        return buildContext.dispose();
+    };
 }
 
 async function doBuild() {
-    console.log("Building all entry points");
+    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    return buildParallel(entryPoints);
+    const entryPoints = Object.values(EntryPoint);
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
+    });
+
+    await esbuild.build(buildOptions);
+
+    logger.info("Build complete");
 }
 
 async function doProxy() {
-    return buildParallel(
-        entryPoints.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
-    );
+    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+        plugins: [styleLoaderPlugin({ logger })],
+    });
+
+    await esbuild.build(buildOptions);
+    logger.info("Proxy build complete");
 }
 
 async function delegateCommand() {
@@ -289,12 +266,47 @@ async function delegateCommand() {
     }
 }
 
-await delegateCommand()
-    .then(() => {
-        console.log("Build complete");
-        process.exit(0);
-    })
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+await cleanDistDirectory()
+    // ---
+    .then(() =>
+        delegateCommand()
+            .then((dispose) => {
+                if (!dispose) {
+                    process.exit(0);
+                }
+
+                /**
+                 * @type {Promise<void>}
+                 */
+                const signalListener = new Promise((resolve) => {
+                    // We prevent multiple attempts to dispose the context
+                    // because ESBuild will repeatedly restart its internal clean-up logic.
+                    // However, sending a second SIGINT will still exit the process immediately.
+                    let signalCount = 0;
+
+                    process.on("SIGINT", () => {
+                        if (signalCount > 3) {
+                            // Something is taking too long and the user wants to exit now.
+                            console.log("🛑 Forcing exit...");
+                            process.exit(0);
+                        }
+                    });
+
+                    process.once("SIGINT", () => {
+                        signalCount++;
+
+                        dispose().finally(() => {
+                            console.log("✅ Done!");
+
+                            resolve();
+                        });
+                    });
+
+                    logger.info("🚪 Press Ctrl+C to exit.");
+                });
+
+                return signalListener;
+            })
+            .then(() => process.exit(0))
+            .catch(() => process.exit(1)),
+    );

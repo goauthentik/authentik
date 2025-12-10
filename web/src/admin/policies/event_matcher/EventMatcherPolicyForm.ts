@@ -1,14 +1,10 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import {
     AdminApi,
@@ -18,6 +14,11 @@ import {
     PoliciesApi,
     TypeCreate,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
@@ -37,11 +38,10 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                eventMatcherPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
+            eventMatcherPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -50,7 +50,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -63,7 +63,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -78,9 +78,8 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
@@ -88,7 +87,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                                     DEFAULT_CONFIG,
                                 ).eventsEventsActionsList();
                                 return items.filter((item) =>
-                                    query ? item.name.includes(query) : true,
+                                    query
+                                        ? item.name.toLowerCase().includes(query.toLowerCase())
+                                        : true,
                                 );
                             }}
                             .renderElement=${(item: TypeCreate): string => {
@@ -100,7 +101,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: TypeCreate): boolean => {
                                 return this.instance?.action === item.component;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -140,7 +141,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.app === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -170,7 +171,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.model === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

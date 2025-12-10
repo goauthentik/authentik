@@ -1,22 +1,23 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-text-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+
+import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
+
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
-} from "@goauthentik/admin/providers/rac/RACProviderFormHelpers.js";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+} from "#admin/providers/rac/RACProviderFormHelpers";
+
+import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 @customElement("ak-application-wizard-provider-for-rac")
 export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderForm<RACProvider> {
@@ -37,7 +38,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -57,12 +58,11 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     help=${msg(
                         "Determines how long a session lasts before being disconnected and requiring re-authorization.",
                     )}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
 
-                <ak-form-group .expanded=${true}>
-                    <span slot="header"> ${msg("Protocol settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group open label="${msg("Protocol settings")}">
+                    <div class="pf-c-form">
                         <ak-form-element-horizontal
                             label=${msg("Property mappings")}
                             name="propertyMappings"

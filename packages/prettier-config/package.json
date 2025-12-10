@@ -1,0 +1,73 @@
+{
+    "name": "@goauthentik/prettier-config",
+    "version": "3.2.1",
+    "description": "authentik's Prettier config",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./imports-plugin": {
+            "import": "./lib/imports.js",
+            "types": "./out/lib/imports.d.ts"
+        },
+        "./formatter": {
+            "import": "./lib/formatter.js",
+            "types": "./out/lib/formatter.d.ts"
+        }
+    },
+    "dependencies": {
+        "format-imports": "^4.0.8"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.47.0",
+        "@typescript-eslint/parser": "^8.47.0",
+        "eslint": "^9.39.1",
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.47.0"
+    },
+    "peerDependencies": {
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/prettier-config"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "out/**/*"
+    ],
+    "prettier": "./index.js",
+    "overrides": {
+        "format-imports": {
+            "eslint": "^9.30.1"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

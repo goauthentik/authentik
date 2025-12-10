@@ -14,7 +14,7 @@ LOG_PRE_CHAIN = [
     # is not from structlog.
     structlog.stdlib.add_log_level,
     structlog.stdlib.add_logger_name,
-    structlog.processors.TimeStamper(),
+    structlog.processors.TimeStamper(fmt="iso", utc=False),
     structlog.processors.StackInfoRenderer(),
 ]
 
@@ -43,7 +43,9 @@ def structlog_configure():
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
-            structlog.processors.dict_tracebacks,
+            structlog.processors.ExceptionRenderer(
+                structlog.tracebacks.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
+            ),
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -65,7 +67,14 @@ def get_logger_config():
             "json": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.processors.JSONRenderer(sort_keys=True),
-                "foreign_pre_chain": LOG_PRE_CHAIN + [structlog.processors.dict_tracebacks],
+                "foreign_pre_chain": LOG_PRE_CHAIN
+                + [
+                    structlog.processors.ExceptionRenderer(
+                        structlog.tracebacks.ExceptionDictTransformer(
+                            show_locals=CONFIG.get_bool("debug")
+                        )
+                    ),
+                ],
             },
             "console": {
                 "()": structlog.stdlib.ProcessorFormatter,
@@ -88,7 +97,6 @@ def get_logger_config():
         "authentik": global_level,
         "django": "WARNING",
         "django.request": "ERROR",
-        "celery": "WARNING",
         "selenium": "WARNING",
         "docker": "WARNING",
         "urllib3": "WARNING",
@@ -96,7 +104,6 @@ def get_logger_config():
         "daphne": "WARNING",
         "kubernetes": "INFO",
         "asyncio": "WARNING",
-        "redis": "WARNING",
         "fsevents": "WARNING",
         "uvicorn": "WARNING",
         "gunicorn": "INFO",

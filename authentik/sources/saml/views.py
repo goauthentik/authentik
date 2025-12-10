@@ -9,6 +9,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -33,7 +34,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import is_url_absolute
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -74,8 +74,6 @@ class InitiateView(View):
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
-        if not is_url_absolute(final_redirect):
-            final_redirect = "authentik_core:if-user"
         kwargs.update(
             {
                 PLAN_CONTEXT_SSO: True,
@@ -131,7 +129,9 @@ class InitiateView(View):
         # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
             injected_stages.append(in_memory_stage(ConsentStageView))
-            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = f"Continue to {source.name}"
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _(
+                "Continue to {source_name}".format(source_name=source.name)
+            )
         injected_stages.append(in_memory_stage(AutosubmitStageView))
         return self.handle_login_flow(
             source,

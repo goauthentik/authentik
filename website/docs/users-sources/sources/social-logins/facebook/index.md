@@ -1,73 +1,74 @@
 ---
 title: Facebook
-support_level: community
+tags:
+    - source
+    - facebook
+    - meta
 ---
 
-Adding Facebook as a source allows users to authenticate through authentik using their Facebook credentials.
+Allows users to authenticate using their Facebook credentials by configuring Facebook as a federated identity provider via OAuth2.
 
 ## Preparation
 
-The following placeholders are used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
 ## Facebook configuration
 
-To integrate authentik with Facebook and access the user credentials from Facebook, you first need to register with Meta for Developers and create a developers account. Refer to the [Facebook documentation](https://developers.facebook.com/docs/development) for exact steps.
+To integrate Facebook with authentik you will need to create an OAuth application in the Meta for Developers Dashboard.
 
-1. Visit https://developers.facebook.com/ and log in to your Facebook account.
-2. After you log in, go to https://developers.facebook.com/async/registration and follow the steps to register as a developer.
+1. Log in to the [Meta for Developers Dashboard](https://developers.facebook.com/) with your Facebook account.
+2. After logging in, [register as a developer](https://developers.facebook.com/async/registration). Refer to the [Facebook development documentation](https://developers.facebook.com/docs/development) for more information.
 
-Next, create an app so that Facebook generates a unique ID for your authentik app.
+After registering, you need to create an application so that Facebook generates a unique ID for authentik.
 
-:::info
-You will need the Facebook **App ID** and **App Secret** values from the Facebook app in order to configure the authentik integration. See Step 11. below for instructions.
-:::
+3. On the [Meta for Developers Dashboard](https://developers.facebook.com/) click **Create**.
+4. Follow the prompts to create the application.
 
-3. On the Meta for Developers Dashboard click **Create**.
-4. Follow the prompts to create the app.
+After creating the application you need to customize its login settings.
 
-After you create the app you need to customize the login settings.
+5. On the [Meta for Developers Dashboard](https://developers.facebook.com/) click **Use Cases** in the left navigation pane.
+6. Under **Authentication and account creation** click **Customize** and then **Go to settings**.
+7. Set the **Valid OAuth redirect URIs** field to `https://authentik.company/source/oauth/callback/facebook/` and then click **Save**.
+8. Navigate to the **Use cases** > **Customize** page.
+9. Under **Permissions** click **Add** for the **email** permission.
 
-5. Go back to the Dashboard and in the left navigation pane click **Use Cases**.
-6. On the **Use cases** page, click **Customize** under **Authentication and account creation**.
-7. On the **Customize** page, click **Go to settings**.
-8. On the **Facebook Login settings** page set the **Valid OAuth redirect URIs** field to `https://authentik.company/source/oauth/callback/facebook/` and then click **Save**.
+Next, you need to obtain the **App ID** and **App Secret** for the Facebook app. These will be required when creating the source in authentik.
 
-9. Navigate to the **Use cases -> Customize** page.
-10. Under **Permissions** click **Add** for the **email** permission.
-
-Next, you need to obtain the App ID and the App Secret for the Facebook app, and enter those into your authentik source configuration.
-
-11. Go back to the Dashboard, and in the bottom left in the navigation pane, click on **App settings -> Basic**.
-12. Copy the **App ID** and the **App secret** values and temporarily store them in a safe place until you enter them into authentik.
+10. Go back to the Dashboard, and in the bottom left of the navigation pane, click **App settings** > **Basic**.
+11. Take note of the **App ID** and the **App secret** values.
 
 Finally, you need to publish the Facebook app.
 
-12. Go back to the Dashboard, and on the **Create and publish this app** page, follow the prompts.
+12. Go back to the Dashboard, and on the **Create and publish this app** page, follow the prompts to complete the process.
 
 ## authentik configuration
 
-1. Log into authentik as admin, and then navigate to **Directory -> Federation & Social login**
-2. Click **Create**.
-3. In the **New Source** box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
-4. Define the following fields:
-    - **Name**: provide a descriptive name
-    - **Slug**: leave default value (If you choose a different slug then the default, the URL will need to be updated to reflect the change)
-    - **User matching mode**: leave default option unless other configuration is needed
-    - **User path**: leave default option unless other configuration is needed
-    - **Icon**: optionally you can select a specific icon of logo to display on the login form.
-    - **Protocol settings**
-        - **Consumer Key**: enter the **App ID** from Facebook
-        - **Consumer Secret**: enter the **App Secret** from Facebook
-        - **Scopes**: define any further access scopes
-    - **Flow settings**
-        - **Authentication flow**: leave the default `default-source-authentication` option.
-        - **Enrollment flow**: leave the default `default-source-enrollment` option.
-5. Click **Finish** to save your settings and close the box.
+To support the integration of Facebook with authentik, you need to create a Facebook OAuth source in authentik.
 
-You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Facebook OAuth Source** as the source type.
+    - **Create Facebook OAuth Source**: provide a name, a slug which must match the slug used in the Facebook `Valid OAuth redirect URIs` field (e.g. `facebook`), and the following required configurations:
+        - **Protocol settings**
+            - **Consumer Key**: enter the **App ID** from Facebook.
+            - **Consumer Secret**: enter the **App Secret** from Facebook.
+            - **Scopes** _(optional)_: define any further access scopes.
+3. Click **Finish** to save your settings.
 
-:::note
-For more details on how to display the new source on the authentik Login page refer to [Add Sources to default Login form](../../index.md#add-sources-to-default-login-page).
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
+:::
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
+
+## Resources
+
+- [Meta for Developers Documentation - Facebook Login Overview](https://developers.facebook.com/docs/facebook-login/overview)

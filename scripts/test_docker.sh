@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
@@ -28,6 +28,6 @@ if [[ -v BUILD ]]; then
 fi
 
 docker compose up --no-start
-docker compose start postgresql redis
+docker compose start postgresql
 docker compose run -u root server test-all
 docker compose down -v

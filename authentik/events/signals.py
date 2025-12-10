@@ -12,13 +12,15 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
-from authentik.events.apps import SYSTEM_TASK_STATUS
-from authentik.events.models import Event, EventAction, SystemTask
-from authentik.events.tasks import event_notification_handler, gdpr_cleanup
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
-from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.planner import (
+    PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_OUTPOST,
+    PLAN_CONTEXT_SOURCE,
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -45,6 +47,9 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_OUTPOST in flow_plan.context:
             # Save outpost context
             kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
+        if PLAN_CONTEXT_DEVICE in flow_plan.context:
+            # Save device
+            kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()
@@ -59,7 +64,7 @@ def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | Non
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
         SessionStore = _session_engine.SessionStore
-        session = SessionStore(request_or_session.session_key)
+        session = SessionStore(request_or_session.session.session_key)
     return session.get(SESSION_LOGIN_EVENT, None)
 
 
@@ -114,19 +119,15 @@ def on_password_changed(sender, user: User, password: str, request: HttpRequest 
 @receiver(post_save, sender=Event)
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
-    event_notification_handler.delay(instance.event_uuid.hex)
+    from authentik.events.tasks import event_trigger_dispatch
+
+    event_trigger_dispatch.send(instance.event_uuid)
 
 
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
+    from authentik.events.tasks import gdpr_cleanup
+
     if get_current_tenant().gdpr_compliance:
-        gdpr_cleanup.delay(instance.pk)
-
-
-@receiver(monitoring_set)
-def monitoring_system_task(sender, **_):
-    """Update metrics when task is saved"""
-    SYSTEM_TASK_STATUS.clear()
-    for task in SystemTask.objects.all():
-        task.update_metrics()
+        gdpr_cleanup.send(instance.pk)

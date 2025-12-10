@@ -1,18 +1,18 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
+
+import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
@@ -28,16 +28,13 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorEndpointGDTCStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
-                authenticatorEndpointGDTCStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
+            authenticatorEndpointGDTCStageRequest: data,
+        });
     }
 
-    static get styles() {
-        return super.styles.concat(PFBanner);
-    }
+    static styles = [...super.styles, PFBanner];
 
     renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">
@@ -52,22 +49,21 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Google Verified Access API")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Google Verified Access API")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
                         required
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
-                            .value="${first(this.instance?.credentials, {})}"
+                            mode="javascript"
+                            .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}

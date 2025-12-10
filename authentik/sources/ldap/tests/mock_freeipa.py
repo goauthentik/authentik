@@ -96,6 +96,26 @@ def mock_freeipa_connection(password: str) -> Connection:
             "objectClass": "posixAccount",
         },
     )
+    # User with groups in memberOf attribute
+    connection.strategy.add_entry(
+        "cn=user4,ou=users,dc=goauthentik,dc=io",
+        {
+            "name": "user4_sn",
+            "uid": "user4_sn",
+            "objectClass": "person",
+            "memberOf": [
+                "cn=reverse-lookup-group,ou=groups,dc=goauthentik,dc=io",
+            ],
+        },
+    )
+    connection.strategy.add_entry(
+        "cn=reverse-lookup-group,ou=groups,dc=goauthentik,dc=io",
+        {
+            "cn": "reverse-lookup-group",
+            "uid": "reverse-lookup-group",
+            "objectClass": "groupOfNames",
+        },
+    )
     # Locked out user
     connection.strategy.add_entry(
         "cn=user-nsaccountlock,ou=users,dc=goauthentik,dc=io",

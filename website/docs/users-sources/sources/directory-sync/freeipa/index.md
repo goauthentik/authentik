@@ -13,7 +13,7 @@ The following placeholders are used in this guide:
 
 ## FreeIPA Setup
 
-1. Log into FreeIPA.
+1. Log in to FreeIPA.
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
@@ -42,7 +42,7 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 
 ## authentik Setup
 
-In authentik, create a new LDAP Source in Directory -> Federation & Social login.
+In authentik, create a new LDAP Source in **Directory > Federation & Social login**.
 
 Use these settings:
 
@@ -75,6 +75,6 @@ After you save the source, you can kick off a synchronization by navigating to t
 
 ![](./06_sync_source.png)
 
-Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under Flows -> Stages.
+Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under **Flows > Stages**.
 
 ![](./07_password_stage.png)

@@ -21,7 +21,7 @@ class UserFields(models.TextChoices):
 
 
 class IdentificationStage(Stage):
-    """Allows the user to identify themselves for authentication."""
+    """Identify the user for authentication."""
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),
@@ -76,7 +76,13 @@ class IdentificationStage(Stage):
             "is entered."
         ),
     )
-
+    enable_remember_me = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Show the user the 'Remember me on this device' toggle, allowing repeat "
+            "users to skip straight to entering their password."
+        ),
+    )
     enrollment_flow = models.ForeignKey(
         Flow,
         on_delete=models.SET_DEFAULT,

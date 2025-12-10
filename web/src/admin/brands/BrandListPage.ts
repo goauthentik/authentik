@@ -1,36 +1,30 @@
-import "@goauthentik/admin/brands/BrandForm";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/brands/BrandForm";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { Brand, CoreApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Brands");
-    }
-    pageDescription(): string {
-        return msg("Configure visual settings and defaults for different domains.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-tenant";
-    }
+    protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by domain or brand name...");
+    public pageTitle = msg("Brands");
+    public pageDescription = msg("Configure visual settings and defaults for different domains.");
+    public pageIcon = "pf-icon pf-icon-tenant";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -42,14 +36,16 @@ export class BrandListPage extends TablePage<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Domain"), "domain"),
-            new TableColumn(msg("Brand name"), "branding_title"),
-            new TableColumn(msg("Default?"), "default"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: Brand): string | null {
+        return item.domain ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Domain"), "domain"],
+        [msg("Brand name"), "branding_title"],
+        [msg("Default?"), "default"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -76,37 +72,39 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): TemplateResult[] {
+    row(item: Brand): SlottedTemplateResult[] {
         return [
             html`${item.domain}`,
             html`${item.brandingTitle}`,
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Brand")} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Brand")}</span>
                     <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Brand")} </span>
+                <span slot="submit">${msg("Create Brand")}</span>
+                <span slot="header">${msg("New Brand")}</span>
                 <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Brand")}</button>
             </ak-forms-modal>
         `;
     }

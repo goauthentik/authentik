@@ -4,23 +4,37 @@ from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
 from django.test import TestCase
+from ldap3.core.exceptions import LDAPInvalidFilterError
+from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.events.models import Event, EventAction, SystemTask
-from authentik.events.system_tasks import TaskStatus
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import class_to_path
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
+from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
+from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
-from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
+from authentik.sources.ldap.tests.mock_slapd import (
+    group_in_slapd_cn,
+    group_in_slapd_uid,
+    mock_slapd_connection,
+    user_in_slapd_cn,
+    user_in_slapd_uid,
+)
+from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
 
@@ -42,9 +56,7 @@ class LDAPSyncTests(TestCase):
         """Test sync with missing page"""
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync.delay(str(self.source.pk), class_to_path(UserLDAPSynchronizer), "foo").get()
-        task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
-        self.assertEqual(task.status, TaskStatus.ERROR)
+            ldap_sync_page.send(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo")
 
     def test_sync_error(self):
         """Test user sync"""
@@ -62,7 +74,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             with self.assertRaises(StopSync):
                 user_sync.sync_full()
             self.assertFalse(User.objects.filter(username="user0_sn").exists())
@@ -93,7 +105,7 @@ class LDAPSyncTests(TestCase):
 
         # we basically just test that the mappings don't throw errors
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
     def test_sync_users_ad(self):
@@ -121,7 +133,7 @@ class LDAPSyncTests(TestCase):
         )
 
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             user = User.objects.filter(username="user0_sn").first()
             self.assertEqual(user.attributes["foo"], "bar")
@@ -140,7 +152,7 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
@@ -156,11 +168,48 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
             self.assertFalse(User.objects.get(username="user-nsaccountlock").is_active)
+
+    def test_sync_groups_freeipa_memberOf(self):
+        """Test group sync when membership is derived from memberOf user attribute"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/openldap-cn"
+            )
+        )
+        connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source, Task())
+            user_sync.sync_full()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+
+            self.assertTrue(
+                User.objects.filter(username="user4_sn").exists(), "User does not exist"
+            )
+            # Test if membership mapping based on memberOf works.
+            memberof_group = Group.objects.filter(name="reverse-lookup-group")
+            self.assertTrue(memberof_group.exists(), "Group does not exist")
+            self.assertTrue(
+                memberof_group.first().users.filter(username="user4_sn").exists(),
+                "User not a member of the group",
+            )
 
     def test_sync_groups_ad(self):
         """Test group sync"""
@@ -181,13 +230,13 @@ class LDAPSyncTests(TestCase):
             parent_group = Group.objects.get(name=_user.username)
             self.source.sync_parent_group = parent_group
             self.source.save()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             self.assertIsNotNone(group)
-            self.assertEqual(group.parent, parent_group)
+            self.assertEqual(group.parents.first(), parent_group)
 
     def test_sync_groups_openldap(self):
         """Test group sync"""
@@ -207,9 +256,9 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             group = Group.objects.filter(name="group1")
             self.assertTrue(group.exists())
@@ -220,11 +269,18 @@ class LDAPSyncTests(TestCase):
         self.source.group_membership_field = "memberUid"
         self.source.user_object_filter = "(objectClass=posixAccount)"
         self.source.group_object_filter = "(objectClass=posixGroup)"
+        self.source.user_membership_attribute = "uid"
         self.source.user_property_mappings.set(
-            LDAPSourcePropertyMapping.objects.filter(
-                Q(managed__startswith="goauthentik.io/sources/ldap/default")
-                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
-            )
+            [
+                *LDAPSourcePropertyMapping.objects.filter(
+                    Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                    | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+                ).all(),
+                LDAPSourcePropertyMapping.objects.create(
+                    name="name",
+                    expression='return {"attributes": {"uid": list_flatten(ldap.get("uid"))}}',
+                ),
+            ]
         )
         self.source.group_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
@@ -234,11 +290,48 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+            # Test if membership mapping based on memberUid works.
+            posix_group = Group.objects.filter(name="group-posix").first()
+            self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_groups_openldap_posix_group_nonstandard_membership_attribute(self):
+        """Test posix group sync"""
+        self.source.object_uniqueness_field = "cn"
+        self.source.group_membership_field = "memberUid"
+        self.source.user_object_filter = "(objectClass=posixAccount)"
+        self.source.group_object_filter = "(objectClass=posixGroup)"
+        self.source.user_membership_attribute = "cn"
+        self.source.user_property_mappings.set(
+            [
+                *LDAPSourcePropertyMapping.objects.filter(
+                    Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                    | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+                ).all(),
+                LDAPSourcePropertyMapping.objects.create(
+                    name="name",
+                    expression='return {"attributes": {"cn": list_flatten(ldap.get("cn"))}}',
+                ),
+            ]
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/openldap-cn"
+            )
+        )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            self.source.save()
+            user_sync = UserLDAPSynchronizer(self.source, Task())
+            user_sync.sync_full()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
@@ -255,7 +348,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
 
     def test_tasks_openldap(self):
         """Test Scheduled tasks"""
@@ -270,4 +363,247 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
+
+    def test_user_deletion(self):
+        """Test user deletion"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertFalse(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_user_deletion_still_in_source(self):
+        """Test that user is not deleted if it's still in the source"""
+        username = user_in_slapd_cn
+        identifier = user_in_slapd_uid
+        user = User.objects.create_user(username=username)
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier=identifier
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(User.objects.filter(username=username).exists())
+
+    def test_user_deletion_no_sync(self):
+        """Test that user is not deleted if sync_users is False"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.sync_users = False
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_user_deletion_no_delete(self):
+        """Test that user is not deleted if delete_not_found_objects is False"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_group_deletion(self):
+        """Test group deletion"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertFalse(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_group_deletion_still_in_source(self):
+        """Test that group is not deleted if it's still in the source"""
+        groupname = group_in_slapd_cn
+        identifier = group_in_slapd_uid
+        group = Group.objects.create(name=groupname)
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier=identifier
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(Group.objects.filter(name=groupname).exists())
+
+    def test_group_deletion_no_sync(self):
+        """Test that group is not deleted if sync_groups is False"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.sync_groups = False
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_group_deletion_no_delete(self):
+        """Test that group is not deleted if delete_not_found_objects is False"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_batch_deletion(self):
+        """Test batch deletion"""
+        BATCH_SIZE = DELETE_CHUNK_SIZE + 1
+        for i in range(BATCH_SIZE):
+            user = User.objects.create_user(username=f"not-in-the-source-{i}")
+            group = Group.objects.create(name=f"not-in-the-source-{i}")
+            group.users.add(user)
+            UserLDAPSourceConnection.objects.create(
+                user=user, source=self.source, identifier=f"not-in-the-source-{i}-user"
+            )
+            GroupLDAPSourceConnection.objects.create(
+                group=group, source=self.source, identifier=f"not-in-the-source-{i}-group"
+            )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+
+        self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
+        self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())
+
+    def test_membership_sync_special_chars_in_group_dn(self):
+        """Test membership synchronization with special characters in group DN"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
+
+        # Mock connection with group DN containing special characters
+        mock_conn = MagicMock()
+
+        # Simulate group with special characters in DN: parentheses, backslashes, asterisks
+        special_group_dn = "cn=test(group),ou=groups,dc=example,dc=com"
+        backslash_group_dn = "cn=test\\group,ou=groups,dc=example,dc=com"
+        asterisk_group_dn = "cn=test*group,ou=groups,dc=example,dc=com"
+
+        # Mock the paged_search method that would be called with the filter
+        mock_standard = MagicMock()
+        mock_conn.extend.standard = mock_standard
+
+        # Test case 1: Group DN with parentheses
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+
+            # Simulate group data with special characters in DN
+            page_data = [{"dn": special_group_dn}]
+
+            # This should not raise LDAPInvalidFilterError anymore
+            try:
+                membership_sync.sync(page_data)
+                # Verify that the filter was properly escaped
+                # The call should have been made with escaped characters
+                mock_standard.paged_search.assert_called()
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The parentheses should be escaped as \28 and \29
+                self.assertIn("\\28", search_filter)  # Escaped (
+                self.assertIn("\\29", search_filter)  # Escaped )
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+        # Test case 2: Group DN with backslashes
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            page_data = [{"dn": backslash_group_dn}]
+
+            try:
+                membership_sync.sync(page_data)
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The backslash should be escaped as \5c
+                self.assertIn("\\5c", search_filter)  # Escaped \
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+        # Test case 3: Group DN with asterisks
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            page_data = [{"dn": asterisk_group_dn}]
+
+            try:
+                membership_sync.sync(page_data)
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The asterisk should be escaped as \2a
+                self.assertIn("\\2a", search_filter)  # Escaped *
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+    def test_escape_filter_chars_function(self):
+        """Test the escape_filter_chars function directly"""
+
+        # Test various special characters that need escaping
+        test_cases = [
+            ("test(group)", "test\\28group\\29"),  # parentheses
+            ("test\\group", "test\\5cgroup"),  # backslash
+            ("test*group", "test\\2agroup"),  # asterisk
+            ("test(*)group", "test\\28\\2a\\29group"),  # multiple special chars
+            ("normalgroup", "normalgroup"),  # no special chars
+            ("", ""),  # empty string
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = escape_filter_chars(input_str)
+                self.assertEqual(result, expected)

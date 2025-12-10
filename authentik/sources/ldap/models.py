@@ -15,10 +15,19 @@ from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, PropertyMapping, Source
+from authentik.core.models import (
+    Group,
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
@@ -47,7 +56,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(Source):
+class LDAPSource(ScheduledModel, Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
@@ -94,6 +103,10 @@ class LDAPSource(Source):
         default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
+    user_membership_attribute = models.TextField(
+        default=LDAP_DISTINGUISHED_NAME,
+        help_text=_("Attribute which matches the value of `group_membership_field`."),
+    )
     group_membership_field = models.TextField(
         default="member", help_text=_("Field which contains members of a group.")
     )
@@ -123,6 +136,22 @@ class LDAPSource(Source):
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
+    lookup_groups_from_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Lookup group membership based on a user attribute instead of a group attribute. "
+            "This allows nested group resolution on systems like FreeIPA and Active Directory"
+        ),
+    )
+
+    delete_not_found_objects = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Delete authentik users and groups which were previously supplied by this source, "
+            "but are now missing from it."
+        ),
+    )
+
     @property
     def component(self) -> str:
         return "ak-source-ldap-form"
@@ -132,6 +161,27 @@ class LDAPSource(Source):
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync
+
+        return [
+            ScheduleSpec(
+                actor=ldap_sync,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
+            ),
+            ScheduleSpec(
+                actor=ldap_connectivity_check,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
+            ),
+        ]
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
@@ -248,6 +298,16 @@ class LDAPSource(Source):
             side_effect=pglock.Return,
         )
 
+    def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
+        info = {
+            "vendor": _("N/A"),
+            "version": _("N/A"),
+        }
+        if srv.info:
+            info["vendor"] = str(flatten(srv.info.vendor_name))
+            info["version"] = str(flatten(srv.info.vendor_version))
+        return info
+
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
         servers = self.server()
@@ -258,9 +318,8 @@ class LDAPSource(Source):
             try:
                 conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(conn.server.info.vendor_name)),
-                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
+                    **self.get_ldap_server_info(conn.server),
                 }
             except LDAPException as exc:
                 server_info[server.host] = {
@@ -270,9 +329,8 @@ class LDAPSource(Source):
         try:
             conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(conn.server.info.vendor_name)),
-                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
+                **self.get_ldap_server_info(conn.server),
             }
         except LDAPException as exc:
             server_info["__all__"] = {
@@ -304,3 +362,49 @@ class LDAPSourcePropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("LDAP Source Property Mapping")
         verbose_name_plural = _("LDAP Source Property Mappings")
+
+
+class UserLDAPSourceConnection(UserSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api import (
+            UserLDAPSourceConnectionSerializer,
+        )
+
+        return UserLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User LDAP Source Connection")
+        verbose_name_plural = _("User LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]
+
+
+class GroupLDAPSourceConnection(GroupSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api import (
+            GroupLDAPSourceConnectionSerializer,
+        )
+
+        return GroupLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group LDAP Source Connection")
+        verbose_name_plural = _("Group LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]

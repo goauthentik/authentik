@@ -2,9 +2,9 @@
 title: Expression Policies
 ---
 
-Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. With Expression polices, you can provide Python code to enforce custom checks and validation.
+Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. When you [create](./working_with_policies.md#create-a-policy) an expression policy, you provide your own custom Python code to enforce custom checks and validation.
 
-The passing of the policy is determined by the return value of the code.
+The passing of the policy is determined by the return value of the code: `True` or `False`.
 
 To pass a policy, use:
 
@@ -27,9 +27,18 @@ if request.context["pending_user"].username == "marie":
 return False
 ```
 
-If the return is `True` that means Yes, use this stage (i.e. the user will get the MFA prompt). A return of `False` means remove this stage from the plan.
+When the policy returns `True`, the MFA validation stage is enforced. When it returns `False`, the MFA validation stage is skipped.
 
-## Available Functions
+## Sample expression policies
+
+Expressions policies with sample Python that we have documented:
+
+- [Source-switching based on email address](./expression/source_switch.md)
+- [Managing flow context keys](./expression/managing_flow_context_keys.md)
+- [Unique email addresses](./expression/unique_email.md)
+- [Create an email address allow list](./expression/whitelist_email.md)
+
+## Available functions
 
 ### `ak_message(message: str)`
 
@@ -53,13 +62,12 @@ import Objects from "../../expressions/_objects.md";
 <Objects />
 
 - `request`: A PolicyRequest object, which has the following properties:
-
     - `request.user`: The current user, against which the policy is applied. See [User](../../users-sources/user/index.mdx)
 
         :::caution
-        When a policy is executed in the context of a flow, this will be set to the user initiaing request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
+        When a policy is executed in the context of a flow, this will be set to the user initiating the request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
 
-        If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User) (authentik uses django-guardian for per-object permissions, [see](https://django-guardian.readthedocs.io/en/stable/)).
+        If the user is not authenticated, this will be set to a user called _AnonymousUser_, which is an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User).
         :::
 
     - `request.http_request`: The Django HTTP Request. See [Django documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#httprequest-objects).
@@ -71,7 +79,6 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic country matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-
     - `continent`: a two character continent code like `NA` (North America) or `OC` (Oceania).
     - `country`: the two character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
     - `lat`: the approximate latitude of the location associated with the IP address.
@@ -87,7 +94,6 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic ASN matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-
     - `asn`: the autonomous system number associated with the IP address.
     - `as_org`: the organization associated with the registered autonomous system number for the IP address.
     - `network`: the network associated with the record. In particular, this is the largest network where all of the fields except `ip_address` have the same value.
@@ -112,7 +118,6 @@ Additionally, when the policy is executed from a flow, every variable from the f
 This includes the following:
 
 - `context['flow_plan']`: The actual flow plan itself, can be used to inject stages.
-
     - `context['flow_plan'].context`: The context of the currently active flow, which differs from the policy context. Some fields of flow plan context are passed to the root context, and updated from it, like 'prompt_data', but not every variable
     - `context['flow_plan'].context['redirect']`: The URL the user should be redirected to after the flow execution succeeds. (Optional)
 
@@ -126,7 +131,6 @@ This includes the following:
     Depending on method, `context['auth_method_args']` is also set.
 
     Can be any of:
-
     - `password`: Standard password login
     - `auth_mfa`: MFA login (this method is only set if no password was used)
 

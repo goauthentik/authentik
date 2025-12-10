@@ -2,6 +2,10 @@
 set -e -o pipefail
 MODE_FILE="${TMPDIR}/authentik-mode"
 
+if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
+    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
+fi
+
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
 }
@@ -31,7 +35,7 @@ function check_if_root {
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of certs and media
-    chown -R authentik:authentik /media /certs
+    chown -R authentik:authentik /media /certs "${PROMETHEUS_MULTIPROC_DIR}"
     chmod ug+rwx /media
     chmod ug+rx /certs
     exec chpst -u authentik:$GROUP env HOME=/authentik $1
@@ -62,10 +66,13 @@ function prepare_debug {
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server libkrb5-dev gcc
-    VIRTUAL_ENV=/ak-root/.venv uv sync --frozen
+    source "${VENV_PATH}/bin/activate"
+    uv sync --active --frozen
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }
+
+mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
 
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
@@ -73,20 +80,17 @@ fi
 
 if [[ "$1" == "server" ]]; then
     set_mode "server"
-    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
-    # sync, so that we can sure the first start actually has working bootstrap
-    # credentials
-    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
-        python -m manage bootstrap_tasks
-    fi
     run_authentik
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
-    check_if_root "python -m manage worker"
-elif [[ "$1" == "worker-status" ]]; then
-    wait_for_db
-    celery -A authentik.root.celery flower \
-        --port=9000
+    shift
+    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
+    # sync, so that we can sure the first start actually has working bootstrap
+    # credentials
+    if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage apply_blueprint system/bootstrap.yaml || true
+    fi
+    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
@@ -96,6 +100,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
+    shift
     exec python -m authentik.lib.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity

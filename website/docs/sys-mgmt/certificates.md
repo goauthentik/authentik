@@ -2,85 +2,139 @@
 title: Certificates
 ---
 
-Certificates in authentik are used for the following use cases:
+Certificates in authentik are used for:
 
-- Signing and verifying SAML Requests and Responses
-- Signing JSON Web Tokens for OAuth and OIDC
-- Connecting to remote docker hosts using the Docker integration
-- Verifying LDAP Servers' certificates
+- Signing and verifying SAML requests and responses
+- Signing JSON web tokens for OAuth and OIDC
+- Connecting to remote Docker hosts using the Docker integration
+- Verifying LDAP servers' certificates
 - Encrypting outposts' endpoints
 
 ## Default certificate
 
-Every authentik install generates a self-signed certificate on the first start. The certificate is called _authentik Self-signed Certificate_ and is valid for 1 year.
+Every authentik installation generates a self-signed certificate on first startup. The certificate is named `authentik Self-signed Certificate` and is valid for 1 year.
 
-This certificate is generated to be used as a default for all OAuth2/OIDC providers, as these don't require the certificate to be configured on both sides (the signature of a JWT is validated using the [JWKS](https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets) URL).
+This certificate serves as the default for all OAuth2/OIDC providers, as these don't require certificate configuration on both sides (JWT signatures are validated using the [JWKS](../users-sources/sources/protocols/oauth/index.mdx#jwks) URL).
 
-This certificate can also be used for SAML Providers/Sources, but keep in mind that the certificate is only valid for a year. Some SAML applications require the certificate to be valid, so they might need to be rotated regularly.
+While this certificate can be used for SAML providers/sources, remember that it's only valid for a year. Since some SAML applications require valid certificates, you might need to rotate them regularly.
 
-For SAML use-cases, you can generate a Certificate that's valid for longer than 1 year, at your own risk.
+For SAML use-cases, you can generate a certificate with a longer validity period (at your own risk).
+
+## Certificate considerations
+
+### OAuth and SAML
+
+For OAuth and SAML providers, in the vast majority of cases, certificate expiry does not matter. Most service providers don't check whether certificates are expired. What usually matters is that the signature is valid.
+
+However, there are some notable exceptions; for example, the Slack SAML integration does check for certificate expiry.
+
+We recommend checking your service provider's documentation for specific requirements.
+
+### Proxy provider and brands
+
+We recommend using a certificate generated outside of authentik that matches your Fully Qualified Domain Name (FQDN), preferably issued by a publicly trusted certificate authority.
+
+### Radius EAP-TLS
+
+We recommend using a certificate generated outside of authentik. A privately issued certificate is sufficient.
+
+## Downloading SAML certificates
+
+To download a certificate for SAML configuration:
+
+1. Log into authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider.
+3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
+
+## Certificate recommendations
+
+It is generally not recommended to use short-lived certificates for SAML/OIDC signing operations as the main priority is that the signature is valid. Frequently changing certificates can be problematic as it requires updating configuration in authentik and potentially in connected applications.
 
 ## External certificates
 
-To use externally managed certificates, for example generated with certbot or HashiCorp Vault, you can use the discovery feature.
+To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), you can use the discovery feature.
 
-The Docker Compose installation maps a `certs` directory to `/certs`. You can simply use this as an output directory for certbot.
+### Certificate discovery
 
-For Kubernetes, you can map custom secrets/volumes under `/certs`.
+authentik can automatically discover and import certificates from a designated directory. This allows you to use externally managed certificates with minimal configuration.
 
-You can also bind mount single files into the folder, as long as they fall under this naming schema.
+:::info
+Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** > **System Tasks**.
+:::
 
-- Files in the root directory will be imported based on their filename.
+#### Mounted directories
 
-    `/foo.pem` Will be imported as the keypair `foo`. Based on its content, the file is either imported as a certificate or a private key:
+- **Docker Compose**: A `certs` directory is mapped to `/certs` within the worker container.
+- **Kubernetes**: You can mount custom Secrets or Volumes under `/certs` and configure them in the worker Pod specification.
 
-    - Files containing `PRIVATE KEY` will imported as private keys.
+When a new key pair is added or changed, authentik automatically triggers an outpost refresh.
 
-    - Otherwise the file will be imported as a certificate.
+When a new key pair is added with a private key that already exists in the database, authentik updates the existing key pair's certificate instead of creating a duplicate one.
 
-- If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), it will get the name of the parent folder.
-- Files can be in any arbitrary file structure, and can have any extension.
-- If the path contains `archive`, the files will be ignored (to better support certbot setups).
+### Manual imports
+
+Since authentik 2022.9, you can import certificates with any folder structure directly. Run commands within the worker container to import certificates in different ways:
+
+#### Import certificate with private key
+
+Use this option when you need to import a complete certificate keypair that authentik can use for signing or encryption:
 
 ```shell
+ak import_certificate --certificate /certs/mycert.pem --private-key /certs/private.pem --name mycert
+```
+
+#### Import certificate for trust only
+
+Use this option when you only need to establish trust with an external system and don't need the private key:
+
+```shell
+ak import_certificate --certificate /certs/othercert.pem --name othercert
+```
+
+These commands import certificates under the specified names. They are safe to run as cron jobs, as authentik only re-imports certificates when they change.
+
+#### Naming conventions
+
+authentik uses the following rules to import certificates:
+
+- **Root directory files**: Files in the root directory are imported based on their filename
+    - `/foo.pem` will be imported as the keypair `foo`
+    - Files are classified as private keys if they contain `PRIVATE KEY`, otherwise as certificates
+
+- **Certbot convention**: Files named `fullchain.pem` or `privkey.pem` will use their parent folder's name
+    - Files in paths containing `archive` are ignored (to better support certbot setups)
+
+- **Flexible organization**: Files can use any directory structure and extension
+
+#### Directory structure example
+
+Below is an example of a valid certificate directory structure:
+
+```text
 certs/
 ├── baz
-│   └── bar.baz
-│       ├── fullchain.pem
-│       └── privkey.pem
+│   └── bar.baz
+│       ├── fullchain.pem
+│       └── privkey.pem
 ├── foo.bar
-│   ├── fullchain.pem
-│   └── privkey.pem
+│   ├── fullchain.pem
+│   └── privkey.pem
 ├── foo.key
 └── foo.pem
 ```
 
-Files are checked every 5 minutes and will trigger an Outpost refresh if a file has changed.
-
-#### Manual imports
-
-Starting with authentik 2022.9, you can also import certificates with any folder structure directly. To do this, run the following command within the worker container:
-
-```shell
-ak import_certificate --certificate /certs/mycert.pem --private-key /certs/something.pem --name test
-# --private-key can be omitted to only import a certificate, i.e. to trust other connections
-# ak import_certificate --certificate /certs/othercert.pem --name test2
-```
-
-This will import the certificate into authentik under the given name. This command is safe to run as a cron job; authentik will only re-import the certificate if it changes.
-
 ## Web certificates
 
-Starting with authentik 2021.12.4, you can configure the certificate authentik uses for its core webserver. For most deployments this will not be relevant and reverse proxies are used, but this can be used to create a very compact and self-contained authentik install.
+You can configure the certificate used by authentik's core webserver, which allows for compact and self-contained authentik installations, even though most deployments use reverse proxies.
 
-#### Let's Encrypt
+### Let's Encrypt integration
 
-To use Let's Encrypt certificates with this setup, using certbot, you can use this compose override (create or edit a file called `docker-compose.override.yml` in the same folder as the authentik docker-compose file)
+To use Let's Encrypt certificates with Certbot in Docker Compose deployments, create or edit the `docker-compose.override.yml` file in the same directory as your authentik Docker Compose file. The example below demonstrates the use of the AWS Route 53 DNS plugin:
 
 ```yaml
 services:
     certbot:
-        image: certbot/dns-route53:v1.22.0
+        image: certbot/dns-route53:v4.0.0
         volumes:
             - ./certs/:/etc/letsencrypt
         # Variables depending on DNS Plugin
@@ -90,14 +144,24 @@ services:
             - certonly
             - --non-interactive
             - --agree-tos
-            - -m your.email@company
+            # Replace your@email.com with the email you wish to use
+            - -m your@email.com
+            # Replace authentik.company with your actual domain
             - -d authentik.company
             # Again, match with your provider
             - --dns-route53
 ```
 
-Afterward, run `docker compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
+:::info
+For other DNS providers and detailed setup instructions, see the official [Certbot Docker documentation](https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker). Certbot provides Docker images for many popular DNS providers.
+:::
 
-Navigate to _System -> Brands_, edit any brand and select the certificate of your choice.
+:::info
+The Certbot container only runs once. You'll need to set up a separate mechanism for regular certificate renewals.
+:::
 
-Keep in mind this certbot container will only run once, but there are a variety of ways to schedule regular renewals.
+Run `docker compose up -d` to create and start the Certbot container and generate your certificate. The certificate should appear in authentik within minutes. If it doesn't, restart the worker container (this can happen due to permission issues set by Certbot).
+
+For Kubernetes or AWS deployments, you can use similar approaches with appropriate certificate management tools for your platform.
+
+Navigate to **System** > **Brands**, edit any brand, and select your preferred certificate.

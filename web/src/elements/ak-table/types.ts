@@ -1,6 +1,8 @@
-import { TemplateResult } from "lit";
+import { TableColumn } from "./TableColumn.js";
 
-import { TableColumn } from "./TableColumn";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { TemplateResult } from "lit";
 
 // authentik's standard tables (ak-simple-table, ak-select-table) all take a variety of types, the
 // simplest of which is just an array of tuples, one for each column, along with an tuple for
@@ -17,7 +19,7 @@ import { TableColumn } from "./TableColumn";
  */
 export type TableRow = {
     key?: string;
-    content: TemplateResult[];
+    content: SlottedTemplateResult[];
     // expansion?: () => TemplateResult;
 };
 

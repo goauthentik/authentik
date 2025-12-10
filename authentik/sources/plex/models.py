@@ -19,7 +19,10 @@ from authentik.core.models import (
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.time import fqdn_rand
 from authentik.stages.identification.stage import LoginChallengeMixin
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 
 class PlexAuthenticationChallenge(LoginChallengeMixin, Challenge):
@@ -36,7 +39,7 @@ class PlexAuthenticationChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-source-plex")
 
 
-class PlexSource(Source):
+class PlexSource(ScheduledModel, Source):
     """Authenticate against plex.tv"""
 
     client_id = models.TextField(
@@ -72,6 +75,19 @@ class PlexSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return PlexSourcePropertyMapping
 
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.plex.tasks import check_plex_token
+
+        return [
+            ScheduleSpec(
+                actor=check_plex_token,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand(self.pk)} */3 * * *",
+            ),
+        ]
+
     def get_base_user_properties(self, info: dict[str, Any], **kwargs):
         return {
             "username": info.get("username"),
@@ -102,6 +118,7 @@ class PlexSource(Source):
             ),
             icon_url=self.icon_url,
             name=self.name,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -141,7 +158,6 @@ class UserPlexSourceConnection(UserSourceConnection):
     """Connect user and plex source"""
 
     plex_token = models.TextField()
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> type[Serializer]:

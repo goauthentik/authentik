@@ -12,13 +12,42 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
-class InbuiltBackend(ModelBackend):
+class ModelBackendNoAuthz(ModelBackend):
+    def get_user_permissions(self, user_obj, obj=None):
+        return set()
+
+    def get_group_permissions(self, user_obj, obj=None):
+        return set()
+
+    def get_all_permissions(self, user_obj, obj=None):
+        return set()
+
+    def has_perm(self, user_obj, perm, obj=None):
+        return False
+
+    def has_module_perms(self, user_obj, app_label):
+        return False
+
+    def with_perm(self, perm, is_active=True, include_superusers=True, obj=None):
+        return User.objects.none()
+
+
+class InbuiltBackend(ModelBackendNoAuthz):
     """Inbuilt backend"""
 
     def authenticate(
         self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
     ) -> User | None:
         user = super().authenticate(request, username=username, password=password, **kwargs)
+        if not user:
+            return None
+        self.set_method("password", request)
+        return user
+
+    async def aauthenticate(
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
+        user = await super().aauthenticate(request, username=username, password=password, **kwargs)
         if not user:
             return None
         self.set_method("password", request)

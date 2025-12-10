@@ -1,7 +1,11 @@
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -11,8 +15,6 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
-
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @property({ type: Boolean })
@@ -21,27 +23,27 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     startedRedirect = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            PFTitle,
-            css`
-                code {
-                    word-break: break-all;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFButton,
+        PFFormControl,
+        PFTitle,
+        css`
+            code {
+                word-break: break-all;
+            }
+        `,
+    ];
 
     getURL(): string {
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    firstUpdated(): void {
+    firstUpdated(changed: PropertyValues<this>): void {
+        super.firstUpdated(changed);
+
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -69,45 +71,41 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (!url.protocol.startsWith("http")) {
-            return html`<ak-empty-state
-                icon="fas fa-check"
-                header=${msg("You may close this page now.")}
-            >
-            </ak-empty-state>`;
+            return html`<ak-flow-card .challenge=${this.challenge}>
+                <ak-empty-state icon="fas fa-check"
+                    ><span>${msg("You may close this page now.")}</span>
+                </ak-empty-state>
+            </ak-flow-card>`;
         }
-        return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
     render(): TemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Redirect")}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <div class="pf-c-form__group">
-                        <p>${msg("You're about to be redirect to the following URL.")}</p>
-                        <code>${this.getURL()}</code>
-                    </div>
-                    <div class="pf-c-form__group pf-m-action">
-                        <a
-                            type="submit"
-                            class="pf-c-button pf-m-primary pf-m-block"
-                            href=${this.challenge.to}
-                            @click=${() => {
-                                this.startedRedirect = true;
-                            }}
-                        >
-                            ${msg("Follow redirect")}
-                        </a>
-                    </div>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer> `;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <span slot="title">${msg("Redirect")}</span>
+            <form class="pf-c-form">
+                <div class="pf-c-form__group">
+                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <code>${this.getURL()}</code>
+                </div>
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <a
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                        href=${this.challenge.to}
+                        @click=${() => {
+                            this.startedRedirect = true;
+                        }}
+                    >
+                        ${msg("Follow redirect")}
+                    </a>
+                </fieldset>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

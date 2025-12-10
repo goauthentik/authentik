@@ -1,0 +1,82 @@
+{
+    "name": "@goauthentik/eslint-config",
+    "version": "1.1.1",
+    "description": "authentik's ESLint config",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./react-config": {
+            "import": "./lib/react-config.js",
+            "types": "./out/lib/react-config.d.ts"
+        },
+        "./javascript-config": {
+            "import": "./lib/javascript-config.js",
+            "types": "./out/lib/javascript-config.d.ts"
+        },
+        "./typescript-config": {
+            "import": "./lib/typescript-config.js",
+            "types": "./out/lib/typescript-config.d.ts"
+        }
+    },
+    "dependencies": {
+        "eslint": "^9.39.1",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-lit": "^2.1.1",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "eslint-plugin-wc": "^3.0.2"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/eslint": "^9.6.1",
+        "@types/node": "^24.10.1",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.47.0"
+    },
+    "peerDependencies": {
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.47.0"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/eslint-config"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "out/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "react-dom": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

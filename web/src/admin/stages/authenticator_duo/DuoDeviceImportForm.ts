@@ -1,16 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/Divider";
+import "#elements/buttons/ActionButton/index";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { MessageLevel } from "#common/messages";
+
+import { ModalForm } from "#elements/forms/ModalForm";
+import { ModelForm } from "#elements/forms/ModelForm";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import {
     AuthenticatorDuoStage,
@@ -20,6 +18,10 @@ import {
     StagesApi,
     User,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
 export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string> {
@@ -44,16 +46,12 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
-            : html``}
+            : nothing}
         ${this.renderFormManual()}`;
     }
 
     renderFormManual(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("User")}
-                ?required=${true}
-                name="username"
-            >
+        return html`<ak-form-element-horizontal label=${msg("User")} required name="username">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -81,11 +79,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                     ${msg("The user in authentik this device will be assigned to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Duo User ID")}
-                ?required=${true}
-                name="duoUserId"
-            >
+            <ak-form-element-horizontal label=${msg("Duo User ID")} required name="duoUserId">
                 <input type="text" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
                     ${msg("The user ID in Duo, can be found in the URL after clicking on a user.")}

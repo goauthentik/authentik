@@ -76,7 +76,7 @@ class PermissionFilter(FilterSet):
 
     def filter_role(self, queryset: QuerySet, name, value: Role) -> QuerySet:
         """Filter permissions based on role"""
-        return queryset.filter(group__role=value)
+        return queryset.filter(rolemodelpermission__role=value)
 
     class Meta:
         model = Permission
@@ -99,6 +99,7 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     filterset_class = PermissionFilter
     permission_classes = [IsAuthenticated]
     search_fields = [
+        "name",
         "codename",
         "content_type__model",
         "content_type__app_label",

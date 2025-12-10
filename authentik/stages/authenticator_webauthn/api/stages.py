@@ -25,6 +25,7 @@ class AuthenticatorWebAuthnStageSerializer(StageSerializer):
             "resident_key_requirement",
             "device_type_restrictions",
             "device_type_restrictions_obj",
+            "max_attempts",
         ]
 
 

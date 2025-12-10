@@ -2,11 +2,11 @@
 
 from rest_framework import mixins
 from rest_framework.permissions import IsAdminUser
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     AuthenticatorEndpointGDTCStage,
@@ -42,7 +42,7 @@ class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
 
-class EndpointDeviceSerializer(ModelSerializer):
+class GoogleEndpointDeviceSerializer(ModelSerializer):
     """Serializer for Endpoint authenticator devices"""
 
     class Meta:
@@ -60,7 +60,7 @@ class EndpointDeviceViewSet(
     """Viewset for Endpoint authenticator devices"""
 
     queryset = EndpointDevice.objects.all()
-    serializer_class = EndpointDeviceSerializer
+    serializer_class = GoogleEndpointDeviceSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
@@ -72,7 +72,7 @@ class EndpointAdminDeviceViewSet(ModelViewSet):
 
     permission_classes = [IsAdminUser]
     queryset = EndpointDevice.objects.all()
-    serializer_class = EndpointDeviceSerializer
+    serializer_class = GoogleEndpointDeviceSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]

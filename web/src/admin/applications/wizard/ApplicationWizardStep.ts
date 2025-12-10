@@ -1,54 +1,80 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
-import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
-    NavigationUpdate,
-    WizardNavigationEvent,
-    WizardUpdateEvent,
-} from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-
-import { msg } from "@lit/localize";
-import { property, query } from "lit/decorators.js";
-
-import { ValidationError } from "@goauthentik/api";
-
-import {
+    ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
-    ExtendedValidationError,
-} from "./types";
+} from "./types.js";
 
-export class ApplicationWizardStep extends WizardStep {
-    static get styles() {
-        return [...WizardStep.styles, ...styles];
-    }
+import { serializeForm } from "#elements/forms/Form";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
+
+import {
+    NavigationEventInit,
+    WizardNavigationEvent,
+    WizardUpdateEvent,
+} from "#components/ak-wizard/events";
+import { WizardStep } from "#components/ak-wizard/WizardStep";
+
+import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+
+import { ApplicationRequest, ValidationError } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { property } from "lit/decorators.js";
+
+export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
+    static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application and configure a provider for it.");
-    canCancel = true;
+    protected wizardTitle = msg("New application");
+    protected wizardDescription = msg("Create a new application and configure a provider for it.");
+    public canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
-    @query("form")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form");
+    }
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public reportValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return reportValidityDeep(form);
+    }
+
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public checkValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return form.checkValidity();
+    }
+
+    protected get formValues(): T {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
+        return serializeForm<T>([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     protected removeErrors(
-        keyToDelete: keyof ExtendedValidationError,
+        keyToDelete: keyof ApplicationTransactionValidationError,
     ): ValidationError | undefined {
         if (!this.wizard.errors) {
             return undefined;
@@ -71,7 +97,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationUpdate,
+        enable?: NavigationEventInit,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

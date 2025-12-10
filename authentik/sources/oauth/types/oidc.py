@@ -2,8 +2,10 @@
 
 from typing import Any
 
+from requests.auth import AuthBase, HTTPBasicAuth
+
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -18,10 +20,27 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
         }
 
 
+class OpenIDConnectClient(UserprofileHeaderAuthClient):
+    def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
+        args = super().get_access_token_args(callback, code)
+        if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.POST_BODY:
+            args["client_id"] = self.get_client_id()
+            args["client_secret"] = self.get_client_secret()
+        else:
+            args.pop("client_id", None)
+            args.pop("client_secret", None)
+        return args
+
+    def get_access_token_auth(self) -> AuthBase | None:
+        if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH:
+            return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
+        return None
+
+
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 
-    client_class = UserprofileHeaderAuthClient
+    client_class = OpenIDConnectClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("sub", None)

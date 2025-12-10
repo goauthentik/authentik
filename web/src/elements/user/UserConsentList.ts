@@ -1,16 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, UserConsent } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
@@ -28,13 +29,15 @@ export class UserConsentList extends Table<UserConsent> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Application"), "application"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Permissions"), "permissions"),
-        ];
+    protected override rowLabel(item: UserConsent): string | null {
+        return item.application?.name ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Application"), "application"],
+        [msg("Expires"), "expires"],
+        [msg("Permissions"), "permissions"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -58,13 +61,10 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    row(item: UserConsent): SlottedTemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires && item.expiring
-                ? html`<div>${getRelativeTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${item.permissions
                 ? html`<ak-chip-group>
                       ${item.permissions.split(" ").map((perm) => {

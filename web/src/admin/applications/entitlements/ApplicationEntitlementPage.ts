@@ -1,27 +1,30 @@
-import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/applications/entitlements/ApplicationEntitlementForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#elements/Tabs";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import {
     ApplicationEntitlement,
     CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
@@ -34,6 +37,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     order = "order";
 
+    protected override searchEnabled = true;
+
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
@@ -41,9 +46,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -67,12 +74,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    row(item: ApplicationEntitlement): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Entitlement")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Entitlement")}</span>
                     <ak-application-entitlement-form
                         slot="form"
                         .instancePk=${item.pbmUuid}
@@ -81,12 +88,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplicationentitlement}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -94,37 +101,24 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html`<td></td>
-            <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users have access to this entitlement.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list
-                            .target=${item.pbmUuid}
-                            .allowedTypes=${[
-                                PolicyBindingCheckTarget.group,
-                                PolicyBindingCheckTarget.user,
-                            ]}
-                        >
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>${msg("These bindings control which users have access to this entitlement.")}</p>
+            <ak-bound-policies-list
+                .target=${item.pbmUuid}
+                .allowedTypes=${[PolicyBindingCheckTarget.group, PolicyBindingCheckTarget.user]}
+            >
+            </ak-bound-policies-list>
+        </div>`;
     }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                header=${msg("No app entitlements created.")}
-                icon="pf-icon-module"
-            >
+            html`<ak-empty-state icon="pf-icon-module"
+                ><span>${msg("No app entitlements created.")}</span>
+
                 <div slot="body">
                     ${msg(
-                        "This application does currently not have any application entitlement defined.",
+                        "This application does currently not have any application entitlements defined.",
                     )}
                 </div>
                 <div slot="primary"></div>
@@ -134,8 +128,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Entitlement")} </span>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("Create Entitlement")}</span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">

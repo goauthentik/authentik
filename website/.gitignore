@@ -2,12 +2,16 @@
 /node_modules
 
 # Production
+/api/build
+/integrations/build
 /build
+/out
 /help
 
 # Generated files
 .docusaurus
 .cache-loader
+cache-output.json
 
 # Misc
 .DS_Store
@@ -23,6 +27,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-static/docker-compose.yml
-static/schema.yml
+!integrations/**/media
+**/static/docker-compose.yml
+**/static/releases.gen.json
+**/static/schema.yml
+api/reference
 docs/developer-docs/api/reference/**

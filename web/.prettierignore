@@ -1,16 +1,23 @@
-# don't ever lint node_modules
+# Prettier Ignorefile
+
+## Node
 node_modules
-# don't lint build output (make sure it's set to your correct build folder name)
-dist
-# don't lint nyc coverage output
+
+## Static Files
+**/LICENSE
+
+## Build asset directories
 coverage
-# Import order matters
-poly.ts
+dist
+out
+
+## Storybook
+storybook-static/
+.storybook/css-import-maps*
+
+## Locales
 src/locale-codes.ts
 src/locales/
-storybook-static/
-# Prettier breaks the tsconfig file
-tsconfig.json
-.storybook/css-import-maps*
-package.json
-packages/**/package.json
+
+## Vendored files
+*.min.js

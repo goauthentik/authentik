@@ -1,23 +1,21 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import "#elements/CodeMirror";
+import "#components/ak-number-input";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
-} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers";
 
 import {
     CoreApi,
@@ -27,6 +25,11 @@ import {
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-google-workspace-form")
 export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
@@ -42,33 +45,33 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 id: this.instance.pk,
                 googleWorkspaceProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleWorkspaceProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
+            googleWorkspaceProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
-                        ?required=${true}
+                        required
                         name="credentials"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.JavaScript}
-                            .value="${first(this.instance?.credentials, {})}"
+                            mode="javascript"
+                            .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
@@ -76,12 +79,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
-                        ?required=${true}
+                        required
                         name="delegatedSubject"
                     >
                         <input
                             type="email"
-                            value="${first(this.instance?.delegatedSubject, "")}"
+                            value="${this.instance?.delegatedSubject ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -93,12 +96,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default group email domain")}
-                        ?required=${true}
+                        required
                         name="defaultGroupEmailDomain"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.defaultGroupEmailDomain, "")}"
+                            value="${this.instance?.defaultGroupEmailDomain ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -166,7 +169,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.dryRun, false)}
+                                ?checked=${this.instance?.dryRun ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -183,15 +186,14 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
-                <span slot="header">${msg("User filtering")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("User filtering")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.excludeUsersServiceAccount, true)}
+                                ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -227,7 +229,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.filterGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -236,9 +238,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${msg("Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"
@@ -273,6 +274,29 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             ${msg("Property mappings used to group creation.")}
                         </p>
                     </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Sync settings")}">
+                <div class="pf-c-form">
+                    <ak-number-input
+                        label=${msg("Page size")}
+                        required
+                        name="pageSize"
+                        value="${this.instance?.syncPageSize ?? 100}"
+                        help=${msg("Controls the number of objects synced in a single task.")}
+                    ></ak-number-input>
+                    <ak-text-input
+                        name="syncPageTimeout"
+                        label=${msg("Page timeout")}
+                        input-hint="code"
+                        required
+                        value="${ifDefined(this.instance?.syncPageTimeout ?? "minutes=30")}"
+                        .bighelp=${html`<p class="pf-c-form__helper-text">
+                                ${msg("Timeout for synchronization of a single page.")}
+                            </p>
+                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                    >
+                    </ak-text-input>
                 </div>
             </ak-form-group>`;
     }

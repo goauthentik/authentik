@@ -68,7 +68,7 @@ class AuthenticatorAttachment(models.TextChoices):
 
 
 class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Stage to enroll WebAuthn-based authenticators."""
+    """Setup WebAuthn-based authentication for the user."""
 
     user_verification = models.TextField(
         choices=UserVerification.choices,
@@ -83,6 +83,8 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     )
 
     device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+
+    max_attempts = models.PositiveIntegerField(default=0)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

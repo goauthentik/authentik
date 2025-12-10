@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Generate config for development"""
 
+from typing import Any
+
 from yaml import safe_dump
 
 from authentik.lib.generators import generate_id
 
 
-def generate_local_config():
+def generate_local_config() -> dict[str, Any]:
     """Generate a local development configuration"""
     # TODO: This should be generated and validated against a schema, such as Pydantic.
 
@@ -30,21 +32,25 @@ def generate_local_config():
             }
         },
         "storage": {
-            "media": {
-                "backend": "file",
-                "s3": {
-                    "endpoint": "http://localhost:8020",
-                    "access_key": "accessKey1",
-                    "secret_key": "secretKey1",
-                    "bucket_name": "authentik-media",
-                    "custom_domain": "localhost:8020/authentik-media",
-                    "secure_urls": False,
-                },
+            "backend": "file",
+            "s3": {
+                "endpoint": "http://localhost:8020",
+                "access_key": "accessKey1",
+                "secret_key": "secretKey1",
+                "bucket_name": "authentik-media",
+                "custom_domain": "localhost:8020/authentik-media",
+                "secure_urls": False,
             },
         },
         "tenants": {
             "enabled": False,
             "api_key": generate_id(),
+        },
+        "worker": {
+            "processes": 1,
+            "threads": 1,
+            "consumer_listen_timeout": "seconds=10",
+            "scheduler_interval": "seconds=30",
         },
     }
 

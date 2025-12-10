@@ -1,165 +1,197 @@
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { adaptCSS } from "@goauthentik/common/utils";
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
+import { globalAK } from "#common/global";
+import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
+import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from "#common/theme";
+
+import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
+import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
 
 import { localized } from "@lit/localize";
-import { LitElement, ReactiveElement } from "lit";
+import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
+import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import OneDark from "@goauthentik/common/styles/one-dark.css";
-import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
+/**
+ * Patternfly base styles, providing common variables and resets.
+ *
+ * @remarks
+ *
+ * This style sheet **must** be included before any other styles that depend on Patternfly variables.
+ */
+const $PFBase = createStyleSheetUnsafe(PFBase);
 
-import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+/**
+ * authentik base styles, providing overrides to Patternfly's initial definitions,
+ * and additional customizations.
+ */
+const $AKBase = createStyleSheetUnsafe(AKBase);
 
-type AkInterface = HTMLElement & {
-    getTheme: () => Promise<UiThemeEnum>;
-    brand?: CurrentBrand;
-    uiConfig?: UIConfig;
-    config?: Config;
-    get activeTheme(): UiThemeEnum | undefined;
-};
-
-export const rootInterface = <T extends AkInterface>(): T | undefined =>
-    (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
-
-export const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
-
-// Ensure themes are converted to a static instance of CSS Stylesheet, otherwise the
-// when changing themes we might not remove the correct css stylesheet instance.
-const _darkTheme = ensureCSSStyleSheet(ThemeDark);
+export interface AKElementProps {
+    activeTheme: ResolvedUITheme;
+}
 
 @localized()
-export class AKElement extends LitElement {
-    _mediaMatcher?: MediaQueryList;
-    _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
-    _activeTheme?: UiThemeEnum;
+export class AKElement extends LitElement implements AKElementProps {
+    //#region Static Properties
 
-    get activeTheme(): UiThemeEnum | undefined {
-        return this._activeTheme;
+    public static styles?: Array<CSSResult | CSSModule>;
+
+    protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
+        if (!styles) return [$PFBase, $AKBase];
+
+        if (!Array.isArray(styles)) return [createCSSResult(styles), $PFBase, $AKBase];
+
+        return [
+            $PFBase,
+            // ---
+            ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
+            $AKBase,
+        ];
     }
+
+    //#endregion
+
+    //#region Lifecycle
 
     constructor() {
         super();
-    }
 
-    setInitialStyles(root: DocumentOrShadowRoot) {
-        const styleRoot: DocumentOrShadowRoot = (
-            "ShadyDOM" in window ? document : root
-        ) as DocumentOrShadowRoot;
-        styleRoot.adoptedStyleSheets = adaptCSS([
-            ...styleRoot.adoptedStyleSheets,
-            ensureCSSStyleSheet(AKGlobal),
-            ensureCSSStyleSheet(OneDark),
-        ]);
-        this._initTheme(styleRoot);
-        this._initCustomCSS(styleRoot);
-    }
+        const { brand } = globalAK();
 
-    protected createRenderRoot() {
-        this.fixElementStyles();
-        const root = super.createRenderRoot();
-        this.setInitialStyles(root as unknown as DocumentOrShadowRoot);
-        return root;
-    }
+        const preferredColorScheme = resolveUITheme(
+            document.documentElement.dataset.theme || globalAK().brand.uiTheme,
+        );
+        this.activeTheme = preferredColorScheme;
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
-    }
+        this.#customCSSStyleSheet = brand?.brandingCustomCss
+            ? createStyleSheetUnsafe(brand.brandingCustomCss)
+            : null;
 
-    fixElementStyles() {
-        // Ensure all style sheets being passed are really style sheets.
-        (this.constructor as typeof ReactiveElement).elementStyles = (
-            this.constructor as typeof ReactiveElement
-        ).elementStyles.map(ensureCSSStyleSheet);
-    }
+        if (process.env.NODE_ENV === "development") {
+            const updatedCallback = this.updated;
 
-    async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
-        // Early activate theme based on media query to prevent light flash
-        // when dark is preferred
-        this._applyTheme(root, globalAK().brand.uiTheme);
-        this._applyTheme(root, await this.getTheme());
-    }
+            this.updated = function updatedWrapper(args: PropertyValues) {
+                updatedCallback?.call(this, args);
 
-    async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const brand = globalAK().brand;
-        if (!brand) {
-            return;
+                const unregisteredElements = this.renderRoot.querySelectorAll(
+                    `:not(:defined):not([data-registration="lazy"])`,
+                );
+
+                if (!unregisteredElements.length) return;
+
+                for (const element of unregisteredElements) {
+                    console.debug("Unregistered custom element found in the DOM", element);
+                }
+                throw new TypeError(
+                    `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
+                );
+            };
         }
-        const sheet = await new CSSStyleSheet().replace(brand.brandingCustomCss);
-        root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     }
 
-    _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
-        if (!theme) {
-            theme = UiThemeEnum.Automatic;
-        }
-        if (theme === UiThemeEnum.Automatic) {
-            // Create a media matcher to automatically switch the theme depending on
-            // prefers-color-scheme
-            if (!this._mediaMatcher) {
-                this._mediaMatcher = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT);
-                this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
-                    const theme =
-                        ev?.matches || this._mediaMatcher?.matches
-                            ? UiThemeEnum.Light
-                            : UiThemeEnum.Dark;
-                    this._activateTheme(theme, root);
-                };
-                this._mediaMatcherHandler(undefined);
-                this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
-            }
-            return;
-        } else if (this._mediaMatcher && this._mediaMatcherHandler) {
-            // Theme isn't automatic and we have a matcher configured, remove the matcher
-            // to prevent changes
-            this._mediaMatcher.removeEventListener("change", this._mediaMatcherHandler);
-            this._mediaMatcher = undefined;
-        }
-        this._activateTheme(theme, root);
-    }
-
-    static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
-        if (theme === UiThemeEnum.Dark) {
-            return _darkTheme;
-        }
-        return undefined;
+    public override disconnectedCallback(): void {
+        this.#themeAbortController?.abort();
+        super.disconnectedCallback();
     }
 
     /**
-     * Directly activate a given theme, accepts multiple document/ShadowDOMs to apply the stylesheet
-     * to. The stylesheets are applied to each DOM in order. Does nothing if the given theme is already active.
+     * Returns the node into which the element should render.
+     *
+     * @see {LitElement.createRenderRoot} for more information.
      */
-    _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]) {
-        if (theme === this._activeTheme) {
-            return;
-        }
-        // Make sure we only get to this callback once we've picked a concise theme choice
-        this.dispatchEvent(
-            new CustomEvent(EVENT_THEME_CHANGE, {
-                bubbles: true,
-                composed: true,
-                detail: theme,
-            }),
-        );
-        this.setAttribute("theme", theme);
-        const stylesheet = AKElement.themeToStylesheet(theme);
-        const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
-        roots.forEach((root) => {
-            if (stylesheet) {
-                root.adoptedStyleSheets = [
-                    ...root.adoptedStyleSheets,
-                    ensureCSSStyleSheet(stylesheet),
-                ];
-            }
-            if (oldStylesheet) {
-                root.adoptedStyleSheets = root.adoptedStyleSheets.filter(
-                    (v) => v !== oldStylesheet,
-                );
-            }
-        });
-        this._activeTheme = theme;
-        this.requestUpdate();
+    protected override createRenderRoot(): HTMLElement | DocumentFragment {
+        const renderRoot = super.createRenderRoot();
+        this.styleRoot ??= renderRoot;
+
+        return renderRoot;
     }
+
+    //#endregion
+
+    //#region Properties
+
+    /**
+     * The resolved theme of the current element.
+     *
+     * @remarks
+     *
+     * Unlike the browser's current color scheme, this is a value that can be
+     * resolved to a specific theme, i.e. dark or light.
+     */
+    @property({
+        attribute: "theme",
+        type: String,
+        reflect: true,
+    })
+    public activeTheme: ResolvedUITheme;
+
+    //#endregion
+
+    //#region Private Properties
+
+    /**
+     * A custom CSS style sheet to apply to the element.
+     */
+    readonly #customCSSStyleSheet: CSSStyleSheet | null;
+
+    /**
+     * A controller to abort theme updates, such as when the element is disconnected.
+     */
+    #themeAbortController: AbortController | null = null;
+    /**
+     * The style root to which the theme is applied.
+     */
+    #styleRoot?: StyleRoot;
+
+    protected set styleRoot(nextStyleRoot: StyleRoot | undefined) {
+        this.#themeAbortController?.abort();
+
+        this.#styleRoot = nextStyleRoot;
+
+        if (!nextStyleRoot) return;
+
+        this.#themeAbortController = new AbortController();
+
+        document.addEventListener(
+            ThemeChangeEvent.eventName,
+            (event) => {
+                applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
+
+                this.activeTheme = event.theme;
+            },
+            {
+                signal: this.#themeAbortController.signal,
+            },
+        );
+    }
+
+    protected get styleRoot(): StyleRoot | undefined {
+        return this.#styleRoot;
+    }
+
+    protected hasSlotted(name: string | null) {
+        const isNotNestedSlot = (start: Element) => {
+            let node = start.parentNode;
+            while (node && node !== this) {
+                if (node instanceof Element && node.hasAttribute("slot")) {
+                    return false;
+                }
+                node = node.parentNode;
+            }
+            return true;
+        };
+
+        // All child slots accessible from the component's LightDOM that match the request
+        const allChildSlotRequests =
+            typeof name === "string"
+                ? [...this.querySelectorAll(`[slot="${name}"]`)]
+                : [...this.children].filter((child) => {
+                      const slotAttr = child.getAttribute("slot");
+                      return !slotAttr || slotAttr === "";
+                  });
+
+        // All child slots accessible from the LightDom that match the request *and* are not nested
+        // within another slotted element.
+        return allChildSlotRequests.filter((node) => isNotNestedSlot(node)).length > 0;
+    }
+
+    //#endregion
 }

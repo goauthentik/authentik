@@ -5,13 +5,14 @@ from typing import Any
 
 from django.core.management.base import BaseCommand, no_translations
 from django.db.models import Model, fields
+from django.db.models.fields.related import OneToOneField
 from drf_jsonschema_serializer.convert import converter, field_to_converter
 from rest_framework.fields import Field, JSONField, UUIDField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
@@ -32,6 +33,8 @@ class PrimaryKeyRelatedFieldConverter:
     def convert(self, field: PrimaryKeyRelatedField):
         model: Model = field.queryset.model
         pk_field = model._meta.pk
+        if isinstance(pk_field, OneToOneField):
+            pk_field = pk_field.related_fields[0][1]
         if isinstance(pk_field, fields.UUIDField):
             return {"type": "string", "format": "uuid"}
         return {"type": "integer"}
@@ -48,7 +51,7 @@ class Command(BaseCommand):
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
             "type": "object",
-            "title": f"authentik {__version__} Blueprint schema",
+            "title": f"authentik {authentik_version()} Blueprint schema",
             "required": ["version", "entries"],
             "properties": {
                 "version": {
@@ -72,20 +75,33 @@ class Command(BaseCommand):
                     "additionalProperties": True,
                 },
                 "entries": {
-                    "type": "array",
-                    "items": {
-                        "oneOf": [],
-                    },
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {"$ref": "#/$defs/blueprint_entry"},
+                        },
+                        {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {"$ref": "#/$defs/blueprint_entry"},
+                            },
+                        },
+                    ],
                 },
             },
-            "$defs": {},
+            "$defs": {"blueprint_entry": {"oneOf": []}},
         }
 
+    def add_arguments(self, parser):
+        parser.add_argument("--file", type=str)
+
     @no_translations
-    def handle(self, *args, **options):
+    def handle(self, *args, file: str, **options):
         """Generate JSON Schema for blueprints"""
         self.build()
-        self.stdout.write(dumps(self.schema, indent=4, default=Command.json_default))
+        with open(file, "w") as _schema:
+            _schema.write(dumps(self.schema, indent=4, default=Command.json_default))
 
     @staticmethod
     def json_default(value: Any) -> Any:
@@ -105,14 +121,17 @@ class Command(BaseCommand):
                 model_instance: Model = model()
                 if not isinstance(model_instance, SerializerModel):
                     continue
-                serializer_class = model_instance.serializer
+                try:
+                    serializer_class = model_instance.serializer
+                except NotImplementedError as exc:
+                    raise NotImplementedError(model_instance) from exc
             serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,
                 }
             )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
-            self.schema["properties"]["entries"]["items"]["oneOf"].append(
+            self.schema["$defs"]["blueprint_entry"]["oneOf"].append(
                 self.template_entry(model_path, model, serializer)
             )
 
@@ -134,7 +153,7 @@ class Command(BaseCommand):
                 "id": {"type": "string"},
                 "state": {
                     "type": "string",
-                    "enum": [s.value for s in BlueprintEntryDesiredState],
+                    "enum": sorted([s.value for s in BlueprintEntryDesiredState]),
                     "default": "present",
                 },
                 "conditions": {"type": "array", "items": {"type": "boolean"}},
@@ -205,7 +224,7 @@ class Command(BaseCommand):
                 "type": "object",
                 "required": ["permission"],
                 "properties": {
-                    "permission": {"type": "string", "enum": perms},
+                    "permission": {"type": "string", "enum": sorted(perms)},
                     "user": {"type": "integer"},
                     "role": {"type": "string"},
                 },

@@ -1,0 +1,57 @@
+{
+    "name": "@goauthentik/core",
+    "version": "1.0.0",
+    "description": "Core functionality for the authentik monorepo",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "tsc -p ."
+    },
+    "main": "index.js",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        },
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
+        }
+    },
+    "imports": {
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "dependencies": {
+        "@goauthentik/tsconfig": "^1.0.5",
+        "@types/node": "^24.10.1",
+        "@types/semver": "^7.7.1",
+        "semver": "^7.7.3",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "types": "./out/index.d.ts"
+}

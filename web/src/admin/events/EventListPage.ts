@@ -1,105 +1,137 @@
-import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-event-info";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/events/EventMap";
+import "#admin/events/EventVolumeChart";
+import "#admin/reports/ExportButton";
+import "#components/ak-event-info";
+import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
-@customElement("ak-event-list")
-export class EventListPage extends TablePage<Event> {
-    expandable = true;
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-    pageTitle(): string {
-        return msg("Event Log");
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-catalog";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+@customElement("ak-event-list")
+export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
+    expandable = true;
+    supportsQL = true;
+
+    public pageTitle = msg("Event Log");
+    public pageDescription = "";
+
+    public pageIcon = "pf-icon pf-icon-catalog";
+    protected override searchEnabled = true;
 
     @property()
     order = "-created";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFGrid,
+        css`
             .pf-m-no-padding-bottom {
                 padding-bottom: 0;
             }
-        `);
-    }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "user"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-            new TableColumn(msg("Brand"), "brand_name"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "user"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+        [msg("Brand"), "brand_name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override rowLabel(item: Event): string | null {
+        return actionToLabel(item.action);
     }
 
     renderSectionBefore(): TemplateResult {
-        return html`
-            <div class="pf-c-page__main-section pf-m-no-padding-bottom">
+        if (this.hasEnterpriseLicense) {
+            return html`<div
+                class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
+            >
                 <ak-events-volume-chart
+                    class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl "
                     .query=${{
                         page: this.page,
                         search: this.search,
                     }}
+                    with-map
                 ></ak-events-volume-chart>
-            </div>
-        `;
+                <ak-events-map
+                    class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
+                    .events=${this.data}
+                    @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
+                        this.search = `event_uuid = "${ev.detail.eventId}"`;
+                        this.page = 1;
+                        this.fetch();
+                    }}
+                ></ak-events-map>
+            </div>`;
+        }
+        return html`<div class="pf-c-page__main-section pf-m-no-padding-bottom">
+            <ak-events-volume-chart
+                .query=${{
+                    page: this.page,
+                    search: this.search,
+                }}
+            ></ak-events-volume-chart>
+        </div>`;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
-            EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            renderEventUser(item),
+            Timestamp(item.created),
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>
-                    <i class="fas fa-share-square"></i>
+                    <i class="fas fa-share-square" aria-hidden="true"></i>
                 </pf-tooltip>
             </a>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="5">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
+
+    protected renderToolbar(): TemplateResult {
+        return html`${super.renderToolbar()}
+            <ak-reports-export-button
+                .createExport=${this.#createExport}
+            ></ak-reports-export-button>`;
+    }
+
+    #createExport = async () => {
+        await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate({
+            ...(await this.defaultEndpointConfig()),
+        });
+    };
 }
 
 declare global {

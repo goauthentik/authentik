@@ -1,12 +1,16 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
+import { pluckErrorDetail } from "#common/errors/network";
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import { WithLocale } from "#elements/mixins/locale";
+import { FocusTarget } from "#elements/utils/focus";
 
 import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, LitElement, nothing, PropertyValues } from "lit";
+import { property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface SubmitOptions {
     invisible: boolean;
@@ -16,6 +20,7 @@ export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
     loading: boolean;
+    reset?: () => void;
     submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
@@ -45,57 +50,122 @@ export interface PendingUserChallenge {
 
 export interface ResponseErrorsChallenge {
     responseErrors?: {
-        [key: string]: Array<ErrorDetail>;
+        [key: string]: ErrorDetail[];
     };
 }
 
-export class BaseStage<
+export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
-> extends AKElement {
-    host!: StageHost;
+> extends WithLocale(AKElement) {
+    static shadowRootOptions: ShadowRootInit = {
+        ...LitElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
+    // TODO: Should have a property but this needs some refactoring first.
+    // @property({ attribute: false })
+    public host!: StageHost;
 
     @property({ attribute: false })
-    challenge!: Tin;
+    public challenge!: Tin;
 
-    async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
-        e.preventDefault();
-        const object: KeyUnknown = defaults || {};
-        const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
+    @intersectionObserver()
+    public visible = false;
 
-        for await (const [key, value] of form.entries()) {
-            if (value instanceof Blob) {
-                object[key] = await readFileAsync(value);
-            } else {
-                object[key] = value;
+    protected autofocusTarget = new FocusTarget();
+    focus = this.autofocusTarget.focus;
+
+    #visibilityListener = () => {
+        if (document.visibilityState !== "visible") return;
+        if (!this.visible) return;
+
+        if (!this.autofocusTarget.target) return;
+
+        this.autofocusTarget.focus();
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+
+        document.addEventListener("visibilitychange", this.#visibilityListener);
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.removeEventListener("focus", this.autofocusTarget.toEventListener());
+
+        document.removeEventListener("visibilitychange", this.#visibilityListener);
+    }
+
+    public updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        // We're especially mindful of how often this runs to avoid
+        // unnecessary focus and in-fighting between the user's chosen focus target.
+        if (
+            changed.has("visible") &&
+            changed.get("visible") !== this.visible &&
+            this.visible &&
+            this.autofocusTarget.target
+        ) {
+            this.autofocusTarget.focus();
+        }
+    }
+
+    public submitForm = async (event?: SubmitEvent, defaults?: Tout): Promise<boolean> => {
+        event?.preventDefault();
+
+        const payload: Record<string, unknown> = defaults || {};
+
+        const form = this.shadowRoot?.querySelector("form");
+
+        if (form) {
+            const data = new FormData(form);
+
+            for await (const [key, value] of data.entries()) {
+                if (value instanceof Blob) {
+                    payload[key] = await readFileAsync(value);
+                } else {
+                    payload[key] = value;
+                }
             }
         }
-        return this.host?.submit(object as unknown as Tout).then((successful) => {
+
+        return this.host?.submit(payload).then((successful) => {
             if (successful) {
                 this.onSubmitSuccess();
             } else {
                 this.onSubmitFailure();
             }
+
             return successful;
         });
-    }
+    };
 
     renderNonFieldErrors() {
-        const errors = this.challenge?.responseErrors || {};
-        if (!("non_field_errors" in errors)) {
-            return nothing;
-        }
-        const nonFieldErrors = errors["non_field_errors"];
+        const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
+
         if (!nonFieldErrors) {
             return nothing;
         }
+
         return html`<div class="pf-c-form__alert">
-            ${nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+            ${nonFieldErrors.map((err, idx) => {
+                return html`<div
+                    role="alert"
+                    aria-labelledby="error-message-${idx}"
+                    class="pf-c-alert pf-m-inline pf-m-danger"
+                >
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${err.string}</h4>
+                    <p id="error-message-${idx}" class="pf-c-alert__title">
+                        ${pluckErrorDetail(err)}
+                    </p>
                 </div>`;
             })}
         </div>`;

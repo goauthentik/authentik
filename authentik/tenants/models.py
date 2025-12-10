@@ -4,13 +4,15 @@ import re
 from uuid import uuid4
 
 from django.apps import apps
+from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
+from django_tenants.utils import get_tenant_base_schema
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -25,6 +27,8 @@ VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
 DEFAULT_TOKEN_DURATION = "days=1"  # nosec
 DEFAULT_TOKEN_LENGTH = 60
+DEFAULT_REPUTATION_LOWER_LIMIT = -5
+DEFAULT_REPUTATION_UPPER_LIMIT = 5
 
 
 def _validate_schema_name(name):
@@ -70,6 +74,16 @@ class Tenant(TenantMixin, SerializerModel):
             "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
         ),
     )
+    reputation_lower_limit = models.IntegerField(
+        help_text=_("Reputation cannot decrease lower than this value. Zero or negative."),
+        default=DEFAULT_REPUTATION_LOWER_LIMIT,
+        validators=[MaxValueValidator(0)],
+    )
+    reputation_upper_limit = models.IntegerField(
+        help_text=_("Reputation cannot increase higher than this value. Zero or positive."),
+        default=DEFAULT_REPUTATION_UPPER_LIMIT,
+        validators=[MinValueValidator(0)],
+    )
     footer_links = models.JSONField(
         help_text=_("The option configures the footer links on the flow executor pages."),
         default=list,
@@ -99,10 +113,11 @@ class Tenant(TenantMixin, SerializerModel):
         default=DEFAULT_TOKEN_LENGTH,
         validators=[MinValueValidator(1)],
     )
+    flags = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):
-        if self.schema_name == "template":
-            raise IntegrityError("Cannot create schema named template")
+        if self.schema_name == get_tenant_base_schema() and not settings.TEST:
+            raise IntegrityError(f"Cannot create schema named {self.schema_name}")
         super().save(*args, **kwargs)
 
     @property

@@ -1,19 +1,20 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-status-label";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/DeleteBulkForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-
-import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
 @customElement("ak-user-oauth-access-token-list")
 export class UserOAuthAccessTokenList extends Table<TokenModel> {
@@ -22,9 +23,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     @property({ type: Number })
     userId?: number;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFFlex);
-    }
+    static styles: CSSResult[] = [...super.styles, PFFlex];
 
     async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
@@ -36,28 +35,24 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     checkbox = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Provider"), "provider"),
-            new TableColumn(msg("Revoked?"), "revoked"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Scopes"), "scope"),
-        ];
+    protected override rowLabel(item: TokenModel): string | null {
+        return item.provider?.name ?? null;
     }
 
+    protected columns: TableColumn[] = [
+        [msg("Provider"), "provider"],
+        [msg("Revoked?"), "revoked"],
+        [msg("Expires"), "expires"],
+        [msg("Scopes"), "scope"],
+    ];
+
     renderExpanded(item: TokenModel): TemplateResult {
-        return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-l-flex">
-                        <div class="pf-l-flex__item">
-                            <h3>${msg("ID Token")}</h3>
-                            <pre>${item.idToken}</pre>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+        return html`<div class="pf-l-flex">
+            <div class="pf-l-flex__item">
+                <h3>${msg("ID Token")}</h3>
+                <pre>${item.idToken}</pre>
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -82,7 +77,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: TokenModel): TemplateResult[] {
+    row(item: TokenModel): SlottedTemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label
@@ -91,13 +86,10 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
                 good-label=${msg("No")}
                 bad-label=${msg("Yes")}
             ></ak-status-label>`,
-            html`${item.expires
-                ? html`<div>${getRelativeTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires),
             html`<ak-chip-group>
                 ${item.scope.sort().map((scope) => {
-                    return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
+                    return html`<ak-chip>${scope}</ak-chip>`;
                 })}
             </ak-chip-group>`,
         ];

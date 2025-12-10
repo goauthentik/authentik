@@ -6,48 +6,80 @@
 {% block head %}
 {{ block.super }}
 <script>
-  let redirecting = false;
-  const checkAuth = async () => {
-    if (redirecting) return true;
+"use strict";
+
+let redirecting = false;
+
+async function checkAuth() {
+    if (redirecting) {
+        console.debug(
+            "authentik/policies/buffer: Already authenticating in another tab. This page will refresh once authentication is completed.",
+        );
+
+        return true;
+    }
+
     const url = "{{ check_auth_url }}";
     console.debug("authentik/policies/buffer: Checking authentication...");
-    try {
-      const result = await fetch(url, {
+
+    return fetch(url, {
         method: "HEAD",
-      });
-      if (result.status >= 400) {
-        return false
-      }
-      console.debug("authentik/policies/buffer: Continuing");
-      redirecting = true;
-      if ("{{ auth_req_method }}" === "post") {
-        document.querySelector("form").submit();
-      } else {
-        window.location.assign("{{ continue_url|escapejs }}");
-      }
-    } catch {
-      return false;
-    }
-  };
-  let timeout = 100;
-  let offset = 20;
-  let attempt = 0;
-  const main = async () => {
-    attempt += 1;
-    await checkAuth();
+    })
+        .then((response) => {
+            if (response.status >= 400) {
+                return false;
+            }
+
+            console.debug("authentik/policies/buffer: Continuing");
+
+            if ("{{ auth_req_method }}" === "post") {
+                document.querySelector("form")?.submit();
+                return true;
+            }
+
+            window.location.assign("{{ continue_url|escapejs }}");
+
+            return true;
+        })
+        .catch((error) => {
+            console.warn("authentik/policies/buffer: Error checking authentication.", error);
+            return false;
+        })
+}
+
+const offset = 20;
+
+let timeoutID = -1;
+let timeout = 100;
+let attempts = 0;
+
+async function main() {
+    window.clearTimeout(timeoutID);
+
+    attempts += 1;
+
+    redirecting = await checkAuth();
+
     console.debug(`authentik/policies/buffer: Waiting ${timeout}ms...`);
-    setTimeout(main, timeout);
-    timeout += (offset * attempt);
+
+    timeoutID = window.setTimeout(main, timeout);
+
+    timeout += offset * attempts;
+
     if (timeout >= 2000) {
-      timeout = 2000;
+        timeout = 2000;
     }
-  }
-  document.addEventListener("visibilitychange", async () => {
+}
+
+document.addEventListener("visibilitychange", async () => {
     if (document.hidden) return;
+
     console.debug("authentik/policies/buffer: Checking authentication on tab activate...");
-    await checkAuth();
-  });
-  main();
+
+    redirecting = await checkAuth();
+});
+
+main();
 </script>
 {% endblock %}
 

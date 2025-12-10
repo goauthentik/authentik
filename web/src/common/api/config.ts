@@ -1,12 +1,24 @@
 import {
     CSRFMiddleware,
     EventMiddleware,
+    LocaleMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+} from "#common/api/middleware";
+import { globalAK } from "#common/global";
+import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Config, Configuration, CurrentBrand, RootApi } from "@goauthentik/api";
+
+export const DEFAULT_CONFIG = new Configuration({
+    basePath: `${globalAK().api.base}api/v3`,
+    middleware: [
+        new CSRFMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(globalAK().brand),
+        new SentryMiddleware(),
+        new LocaleMiddleware(),
+    ],
+});
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
@@ -33,52 +45,6 @@ export function brandSetFavicon(brand: CurrentBrand) {
     });
 }
 
-export function brandSetLocale(brand: CurrentBrand) {
-    if (brand.defaultLocale === "") {
-        return;
-    }
-    console.debug("authentik/locale: setting locale from brand default");
-    window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail: { locale: brand.defaultLocale },
-        }),
-    );
-}
-
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
-}
-
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-    ],
-});
-
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or
 // unexpected-character-in-attribute-name
@@ -86,4 +52,6 @@ export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
 
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
+console.debug(
+    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
+);

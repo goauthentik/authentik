@@ -13,7 +13,6 @@
 - Create/update the release notes
 
     #### For initial releases:
-
     - Copy `website/docs/releases/_template.md` to `website/docs/releases/v2022.12.md` and replace `xxxx.x` with the version that is being released
 
     - Fill in the section of `Breaking changes` and `New features`, or remove the headers if there's nothing applicable
@@ -32,34 +31,32 @@
 
         If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
 
-    - Run `make website`
+    - Run `make docs`
 
     #### For subsequent releases:
-
     - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
 
     - Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
 
     - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
 
-    - Run `make website`
+    - Run `make docs`
 
 - Run `bumpversion` on the version branch with the new version (i.e. `bumpversion --new-version 2022.12.2 minor --verbose`)
 - Push the tag and commit
 - A GitHub actions workflow will start to run a last test in container images and create a draft release on GitHub
 - Edit the draft GitHub release
-
     - Make sure the title is formatted `Release 2022.12.0`
     - Add the following to the release notes
 
         ```
-        See https://goauthentik.io/docs/releases/2022.12
+        See https://docs.goauthentik.io/releases/2022.12
         ```
 
         Or if creating a subsequent release
 
         ```
-        See https://goauthentik.io/docs/releases/2022.12#fixed-in-2022121
+        See https://docs.goauthentik.io/releases/2022.12#fixed-in-2022121
         ```
 
     - Auto-generate the full release notes using the GitHub _Generate Release Notes_ feature
@@ -113,6 +110,10 @@ If you have any questions or comments about this advisory:
 
     Include the new file in the `/website/sidebars.js`
 
+    Push the branch to https://github.com/goauthentik/authentik-internal for CI to run and for reviews
+
+    An image with the fix is built under `ghcr.io/goauthentik/internal-server` which can be made accessible to the reporter for testing
+
 - Check with the original reporter that the fix works as intended
 - Wait for GitHub to assign a CVE
 - Announce the release of the vulnerability via Mailing list and discord
@@ -123,7 +124,7 @@ If you have any questions or comments about this advisory:
 Subject: `Notice of upcoming authentik Security releases 2022.10.3 and 2022.11.3`
 
 ```markdown
-We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
 ```
 
 </details>
@@ -132,14 +133,25 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 <summary>Discord template</summary>
 
 ```markdown
-@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://goauthentik.io/docs/security/policy.
+@everyone We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _date_, 13:00 UTC with the Severity level High. Fixed versions x, y and z will be released alongside a workaround for previous versions. For more info, see the authentik Security policy here: https://docs.goauthentik.io/security/policy.
 ```
 
 </details>
 
 ### Creating a security release
 
-- On the date specified in the announcement, push the local `security/CVE-2022-xxxxx` branch into a PR, and squash merge it if the pipeline passes
+- On the date specified in the announcement, retag the image from `authentik-internal` to the main image:
+
+    ```
+    docker buildx imagetools create -t ghcr.io/goauthentik/server:xxxx.x ghcr.io/goauthentik/internal-server:gh-cve-2022-xxx
+    docker buildx imagetools create -t ghcr.io/goauthentik/server:xxxx.x.x ghcr.io/goauthentik/internal-server:gh-cve-2022-xxx
+    ```
+
+    Where xxxx.x is the version family and xxxx.x.x is the full version.
+
+    This will make the fixed container image available instantly, while the full release is running on the main repository.
+
+- Push the local `security/CVE-2022-xxxxx` branch into a PR, and squash merge it if the pipeline passes
 - If the fix made any changes to the API schema, merge the PR to update the web API client
 - Cherry-pick the merge commit onto the version branch
 - If the fix made any changes to the API schema, manually install the latest version of the API client in `/web`
@@ -148,7 +160,6 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 
 <details>
 <summary>Mailing list template</summary>
-<p>
 
 Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
 
@@ -158,12 +169,10 @@ The security advisory for CVE-2022-xxxxx has been published: https://github.com/
 Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https://github.com/goauthentik/authentik/releases
 ```
 
-</p>
 </details>
 
 <details>
 <summary>Discord template</summary>
-<p>
 
 ```markdown
 [...existing announcement...]
@@ -175,5 +184,4 @@ Advisory for for CVE-2022-xxxxx has been published here https://github.com/goaut
 The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
 ```
 
-</p>
 </details>

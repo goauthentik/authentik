@@ -15,12 +15,12 @@ from pathlib import Path
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
 
-from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
+from authentik.lib.utils.dict import delete_path_in_dict, get_path_from_dict, set_path_in_dict
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -28,25 +28,10 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
-REDIS_ENV_KEYS = [
-    f"{ENV_PREFIX}_REDIS__HOST",
-    f"{ENV_PREFIX}_REDIS__PORT",
-    f"{ENV_PREFIX}_REDIS__DB",
-    f"{ENV_PREFIX}_REDIS__USERNAME",
-    f"{ENV_PREFIX}_REDIS__PASSWORD",
-    f"{ENV_PREFIX}_REDIS__TLS",
-    f"{ENV_PREFIX}_REDIS__TLS_REQS",
-]
-
 # Old key -> new key
 DEPRECATIONS = {
     "geoip": "events.context_processors.geoip",
-    "redis.broker_url": "broker.url",
-    "redis.broker_transport_options": "broker.transport_options",
-    "redis.cache_timeout": "cache.timeout",
-    "redis.cache_timeout_flows": "cache.timeout_flows",
-    "redis.cache_timeout_policies": "cache.timeout_policies",
-    "redis.cache_timeout_reputation": "cache.timeout_reputation",
+    "worker.concurrency": "worker.threads",
 }
 
 
@@ -252,12 +237,15 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_value = self.get(path)
+        original_value = self.get(path, UNSET)
         self.set(path, value)
         try:
             yield
         finally:
-            self.set(path, original_value)
+            if original_value is not UNSET:
+                self.set(path, original_value)
+            else:
+                self.delete(path)
 
     @property
     def raw(self) -> dict:
@@ -327,36 +315,32 @@ class ConfigLoader:
             value = Attr(value)
         set_path_in_dict(self.raw, path, value, sep=sep)
 
+    def delete(self, path: str, sep="."):
+        delete_path_in_dict(self.raw, path, sep=sep)
+
 
 CONFIG = ConfigLoader()
-
-
-def redis_url(db: int) -> str:
-    """Helper to create a Redis URL for a specific database"""
-    _redis_protocol_prefix = "redis://"
-    _redis_tls_requirements = ""
-    if CONFIG.get_bool("redis.tls", False):
-        _redis_protocol_prefix = "rediss://"
-        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
-            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
-    _redis_url = (
-        f"{_redis_protocol_prefix}"
-        f"{quote_plus(CONFIG.get('redis.username'))}:"
-        f"{quote_plus(CONFIG.get('redis.password'))}@"
-        f"{quote_plus(CONFIG.get('redis.host'))}:"
-        f"{CONFIG.get_int('redis.port')}"
-        f"/{db}{_redis_tls_requirements}"
-    )
-    return _redis_url
 
 
 def django_db_config(config: ConfigLoader | None = None) -> dict:
     if not config:
         config = CONFIG
+
+    pool_options = False
+    use_pool = config.get_bool("postgresql.use_pool", False)
+    if use_pool:
+        pool_options = config.get_dict_from_b64_json("postgresql.pool_options", True)
+        if not pool_options:
+            pool_options = True
+    # FIXME: Temporarily force pool to be deactivated.
+    # See https://github.com/goauthentik/authentik/issues/14320
+    pool_options = False
+
+    conn_options = config.get_dict_from_b64_json("postgresql.conn_options", default={})
+
     db = {
         "default": {
-            "ENGINE": "authentik.root.db",
+            "ENGINE": "psqlextra.backend",
             "HOST": config.get("postgresql.host"),
             "NAME": config.get("postgresql.name"),
             "USER": config.get("postgresql.user"),
@@ -367,6 +351,8 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
                 "sslrootcert": config.get("postgresql.sslrootcert"),
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
+                "pool": pool_options,
+                **conn_options,
             },
             "CONN_MAX_AGE": config.get_optional_int("postgresql.conn_max_age", 0),
             "CONN_HEALTH_CHECKS": config.get_bool("postgresql.conn_health_checks", False),
@@ -396,8 +382,14 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         if conn_max_age is not UNSET:
             db["default"]["CONN_MAX_AGE"] = conn_max_age
 
+    all_replica_conn_options = config.get_dict_from_b64_json(
+        "postgresql.replica_conn_options",
+        default={},
+    )
+
     for replica in config.get_keys("postgresql.read_replicas"):
         _database = deepcopy(db["default"])
+
         for setting, current_value in db["default"].items():
             if isinstance(current_value, dict):
                 continue
@@ -406,12 +398,23 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             )
             if override is not UNSET:
                 _database[setting] = override
+
+        for option in conn_options.keys():
+            _database["OPTIONS"].pop(option, None)
+
         for setting in db["default"]["OPTIONS"].keys():
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
             )
             if override is not UNSET:
                 _database["OPTIONS"][setting] = override
+
+        _database["OPTIONS"].update(all_replica_conn_options)
+        replica_conn_options = config.get_dict_from_b64_json(
+            f"postgresql.read_replicas.{replica}.conn_options", default={}
+        )
+        _database["OPTIONS"].update(replica_conn_options)
+
         db[f"replica_{replica}"] = _database
     return db
 

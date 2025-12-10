@@ -1,23 +1,25 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-text-input";
+import "#components/ak-toggle-group";
+import "#elements/CodeMirror";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-
-import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 enum blueprintSource {
     file = "file",
@@ -49,9 +51,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             : msg("Successfully created instance.");
     }
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent];
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
@@ -59,15 +59,14 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 instanceUuid: this.instance.pk,
                 blueprintInstanceRequest: data,
             });
-        } else {
-            return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
-                blueprintInstanceRequest: data,
-            });
         }
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
+            blueprintInstanceRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,7 +79,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -135,56 +134,61 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   .selected=${(item: BlueprintFile): boolean => {
                                       return this.instance?.path === item.path;
                                   }}
-                                  ?blankable=${true}
+                                  blankable
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                     ${this.source === blueprintSource.oci
-                        ? html`<ak-form-element-horizontal label=${msg("URL")} name="path">
-                              <input
-                                  type="text"
-                                  value="${ifDefined(this.instance?.path)}"
-                                  class="pf-c-form-control"
-                                  required
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.",
-                                  )}
-                              </p>
-                              <p class="pf-c-form__helper-text">
-                                  ${msg("See more about OCI support here:")}&nbsp;
-                                  <a
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="${docLink(
-                                          "/docs/customize/blueprints/?utm_source=authentik#storage---oci",
-                                      )}"
-                                      >${msg("Documentation")}</a
-                                  >
-                              </p>
-                          </ak-form-element-horizontal>`
-                        : html``}
+                        ? html` <ak-text-input
+                              name="path"
+                              label=${msg("OCI URL")}
+                              input-hint="code"
+                              required
+                              placeholder="oci://..."
+                              value="${ifDefined(this.instance?.path)}"
+                              .bighelp=${html`<p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          html` A valid OCI manifest URL, prefixed with the protocol
+                                              e.g.&nbsp;<code
+                                                  >oci://registry.domain.tld/path/to/manifest</code
+                                              >`,
+                                      )}
+                                  </p>
+                                  <p class="pf-c-form__helper-text">
+                                      <span>
+                                          ${msg("Read more about")}&nbsp;
+                                          <a
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              href=${docLink(
+                                                  "/customize/blueprints/#storage---oci",
+                                              )}
+                                              >${msg("OCI Support")}</a
+                                          >.
+                                      </span>
+                                  </p> `}
+                          >
+                          </ak-text-input>`
+                        : nothing}
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.YAML}
-                                  .parseValue=${false}
+                                  mode="yaml"
+                                  raw
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
 
-            <ak-form-group>
-                <span slot="header">${msg("Additional settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.YAML}
-                            value="${YAML.stringify(first(this.instance?.context, {}))}"
+                            mode="yaml"
+                            value="${YAML.stringify(this.instance?.context ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">

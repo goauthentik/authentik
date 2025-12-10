@@ -11,6 +11,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
+from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
@@ -26,6 +27,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.tenants.flags import patch_flag
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -325,7 +327,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.assertIn(
             app.name,
-            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "[data-test-id='stage-heading']").text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -398,16 +400,18 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
 
         negative_policy = ExpressionPolicy.objects.create(
-            name="negative-static", expression="return False"
+            name=generate_id(), expression="return False"
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.login()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[data-test-id='card-title']"))
+        )
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "[data-test-id='card-title']").text,
             "Permission denied",
         )
 
@@ -419,6 +423,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
     @apply_blueprint("system/providers-oauth2.yaml")
     @reconcile_app("authentik_crypto")
+    @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_authorization_consent_implied_parallel(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects

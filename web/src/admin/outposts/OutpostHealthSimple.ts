@@ -1,17 +1,19 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
+import "#elements/Spinner";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+import { PFColor } from "#elements/Label";
+
+import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
@@ -27,9 +29,7 @@ export class OutpostHealthSimpleElement extends AKElement {
     @property({ attribute: false })
     showVersion = true;
 
-    static get styles(): CSSResult[] {
-        return [PFBase];
-    }
+    static styles: CSSResult[] = [PFBase];
 
     constructor() {
         super();
@@ -69,7 +69,7 @@ export class OutpostHealthSimpleElement extends AKElement {
         const lastSeen = this.outpostHealths[0].lastSeen;
         return html`<ak-label color=${PFColor.Green}>
             ${msg(
-                str`Last seen: ${getRelativeTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
+                str`Last seen: ${formatElapsedTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
             )}</ak-label
         >`;
     }

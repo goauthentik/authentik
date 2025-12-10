@@ -23,12 +23,7 @@ class TestConfig(TestCase):
     """Test config loader"""
 
     check_deprecations_env_vars = {
-        ENV_PREFIX + "_REDIS__BROKER_URL": "redis://myredis:8327/43",
-        ENV_PREFIX + "_REDIS__BROKER_TRANSPORT_OPTIONS": "bWFzdGVybmFtZT1teW1hc3Rlcg==",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT": "124s",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS": "32m",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
-        ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_REPUTATION": "298382us",
+        ENV_PREFIX + "_WORKER__CONCURRENCY": "2",
     }
 
     @mock.patch.dict(environ, {ENV_PREFIX + "_test__test": "bar"})
@@ -144,7 +139,7 @@ class TestConfig(TestCase):
 
     def test_attr_json_encoder(self):
         """Test AttrEncoder"""
-        test_attr = Attr("foo", Attr.Source.ENV, "AUTHENTIK_REDIS__USERNAME")
+        test_attr = Attr("foo", Attr.Source.ENV, "AUTHENTIK_POSTGRESQL__USERNAME")
         json_attr = dumps(test_attr, indent=4, cls=AttrEncoder)
         self.assertEqual(json_attr, '"foo"')
 
@@ -176,18 +171,8 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.update_from_env()
         config.check_deprecations()
-        self.assertEqual(config.get("redis.broker_url", UNSET), UNSET)
-        self.assertEqual(config.get("redis.broker_transport_options", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
-        self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
-        self.assertEqual(config.get("broker.url"), "redis://myredis:8327/43")
-        self.assertEqual(config.get("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
-        self.assertEqual(config.get("cache.timeout"), "124s")
-        self.assertEqual(config.get("cache.timeout_flows"), "32m")
-        self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
-        self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
+        self.assertEqual(config.get("worker.concurrency", UNSET), UNSET)
+        self.assertEqual(config.get("worker.threads"), 2)
 
     def test_get_keys(self):
         """Test get_keys"""
@@ -213,10 +198,11 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -263,10 +249,11 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -281,10 +268,11 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": False,
                 },
                 "replica_0": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -329,10 +317,11 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": None,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -347,10 +336,11 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 10,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -390,10 +380,11 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -408,10 +399,11 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": True,
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -447,10 +439,11 @@ class TestConfig(TestCase):
             conf,
             {
                 "default": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -465,10 +458,11 @@ class TestConfig(TestCase):
                     "CONN_HEALTH_CHECKS": False,
                 },
                 "replica_0": {
-                    "ENGINE": "authentik.root.db",
+                    "ENGINE": "psqlextra.backend",
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -484,3 +478,148 @@ class TestConfig(TestCase):
                 },
             },
         )
+
+    def test_db_conn_options(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+
+        conf = django_db_config(config)
+
+        self.assertEqual(
+            conf["default"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertNotIn("connect_timeout", conf["replica_0"]["OPTIONS"])
+
+    def test_db_conn_options_read_replicas(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.replica_conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+        config.set("postgresql.read_replicas.1.host", "bar")
+        config.set(
+            "postgresql.read_replicas.1.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "20",
+                    }
+                ).encode()
+            ).decode(),
+        )
+
+        conf = django_db_config(config)
+
+        self.assertNotIn("connect_timeout", conf["default"]["OPTIONS"])
+        self.assertEqual(
+            conf["replica_0"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertEqual(
+            conf["replica_1"]["OPTIONS"]["connect_timeout"],
+            "20",
+        )
+
+    # FIXME: Temporarily force pool to be deactivated.
+    # See https://github.com/goauthentik/authentik/issues/14320
+    # def test_db_pool(self):
+    #     """Test DB Config with pool"""
+    #     config = ConfigLoader()
+    #     config.set("postgresql.host", "foo")
+    #     config.set("postgresql.name", "foo")
+    #     config.set("postgresql.user", "foo")
+    #     config.set("postgresql.password", "foo")
+    #     config.set("postgresql.port", "foo")
+    #     config.set("postgresql.test.name", "foo")
+    #     config.set("postgresql.use_pool", True)
+    #     conf = django_db_config(config)
+    #     self.assertEqual(
+    #         conf,
+    #         {
+    #             "default": {
+    #                 "ENGINE": "psqlextra.backend",
+    #                 "HOST": "foo",
+    #                 "NAME": "foo",
+    #                 "OPTIONS": {
+    #                     "pool": True,
+    #                     "sslcert": None,
+    #                     "sslkey": None,
+    #                     "sslmode": None,
+    #                     "sslrootcert": None,
+    #                 },
+    #                 "PASSWORD": "foo",
+    #                 "PORT": "foo",
+    #                 "TEST": {"NAME": "foo"},
+    #                 "USER": "foo",
+    #                 "CONN_MAX_AGE": 0,
+    #                 "CONN_HEALTH_CHECKS": False,
+    #                 "DISABLE_SERVER_SIDE_CURSORS": False,
+    #             }
+    #         },
+    #     )
+
+    # def test_db_pool_options(self):
+    #     """Test DB Config with pool"""
+    #     config = ConfigLoader()
+    #     config.set("postgresql.host", "foo")
+    #     config.set("postgresql.name", "foo")
+    #     config.set("postgresql.user", "foo")
+    #     config.set("postgresql.password", "foo")
+    #     config.set("postgresql.port", "foo")
+    #     config.set("postgresql.test.name", "foo")
+    #     config.set("postgresql.use_pool", True)
+    #     config.set(
+    #         "postgresql.pool_options",
+    #         base64.b64encode(
+    #             dumps(
+    #                 {
+    #                     "max_size": 15,
+    #                 }
+    #             ).encode()
+    #         ).decode(),
+    #     )
+    #     conf = django_db_config(config)
+    #     self.assertEqual(
+    #         conf,
+    #         {
+    #             "default": {
+    #                 "ENGINE": "psqlextra.backend",
+    #                 "HOST": "foo",
+    #                 "NAME": "foo",
+    #                 "OPTIONS": {
+    #                     "pool": {
+    #                         "max_size": 15,
+    #                     },
+    #                     "sslcert": None,
+    #                     "sslkey": None,
+    #                     "sslmode": None,
+    #                     "sslrootcert": None,
+    #                 },
+    #                 "PASSWORD": "foo",
+    #                 "PORT": "foo",
+    #                 "TEST": {"NAME": "foo"},
+    #                 "USER": "foo",
+    #                 "CONN_MAX_AGE": 0,
+    #                 "CONN_HEALTH_CHECKS": False,
+    #                 "DISABLE_SERVER_SIDE_CURSORS": False,
+    #             }
+    #         },
+    #     )

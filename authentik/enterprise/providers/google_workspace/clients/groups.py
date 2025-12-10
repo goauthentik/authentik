@@ -208,11 +208,11 @@ class GoogleWorkspaceGroupClient(
         )
         if not matching_authentik_group:
             return
-        GoogleWorkspaceProviderGroup.objects.get_or_create(
+        GoogleWorkspaceProviderGroup.objects.update_or_create(
             provider=self.provider,
             group=matching_authentik_group,
             google_id=google_id,
-            attributes=group,
+            defaults={"attributes": group},
         )
 
     def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):

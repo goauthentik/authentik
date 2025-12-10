@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from psqlextra.manager import PostgresManager
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
@@ -71,6 +72,8 @@ class ReputationPolicy(Policy):
 class Reputation(ExpiringModel, SerializerModel):
     """Reputation for user and or IP."""
 
+    objects = PostgresManager()
+
     reputation_uuid = models.UUIDField(primary_key=True, unique=True, default=uuid4)
 
     identifier = models.TextField()
@@ -81,7 +84,7 @@ class Reputation(ExpiringModel, SerializerModel):
 
     expires = models.DateTimeField(default=reputation_expiry)
 
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

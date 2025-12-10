@@ -6,11 +6,18 @@ from urllib.parse import parse_qsl
 
 from django.utils.crypto import constant_time_compare, get_random_string
 from django.utils.translation import gettext as _
+from requests.auth import AuthBase, HTTPBasicAuth
 from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
 
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.sources.oauth.clients.base import BaseOAuthClient
+from authentik.sources.oauth.models import (
+    AuthorizationCodeAuthMethod,
+    PKCEMethod,
+)
 
 LOGGER = get_logger()
 SESSION_KEY_OAUTH_PKCE = "authentik/sources/oauth/pkce"
@@ -55,6 +62,36 @@ class OAuth2Client(BaseOAuthClient):
         """Get client secret"""
         return self.source.consumer_secret
 
+    def get_access_token_args(self, callback: str | None, code: str | None) -> dict[str, Any]:
+        args = {
+            "grant_type": "authorization_code",
+        }
+        if callback:
+            args["redirect_uri"] = callback
+        if code:
+            args["code"] = code
+        if self.request:
+            pkce_mode = self.source.source_type.pkce
+            if self.source.source_type.urls_customizable and self.source.pkce:
+                pkce_mode = self.source.pkce
+            if pkce_mode != PKCEMethod.NONE:
+                args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
+        if (
+            self.source.source_type.authorization_code_auth_method
+            == AuthorizationCodeAuthMethod.POST_BODY
+        ):
+            args["client_id"] = self.get_client_id()
+            args["client_secret"] = self.get_client_secret()
+        return args
+
+    def get_access_token_auth(self) -> AuthBase | None:
+        if (
+            self.source.source_type.authorization_code_auth_method
+            == AuthorizationCodeAuthMethod.BASIC_AUTH
+        ):
+            return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
+        return None
+
     def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """Fetch access token from callback request."""
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
@@ -67,13 +104,6 @@ class OAuth2Client(BaseOAuthClient):
             error = self.get_request_arg("error", None)
             error_desc = self.get_request_arg("error_description", None)
             return {"error": error_desc or error or _("No token received.")}
-        args = {
-            "redirect_uri": callback,
-            "code": code,
-            "grant_type": "authorization_code",
-        }
-        if SESSION_KEY_OAUTH_PKCE in self.request.session:
-            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
             access_token_url = self.source.source_type.access_token_url or ""
             if self.source.source_type.urls_customizable and self.source.access_token_url:
@@ -81,8 +111,8 @@ class OAuth2Client(BaseOAuthClient):
             response = self.do_request(
                 "post",
                 access_token_url,
-                auth=(self.get_client_id(), self.get_client_secret()),
-                data=args,
+                auth=self.get_access_token_auth(),
+                data=self.get_access_token_args(callback, code),
                 headers=self._default_headers,
                 **request_kwargs,
             )
@@ -109,6 +139,18 @@ class OAuth2Client(BaseOAuthClient):
         if state is not None:
             args["state"] = state
             self.request.session[self.session_key] = state
+        pkce_mode = self.source.source_type.pkce
+        if self.source.source_type.urls_customizable and self.source.pkce:
+            pkce_mode = self.source.pkce
+        if pkce_mode != PKCEMethod.NONE:
+            verifier = generate_id(length=128)
+            self.request.session[SESSION_KEY_OAUTH_PKCE] = verifier
+            # https://datatracker.ietf.org/doc/html/rfc7636#section-4.2
+            if pkce_mode == PKCEMethod.PLAIN:
+                args["code_challenge"] = verifier
+            elif pkce_mode == PKCEMethod.S256:
+                args["code_challenge"] = pkce_s256_challenge(verifier)
+            args["code_challenge_method"] = str(pkce_mode)
         return args
 
     def parse_raw_token(self, raw_token: str) -> dict[str, Any]:

@@ -1,14 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-token-form")
 export class UserTokenForm extends ModelForm<Token, string> {
@@ -34,12 +36,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            data.intent = this.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        data.intent = this.intent;
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -50,7 +51,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
-                ?required=${true}
+                required
                 name="identifier"
             >
                 <input
@@ -69,7 +70,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
-            ${this.intent == IntentEnum.AppPassword
+            ${this.intent === IntentEnum.AppPassword
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
                       <input
                           type="datetime-local"
@@ -78,7 +79,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                           class="pf-c-form-control"
                       />
                   </ak-form-element-horizontal>`
-                : html``}`;
+                : nothing}`;
     }
 }
 

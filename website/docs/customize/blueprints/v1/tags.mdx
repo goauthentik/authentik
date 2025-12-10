@@ -11,6 +11,8 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
         "!Format sequence",
         "!If sequence",
@@ -44,9 +46,21 @@ password: !Env my_env_var
 
 Returns the value of the given environment variable. Can be used as a scalar with `!Env my_env_var, default` to return a default value.
 
+#### `!File`
+
+Example:
+
+```yaml
+password: !File /path/to/file
+```
+
+Returns the contents of the file at the given path. Can be used as a scalar with `!File /file/to/path, default` to return a default value.
+
 #### `!Find`
 
 Examples:
+
+{/* prettier-ignore-start */}
 
 ```yaml
 configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
@@ -60,16 +74,42 @@ configure_flow:
     ]
 ```
 
+{/* prettier-ignore-end */}
+
 Looks up any model and resolves to the the matches' primary key.
+First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
+
+#### `!FindObject` <span class="badge badge--version">authentik 2025.8+</span>
+
+Examples:
+
+{/* prettier-ignore-start */}
+
+```yaml
+flow_designation:
+    !AtIndex [
+        !FindObject [authentik_flows.flow, [slug, default-password-change]],
+        designation,
+    ]
+```
+
+{/* prettier-ignore-end */}
+
+Looks up any model and resolves to the matches' serialized data.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
 
 #### `!Context`
 
 Example:
 
+{/* prettier-ignore-start */}
+
+
 ```yaml
 configure_flow: !Context foo
 ```
+
+{/* prettier-ignore-end */}
 
 Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
 
@@ -209,6 +249,8 @@ For example, given a sequence like this - `["a", "b", "c"]`, this tag will resol
 
 Minimal examples:
 
+{/* prettier-ignore-start */}
+
 ```yaml
 configuration_stages: !Enumerate [
         !Context map_of_totp_stage_names_and_types,
@@ -223,6 +265,8 @@ configuration_stages: !Enumerate [
         ], # The value of each item in the sequence
     ]
 ```
+
+{/* prettier-ignore-end */}
 
 The above example will resolve to something like this:
 
@@ -265,6 +309,8 @@ Full example:
 Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
 :::
 
+{/* prettier-ignore-start */}
+
 ```yaml
 example: !Enumerate [
         !Context sequence, # ["foo", "bar"]
@@ -287,6 +333,8 @@ example: !Enumerate [
         ],
     ]
 ```
+
+{/* prettier-ignore-end */}
 
 The above example will resolve to something like this:
 

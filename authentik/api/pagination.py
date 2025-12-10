@@ -1,44 +1,10 @@
 """Pagination which includes total pages and current page"""
 
+from drf_spectacular.plumbing import build_object_type
 from rest_framework import pagination
 from rest_framework.response import Response
 
-PAGINATION_COMPONENT_NAME = "Pagination"
-PAGINATION_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "next": {
-            "type": "number",
-        },
-        "previous": {
-            "type": "number",
-        },
-        "count": {
-            "type": "number",
-        },
-        "current": {
-            "type": "number",
-        },
-        "total_pages": {
-            "type": "number",
-        },
-        "start_index": {
-            "type": "number",
-        },
-        "end_index": {
-            "type": "number",
-        },
-    },
-    "required": [
-        "next",
-        "previous",
-        "count",
-        "current",
-        "total_pages",
-        "start_index",
-        "end_index",
-    ],
-}
+from authentik.api.v3.schema.response import PAGINATION
 
 
 class Pagination(pagination.PageNumberPagination):
@@ -70,14 +36,13 @@ class Pagination(pagination.PageNumberPagination):
         )
 
     def get_paginated_response_schema(self, schema):
-        return {
-            "type": "object",
-            "properties": {
-                "pagination": {"$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"},
+        return build_object_type(
+            properties={
+                "pagination": PAGINATION.ref,
                 "results": schema,
             },
-            "required": ["pagination", "results"],
-        }
+            required=["pagination", "results"],
+        )
 
 
 class SmallerPagination(Pagination):

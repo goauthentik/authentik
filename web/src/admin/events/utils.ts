@@ -1,44 +1,82 @@
-import { EventWithContext } from "@goauthentik/common/events";
-import { truncate } from "@goauthentik/common/utils";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
+import { EventUser, EventWithContext } from "#common/events";
+import { truncate } from "#common/strings";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 
-export function EventGeo(event: EventWithContext): TemplateResult {
-    let geo: KeyUnknown | undefined = undefined;
-    if (Object.hasOwn(event.context, "geo")) {
-        geo = event.context.geo as KeyUnknown;
-        const parts = [geo.city, geo.country, geo.continent].filter(
-            (v) => v !== "" && v !== undefined,
-        );
-        return html`${parts.join(", ")}`;
+export function formatUUID(hex: string): string {
+    if (hex.length < 32) {
+        return hex;
     }
-    return html``;
+    return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
 }
 
-export function EventUser(event: EventWithContext, truncateUsername?: number): TemplateResult {
-    if (!event.user.username) {
-        return html`-`;
-    }
-    let body = html``;
-    if (event.user.is_anonymous) {
-        body = html`<div>${msg("Anonymous user")}</div>`;
-    } else {
-        body = html`<div>
-            <a href="#/identity/users/${event.user.pk}"
-                >${truncateUsername
-                    ? truncate(event.user?.username, truncateUsername)
-                    : event.user?.username}</a
-            >
-        </div>`;
-    }
+/**
+ * Given event with a geographical context, format it into a string for display.
+ */
+export function EventGeo(event: EventWithContext): SlottedTemplateResult {
+    if (!event.context.geo) return nothing;
+
+    const { city, country, continent } = event.context.geo;
+
+    const parts = [city, country, continent].filter(Boolean);
+
+    return html`${parts.join(", ")}`;
+}
+
+export function renderEventUser(
+    event: EventWithContext,
+    truncateUsername?: number,
+): SlottedTemplateResult {
+    if (!event.user.username) return html`-`;
+
+    const linkOrSpan = (inner: TemplateResult, evu: EventUser) => {
+        return html`${evu.pk && !evu.is_anonymous
+            ? html`<a href="#/identity/users/${evu.pk}">${inner}</a>`
+            : html`<span>${inner}</span>`}`;
+    };
+
+    const renderUsername = (evu: EventUser) => {
+        let username = evu.username;
+        if (evu.is_anonymous) {
+            username = msg("Anonymous user");
+        }
+        if (truncateUsername) {
+            return truncate(username, truncateUsername);
+        }
+        return username;
+    };
+
+    let body: SlottedTemplateResult = nothing;
+    body = html`<div>${linkOrSpan(html`${renderUsername(event.user)}`, event.user)}</div>`;
+
     if (event.user.on_behalf_of) {
-        body = html`${body}<small>
-                <a href="#/identity/users/${event.user.on_behalf_of.pk}"
-                    >${msg(str`On behalf of ${event.user.on_behalf_of.username}`)}</a
-                >
+        return html`${body}<small>
+                ${linkOrSpan(
+                    html`${msg(str`On behalf of ${renderUsername(event.user.on_behalf_of)}`)}`,
+                    event.user.on_behalf_of,
+                )}
             </small>`;
     }
+    if (event.user.authenticated_as) {
+        return html`${body}<small>
+                ${linkOrSpan(
+                    html`${msg(
+                        str`Authenticated as ${renderUsername(event.user.authenticated_as)}`,
+                    )}`,
+                    event.user.authenticated_as,
+                )}
+            </small>`;
+    }
+    if (event.context.device) {
+        return html`${body}<small>
+                <a href="#/endpoints/devices/${formatUUID(event.context.device.pk)}">
+                    ${msg(str`Via ${event.context.device.name}`)}
+                </a>
+            </small>`;
+    }
+
     return body;
 }

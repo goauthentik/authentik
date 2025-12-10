@@ -1,7 +1,7 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from django.utils.timezone import now
@@ -28,7 +28,7 @@ class LogEvent:
     def from_event_dict(item: EventDict) -> "LogEvent":
         event = item.pop("event")
         log_level = item.pop("level").lower()
-        timestamp = datetime.fromisoformat(item.pop("timestamp"))
+        timestamp = datetime.fromisoformat(item.pop("timestamp")).replace(tzinfo=UTC)
         item.pop("pid", None)
         # Sometimes log entries have both `level` and `log_level` set, but `level` is always set
         item.pop("log_level", None)
@@ -57,7 +57,7 @@ class LogEventSerializer(PassiveSerializer):
 
 
 @contextmanager
-def capture_logs(log_default_output=True) -> Generator[list[LogEvent], None, None]:
+def capture_logs(log_default_output=True) -> Generator[list[LogEvent]]:
     """Capture log entries created"""
     logs = []
     cap = LogCapture()

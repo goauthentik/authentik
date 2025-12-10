@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main-daily
+name: CI - Main daily
 
 on:
   workflow_dispatch:
@@ -15,10 +15,10 @@ jobs:
       matrix:
         version:
           - docs
+          - version-2025-4
           - version-2025-2
-          - version-2024-12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"

@@ -3,8 +3,6 @@ title: Service Accounts
 sidebar_label: Service Accounts
 ---
 
-# Service Accounts
-
 Service accounts are specialized user accounts designed for machine-to-machine authentication and automation purposes rather than interactive human use. They're ideal for integrating authentik with external systems, APIs, and services.
 
 ## Types of Service Accounts
@@ -54,8 +52,9 @@ Service account tokens have the following properties:
 
 Tokens for service accounts are managed through the authentik Admin interface:
 
-1. Log in to the Admin interface and navigate to **Directory** > **Tokens and App passwords**.
-2. Here you can view, create, copy, delete, and manage tokens.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Tokens and App passwords**.
+   Here you can view, create, copy, delete, and manage tokens.
 
 ### Creating New Tokens
 
@@ -81,7 +80,7 @@ Service accounts authenticate using [HTTP Basic Authentication](https://datatrac
 
 ## Permissions and Access Control
 
-Like regular user accounts, with service accounts you can assign [permissions and use RBAC](../users-sources/access-control/manage_permissions).
+Like regular user accounts, with service accounts you can assign [permissions and use RBAC](../users-sources/access-control/manage_permissions.md).
 
 1. Assign the service account to groups to inherit group permissions.
 2. Grant specific permissions directly to the service account.

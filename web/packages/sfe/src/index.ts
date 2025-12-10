@@ -1,6 +1,4 @@
-import { fromByteArray } from "base64-js";
 import "formdata-polyfill";
-import $ from "jquery";
 import "weakmap-polyfill";
 
 import {
@@ -15,6 +13,11 @@ import {
     type PasswordChallenge,
     type RedirectChallenge,
 } from "@goauthentik/api";
+
+import { fromByteArray } from "base64-js";
+import $ from "jquery";
+
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 interface GlobalAuthentik {
     brand: {
@@ -47,7 +50,16 @@ class SimpleFlowExecutor {
         return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
     }
 
+    loading() {
+        this.container.innerHTML = `<div class="d-flex justify-content-center">
+            <div class="spinner-border spinner-border-md" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>`;
+    }
+
     start() {
+        this.loading();
         $.ajax({
             type: "GET",
             url: this.apiURL,
@@ -201,6 +213,9 @@ class PasswordStage extends Stage<PasswordChallenge> {
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <div class="form-label-group my-3">
+                    <input type="text" readonly class="form-control-plaintext" value="Welcome, ${this.challenge?.pendingUser}.">
+                </div>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}
@@ -298,53 +313,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         return false;
     }
 
-    /**
-     * Transforms items in the credentialCreateOptions generated on the server
-     * into byte arrays expected by the navigator.credentials.create() call
-     */
-    transformCredentialCreateOptions(
-        credentialCreateOptions: PublicKeyCredentialCreationOptions,
-        userId: string,
-    ): PublicKeyCredentialCreationOptions {
-        const user = credentialCreateOptions.user;
-        // Because json can't contain raw bytes, the server base64-encodes the User ID
-        // So to get the base64 encoded byte array, we first need to convert it to a regular
-        // string, then a byte array, re-encode it and wrap that in an array.
-        const stringId = decodeURIComponent(window.atob(userId));
-        user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
-        const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
-
-        return Object.assign({}, credentialCreateOptions, {
-            challenge,
-            user,
-        });
-    }
-
-    /**
-     * Transforms the binary data in the credential into base64 strings
-     * for posting to the server.
-     * @param {PublicKeyCredential} newAssertion
-     */
-    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
-        const attObj = new Uint8Array(
-            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
-        );
-        const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
-        const rawId = new Uint8Array(newAssertion.rawId);
-
-        const registrationClientExtensions = newAssertion.getClientExtensionResults();
-        return {
-            id: newAssertion.id,
-            rawId: this.b64enc(rawId),
-            type: newAssertion.type,
-            registrationClientExtensions: JSON.stringify(registrationClientExtensions),
-            response: {
-                clientDataJSON: this.b64enc(clientDataJSON),
-                attestationObject: this.b64enc(attObj),
-            },
-        };
-    }
-
     transformCredentialRequestOptions(
         credentialRequestOptions: PublicKeyCredentialRequestOptions,
     ): PublicKeyCredentialRequestOptions {
@@ -391,6 +359,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     render() {
+        if (this.challenge.deviceChallenges.length === 1) {
+            this.deviceChallenge = this.challenge.deviceChallenges[0];
+        }
         if (!this.deviceChallenge) {
             return this.renderChallengePicker();
         }
@@ -419,9 +390,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 ${
                     challenges.length > 0
                         ? "<p>Select an authentication method.</p>"
-                        : `
-                    <p>No compatible authentication method available</p>
-                    `
+                        : `<p>No compatible authentication method available</p>`
                 }
                 ${challenges
                     .map((challenge) => {

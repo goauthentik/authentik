@@ -1,8 +1,19 @@
-import { useMDXModule } from "@goauthentik/elements/ak-mdx/MDXModuleContext";
-import { resolve } from "node:path";
-import React, { memo } from "react";
+import { useMDXModule } from "#elements/ak-mdx/MDXModuleContext";
 
-const DOCS_DOMAIN = "https://goauthentik.io";
+import React from "react";
+
+/**
+ * A simplified version of Node's `path.resolve`:
+ */
+function resolvePath(...args: string[]): string {
+    const pathname = args
+        // Combine all arguments into a single path...
+        .join("/")
+        // Normalizing any delimiting slashes...
+        .replace(/\/{2,}/g, "/");
+
+    return new URL(pathname, "file:///").pathname;
+}
 
 /**
  * A custom anchor element that applies special behavior for MDX content.
@@ -10,52 +21,52 @@ const DOCS_DOMAIN = "https://goauthentik.io";
  * - Resolves relative links to the public directory in the public docs domain.
  * - Intercepts local links and scrolls to the target element.
  */
-export const MDXAnchor = memo<React.AnchorHTMLAttributes<HTMLAnchorElement>>(
-    ({ href, children, ...props }) => {
-        const { publicDirectory } = useMDXModule();
+export const MDXAnchor = ({
+    href,
+    children,
+    ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const { publicDirectory } = useMDXModule();
 
-        if (href?.startsWith(".") && publicDirectory) {
-            const nextPathname = resolve(publicDirectory, href);
+    if (href?.startsWith(".") && publicDirectory) {
+        const nextPathname = resolvePath(publicDirectory, href);
 
-            const nextURL = new URL(nextPathname, DOCS_DOMAIN);
-            // Remove trailing .md and .mdx, and trailing "index".
-            nextURL.pathname = nextURL.pathname.replace(/(index)?\.mdx?$/, "");
-            href = nextURL.toString();
+        const nextURL = new URL(nextPathname, import.meta.env.AK_DOCS_URL);
+        // Remove trailing .md and .mdx, and trailing "index".
+        nextURL.pathname = nextURL.pathname.replace(/(index)?\.mdx?$/, "");
+        href = nextURL.toString();
+    }
+
+    const interceptHeadingLinks = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (!href || !href.startsWith("#")) return;
+
+        event.preventDefault();
+
+        const rootNode = event.currentTarget.getRootNode() as ShadowRoot;
+
+        const elementID = href.slice(1);
+        const target = rootNode.getElementById(elementID);
+
+        if (!target) {
+            console.warn(`Element with ID ${elementID} not found`);
+            return;
         }
 
-        const interceptHeadingLinks = (event: React.MouseEvent<HTMLAnchorElement>) => {
-            if (!href || !href.startsWith("#")) return;
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    };
 
-            event.preventDefault();
-
-            const rootNode = event.currentTarget.getRootNode() as ShadowRoot;
-
-            const elementID = href.slice(1);
-            const target = rootNode.getElementById(elementID);
-
-            if (!target) {
-                console.warn(`Element with ID ${elementID} not found`);
-                return;
-            }
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-            });
-        };
-
-        return (
-            <a
-                href={href}
-                onClick={interceptHeadingLinks}
-                rel="noopener noreferrer"
-                target="_blank"
-                {...props}
-            >
-                {children}
-            </a>
-        );
-    },
-);
-
-MDXAnchor.displayName = "MDXAnchor";
+    return (
+        <a
+            href={href}
+            onClick={interceptHeadingLinks}
+            rel="noopener noreferrer"
+            target="_blank"
+            {...props}
+        >
+            {children}
+        </a>
+    );
+};

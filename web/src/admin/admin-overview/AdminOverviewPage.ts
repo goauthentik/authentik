@@ -1,29 +1,30 @@
-import "@goauthentik/admin/admin-overview/TopApplicationsTable";
-import "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import "@goauthentik/admin/admin-overview/cards/FipsStatusCard";
-import "@goauthentik/admin/admin-overview/cards/RecentEventsCard";
-import "@goauthentik/admin/admin-overview/cards/SystemStatusCard";
-import "@goauthentik/admin/admin-overview/cards/VersionStatusCard";
-import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
-import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
-import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
-import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
-import { VERSION } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/cards/AggregatePromiseCard";
-import "@goauthentik/elements/cards/QuickActionsCard.js";
-import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import "#admin/admin-overview/TopApplicationsTable";
+import "#admin/admin-overview/cards/AdminStatusCard";
+import "#admin/admin-overview/cards/FipsStatusCard";
+import "#admin/admin-overview/cards/RecentEventsCard";
+import "#admin/admin-overview/cards/SystemStatusCard";
+import "#admin/admin-overview/cards/VersionStatusCard";
+import "#admin/admin-overview/cards/WorkerStatusCard";
+import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
+import "#admin/admin-overview/charts/OutpostStatusChart";
+import "#admin/admin-overview/charts/SyncStatusChart";
+import "#elements/cards/AggregatePromiseCard";
+import "#elements/cards/QuickActionsCard";
+
+import { formatUserDisplayName } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+import type { QuickAction } from "#elements/cards/QuickActionsCard";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithSession } from "#elements/mixins/session";
+import { paramURL } from "#elements/router/RouterOutlet";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { map } from "lit/directives/map.js";
-import { when } from "lit/directives/when.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
@@ -31,136 +32,103 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionUser } from "@goauthentik/api";
-
-export function versionFamily(): string {
-    const parts = VERSION.split(".");
-    parts.pop();
-    return parts.join(".");
-}
-
-const RELEASE = `${VERSION.split(".").slice(0, -1).join(".")}#fixed-in-${VERSION.replaceAll(
-    ".",
-    "",
-)}`;
-
-const AdminOverviewBase = WithLicenseSummary(AKElement);
-
-type Renderer = () => TemplateResult | typeof nothing;
+const AdminOverviewBase = WithLicenseSummary(WithSession(AKElement));
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFDivider,
-            css`
-                .pf-l-grid__item {
-                    height: 100%;
-                }
-                .pf-l-grid__item.big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-                .ak-external-link {
-                    display: inline-block;
-                    margin-left: 0.175rem;
-                    vertical-align: super;
-                    line-height: normal;
-                    font-size: var(--pf-global--icon--FontSize--sm);
-                }
-            `,
-        ];
-    }
-
-    quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
-        [msg("Check the logs"), paramURL("/events/log")],
-        [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
-        [msg("Manage users"), paramURL("/identity/users")],
-        [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${RELEASE}`, true],
+    static styles: CSSResult[] = [
+        PFBase,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFDivider,
+        css`
+            .pf-l-grid__item {
+                height: 100%;
+            }
+            .pf-l-grid__item.big-graph-container {
+                height: 35em;
+            }
+            .card-container {
+                max-height: 10em;
+            }
+            .ak-external-link {
+                display: inline-block;
+                margin-left: 0.175rem;
+                vertical-align: super;
+                line-height: normal;
+                font-size: var(--pf-global--icon--FontSize--sm);
+            }
+        `,
     ];
 
-    @state()
-    user?: SessionUser;
-
-    async firstUpdated(): Promise<void> {
-        this.user = await me();
-    }
+    quickActions: QuickAction[] = [
+        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
+        [msg("Check the logs"), paramURL("/events/log")],
+        [msg("Explore integrations"), "https://integrations.goauthentik.io/", true],
+        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Check the release notes"), import.meta.env.AK_DOCS_RELEASE_NOTES_URL, true],
+    ];
 
     render(): TemplateResult {
-        const name = this.user?.user.name ?? this.user?.user.username;
-
-        return html`<ak-page-header description=${msg("General system status")} ?hasIcon=${false}>
-                <span slot="header"> ${msg(str`Welcome, ${name || ""}.`)} </span>
-            </ak-page-header>
-            <section class="pf-c-page__main-section">
-                <div class="pf-l-grid pf-m-gutter">
-                    <!-- row 1 -->
-                    <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
-                    >
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-quick-actions-card .actions=${this.quickActions}>
-                            </ak-quick-actions-card>
-                        </div>
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-aggregate-card
-                                icon="pf-icon pf-icon-zone"
-                                header=${msg("Outpost status")}
-                                headerLink="#/outpost/outposts"
-                            >
-                                <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
-                            </ak-aggregate-card>
-                        </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
-                        >
-                            <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
-                                <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
-                            </ak-aggregate-card>
-                        </div>
-                        <div class="pf-l-grid__item pf-m-12-col">
-                            <hr class="pf-c-divider" />
-                        </div>
-                        ${this.renderCards()}
+        return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
+            <div class="pf-l-grid pf-m-gutter">
+                <!-- row 1 -->
+                <div
+                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
+                >
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                        <ak-quick-actions-card .actions=${this.quickActions}>
+                        </ak-quick-actions-card>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                        <ak-recent-events pageSize="6"></ak-recent-events>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                        <ak-aggregate-card
+                            icon="pf-icon pf-icon-zone"
+                            label=${msg("Outpost status")}
+                            headerLink="#/outpost/outposts"
+                        >
+                            <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
+                        </ak-aggregate-card>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl">
+                        <ak-aggregate-card icon="fa fa-sync-alt" label=${msg("Sync status")}>
+                            <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
+                        </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col">
                         <hr class="pf-c-divider" />
                     </div>
-                    <!-- row 3 -->
-                    <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
-                    >
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
-                            header=${msg(
-                                "Logins and authorizations over the last week (per 8 hours)",
-                            )}
-                        >
-                            <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
-                        </ak-aggregate-card>
-                    </div>
-                    <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
-                    >
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
-                            header=${msg("Apps with most usage")}
-                        >
-                            <ak-top-applications-table></ak-top-applications-table>
-                        </ak-aggregate-card>
-                    </div>
+                    ${this.renderCards()}
                 </div>
-            </section>`;
+                <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
+                    <ak-recent-events pageSize="6"></ak-recent-events>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col">
+                    <hr class="pf-c-divider" />
+                </div>
+                <!-- row 3 -->
+                <div
+                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
+                >
+                    <ak-aggregate-card
+                        icon="pf-icon pf-icon-server"
+                        label=${msg("Logins and authorizations over the last week (per 8 hours)")}
+                    >
+                        <ak-charts-admin-login-authorization></ak-charts-admin-login-authorization>
+                    </ak-aggregate-card>
+                </div>
+                <div
+                    class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
+                >
+                    <ak-aggregate-card
+                        icon="pf-icon pf-icon-server"
+                        label=${msg("Apps with most usage")}
+                    >
+                        <ak-top-applications-table></ak-top-applications-table>
+                    </ak-aggregate-card>
+                </div>
+            </div>
+        </main>`;
     }
 
     renderCards() {
@@ -191,43 +159,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
                 : nothing} `;
     }
 
-    renderActions() {
-        const release = `${versionFamily()}#fixed-in-${VERSION.replaceAll(".", "")}`;
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        const displayName = formatUserDisplayName(this.currentUser);
 
-        const quickActions: [string, string][] = [
-            [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
-            [msg("Check the logs"), paramURL("/events/log")],
-            [msg("Explore integrations"), "https://goauthentik.io/integrations/"],
-            [msg("Manage users"), paramURL("/identity/users")],
-            [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${release}`],
-        ];
-
-        const action = ([label, url]: [string, string]) => {
-            const isExternal = url.startsWith("https://");
-            const ex = (truecase: Renderer, falsecase: Renderer) =>
-                when(isExternal, truecase, falsecase);
-
-            const content = html`${label}${ex(
-                () => html`<i class="fas fa-external-link-alt ak-external-link"></i>`,
-                () => nothing,
-            )}`;
-
-            return html`<li>
-                ${ex(
-                    () =>
-                        html`<a
-                            href="${url}"
-                            class="pf-u-mb-xl"
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            >${content}</a
-                        >`,
-                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
-                )}
-            </li>`;
-        };
-
-        return html`${map(quickActions, action)}`;
+        setPageDetails({
+            header: displayName ? msg(str`Welcome, ${displayName}`) : msg("Welcome"),
+            description: msg("General system status"),
+        });
     }
 }
 

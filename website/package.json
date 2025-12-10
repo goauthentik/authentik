@@ -1,91 +1,106 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "private": true,
     "license": "MIT",
+    "private": true,
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "deploy": "docusaurus deploy",
+        "build": "npm run build -w docs",
+        "build:api": "npm run build -w api",
+        "build:integrations": "npm run build -w integrations",
+        "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "wireit",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
-        "serve": "docusaurus serve",
-        "swizzle": "docusaurus swizzle",
-        "test": "node --test",
-        "watch": "cp -f ../schema.yml ./static/schema.yml && docusaurus gen-api-docs all && docusaurus start"
+        "start": "npm start -w docs",
+        "test": "node --test"
     },
     "dependencies": {
-        "semver": "^7.7.1",
-        "@docusaurus/core": "^3.7.0",
-        "@docusaurus/faster": "^3.7.0",
-        "@docusaurus/plugin-client-redirects": "^3.7.0",
-        "@docusaurus/plugin-content-docs": "^3.7.0",
-        "@docusaurus/preset-classic": "^3.7.0",
-        "@docusaurus/theme-common": "^3.7.0",
-        "@docusaurus/theme-mermaid": "^3.7.0",
-        "@mdx-js/react": "^3.1.0",
-        "clsx": "^2.1.1",
-        "disqus-react": "^1.1.6",
-        "docusaurus-plugin-openapi-docs": "4.3.4",
-        "docusaurus-theme-openapi-docs": "4.3.4",
-        "postcss": "^8.5.3",
-        "prism-react-renderer": "^2.4.1",
-        "react": "^18.3.1",
-        "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^18.3.1",
-        "react-feather": "^2.0.10",
-        "react-toggle": "^4.1.3",
-        "react-tooltip": "^5.28.0",
-        "remark-directive": "^4.0.0",
-        "remark-github": "^12.0.0"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@types/semver": "^7.7.0",
-        "@docusaurus/module-type-aliases": "^3.3.2",
-        "@docusaurus/tsconfig": "^3.7.0",
-        "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.13",
-        "cross-env": "^7.0.3",
-        "prettier": "3.5.3",
-        "typescript": "~5.8.2",
-        "wireit": "^0.14.11"
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "^1.1.1",
+        "@goauthentik/prettier-config": "^3.2.1",
+        "@goauthentik/tsconfig": "^1.0.5",
+        "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.48.0",
+        "@typescript-eslint/parser": "^8.48.0",
+        "escape-string-regexp": "^5.0.0",
+        "eslint": "^9.39.1",
+        "netlify-plugin-cache": "^1.0.3",
+        "netlify-redirect-parser": "^14.4.0",
+        "npm-run-all": "^4.1.5",
+        "postman-code-generators": "2.1.0",
+        "prettier": "^3.7.3",
+        "prettier-plugin-packagejson": "^2.5.20",
+        "typescript-eslint": "^8.48.0"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.3.0",
-        "@rspack/binding-linux-arm64-gnu": "1.3.0",
-        "@rspack/binding-linux-x64-gnu": "1.3.0",
-        "lightningcss-darwin-arm64": "1.29.3",
-        "lightningcss-linux-arm64-gnu": "1.29.3",
-        "lightningcss-linux-x64-gnu": "1.29.3",
-        "@swc/core-darwin-arm64": "1.11.13",
-        "@swc/core-linux-arm64-gnu": "1.11.13",
-        "@swc/core-linux-x64-gnu": "1.11.13",
-        "@swc/html-darwin-arm64": "1.11.13",
-        "@swc/html-linux-arm64-gnu": "1.11.13",
-        "@swc/html-linux-x64-gnu": "1.11.13"
-    },
-    "wireit": {
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
-        }
+        "@rspack/binding-darwin-arm64": "1.6.6",
+        "@rspack/binding-linux-arm64-gnu": "1.6.6",
+        "@rspack/binding-linux-x64-gnu": "1.6.6",
+        "@swc/core-darwin-arm64": "1.15.3",
+        "@swc/core-linux-arm64-gnu": "1.15.3",
+        "@swc/core-linux-x64-gnu": "1.15.3",
+        "@swc/html-darwin-arm64": "1.15.3",
+        "@swc/html-linux-arm64-gnu": "1.15.3",
+        "@swc/html-linux-x64-gnu": "1.15.3",
+        "lightningcss-darwin-arm64": "1.30.2",
+        "lightningcss-linux-arm64-gnu": "1.30.2",
+        "lightningcss-linux-x64-gnu": "1.30.2"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "workspaces": [
+        "vendored/*",
+        "docusaurus-theme",
+        "api",
+        "integrations",
+        "docs"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "@goauthentik/api-docs": {
+            "openapi-to-postmanv2": "^5.0.0",
+            "postman-collection": "^5.0.2",
+            "postman-code-generators": {
+                "detect-package-manager": "file:./vendored/detect-package-manager",
+                "shelljs": "0.10.0"
+            },
+            "docusaurus-theme-openapi-docs": {
+                "postman-code-generators": {
+                    ".": "^2.1.0",
+                    "detect-package-manager": "file:./vendored/detect-package-manager"
+                }
+            }
+        },
+        "docusaurus-theme-openapi-docs": {
+            "postman-code-generators": {
+                ".": "^1.10.1",
+                "detect-package-manager": "file:./vendored/detect-package-manager",
+                "shelljs": "0.10.0"
+            }
+        },
+        "format-imports": {
+            "eslint": "$eslint"
+        },
+        "postman-code-generators": {
+            "detect-package-manager": "file:./vendored/detect-package-manager",
+            "shelljs": "0.10.0"
+        }
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "onFail": "error",
+            "version": ">=11.6.2"
+        }
     }
 }

@@ -1,20 +1,23 @@
-import { EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-event-info";
+import "#elements/Tabs";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-events-user")
 export class UserEvents extends Table<Event> {
@@ -33,39 +36,34 @@ export class UserEvents extends Table<Event> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "enabled"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-        ];
+    protected override rowLabel(item: Event): string {
+        return actionToLabel(item.action);
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "enabled"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+    ];
+
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            renderEventUser(item),
+            Timestamp(item.created),
             html`<span>${item.clientIp || msg("-")}</span>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Events found.")}>
+            html`<ak-empty-state
+                ><span>${msg("No Events found.")}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

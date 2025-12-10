@@ -16,6 +16,7 @@ import (
 	memorybind "goauthentik.io/internal/outpost/ldap/bind/memory"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
+	"goauthentik.io/internal/outpost/ldap/search"
 	directsearch "goauthentik.io/internal/outpost/ldap/search/direct"
 	memorysearch "goauthentik.io/internal/outpost/ldap/search/memory"
 )
@@ -85,7 +86,11 @@ func (ls *LDAPServer) Refresh() error {
 			providers[idx].certUUID = *kp
 		}
 		if *provider.SearchMode.Ptr() == api.LDAPAPIACCESSMODE_CACHED {
-			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx])
+			var oldSearcher search.Searcher
+			if existing != nil {
+				oldSearcher = existing.searcher
+			}
+			providers[idx].searcher = memorysearch.NewMemorySearcher(providers[idx], oldSearcher)
 		} else if *provider.SearchMode.Ptr() == api.LDAPAPIACCESSMODE_DIRECT {
 			providers[idx].searcher = directsearch.NewDirectSearcher(providers[idx])
 		}

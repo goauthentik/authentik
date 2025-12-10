@@ -1,22 +1,14 @@
-from collections.abc import Callable
-from dataclasses import asdict
-
-from celery.exceptions import Retry
-from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
+from dramatiq.composition import group
+from dramatiq.errors import Retry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
-from authentik.events.logs import LogEvent
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
@@ -25,12 +17,16 @@ from authentik.lib.sync.outgoing.exceptions import (
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 
 class SyncTasks:
-    """Container for all sync 'tasks' (this class doesn't actually contain celery
-    tasks due to celery's magic, however exposes a number of functions to be called from tasks)"""
+    """Container for all sync 'tasks' (this class doesn't actually contain
+    tasks due to dramatiq's magic, however exposes a number of functions to be called from tasks)"""
 
     logger: BoundLogger
 
@@ -38,87 +34,104 @@ class SyncTasks:
         super().__init__()
         self._provider_model = provider_model
 
-    def sync_all(self, single_sync: Callable[[int], None]):
-        for provider in self._provider_model.objects.filter(
-            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
-        ):
-            self.trigger_single_task(provider, single_sync)
-
-    def trigger_single_task(self, provider: OutgoingSyncProvider, sync_task: Callable[[int], None]):
-        """Wrapper single sync task that correctly sets time limits based
-        on the amount of objects that will be synced"""
-        users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
-        groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        soft_time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT
-        time_limit = soft_time_limit * 1.5
-        return sync_task.apply_async(
-            (provider.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
-        )
-
-    def sync_single(
+    def sync_paginator(
         self,
-        task: SystemTask,
-        provider_pk: int,
-        sync_objects: Callable[[int, int], list[str]],
+        current_task: Task,
+        provider: OutgoingSyncProvider,
+        sync_objects: Actor[[str, int, int, bool], None],
+        paginator: Paginator,
+        object_type: type[User | Group],
+        **options,
     ):
+        tasks = []
+        time_limit = timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
+        for page in paginator.page_range:
+            page_sync = sync_objects.message_with_options(
+                args=(class_to_path(object_type), page, provider.pk),
+                time_limit=time_limit,
+                # Assign tasks to the same schedule as the current one
+                rel_obj=current_task.rel_obj,
+                uid=f"{provider.name}:{object_type._meta.model_name}:{page}",
+                **options,
+            )
+            tasks.append(page_sync)
+        return tasks
+
+    def sync(
+        self,
+        provider_pk: int,
+        sync_objects: Actor[[str, int, int, bool], None],
+    ):
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
         )
-        provider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
         if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
-        messages = []
-        messages.append(_("Starting full provider sync"))
+        task.info("Starting full provider sync")
         self.logger.debug("Starting provider sync")
-        users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
-        groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        with allow_join_result(), provider.sync_lock as lock_acquired:
+        with provider.sync_lock as lock_acquired:
             if not lock_acquired:
+                task.info("Synchronization is already running. Skipping.")
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
-                for page in users_paginator.page_range:
-                    messages.append(_("Syncing page {page} of users".format(page=page)))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(User), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
-                        messages.append(LogEvent(**msg))
-                for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page {page} of groups".format(page=page)))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(Group), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
-                        messages.append(LogEvent(**msg))
+                users_tasks = group(
+                    self.sync_paginator(
+                        current_task=task,
+                        provider=provider,
+                        sync_objects=sync_objects,
+                        paginator=provider.get_paginator(User),
+                        object_type=User,
+                    )
+                )
+                group_tasks = group(
+                    self.sync_paginator(
+                        current_task=task,
+                        provider=provider,
+                        sync_objects=sync_objects,
+                        paginator=provider.get_paginator(Group),
+                        object_type=Group,
+                    )
+                )
+                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
+                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
-                raise task.retry(exc=exc) from exc
+                task.warning("Sync encountered a transient exception. Retrying", exc=exc)
+                raise Retry() from exc
             except StopSync as exc:
-                task.set_error(exc)
+                task.error(exc)
                 return
-        task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
     def sync_objects(
-        self, object_type: str, page: int, provider_pk: int, override_dry_run=False, **filter
+        self,
+        object_type: str,
+        page: int,
+        provider_pk: int,
+        override_dry_run=False,
+        **filter,
     ):
-        _object_type = path_to_class(object_type)
+        task = CurrentTask.get_task()
+        _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        messages = []
-        provider = self._provider_model.objects.filter(pk=provider_pk).first()
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
         if not provider:
-            return messages
+            task.warning("No provider found. Is it assigned to an application?")
+            return
         # Override dry run mode if requested, however don't save the provider
         # so that scheduled sync tasks still run in dry_run mode
         if override_dry_run:
@@ -126,12 +139,16 @@ class SyncTasks:
         try:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
-            return messages
-        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
+            return
+        paginator = Paginator(
+            provider.get_object_qs(_object_type).filter(**filter),
+            provider.sync_page_size,
+        )
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()
         self.logger.debug("starting sync for page", page=page)
+        task.info(f"Syncing page {page} or {_object_type._meta.verbose_name_plural}")
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
@@ -140,89 +157,61 @@ class SyncTasks:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
             except DryRunRejected as exc:
-                messages.append(
-                    asdict(
-                        LogEvent(
-                            _("Dropping mutating request due to dry run"),
-                            log_level="info",
-                            logger=f"{provider._meta.verbose_name}@{object_type}",
-                            attributes={
-                                "obj": sanitize_item(obj),
-                                "method": exc.method,
-                                "url": exc.url,
-                                "body": exc.body,
-                            },
-                        )
-                    )
+                task.info(
+                    "Dropping mutating request due to dry run",
+                    obj=sanitize_item(obj),
+                    method=exc.method,
+                    url=exc.url,
+                    body=exc.body,
                 )
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
-                messages.append(
-                    asdict(
-                        LogEvent(
-                            _(
-                                (
-                                    "Failed to sync {object_type} {object_name} "
-                                    "due to error: {error}"
-                                ).format_map(
-                                    {
-                                        "object_type": obj._meta.verbose_name,
-                                        "object_name": str(obj),
-                                        "error": str(exc),
-                                    }
-                                )
-                            ),
-                            log_level="warning",
-                            logger=f"{provider._meta.verbose_name}@{object_type}",
-                            attributes={"arguments": exc.args[1:], "obj": sanitize_item(obj)},
-                        )
-                    )
+                task.warning(
+                    f"Failed to sync {str(obj)} due to error: {str(exc)}",
+                    arguments=exc.args[1:],
+                    obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
-                messages.append(
-                    asdict(
-                        LogEvent(
-                            _(
-                                (
-                                    "Failed to sync {object_type} {object_name} "
-                                    "due to transient error: {error}"
-                                ).format_map(
-                                    {
-                                        "object_type": obj._meta.verbose_name,
-                                        "object_name": str(obj),
-                                        "error": str(exc),
-                                    }
-                                )
-                            ),
-                            log_level="warning",
-                            logger=f"{provider._meta.verbose_name}@{object_type}",
-                            attributes={"obj": sanitize_item(obj)},
-                        )
-                    )
+                task.warning(
+                    f"Failed to sync {str(obj)} due to transient error: {str(exc)}",
+                    obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
-                messages.append(
-                    asdict(
-                        LogEvent(
-                            _(
-                                "Stopping sync due to error: {error}".format_map(
-                                    {
-                                        "error": exc.detail(),
-                                    }
-                                )
-                            ),
-                            log_level="warning",
-                            logger=f"{provider._meta.verbose_name}@{object_type}",
-                            attributes={"obj": sanitize_item(obj)},
-                        )
-                    )
+                task.warning(
+                    f"Stopping sync due to error: {exc.detail()}",
+                    obj=sanitize_item(obj),
                 )
                 break
-        return messages
 
-    def sync_signal_direct(self, model: str, pk: str | int, raw_op: str):
+    def sync_signal_direct_dispatch(
+        self,
+        task_sync_signal_direct: Actor[[str, str | int, int, str], None],
+        model: str,
+        pk: str | int,
+        raw_op: str,
+    ):
+        model_class: type[Model] = path_to_class(model)
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
+            task_sync_signal_direct.send_with_options(
+                args=(model, pk, provider.pk, raw_op),
+                rel_obj=provider,
+                uid=f"{provider.name}:{model_class._meta.model_name}:{pk}:direct",
+            )
+
+    def sync_signal_direct(
+        self,
+        model: str,
+        pk: str | int,
+        provider_pk: int,
+        raw_op: str,
+    ):
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -230,65 +219,108 @@ class SyncTasks:
         instance = model_class.objects.filter(pk=pk).first()
         if not instance:
             return
+        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
+        if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
+            return
         operation = Direction(raw_op)
+        client = provider.client_for_model(instance.__class__)
+        # Check if the object is allowed within the provider's restrictions
+        queryset = provider.get_object_qs(instance.__class__)
+        if not queryset:
+            return
+
+        # The queryset we get from the provider must include the instance we've got given
+        # otherwise ignore this provider
+        if not queryset.filter(pk=instance.pk).exists():
+            return
+
+        try:
+            if operation == Direction.add:
+                client.write(instance)
+            if operation == Direction.remove:
+                client.delete(instance)
+        except TransientSyncException as exc:
+            raise Retry() from exc
+        except SkipObjectException:
+            return
+        except DryRunRejected as exc:
+            self.logger.info("Rejected dry-run event", exc=exc)
+        except StopSync as exc:
+            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+
+    def sync_signal_m2m_dispatch(
+        self,
+        task_sync_signal_m2m: Actor[[str, int, str, list[int]], None],
+        instance_pk: str,
+        action: str,
+        pk_set: list[int],
+        reverse: bool,
+    ):
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
-            client = provider.client_for_model(instance.__class__)
-            # Check if the object is allowed within the provider's restrictions
-            queryset = provider.get_object_qs(instance.__class__)
-            if not queryset:
-                continue
+            # reverse: instance is a Group, pk_set is a list of user pks
+            # non-reverse: instance is a User, pk_set is a list of groups
+            if reverse:
+                task_sync_signal_m2m.send_with_options(
+                    args=(instance_pk, provider.pk, action, list(pk_set)),
+                    rel_obj=provider,
+                    uid=f"{provider.name}:group:{instance_pk}:m2m",
+                )
+            else:
+                for pk in pk_set:
+                    task_sync_signal_m2m.send_with_options(
+                        args=(pk, provider.pk, action, [instance_pk]),
+                        rel_obj=provider,
+                        uid=f"{provider.name}:group:{pk}:m2m",
+                    )
 
-            # The queryset we get from the provider must include the instance we've got given
-            # otherwise ignore this provider
-            if not queryset.filter(pk=instance.pk).exists():
-                continue
-
-            try:
-                if operation == Direction.add:
-                    client.write(instance)
-                if operation == Direction.remove:
-                    client.delete(instance)
-            except TransientSyncException as exc:
-                raise Retry() from exc
-            except SkipObjectException:
-                continue
-            except DryRunRejected as exc:
-                self.logger.info("Rejected dry-run event", exc=exc)
-            except StopSync as exc:
-                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
-
-    def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
+    def sync_signal_m2m(
+        self,
+        group_pk: str,
+        provider_pk: int,
+        action: str,
+        pk_set: list[int],
+    ):
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
         group = Group.objects.filter(pk=group_pk).first()
         if not group:
             return
-        for provider in self._provider_model.objects.filter(
-            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
-        ):
-            # Check if the object is allowed within the provider's restrictions
-            queryset: QuerySet = provider.get_object_qs(Group)
-            # The queryset we get from the provider must include the instance we've got given
-            # otherwise ignore this provider
-            if not queryset.filter(pk=group_pk).exists():
-                continue
+        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
+        if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
+            return
 
-            client = provider.client_for_model(Group)
-            try:
-                operation = None
-                if action == "post_add":
-                    operation = Direction.add
-                if action == "post_remove":
-                    operation = Direction.remove
-                client.update_group(group, operation, pk_set)
-            except TransientSyncException as exc:
-                raise Retry() from exc
-            except SkipObjectException:
-                continue
-            except DryRunRejected as exc:
-                self.logger.info("Rejected dry-run event", exc=exc)
-            except StopSync as exc:
-                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        # Check if the object is allowed within the provider's restrictions
+        queryset: QuerySet = provider.get_object_qs(Group)
+        # The queryset we get from the provider must include the instance we've got given
+        # otherwise ignore this provider
+        if not queryset.filter(pk=group_pk).exists():
+            return
+
+        client = provider.client_for_model(Group)
+        try:
+            operation = None
+            if action == "post_add":
+                operation = Direction.add
+            if action == "post_remove":
+                operation = Direction.remove
+            client.update_group(group, operation, pk_set)
+        except TransientSyncException as exc:
+            raise Retry() from exc
+        except SkipObjectException:
+            return
+        except DryRunRejected as exc:
+            self.logger.info("Rejected dry-run event", exc=exc)
+        except StopSync as exc:
+            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)

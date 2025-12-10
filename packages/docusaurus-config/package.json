@@ -1,0 +1,88 @@
+{
+    "name": "@goauthentik/docusaurus-config",
+    "version": "2.2.2",
+    "description": "authentik's Docusaurus config",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./css/*.css": "./css/*.css"
+    },
+    "dependencies": {
+        "deepmerge-ts": "^7.1.5",
+        "prism-react-renderer": "^2.4.1"
+    },
+    "devDependencies": {
+        "@docusaurus/theme-common": "3.9.2",
+        "@docusaurus/theme-search-algolia": "^3.9.2",
+        "@docusaurus/types": "^3.9.2",
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/node": "^24.10.1",
+        "@types/react": "^19.2.7",
+        "@types/react-dom": "^19.2.3",
+        "@typescript-eslint/eslint-plugin": "^8.47.0",
+        "@typescript-eslint/parser": "^8.47.0",
+        "eslint": "^9.39.1",
+        "pino": "^10.1.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.47.0"
+    },
+    "peerDependencies": {
+        "@docusaurus/theme-common": "^3.9.2",
+        "@docusaurus/theme-search-algolia": "^3.9.2",
+        "@docusaurus/types": "^3.9.2",
+        "react": ">=18",
+        "react-dom": ">=18"
+    },
+    "optionalDependencies": {
+        "react": ">=18",
+        "react-dom": ">=18"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/docusaurus-config"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "css/**/*",
+        "out/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "peerDependenciesMeta": {
+        "@docusaurus/theme-search-algolia": {
+            "optional": true
+        },
+        "react": {
+            "optional": true
+        },
+        "react-dom": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

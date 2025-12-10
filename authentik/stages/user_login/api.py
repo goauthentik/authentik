@@ -18,6 +18,7 @@ class UserLoginStageSerializer(StageSerializer):
             "remember_me_offset",
             "network_binding",
             "geoip_binding",
+            "remember_device",
         ]
 
 

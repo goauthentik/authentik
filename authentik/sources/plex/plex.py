@@ -6,10 +6,14 @@ from django.http.response import Http404
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.http import get_http_session
-from authentik.sources.plex.models import PlexSource, UserPlexSourceConnection
+from authentik.sources.plex.models import (
+    GroupPlexSourceConnection,
+    PlexSource,
+    UserPlexSourceConnection,
+)
 
 LOGGER = get_logger()
 
@@ -34,7 +38,7 @@ class PlexAuth:
         """Get common headers"""
         return {
             "X-Plex-Product": "authentik",
-            "X-Plex-Version": __version__,
+            "X-Plex-Version": authentik_version(),
             "X-Plex-Device-Vendor": "goauthentik.io",
         }
 
@@ -110,6 +114,7 @@ class PlexSourceFlowManager(SourceFlowManager):
     """Flow manager for plex sources"""
 
     user_connection_type = UserPlexSourceConnection
+    group_connection_type = GroupPlexSourceConnection
 
     def update_user_connection(
         self, connection: UserPlexSourceConnection, **kwargs

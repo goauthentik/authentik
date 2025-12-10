@@ -1,18 +1,35 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "./ak-action-button.js";
+
+import AKActionButton from "./ak-action-button.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "./ak-action-button";
-import AKActionButton from "./ak-action-button";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AKActionButton> = {
     title: "Elements / <ak-action-button>",
     component: "ak-action-button",
+    tags: ["autodocs"],
     parameters: {
         docs: {
             description: {
-                component: "A four-state button for asynchronous operations",
+                component: /* md */ `
+An \`<ak-action-button>\` takes a zero-arity function (a function that takes no argument) that returns
+a promise. Pressing the button runs the function and the results of the promise drive the behavior
+of the button.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/buttons/ActionButton/ak-action-button";
+\`\`\`
+
+\`\`\`html
+<ak-action-button .apiRequest=\${somePromise}">Your message here</ak-action-button>
+\`\`\`
+
+`,
             },
         },
     },
@@ -28,7 +45,7 @@ const metadata: Meta<AKActionButton> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -46,9 +63,7 @@ const container = (testItem: TemplateResult) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
     const doc = new DOMParser().parseFromString(
-        `<li><i>Event</i>: ${
-            "result" in result.detail ? result.detail.result : result.detail.error
-        }</li>`,
+        `<li><i>Event</i>: ${"result" in result.detail ? result.detail.result : result.detail.error}</li>`,
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
@@ -60,11 +75,11 @@ window.addEventListener("ak-button-failure", displayMessage);
 
 export const ButtonWithSuccess = () => {
     const run = () =>
-        new Promise<string>(function (resolve) {
-            setTimeout(function () {
+        new Promise<string>((resolve) =>
+            setTimeout(() => {
                 resolve("Success!");
-            }, 3000);
-        });
+            }, 3000),
+        );
 
     return container(
         html`<ak-action-button class="pf-m-primary" .apiRequest=${run}

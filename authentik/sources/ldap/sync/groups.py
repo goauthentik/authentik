@@ -14,15 +14,22 @@ from authentik.core.models import Group
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
+from authentik.sources.ldap.models import (
+    LDAP_UNIQUENESS,
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    flatten,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.tasks.models import Task
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
 
-    def __init__(self, source: LDAPSource):
-        super().__init__(source)
+    def __init__(self, source: LDAPSource, task: Task):
+        super().__init__(source, task)
+        self._source = source
         self.mapper = SourceMapper(source)
         self.manager = self.mapper.get_manager(Group, ["ldap", "dn"])
 
@@ -32,7 +39,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return iter(())
         return self.search_paginator(
             search_base=self.base_dn_groups,
@@ -49,22 +56,20 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Groups and create authentik_core.Group instances"""
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return -1
         group_count = 0
         for group in page_data:
-            if "attributes" not in group:
+            if (attributes := self.get_attributes(group)) is None:
                 continue
-            attributes = group.get("attributes", {})
             group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
-            if not attributes.get(self._source.object_uniqueness_field):
-                self.message(
+            if not (uniq := self.get_identifier(attributes)):
+                self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{group_dn}'",
-                    attributes=attributes.keys(),
+                    attributes=list(attributes.keys()),
                     dn=group_dn,
                 )
                 continue
-            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = {
                     k: flatten(v)
@@ -82,13 +87,22 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
                 if "users" in defaults:
                     del defaults["users"]
+                parent = defaults.pop("parent", None)
                 ak_group, created = Group.update_or_create_attributes(
                     {
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
                     },
                     defaults,
                 )
+                if parent:
+                    ak_group.parents.add(parent)
                 self._logger.debug("Created group with attributes", **defaults)
+                if not GroupLDAPSourceConnection.objects.filter(
+                    source=self._source, identifier=uniq
+                ):
+                    GroupLDAPSourceConnection.objects.create(
+                        source=self._source, group=ak_group, identifier=uniq
+                    )
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:

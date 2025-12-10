@@ -2,10 +2,17 @@
 
 from binascii import hexlify
 from hashlib import md5
+from ssl import PEM_FOOTER, PEM_HEADER
+from textwrap import wrap
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
@@ -18,6 +25,26 @@ from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
+
+
+def format_cert(raw_pam: str) -> str:
+    """Format a PEM certificate that is either missing its header/footer or is in a single line"""
+    return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
+
+
+class KeyType(models.TextChoices):
+    """Cryptographic key algorithm types"""
+
+    RSA = "rsa", _("RSA")
+    EC = "ec", _("Elliptic Curve")
+    DSA = "dsa", _("DSA")
+    ED25519 = "ed25519", _("Ed25519")
+    ED448 = "ed448", _("Ed448")
+
+
+def fingerprint_sha256(cert: Certificate) -> str:
+    """Get SHA256 Fingerprint of certificate"""
+    return hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8")
 
 
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
@@ -82,7 +109,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def fingerprint_sha256(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
-        return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode("utf-8")
+        return fingerprint_sha256(self.certificate)
 
     @property
     def fingerprint_sha1(self) -> str:
@@ -98,9 +125,29 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
             else ""
         )  # nosec
 
+    @property
+    def key_type(self) -> str | None:
+        """Get the key algorithm type from the certificate's public key"""
+        public_key = self.certificate.public_key()
+        if isinstance(public_key, RSAPublicKey):
+            return KeyType.RSA
+        if isinstance(public_key, EllipticCurvePublicKey):
+            return KeyType.EC
+        if isinstance(public_key, DSAPublicKey):
+            return KeyType.DSA
+        if isinstance(public_key, Ed25519PublicKey):
+            return KeyType.ED25519
+        if isinstance(public_key, Ed448PublicKey):
+            return KeyType.ED448
+        return None
+
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
 
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
+        permissions = [
+            ("view_certificatekeypair_certificate", _("View Certificate-Key pair's certificate")),
+            ("view_certificatekeypair_key", _("View Certificate-Key pair's private key")),
+        ]

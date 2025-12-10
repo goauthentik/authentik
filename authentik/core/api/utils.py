@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.db import models
 from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
@@ -28,7 +29,26 @@ def is_dict(value: Any):
     raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
 
 
+class JSONDictField(JSONField):
+    """JSON Field which only allows dictionaries"""
+
+    default_validators = [is_dict]
+
+
+class JSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.core.api.utils.JSONDictField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        return build_basic_type(OpenApiTypes.OBJECT)
+
+
 class ModelSerializer(BaseModelSerializer):
+
+    # By default, JSON fields we have are used to store dictionaries
+    serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
+    serializer_field_mapping[models.JSONField] = JSONDictField
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)
@@ -59,21 +79,6 @@ class ModelSerializer(BaseModelSerializer):
                 field.set(value)
 
         return instance
-
-
-class JSONDictField(JSONField):
-    """JSON Field which only allows dictionaries"""
-
-    default_validators = [is_dict]
-
-
-class JSONExtension(OpenApiSerializerFieldExtension):
-    """Generate API Schema for JSON fields as"""
-
-    target_class = "authentik.core.api.utils.JSONDictField"
-
-    def map_serializer_field(self, auto_schema, direction):
-        return build_basic_type(OpenApiTypes.OBJECT)
 
 
 class PassiveSerializer(Serializer):

@@ -1,0 +1,229 @@
+---
+title: Email
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This page covers both configuring authentik to send emails and testing that email delivery is working.
+
+authentik can be configured with global email settings used to notify administrators about alerts, configuration issues, and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik.
+
+authentik also provides [Email stages](../../add-secure-apps/flows-stages/stages/email/), which are used to send emails to users for actions such as account recovery and verification. Email stages can be configured to use the global email settings or their own specific email settings.
+
+:::warning
+Some hosting providers block outgoing SMTP ports, in which case you will need to host an SMTP relay on a different port with a different provider.
+:::
+
+## Global email settings
+
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
+
+To configure global email settings, append the following block to your `.env` file:
+
+```sh
+# SMTP Host Emails are sent to
+AUTHENTIK_EMAIL__HOST=localhost
+AUTHENTIK_EMAIL__PORT=25
+# Optionally authenticate (don't add quotation marks to your password)
+AUTHENTIK_EMAIL__USERNAME=
+AUTHENTIK_EMAIL__PASSWORD=
+# Use StartTLS
+AUTHENTIK_EMAIL__USE_TLS=false
+# Use SSL
+AUTHENTIK_EMAIL__USE_SSL=false
+AUTHENTIK_EMAIL__TIMEOUT=10
+# Email address authentik will send from, should have a correct @domain
+AUTHENTIK_EMAIL__FROM=authentik@localhost
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To configure global email settings, append the following block to your `values.yaml` file:
+
+```yaml
+# add this block under the `authentik:` block in your values.yaml file
+# authentik:
+email:
+    # -- SMTP Server emails are sent from, fully optional
+    host: ""
+    port: 587
+    # -- SMTP credentials. When left empty, no authentication will be done.
+    username: ""
+    # -- SMTP credentials. When left empty, no authentication will be done.
+    password: ""
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    use_tls: false
+    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    use_ssl: false
+    # -- Connection timeout in seconds
+    timeout: 30
+    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
+    from: ""
+```
+
+  </TabItem>
+</Tabs>
+
+## Testing email configuration
+
+To test whether the global email settings are configured correctly, you can use the following command on your authentik server:
+
+```shell
+ak test_email <to_address>
+```
+
+To test the email settings of a specific email stage, you can optionally provide the `-S` parameter:
+
+```shell
+ak test_email <to_address> [-S <stage_name>]
+```
+
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
+
+To run this command with Docker Compose:
+
+```shell
+docker compose exec worker ak test_email [...]
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To run this command with Kubernetes:
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
+```
+
+  </TabItem>
+</Tabs>
+
+## Google Workspace SMTP relay configuration
+
+To send email through Google SMTP servers, the easiest and most reliable method is often to use [Google's SMTP relay service](https://support.google.com/a/answer/2956491). Google provides detailed guidance in their documentation: [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en).
+
+First, confirm the outbound IP address that authentik uses to send emails. [Follow Google's documentation](https://support.google.com/a/answer/2956491) to add the IP address or addresses to the **SMTP relay service** options in your workspace's Gmail settings.
+
+    - Set **Allowed Senders** to `Only addresses in my domains`.
+    - Set **Authentication** to `Only accept mail from the specified IP addresses`.
+    - Do not set **Require SMTP Authentication**.
+    - Select **Require TLS encryption**.
+
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
+If you are using Docker Compose, set the following environment variables for authentik:
+
+```yaml
+AUTHENTIK_EMAIL__HOST=smtp-relay.gmail.com
+AUTHENTIK_EMAIL__PORT=587
+AUTHENTIK_EMAIL__USE_TLS=true
+AUTHENTIK_EMAIL__USE_SSL=false
+AUTHENTIK_EMAIL__TIMEOUT=30
+```
+
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+If you are using the Kubernetes Helm chart, set the following variables in the `email` section:
+
+```yaml
+email:
+    host: "smtp-relay.gmail.com"
+    port: 587
+    use_tls: true
+    use_ssl: false
+    timeout: 30
+```
+
+Redeploy the authentik containers, then use the `ak test_email` command to confirm that email delivery works.
+
+  </TabItem>
+</Tabs>
+
+## SMTP server with TLS verification
+
+If you're configuring authentik to send email via an SMTP server with TLS enabled, you must mount the certificate used for authentication in your authentik worker and server containers:
+
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
+
+1. Add the following configuration to the server and worker containers in your Docker Compose file:
+
+```yaml
+volumes:
+    - /path/to/<cert_name>.crt:/etc/ssl/certs/<cert_name>.crt:ro
+environment:
+    - SSL_CERT_FILE="/etc/ssl/certs/<cert_name>.crt"
+```
+
+2. Redeploy the containers for the changes to take effect.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+1. Create a `ConfigMap` with your certificate by running the following command on the Kubernetes host:
+
+```sh
+kubectl create configmap my-custom-cert --from-file=<cert_name>.crt -n <your_namespace>
+```
+
+2. Create a volume by adding the following configuration to your Kubernetes `values.yaml` file:
+
+```yaml
+volumes:
+    - name: custom-ca
+      configMap: # or use secret if preferred
+          name: my-custom-cert
+```
+
+3. Add a `volumeMount` and environment variable to your server and worker containers by adding the following configuration to your Kubernetes `values.yaml` file in the appropriate locations:
+
+```yaml
+volumeMounts:
+    - name: custom-ca
+      mountPath: /etc/ssl/certs/ca-certificates.crt
+      subPath: ca-certificates.crt
+      readOnly: true
+env:
+    - name: SSL_CERT_FILE
+      value: /etc/ssl/certs/ca-certificates.crt
+```
+
+4. Recreate the pods for the changes to take effect.
+
+  </TabItem>
+</Tabs>

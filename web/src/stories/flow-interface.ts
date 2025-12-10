@@ -1,16 +1,20 @@
-import { FlowExecutor } from "@goauthentik/flow/FlowExecutor";
+import { FlowExecutor } from "#flow/FlowExecutor";
 
-import { customElement, property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-storybook-interface-flow")
 export class StoryFlowInterface extends FlowExecutor {
-    @property()
-    storyTheme: UiThemeEnum = UiThemeEnum.Dark;
+    public override firstUpdated() {
+        return Promise.resolve();
+    }
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return this.storyTheme;
+    public override submit = () => {
+        return Promise.resolve(true);
+    };
+
+    async renderChallenge(): Promise<TemplateResult> {
+        return html`<slot></slot>`;
     }
 }
 

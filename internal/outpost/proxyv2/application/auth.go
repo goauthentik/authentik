@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/types"
 )
 
 // checkAuth Get claims which are currently in session
 // Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
-func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claims, error) {
+func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*types.Claims, error) {
 	c := a.getClaimsFromSession(r)
 	if c != nil {
 		return c, nil
@@ -48,7 +50,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	return nil, fmt.Errorf("failed to get claims from session")
 }
 
-func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
+func (a *Application) getClaimsFromSession(r *http.Request) *types.Claims {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
 		// err == user has no session/session is not valid, reject
@@ -59,14 +61,29 @@ func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
 		// no claims saved, reject
 		return nil
 	}
-	c, ok := claims.(Claims)
-	if !ok {
-		return nil
+
+	// Claims are always stored as types.Claims but may be deserialized differently:
+	// - Filesystem store (gob): preserves struct type as types.Claims
+	// - PostgreSQL store (JSON): deserializes as map[string]any
+
+	// Handle struct type (filesystem store)
+	if c, ok := claims.(types.Claims); ok {
+		return &c
 	}
-	return &c
+
+	// Handle map type (PostgreSQL store)
+	if claimsMap, ok := claims.(map[string]any); ok {
+		var c types.Claims
+		if err := mapstructure.Decode(claimsMap, &c); err != nil {
+			return nil
+		}
+		return &c
+	}
+
+	return nil
 }
 
-func (a *Application) getClaimsFromCache(r *http.Request) *Claims {
+func (a *Application) getClaimsFromCache(r *http.Request) *types.Claims {
 	key := r.Header.Get(constants.HeaderAuthorization)
 	item := a.authHeaderCache.Get(key)
 	if item != nil && !item.IsExpired() {
@@ -76,7 +93,7 @@ func (a *Application) getClaimsFromCache(r *http.Request) *Claims {
 	return nil
 }
 
-func (a *Application) saveAndCacheClaims(rw http.ResponseWriter, r *http.Request, claims Claims) (*Claims, error) {
+func (a *Application) saveAndCacheClaims(rw http.ResponseWriter, r *http.Request, claims types.Claims) (*types.Claims, error) {
 	s, _ := a.sessions.Get(r, a.SessionName())
 
 	s.Values[constants.SessionClaims] = claims

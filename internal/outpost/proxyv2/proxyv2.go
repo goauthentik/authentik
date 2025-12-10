@@ -35,7 +35,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController) *ProxyServer {
+func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -55,6 +55,11 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
+	if ac.IsEmbedded() {
+		l.Info("using PostgreSQL session backend")
+	} else {
+		l.Info("using filesystem session backend")
+	}
 	s := &ProxyServer{
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),
@@ -66,7 +71,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
-	ac.AddWSHandler(s.handleWSMessage)
+	ac.AddEventHandler(s.handleWSMessage)
 	return s
 }
 
@@ -190,7 +195,7 @@ func (ps *ProxyServer) Stop() error {
 }
 
 func (ps *ProxyServer) serve(listener net.Listener) {
-	srv := &http.Server{Handler: ps.mux}
+	srv := web.Server(ps.mux)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

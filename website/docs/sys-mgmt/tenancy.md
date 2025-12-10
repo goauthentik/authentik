@@ -3,21 +3,21 @@ title: Tenancy
 authentik_enterprise: true
 ---
 
-::::warning
+:::warning
 This feature is in alpha. Use at your own risk.
-::::
+:::
 
-::::info
-This feature is available from 2024.2 and is not to be confused with [brands](../customize/brands.md), which were previously called tenants.
-::::
+:::info
+This feature is available from 2024.2 and is not to be confused with [brands](../sys-mgmt/brands.md), which were previously called tenants.
+:::
 
 ## About tenants
 
-Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s). The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
+Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with its own Install ID and license(s). The relationship between a tenant and its installation (Install ID) is 1:1. For each tenant, there is a unique Install ID.
 
-::::danger
+:::danger
 Expression policies currently have access to all tenants.
-::::
+:::
 
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
@@ -25,7 +25,7 @@ Note that creating and managing multiple tenants is handled using authentik APIs
 
 ### Licensing
 
-For each additional tenant (beyond the default one), one or more licenses is required; a license key cannot be used for more than one tenant. Note that the license for the default tenant must be valid and up-to-date in order to create additional tenants.
+For each additional tenant (beyond the default one), one or more licenses are required; a license key cannot be used for more than one tenant. Note that the license for the default tenant must be valid and up-to-date in order to create additional tenants.
 
 A single tenant and its corresponding installation can have multiple license keys. For example, a company might purchase one license for 50 users, and then later in the same year need to buy another license for 50 more users, due to company growth. Both licenses are associated to the one installation, the one tenant.
 
@@ -34,8 +34,6 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 ### Important considerations
 
 - Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
-
-- In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
 
 - Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
 
@@ -55,7 +53,7 @@ Be sure to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDD
 
 ### 2. Create a new tenant with authentik API endpoints
 
-Tenants are created using the API routes associated. Search for `tenant` in the [API browser](../developer-docs/api/reference/authentik) for the available endpoints.
+Tenants are created using the API routes associated. Search for `tenant` in the [API browser](/api/reference/authentik) for the available endpoints.
 
 When creating a tenant you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant.
 

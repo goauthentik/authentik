@@ -1,31 +1,30 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { intentToLabel } from "@goauthentik/common/labels";
-import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import "@goauthentik/user/user-settings/tokens/UserTokenForm";
+import "#components/ak-status-label";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/TokenCopyButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { intentToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     expandable = true;
     checkbox = true;
@@ -35,36 +34,46 @@ export class UserTokenList extends Table<Token> {
     order = "expires";
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+        let { currentUser } = this;
+
+        if (!currentUser) {
+            currentUser = (await this.refreshSession()).user;
+        }
+
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
             // The user might have access to other tokens that aren't for their user
             // but only show tokens for their user here
-            userUsername: (await me()).user.username,
+            userUsername: currentUser.username,
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Identifier"), "identifier"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
+    protected override rowLabel(item: Token): string | null {
+        return item.identifier;
     }
 
     renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Token")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Token")}</span>
                 <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Token")}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create App password")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create App password")}</span>
                 <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -76,60 +85,53 @@ export class UserTokenList extends Table<Token> {
     }
 
     renderExpanded(item: Token): TemplateResult {
-        return html` <td role="cell" colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("User")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.userObj?.username}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-status-label ?good=${item.expiring}></ak-status-label>
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.expiring
-                                        ? html`<pf-tooltip
-                                              position="top"
-                                              .content=${item.expires?.toLocaleString()}
-                                          >
-                                              ${getRelativeTime(item.expires!)}
-                                          </pf-tooltip>`
-                                        : msg("-")}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Intent")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${intentToLabel(item.intent ?? IntentEnum.Api)}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </td>
-            <td></td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("User")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.userObj?.username}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Expiring")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-status-label ?good=${item.expiring}></ak-status-label>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Expiring")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.expiring
+                            ? html`<pf-tooltip
+                                  position="top"
+                                  .content=${item.expires?.toLocaleString()}
+                              >
+                                  ${formatElapsedTime(item.expires!)}
+                              </pf-tooltip>`
+                            : msg("-")}
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Intent")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${intentToLabel(item.intent ?? IntentEnum.Api)}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -149,13 +151,13 @@ export class UserTokenList extends Table<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Token): TemplateResult[] {
+    row(item: Token): SlottedTemplateResult[] {
         return [
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Token")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Token")}</span>
                     <ak-user-token-form
                         intent=${item.intent ?? IntentEnum.Api}
                         slot="form"
@@ -164,7 +166,7 @@ export class UserTokenList extends Table<Token> {
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i aria-hidden="true" class="fas fa-edit"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -173,7 +175,7 @@ export class UserTokenList extends Table<Token> {
                     identifier="${item.identifier}"
                 >
                     <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy"></i>
+                        <i class="fas fa-copy" aria-hidden="true"></i>
                     </pf-tooltip>
                 </ak-token-copy-button>
             `,

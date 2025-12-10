@@ -43,11 +43,20 @@ See https://docs.hcaptcha.com/switch
 
 ### Cloudflare Turnstile
 
-See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha
+See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha.
 
 #### Configuration options
 
-- Interactive: Enabled if the Turnstile instance is configured as visible or managed
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+3. Select **Captcha Stage** and click **Next**.
+4. Provide a descriptive name for the stage (e.g. `authentication-captcha`) and configure the following required settings based on the values of your [Cloudflare Turnstile Widget](https://developers.cloudflare.com/turnstile/concepts/widget/):
+    - Under **Stage-specific settings**:
+        - **Public Key**: set to the **Turnstile Site Key** value from the widget.
+        - **Private Key**: set to the **Turnstile Secret Key** value from the widget.
+        - **Enable Interactive**: Enable this option if the Turnstile instance is configured as **Invisible** or **Managed**.
+        - Leave both score thresholds at their default, as they are not supported for Turnstile.
+
 - JS URL: `https://challenges.cloudflare.com/turnstile/v0/api.js`
 - API URL: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 

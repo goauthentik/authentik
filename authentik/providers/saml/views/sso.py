@@ -20,11 +20,11 @@ from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_AUTH_N_REQUEST,
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
     REQUEST_KEY_SAML_SIG_ALG,
     REQUEST_KEY_SAML_SIGNATURE,
-    SESSION_KEY_AUTH_N_REQUEST,
     SAMLFlowFinalView,
 )
 from authentik.stages.consent.stage import (
@@ -38,6 +38,10 @@ LOGGER = get_logger()
 class SAMLSSOView(BufferedPolicyAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.plan_context = {}
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
@@ -68,6 +72,7 @@ class SAMLSSOView(BufferedPolicyAccessView):
                     PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                     % {"application": self.application.name},
                     PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+                    **self.plan_context,
                 },
             )
         except FlowNonApplicableException:
@@ -103,7 +108,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
                 self.request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
                 self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -137,7 +142,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
                 payload[REQUEST_KEY_SAML_REQUEST],
                 payload.get(REQUEST_KEY_RELAY_STATE),
             )
-            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+            self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))
@@ -151,4 +156,4 @@ class SAMLSSOBindingInitView(SAMLSSOView):
         """Create SAML Response from scratch"""
         LOGGER.debug("No SAML Request, using IdP-initiated flow.")
         auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
-        self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
+        self.plan_context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST] = auth_n_request

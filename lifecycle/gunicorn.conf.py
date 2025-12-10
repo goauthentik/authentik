@@ -2,22 +2,20 @@
 
 import os
 from hashlib import sha512
-from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from cryptography.hazmat.backends.openssl.backend import backend
-from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
@@ -28,25 +26,19 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
-defuse_stdlib()
-
-if CONFIG.get_bool("compliance.fips.enabled", False):
-    backend._enable_fips()
+setup()
 
 wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
-prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
+worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 
-makedirs(worker_tmp_dir, exist_ok=True)
-makedirs(prometheus_tmp_dir, exist_ok=True)
+os.makedirs(worker_tmp_dir, exist_ok=True)
 
 bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
 preload_app = True
 
@@ -132,9 +124,9 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 json={
                     "domain": "authentik",
                     "name": "pageview",
-                    "referrer": get_full_version(),
+                    "referrer": authentik_full_version(),
                     "url": (
-                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
+                        f"http://localhost/{env}?utm_source={authentik_full_version()}&utm_medium={env}"
                     ),
                 },
                 headers={
@@ -144,7 +136,7 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 timeout=5,
             )
 
-        except Exception:  # nosec
+        except Exception:  # nosec # noqa
             pass
 
 start_debug_server()

@@ -1,13 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Expand";
-import "@goauthentik/elements/Spinner";
+import "#elements/Expand";
+import "#elements/Spinner";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventActions, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -21,9 +25,15 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EventActions, FlowsApi } from "@goauthentik/api";
+// TODO: Settle these types. It's too hard to make sense of what we're expecting here.
+type EventSlotValueType =
+    | number
+    | SlottedTemplateResult
+    | undefined
+    | EventContext
+    | EventContextProperty;
 
-type Pair = [string, string | number | EventContext | EventModel | string[] | TemplateResult];
+type FieldLabelTuple<V extends EventSlotValueType = EventSlotValueType> = [label: string, value: V];
 
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
@@ -62,7 +72,7 @@ ${context.message as string}
 
 
 **Version and Deployment (please complete the following information):**
-- authentik version: ${VERSION}
+- authentik version: ${import.meta.env.AK_VERSION}
 - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
@@ -74,37 +84,35 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFFlex,
-            PFCard,
-            PFTable,
-            PFList,
-            PFSplit,
-            PFDescriptionList,
-            css`
-                code {
-                    display: block;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                }
-                .pf-l-flex {
-                    justify-content: space-between;
-                }
-                .pf-l-flex__item {
-                    min-width: 25%;
-                }
-                iframe {
-                    width: 100%;
-                    height: 50rem;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFFlex,
+        PFCard,
+        PFTable,
+        PFList,
+        PFSplit,
+        PFDescriptionList,
+        css`
+            code {
+                display: block;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+            .pf-l-flex {
+                justify-content: space-between;
+            }
+            .pf-l-flex__item {
+                min-width: 25%;
+            }
+            iframe {
+                width: 100%;
+                height: 50rem;
+            }
+        `,
+    ];
 
-    renderDescriptionGroup([term, description]: Pair) {
+    renderDescriptionGroup([term, description]: FieldLabelTuple) {
         return html` <div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">
                 <span class="pf-c-description-list__text">${term}</span>
@@ -120,7 +128,7 @@ export class EventInfo extends AKElement {
             return html`<span>-</span>`;
         }
 
-        const modelFields: Pair[] = [
+        const modelFields: FieldLabelTuple[] = [
             [msg("UID"), context.pk],
             [msg("Name"), context.name],
             [msg("App"), context.app],
@@ -134,20 +142,23 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getEmailInfo(context: EventContext): TemplateResult {
+    getEmailInfo(context: EventContext): SlottedTemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
 
-        // prettier-ignore
-        const emailFields: Pair[] = [
+        const emailFields = [
+            // ---
             [msg("Message"), context.message],
             [msg("Subject"), context.subject],
             [msg("From"), context.from_email],
-            [msg("To"), html`${(context.to_email as string[]).map((to) => {
+            [
+                msg("To"),
+                html`${(context.to_email as string[]).map((to) => {
                     return html`<li>${to}</li>`;
-                })}`],
-        ];
+                })}`,
+            ],
+        ] satisfies FieldLabelTuple<EventSlotValueType>[];
 
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             ${map(emailFields, this.renderDescriptionGroup)}
@@ -256,16 +267,16 @@ export class EventInfo extends AKElement {
                 clear?: boolean;
             };
         };
-        let diffBody = html``;
+        let diffBody: SlottedTemplateResult = nothing;
         if (diff) {
             diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
-                    <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
+                    <table class="pf-c-table pf-m-compact pf-m-grid-md">
                         <thead>
-                            <tr role="row">
-                                <th role="columnheader" scope="col">${msg("Key")}</th>
-                                <th role="columnheader" scope="col">${msg("Previous value")}</th>
-                                <th role="columnheader" scope="col">${msg("New value")}</th>
+                            <tr>
+                                <th scope="col">${msg("Key")}</th>
+                                <th scope="col">${msg("Previous value")}</th>
+                                <th scope="col">${msg("New value")}</th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup">
@@ -275,7 +286,7 @@ export class EventInfo extends AKElement {
                                     value.previous_value !== null
                                         ? JSON.stringify(value.previous_value, null, 4)
                                         : msg("-");
-                                let newCol = html``;
+                                let newCol: SlottedTemplateResult = nothing;
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">
                                         ${(value.add || value.remove)?.map((item) => {
@@ -295,12 +306,12 @@ export class EventInfo extends AKElement {
 ${JSON.stringify(value.new_value, null, 4)}</pre
                                     >`;
                                 }
-                                return html` <tr role="row">
-                                    <td role="cell"><pre>${key}</pre></td>
-                                    <td role="cell">
+                                return html` <tr>
+                                    <td><pre>${key}</pre></td>
+                                    <td>
                                         <pre>${previousCol}</pre>
                                     </td>
-                                    <td role="cell">${newCol}</td>
+                                    <td>${newCol}</td>
                                 </tr>`;
                             })}
                         </tbody>
@@ -358,7 +369,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
 
     renderEmailSent() {
         let body = this.event.context.body as string;
-        body = body.replace("cid:logo.png", "/static/dist/assets/icons/icon_left_brand.png");
+        body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>

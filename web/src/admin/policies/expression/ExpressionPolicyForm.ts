@@ -1,18 +1,18 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
@@ -28,11 +28,10 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                 policyUuid: this.instance.pk || "",
                 expressionPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
-                expressionPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
+            expressionPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -41,7 +40,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -54,7 +53,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -69,16 +68,15 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
-                        ?required=${true}
+                        required
                         name="expression"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
@@ -87,9 +85,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink(
-                                    "/docs/customize/policies/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink("/customize/policies/expression")}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

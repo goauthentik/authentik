@@ -1,16 +1,11 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     CoreApi,
@@ -20,6 +15,12 @@ import {
     UserTypeEnum,
     UserWriteStage,
 } from "@goauthentik/api";
+import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum.js";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
@@ -35,11 +36,10 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                 stageUuid: this.instance.pk || "",
                 userWriteStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                userWriteStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
+            userWriteStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -49,7 +49,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         is pending, a new user is created, and data is written to them.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -57,9 +57,8 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
                         <ak-radio
                             .options=${[
@@ -95,7 +94,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.createUsersAsInactive, true)}
+                                ?checked=${this.instance?.createUsersAsInactive ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -149,11 +148,10 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.userPathTemplate, "")}"
+                            value="${this.instance?.userPathTemplate ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
-                            required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -185,7 +183,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.createUsersGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

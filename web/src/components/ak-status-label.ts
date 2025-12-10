@@ -1,54 +1,23 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
+
+import Styles from "#components/ak-status-label.css";
+
+import { P4Disposition } from "#styles/patternfly/constants";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-// The 'const ... as const' construction will throw a compilation error if the const variable is
-// only ever used to generate the type information, so the `_` (ignore unused variable) prefix must
-// be used here.
-const _statusNames = ["error", "warning", "info"] as const;
-type StatusName = (typeof _statusNames)[number];
-
-const statusToDetails = new Map<StatusName, [string, string]>([
-    ["error", ["pf-m-red", "fa-times"]],
-    ["warning", ["pf-m-orange", "fa-exclamation-triangle"]],
-    ["info", ["pf-m-gray", "fa-info-circle"]],
+const statusToDetails = new Map<P4Disposition, [string, string]>([
+    [P4Disposition.Error, ["pf-m-red", "fa-times"]],
+    [P4Disposition.Warning, ["pf-m-orange", "fa-exclamation-triangle"]],
+    [P4Disposition.Info, ["pf-m-gray", "fa-info-circle"]],
+    [P4Disposition.Neutral, ["pf-m-gray", "fa-times"]],
 ]);
-
-const styles = css`
-    :host {
-        --pf-c-label--m-gray--BackgroundColor: var(--pf-global--palette--black-100);
-        --pf-c-label--m-gray__icon--Color: var(--pf-global--primary-color--100);
-        --pf-c-label--m-gray__content--Color: var(--pf-global--info-color--200);
-        --pf-c-label--m-gray__content--before--BorderColor: var(--pf-global--palette--black-400);
-        --pf-c-label--m-gray__content--link--hover--before--BorderColor: var(
-            --pf-global--primary-color--100
-        );
-        --pf-c-label--m-gray__content--link--focus--before--BorderColor: var(
-            --pf-global--primary-color--100
-        );
-    }
-
-    .pf-c-label.pf-m-gray {
-        --pf-c-label--BackgroundColor: var(--pf-c-label--m-gray--BackgroundColor);
-        --pf-c-label__icon--Color: var(--pf-c-label--m-gray__icon--Color);
-        --pf-c-label__content--Color: var(--pf-c-label--m-gray__content--Color);
-        --pf-c-label__content--before--BorderColor: var(
-            --pf-c-label--m-gray__content--before--BorderColor
-        );
-        --pf-c-label__content--link--hover--before--BorderColor: var(
-            --pf-c-label--m-gray__content--link--hover--before--BorderColor
-        );
-        --pf-c-label__content--link--focus--before--BorderColor: var(
-            --pf-c-label--m-gray__content--link--focus--before--BorderColor
-        );
-    }
-`;
 
 /**
  * A boolean status indicator
@@ -64,6 +33,7 @@ const styles = css`
  * - type="error" (default): A Red ✖
  * - type="warning" An orange ⚠
  * - type="info" A grey ⓘ
+ * - type="neutral" A grey ✖
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.
@@ -71,9 +41,7 @@ const styles = css`
 
 @customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
-    static get styles() {
-        return [PFBase, PFLabel, styles];
-    }
+    static styles = [PFBase, PFLabel, Styles];
 
     @property({ type: Boolean })
     good = false;
@@ -88,12 +56,13 @@ export class AkStatusLabel extends AKElement {
     compact = false;
 
     @property({ type: String })
-    type: StatusName = "error";
+    type: P4Disposition = P4Disposition.Error;
 
     render() {
         const details = statusToDetails.get(this.type);
+
         if (!details) {
-            throw new Error(`Bad status type [${this.type}] passed to ak-status-label`);
+            throw new TypeError(`Bad status type [${this.type}] passed to ak-status-label`);
         }
 
         const [label, color, icon] = this.good
@@ -106,7 +75,7 @@ export class AkStatusLabel extends AKElement {
             "pf-m-compact": this.compact,
         };
 
-        return html`<span class="${classMap(classes)}">
+        return html`<span class="${classMap(classes)}" aria-label=${label} role="status">
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
                     <i class="fas fa-fw ${icon}" aria-hidden="true"></i> </span

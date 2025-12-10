@@ -2,7 +2,7 @@
 
 from django.test import TransactionTestCase
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.providers.rac.models import (
@@ -36,13 +36,15 @@ class TestModels(TransactionTestCase):
 
     def test_settings_merge(self):
         """Test settings merge"""
+        session = Session.objects.create(
+            session_key=generate_id(),
+            last_ip="255.255.255.255",
+        )
+        auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
-            session=AuthenticatedSession.objects.create(
-                user=self.user,
-                session_key=generate_id(),
-            ),
+            session=auth_session,
         )
         path = f"/tmp/connection/{token.token}"  # nosec
         self.assertEqual(
@@ -88,23 +90,6 @@ class TestModels(TransactionTestCase):
                 "resize-method": "display-update",
             },
         )
-        # Set settings in token
-        token.settings = {
-            "level": "token",
-        }
-        token.save()
-        self.assertEqual(
-            token.get_settings(),
-            {
-                "hostname": self.endpoint.host.split(":")[0],
-                "port": "1324",
-                "client-name": f"authentik - {self.user}",
-                "drive-path": path,
-                "create-drive-path": "true",
-                "level": "token",
-                "resize-method": "display-update",
-            },
-        )
         # Set settings in property mapping (provider)
         mapping = RACPropertyMapping.objects.create(
             name=generate_id(),
@@ -147,5 +132,24 @@ class TestModels(TransactionTestCase):
                 "foo": "true",
                 "bar": "6",
                 "resize-method": "display-update",
+            },
+        )
+        # Set settings in token
+        token.settings = {
+            "level": "token",
+        }
+        token.save()
+        self.assertEqual(
+            token.get_settings(),
+            {
+                "hostname": self.endpoint.host.split(":")[0],
+                "port": "1324",
+                "client-name": f"authentik - {self.user}",
+                "drive-path": path,
+                "create-drive-path": "true",
+                "foo": "true",
+                "bar": "6",
+                "resize-method": "display-update",
+                "level": "token",
             },
         )

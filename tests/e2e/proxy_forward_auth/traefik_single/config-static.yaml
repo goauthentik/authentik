@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/traefik-v2.json
+# yaml-language-server: $schema=https://json.schemastore.org/traefik-v3.json
 api:
   insecure: true
   debug: true

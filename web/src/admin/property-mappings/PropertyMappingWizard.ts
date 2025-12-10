@@ -1,41 +1,42 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderRACForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/wizard/FormWizardPage";
-import "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import "@goauthentik/elements/wizard/Wizard";
-import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import "#admin/property-mappings/PropertyMappingNotification";
+import "#admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
+import "#admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
+import "#admin/property-mappings/PropertyMappingProviderRACForm";
+import "#admin/property-mappings/PropertyMappingProviderRadiusForm";
+import "#admin/property-mappings/PropertyMappingProviderSAMLForm";
+import "#admin/property-mappings/PropertyMappingProviderSCIMForm";
+import "#admin/property-mappings/PropertyMappingProviderScopeForm";
+import "#admin/property-mappings/PropertyMappingSourceKerberosForm";
+import "#admin/property-mappings/PropertyMappingSourceLDAPForm";
+import "#admin/property-mappings/PropertyMappingSourceOAuthForm";
+import "#admin/property-mappings/PropertyMappingSourcePlexForm";
+import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
+import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
+import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
+import "#admin/property-mappings/PropertyMappingTestForm";
+import "#elements/forms/ProxyForm";
+import "#elements/wizard/FormWizardPage";
+import "#elements/wizard/TypeCreateWizardPage";
+import "#elements/wizard/Wizard";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+import type { Wizard } from "#elements/wizard/Wizard";
+
+import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
-
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static get styles() {
-        return [PFBase, PFButton];
-    }
+    static styles = [PFBase, PFButton];
 
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];
@@ -73,7 +74,7 @@ export class PropertyMappingWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>

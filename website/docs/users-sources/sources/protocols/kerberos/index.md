@@ -25,7 +25,7 @@ You can choose to use one or several of those methods.
 
 ## Common settings
 
-In the authentik Admin interface, under **Directory** -> **Federation and Social login**, create a new source of type Kerberos with these settings:
+In the authentik Admin interface, under **Directory** > **Federation and Social login**, create a new source of type Kerberos with these settings:
 
 - Name: a value of your choosing. This name is shown to users if you use the SPNEGO login method.
 - Slug: `kerberos`
@@ -138,6 +138,18 @@ When the property mapping is invoked from a SPNEGO context, the following variab
 When the property mapping is invoked from a synchronization context, the following variable is also available:
 
 - `principal_obj`: a [`Principal`](https://kadmin-rs.readthedocs.io/latest/kadmin.html#kadmin.Principal) object retrieved from the KAdmin API
+
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify a Kerberos property mapping to use an expression to define the object to skip.
+
+**Example:**
+
+```python
+localpart, realm = principal.rsplit("@", 1)
+if localpart == "username":
+    raise SkipObject
+```
 
 ## Troubleshooting
 

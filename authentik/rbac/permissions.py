@@ -1,8 +1,15 @@
 """RBAC Permissions"""
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
+from guardian.shortcuts import assign_perm
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 from rest_framework.request import Request
+from structlog.stdlib import get_logger
+
+from authentik.rbac.models import InitialPermissions
+
+LOGGER = get_logger()
 
 
 class ObjectPermissions(DjangoObjectPermissions):
@@ -51,3 +58,21 @@ def HasPermission(*perm: str) -> type[BasePermission]:
             return bool(request.user and request.user.has_perms(perm))
 
     return checker
+
+
+# TODO: add `user: User` type annotation without circular dependencies.
+# The author of this function isn't proficient/patient enough to do it.
+def assign_initial_permissions(user, instance: Model):
+    # Performance here should not be an issue, but if needed, there are many optimization routes
+    initial_permissions_list = InitialPermissions.objects.filter(role__in=user.all_roles())
+    for initial_permissions in initial_permissions_list:
+        for permission in initial_permissions.permissions.all():
+            if permission.content_type != ContentType.objects.get_for_model(instance):
+                continue
+            LOGGER.debug(
+                "Adding initial permission",
+                initial_permission=permission,
+                subject=initial_permissions.role,
+                object=instance,
+            )
+            assign_perm(permission, initial_permissions.role, instance)

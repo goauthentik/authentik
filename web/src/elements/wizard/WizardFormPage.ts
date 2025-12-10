@@ -1,7 +1,8 @@
-import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -12,30 +13,39 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export abstract class WizardForm extends Form<KeyUnknown> {
+export abstract class WizardForm extends Form {
     viewportCheck = false;
 
     @property({ attribute: false })
-    nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
+    nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
 
     /* Override the traditional behavior of the form and instead simply serialize the form and push
      * it's contents to the next page.
      */
     async submit(): Promise<boolean | undefined> {
-        const data = this.serializeForm();
-        if (!data) {
-            return;
-        }
-        const files = this.getFormFiles();
-        const finalData = Object.assign({}, data, files);
-        return this.nextDataCallback(finalData);
+        const data = this.serialize();
+
+        if (!data) return;
+
+        const files = this.files();
+
+        return this.nextDataCallback({
+            ...data,
+            ...files,
+        });
     }
 }
 
 export class WizardFormPage extends WizardPage {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+    ];
 
     inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
@@ -59,12 +69,13 @@ export class WizardFormPage extends WizardPage {
         return Boolean(response);
     };
 
-    nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (): Promise<boolean> => {
-        return false;
-    };
+    nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
+        async (): Promise<boolean> => {
+            return false;
+        };
 
-    renderForm(): TemplateResult {
-        return html``;
+    renderForm(): SlottedTemplateResult {
+        return nothing;
     }
 
     activeCallback = async () => {

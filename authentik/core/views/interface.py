@@ -8,9 +8,8 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views.generic.base import RedirectView, TemplateView
-from rest_framework.request import Request
 
-from authentik import get_build_hash
+from authentik import authentik_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.brands.api import CurrentBrandSerializer
@@ -46,11 +45,13 @@ class InterfaceView(TemplateView):
     """Base interface view"""
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["config_json"] = dumps(ConfigView(request=Request(self.request)).get_config().data)
-        kwargs["brand_json"] = dumps(CurrentBrandSerializer(self.request.brand).data)
+        brand = CurrentBrandSerializer(self.request.brand)
+        kwargs["config_json"] = dumps(ConfigView.get_config(self.request).data)
+        kwargs["ui_theme"] = brand.data["ui_theme"]
+        kwargs["brand_json"] = dumps(brand.data)
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
-        kwargs["build"] = get_build_hash()
+        kwargs["build"] = authentik_build_hash()
         kwargs["url_kwargs"] = self.kwargs
         kwargs["base_url"] = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
         kwargs["base_url_rel"] = CONFIG.get("web.path", "/")

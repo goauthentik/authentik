@@ -1,12 +1,12 @@
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { type ISimpleTable, SimpleTable } from "./ak-simple-table.js";
+import type { TableRow } from "./types.js";
+
+import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
-
-import { type ISimpleTable, SimpleTable } from "./ak-simple-table";
-import type { TableRow } from "./types";
 
 export interface ISelectTable extends ISimpleTable {
     value: string;
@@ -182,13 +182,13 @@ export class SelectTable extends SimpleTable {
 
     public renderCheckbox(key: string | undefined) {
         if (key === undefined) {
-            return html`<td class="pf-c-table__check" role="cell"></td>`;
+            return html`<td class="pf-c-table__check"></td>`;
         }
         // The double `checked` there is not a typo. The first one ensures the input's DOM object
         // receives the state; the second ensures the input tag on the page reflects the state
         // accurately. See https://github.com/lit/lit-element/issues/601
         const checked = this.selected.includes(key);
-        return html`<td part="select-cell" class="pf-c-table__check" role="cell">
+        return html`<td part="select-cell" class="pf-c-table__check">
             <input
                 type="checkbox"
                 name="${key}"
@@ -209,10 +209,7 @@ export class SelectTable extends SimpleTable {
     public override renderRow(row: TableRow, _rowidx: number) {
         return html` <tr part="row">
             ${this.renderCheckbox(row.key)}
-            ${map(
-                row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
-            )}
+            ${map(row.content, (col, idx) => html`<td part="cell cell-${idx}">${col}</td>`)}
         </tr>`;
     }
 
@@ -233,7 +230,7 @@ export class SelectTable extends SimpleTable {
                   this.selected.filter((i) => !values.includes(i));
         };
 
-        return html`<td part="select-all-header" class="pf-c-table__check" role="cell">
+        return html`<td part="select-all-header" class="pf-c-table__check">
             <input
                 part="select-all-input"
                 name="select-all-input"

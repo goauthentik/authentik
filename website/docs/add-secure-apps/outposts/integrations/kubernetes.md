@@ -13,6 +13,7 @@ This integration creates the following objects:
 - Secret to store the token
 - Prometheus ServiceMonitor (if the Prometheus Operator is installed in the target cluster)
 - Ingress (only Proxy outposts)
+- HTTPRoute (only Proxy outposts, when the Gateway API resources are installed in the target cluster, and the `kubernetes_httproute_parent_refs` setting is set, see below)
 - Traefik Middleware (only Proxy outposts with forward auth enabled)
 
 The following outpost settings are used:
@@ -24,6 +25,8 @@ The following outpost settings are used:
 - `kubernetes_ingress_annotations`: Any additional annotations to add to the ingress object, for example cert-manager
 - `kubernetes_ingress_secret_name`: Name of the secret that is used for TLS connections, can be empty to disable TLS config
 - `kubernetes_ingress_class_name`: Optionally set the ingress class used for the generated ingress, requires authentik 2022.11.0
+- `kubernetes_httproute_parent_refs`: Define which Gateways the HTTPRoute wants to be attached to.
+- `kubernetes_httproute_annotations`: Any additional annotations to add to the HTTPRoute object
 - `kubernetes_service_type`: Service kind created, can be set to LoadBalancer for LDAP outposts for example
 - `kubernetes_disabled_components`: Disable any components of the kubernetes integration, can be any of
     - 'secret'
@@ -32,6 +35,7 @@ The following outpost settings are used:
     - 'prometheus servicemonitor'
     - 'ingress'
     - 'traefik middleware'
+    - 'httproute'
 - `kubernetes_image_pull_secrets`: If the above docker image is in a private repository, use these secrets to pull. (NOTE: The secret must be created manually in the namespace first.)
 - `kubernetes_json_patches`: Applies an RFC 6902 compliant JSON patch to the Kubernetes objects.
 

@@ -1,6 +1,8 @@
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
 
-import { TemplateResult, html } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { html, nothing, TemplateResult } from "lit";
 import { until } from "lit/directives/until.js";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
@@ -15,7 +17,7 @@ export class Route {
     url: RegExp;
 
     private element?: TemplateResult;
-    private callback?: (args: RouteArgs) => Promise<TemplateResult>;
+    private callback?: (args: RouteArgs) => Promise<SlottedTemplateResult>;
 
     constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
         this.url = url;
@@ -30,7 +32,7 @@ export class Route {
             } else {
                 window.location.hash = to;
             }
-            return html``;
+            return nothing;
         };
         return this;
     }
@@ -51,7 +53,7 @@ export class Route {
         if (this.callback) {
             return html`${until(
                 this.callback(args),
-                html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
+                html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
         if (this.element) {

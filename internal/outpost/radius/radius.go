@@ -6,6 +6,7 @@ import (
 	"sort"
 	"sync"
 
+	"beryju.io/radius-eap/protocol"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
@@ -22,23 +23,27 @@ type ProviderInstance struct {
 	appSlug    string
 	flowSlug   string
 	providerId int32
+	certId     string
 	s          *RadiusServer
 	log        *log.Entry
+	eapState   map[string]*protocol.State
 }
 
 type RadiusServer struct {
-	s   radius.PacketServer
-	log *log.Entry
-	ac  *ak.APIController
+	s           radius.PacketServer
+	log         *log.Entry
+	ac          *ak.APIController
+	cryptoStore *ak.CryptoStore
 
-	providers []*ProviderInstance
+	providers map[int32]*ProviderInstance
 }
 
-func NewServer(ac *ak.APIController) *RadiusServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
-		log:       log.WithField("logger", "authentik.outpost.radius"),
-		ac:        ac,
-		providers: []*ProviderInstance{},
+		log:         log.WithField("logger", "authentik.outpost.radius"),
+		ac:          ac,
+		providers:   map[int32]*ProviderInstance{},
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 	}
 	rs.s = radius.PacketServer{
 		Handler:      rs,
@@ -85,7 +90,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		return bi < bj
 	})
 	candidate := matchedPrefixes[0]
-	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).WithField("instance", candidate.p.appSlug).Debug("Matched CIDR")
 	return candidate.p.SharedSecret, nil
 }
 
@@ -98,7 +103,8 @@ func (rs *RadiusServer) Start() error {
 	}()
 	go func() {
 		defer wg.Done()
-		err := rs.StartRadiusServer()
+		rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
+		err := rs.s.ListenAndServe()
 		if err != nil {
 			panic(err)
 		}

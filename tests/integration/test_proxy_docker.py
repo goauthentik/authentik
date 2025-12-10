@@ -10,6 +10,7 @@ from docker.types.healthcheck import Healthcheck
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.config import CONFIG
 from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
@@ -29,7 +30,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.run_container(
-            image="library/docker:dind",
+            image="docker.io/library/docker:28.5.2-dind-alpine3.22",
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(
@@ -45,7 +46,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
             },
         )
         # Ensure that local connection have been created
-        outpost_connection_discovery()
+        outpost_connection_discovery.send()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",
@@ -88,6 +89,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
             pass
 
     @pytest.mark.timeout(120)
+    @CONFIG.patch("outposts.container_image_base", "ghcr.io/goauthentik/dev-proxy:gh-main")
     def test_docker_controller(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)

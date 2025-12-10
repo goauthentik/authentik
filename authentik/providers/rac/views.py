@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application
 from authentik.core.views.interface import InterfaceView
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
@@ -20,6 +20,9 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.views import BufferedPolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+
+PLAN_CONNECTION_SETTINGS = "connection_settings"
 
 
 class RACStartView(BufferedPolicyAccessView):
@@ -65,7 +68,10 @@ class RACInterface(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Early sanity check to ensure token still exists
-        token = ConnectionToken.filter_not_expired(token=self.kwargs["token"]).first()
+        token = ConnectionToken.filter_not_expired(
+            token=self.kwargs["token"],
+            session__session__session_key=request.session.session_key,
+        ).first()
         if not token:
             return redirect("authentik_core:if-user")
         self.token = token
@@ -109,13 +115,16 @@ class RACFinalStage(RedirectStage):
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        settings = self.executor.plan.context.get(PLAN_CONNECTION_SETTINGS)
+        if not settings:
+            settings = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).get(
+                PLAN_CONNECTION_SETTINGS
+            )
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
-            settings=self.executor.plan.context.get("connection_settings", {}),
-            session=AuthenticatedSession.objects.filter(
-                session_key=self.request.session.session_key
-            ).first(),
+            settings=settings or {},
+            session=self.request.session["authenticatedsession"],
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )

@@ -1,0 +1,14 @@
+/**
+ * @file Japanese locale global style overrides.
+ */
+
+html[lang="ja"] {
+    --ak-font-family-sans-serif:
+        "M PLUS 2", "Noto Sans JP", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", メイリオ,
+        Meiryo, "ＭＳ Ｐゴシック", var(--ak-generic-sans-serif);
+    --ak-font-family-serif: "Noto Serif JP", var(--ak-generic-serif);
+
+    --ak-font-family-heading: var(--ak-font-family-sans-serif);
+
+    --pf-c-content--h1--FontWeight: 500;
+}

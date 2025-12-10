@@ -1,21 +1,14 @@
-import {
-    PolicyBindingCheckTarget,
-    PolicyBindingCheckTargetToLabel,
-} from "@goauthentik/admin/policies/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-toggle-group";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { CSSResult, nothing } from "lit";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
 
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
 import {
     CoreApi,
@@ -29,11 +22,20 @@ import {
     User,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 
 @customElement("ak-policy-binding-form")
-export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    async loadInstance(pk: string): Promise<PolicyBinding> {
+export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
+    T,
+    string
+> {
+    async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
@@ -47,7 +49,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
             this.policyGroupUser = PolicyBindingCheckTarget.user;
         }
         this.defaultOrder = await this.getOrder();
-        return binding;
+        return binding as T;
     }
 
     @property()
@@ -72,14 +74,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
-        } else {
-            return msg("Successfully created binding.");
         }
+        return msg("Successfully created binding.");
     }
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent];
 
     async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,
@@ -111,11 +110,10 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 policyBindingUuid: this.instance.pk,
                 policyBindingRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
-                policyBindingRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
+            policyBindingRequest: data,
+        });
     }
 
     async getOrder(): Promise<number> {
@@ -184,7 +182,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(policy: Policy): boolean => {
                                 return policy.pk === this.instance?.policy;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -221,7 +219,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.group;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -258,7 +256,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(user: User): boolean => {
                                 return user.pk === this.instance?.user;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -274,7 +272,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -289,7 +287,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.negate, false)}
+                        ?checked=${this.instance?.negate ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -302,18 +300,18 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     ${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
-                    value="${first(this.instance?.order, this.defaultOrder)}"
+                    value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
+            <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                 <input
                     type="number"
-                    value="${first(this.instance?.timeout, 30)}"
+                    value="${this.instance?.timeout ?? 30}"
                     class="pf-c-form-control"
                     required
                 />
