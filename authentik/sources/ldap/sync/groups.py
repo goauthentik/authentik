@@ -97,12 +97,11 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 if parent:
                     ak_group.parents.add(parent)
                 self._logger.debug("Created group with attributes", **defaults)
-                if not GroupLDAPSourceConnection.objects.filter(
-                    source=self._source, identifier=uniq
-                ):
-                    GroupLDAPSourceConnection.objects.create(
-                        source=self._source, group=ak_group, identifier=uniq
-                    )
+                GroupLDAPSourceConnection.objects.update_or_create(
+                    source=self._source,
+                    group=ak_group,
+                    defaults={"identifier": uniq},
+                )
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:

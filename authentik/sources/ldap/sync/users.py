@@ -89,12 +89,11 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = User.update_or_create_attributes(
                     {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
-                if not UserLDAPSourceConnection.objects.filter(
-                    source=self._source, identifier=uniq
-                ):
-                    UserLDAPSourceConnection.objects.create(
-                        source=self._source, user=ak_user, identifier=uniq
-                    )
+                UserLDAPSourceConnection.objects.update_or_create(
+                    source=self._source,
+                    user=ak_user,
+                    defaults={"identifier": uniq},
+                )
             except PropertyMappingExpressionException as exc:
                 raise StopSync(exc, None, exc.mapping) from exc
             except SkipObjectException:
