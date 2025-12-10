@@ -13,7 +13,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type TelegramUserResponse = {
     id: number;
@@ -30,11 +29,17 @@ export class TelegramLogin extends BaseStage<
     TelegramLoginChallenge,
     TelegramChallengeResponseRequest
 > {
-    btnRef = createRef();
+    static styles: CSSResult[] = [
+        // ---
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+        PFDivider,
+    ];
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
-    }
+    btnRef = createRef();
 
     firstUpdated(): void {
         const widgetScript = document.createElement("script");

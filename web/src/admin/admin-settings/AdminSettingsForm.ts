@@ -8,18 +8,14 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
-import "#elements/CodeMirror";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
-
-import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -265,16 +261,33 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.paginationMaxPageSize ?? DEFAULT_PAGE_MAX}"
                 help=${msg("Maximum page size for API requests.")}
             ></ak-number-input>
-            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(settings?.flags ?? {})}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Modify flags to opt into new authentik behaviours early.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-form-group
+                label=${msg("Flags")}
+                description=${msg(
+                    "Flags allow you to enable new functionality and behaviour in authentik early.",
+                )}
+            >
+                <div class="pf-c-form">
+                    <ak-switch-input
+                        name="flags.policiesBufferedAccessView"
+                        ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
+                        label=${msg("Buffer PolicyAccessVew requests")}
+                        help=${msg(
+                            "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.flowsRefreshOthers"
+                        ?checked=${settings?.flags.flowsRefreshOthers ?? false}
+                        label=${msg("Refresh other flow tabs upon authentication")}
+                        help=${msg(
+                            "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
+                        )}
+                    >
+                    </ak-switch-input>
+                </div>
+            </ak-form-group>
         `;
     }
 }

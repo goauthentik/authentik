@@ -45,7 +45,7 @@ export class WavesCanvas {
 
     // Wave parameters
     turbulence = Math.PI * 6.0;
-    pointSize = 1 * this.dpi;
+    pointSize = this.dpi;
     pointSizeCutoff = 5;
     speed = 10;
     waveHeight = 5;

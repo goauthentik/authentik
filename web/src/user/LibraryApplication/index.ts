@@ -37,8 +37,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     editURL,
     background,
-    appIndex,
-    groupIndex,
     className = "",
     targetRef,
     ...props
@@ -91,7 +89,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 exportparts="icon:card-header-icon"
                 size=${PFSize.Large}
                 name=${application.name}
-                icon=${ifPresent(application.metaIcon)}
+                icon=${ifPresent(application.metaIconUrl)}
             ></ak-app-icon>
             ${rac
                 ? html`<div

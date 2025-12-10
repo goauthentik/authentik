@@ -1,8 +1,10 @@
 import "#admin/applications/wizard/ak-wizard-title";
+import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
@@ -15,7 +17,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/t
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { type ApplicationRequest } from "@goauthentik/api";
+import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
@@ -181,6 +183,28 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             )}
                         >
                         </ak-switch-input>
+                        <ak-file-search-input
+                            name="metaIcon"
+                            label=${msg("Icon")}
+                            value=${ifDefined(app.metaIcon)}
+                            .usage=${AdminFileListUsageEnum.Media}
+                            help=${msg(
+                                "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
+                            )}
+                            blankable
+                        ></ak-file-search-input>
+                        <ak-text-input
+                            label=${msg("Publisher")}
+                            name="metaPublisher"
+                            value="${ifDefined(app.metaPublisher)}"
+                            .errorMessages=${errors.metaPublisher}
+                        ></ak-text-input>
+                        <ak-textarea-input
+                            label=${msg("Description")}
+                            name="metaDescription"
+                            value=${ifDefined(app.metaDescription)}
+                            .errorMessages=${errors.metaDescription}
+                        ></ak-textarea-input>
                     </div>
                 </ak-form-group>
             </form>`;

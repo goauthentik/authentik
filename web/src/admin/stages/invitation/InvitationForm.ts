@@ -6,7 +6,6 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
@@ -88,7 +87,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.fixedData ?? {})}"
                 >
                 </ak-codemirror>

@@ -14,7 +14,6 @@ import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -26,7 +25,7 @@ import {
     CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLProvider,
     User,
@@ -277,7 +276,7 @@ export class SAMLProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSamlSamlprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -522,7 +521,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode=${CodeMirrorMode.XML}
+                                      mode="xml"
                                       readonly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>

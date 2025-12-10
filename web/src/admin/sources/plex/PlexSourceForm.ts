@@ -1,4 +1,5 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -12,14 +13,13 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
@@ -28,24 +28,20 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-plex-form")
-export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
+export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     async loadInstance(pk: string): Promise<PlexSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: pk,
         });
         this.plexToken = source.plexToken;
         this.loadServers();
-        this.clearIcon = false;
         return source;
     }
-
-    @state()
-    clearIcon = false;
 
     @property()
     plexToken?: string;
@@ -61,35 +57,16 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
 
     async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
-        let source: PlexSource;
         if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexUpdate({
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
-                plexSourceRequest: data,
-            });
         }
-        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("icon");
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+            plexSourceRequest: data,
+        });
     }
 
     async doAuth(): Promise<void> {
@@ -307,52 +284,14 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
-            ${this.can(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input type="file" value="" class="pf-c-form-control" />
-                          ${this.instance?.icon
-                              ? html`
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Currently set to:")} ${this.instance?.icon}
-                                    </p>
-                                `
-                              : nothing}
-                      </ak-form-element-horizontal>
-                      ${this.instance?.icon
-                          ? html`
-                                <ak-form-element-horizontal>
-                                    <label class="pf-c-switch">
-                                        <input
-                                            class="pf-c-switch__input"
-                                            type="checkbox"
-                                            @change=${(ev: Event) => {
-                                                const target = ev.target as HTMLInputElement;
-                                                this.clearIcon = target.checked;
-                                            }}
-                                        />
-                                        <span class="pf-c-switch__toggle">
-                                            <span class="pf-c-switch__toggle-icon">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        </span>
-                                        <span class="pf-c-switch__label">
-                                            ${msg("Clear icon")}
-                                        </span>
-                                    </label>
-                                    <p class="pf-c-form__helper-text">
-                                        ${msg("Delete currently set icon.")}
-                                    </p>
-                                </ak-form-element-horizontal>
-                            `
-                          : nothing}`
-                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                      <input
-                          type="text"
-                          value="${this.instance?.icon ?? ""}"
-                          class="pf-c-form-control"
-                      />
-                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                  </ak-form-element-horizontal>`}
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${AdminFileListUsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">

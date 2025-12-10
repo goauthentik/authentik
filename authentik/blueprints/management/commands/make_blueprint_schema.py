@@ -5,6 +5,7 @@ from typing import Any
 
 from django.core.management.base import BaseCommand, no_translations
 from django.db.models import Model, fields
+from django.db.models.fields.related import OneToOneField
 from drf_jsonschema_serializer.convert import converter, field_to_converter
 from rest_framework.fields import Field, JSONField, UUIDField
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -32,6 +33,8 @@ class PrimaryKeyRelatedFieldConverter:
     def convert(self, field: PrimaryKeyRelatedField):
         model: Model = field.queryset.model
         pk_field = model._meta.pk
+        if isinstance(pk_field, OneToOneField):
+            pk_field = pk_field.related_fields[0][1]
         if isinstance(pk_field, fields.UUIDField):
             return {"type": "string", "format": "uuid"}
         return {"type": "integer"}

@@ -22,7 +22,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admi
 import {
     PoliciesApi,
     PolicyBinding,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -33,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
-export class BoundPoliciesList extends Table<PolicyBinding> {
+export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
     @property()
     target?: string;
 
@@ -55,6 +55,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     order = "order";
 
+    protected bindingEditForm = "ak-policy-binding-form";
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFSpacing);
     }
@@ -63,11 +65,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
+    async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
-        });
+        }) as Promise<PaginatedResponse<T>>;
     }
 
     protected override rowLabel(item: PolicyBinding): string | null {
@@ -184,20 +186,23 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <ak-forms-modal size=${PFSize.Medium}>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Binding")}</span>
-                    <ak-policy-binding-form
+                    <ak-proxy-form
                         slot="form"
-                        .instancePk=${item.pk}
-                        .allowedTypes=${this.allowedTypes}
-                        .typeNotices=${this.typeNotices}
-                        targetPk=${ifDefined(this.target)}
+                        type=${this.bindingEditForm}
+                        .args=${{
+                            instancePk: item.pk,
+                            allowedTypes: this.allowedTypes,
+                            typeNotices: this.typeNotices,
+                            targetPk: ifDefined(this.target),
+                        }}
                     >
-                    </ak-policy-binding-form>
+                    </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesPolicybinding}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesPolicybinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -219,13 +224,16 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     <ak-forms-modal size=${PFSize.Medium}>
                         <span slot="submit">${msg("Create")}</span>
                         <span slot="header">${msg("Create Binding")}</span>
-                        <ak-policy-binding-form
+                        <ak-proxy-form
                             slot="form"
-                            targetPk=${ifDefined(this.target)}
-                            .allowedTypes=${this.allowedTypes}
-                            .typeNotices=${this.typeNotices}
+                            type=${this.bindingEditForm}
+                            .args=${{
+                                allowedTypes: this.allowedTypes,
+                                typeNotices: this.typeNotices,
+                                targetPk: ifDefined(this.target),
+                            }}
                         >
-                        </ak-policy-binding-form>
+                        </ak-proxy-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
                             ${msg("Bind existing policy/group/user")}
                         </button>
@@ -246,13 +254,16 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             <ak-forms-modal size=${PFSize.Medium}>
                 <span slot="submit">${msg("Create")}</span>
                 <span slot="header">${msg("Create Binding")}</span>
-                <ak-policy-binding-form
+                <ak-proxy-form
                     slot="form"
-                    targetPk=${ifDefined(this.target)}
-                    .allowedTypes=${this.allowedTypes}
-                    .typeNotices=${this.typeNotices}
+                    type=${this.bindingEditForm}
+                    .args=${{
+                        allowedTypes: this.allowedTypes,
+                        typeNotices: this.typeNotices,
+                        targetPk: ifDefined(this.target),
+                    }}
                 >
-                </ak-policy-binding-form>
+                </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
                 </button>

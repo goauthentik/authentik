@@ -80,8 +80,9 @@ export class FlowInspector extends AKElement {
         if (!stage) {
             return stage;
         }
-        delete stage.flowSet;
-        return stage;
+        const conciseStage = { ...stage };
+        conciseStage.flowSet = [];
+        return conciseStage;
     }
 
     protected renderHeader() {

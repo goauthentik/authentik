@@ -2,31 +2,22 @@
 
 from collections.abc import Iterable
 
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
-from rest_framework.parsers import MultiPartParser
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
-from authentik.lib.utils.file import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    set_file,
-    set_file_url,
-)
 from authentik.policies.engine import PolicyEngine
-from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
@@ -36,18 +27,13 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     managed = ReadOnlyField()
     component = SerializerMethodField()
-    icon = ReadOnlyField(source="icon_url")
+    icon_url = ReadOnlyField()
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""
         if obj.__class__ == Source:
             return ""
         return obj.component
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["icon"] = CharField(required=False)
 
     class Meta:
         model = Source
@@ -70,6 +56,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "managed",
             "user_path_template",
             "icon",
+            "icon_url",
         ]
 
 
@@ -91,47 +78,6 @@ class SourceViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
-
-    @permission_required("authentik_core.change_source")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-        parser_classes=(MultiPartParser,),
-    )
-    def set_icon(self, request: Request, slug: str):
-        """Set source icon"""
-        source: Source = self.get_object()
-        return set_file(request, source, "icon")
-
-    @permission_required("authentik_core.change_source")
-    @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def set_icon_url(self, request: Request, slug: str):
-        """Set source icon (as URL)"""
-        source: Source = self.get_object()
-        return set_file_url(request, source, "icon")
 
     @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
