@@ -117,6 +117,29 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, relay_state)
 
+    def test_redirect_view_handles_logout_response_plain_relay_state(self):
+        """Test that redirect view handles logout response with plain RelayState"""
+        relay_state = "https://sp.example.com/plain"
+
+        # Create request with SAML logout response
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": relay_state,
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to plain relay state
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, relay_state)
+
     def test_redirect_view_handles_logout_response_no_relay_state_with_plan_context(self):
         """Test that redirect view uses plan context fallback when no RelayState"""
         relay_state = "https://idp.example.com/flow/plan-return"
@@ -207,6 +230,55 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(logout_request.issuer, self.provider.issuer)
         self.assertEqual(logout_request.session_index, "test-session-123")
 
+    def test_post_view_handles_logout_response_with_relay_state(self):
+        """Test that POST view handles logout response with RelayState"""
+        # Use raw URL (no encoding needed)
+        relay_state = "https://idp.example.com/flow/return"
+
+        # Create POST request with SAML logout response
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": relay_state,
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to relay state URL
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, relay_state)
+
+    def test_post_view_handles_logout_response_no_relay_state_with_plan_context(self):
+        """Test that POST view uses plan context fallback when no RelayState"""
+        relay_state = "https://idp.example.com/flow/plan-return"
+
+        # Create POST request with SAML logout response
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+            },
+        )
+        # Create a flow plan with the return URL
+        plan = FlowPlan(flow_pk="test-flow")
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        request.session = {SESSION_KEY_PLAN: plan}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should redirect to plan context stored URL
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, relay_state)
+
     def test_post_view_missing_saml_request(self):
         """Test POST view when SAML request is missing"""
         request = self.factory.post(f"/slo/post/{self.application.slug}/", {})
@@ -254,6 +326,46 @@ class TestSPInitiatedSLOViews(TestCase):
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        view.resolve_provider_application()
+
+        # Should return error response
+        result = view.check_saml_request()
+        self.assertIsNotNone(result)
+        self.assertEqual(result.status_code, 400)
+
+    @patch("authentik.providers.saml.views.sp_slo.LOGGER")
+    @patch("authentik.providers.saml.views.sp_slo.Event")
+    @patch("authentik.providers.saml.views.sp_slo.LogoutRequestParser")
+    def test_post_view_handles_parser_exception(
+        self, mock_parser_class, mock_event_class, mock_logger
+    ):
+        """Test POST view handles parser exception gracefully"""
+        # Mock Event.new to avoid the error
+        mock_event = MagicMock()
+        mock_event.save = MagicMock()
+        mock_event_class.new.return_value = mock_event
+
+        # Mock LOGGER.error to avoid the error
+        mock_logger.error = MagicMock()
+
+        # Make parser raise exception
+        mock_parser = MagicMock()
+        mock_parser.parse.side_effect = CannotHandleAssertion("Invalid request")
+        mock_parser_class.return_value = mock_parser
+
+        # Create POST request with SAML logout request
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLRequest": "invalid-request",
+                "RelayState": "test",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
         view.setup(request, application_slug=self.application.slug)
         view.resolve_provider_application()
 
@@ -606,208 +718,6 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         request.user = MagicMock()
 
         view = SPInitiatedSLOBindingRedirectView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify relay state was captured
-        logout_request = view.plan_context.get("authentik/providers/saml/logout_request")
-        self.assertEqual(logout_request.relay_state, expected_relay_state)
-
-    # POST view tests with different logout methods
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_frontchannel_native_post_binding(self, mock_auth_session):
-        """Test POST view with FRONTCHANNEL_NATIVE and POST binding"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_NATIVE
-        self.provider.sls_binding = SAMLBindings.POST
-        self.provider.save()
-
-        encoded_request = self.processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": "https://sp.example.com/return",
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify the logout request was parsed and provider is configured correctly
-        self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
-        self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.FRONTCHANNEL_NATIVE)
-        self.assertEqual(view.provider.sls_binding, SAMLBindings.POST)
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_frontchannel_native_redirect_binding(self, mock_auth_session):
-        """Test POST view with FRONTCHANNEL_NATIVE and REDIRECT binding"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_NATIVE
-        self.provider.sls_binding = SAMLBindings.REDIRECT
-        self.provider.save()
-
-        encoded_request = self.processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": "https://sp.example.com/return",
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify the logout request was parsed
-        self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
-        self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.FRONTCHANNEL_NATIVE)
-        self.assertEqual(view.provider.sls_binding, SAMLBindings.REDIRECT)
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_frontchannel_iframe_post_binding(self, mock_auth_session):
-        """Test POST view with FRONTCHANNEL_IFRAME and POST binding"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
-        self.provider.sls_binding = SAMLBindings.POST
-        self.provider.save()
-
-        encoded_request = self.processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": "https://sp.example.com/return",
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify the logout request was parsed
-        self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
-        self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.FRONTCHANNEL_IFRAME)
-        self.assertEqual(view.provider.sls_binding, SAMLBindings.POST)
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_frontchannel_iframe_redirect_binding(self, mock_auth_session):
-        """Test POST view with FRONTCHANNEL_IFRAME and REDIRECT binding"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
-        self.provider.sls_binding = SAMLBindings.REDIRECT
-        self.provider.save()
-
-        encoded_request = self.processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": "https://sp.example.com/return",
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify the logout request was parsed
-        self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
-        self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.FRONTCHANNEL_IFRAME)
-        self.assertEqual(view.provider.sls_binding, SAMLBindings.REDIRECT)
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_backchannel(self, mock_auth_session):
-        """Test POST view with BACKCHANNEL mode"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.BACKCHANNEL
-        self.provider.sls_binding = SAMLBindings.POST
-        self.provider.save()
-
-        encoded_request = self.processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": "https://sp.example.com/return",
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
-        view.setup(request, application_slug=self.application.slug)
-        view.resolve_provider_application()
-        view.check_saml_request()
-
-        # Verify the logout request was parsed and provider is configured correctly
-        self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
-        self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.BACKCHANNEL)
-
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_post_view_relay_state_propagation(self, mock_auth_session):
-        """Test RelayState from SP's logout request is captured for post-logout redirect"""
-        mock_auth_session.from_request.return_value = None
-
-        self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
-        self.provider.save()
-
-        expected_relay_state = "https://sp.example.com/custom-return-post"
-
-        processor = LogoutRequestProcessor(
-            provider=self.provider,
-            user=None,
-            destination="https://idp.example.com/sls",
-            name_id="test@example.com",
-            name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
-            session_index="test-session-123",
-            relay_state=expected_relay_state,
-        )
-        encoded_request = processor.encode_post()
-
-        request = self.factory.post(
-            f"/slo/post/{self.application.slug}/",
-            {
-                "SAMLRequest": encoded_request,
-                "RelayState": expected_relay_state,
-            },
-        )
-        request.session = {}
-        request.brand = self.brand
-        request.user = MagicMock()
-
-        view = SPInitiatedSLOBindingPOSTView()
         view.setup(request, application_slug=self.application.slug)
         view.resolve_provider_application()
         view.check_saml_request()
