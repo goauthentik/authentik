@@ -10,9 +10,8 @@ class AuthentikFilesConfig(ManagedAppConfig):
     verbose_name = "authentik Files"
     default = True
 
-    def ready(self):
-        super().ready()
-
+    @ManagedAppConfig.reconcile_global
+    def check_for_media_mount(self):
         from authentik.events.models import Event, EventAction
 
         if (
