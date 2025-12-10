@@ -1,13 +1,13 @@
 ---
 title: Device compliance policy
 sidebar_label: Device compliance policy
-tags: [device compliance, compliance, device access]
+tags: [device compliance, compliance, device access, policy]
 toc_max_heading_level: 4
 ---
 
 Device compliance policies are used to limit access to authentik and applications based on [Device Compliance](./index.mdx) information.
 
-Device compliance policies are still in development and currently inaccessible.
+Device compliance policies are currently in development and inaccessible.
 
 However, similar functionality can be achieved with existing stages. The following are examples of what can be achieved.
 
@@ -21,11 +21,14 @@ You must have [configured compliance](./configuration.md) in authentik and on th
 
 If your goal is to only allow registered Endpoint Devices, this is achievable by adding an Endpoint stage (add link to endpoint stage) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny.md) to your authentication flow.
 
-#### Create endpoint stage
+#### Create an endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages > Flows**.
 3. Select the authentication flow that you want to modify.
-4. Open the **Stage Bindings** tab and click **Create and bind stage**
+4. Open the **Stage Bindings** tab and click **Create and bind stage**.
+5. Create a Endpoint stage (TODO)
 
-#### Create deny stage
+#### Create a deny stage
+
+6. Create a deny stage (TODO)

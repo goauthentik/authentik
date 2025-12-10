@@ -788,6 +788,7 @@ const items = [
                     "endpoint-devices/device-compliance/connectors",
                     "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/device-reporting",
+                    "endpoint-devices/device-compliance/browser-extension",
                 ],
             },
         ],

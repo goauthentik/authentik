@@ -6,11 +6,17 @@ sidebar_label: Endpoint Devices
 import DocCardList from "@theme/DocCardList";
 
 :::danger
-The Endpoint Devices featureset is currently in early preview stage and under heavy development. It is not recommended for production use.
+The Endpoint Devices featureset is currently in early preview stage and in development. **It is not recommended for production use.**
 
 This is a very early preview. The features, methods and even the name are yet to be confirmed.
 
 Breaking changes and bugs should be expected.
+:::
+
+:::info Enterprise License Required
+An enterprise license is required to access some of these features, refer to the [current features overview table](#current-features-overview) below for more details.
+
+During this early preview stage, short trial licenses are available for testers. Please contact us via hello@goauthentik.io for more details.
 :::
 
 ## What are Endpoint Devices?
@@ -31,14 +37,14 @@ Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik t
 
 ## Current features overview
 
-| Feature                                   | Linux          | Windows        | macOS          | Status                                             |
-| ----------------------------------------- | -------------- | -------------- | -------------- | -------------------------------------------------- |
-| **Local device login**                    | ?              | ?              | ?              | :ak-enterprise (Linux open-source?)                |
-| **SSH/Remote authentication**             | Open Source    | :ak-enterprise | :ak-enterprise | Linux only (Win/macOS planned)                     |
-| **Sudo authorization**                    | ? Open Source  | -              | ?              | Linux only (macOS testing)                         |
-| **Basic compliance**                      | Open Source    | Open Source    | Open Source    | Basic facts - Session association, agent facts etc |
-| **Advanced compliance**                   | :ak-enterprise | :ak-enterprise | :ak-enterprise | More info than basic                               |
-| **Connectors** (Fleet, Entra, Intune etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise | Fleet ready - Others WIP                           |
+| Feature                                   | Linux          | Windows        | macOS            | Status                                                       |
+| ----------------------------------------- | -------------- | -------------- | ---------------- | ------------------------------------------------------------ |
+| **Local device login**                    | ?              | :ak-enterprise | :ak-enterprise ? | Early preview Windows (Linux open-source?)                   |
+| **SSH/Remote authentication**             | Open Source    | :ak-enterprise | :ak-enterprise   | Linux only at the moment - Windows/macOS in development      |
+| **Sudo authorization**                    | ? Open Source  | N/A            | N/A              | Early preview                                                |
+| **Basic compliance**                      | Open Source    | Open Source    | Open Source      | Early preview                                                |
+| **Advanced compliance**                   | :ak-enterprise | :ak-enterprise | :ak-enterprise   | In development                                               |
+| **Connectors** (Fleet, Entra, Intune etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise   | The Fleet connector is available - Others are in development |
 
 ## Important Considerations
 

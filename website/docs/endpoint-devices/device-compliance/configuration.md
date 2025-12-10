@@ -4,15 +4,13 @@ sidebar_label: Configure device compliance
 tags: [device compliance, compliance, configuration]
 ---
 
-## Configure authentik
+## Prerequisites
 
-Add a [connector](connectors.md) to authentik
+1. [Configure authentik to support the authentik Agent](../authentik-agent/configuration.md).
+2. [Deploy the authentik Agent on the device](../authentik-agent/agent-deployment/index.mdx).
+3. [Deploy the authentik browser extension on the device](./browser-extension.md).
 
 (TODO)
-
-## Configure the Endpoint Device
-
-Deploy and configure the [authentik Agent](../authentik-agent/index.mdx), or a supported connector agent such as [Fleet](./connectors.md#fleet) on the device.
 
 ## Configuration verification
 
