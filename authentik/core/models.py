@@ -152,7 +152,7 @@ class AttributesMixin(models.Model):
     @classmethod
     def update_or_create_attributes(
         cls, query: dict[str, Any], properties: dict[str, Any]
-    ) -> tuple[models.Model, bool]:
+    ) -> tuple[Self, bool]:
         """Same as django's update_or_create but correctly updates attributes by merging dicts"""
         instance = cls.objects.filter(**query).first()
         if not instance:

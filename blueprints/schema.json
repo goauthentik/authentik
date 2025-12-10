@@ -11334,6 +11334,16 @@
                     "type": "boolean",
                     "title": "Password login update internal password",
                     "description": "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend"
+                },
+                "sync_outgoing_trigger_mode": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "immediate",
+                        "deferred_end"
+                    ],
+                    "title": "Sync outgoing trigger mode",
+                    "description": "When to trigger sync for outgoing providers"
                 }
             },
             "required": []
@@ -11699,6 +11709,16 @@
                     "type": "boolean",
                     "title": "Delete not found objects",
                     "description": "Delete authentik users and groups which were previously supplied by this source, but are now missing from it."
+                },
+                "sync_outgoing_trigger_mode": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "immediate",
+                        "deferred_end"
+                    ],
+                    "title": "Sync outgoing trigger mode",
+                    "description": "When to trigger sync for outgoing providers"
                 }
             },
             "required": []

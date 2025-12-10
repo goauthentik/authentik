@@ -39803,6 +39803,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - component
       - connectivity
@@ -39987,6 +39991,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - name
       - realm
@@ -40511,6 +40519,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - component
@@ -40725,6 +40737,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - name
@@ -46867,6 +46883,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -47101,6 +47121,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -53702,6 +53726,12 @@ components:
           readOnly: true
       required:
       - messages
+    SyncOutgoingTriggerModeEnum:
+      enum:
+      - none
+      - immediate
+      - deferred_end
+      type: string
     SyncStatus:
       type: object
       description: Provider/source sync status
