@@ -124,7 +124,7 @@ export class LocaleContextController implements ReactiveController {
      * @param host The host element.
      * @param localeHint The initial locale code to set.
      */
-    constructor(host: ReactiveElementHost<LocaleMixin>, localeHint?: string) {
+    constructor(host: ReactiveElementHost<LocaleMixin>, localeHint?: TargetLocale) {
         this.#host = host;
 
         const contextValue = configureLocalization({
@@ -140,7 +140,7 @@ export class LocaleContextController implements ReactiveController {
 
         this.#host[kAKLocale] = contextValue;
 
-        const nextLocale = autoDetectLanguage(localeHint);
+        const nextLocale = localeHint || autoDetectLanguage();
 
         if (nextLocale !== sourceLocale) {
             this.#applyLocale(nextLocale);
