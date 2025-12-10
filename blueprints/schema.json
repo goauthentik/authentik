@@ -11982,7 +11982,8 @@
                         "reddit",
                         "slack",
                         "twitch",
-                        "twitter"
+                        "twitter",
+                        "wechat"
                     ],
                     "title": "Provider type"
                 },
