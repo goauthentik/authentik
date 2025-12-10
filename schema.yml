@@ -24425,6 +24425,39 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /sources/telegram/{slug}/connect_user/:
+    post:
+      operationId: sources_telegram_connect_user_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramAuthRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTelegramSourceConnection'
+          description: ''
+        '403':
+          description: Access denied
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
   /sources/telegram/{slug}/used_by/:
     get:
       operationId: sources_telegram_used_by_list
@@ -53933,14 +53966,9 @@ components:
       - warning
       - error
       type: string
-    TelegramChallengeResponseRequest:
+    TelegramAuthRequest:
       type: object
-      description: Base class for all challenge responses
       properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-source-telegram
         id:
           type: integer
         first_name:
@@ -53965,6 +53993,42 @@ components:
           type: string
           minLength: 1
           maxLength: 64
+      required:
+      - auth_date
+      - hash
+      - id
+    TelegramChallengeResponseRequest:
+      type: object
+      description: Base class for all challenge responses
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        username:
+          type: string
+          minLength: 1
+          maxLength: 255
+        photo_url:
+          type: string
+          format: uri
+          minLength: 1
+        auth_date:
+          type: integer
+        hash:
+          type: string
+          minLength: 1
+          maxLength: 64
+        component:
+          type: string
+          minLength: 1
+          default: ak-source-telegram
       required:
       - auth_date
       - hash
