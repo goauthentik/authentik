@@ -10072,6 +10072,36 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
 </trans-unit>
+<trans-unit id="s145aca905bbc68a4">
+  <source>SAML metadata XML file to import provider settings from.</source>
+</trans-unit>
+<trans-unit id="s0d748f6fb237da48">
+  <source>Configure SAML Provider from Metadata</source>
+</trans-unit>
+<trans-unit id="sb541f02499d73b4e">
+  <source>Outgoing syncs will not be triggered.</source>
+</trans-unit>
+<trans-unit id="s967b3abf2608649a">
+  <source>Immediate</source>
+</trans-unit>
+<trans-unit id="sba0b0ee7c8b8f04a">
+  <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+</trans-unit>
+<trans-unit id="sd3dfc2a1c3647e77">
+  <source>Deferred until end</source>
+</trans-unit>
+<trans-unit id="secd492de6e1ae305">
+  <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+</trans-unit>
+<trans-unit id="s0c476074a4fc4d95">
+  <source>Outgoing sync trigger mode</source>
+</trans-unit>
+<trans-unit id="s4bb6f209647072f4">
+  <source>Successfully connected source</source>
+</trans-unit>
+<trans-unit id="sf3ad0b5ebe730780">
+  <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
 </body>
 </file>
 </xliff>
