@@ -161,8 +161,8 @@ def validate_challenge_webauthn(
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-    if stage is None:
-        stage = stage_view.executor.current_stage
+    stage = stage or stage_view.executor.current_stage
+
     if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
         # Workaround for Android sign-in, when signing into Google Workspace on android while
         # adding the account to the system (not in Chrome), for some reason `type` is not set
