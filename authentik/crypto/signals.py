@@ -15,6 +15,7 @@ from authentik.crypto.models import (
     detect_key_type,
     fingerprint_sha256,
     generate_key_id,
+    generate_key_id_legacy,
 )
 
 LOGGER = get_logger()
@@ -60,6 +61,10 @@ def certificate_key_pair_pre_save(
     instance.fingerprint_sha256 = metadata["fingerprint_sha256"]
     instance.fingerprint_sha1 = metadata["fingerprint_sha1"]
 
-    # Generate kid only if not already set (preserves backfilled MD5 values)
-    if not instance.kid and instance.key_data:
-        instance.kid = generate_key_id(instance.key_data)
+    # Generate kid if not set, or regenerate if key_data has changed
+    # Preserve existing kid (MD5 or SHA512) if it matches the current key_data
+    if instance.key_data:
+        new_kid = generate_key_id(instance.key_data)
+        legacy_kid = generate_key_id_legacy(instance.key_data)
+        if instance.kid not in (new_kid, legacy_kid):
+            instance.kid = new_kid

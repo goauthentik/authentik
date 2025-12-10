@@ -2,7 +2,7 @@
 
 from base64 import urlsafe_b64encode
 from binascii import hexlify
-from hashlib import sha512
+from hashlib import md5, sha512
 from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
@@ -72,6 +72,13 @@ def generate_key_id(key_data: str) -> str:
     if not key_data:
         return ""
     return urlsafe_b64encode(sha512(key_data.encode("utf-8")).digest()).decode("utf-8").rstrip("=")
+
+
+def generate_key_id_legacy(key_data: str) -> str:
+    """Generate Key ID using MD5 (legacy format for backwards compatibility)."""
+    if not key_data:
+        return ""
+    return md5(key_data.encode("utf-8")).hexdigest()  # nosec
 
 
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):

@@ -20,7 +20,7 @@ from authentik.core.tests.utils import (
 )
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair, generate_key_id
+from authentik.crypto.models import CertificateKeyPair, generate_key_id, generate_key_id_legacy
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
@@ -482,3 +482,61 @@ class TestCrypto(APITestCase):
         self.assertIsNone(cert.fingerprint_sha256)
         self.assertIsNone(cert.fingerprint_sha1)
         self.assertIsNone(cert.kid)
+
+    def test_kid_legacy_preservation(self):
+        """Test that legacy MD5 kid is preserved when key_data hasn't changed"""
+        cert = create_test_cert()
+
+        # Simulate a legacy MD5 kid (as if backfilled from old system)
+        legacy_kid = generate_key_id_legacy(cert.key_data)
+        CertificateKeyPair.objects.filter(pk=cert.pk).update(kid=legacy_kid)
+        cert.refresh_from_db()
+        self.assertEqual(cert.kid, legacy_kid)
+
+        # Save the cert again (e.g., name change) - kid should be preserved
+        cert.name = generate_id()
+        cert.save()
+        cert.refresh_from_db()
+
+        self.assertEqual(cert.kid, legacy_kid)
+
+    def test_kid_regenerated_on_key_change(self):
+        """Test that kid is regenerated when key_data changes"""
+        cert = create_test_cert()
+        original_kid = cert.kid
+
+        # Generate a new key and update the keypair
+        builder = CertificateBuilder(generate_id())
+        builder.build(subject_alt_names=[], validity_days=3)
+
+        cert.key_data = builder.private_key
+        cert.certificate_data = builder.certificate
+        cert.save()
+        cert.refresh_from_db()
+
+        # Kid should be regenerated for the new key
+        self.assertNotEqual(cert.kid, original_kid)
+        self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+    def test_kid_regenerated_on_key_change_from_legacy(self):
+        """Test that kid is regenerated from legacy MD5 when key_data changes"""
+        cert = create_test_cert()
+
+        # Simulate a legacy MD5 kid
+        legacy_kid = generate_key_id_legacy(cert.key_data)
+        CertificateKeyPair.objects.filter(pk=cert.pk).update(kid=legacy_kid)
+        cert.refresh_from_db()
+        self.assertEqual(cert.kid, legacy_kid)
+
+        # Generate a new key and update the keypair
+        builder = CertificateBuilder(generate_id())
+        builder.build(subject_alt_names=[], validity_days=3)
+
+        cert.key_data = builder.private_key
+        cert.certificate_data = builder.certificate
+        cert.save()
+        cert.refresh_from_db()
+
+        # Kid should now be SHA512 for the new key
+        self.assertNotEqual(cert.kid, legacy_kid)
+        self.assertEqual(cert.kid, generate_key_id(cert.key_data))
