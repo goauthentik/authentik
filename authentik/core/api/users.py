@@ -86,6 +86,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -484,7 +485,11 @@ class UsersFilter(FilterSet):
         ]
 
 
-class UserViewSet(UsedByMixin, ModelViewSet):
+class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
+    UsedByMixin,
+    ModelViewSet,
+):
     """User Viewset"""
 
     queryset = User.objects.none()

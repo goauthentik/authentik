@@ -48,17 +48,7 @@ LOGGER = get_logger()
 class CertificateKeyPairSerializer(ModelSerializer):
     """CertificateKeyPair Serializer"""
 
-    fingerprint_sha256 = CharField(read_only=True, required=False, allow_null=True)
-    fingerprint_sha1 = CharField(read_only=True, required=False, allow_null=True)
-    cert_expiry = DateTimeField(read_only=True, required=False, allow_null=True)
-    cert_subject = CharField(read_only=True, required=False, allow_null=True)
     private_key_available = SerializerMethodField()
-    key_type = ChoiceField(
-        choices=KeyType.choices,
-        read_only=True,
-        required=False,
-        allow_null=True,
-    )
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
@@ -138,6 +128,11 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "managed": {"read_only": True},
             "key_data": {"write_only": True},
             "certificate_data": {"write_only": True},
+            "fingerprint_sha256": {"read_only": True},
+            "fingerprint_sha1": {"read_only": True},
+            "cert_expiry": {"read_only": True},
+            "cert_subject": {"read_only": True},
+            "key_type": {"read_only": True},
         }
 
 

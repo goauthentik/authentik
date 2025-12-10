@@ -4,11 +4,15 @@
     &:hover {
         --pf-c-switch__toggle--before--BackgroundColor: var(--pf-global--BackgroundColor--200);
     }
-}
 
-.pf-c-switch__label {
-    --pf-c-switch__input--not-checked__label--Color: var(--pf-global--Color--100);
-    user-select: none;
+    .pf-c-switch__label {
+        --pf-c-switch__input--not-checked__label--Color: var(--pf-global--Color--100);
+        user-select: none;
+    }
+
+    .pf-c-switch__toggle::before {
+        z-index: 1;
+    }
 }
 
 /* #region Dark Theme */
