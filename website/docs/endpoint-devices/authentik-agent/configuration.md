@@ -1,10 +1,10 @@
 ---
-title: Configure authentik Agent
-sidebar_label: Configure authentik Agent
+title: Configuration
+sidebar_label: Configuration
 tags: [authentik Agent, connector]
 ---
 
-To support the deployment of the authentik Agent on Endpoint Devices, you need to configure your authentik deployment. This involves creating an application/provider pair, importing the [device code flow](../../add-secure-apps/providers/oauth2/device_code.md), and creating a [Connector](../device-compliance/connectors.md).
+To support the deployment of the authentik Agent on Endpoint Devices, you need to configure your authentik deployment. This involves importing the [device code flow](../../add-secure-apps/providers/oauth2/device_code.md), creating an application/provider pair, and creating a [Connector](../device-compliance/connectors.md).
 
 ## Import OAuth device code flow
 

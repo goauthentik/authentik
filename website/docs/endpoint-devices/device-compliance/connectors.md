@@ -14,9 +14,11 @@ Currently, the only supported connectors are the [authentik Agent](#authentik-ag
 
 ### authentik Agent
 
-The
+(TODO) information on how the connector functions
 
 ### Fleet
+
+(TODO) information on how the connector functions
 
 ## Adding a connector
 

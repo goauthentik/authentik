@@ -695,14 +695,14 @@ const items = [
 
                         //#region authentik Agent Deployment
                         type: "category",
-                        label: "authentik Agent Deployment",
+                        label: "Deployment",
                         collapsed: true,
                         link: {
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/mdm-deployment",
+                            "endpoint-devices/authentik-agent/agent-deployment/mdm",
                             "endpoint-devices/authentik-agent/agent-deployment/linux",
                             "endpoint-devices/authentik-agent/agent-deployment/macos",
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
@@ -713,7 +713,7 @@ const items = [
 
                         //#region authentik Agent Release Notes
                         type: "category",
-                        label: "authentik Agent Release Notes",
+                        label: "Release Notes",
                         collapsed: true,
                         link: {
                             type: "doc",
@@ -741,7 +741,7 @@ const items = [
 
                         //#region local device login
                         type: "category",
-                        label: "Local Device Login",
+                        label: "Local device login",
                         collapsed: true,
                         link: {
                             type: "doc",
@@ -786,8 +786,8 @@ const items = [
                 items: [
                     "endpoint-devices/device-compliance/configuration",
                     "endpoint-devices/device-compliance/connectors",
-                    "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/device-reporting",
+                    "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/browser-extension",
                 ],
             },
